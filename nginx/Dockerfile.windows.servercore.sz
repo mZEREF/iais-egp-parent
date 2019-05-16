@@ -1,0 +1,18 @@
+FROM 192.168.7.61/windows/ecq/servercore:latest
+
+MAINTAINER zhouxiang <zhouxiang@ecquaria.com>
+
+ENV NGINX_HOME "C:\nginx"
+
+COPY nginx-1.14.2.zip "C:\nginx.zip"
+
+RUN unzip -q "C:\nginx.zip" && \
+    del "C:\nginx.zip" && \
+    move C:\nginx* "%NGINX_HOME%"
+
+COPY "docker\nginx.windows.conf" "$NGINX_HOME\conf\nginx.conf"
+COPY "docker\server.crt" "$NGINX_HOME\conf\server.crt"
+COPY "docker\server.key" "$NGINX_HOME\conf\server.key"
+COPY "docker\start.bat" "C:\start.bat"
+
+CMD "C:\start.bat"

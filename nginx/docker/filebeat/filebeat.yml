@@ -1,0 +1,32 @@
+output:
+  logstash:
+    enabled: true
+    hosts:
+      - "${LOGSTASH_ADDRESS}:${FILEBEAT_PORT:5044}"
+    ssl:
+      certificate_authorities:
+        - /etc/pki/tls/certs/logstash-beats.crt
+      insecure: true
+    timeout: 15
+
+filebeat:
+  prospectors:
+    -
+      paths:
+        - "/var/log/nginx/*.log"
+      fields:
+        document_type: nginx-log
+
+logging:
+  level: warning
+
+  # enable file rotation with default configuration
+  to_files: true
+
+  # do not log to syslog
+  to_syslog: false
+
+  files:
+    path: /var/log/mybeat
+    name: filebeat.log
+    keepfiles: 2
