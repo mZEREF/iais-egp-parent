@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.ecquaria.egp:backbone:war:19.04.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ecquaria/egp/backbone/19.04.2/backbone-19.04.2.war!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ecquaria/egp/backbone/19.04.2/backbone-19.04.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ecquaria/egp/backbone/19.04.2/backbone-19.04.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

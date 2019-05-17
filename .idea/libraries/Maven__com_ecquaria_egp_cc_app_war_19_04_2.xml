@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.ecquaria.egp:cc-app:war:19.04.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ecquaria/egp/cc-app/19.04.2/cc-app-19.04.2.war!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ecquaria/egp/cc-app/19.04.2/cc-app-19.04.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ecquaria/egp/cc-app/19.04.2/cc-app-19.04.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
