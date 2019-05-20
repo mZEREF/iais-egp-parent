@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/ViewForm" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="EmbedFormDetail" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="ViewForm" x="100" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="250" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <StartStep defClass="" executor="" icon="" name="ViewPDF" x="110" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preparePDFData" x="260" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePDFData_OnStepProcess_0" name="preparePDFData_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <StartStep defClass="" executor="" icon="" name="SetSession" x="110" y="350">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+  </StartStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Display" stageIndicator="" x="430" y="100">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="DisplayPDF" stageIndicator="" x="420" y="230">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SetPage" stageIndicator="" x="430" y="350">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/ViewForm" style="oblique">
+   <position>{(120,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Display" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareData" style="oblique">
+   <position>{(270,120)(450,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePDFData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/ViewPDF" style="oblique">
+   <position>{(130,250)(280,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/DisplayPDF" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePDFData" style="oblique">
+   <position>{(280,250)(440,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/SetPage" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/SetSession" style="rectanular">
+   <position>{(130,370)(450,370)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches />
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>

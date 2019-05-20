@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.Control</Require>
+	<Type>sopform.controls.standard.Empty</Type>
+	<SimpleName>Empty Space</SimpleName>
+	<Icon>empty.png</Icon>
+	<DisplayOrder>13</DisplayOrder>
+</Component>

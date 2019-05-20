@@ -1,0 +1,10 @@
+<Component>
+	<Require>sopform.controls.base.Theme</Require>
+	<Require>sopform.controls.base.Template</Require>
+	<Require>sopform.controls.base.Properties</Require>
+	<Require>sopform.controls.base.Renderer</Require>
+	<Require>sopform.controls.base.Serializer</Require>
+	<Require>sopform.controls.base.ArrayElement</Require>
+	<Type>sopform.controls.base.Control</Type>
+	<Visible>false</Visible>
+</Component>

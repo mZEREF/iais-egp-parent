@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="RepresentCitizenProcess" packageName="sop.webflow.rt.java.code" processType="normal" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepare" x="230" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="checkasOTP" x="280" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="checkagentOTP" x="460" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="checkagentOTP_OnStepProcess_0" name="checkagentOTP_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <StartStep defClass="" executor="" icon="" name="Step3" x="120" y="710">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SendOTP" x="240" y="710">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="sendOTP_OnStepProcess_0" name="sendOTP_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step4" x="580" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step4_OnStepProcess_0" name="step4_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" executor="" icon="" name="agent" x="480" y="230">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" executor="" icon="" name="agencystaff" x="290" y="240">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" executor="" icon="" name="Page1" x="380" y="710">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" executor="" icon="" name="Page2" x="730" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
+   <position>{(120,120)(250,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepare" style="rectanular">
+   <position>{(250,120)(390,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/agent" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(390,120)(499,120)(500,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/agencystaff" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(390,120)(318,120)(310,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/checkasOTP" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/agencystaff" style="rectanular">
+   <position>{(310,260)(300,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/checkasOTP" style="rectanular">
+   <position>{(300,390)(320,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(320,500)(320,589)(390,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(500,500)(500,564)(390,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step4" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(390,600)(604,600)(600,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/agencystaff" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(320,500)(228,499)(310,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/agent" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(500,500)(449,500)(500,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/checkagentOTP" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/agent" style="rectanular">
+   <position>{(500,250)(480,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/checkagentOTP" style="rectanular">
+   <position>{(480,370)(500,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SendOTP" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step3" style="rectanular">
+   <position>{(140,730)(260,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SendOTP" style="rectanular">
+   <position>{(260,730)(400,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step4" style="rectanular">
+   <position>{(600,120)(750,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/agencystaff" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="valid1" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="300" y="480">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/agent" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="valid2" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="480" y="480">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Pages/WebPage/agent" executor="" icon="" leftOperand="action" name="Switch1" x="370" y="100">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/agent" value="&quot;agent&quot;"/>
+   <SwitchCase component="/Pages/WebPage/agencystaff" value="&quot;agencystaff&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="370" y="580">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+</Application>

@@ -1,0 +1,39 @@
+<Template name="singlecolumn" label="Single Column" type="page">
+	<Control type="sopform.controls.base.Page">
+		<Properties>
+			<Entry name="cols">
+				<Integer>1</Integer>
+			</Entry>
+			<Entry name="captionOrientation">
+				<String>horizontal</String>
+			</Entry>
+			<Entry name="title">
+				<String>Page</String>
+			</Entry>
+			<Entry name="hint">
+				<String></String>
+			</Entry>
+			<Entry name="help">
+				<String></String>
+			</Entry>
+			<Entry name="acl">
+				<Map>
+					<Entry name="visibility">
+						<Map>
+							<Entry name="mode">
+								<String>always-visible</String>
+							</Entry>
+						</Map>
+					</Entry>
+					<Entry name="editability">
+						<Map>
+							<Entry name="mode">
+								<String>always-editable</String>
+							</Entry>
+						</Map>
+					</Entry>
+				</Map>
+			</Entry>
+		</Properties>
+	</Control>
+</Template>

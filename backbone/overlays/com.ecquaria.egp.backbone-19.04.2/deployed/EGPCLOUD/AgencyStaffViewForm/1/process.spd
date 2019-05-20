@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="AgencyStaffViewForm" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Resources>
+</Resources>
+<WebServices>
+</WebServices>
+<RestServices>
+</RestServices>
+<Steps>
+<StartStep defClass="" executor="" name="Step1" x="100" y="100"><Description /><probepoint type="none" />
+<OnStepProcess>
+</OnStepProcess>
+</StartStep>
+<AutomaticStep defClass="" executor="" name="PrepareData" x="247" y="97"><Description /><probepoint type="none" />
+<OnStepProcess>
+<JavaCode defClass="" executor="" methodName="automaticStep0_OnStepProcess_0" name="automaticStep0_OnStepProcess_0">
+</JavaCode>
+</OnStepProcess>
+</AutomaticStep>
+<AutomaticStep defClass="" executor="" name="SaveFormData" x="588" y="95"><Description /><probepoint type="none" />
+<OnStepProcess>
+<JavaCode defClass="" executor="" methodName="automaticStep1_OnStepProcess_0" name="automaticStep1_OnStepProcess_0">
+</JavaCode>
+</OnStepProcess>
+</AutomaticStep>
+</Steps>
+<Pages>
+<WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" name="WebPage1" stageIndicator="" x="778" y="92"><Description /><probepoint type="none" />
+<OnPageLoad>
+</OnPageLoad>
+<OnPageSubmit>
+</OnPageSubmit>
+</WebPage>
+<WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" name="Display" stageIndicator="" x="417" y="96"><Description /><probepoint type="none" />
+<OnPageLoad>
+</OnPageLoad>
+<OnPageSubmit>
+</OnPageSubmit>
+</WebPage>
+</Pages>
+<Forms>
+</Forms>
+<Conditions>
+</Conditions>
+<Switches>
+</Switches>
+<Branches>
+</Branches>
+<Merges>
+</Merges>
+<StudioLabels>
+</StudioLabels>
+<StageIndicator>
+</StageIndicator>
+<AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="">
+</AuthenticationRequire>
+<BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions="">
+</BatFlowsSelected>
+<Links>
+<SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1">
+<position>{(100,100)(247,97)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Pages/WebPage/WebPage1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SaveFormData">
+<position>{(588,95)(778,92)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Pages/WebPage/Display" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData">
+<position>{(247,97)(417,96)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Steps/AutomaticStep/SaveFormData" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Display">
+<position>{(417,96)(588,95)}</position>
+</SynchronousLink>
+</Links>
+</Application>

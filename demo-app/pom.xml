@@ -17,9 +17,9 @@
             <version>19.04.2</version>
         </dependency>
         <dependency>
-            <groupId>com.ecquaria.egp</groupId>
+            <groupId>sg.gov.moh.iais-egp</groupId>
             <artifactId>backbone</artifactId>
-            <version>19.04.2</version>
+            <version>${revision}</version>
             <type>war</type>
         </dependency>
 

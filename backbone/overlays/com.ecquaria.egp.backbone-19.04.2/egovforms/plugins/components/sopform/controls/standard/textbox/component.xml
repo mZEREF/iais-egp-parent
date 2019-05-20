@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.SingleInput</Require>
+	<Type>sopform.controls.standard.TextBox</Type>
+	<SimpleName>Text Box</SimpleName>
+	<Icon>textbox.png</Icon>
+	<DisplayOrder>3</DisplayOrder>
+</Component>

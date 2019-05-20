@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="DynamicFlow" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="AppInFeeCond" x="200" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="appInFeeCheck_OnStepProcess_0" name="appInFeeCheck_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingAppInFee" x="320" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingAppInFee_OnStepProcess_0" name="pendingAppInFee_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ProcessingCond" x="780" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="processingCheck_OnStepProcess_0" name="processingCheck_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ApprovalCond" x="1030" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="approvalCheck_OnStepProcess_0" name="approvalCheck_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PaymentCond" x="1300" y="130">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="paymentCheck_OnStepProcess_0" name="paymentCheck_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingProcessing" x="920" y="280">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingProcessing_OnStepProcess_0" name="pendingProcessing_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingPayment" x="1390" y="280">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingPayment_OnStepProcess_0" name="pendingPayment_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingApproval" x="1160" y="280">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingApproval_OnStepProcess_0" name="pendingApproval_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <AutomaticStep defClass="" executor="" icon="" name="CollectionCond" x="1520" y="130">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="collectionCheck_OnStepProcess_0" name="collectionCheck_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingCollection" x="1610" y="280">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingCollection_OnStepProcess_0" name="pendingCollection_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Completed" x="1670" y="500">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="completed_OnStepProcess_0" name="completed_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <StopStep defClass="" executor="" icon="" name="Stop" x="1800" y="500">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StopStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Prepare" x="770" y="680">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="ApplicationDetail" processname="ApplicationView" project="EGPCLOUD" version="-1" x="900" y="680">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BindStatus" x="1060" y="680">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bindStatus_OnStepProcess_0" name="bindStatus_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BindProcessingStage" x="920" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bindProcessingStage_OnStepProcess_0" name="bindProcessingStage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BindApprovalStage" x="1170" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bindApprovalStage_OnStepProcess_0" name="bindApprovalStage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingProcessingAmendment" x="770" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingAmendment_OnStepProcess_0" name="pendingAmendment_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Reject" x="1430" y="680">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="reject_OnStepProcess_0" name="reject_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Processing" x="1070" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="processing_OnStepProcess_0" name="processing_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Approve" x="1430" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingApprovalAmendment" x="1270" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingApprovalAmendment_OnStepProcess_0" name="pendingApprovalAmendment_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <AutomaticStep defClass="" executor="" icon="" name="VettingCond" x="480" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="vettingCond_OnStepProcess_0" name="vettingCond_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingVetting" x="600" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingVetting_OnStepProcess_0" name="pendingVetting_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BindVettingStage" x="600" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bindVettingStage_OnStepProcess_0" name="bindVettingStage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingVettingAmendment" x="430" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingVettingAmendment_OnStepProcess_0" name="pendingVettingAmendment_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Vetting" x="730" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="vetting_OnStepProcess_0" name="vetting_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BindCollectionStage" x="1540" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bindCollectionStage_OnStepProcess_0" name="bindCollectionStage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Collection" x="1490" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="collection_OnStepProcess_0" name="collection_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages/>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AppInFeeCond" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(120,120)(220,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/AppInFeeRequired" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/AppInFeeCond" style="oblique">
+   <position>{(220,120)(340,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/ProcessingRequired" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ProcessingCond" style="oblique">
+   <position>{(800,120)(920,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ApprovalCond" linkstyle="Direct" name="" sourceName="/Conditions/Condition/ProcessingRequired" style="oblique">
+   <position>{(920,130)(1050,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/ApprovalRequired" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ApprovalCond" style="oblique">
+   <position>{(1050,130)(1160,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PaymentCond" linkstyle="Direct" name="" sourceName="/Conditions/Condition/ApprovalRequired" style="oblique">
+   <position>{(1160,130)(1320,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/PaymentRequired" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PaymentCond" style="oblique">
+   <position>{(1320,150)(1420,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/CollectionCond" linkstyle="Direct" name="" sourceName="/Conditions/Condition/PaymentRequired" style="oblique">
+   <position>{(1420,150)(1540,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/CollectionRequired" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/CollectionCond" style="oblique">
+   <position>{(1540,150)(1640,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Completed" linkstyle="Direct" name="" sourceName="/Conditions/Condition/CollectionRequired" style="oblique">
+   <position>{(1640,150)(1449,402)(1690,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingCollection" linkstyle="Direct" name="" sourceName="/Conditions/Condition/CollectionRequired" style="oblique">
+   <position>{(1640,150)(1630,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingPayment" linkstyle="Direct" name="" sourceName="/Conditions/Condition/PaymentRequired" style="oblique">
+   <position>{(1420,150)(1410,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingApproval" linkstyle="Direct" name="" sourceName="/Conditions/Condition/ApprovalRequired" style="oblique">
+   <position>{(1160,130)(1180,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingProcessing" linkstyle="Direct" name="" sourceName="/Conditions/Condition/ProcessingRequired" style="oblique">
+   <position>{(920,130)(940,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingAppInFee" linkstyle="Direct" name="" sourceName="/Conditions/Condition/AppInFeeRequired" style="oblique">
+   <position>{(340,120)(340,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/CollectionCond" linkstyle="Direct" name="" sourceName="/Steps/ManualStep/PendingPayment" style="oblique">
+   <position>{(1410,300)(1540,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/StopStep/Stop" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Completed" style="oblique">
+   <position>{(1690,520)(1820,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindProcessingStage" linkstyle="Direct" name="" sourceName="/Steps/ManualStep/PendingProcessing" style="oblique">
+   <position>{(940,300)(940,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindApprovalStage" linkstyle="Direct" name="" sourceName="/Steps/ManualStep/PendingApproval" style="oblique">
+   <position>{(1180,300)(1190,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindProcessingStage" style="oblique">
+   <position>{(940,420)(790,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ApplicationDetail" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Prepare" style="oblique">
+   <position>{(790,700)(920,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindStatus" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/ApplicationDetail" style="oblique">
+   <position>{(920,700)(1080,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindApprovalStage" style="oblique">
+   <position>{(1190,420)(790,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Processing" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(1200,700)(1090,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Approve" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(1200,700)(1450,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/StatusSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindStatus" style="oblique">
+   <position>{(1080,700)(1200,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingProcessing" linkstyle="Direct" name="" sourceName="/Steps/ManualStep/PendingProcessingAmendment" style="oblique">
+   <position>{(790,390)(940,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Reject" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(1200,700)(1450,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/StopStep/Stop" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Reject" style="oblique">
+   <position>{(1450,700)(1564,658)(1820,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ApprovalCond" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Processing" style="oblique">
+   <position>{(1090,420)(1050,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PaymentCond" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Approve" style="oblique">
+   <position>{(1450,420)(1320,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingApproval" linkstyle="Direct" name="" sourceName="/Steps/ManualStep/PendingApprovalAmendment" style="oblique">
+   <position>{(1290,420)(1180,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingProcessingAmendment" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(1200,700)(790,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingApprovalAmendment" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(1200,700)(1290,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/VettingCond" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/AppInFeeRequired" style="rectanular">
+   <position>{(340,120)(500,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindVettingStage" linkstyle="Rectangle" name="" sourceName="/Steps/ManualStep/PendingVetting" style="rectanular">
+   <position>{(620,260)(620,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/BindVettingStage" style="rectanular">
+   <position>{(620,390)(790,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingVettingAmendment" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/StatusSwitch" style="rectanular">
+   <position>{(1200,700)(504,753)(450,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingVetting" linkstyle="Rectangle" name="" sourceName="/Steps/ManualStep/PendingVettingAmendment" style="rectanular">
+   <position>{(450,390)(620,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/VettingCond" linkstyle="Direct" name="" sourceName="/Steps/ManualStep/PendingAppInFee" style="oblique">
+   <position>{(340,270)(500,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/VettingRequired" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/VettingCond" style="rectanular">
+   <position>{(500,120)(620,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ProcessingCond" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/VettingRequired" style="rectanular">
+   <position>{(620,120)(800,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingVetting" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/VettingRequired" style="rectanular">
+   <position>{(620,120)(620,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Vetting" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(1200,700)(750,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ProcessingCond" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Vetting" style="rectanular">
+   <position>{(750,450)(800,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindCollectionStage" linkstyle="Direct" name="" sourceName="/Steps/ManualStep/PendingCollection" style="oblique">
+   <position>{(1630,300)(1560,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindCollectionStage" style="oblique">
+   <position>{(1560,390)(790,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Collection" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(1200,700)(1510,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Completed" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Collection" style="oblique">
+   <position>{(1510,540)(1690,520)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/VettingCond" componentIfTrue="/Steps/ManualStep/PendingAppInFee" defClass="" executor="" icon="" leftOperand="required" name="AppInFeeRequired" operator="=" rightOperand="&quot;true&quot;" x="320" y="100">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/ApprovalCond" componentIfTrue="/Steps/ManualStep/PendingProcessing" defClass="" executor="" icon="" leftOperand="required" name="ProcessingRequired" operator="=" rightOperand="&quot;true&quot;" x="900" y="110">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/PaymentCond" componentIfTrue="/Steps/ManualStep/PendingApproval" defClass="" executor="" icon="" leftOperand="required" name="ApprovalRequired" operator="=" rightOperand="&quot;true&quot;" x="1140" y="110">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/CollectionCond" componentIfTrue="/Steps/ManualStep/PendingPayment" defClass="" executor="" icon="" leftOperand="required" name="PaymentRequired" operator="=" rightOperand="&quot;true&quot;" x="1400" y="130">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/Completed" componentIfTrue="/Steps/ManualStep/PendingCollection" defClass="" executor="" icon="" leftOperand="required" name="CollectionRequired" operator="=" rightOperand="&quot;true&quot;" x="1620" y="130">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/ProcessingCond" componentIfTrue="/Steps/ManualStep/PendingVetting" defClass="" executor="" icon="" leftOperand="required" name="VettingRequired" operator="=" rightOperand="&quot;true&quot;" x="600" y="100">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Reject" executor="" icon="" leftOperand="status" name="StatusSwitch" x="1180" y="680">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Reject" value="&quot;reject&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Processing" value="&quot;processing&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;"/>
+   <SwitchCase component="/Steps/ManualStep/PendingProcessingAmendment" value="&quot;processingAmendment&quot;"/>
+   <SwitchCase component="/Steps/ManualStep/PendingApprovalAmendment" value="&quot;approvalAmendment&quot;"/>
+   <SwitchCase component="/Steps/ManualStep/PendingVettingAmendment" value="&quot;vettingAmendment&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Vetting" value="&quot;vetting&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Collection" value="&quot;collection&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="1220" y="490">PendingAmendment</StudioLabel>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="1090" y="540">Processing</StudioLabel>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="1310" y="540">Approve</StudioLabel>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="1350" y="690">Reject</StudioLabel>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="920" y="490">PendingAmendment</StudioLabel>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="800" y="490">Vetting</StudioLabel>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="430" y="560">PendingAmendment</StudioLabel>
+ </StudioLabels>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

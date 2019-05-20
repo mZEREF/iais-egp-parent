@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.Control</Require>
+	<Type>sopform.controls.standard.Session</Type>
+	<SimpleName>Session</SimpleName>
+	<Icon>session.png</Icon>
+	<DisplayOrder>15</DisplayOrder>
+</Component>

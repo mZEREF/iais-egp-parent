@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="FormDetails_MC" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="170" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="420" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InitLanguage" x="280" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="initLanguage_OnStepProcess_0" name="initLanguage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Display" stageIndicator="" x="700" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="GetTitle" stageIndicator="" x="710" y="220">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Links>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
+   <position>{(440,120)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Display" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(570,120)(720,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/GetTitle" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(570,120)(730,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InitLanguage" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(190,120)(300,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InitLanguage" style="rectanular">
+   <position>{(300,120)(440,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/Display" componentIfTrue="/Pages/WebPage/GetTitle" defClass="" executor="" icon="" leftOperand="&quot;GET_TITLE&quot;" name="Cond1" operator="=" rightOperand="_ACTION" x="550" y="100">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches/>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+</Application>

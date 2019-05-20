@@ -1,0 +1,1 @@
+<%@include file="/egov/endorsement/viewPage.jsp"%>

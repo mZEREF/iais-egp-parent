@@ -1,0 +1,1 @@
+<div style="height: 12px; {if defined('value') && value} background-color: ${value}; {/if}"><img src="${sopFormTheme}images/forms/colorpicker.png" border="0" /></div>

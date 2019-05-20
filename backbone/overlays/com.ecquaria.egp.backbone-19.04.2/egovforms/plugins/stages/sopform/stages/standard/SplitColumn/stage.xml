@@ -1,0 +1,18 @@
+<StageType>
+	<Type>sopform.stages.standard.SplitColumn</Type>
+	<Require>sopform.stages.base.BaseStage</Require>
+	<Require>sopform.stages.standard.Split</Require>
+	
+	<Name>Split Column</Name>
+	<Javascript>javascripts/SplitColumn.js</Javascript>
+	<Html>dialog.html</Html>
+	<Instantiable>false</Instantiable>
+	<Draggable>false</Draggable>
+	<Properties>
+		<Property>
+			<Name>stageName</Name>
+			<Label>Stage Name</Label>
+			<Type>text</Type>
+		</Property>
+	</Properties>
+</StageType>

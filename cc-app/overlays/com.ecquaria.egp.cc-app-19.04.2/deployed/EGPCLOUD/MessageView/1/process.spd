@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MessageView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="340" y="20">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="320" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Cancel" x="190" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Return" x="340" y="650">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Search" x="340" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="search_OnStepProcess_0" name="search_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="MainSearch" x="260" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="mainSearch_OnStepProcess_0" name="mainSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="myApp" processname="MyApplicationManagement" project="EGPCLOUD" version="-1" x="500" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="myDoc" processname="DocumentVaultManagement" project="EGPCLOUD" version="-1" x="430" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="myCase" processname="MyCaseManagement" project="EGPCLOUD" version="-1" x="580" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewPage" stageIndicator="" x="340" y="200">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(360,40)(340,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
+   <position>{(340,130)(360,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ViewPage" style="oblique">
+   <position>{(360,220)(360,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Cancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,320)(210,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Cancel" style="oblique">
+   <position>{(210,420)(360,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Return" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(360,520)(360,670)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Search" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,320)(360,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Search" style="oblique">
+   <position>{(360,420)(360,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/MainSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,320)(280,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/MainSearch" style="oblique">
+   <position>{(280,420)(360,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/myApp" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,320)(520,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/myApp" style="oblique">
+   <position>{(520,420)(360,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/myDoc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,320)(450,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/myDoc" style="oblique">
+   <position>{(450,420)(360,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/myCase" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,320)(600,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/myCase" style="oblique">
+   <position>{(600,420)(360,520)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Cancel" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="340" y="300">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Cancel" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Search" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/MainSearch" value="&quot;mainSearch&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/myApp" value="&quot;myApp&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/myDoc" value="&quot;myDoc&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/myCase" value="&quot;myCase&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="340" y="500">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+</Application>

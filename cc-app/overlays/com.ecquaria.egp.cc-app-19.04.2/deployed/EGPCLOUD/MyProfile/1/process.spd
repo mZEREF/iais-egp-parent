@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MyProfile" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="120" y="40">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="230" y="40">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BindAction" x="530" y="40">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bindAction_OnStepProcess_0" name="bindAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ValidateUpdate" x="710" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validate_OnStepProcess_0" name="validate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Update" x="730" y="450">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="update_OnStepProcess_0" name="update_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ValidUpload" x="590" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validUpload_OnStepProcess_0" name="validUpload_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Upload" x="600" y="450">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="upload_OnStepProcess_0" name="upload_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ValidRemove" x="440" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validRemove_OnStepProcess_0" name="validRemove_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Remove" x="450" y="440">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="remove_OnStepProcess_0" name="remove_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ValidDownload" x="310" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validDownload_OnStepProcess_0" name="validDownload_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Download" x="320" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="download_OnStepProcess_0" name="download_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="SetLang" processname="SettingLanguage" project="EGPCLOUD" version="-1" x="730" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="initMsg" x="730" y="650">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="initMsg_OnStepProcess_0" name="initMsg_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="View" stageIndicator="" x="400" y="40">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="downloadPage" stageIndicator="" x="310" y="540">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(140,60)(250,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/View" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="rectanular">
+   <position>{(250,60)(420,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindAction" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/View" style="rectanular">
+   <position>{(420,60)(550,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Valid" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ValidateUpdate" style="rectanular">
+   <position>{(730,270)(750,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Update" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Valid" style="rectanular">
+   <position>{(750,370)(750,470)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Action" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/BindAction" style="rectanular">
+   <position>{(550,60)(560,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ValidateUpdate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Action" style="oblique">
+   <position>{(560,200)(730,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ValidUpload" linkstyle="Direct" name="" sourceName="/Switches/Switch/Action" style="oblique">
+   <position>{(560,200)(610,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(550,730)(265,729)(250,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Valid" style="oblique">
+   <position>{(750,370)(550,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Valid1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ValidUpload" style="rectanular">
+   <position>{(610,270)(620,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Upload" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Valid1" style="rectanular">
+   <position>{(620,370)(620,470)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Upload" style="oblique">
+   <position>{(620,470)(550,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Valid1" style="oblique">
+   <position>{(620,370)(550,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ValidRemove" linkstyle="Direct" name="" sourceName="/Switches/Switch/Action" style="oblique">
+   <position>{(560,200)(460,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Valid2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ValidRemove" style="rectanular">
+   <position>{(460,270)(470,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Remove" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Valid2" style="rectanular">
+   <position>{(470,370)(470,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Remove" style="oblique">
+   <position>{(470,460)(550,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Valid2" style="oblique">
+   <position>{(470,370)(550,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Valid3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ValidDownload" style="rectanular">
+   <position>{(330,270)(360,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Download" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Valid3" style="rectanular">
+   <position>{(360,360)(340,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Valid3" style="oblique">
+   <position>{(360,360)(550,730)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/downloadPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Download" style="rectanular">
+   <position>{(340,450)(330,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ValidDownload" linkstyle="Direct" name="" sourceName="/Switches/Switch/Action" style="oblique">
+   <position>{(560,200)(330,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/SetLang" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Update" style="rectanular">
+   <position>{(750,470)(750,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initMsg" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/SetLang" style="rectanular">
+   <position>{(750,570)(750,670)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/initMsg" style="oblique">
+   <position>{(750,670)(550,730)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/Update" defClass="" executor="" icon="" leftOperand="valid" name="Valid" operator="=" rightOperand="&quot;true&quot;" x="730" y="350">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/Upload" defClass="" executor="" icon="" leftOperand="valid" name="Valid1" operator="=" rightOperand="&quot;true&quot;" x="600" y="350">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/Remove" defClass="" executor="" icon="" leftOperand="valid" name="Valid2" operator="=" rightOperand="&quot;true&quot;" x="450" y="350">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/Download" defClass="" executor="" icon="" leftOperand="valid" name="Valid3" operator="=" rightOperand="&quot;true&quot;" x="340" y="340">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="Action" name="Action" x="540" y="180">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/ValidateUpdate" value="&quot;update&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/ValidUpload" value="&quot;upload&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/ValidRemove" value="&quot;remove&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/ValidDownload" value="&quot;download&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="530" y="710">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+</Application>

@@ -1,0 +1,6 @@
+<%@page import="ecq.commons.helper.StringHelper"%>
+<%!
+	public static String display(String str) {
+		return (str==null) ? "" : StringHelper.escapeHtmlChars(str);
+	}
+%>

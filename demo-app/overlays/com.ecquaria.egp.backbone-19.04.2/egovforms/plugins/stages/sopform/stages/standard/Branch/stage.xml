@@ -1,0 +1,51 @@
+<StageType>
+	<Type>sopform.stages.standard.Branch</Type>
+	<Require>sopform.stages.base.BaseStage</Require>
+	
+	<Name>Branch</Name>
+	<Description>Description of Branch</Description>
+	<Icon>images/branch.png</Icon>
+	<Javascript>javascripts/Branch.js</Javascript>
+	<Html>dialog.html</Html>
+	<Process>SOPFORMS:Branch</Process>
+	<FlowControl>true</FlowControl>
+	<Properties>
+		<Property>
+			<Name>stageName</Name>
+			<Label>Branch Name</Label>
+			<Type>text</Type>
+		</Property>
+		<Property>
+			<Name>branchCondition</Name>
+			<Label>Branch Condition</Label>
+			<Type>radio</Type>
+			<Options>
+				<Option>
+					<Code>result</Code>
+					<Value>Use Result</Value>
+				</Option>
+				<Option>
+					<Code>field</Code>
+					<Value>Use Field</Value>
+				</Option>
+			</Options>
+		</Property>
+		<Property>
+			<Name>generateColumn</Name>
+			<Label></Label>
+			<Value>Generate Column</Value>
+			<Type>button</Type>
+		</Property>
+		<Property>
+			<Name>selectField</Name>
+			<Label>Select Field</Label>
+			<Type>dropdown</Type>
+		</Property>
+		<Property>
+			<Name>addColumn</Name>
+			<Label></Label>
+			<Value>Add Column</Value>
+			<Type>button</Type>
+		</Property>
+	</Properties>
+</StageType>

@@ -1,0 +1,8 @@
+<Component>
+	<Require>sopform.controls.base.MultiSelect</Require>
+	<Require>sopform.controls.base.Container</Require>
+	<Type>sopform.controls.standard.CheckBox</Type>
+	<SimpleName>Check Box</SimpleName>
+	<Icon>checkbox.png</Icon>
+	<DisplayOrder>9</DisplayOrder>
+</Component>

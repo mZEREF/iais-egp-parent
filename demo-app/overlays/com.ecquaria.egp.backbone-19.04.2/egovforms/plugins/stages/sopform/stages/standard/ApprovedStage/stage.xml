@@ -1,0 +1,33 @@
+<StageType>
+	<Type>sopform.stages.standard.ApprovedStage</Type>
+	<Require>sopform.stages.base.BaseStage</Require>
+
+	<Name>Approved</Name>
+	<Description>Stage denoting that submission is approved by officer</Description>
+	<Icon>images/approved.png</Icon>
+	<Javascript>javascripts/ApprovedStage.js</Javascript>
+	<Process>SOPFORMS:ApprovedStage</Process>
+	<Properties>
+		<Property>
+			<Name>stageType</Name>
+			<Label>Stage Type</Label>
+			<Value>Approved</Value>
+			<Type>label</Type>
+		</Property>
+		<Property>
+			<Name>stageName</Name>
+			<Label>Stage Name</Label>
+			<Type>text</Type>
+		</Property>
+		<Property>
+			<Name>notifyApplicant</Name>
+			<Label>Notify Applicant</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>emailApplicant</Name>
+			<Label>Email Applicant</Label>
+			<Type>checkbox</Type>
+		</Property>
+	</Properties>
+</StageType>

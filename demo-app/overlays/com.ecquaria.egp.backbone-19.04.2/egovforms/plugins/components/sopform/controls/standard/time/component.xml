@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.SingleInput</Require>
+	<Type>sopform.controls.standard.Time</Type>
+	<SimpleName>Time</SimpleName>
+	<Icon>time.gif</Icon>
+	<DisplayOrder>11</DisplayOrder>
+</Component>

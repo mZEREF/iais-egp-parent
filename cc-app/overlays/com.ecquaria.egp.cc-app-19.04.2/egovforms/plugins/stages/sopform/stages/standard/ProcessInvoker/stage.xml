@@ -1,0 +1,29 @@
+<StageType>
+	<Type>sopform.stages.standard.ProcessInvoker</Type>
+	<Require>sopform.stages.base.BaseStage</Require>
+
+	<Name>Process Invoker </Name>
+	<Description>Invoke SOP process</Description>
+	<Icon>images/invoke.png</Icon>
+	<Javascript>javascripts/ProcessInvoker.js</Javascript>
+	<Process>SOPFORMS:ProcessInvoker</Process>
+	<Properties>
+		<Property>
+			<Name>stageType</Name>
+			<Label>Stage Type</Label>
+			<Value>Process Invoker</Value>
+			<Type>label</Type>
+		</Property>
+		<Property>
+			<Name>stageName</Name>
+			<Label>Stage Name</Label>
+			<Type>text</Type>
+		</Property>
+		<Property>
+			<Name>processSelection</Name>
+			<Label>Process Selection</Label>
+			<Type>processSelection</Type>
+			<Special>true</Special>
+		</Property>
+	</Properties>
+</StageType>

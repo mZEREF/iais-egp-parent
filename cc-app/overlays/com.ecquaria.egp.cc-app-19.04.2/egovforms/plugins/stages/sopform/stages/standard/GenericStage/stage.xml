@@ -1,0 +1,106 @@
+<StageType>
+	<Type>sopform.stages.standard.GenericStage</Type>
+	<Require>sopform.stages.base.BaseStage</Require>
+	
+	<Name>Generic</Name>
+	<Description>Generic, multi-purpose stage</Description>
+	<Icon>images/stage.png</Icon>
+	<Javascript>javascripts/GenericStage.js</Javascript>
+	<Process>SOPFORMS:GenericStage</Process>
+	<Properties>
+		<Property>
+			<Name>stageType</Name>
+			<Label>Stage Type</Label>
+			<Value>Generic</Value>
+			<Type>label</Type>
+		</Property>
+		<Property>
+			<Name>stageName</Name>
+			<Label>Stage Name</Label>
+			<Type>text</Type>
+		</Property>
+		<Property>
+			<Type>separator</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>taskAssignment</Name>
+			<Label>Task Assignment</Label>
+			<Type>taskAssignment</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Type>separator</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>requireApproval</Name>
+			<Label>Require Approval</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>allowEdit</Name>
+			<Label>Allow Data Edit</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>allowComment</Name>
+			<Label>Allow Comment</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>allowForwarding</Name>
+			<Label>Allow Forwarding</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>allowRFC</Name>
+			<Label>Allow Request for Comment</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>allowQuery</Name>
+			<Label>Allow Query</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>allowDelegate</Name>
+			<Label>Allow Delegate</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>allowPAC</Name>
+			<Label>Allow Post-Approval Comment</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>customizedAckPage</Name>
+			<Label>Customized Acknowledgement Page</Label>
+			<Type>customizedAckPage</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>customizedButtons</Name>
+			<Label>Customized Buttons</Label>
+			<Type>customizedButtons</Type>
+			<Special>true</Special>
+		</Property>
+		
+		<Property>
+			<Type>separator</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>notifyTaskViaEmail</Name>
+			<Label>Notify Task via Email</Label>
+			<Type>checkbox</Type>
+		</Property>
+	</Properties>
+	<Results>
+		<Result>Approved</Result>
+		<Result>Rejected</Result>
+		<Result>Reviewed</Result>
+		<Result>Closed</Result>
+	</Results>
+	
+</StageType>

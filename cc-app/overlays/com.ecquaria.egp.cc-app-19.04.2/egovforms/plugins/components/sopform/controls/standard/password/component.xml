@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.SingleInput</Require>
+	<Type>sopform.controls.standard.Password</Type>
+	<SimpleName>Password</SimpleName>
+	<Icon>password.png</Icon>
+	<DisplayOrder>5</DisplayOrder>
+</Component>

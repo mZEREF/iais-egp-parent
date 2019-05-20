@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.BlobInput</Require>
+	<Type>sopform.controls.standard.RichTextBox</Type>
+	<SimpleName>Rich Text Box</SimpleName>
+	<Icon>richtextbox.png</Icon>
+	<DisplayOrder>15</DisplayOrder>
+</Component>

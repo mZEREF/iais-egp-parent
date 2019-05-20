@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.Container</Require>
+	<Type>sopform.controls.base.RepeatableSection</Type>
+	<SimpleName>Repeatable Section</SimpleName>
+	<Icon>repeatablesection.png</Icon>
+	<DisplayOrder>11</DisplayOrder>
+</Component>

@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="EndorsementView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="320" y="10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="300" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BindAction" x="310" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bindAction_OnStepProcess_0" name="bindAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="UploadInternalDoc" x="100" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="uploadInternalDoc_OnStepProcess_0" name="uploadInternalDoc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DeleteInternalDoc" x="200" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="deleteInternalDoc_OnStepProcess_0" name="deleteInternalDoc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SortInternal" x="290" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="sortInternal_OnStepProcess_0" name="sortInternal_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SortSupportDoc" x="360" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="sortSupportDoc_OnStepProcess_0" name="sortSupportDoc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="UploadSupportDoc" x="440" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="uploadSupportDoc_OnStepProcess_0" name="uploadSupportDoc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DeleteSupportDoc" x="540" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="deleteSupportDoc_OnStepProcess_0" name="deleteSupportDoc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="UpdateSupportDoc" x="640" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="updateSupportDoc_OnStepProcess_0" name="updateSupportDoc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SupportDocHistory" x="740" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="supportDocHistory_OnStepProcess_0" name="supportDocHistory_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ValidateUpdateStatus" x="520" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validateUpdateStatus_OnStepProcess_0" name="validateUpdateStatus_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Return" x="840" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
+  <StartStep defClass="" executor="" icon="" name="DownLoadFormPDF" x="580" y="10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <StartStep defClass="" executor="" icon="" name="DownLoadInternal" x="720" y="10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDownloadFormAsPDF" x="550" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDownloadFormAsPDF_OnStepProcess_0" name="prepareDownloadFormAsPDF_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <StartStep defClass="" executor="" icon="" name="SendEmail" x="860" y="10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <StartStep defClass="" executor="" icon="" name="SendSMS" x="980" y="10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <StartStep defClass="" executor="" icon="" name="UpdateMessage" x="1080" y="10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDownload" x="730" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDownload_OnStepProcess_0" name="prepareDownload_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Email" x="880" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="email_OnStepProcess_0" name="email_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="SMS" x="980" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="sMS_OnStepProcess_0" name="sMS_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="UpdateMessageHistory" x="1070" y="120">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="updateMessageHistory_OnStepProcess_0" name="updateMessageHistory_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <StartStep defClass="" executor="" icon="" name="DownloadSupport" x="1010" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareSupport" x="1020" y="460">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareSupport_OnStepProcess_0" name="prepareSupport_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewPage" stageIndicator="" x="310" y="200">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page6" stageIndicator="" x="610" y="220">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page4" stageIndicator="" x="770" y="220">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="880" y="220">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="980" y="220">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page5" stageIndicator="" x="1040" y="560">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page3" stageIndicator="" x="1120" y="230">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(340,30)(320,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareData" style="oblique">
+   <position>{(320,130)(330,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ViewPage" style="oblique">
+   <position>{(330,220)(330,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindAction" style="oblique">
+   <position>{(330,320)(340,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/UploadInternalDoc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,420)(120,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DeleteInternalDoc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,420)(220,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SortInternal" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,420)(310,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SortSupportDoc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,420)(380,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/UploadSupportDoc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,420)(460,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DeleteSupportDoc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,420)(560,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/UpdateSupportDoc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,420)(660,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SupportDocHistory" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,420)(760,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/UploadInternalDoc" style="oblique">
+   <position>{(120,540)(320,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DeleteInternalDoc" style="oblique">
+   <position>{(220,540)(320,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SortInternal" style="oblique">
+   <position>{(310,540)(320,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SortSupportDoc" style="oblique">
+   <position>{(380,540)(320,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/UploadSupportDoc" style="oblique">
+   <position>{(460,540)(320,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DeleteSupportDoc" style="oblique">
+   <position>{(560,540)(320,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/UpdateSupportDoc" style="oblique">
+   <position>{(660,540)(320,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SupportDocHistory" style="oblique">
+   <position>{(760,540)(320,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ValidateUpdateStatus" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(340,420)(540,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ValidateUpdateStatus" style="oblique">
+   <position>{(540,390)(730,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Return" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(730,380)(860,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(730,380)(320,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(320,640)(53,638)(53,373)(53,129)(320,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDownloadFormAsPDF" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/DownLoadFormPDF" style="rectanular">
+   <position>{(600,30)(570,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page6" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareDownloadFormAsPDF" style="rectanular">
+   <position>{(570,130)(630,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDownload" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/DownLoadInternal" style="rectanular">
+   <position>{(740,30)(750,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareDownload" style="rectanular">
+   <position>{(750,130)(790,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Email" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/SendEmail" style="rectanular">
+   <position>{(880,30)(900,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Email" style="rectanular">
+   <position>{(900,130)(900,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SMS" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/SendSMS" style="rectanular">
+   <position>{(1000,30)(1000,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SMS" style="rectanular">
+   <position>{(1000,130)(1000,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/UpdateMessageHistory" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/UpdateMessage" style="rectanular">
+   <position>{(1100,30)(1090,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSupport" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/DownloadSupport" style="rectanular">
+   <position>{(1030,370)(1040,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page5" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareSupport" style="rectanular">
+   <position>{(1040,480)(1060,580)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/UpdateMessageHistory" style="rectanular">
+   <position>{(1090,140)(1140,250)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareData" componentIfTrue="/Steps/ReturnInvokeProcessStep/Return" defClass="" executor="" icon="" leftOperand="valid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="710" y="360">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/ValidateUpdateStatus" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="320" y="400">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/UploadInternalDoc" value="&quot;uploadInternal&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/DeleteInternalDoc" value="&quot;deleteInternal&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/SortInternal" value="&quot;sortInternal&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/SortSupportDoc" value="&quot;sortSupport&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/UploadSupportDoc" value="&quot;uploadSupportDoc&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/DeleteSupportDoc" value="&quot;deleteSupportDoc&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/UpdateSupportDoc" value="&quot;updateSupportDoc&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/SupportDocHistory" value="&quot;supportDocHistory&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/ValidateUpdateStatus" value=""/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="300" y="620">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

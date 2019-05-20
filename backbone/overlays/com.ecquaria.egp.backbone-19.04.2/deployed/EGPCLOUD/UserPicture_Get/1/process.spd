@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="5.0" majorVersion="1" minorVersion="0" name="UserPicture_Get" processType="normal">
+ <Variables/>
+ <Forms/>
+ <UserVariables/>
+ <Functions>
+  <Function name="BindModel">
+   <JavaCode defClass="" executor="" methodName="bindModel" name="BindModel"/>
+  </Function>
+  <Function name="RetrieveModel">
+   <JavaCode defClass="" executor="" methodName="retrieveModel" name="RetrieveModel"/>
+  </Function>
+  <Function name="WriteResponse">
+   <JavaCode defClass="" executor="" methodName="writeResponse" name="WriteResponse"/>
+  </Function>
+ </Functions>
+ <Resources>
+  <Resource filename="End.jsp" name="End"/>
+  <image filename="default-picture.jpg" name="default-picture"/>
+ </Resources>
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="-50">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Retrieve" x="100" y="50">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="onRetrieve" name="Retrieve"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" executor="" icon="" name="End" x="100" y="150">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Retrieve" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(120,-30)(120,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/End" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Retrieve" style="oblique">
+   <position>{(120,70)(120,170)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches/>
+ <Branches/>
+ <Merges/>
+ <StudioLabels>
+  <StudioLabel color="0" fontName="Verdana" fontSize="10" fontStyle="1" icon="" x="50" y="-100">Get User Picture</StudioLabel>
+ </StudioLabels>
+</Application>

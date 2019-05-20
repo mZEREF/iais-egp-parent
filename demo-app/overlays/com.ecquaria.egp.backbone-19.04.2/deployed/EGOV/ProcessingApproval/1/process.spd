@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/ProcessingStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="ProcessingApproval" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="ProcessingStart" x="20" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <InvokeStep defClass="" executor="" icon="" name="ApplicationDetail" processname="ApplicationView" project="EGPCLOUD" version="-1" x="470" y="530">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Prepare" x="500" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BindStatusType" x="480" y="670">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="bindStatusType_OnStepProcess_0" name="bindStatusType_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Approve" x="720" y="660">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PendingAmendmentLv2" x="720" y="1040">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingUpdateStatus_OnStepProcess_0" name="pendingUpdateStatus_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="RejectLv2" x="920" y="940">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="complete_OnStepProcess_0" name="complete_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ApprovalStart" x="610" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="approveStart_OnStepProcess_0" name="approveStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ManualStep defClass="" executor="" icon="" name="PendingApprove" x="660" y="530">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingApprove_OnStepProcess_0" name="pendingApprove_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareTask" x="480" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareTask_OnStepProcess_0" name="prepareTask_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PendingAmendment" x="320" y="940">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingAmandment_OnStepProcess_0" name="pendingAmandment_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PendingProcessing" x="120" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pendingProcessing_OnStepProcess_0" name="pendingProcessing_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ManualStep defClass="" executor="" icon="" name="DoPendingProcessing" x="240" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPendingProcessing_OnStepProcess_0" name="doPendingProcessing_OnStepProcess_0"/>
+   </OnStepProcess>
+   <OnStepComplete/>
+  </ManualStep>
+  <StartStep defClass="" executor="" icon="" name="DoPendingUpdateStatus" x="880" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="AutoPendingUpdateStatus" x="890" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="autoPendingUpdate_OnStepProcess_0" name="autoPendingUpdate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <StopStep defClass="" executor="" icon="" name="StopLv1" x="1060" y="530">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="stopLv1_OnStepProcess_0" name="stopLv1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StopStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Reject" x="550" y="1090">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="reject_OnStepProcess_0" name="reject_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <StartStep defClass="" executor="" icon="" name="DoPendingProcessingLv1" x="720" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="AutoPendingProcessingLv1" x="780" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="autoPendingProcessing_OnStepProcess_0" name="autoPendingProcessing_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareStageLv1" x="250" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareStageLv1_OnStepProcess_0" name="prepareStageLv1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BackToPrepareLv1" x="170" y="960">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="backToPrepareLv1_OnStepProcess_0" name="backToPrepareLv1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="BackToPrepareLv2" x="830" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="backToPrepareLv2_OnStepProcess_0" name="backToPrepareLv2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ApproveLv2" x="1000" y="820">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="approveLv2_OnStepProcess_0" name="approveLv2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ApproveBack" x="620" y="640">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="approveBack_OnStepProcess_0" name="approveBack_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PendingProcessing" linkstyle="Direct" name="" sourceName="/Steps/StartStep/ProcessingStart" style="oblique">
+   <position>{(40,130)(140,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ApplicationDetail" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Prepare" style="oblique">
+   <position>{(520,380)(490,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/StatusSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindStatusType" style="oblique">
+   <position>{(500,690)(510,840)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Approve" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(510,840)(740,680)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ApprovalStart" linkstyle="Direct" name="" sourceName="/Steps/ManualStep/PendingApprove" style="oblique">
+   <position>{(680,550)(630,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BindStatusType" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/ApplicationDetail" style="oblique">
+   <position>{(490,550)(500,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PendingAmendment" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(510,840)(340,960)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BackToPrepareLv2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/RejectLv2" style="oblique">
+   <position>{(940,960)(850,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BackToPrepareLv2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PendingAmendmentLv2" style="oblique">
+   <position>{(740,1060)(850,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/DoPendingProcessing" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PendingProcessing" style="oblique">
+   <position>{(140,130)(260,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AutoPendingUpdateStatus" linkstyle="Direct" name="" sourceName="/Steps/StartStep/DoPendingUpdateStatus" style="oblique">
+   <position>{(900,270)(910,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/StopStep/StopLv1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/AutoPendingUpdateStatus" style="oblique">
+   <position>{(910,370)(1080,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ManualStep/PendingApprove" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Approve" style="oblique">
+   <position>{(740,680)(680,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BackToPrepareLv1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PendingAmendment" style="oblique">
+   <position>{(340,960)(190,980)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BackToPrepareLv1" style="oblique">
+   <position>{(190,980)(520,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Reject" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(510,840)(570,1110)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BackToPrepareLv1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Reject" style="oblique">
+   <position>{(570,1110)(190,980)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AutoPendingProcessingLv1" linkstyle="Direct" name="" sourceName="/Steps/StartStep/DoPendingProcessingLv1" style="oblique">
+   <position>{(740,270)(800,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/StopStep/StopLv1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/AutoPendingProcessingLv1" style="oblique">
+   <position>{(800,390)(1080,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareTask" style="oblique">
+   <position>{(500,260)(520,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareStageLv1" linkstyle="Direct" name="" sourceName="/Steps/ManualStep/DoPendingProcessing" style="oblique">
+   <position>{(260,130)(270,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareTask" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareStageLv1" style="oblique">
+   <position>{(270,260)(500,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BackToPrepareLv2" style="oblique">
+   <position>{(850,560)(520,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PendingAmendmentLv2" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(510,840)(740,1060)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/RejectLv2" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(510,840)(940,960)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ApproveLv2" linkstyle="Direct" name="" sourceName="/Switches/Switch/StatusSwitch" style="oblique">
+   <position>{(510,840)(1020,840)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/BackToPrepareLv2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ApproveLv2" style="oblique">
+   <position>{(1020,840)(850,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareTask" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ApprovalStart" style="oblique">
+   <position>{(630,260)(500,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ApproveBack" style="oblique">
+   <position>{(640,660)(520,380)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="appStatusType" name="StatusSwitch" x="490" y="820">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;p_processing&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PendingAmendment" value="&quot;p_pending&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Reject" value="&quot;p_rejected&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PendingAmendmentLv2" value="&quot;a_pending&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/RejectLv2" value="&quot;a_rejected&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/ApproveLv2" value="&quot;a_approved&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="20" y="20">ProcessingApproval &amp; With Paymnet &amp; With Collection</StudioLabel>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="50" y="70">Processing</StudioLabel>
+  <StudioLabel color="0" fontName="DialogInput" fontSize="14" fontStyle="0" icon="" x="610" y="100">Approval</StudioLabel>
+ </StudioLabels>
+</Application>

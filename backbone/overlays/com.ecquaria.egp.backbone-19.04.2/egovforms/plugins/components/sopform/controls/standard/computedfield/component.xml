@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.SingleInput</Require>
+	<Type>sopform.controls.standard.ComputedField</Type>
+	<SimpleName>Computed Field</SimpleName>
+	<Icon>computedfield.png</Icon>
+	<DisplayOrder>19</DisplayOrder>
+</Component>
