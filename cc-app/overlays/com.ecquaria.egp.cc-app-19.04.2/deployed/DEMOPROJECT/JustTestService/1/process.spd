@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="JustTestService" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="true" transaction="enable">
+<Resources>
+</Resources>
+<WebServices>
+</WebServices>
+<RestServices>
+</RestServices>
+<Steps>
+<StartStep defClass="" executor="" name="Step1" x="100" y="100"><Description/><probepoint type="none"/>
+<OnStepProcess>
+</OnStepProcess>
+</StartStep>
+</Steps>
+<Pages>
+</Pages>
+<Forms>
+<Form defClass="" editable="true" executor="" formInstance="" icon="" name="Form1" x="256" y="101"><Description/><probepoint type="none"/>
+<OnPageLoad>
+</OnPageLoad>
+<OnPageSubmit>
+</OnPageSubmit>
+<OnValidateRequest>
+</OnValidateRequest>
+</Form>
+</Forms>
+<Conditions>
+</Conditions>
+<Switches>
+</Switches>
+<Branches>
+</Branches>
+<Merges>
+</Merges>
+<StudioLabels>
+</StudioLabels>
+<StageIndicator>
+</StageIndicator>
+<AuthenticationRequire agent="false" authentication="true" citizen="false" counterStaff="true" workingGroup="3">
+</AuthenticationRequire>
+<Links>
+<SynchronousLink destinationName="/Forms/Form/Form1" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1">
+<position>{(100,100)(256,101)}</position>
+</SynchronousLink>
+</Links>
+</Application>

@@ -1,0 +1,1 @@
+<%@include file="/cc/application/listPage.jsp"%>

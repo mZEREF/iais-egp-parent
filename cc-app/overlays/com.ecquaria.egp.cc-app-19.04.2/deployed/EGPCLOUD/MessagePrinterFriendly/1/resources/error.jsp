@@ -1,0 +1,1 @@
+<%@include file="/cc/message/printerFriendly-error.jsp"%>

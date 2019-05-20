@@ -1,0 +1,107 @@
+<Template name="personalparticulars" label="Personal Particulars" type="section">
+	<Control type="sopform.controls.base.Section">
+		<Properties>
+			<Entry name="cols">
+				<Integer>1</Integer>
+			</Entry>
+			<Entry name="title">
+				<String>Personal Particulars</String>
+			</Entry>
+			<Entry name="captionOrientation">
+				<String>vertical</String>
+			</Entry>
+			<Entry name="border">
+				<Boolean>true</Boolean>
+			</Entry>
+			<Entry name="hint">
+				<String />
+			</Entry>
+			<Entry name="help">
+				<String />
+			</Entry>
+			<Entry name="font">
+				<Map>
+					<Entry name="inherited">
+						<Boolean>false</Boolean>
+					</Entry>
+					<Entry name="bold">
+						<Boolean>true</Boolean>
+					</Entry>
+					<Entry name="size">
+						<Integer>11</Integer>
+					</Entry>
+				</Map>
+			</Entry>
+			<Entry name="acl">
+				<Map>
+					<Entry name="visibility">
+						<Map>
+							<Entry name="mode">
+								<String>always-visible</String>
+							</Entry>
+						</Map>
+					</Entry>
+					<Entry name="editability">
+						<Map>
+							<Entry name="mode">
+								<String>always-editable</String>
+							</Entry>
+						</Map>
+					</Entry>
+				</Map>
+			</Entry>
+		</Properties>
+		<Children>
+			<Control type="sopform.controls.standard.TextBox" position="0">
+				<Properties>
+					<Entry name="caption">
+						<String>First Name</String>
+					</Entry>
+					<Entry name="alignment">
+						<String>left</String>
+					</Entry>
+					<Entry name="hint">
+						<String />
+					</Entry>
+					<Entry name="help">
+						<String />
+					</Entry>
+					<Entry name="size">
+						<Integer>20</Integer>
+					</Entry>
+					<Entry name="conditionModelPersistentMap">
+						<Map />
+					</Entry>
+					<Entry name="validationModelPersistentMap">
+						<Map />
+					</Entry>
+					<Entry name="font">
+						<Map>
+							<Entry name="inherited">
+								<Boolean>true</Boolean>
+							</Entry>
+						</Map>
+					</Entry>
+					<Entry name="acl">
+						<Map>
+							<Entry name="visibility">
+								<Map>
+									<Entry name="mode">
+										<String>always-visible</String>
+									</Entry>
+								</Map>
+							</Entry>
+							<Entry name="editability">
+								<Map>
+									<Entry name="mode">
+										<String>always-editable</String>
+									</Entry>
+								</Map>
+							</Entry>
+						</Map>
+					</Entry>
+				</Properties>
+			</Control>
+		</Children>
+	</Control>
+</Template>

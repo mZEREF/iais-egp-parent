@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.Container</Require>
+	<Type>sopform.controls.base.RepeatableRow</Type>
+	<SimpleName>Repeatable Row</SimpleName>
+	<Icon>repeatablerow.png</Icon>
+	<DisplayOrder>12</DisplayOrder>
+</Component>

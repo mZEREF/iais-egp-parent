@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.MultiSelect</Require>
+	<Type>sopform.controls.standard.ListBox</Type>
+	<SimpleName>List Box</SimpleName>
+	<Icon>listbox.png</Icon>
+	<DisplayOrder>7</DisplayOrder>
+</Component>

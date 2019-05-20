@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.Control</Require>
+	<Type>sopform.controls.standard.Label</Type>
+	<SimpleName>Label</SimpleName>
+	<Icon>label.png</Icon>
+	<DisplayOrder>1</DisplayOrder>
+</Component>

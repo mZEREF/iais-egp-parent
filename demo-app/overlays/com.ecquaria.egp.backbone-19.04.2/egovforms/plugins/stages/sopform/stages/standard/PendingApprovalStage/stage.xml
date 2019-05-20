@@ -1,0 +1,135 @@
+<StageType>
+	<Type>sopform.stages.standard.PendingApprovalStage</Type>
+	<Require>sopform.stages.base.BaseStage</Require>
+	
+	<Name>Approval</Name>
+	<Description>Send submission for approval</Description>
+	<Icon>images/pending.png</Icon>
+	<Javascript>javascripts/PendingApprovalStage.js</Javascript>
+	<Process>SOPFORMS:PendingApprovalStage</Process>
+	<Properties>
+		<Property>
+			<Name>stageType</Name>
+			<Label>Stage Type</Label>
+			<Value>Approval</Value>
+			<Type>label</Type>
+		</Property>
+		<Property>
+			<Name>stageName</Name>
+			<Label>Stage Name</Label>
+			<Type>text</Type>
+		</Property>
+		<Property>
+			<Type>separator</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>taskAssignment</Name>
+			<Label>Task Assignment</Label>
+			<Type>taskAssignment</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Type>separator</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>allowComment</Name>
+			<Label>Allows Comment</Label>
+			<Type>checkbox</Type>
+			<Default>checked</Default>
+		</Property>
+		<Property>
+			<Name>allowForwarding</Name>
+			<Label>Allows Forwarding</Label>
+			<Type>checkbox</Type>
+			<Default>checked</Default>
+		</Property>
+		<Property>
+			<Name>allowQuery</Name>
+			<Label>Allows Query</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>allowDiscussion</Name>
+			<Label>Allows Discussion</Label>
+			<Type>allowsDiscussion</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>customizedAckPage</Name>
+			<Label>Customized Acknowledgement Page</Label>
+			<Type>customizedAckPage</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>customizedButtons</Name>
+			<Label>Customized Buttons</Label>
+			<Type>customizedButtons</Type>
+			<Special>true</Special>
+		</Property>
+		
+		<Property>
+			<Type>separator</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>useOnPageLoad</Name>
+			<Label>On Page Load</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>processSelectionOPL</Name>
+			<Label>Process Selection</Label>
+			<Type>processSelectionOPL</Type>
+			<Special>true</Special>
+		</Property>
+		
+		<Property>
+			<Type>separator</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>useOnPageSubmit</Name>
+			<Label>On Page Submit</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>processSelectionOPS</Name>
+			<Label>Process Selection</Label>
+			<Type>processSelectionOPS</Type>
+			<Special>true</Special>
+		</Property>
+
+		<Property>
+			<Type>separator</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>useAlternateStage</Name>
+			<Label>Alternate Approval Stage</Label>
+			<Type>checkbox</Type>
+		</Property>
+		<Property>
+			<Name>processSelectionAltStage</Name>
+			<Label>Process Selection</Label>
+			<Type>processSelectionAltStage</Type>
+			<Special>true</Special>
+		</Property>
+		
+		<Property>
+			<Type>separator</Type>
+			<Special>true</Special>
+		</Property>
+		<Property>
+			<Name>notifyTaskViaEmail</Name>
+			<Label>Notify Task via Email</Label>
+			<Type>checkbox</Type>
+		</Property>
+		
+	</Properties>
+	<Results>
+		<Result>Approved</Result>
+		<Result>Rejected</Result>
+	</Results>
+</StageType>

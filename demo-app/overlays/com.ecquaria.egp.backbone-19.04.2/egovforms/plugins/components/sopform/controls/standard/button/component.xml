@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.Control</Require>
+	<Type>sopform.controls.standard.Button</Type>
+	<SimpleName>Button</SimpleName>
+	<Icon>button.png</Icon>
+	<DisplayOrder>2</DisplayOrder>
+</Component>

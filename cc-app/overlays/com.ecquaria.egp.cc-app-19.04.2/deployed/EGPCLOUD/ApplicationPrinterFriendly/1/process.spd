@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="ApplicationPrinterFriendly" packageName="sop.webflow.rt.java.code" processType="normal" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="initData" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="initData_OnStepProcess_0" name="initData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" executor="" icon="" name="error" x="550" y="230">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" executor="" icon="" name="printerFriendly" x="550" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
+   <position>{(120,120)(295,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/isValid" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/initData" style="oblique">
+   <position>{(295,150)(445,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/error" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/isValid" style="rectanular">
+   <position>{(445,150)(425,215)(595,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/printerFriendly" linkstyle="Direct" name="" sourceName="/Conditions/Condition/isValid" style="oblique">
+   <position>{(445,150)(595,150)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/error" componentIfTrue="/Pages/WebPage/printerFriendly" defClass="" executor="" icon="" leftOperand="valid" name="isValid" operator="=" rightOperand="&quot;true&quot;" x="400" y="100">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches/>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+</Application>

@@ -1,0 +1,7 @@
+<Component>
+	<Require>sopform.controls.base.Container</Require>
+	<Type>sopform.controls.base.Section</Type>
+	<SimpleName>Section</SimpleName>
+	<Icon>section.png</Icon>
+	<DisplayOrder>11</DisplayOrder>
+</Component>

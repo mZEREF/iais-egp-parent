@@ -1,0 +1,24 @@
+<StageType>
+	<Type>sopform.stages.standard.Split</Type>
+	<Require>sopform.stages.base.BaseStage</Require>
+	
+	<Name>Split</Name>
+	<Description>Description of Split</Description>
+	<Icon>images/split.png</Icon>
+	<Javascript>javascripts/Split.js</Javascript>
+	<Process>SOPFORMS:Split</Process>
+	<FlowControl>true</FlowControl>
+	<Properties>
+		<Property>
+			<Name>stageName</Name>
+			<Label>Split Name</Label>
+			<Type>text</Type>
+		</Property>
+		<Property>
+			<Name>addColumn</Name>
+			<Label></Label>
+			<Value>Add Column</Value>
+			<Type>button</Type>
+		</Property>
+	</Properties>
+</StageType>
