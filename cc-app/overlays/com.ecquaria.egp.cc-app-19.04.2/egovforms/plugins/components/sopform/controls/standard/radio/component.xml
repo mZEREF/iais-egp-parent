@@ -1,8 +1,0 @@
-<Component>
-	<Require>sopform.controls.base.SingleSelect</Require>
-	<Require>sopform.controls.base.Container</Require>
-	<Type>sopform.controls.standard.Radio</Type>
-	<SimpleName>Radio</SimpleName>
-	<Icon>radio.png</Icon>
-	<DisplayOrder>8</DisplayOrder>
-</Component>

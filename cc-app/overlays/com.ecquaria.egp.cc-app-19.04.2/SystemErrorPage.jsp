@@ -1,3 +1,0 @@
-<%@page isErrorPage="true"%>
-
-hello

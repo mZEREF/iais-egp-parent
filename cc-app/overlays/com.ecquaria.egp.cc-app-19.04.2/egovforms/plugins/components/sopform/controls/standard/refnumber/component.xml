@@ -1,7 +1,0 @@
-<Component>
-	<Require>sopform.controls.base.Control</Require>
-	<Type>sopform.controls.standard.RefNumber</Type>
-	<SimpleName>Ref Number</SimpleName>
-	<Icon>refnumber.png</Icon>
-	<DisplayOrder>14</DisplayOrder>
-</Component>

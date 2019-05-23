@@ -1,7 +1,0 @@
-<Component>
-	<Require>sopform.controls.base.Control</Require>
-	<Type>sopform.controls.standard.Html</Type>
-	<SimpleName>HTML</SimpleName>
-	<Icon>html.png</Icon>
-	<DisplayOrder>17</DisplayOrder>
-</Component>

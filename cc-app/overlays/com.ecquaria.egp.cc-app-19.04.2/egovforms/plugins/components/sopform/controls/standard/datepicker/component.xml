@@ -1,7 +1,0 @@
-<Component>
-	<Require>sopform.controls.base.SingleInput</Require>
-	<Type>sopform.controls.standard.DatePicker</Type>
-	<SimpleName>Date Picker</SimpleName>
-	<Icon>datepicker.png</Icon>
-	<DisplayOrder>10</DisplayOrder>
-</Component>

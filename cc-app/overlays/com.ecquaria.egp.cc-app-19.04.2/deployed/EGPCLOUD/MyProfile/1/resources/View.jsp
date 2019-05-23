@@ -1,1 +1,0 @@
-<jsp:include page="/cc/profile/view.jsp"></jsp:include>
