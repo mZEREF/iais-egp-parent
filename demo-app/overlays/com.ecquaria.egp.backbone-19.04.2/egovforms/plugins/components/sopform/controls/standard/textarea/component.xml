@@ -1,7 +1,0 @@
-<Component>
-	<Require>sopform.controls.base.BlobInput</Require>
-	<Type>sopform.controls.standard.TextArea</Type>
-	<SimpleName>Text Area</SimpleName>
-	<Icon>textarea.png</Icon>
-	<DisplayOrder>4</DisplayOrder>
-</Component>

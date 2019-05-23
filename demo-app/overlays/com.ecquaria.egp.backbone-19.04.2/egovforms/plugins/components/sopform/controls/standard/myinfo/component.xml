@@ -1,7 +1,0 @@
-<Component>
-	<Require>sopform.controls.base.Control</Require>
-	<Type>sopform.controls.standard.MyInfo</Type>
-	<SimpleName>MyInfo</SimpleName>
-	<Icon>myinfo.png</Icon>
-	<DisplayOrder>2</DisplayOrder>
-</Component>
