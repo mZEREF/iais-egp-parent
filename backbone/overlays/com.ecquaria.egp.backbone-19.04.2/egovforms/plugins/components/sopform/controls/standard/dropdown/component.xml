@@ -1,7 +1,0 @@
-<Component>
-	<Require>sopform.controls.base.SingleSelect</Require>
-	<Type>sopform.controls.standard.DropDown</Type>
-	<SimpleName>Drop Down</SimpleName>
-	<Icon>dropdown.png</Icon>
-	<DisplayOrder>6</DisplayOrder>
-</Component>

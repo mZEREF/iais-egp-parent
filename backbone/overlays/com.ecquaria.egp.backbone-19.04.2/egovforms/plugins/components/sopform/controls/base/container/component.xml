@@ -1,5 +1,0 @@
-<Component>
-	<Require>sopform.controls.base.Control</Require>
-	<Type>sopform.controls.base.Container</Type>
-	<Visible>false</Visible>
-</Component>

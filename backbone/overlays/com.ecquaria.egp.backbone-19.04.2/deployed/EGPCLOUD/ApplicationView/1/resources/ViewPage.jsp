@@ -1,1 +1,0 @@
-<%@include file="/egov/application/viewPage.jsp"%>

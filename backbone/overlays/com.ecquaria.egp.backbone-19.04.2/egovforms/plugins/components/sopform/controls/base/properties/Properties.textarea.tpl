@@ -1,1 +1,0 @@
-<textarea cols="15" rows="4" name="property::${id}::${name}" class="property-input">{if value !== undefined}${value|escape}{/if}</textarea>
