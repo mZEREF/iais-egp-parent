@@ -24,6 +24,7 @@
         <module>cc-app</module>
         <module>demo-app</module>
         <module>backbone</module>
+        <module>iais-console</module>
     </modules>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
