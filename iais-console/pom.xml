@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>egp-console</artifactId>
+        <groupId>com.ecquaria.egp.console</groupId>
+        <version>19.04.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ecquaria.egp</groupId>
+    <artifactId>iais-console</artifactId>
+    <packaging>war</packaging>
+    <version>1.0.0</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.ecquaria.egp.console</groupId>
+            <artifactId>sop</artifactId>
+            <version>19.04.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ecquaria.egp.console</groupId>
+            <artifactId>egp-core</artifactId>
+            <version>19.04.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ecquaria.egp.console</groupId>
+            <artifactId>console-app</artifactId>
+            <version>19.04.2</version>
+            <type>war</type>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.7</version>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>sz-nexus</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>sz-nexus</id>
+                    <name>Nexus Repository</name>
+                    <url>http://nexus:8081/repository/maven-public/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
+            <id>sg-nexus</id>
+            <repositories>
+                <repository>
+                    <id>sg-nexus</id>
+                    <name>Nexus Repository</name>
+                    <url>http://192.168.4.165/repository/public-maven/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+            </repositories>
+        </profile>
+
+    </profiles>
+
+    <build>
+        <finalName>console</finalName>
+    </build>
+
+</project>
