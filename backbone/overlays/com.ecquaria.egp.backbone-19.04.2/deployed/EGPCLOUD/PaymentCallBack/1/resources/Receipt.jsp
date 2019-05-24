@@ -1,1 +1,0 @@
-<%@include file="/payment/receipt.jsp"%>

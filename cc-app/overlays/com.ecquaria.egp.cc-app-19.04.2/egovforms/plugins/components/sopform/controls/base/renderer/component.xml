@@ -1,5 +1,0 @@
-<Component>
-	<Require>sopform.controls.base.Theme</Require>
-	<Type>sopform.controls.base.Renderer</Type>
-	<Visible>false</Visible>
-</Component>
