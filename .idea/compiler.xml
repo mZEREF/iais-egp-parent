@@ -9,6 +9,8 @@
         <module name="backbone" />
         <module name="ccapp" />
         <module name="demoapp" />
+        <module name="iais-console" />
+        <module name="systemadmin" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -16,7 +18,9 @@
       <module name="ccapp" target="8" />
       <module name="demoapp" target="8" />
       <module name="iais-app" target="8" />
+      <module name="iais-console" target="1.7" />
       <module name="iais-egp" target="8" />
+      <module name="systemadmin" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

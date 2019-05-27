@@ -5,10 +5,14 @@
     <file url="file://$PROJECT_DIR$/backbone/overlays" />
     <file url="file://$PROJECT_DIR$/cc-app/overlays" />
     <file url="file://$PROJECT_DIR$/demo-app/overlays" />
+    <file url="file://$PROJECT_DIR$/iais-console/overlays" />
+    <file url="file://$PROJECT_DIR$/systemadmin/overlays" />
     <file type="web" url="file://$PROJECT_DIR$/app" />
     <file type="web" url="file://$PROJECT_DIR$/backbone" />
     <file type="web" url="file://$PROJECT_DIR$/cc-app" />
     <file type="web" url="file://$PROJECT_DIR$/demo-app" />
+    <file type="web" url="file://$PROJECT_DIR$/iais-console" />
+    <file type="web" url="file://$PROJECT_DIR$/systemadmin" />
   </component>
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
@@ -17,7 +21,9 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/systemadmin/pom.xml" />
       </list>
     </option>
   </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>

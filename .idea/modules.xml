@@ -5,7 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/backbone/backbone.iml" filepath="$PROJECT_DIR$/backbone/backbone.iml" />
       <module fileurl="file://$PROJECT_DIR$/cc-app/ccapp.iml" filepath="$PROJECT_DIR$/cc-app/ccapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo-app/demoapp.iml" filepath="$PROJECT_DIR$/demo-app/demoapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iais-console/iais-console.iml" filepath="$PROJECT_DIR$/iais-console/iais-console.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/iais-egp.iml" filepath="$PROJECT_DIR$/.idea/iais-egp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/systemadmin/systemadmin.iml" filepath="$PROJECT_DIR$/systemadmin/systemadmin.iml" />
     </modules>
   </component>
 </project>
