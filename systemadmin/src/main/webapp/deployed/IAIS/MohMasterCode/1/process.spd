@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohMasterCode" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Resources>
+</Resources>
+<WebServices>
+</WebServices>
+<RestServices>
+</RestServices>
+<Steps>
+<StartStep defClass="" executor="" name="Step1" x="88" y="167"><Description/><probepoint type="none"/>
+<OnStepProcess>
+</OnStepProcess>
+</StartStep>
+<AutomaticStep defClass="" executor="" name="init" x="323" y="153"><Description/><probepoint type="none"/>
+<OnStepProcess>
+<JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0">
+</JavaCode>
+</OnStepProcess>
+</AutomaticStep>
+</Steps>
+<Pages>
+<WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" name="MasterCode" stageIndicator="" x="475" y="147"><Description/><probepoint type="none"/>
+<OnPageLoad>
+</OnPageLoad>
+<OnPageSubmit>
+</OnPageSubmit>
+</WebPage>
+</Pages>
+<Forms>
+<Form autoFilledMyInfo="on" defClass="" editable="true" executor="" formInstance="" icon="" name="Form0" x="677" y="158"><Description/><probepoint type="none"/>
+<OnPageLoad>
+</OnPageLoad>
+<OnPageSubmit>
+</OnPageSubmit>
+<OnValidateRequest>
+</OnValidateRequest>
+<OnFormDataFilter>
+</OnFormDataFilter>
+</Form>
+</Forms>
+<Conditions>
+</Conditions>
+<Switches>
+</Switches>
+<Branches>
+</Branches>
+<Merges>
+</Merges>
+<StudioLabels>
+</StudioLabels>
+<StageIndicator>
+</StageIndicator>
+<AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="">
+</AuthenticationRequire>
+<BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions="">
+</BatFlowsSelected>
+<Links>
+<SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1">
+<position>{(88,167)(323,153)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Pages/WebPage/MasterCode" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/init">
+<position>{(323,153)(475,147)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Forms/Form/Form0" linkstyle="Direct" name="" sourceName="/Pages/WebPage/MasterCode">
+<position>{(475,147)(677,158)}</position>
+</SynchronousLink>
+</Links>
+</Application>
