@@ -17,16 +17,24 @@
 </JavaCode>
 </OnStepProcess>
 </AutomaticStep>
-<AutomaticStep defClass="" executor="" name="Validate" x="697" y="92"><Description/><probepoint type="none"/>
+<AutomaticStep defClass="" executor="" name="Validate" x="909" y="117"><Description/><probepoint type="none"/>
 <OnStepProcess>
 <JavaCode defClass="" executor="" methodName="validate_OnStepProcess_0" name="validate_OnStepProcess_0">
 </JavaCode>
 </OnStepProcess>
 </AutomaticStep>
+<AutomaticStep defClass="" executor="" name="SaveDraft" x="449" y="13"><Description/><probepoint type="none"/>
+<OnStepProcess>
+<JavaCode defClass="" executor="" methodName="saveDraft_OnStepProcess_0" name="saveDraft_OnStepProcess_0">
+</JavaCode>
+</OnStepProcess>
+</AutomaticStep>
 </Steps>
 <Pages>
-<WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" name="FillFormPage" stageIndicator="" x="337" y="103"><Description/><probepoint type="none"/>
+<WebPage defClass="" displayStageIndicator="true" executor="" formSetupHeight="" formSetupMode="DIV" formSetupSelector="#formdiv" formSetupWidth="100%" name="FillFormPage" stageIndicator="&quot;stage.1&quot;" x="338" y="114"><Description/><probepoint type="none"/>
 <OnPageLoad>
+<JavaCode defClass="" executor="" methodName="fillFormPage_OnPageLoad_0" name="fillFormPage_OnPageLoad_0">
+</JavaCode>
 </OnPageLoad>
 <OnPageSubmit>
 </OnPageSubmit>
@@ -39,8 +47,10 @@
 </WebPage>
 </Pages>
 <Forms>
-<Form autoFilledMyInfo="on" defClass="" editable="true" executor="" formInstance="" icon="" name="ApplicationForm" x="501" y="100"><Description/><probepoint type="none"/>
+<Form autoFilledMyInfo="on" defClass="" editable="true" executor="" formInstance="" icon="" name="ApplicationForm" x="507" y="118"><Description/><probepoint type="none"/>
 <OnPageLoad>
+<JavaCode defClass="" executor="" methodName="applicationForm_OnPageLoad_0" name="applicationForm_OnPageLoad_0">
+</JavaCode>
 </OnPageLoad>
 <OnPageSubmit>
 </OnPageSubmit>
@@ -55,6 +65,12 @@
 </Condition>
 </Conditions>
 <Switches>
+<Switch defClass="" defaultComponent="" executor="" leftOperand="crud_action_type" name="Switch0" x="694" y="89"><Description/>
+<SwitchCase component="/Steps/AutomaticStep/SaveDraft" value="&quot;draft&quot;">
+</SwitchCase>
+<SwitchCase component="/Steps/AutomaticStep/Validate" value="&quot;submit&quot;">
+</SwitchCase>
+</Switch>
 </Switches>
 <Branches>
 </Branches>
@@ -70,25 +86,34 @@
 </BatFlowsSelected>
 <Links>
 <SynchronousLink destinationName="/Forms/Form/ApplicationForm" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FillFormPage">
-<position>{(337,103)(501,100)}</position>
+<position>{(338,114)(507,118)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start">
 <position>{(97,108)(199,106)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Pages/WebPage/FillFormPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData">
-<position>{(199,106)(337,103)}</position>
-</SynchronousLink>
-<SynchronousLink destinationName="/Steps/AutomaticStep/Validate" linkstyle="Direct" name="" sourceName="/Forms/Form/ApplicationForm">
-<position>{(501,100)(697,92)}</position>
+<position>{(199,106)(338,114)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Conditions/Condition/Condition0" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Validate">
-<position>{(697,92)(219,294)}</position>
+<position>{(909,117)(219,294)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Pages/WebPage/ConfirmPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Condition0">
 <position>{(219,294)(910,279)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Condition0">
 <position>{(219,294)(199,106)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Switches/Switch/Switch0" linkstyle="Direct" name="" sourceName="/Forms/Form/ApplicationForm">
+<position>{(507,118)(694,89)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SaveDraft">
+<position>{(449,13)(199,106)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Steps/AutomaticStep/SaveDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch0">
+<position>{(694,89)(449,13)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Steps/AutomaticStep/Validate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch0">
+<position>{(694,89)(909,117)}</position>
 </SynchronousLink>
 </Links>
 </Application>
