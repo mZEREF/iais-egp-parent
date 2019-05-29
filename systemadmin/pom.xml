@@ -1,49 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>iais-egp-parent</artifactId>
         <groupId>sg.gov.moh.iais-egp</groupId>
         <version>${revision}</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>backbone</artifactId>
-    <version>${revision}</version>
+    </parent>
+
     <packaging>war</packaging>
+    <artifactId>systemadmin</artifactId>
     <dependencies>
-        <dependency>
+
+    <dependency>
+        <groupId>com.ecquaria.egp</groupId>
+        <artifactId>engine</artifactId>
+        <version>${engine-version}</version>
+    </dependency>
+
+     <!--   <dependency>
             <groupId>com.ecquaria.egp</groupId>
             <artifactId>backbone</artifactId>
             <version>19.04.2</version>
             <type>war</type>
+        </dependency>-->
+
+        <dependency>
+            <groupId>sg.gov.moh.iais-egp</groupId>
+            <artifactId>backbone</artifactId>
+            <version>${revision}</version>
+            <type>war</type>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.6</version>
         </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.20</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.12</version>
-        </dependency>
-    </dependencies>
 
+    </dependencies>
     <build>
+        <finalName>systemadmin</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
@@ -60,8 +79,6 @@
                 </executions>
                 <inherited>false</inherited>
             </plugin>
-
         </plugins>
     </build>
-
 </project>
