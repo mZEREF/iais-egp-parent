@@ -8,5 +8,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface FunctionTrack {
     String funcName() default "";
+    String moduleName() default "";
     int auditType() default 0;
 }
