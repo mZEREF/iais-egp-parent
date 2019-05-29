@@ -1,14 +1,23 @@
 package com.ecquaria.cloud.moh.iais.exception;
 
-import org.springframework.http.ResponseEntity;
+import com.alibaba.fastjson.JSONObject;
+import com.ecquaria.cloud.moh.iais.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.util.MiscUtil;
+import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 @ControllerAdvice
 public class ExceptionsHandler {
@@ -22,4 +31,5 @@ public class ExceptionsHandler {
         }
         return ResponseEntity.badRequest().body(map);
     }
+
 }
