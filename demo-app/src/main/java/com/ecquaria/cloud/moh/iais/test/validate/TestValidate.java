@@ -1,9 +1,8 @@
-package sg.gov.moh.iais.test.validate;
+package com.ecquaria.cloud.moh.iais.test.validate;
 
 
-import sg.gov.moh.iais.common.IFormValidator;
-import sg.gov.moh.iais.common.helper.IaisFormHelper;
-import sg.gov.moh.iais.common.util.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.helper.IaisFormHelper;
+import com.ecquaria.cloud.moh.iais.common.IFormValidator;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.List;
@@ -16,12 +15,12 @@ public class TestValidate  extends IFormValidator {
      this.formName = FORM;
     }
     @Override
-    public void validateProject(IaisFormHelper helper) {
-        String age = helper.getFieldValue("iais.test.age");
+    public void validateProject() {
+        String age = IaisFormHelper.getFormFieldData(process,formName,"iais.test.age");
         int ageint = Integer.parseInt(age);
         if(ageint>80 || ageint<18){
             this.errorCount++;
-            helper.setFieldErrorMessage("iais.test.age","age is wrong!!!");
+            IaisFormHelper.addFieldErrorMessage(process.request,"iais.test.age","age is wrong!!!");
         }
 
     }

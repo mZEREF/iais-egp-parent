@@ -1,7 +1,7 @@
-package sg.gov.moh.iais.common;
+package com.ecquaria.cloud.moh.iais.common;
 
-import sg.gov.moh.iais.common.helper.IaisFormHelper;
-import sg.gov.moh.iais.common.util.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.helper.IaisFormHelper;
+import com.ecquaria.cloud.moh.iais.common.util.StringUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 import java.util.List;
 
@@ -10,11 +10,10 @@ public abstract class IFormValidator {
     public String formName;
     private List required;
     public int errorCount = 0;
-    public abstract void validateProject(IaisFormHelper helper);
+    public abstract void validateProject();
     public void validate(){
-        IaisFormHelper helper = new IaisFormHelper(process,formName);
-        validateRequired(helper);
-        validateProject(helper);
+        validateRequired();
+        validateProject();
         if(errorCount==0){
             process.request.setAttribute("validate","true");
         }else{
@@ -23,15 +22,15 @@ public abstract class IFormValidator {
     }
 
     public abstract void addRequired(List required);
-    private void validateRequired(IaisFormHelper helper){
+    private void validateRequired(){
          if (required!=null && required.size()>0){
              for (int i = 0;i<required.size();i++){
                  String column = (String) required.get(i);
-                 String value = helper.getFieldValue(column);
+                 String value = IaisFormHelper.getFormFieldData(process,formName,column);
                  if(StringUtil.isEmpty(value)){
                      errorCount++;
                      // todo  get the errormessage from DB.
-                     helper.setFieldErrorMessage(column,"age is empty!!!");
+                     IaisFormHelper.addFieldErrorMessage(process.request,column,"age is empty!!!");
                  }
              }
          }

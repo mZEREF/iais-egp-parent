@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.common;
+package com.ecquaria.cloud.moh.iais.common;
 
 import java.util.Date;
 import java.util.Locale;

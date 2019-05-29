@@ -1,6 +1,6 @@
-package sg.gov.moh.iais.common.util;
+package com.ecquaria.cloud.moh.iais.common.util;
 
-import sg.gov.moh.iais.common.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.AppConsts;
 
 public final class StringUtil {
 
