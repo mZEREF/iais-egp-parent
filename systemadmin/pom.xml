@@ -12,36 +12,25 @@
     <packaging>war</packaging>
     <artifactId>systemadmin</artifactId>
     <dependencies>
-        <dependency>
+
+    <dependency>
+        <groupId>com.ecquaria.egp</groupId>
+        <artifactId>engine</artifactId>
+        <version>${engine-version}</version>
+    </dependency>
+
+     <!--   <dependency>
             <groupId>com.ecquaria.egp</groupId>
-            <artifactId>engine</artifactId>
-            <version>${engine-version}</version>
-        </dependency>
+            <artifactId>backbone</artifactId>
+            <version>19.04.2</version>
+            <type>war</type>
+        </dependency>-->
 
-
-            <dependency>
-                <groupId>com.ecquaria.egp</groupId>
-                <artifactId>backbone</artifactId>
-                <version>19.04.2</version>
-                <type>war</type>
-            </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
+            <groupId>sg.gov.moh.iais-egp</groupId>
+            <artifactId>backbone</artifactId>
+            <version>${revision}</version>
+            <type>war</type>
         </dependency>
 
         <dependency>

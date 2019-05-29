@@ -3,16 +3,13 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<!--
 
     <context:component-scan base-package="sg.gov.moh.iais" >
     </context:component-scan>
 
-    <beans>
-        <bean id="masterCode" class="sg.gov.moh.iais.entity.MasterCode">
-        </bean>
+    <context:annotation-config />
+-->
 
-        <bean id="masterCodeService" class="sg.gov.moh.iais.service.impl.MasterCodeServiceImpl">
 
-        </bean>
-    </beans>
 </beans>
