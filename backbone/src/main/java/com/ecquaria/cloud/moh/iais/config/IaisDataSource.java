@@ -17,9 +17,9 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 
 @Configuration
-@PropertySource({ "classpath:application.properties" })
+@PropertySource({"classpath:iais-datasource.properties"})
 @EnableJpaRepositories(
-        basePackages = "com.ecquaria.cloud.moh.iais.dao",
+        basePackages = "com.ecquaria.cloud.moh.iais",
         entityManagerFactoryRef = "iaisEntityManager",
         transactionManagerRef = "iaisTransactionManager"
 )
