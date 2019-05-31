@@ -23,7 +23,7 @@ import java.util.HashMap;
         entityManagerFactoryRef = "iaisEntityManager",
         transactionManagerRef = "iaisTransactionManager"
 )
-public class IaisDataSource {
+public class IaisDsConfig {
     @Autowired
     private Environment environment;
 
