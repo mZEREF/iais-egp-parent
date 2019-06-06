@@ -13,18 +13,21 @@
     <artifactId>systemadmin</artifactId>
     <dependencies>
 
-    <dependency>
-        <groupId>com.ecquaria.egp</groupId>
-        <artifactId>engine</artifactId>
-        <version>${engine-version}</version>
-    </dependency>
-
-     <!--   <dependency>
+        <dependency>
             <groupId>com.ecquaria.egp</groupId>
-            <artifactId>backbone</artifactId>
-            <version>19.04.2</version>
-            <type>war</type>
-        </dependency>-->
+            <artifactId>engine</artifactId>
+            <version>${engine-version}</version>
+        </dependency>
+
+
+
+
+        <!--   <dependency>
+               <groupId>com.ecquaria.egp</groupId>
+               <artifactId>backbone</artifactId>
+               <version>19.04.2</version>
+               <type>war</type>
+           </dependency>-->
 
         <dependency>
             <groupId>sg.gov.moh.iais-egp</groupId>
@@ -36,6 +39,25 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>2.1.4.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.3.2</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>
@@ -62,6 +84,7 @@
                         <nonFilteredFileExtension>jks</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
+
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
