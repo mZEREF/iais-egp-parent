@@ -6,16 +6,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="backbone" />
+        <module name="cc-app" />
         <module name="ccapp" />
         <module name="demoapp" />
-        <module name="iais-console" />
+        <module name="backbone" />
         <module name="systemadmin" />
+        <module name="iais-console" />
+        <module name="demo-app" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="backbone" target="8" />
+      <module name="cc-app" target="8" />
       <module name="ccapp" target="8" />
+      <module name="demo-app" target="8" />
       <module name="demoapp" target="8" />
       <module name="iais-app" target="8" />
       <module name="iais-console" target="1.7" />

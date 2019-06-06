@@ -14,7 +14,7 @@
         <dependency>
             <groupId>com.ecquaria.egp</groupId>
             <artifactId>engine</artifactId>
-            <version>19.04.2</version>
+            <version>${engine-version}</version>
         </dependency>
         <dependency>
             <groupId>sg.gov.moh.iais-egp</groupId>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>biz.paluch.maven.configurator</groupId>
             <artifactId>configurator-maven-plugin</artifactId>
-            <version>1.0.1</version>
+            <version>${biz.paluch.maven.configurator.version}</version>
         </dependency>
         <dependency>
             <groupId>com.ecquaria.egp.console</groupId>
@@ -62,7 +62,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>${org.codehaus.mojo.version}</version>
                 <configuration>
                     <timestampFormat>yyyyMMddHHmm</timestampFormat>
                 </configuration>

@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/backbone/backbone.iml" filepath="$PROJECT_DIR$/backbone/backbone.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cc-app/cc-app.iml" filepath="$PROJECT_DIR$/cc-app/cc-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/cc-app/ccapp.iml" filepath="$PROJECT_DIR$/cc-app/ccapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/demo-app/demo-app.iml" filepath="$PROJECT_DIR$/demo-app/demo-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/demo-app/demoapp.iml" filepath="$PROJECT_DIR$/demo-app/demoapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/iais-console/iais-console.iml" filepath="$PROJECT_DIR$/iais-console/iais-console.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/iais-egp.iml" filepath="$PROJECT_DIR$/.idea/iais-egp.iml" />

@@ -15,13 +15,13 @@
         <dependency>
             <groupId>com.ecquaria.egp</groupId>
             <artifactId>cc-app</artifactId>
-            <version>19.04.2</version>
+            <version>${engine-version}</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>com.ecquaria.egp</groupId>
             <artifactId>cc-app</artifactId>
-            <version>19.04.2</version>
+            <version>${engine-version}</version>
             <type>jar</type>
             <scope>compile</scope>
             <classifier>api</classifier>
@@ -45,7 +45,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>${org.codehaus.mojo.version}</version>
                 <configuration>
                     <timestampFormat>yyyyMMddHHmm</timestampFormat>
                 </configuration>
