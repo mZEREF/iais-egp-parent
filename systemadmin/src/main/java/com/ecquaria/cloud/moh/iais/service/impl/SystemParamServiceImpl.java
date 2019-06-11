@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.dao.SystemParamDAO;
-import com.ecquaria.cloud.moh.iais.dto.SystemParamDTO;
 import com.ecquaria.cloud.moh.iais.entity.SystemParam;
 import com.ecquaria.cloud.moh.iais.service.SystemParamService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +22,12 @@ public class SystemParamServiceImpl implements SystemParamService {
     @Qualifier(value = "systemParamDAO")
     private SystemParamDAO systemParamDAO;
 
-    public List<SystemParamDTO> listSystemParam(){
-        List<SystemParamDTO> dtoList = new ArrayList<>();
+    public List<SystemParam> listSystemParam(){
+        List<SystemParam> dtoList = new ArrayList<>();
         systemParamDAO.listSystemParam().forEach(i -> {
-            SystemParamDTO param = new SystemParamDTO();
-            param.setId(i.getRowguid());
+            SystemParam param = new SystemParam();
+            param.setId(i.getId());
+            param.setRowguid(i.getRowguid());
             param.setValue(i.getValue());
             param.setDescription(i.getDescription());
             dtoList.add(param);
@@ -37,13 +37,13 @@ public class SystemParamServiceImpl implements SystemParamService {
 
     /**
      * update column value
-     * @param id
+     * @param guid
      * @param value
      */
     @Transactional
-    public void updateParamByPkId(String id, String value) {
+    public void updateValueByGuid(String guid, String value) {
         try {
-            systemParamDAO.updateValueByKey(id, Integer.valueOf(value));
+            systemParamDAO.updateValueByGuid(guid, Integer.valueOf(value));
         }catch (RuntimeException e){
             throw new RuntimeException(e);
         }

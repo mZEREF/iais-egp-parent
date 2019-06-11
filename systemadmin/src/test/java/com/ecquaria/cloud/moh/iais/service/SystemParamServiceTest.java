@@ -40,11 +40,11 @@ public class SystemParamServiceTest {
 
     @Test(expected = RuntimeException.class)
     public void testUpdateParamByPkId(){
-        String id = "52";
+        String guid = "52";
         String value = "555";
 
-        PowerMockito.when(systemParamDAO.updateValueByKey(id, Integer.valueOf(value))).thenThrow(new RuntimeException());
-        systemParamService.updateParamByPkId(id, value);
+        PowerMockito.when(systemParamDAO.updateValueByGuid(guid, Integer.valueOf(value))).thenThrow(new RuntimeException());
+        systemParamService.updateValueByGuid(guid, value);
     }
 
     @Test

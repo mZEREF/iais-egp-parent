@@ -7,7 +7,7 @@ package com.ecquaria.cloud.moh.iais.controller;
  *Describe:
  */
 
-import com.ecquaria.cloud.moh.iais.dto.SystemParamDTO;
+import com.ecquaria.cloud.moh.iais.entity.SystemParam;
 import com.ecquaria.cloud.moh.iais.service.impl.SystemParamServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,19 +43,26 @@ public class SystemParamControllerTest {
     }
 
     @Test
-    public void testUpdateParamByPkId(){
-        SystemParamDTO systemParam = new SystemParamDTO();
-        systemParam.setId("52");
+    public void testUpdateValueByGuid(){
+        SystemParam systemParam = new SystemParam();
+        systemParam.setRowguid("9A7149C4-06CB-4BAC-BC8B-9C5038DA0276");
         systemParam.setValue("444");
         request.setAttribute("systemParam", systemParam);
 
-        Mockito.doNothing().when(service).updateParamByPkId(systemParam.getId(), systemParam.getValue());
-        systemParamController.updateParamByPkId(request);
+        Mockito.doNothing().when(service).updateValueByGuid(systemParam.getRowguid(), systemParam.getValue());
+        systemParamController.updateValueByGuid(request);
     }
 
     @Test
     public void testInsertRecord(){
+        SystemParam systemParam = new SystemParam();
+        systemParam.setRowguid("9A7149C4-06CB-4BAC-BC8B-9C5038DA0276");
+        systemParam.setValue("444");
+        systemParam.setDescription("Number of records per page to display the search results");
+        request.setAttribute("systemParam", systemParam);
 
+        Mockito.doNothing().when(service).insertRecord(systemParam);
+        systemParamController.insertRecord(request);
     }
 
 }
