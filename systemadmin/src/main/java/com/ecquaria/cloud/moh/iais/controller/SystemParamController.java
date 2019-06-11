@@ -1,23 +1,28 @@
 package com.ecquaria.cloud.moh.iais.controller;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.dto.SystemParamDTO;
 import com.ecquaria.cloud.moh.iais.service.SystemParamService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /*
     @author yichen_guo@ecquaria.com
 
  */
 
+@Delegator(value = "systemParamController")
 public class SystemParamController {
 
     @Autowired
     private SystemParamService service;
 
-    /*@ApiOperation(value = "list params")
-    @GetMapping(value = "params")
-    @LogInfo(action = "view")
-    public ResponseEntity<List<Map<String, String>>> view(){
+    public void view(HttpServletRequest request){
         List<Map<String, String>> list = new ArrayList<>();
         service.listSystemParam().forEach(i -> {
             Map<String, String> map = new HashMap<>();
@@ -26,19 +31,21 @@ public class SystemParamController {
             map.put("description", i.getDescription());
             list.add(map);
         });
-
-        return ResponseEntity.accepted().body(list);
     }
 
-    @ApiOperation(value = "update to System param value by pk id")
-    @PostMapping(value = "params/{param}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateParamByPkId(@RequestBody @Required SystemParamDTO param){
-        service.updateParam(param.getId(), param.getValue());
+
+    public void updateParamByPkId(HttpServletRequest request){
+        SystemParamDTO dto = (SystemParamDTO)request.getAttribute("systemParam");
+        if(dto != null){
+            if(dto.getId() != null && dto.getId().length() != 0){
+                service.updateParamByPkId(dto.getId(), dto.getValue());
+            }
+        }
+
     }
 
-    @ApiOperation(value = "insert to new record for system param")
-    @PostMapping(value = "param", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void insertRecord(@RequestBody @Required SystemParam sys){
+
+    /*public void insertRecord(HttpServletRequest request){
         service.insertRecord(sys);
     }*/
 }

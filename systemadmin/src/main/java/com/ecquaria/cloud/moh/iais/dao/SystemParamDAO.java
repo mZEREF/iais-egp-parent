@@ -18,6 +18,6 @@ public interface SystemParamDAO extends JpaRepository<SystemParam, String> {
 
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE SYSTEM_PARAMETERS SET VALUE = :value WHERE ROWGUID= :guid", nativeQuery = true)
-    int updateDescriptionByKey(@Param("guid") String guid, @Param("value") Integer value);
+    int updateValueByKey(@Param("guid") String guid, @Param("value") Integer value);
 
 }

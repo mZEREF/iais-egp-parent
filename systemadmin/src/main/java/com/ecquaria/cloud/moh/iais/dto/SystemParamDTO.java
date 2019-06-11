@@ -1,19 +1,26 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.Size;
+import java.util.Date;
+
 public class SystemParamDTO {
-/*
-    @NotNull(message = "id is mandatory.")
-    @NotBlank(message = "id is mandatory.")
+
+    /*@NotNull(message = "id is mandatory.")
+    @NotBlank(message = "id is mandatory.")*/
     @Size(min = 10,max = 255, message = "The length of id should be in 10 to 255")
-    @ApiModelProperty(value="id", required=true)
-    @Setter @Getter private String id;
+   /* @ApiModelProperty(value="id", required=true)*/
+    @Setter @Getter
+    private String id;
 
     @Setter @Getter private String description;
 
-    @NotNull(message = "value is mandatory.")
+    /*@NotNull(message = "value is mandatory.")
     @NotBlank(message = "value is mandatory.")
     @Size(min = 10,max = 255, message = "The length of value should be in 10 to 255")
-    @ApiModelProperty(value="value", required=true)
+    @ApiModelProperty(value="value", required=true)*/
     @Setter @Getter private String value;
 
     @Setter @Getter private String units;
@@ -26,5 +33,5 @@ public class SystemParamDTO {
     @Setter @Getter private Integer canUpdate;
     @Setter @Getter private Integer maxLength;
     @Setter @Getter private Integer enable;
-    @Setter @Getter private Integer enableCheckBox;*/
+    @Setter @Getter private Integer enableCheckBox;
 }

@@ -8,7 +8,7 @@ import java.util.List;
 public interface SystemParamService {
     List<SystemParamDTO> listSystemParam();
 
-    void updateParam(String id, String value);
+    void updateParamByPkId(String id, String value);
 
     void insertRecord(SystemParam sys);
 }
