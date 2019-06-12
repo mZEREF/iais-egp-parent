@@ -1,11 +1,11 @@
 package com.ecquaria.cloud.moh.iais.aop;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ecquaria.cloud.moh.iais.annotation.FunctionTrack;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.util.MiscUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -26,10 +26,7 @@ import sop.rbac.user.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Aspect
 @Component
@@ -54,18 +51,20 @@ public class AuditFunctionAspect {
         }
         dto.setSessionId(session.getId());
         dto.setClientIp(MiscUtil.getClientIp(request));
-        Class clazz = point.getSignature().getDeclaringType();
         dto.setUserAgent(request.getHeader("User-Agent"));
+        Class clazz = point.getSignature().getDeclaringType();
         if (clazz.isAnnotationPresent(FunctionTrack.class)) {
             FunctionTrack logInfo = (FunctionTrack) clazz.getAnnotation(FunctionTrack.class);
             dto.setOperation(logInfo.auditType());
             dto.setFunctionName(logInfo.funcName());
+            dto.setModule(logInfo.moduleName());
         }
         Method method = ((MethodSignature) point.getSignature()).getMethod();
         if (method.isAnnotationPresent(FunctionTrack.class)) {
             FunctionTrack logInfo = method.getAnnotation(FunctionTrack.class);
             dto.setOperation(logInfo.auditType());
             dto.setFunctionName(logInfo.funcName());
+            dto.setModule(logInfo.moduleName());
         }
         if (method.isAnnotationPresent(SearchTrack.class)) {
             Object[] args = point.getArgs();
@@ -74,11 +73,12 @@ public class AuditFunctionAspect {
                     if (obj instanceof SearchParam) {
                         SearchParam param = (SearchParam) obj;
                         Map<String, Object> filters = param.getFilters();
-                        JSONObject json = new JSONObject();
+                        ObjectMapper mapper = new ObjectMapper();
+                        Map<String, Object> json = new HashMap<>();
                         for (Map.Entry<String, Object> ent : filters.entrySet()) {
                             json.put(ent.getKey(), ent.getValue());
                         }
-                        dto.setViewParams(json.toString());
+                        dto.setViewParams(mapper.writeValueAsString(json));
                         break;
                     }
                 }
@@ -91,7 +91,7 @@ public class AuditFunctionAspect {
         List<AuditTrailDto> dtoList = new ArrayList<>();
         dtoList.add(dto);
         HttpEntity<Collection<AuditTrailDto>> jsonPart = new HttpEntity<>(dtoList, headers);
-        String rslt = restTemplate.exchange("http://localhost:8887/api/audittrail/cudTrail",
+        restTemplate.exchange("http://localhost:8887/api/audittrail/cudTrail",
                 HttpMethod.POST, jsonPart, String.class).getBody();
 
         return point.proceed();

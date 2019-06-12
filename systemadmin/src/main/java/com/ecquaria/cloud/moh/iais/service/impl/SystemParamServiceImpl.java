@@ -1,16 +1,14 @@
-/*
-package sg.gov.moh.iais.service.impl;
+package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.dao.SystemParamDAO;
+import com.ecquaria.cloud.moh.iais.entity.SystemParam;
+import com.ecquaria.cloud.moh.iais.service.SystemParamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
-import SystemParamDAO;
-import SystemParamDTO;
-import SystemParam;
-import SystemParamService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +22,12 @@ public class SystemParamServiceImpl implements SystemParamService {
     @Qualifier(value = "systemParamDAO")
     private SystemParamDAO systemParamDAO;
 
-    public List<SystemParamDTO> listSystemParam(){
-        List<SystemParamDTO> dtoList = new ArrayList<>();
+    public List<SystemParam> listSystemParam(){
+        List<SystemParam> dtoList = new ArrayList<>();
         systemParamDAO.listSystemParam().forEach(i -> {
-            SystemParamDTO param = new SystemParamDTO();
-            param.setId(i.getRowguid());
+            SystemParam param = new SystemParam();
+            param.setId(i.getId());
+            param.setRowguid(i.getRowguid());
             param.setValue(i.getValue());
             param.setDescription(i.getDescription());
             dtoList.add(param);
@@ -36,14 +35,18 @@ public class SystemParamServiceImpl implements SystemParamService {
         return dtoList;
     }
 
+    /**
+     * update column value
+     * @param guid
+     * @param value
+     */
     @Transactional
-    public void updateParam(String id, String value) {
+    public void updateValueByGuid(String guid, String value) {
         try {
-            systemParamDAO.updateDescriptionByKey(id, Integer.valueOf(value));
+            systemParamDAO.updateValueByGuid(guid, Integer.valueOf(value));
         }catch (RuntimeException e){
             throw new RuntimeException(e);
         }
-
     }
 
     @Transactional
@@ -51,4 +54,3 @@ public class SystemParamServiceImpl implements SystemParamService {
         systemParamDAO.save(sys);
     }
 }
-*/

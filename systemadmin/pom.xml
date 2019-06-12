@@ -13,30 +13,36 @@
     <artifactId>systemadmin</artifactId>
     <dependencies>
 
-    <dependency>
-        <groupId>com.ecquaria.egp</groupId>
-        <artifactId>engine</artifactId>
-        <version>${engine-version}</version>
-    </dependency>
-
-     <!--   <dependency>
+        <dependency>
             <groupId>com.ecquaria.egp</groupId>
-            <artifactId>backbone</artifactId>
-            <version>19.04.2</version>
-            <type>war</type>
-        </dependency>-->
-
-        <dependency>
-            <groupId>sg.gov.moh.iais-egp</groupId>
-            <artifactId>backbone</artifactId>
-            <version>${revision}</version>
-            <type>war</type>
+            <artifactId>engine</artifactId>
+            <version>${engine-version}</version>
         </dependency>
 
+
+
+
+       <dependency>
+           <groupId>com.ecquaria.egp</groupId>
+           <artifactId>backbone</artifactId>
+           <version>${engine-version}</version>
+           <type>war</type>
+       </dependency>
+
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${spring.boot.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+
 
     </dependencies>
     <build>
@@ -62,11 +68,12 @@
                         <nonFilteredFileExtension>jks</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
+
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>${org.codehaus.mojo.version}</version>
                 <configuration>
                     <timestampFormat>yyyyMMddHHmm</timestampFormat>
                 </configuration>

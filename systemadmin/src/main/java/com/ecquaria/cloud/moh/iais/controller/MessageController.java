@@ -1,9 +1,6 @@
 package com.ecquaria.cloud.moh.iais.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 /*
     @author yichen_guo@ecquaria.com
 
