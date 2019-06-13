@@ -1,10 +1,8 @@
 package sop.webflow.rt.java.code;
 
-import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
-import com.ecquaria.egp.core.forms.util.FormRuntimeUtil;
-import com.ecquaria.egp.core.forms.util.entity.FormButton;
-//import com.ecquaria.moh.iais.test.action.TestDelegator;
+import sop.webflow.rt.api.BaseProcessClass;
+
 
 public class IAIS___suochengTest___1 extends BaseProcessClass {
     private static final String DELEGATOR ="testDelegator";
@@ -22,5 +20,20 @@ public class IAIS___suochengTest___1 extends BaseProcessClass {
     }
     public void saveDraft_OnStepProcess_0() throws Exception {
         EngineHelper.delegate(DELEGATOR, "saveDraft", this);
+    }
+    public void initSaveDraftData_OnStepProcess_0() throws Exception {
+        EngineHelper.delegate(DELEGATOR, "initSaveDraftData", this);
+    }
+
+    public void bATStep0_OnApplicationCreate_0() throws Exception {
+        EngineHelper.delegate(DELEGATOR, "bATStep0_OnApplicationCreate", this);
+    }
+
+    public static void bATStep0_OnPostStatusChange_1(IPostAppContext context) throws Exception {
+
+    }
+
+    public static void bATStep0_OnPreTransfer_0(IPreTransferContext context) throws Exception {
+
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="suochengTest" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="9" minorVersion="0" name="suochengTest" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
 <Resources>
 </Resources>
 <WebServices>
@@ -7,31 +7,67 @@
 <RestServices>
 </RestServices>
 <Steps>
-<StartStep defClass="" executor="" name="Start" x="97" y="108"><Description/><probepoint type="none"/>
+<StartStep defClass="" executor="" name="Start" x="38" y="120"><Description /><probepoint type="none" />
 <OnStepProcess>
 </OnStepProcess>
 </StartStep>
-<AutomaticStep defClass="" executor="" name="PrepareData" x="199" y="106"><Description/><probepoint type="none"/>
+<AutomaticStep defClass="" executor="" name="PrepareData" x="243" y="102"><Description /><probepoint type="none" />
 <OnStepProcess>
 <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0">
 </JavaCode>
 </OnStepProcess>
 </AutomaticStep>
-<AutomaticStep defClass="" executor="" name="Validate" x="909" y="117"><Description/><probepoint type="none"/>
+<AutomaticStep defClass="" executor="" name="Validate" x="909" y="117"><Description /><probepoint type="none" />
 <OnStepProcess>
 <JavaCode defClass="" executor="" methodName="validate_OnStepProcess_0" name="validate_OnStepProcess_0">
 </JavaCode>
 </OnStepProcess>
 </AutomaticStep>
-<AutomaticStep defClass="" executor="" name="SaveDraft" x="449" y="13"><Description/><probepoint type="none"/>
+<AutomaticStep defClass="" executor="" name="SaveDraft" x="452" y="1"><Description /><probepoint type="none" />
 <OnStepProcess>
 <JavaCode defClass="" executor="" methodName="saveDraft_OnStepProcess_0" name="saveDraft_OnStepProcess_0">
 </JavaCode>
 </OnStepProcess>
 </AutomaticStep>
+<AutomaticStep defClass="" executor="" name="AutomaticStep0" x="694" y="299"><Description /><probepoint type="none" />
+<OnStepProcess>
+</OnStepProcess>
+</AutomaticStep>
+<BATStep batType="submission" continueID="" defClass="" executor="" name="BATStep0" submitForm="" x="926" y="293"><Description /><probepoint type="none" />
+<OnPreStatusChange>
+</OnPreStatusChange>
+<OnPostStatusChange>
+<JavaCode defClass="" executor="" methodName="bATStep0_OnPostStatusChange_1" name="bATStep0_OnPostStatusChange_1">
+</JavaCode>
+</OnPostStatusChange>
+<OnPreCondition>
+</OnPreCondition>
+<OnApplicationCreate>
+<JavaCode defClass="" executor="" methodName="bATStep0_OnApplicationCreate_0" name="bATStep0_OnApplicationCreate_0">
+</JavaCode>
+</OnApplicationCreate>
+<OnStepSuspend>
+</OnStepSuspend>
+<OnPreTransfer>
+<JavaCode defClass="" executor="" methodName="bATStep0_OnPreTransfer_0" name="bATStep0_OnPreTransfer_0">
+</JavaCode>
+</OnPreTransfer>
+<OnPostTransfer>
+</OnPostTransfer>
+</BATStep>
+<StartStep defClass="" executor="" name="SaveContinueURL" x="0" y="32"><Description /><probepoint type="none" />
+<OnStepProcess>
+</OnStepProcess>
+</StartStep>
+<AutomaticStep defClass="" executor="" name="InitSaveDraftData" x="153" y="26"><Description /><probepoint type="none" />
+<OnStepProcess>
+<JavaCode defClass="" executor="" methodName="initSaveDraftData_OnStepProcess_0" name="initSaveDraftData_OnStepProcess_0">
+</JavaCode>
+</OnStepProcess>
+</AutomaticStep>
 </Steps>
 <Pages>
-<WebPage defClass="" displayStageIndicator="true" executor="" formSetupHeight="" formSetupMode="DIV" formSetupSelector="#formdiv" formSetupWidth="100%" name="FillFormPage" stageIndicator="&quot;stage.1&quot;" x="338" y="114"><Description/><probepoint type="none"/>
+<WebPage defClass="" displayStageIndicator="true" executor="" formSetupHeight="" formSetupMode="DIV" formSetupSelector="#formdiv" formSetupWidth="100%" name="FillFormPage" stageIndicator="&quot;stage.1&quot;" x="384" y="115"><Description /><probepoint type="none" />
 <OnPageLoad>
 <JavaCode defClass="" executor="" methodName="fillFormPage_OnPageLoad_0" name="fillFormPage_OnPageLoad_0">
 </JavaCode>
@@ -39,7 +75,13 @@
 <OnPageSubmit>
 </OnPageSubmit>
 </WebPage>
-<WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" name="ConfirmPage" stageIndicator="" x="910" y="279"><Description/><probepoint type="none"/>
+<WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" name="ConfirmPage" stageIndicator="" x="512" y="310"><Description /><probepoint type="none" />
+<OnPageLoad>
+</OnPageLoad>
+<OnPageSubmit>
+</OnPageSubmit>
+</WebPage>
+<WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" name="WebPage0" stageIndicator="" x="1117" y="299"><Description /><probepoint type="none" />
 <OnPageLoad>
 </OnPageLoad>
 <OnPageSubmit>
@@ -47,7 +89,7 @@
 </WebPage>
 </Pages>
 <Forms>
-<Form autoFilledMyInfo="on" defClass="" editable="true" executor="" formInstance="" icon="" name="ApplicationForm" x="507" y="118"><Description/><probepoint type="none"/>
+<Form autoFilledMyInfo="on" defClass="" editable="true" executor="" formInstance="" icon="" name="ApplicationForm" x="507" y="118"><Description /><probepoint type="none" />
 <OnPageLoad>
 <JavaCode defClass="" executor="" methodName="applicationForm_OnPageLoad_0" name="applicationForm_OnPageLoad_0">
 </JavaCode>
@@ -61,14 +103,14 @@
 </Form>
 </Forms>
 <Conditions>
-<Condition componentIfFalse="/Steps/AutomaticStep/PrepareData" componentIfTrue="/Pages/WebPage/ConfirmPage" defClass="" executor="" leftOperand="validate" name="Condition0" operator="=" rightOperand="&quot;true&quot;" x="219" y="294"><Description/>
+<Condition componentIfFalse="/Steps/AutomaticStep/PrepareData" componentIfTrue="/Pages/WebPage/ConfirmPage" defClass="" executor="" leftOperand="validate" name="Condition0" operator="=" rightOperand="&quot;true&quot;" x="257" y="293"><Description />
 </Condition>
 </Conditions>
 <Switches>
-<Switch defClass="" defaultComponent="" executor="" leftOperand="crud_action_type" name="Switch0" x="694" y="89"><Description/>
-<SwitchCase component="/Steps/AutomaticStep/SaveDraft" value="&quot;draft&quot;">
-</SwitchCase>
+<Switch defClass="" defaultComponent="" executor="" leftOperand="crud_action_type" name="Switch0" x="694" y="89"><Description />
 <SwitchCase component="/Steps/AutomaticStep/Validate" value="&quot;submit&quot;">
+</SwitchCase>
+<SwitchCase component="/Steps/AutomaticStep/SaveDraft" value="&quot;draft&quot;">
 </SwitchCase>
 </Switch>
 </Switches>
@@ -82,38 +124,53 @@
 </StageIndicator>
 <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="">
 </AuthenticationRequire>
-<BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions="">
+<BatFlowsSelected batFlowsName="megaflow" batFlowsSelected="true" conditions="vettingCond,approvalCond" mandatoryConditions="">
 </BatFlowsSelected>
 <Links>
 <SynchronousLink destinationName="/Forms/Form/ApplicationForm" linkstyle="Direct" name="" sourceName="/Pages/WebPage/FillFormPage">
-<position>{(338,114)(507,118)}</position>
+<position>{(384,115)(507,118)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start">
-<position>{(97,108)(199,106)}</position>
+<position>{(38,120)(243,102)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Pages/WebPage/FillFormPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData">
-<position>{(199,106)(338,114)}</position>
+<position>{(243,102)(384,115)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Conditions/Condition/Condition0" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Validate">
-<position>{(909,117)(219,294)}</position>
+<position>{(909,117)(257,293)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Pages/WebPage/ConfirmPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Condition0">
-<position>{(219,294)(910,279)}</position>
+<position>{(257,293)(512,310)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Condition0">
-<position>{(219,294)(199,106)}</position>
+<position>{(257,293)(243,102)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Switches/Switch/Switch0" linkstyle="Direct" name="" sourceName="/Forms/Form/ApplicationForm">
 <position>{(507,118)(694,89)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SaveDraft">
-<position>{(449,13)(199,106)}</position>
+<position>{(452,1)(243,102)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Steps/AutomaticStep/SaveDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch0">
-<position>{(694,89)(449,13)}</position>
+<position>{(694,89)(452,1)}</position>
 </SynchronousLink>
 <SynchronousLink destinationName="/Steps/AutomaticStep/Validate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch0">
 <position>{(694,89)(909,117)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Steps/AutomaticStep/AutomaticStep0" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ConfirmPage">
+<position>{(512,310)(694,299)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Steps/BATStep/BATStep0" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/AutomaticStep0">
+<position>{(694,299)(926,293)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Pages/WebPage/WebPage0" linkstyle="Direct" name="" sourceName="/Steps/BATStep/BATStep0">
+<position>{(926,293)(1117,299)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Steps/AutomaticStep/InitSaveDraftData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/SaveContinueURL">
+<position>{(0,32)(153,26)}</position>
+</SynchronousLink>
+<SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InitSaveDraftData">
+<position>{(153,26)(243,102)}</position>
 </SynchronousLink>
 </Links>
 </Application>
