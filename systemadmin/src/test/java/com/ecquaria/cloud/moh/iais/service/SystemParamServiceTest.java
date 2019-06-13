@@ -21,6 +21,9 @@ import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
 @PrepareForTest({SystemParamService.class})
@@ -34,7 +37,10 @@ public class SystemParamServiceTest {
 
     @Test
     public void  testListSystemParam(){
-        Mockito.doReturn(null).when(systemParamDAO).listSystemParam();
+        List<SystemParam> result = new ArrayList<>();
+        SystemParam sp = new SystemParam();
+        result.add(sp);
+        Mockito.doReturn(result).when(systemParamDAO).listSystemParam();
         systemParamService.listSystemParam();
     }
 
