@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
-public class TestDto {
+public class TestValidationUtilsDto {
     @NotNull(message = "operation is mandatory")
     @ApiModelProperty(value = "operation", required = true)
     @Getter

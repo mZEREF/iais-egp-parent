@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
-import com.ecquaria.cloud.moh.iais.dto.TestDto;
+import com.ecquaria.cloud.moh.iais.dto.TestValidationUtilsDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
@@ -18,14 +18,14 @@ public class ValidationUtilsTest {
     //test the method of the validateEntity
     @Test
   public void testvalidateEntity(){
-        TestDto dto = new TestDto();
+        TestValidationUtilsDto dto = new TestValidationUtilsDto();
         ValidationResult vr = ValidationUtil.validateEntity(dto);
         assertTrue(vr.isHasErrors());
   }
     //test the method of the validateProperty
     @Test
     public void testvalidateProperty(){
-        TestDto dto = new TestDto();
+        TestValidationUtilsDto dto = new TestValidationUtilsDto();
         ValidationResult vr = ValidationUtil.validateProperty(dto,"operation");
         assertTrue(vr.isHasErrors());
     }
