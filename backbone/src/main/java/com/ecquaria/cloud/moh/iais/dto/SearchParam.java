@@ -81,7 +81,7 @@ public class SearchParam implements Serializable {
     }
     public void addSortField(String sortField) {
         if (!StringUtils.isEmpty(sortField) && !sortMap.containsKey(sortField.toUpperCase()))
-            sortMap.put(sortField, ASCENDING);
+            sortMap.put(sortField.toUpperCase(), ASCENDING);
     }
     public int getPageSize() {
         return pageSize;
