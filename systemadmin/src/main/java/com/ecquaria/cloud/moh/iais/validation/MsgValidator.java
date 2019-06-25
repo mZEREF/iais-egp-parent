@@ -17,7 +17,7 @@ public class MsgValidator {
 
         List<String> str = Arrays.asList("New", "Renewal", "Cessation", "Amendment", "Reinstate", "Audit", "Common", "Others");
         for (int i = 0; i < str.size(); i++){
-            if(str.get(i).equals(i)){
+            if(!str.get(i).equals("")){
                 return true;
             }
         }
