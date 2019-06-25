@@ -338,14 +338,14 @@
         <li class="">
             <a data-toggle="tab" href="#applications" onClick="SOP.Crud.cfxSubmit('', 'myApp')" title="<egov-smc:commonLabel>My Applications</egov-smc:commonLabel>"
                name="My Applications">
-                <i class="fa fa-pencil-square-o"></i>
+                <em class="fa fa-pencil-square-o"></em>
                 <span><egov-smc:commonLabel>My Applications</egov-smc:commonLabel></span>
             </a>
         </li>
         <li class="">
             <a data-toggle="tab" href="#documents" onClick="SOP.Crud.cfxSubmit('', 'myDoc')" title="<egov-smc:commonLabel>My Documents</egov-smc:commonLabel>"
                name="My Documents">
-                <i class="fa fa-file-text-o"></i>
+                <em class="fa fa-file-text-o"></em>
                 <span><egov-smc:commonLabel>My Documents</egov-smc:commonLabel></span>
             </a>
         </li>
@@ -373,10 +373,10 @@
                         <input type="text" class="form-control" placeholder='<egov-smc:commonLabel>I am looking for...</egov-smc:commonLabel>' name="mainSearch"
                                value="<c:out value='${displayMainSearch}'/>">
                         <span class="input-group-btn">
-			                <button type="button" class="btn btn-default buttonsearch" onclick="submitMainSearch()"><i
-                                    class="fa fa-search"></i></button>
-			                <a href="#" id="slick-toggle" class="btn btn-default hidden-xs"><egov-smc:commonLabel>Advanced Search</egov-smc:commonLabel>&nbsp;<i
-                                    class="fa fa-chevron-down"></i></a>
+			                <button type="button" class="btn btn-default buttonsearch" onclick="submitMainSearch()"><em
+                                    class="fa fa-search"></em></button>
+			                <a href="#" id="slick-toggle" class="btn btn-default hidden-xs"><egov-smc:commonLabel>Advanced Search</egov-smc:commonLabel>&nbsp;<em
+                                    class="fa fa-chevron-down"></em></a>
 		              	</span>
                     </div>
                 </div>
@@ -415,13 +415,13 @@
                                                                                                                                       class="form-control"
                                                                                                                                       name="fromDate"
                                                                                                                                       value="<c:out value="${filters.fromDate}"></c:out>"><span
-                                        class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                        class="input-group-addon"><em class="glyphicon glyphicon-th"></em></span>
                                 </div>
                                 <div class="input-group date">
                                     <label class="input-group-addon"><egov-smc:commonLabel>To</egov-smc:commonLabel></label> <input type="text" name="toDate"
                                                                                                                                     class="form-control"
                                                                                                                                     value="<c:out value="${filters.toDate}"></c:out>"><span
-                                        class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                        class="input-group-addon"><em class="glyphicon glyphicon-th"></em></span>
                                 </div>
                             </div>
                         </div>
@@ -461,10 +461,10 @@
 
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-9">
-                                <button type="button" class="btn btn-round-lg btn-blue2 btn-st" onclick="submitSearch()"><i
-                                        class="fa fa-search"></i><egov-smc:commonLabel>Search</egov-smc:commonLabel></button>
-                                <button type="button" class="btn btn-round-lg btn-red btn-st" onclick="EGOV.Common.clearForm();"><i
-                                        class="fa fa-refresh"></i> <egov-smc:commonLabel>Reset</egov-smc:commonLabel></button>
+                                <button type="button" class="btn btn-round-lg btn-blue2 btn-st" onclick="submitSearch()"><em
+                                        class="fa fa-search"></em><egov-smc:commonLabel>Search</egov-smc:commonLabel></button>
+                                <button type="button" class="btn btn-round-lg btn-red btn-st" onclick="EGOV.Common.clearForm();"><em
+                                        class="fa fa-refresh"></em> <egov-smc:commonLabel>Reset</egov-smc:commonLabel></button>
                             </div>
                         </div>
                     </div>
@@ -558,55 +558,55 @@
                                 <thead>
                                 <tr>
                                     <th><egov-smc:commonLabel>Mode</egov-smc:commonLabel>
-                                        <div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/tblock.jpg">
+                                        <div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/tblock.jpg" alt="">
                                     </th>
                                     <th class="hidden-xs">
                                         <c:choose>
                                             <c:when test="${sort.equals('-sender')}">
-                                                <egov-smc:commonLabel>Sender</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('sender', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png"></a>
+                                                <egov-smc:commonLabel>Sender</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('sender', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png" alt=""></a>
                                             </c:when>
                                             <c:otherwise>
-                                                <egov-smc:commonLabel>Sender</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('sender', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png"></a>
+                                                <egov-smc:commonLabel>Sender</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('sender', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png" alt=""></a>
                                             </c:otherwise>
                                         </c:choose>
                                     </th>
                                     <th class="hidden-xs">
                                         <c:choose>
                                             <c:when test="${sort.equals('-senderAgy')}">
-                                                <egov-smc:commonLabel>Agency</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('senderAgy', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png"></a>
+                                                <egov-smc:commonLabel>Agency</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('senderAgy', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png" alt=""></a>
                                             </c:when>
                                             <c:otherwise>
-                                                <egov-smc:commonLabel>Agency</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('senderAgy', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png"></a>
+                                                <egov-smc:commonLabel>Agency</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('senderAgy', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png" alt=""></a>
                                             </c:otherwise>
                                         </c:choose>
                                     </th>
                                     <th>
                                         <c:choose>
                                             <c:when test="${sort.equals('-subject')}">
-                                                <egov-smc:commonLabel>Subject</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('subject', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png"></a>
+                                                <egov-smc:commonLabel>Subject</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('subject', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png" alt=""></a>
                                             </c:when>
                                             <c:otherwise>
-                                                <egov-smc:commonLabel>Subject</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('subject', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png"></a>
+                                                <egov-smc:commonLabel>Subject</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('subject', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png" alt=""></a>
                                             </c:otherwise>
                                         </c:choose>
                                     </th>
                                     <th class="hidden-xs">
                                         <c:choose>
                                             <c:when test="${sort.equals('-importance')}">
-                                                <egov-smc:commonLabel>Importance</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('importance', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png"></a>
+                                                <egov-smc:commonLabel>Importance</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('importance', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png" alt=""></a>
                                             </c:when>
                                             <c:otherwise>
-                                                <egov-smc:commonLabel>Importance</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('importance', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png"></a>
+                                                <egov-smc:commonLabel>Importance</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('importance', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png" alt=""></a>
                                             </c:otherwise>
                                         </c:choose>
                                     </th>
                                     <th>
                                         <c:choose>
                                             <c:when test="${sort.equals('-receivedDate')}">
-                                                <egov-smc:commonLabel>Date</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('receivedDate', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png"></a>
+                                                <egov-smc:commonLabel>Date</egov-smc:commonLabel><a class="sort-up" href="javascript:changeSort_('receivedDate', 'ascending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-uparrow.png" alt=""></a>
                                             </c:when>
                                             <c:otherwise>
-                                                <egov-smc:commonLabel>Date</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('receivedDate', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png"></a>
+                                                <egov-smc:commonLabel>Date</egov-smc:commonLabel><a class="sort-down" href="javascript:changeSort_('receivedDate', 'descending')" ><div class="hidden-sm hidden-md hidden-lg"></div><img src="<%=EgpcloudPortFactory.webContext%>/_themes/cc/images/sort-downarrow.png" alt=""></a>
                                             </c:otherwise>
                                         </c:choose>
                                     </th>
@@ -625,14 +625,14 @@
 												<%--<span class="badge badge-success">
 													<i class="fa fa-comment"></i>
 												</span>--%>
-                                                <i class="fa fa-comment circle-icon"></i>
+                                                <em class="fa fa-comment circle-icon"></em>
                                             </c:if>
 
                                             <c:if test="${message.type=='E' }">
 													<%--<span class="badge badge-info">
 														<i class="fa fa-envelope-o"></i>
 													</span>--%>
-                                                <i class="fa fa-envelope-o circle-icon"></i>
+                                                <em class="fa fa-envelope-o circle-icon"></em>
                                             </c:if>
                                         </td>
                                         <td class="hidden-xs">${message.sender}</td>
@@ -685,7 +685,7 @@
                                     <tr>
                                         <td align="center" colspan="6">
                                             <blod>
-                                                <center><b><egov-smc:commonLabel>No records found</egov-smc:commonLabel></b></center>
+                                                <strong><egov-smc:commonLabel>No records found</egov-smc:commonLabel></strong>
                                             </blod>
                                         </td>
                                     </tr>
