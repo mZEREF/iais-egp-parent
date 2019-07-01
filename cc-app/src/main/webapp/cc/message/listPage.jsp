@@ -331,7 +331,7 @@
     <ul class="nav nav-tabs" id="myTab">
         <li class="active">
             <a data-toggle="tab" href="#messages" title="<egov-smc:commonLabel>My Messages</egov-smc:commonLabel>" name="My Messages">
-                <i class="fa fa-envelope-o"></i>
+                <em class="fa fa-envelope-o"></em>
                 <span><egov-smc:commonLabel>My Messages</egov-smc:commonLabel></span>
             </a>
         </li>

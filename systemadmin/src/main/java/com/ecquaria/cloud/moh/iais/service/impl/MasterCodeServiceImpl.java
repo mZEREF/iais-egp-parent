@@ -23,7 +23,7 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Override
     public List<MasterCode> getMasterCodeList() {
-        List<MasterCode> masterCodeList = new ArrayList<MasterCode>();
+        List<MasterCode> masterCodeList ;
         masterCodeList = masterCodeRepository.findAll();
         return masterCodeList;
     }
@@ -36,7 +36,7 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Override
     public List<MasterCode> findMasterCodeById(int id) {
-        List<MasterCode> masterCodeList = new ArrayList<>();
+        List<MasterCode> masterCodeList;
         masterCodeList = masterCodeRepository.findMasterCodeByMasterCodeId(id);
         return masterCodeList;
     }
