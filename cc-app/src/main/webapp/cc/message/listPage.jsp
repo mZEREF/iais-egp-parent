@@ -349,14 +349,6 @@
                 <span><egov-smc:commonLabel>My Documents</egov-smc:commonLabel></span>
             </a>
         </li>
-        <!--
-     <c:if test="${ifPrivMyCase }">
-			<li class="">
-				<a data-toggle="tab" href="#myCase" onClick="SOP.Crud.cfxSubmit('', 'myCase')" title="<label>My Cases</label>" name="My Cases"> <i class="fa fa-file-text-o"></i> <span><label>My Case</label></span>
-				</a>
-			</li>
-	</c:if>
-	 -->
     </ul>
 
 

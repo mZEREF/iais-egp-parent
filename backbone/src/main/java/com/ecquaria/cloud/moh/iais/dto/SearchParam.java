@@ -11,6 +11,7 @@ import java.util.Map;
 public class SearchParam implements Serializable {
     public static final String ASCENDING    = "ASC";
     public static final String DESCENDING   = "DESC";
+    private static final long serialVersionUID = -2125684909112059522L;
 
     private HashMap<String, Object> params;     // for template SQL generation
     private LinkedHashMap<String, Object> filters;    // for SQL query
@@ -20,9 +21,9 @@ public class SearchParam implements Serializable {
 
     public SearchParam() {
         clear();
-        filters = new LinkedHashMap<String, Object>();
-        params = new HashMap<String, Object>();
-        sortMap = new LinkedHashMap<String, String>();
+        filters = new LinkedHashMap<>();
+        params = new HashMap<>();
+        sortMap = new LinkedHashMap<>();
     }
 
     public void addParam(String name, Object value) {

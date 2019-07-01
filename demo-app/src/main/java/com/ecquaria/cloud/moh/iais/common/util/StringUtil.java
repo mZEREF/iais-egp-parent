@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.AppConsts;
 public final class StringUtil {
 
 
+    private StringUtil() {
+    }
 
     public static String getValue(Object obj) {
         return (null == obj) ? "" : getValue(obj.toString());
@@ -60,11 +62,6 @@ public final class StringUtil {
      * @param str
      * @return
      */
-    public static String viewValue(String str) {
-        String s = getValue(str);
-        return "".equals(s) ? AppConsts.EMPTY_STR : s;
-    }
-
     public static String viewValue(int val) {
         return String.valueOf(val);
     }

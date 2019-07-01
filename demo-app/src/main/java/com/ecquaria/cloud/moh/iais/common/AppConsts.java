@@ -25,7 +25,7 @@ public final class AppConsts {// default settings used in app
     public static final String	FORMAT_DATE_TIME_FOR_DB						= "yyyy-MM-dd HH:mm";
     public static final String	FORM_DEFAULT_FORMAT_DATE					= "dd/MM/yyyy";
     public static final String  ORACLE_DEFAULT_FORMAT_DATE              	= "yyyy-MM-dd hh:mm:ss";
-    public static final String	CERTAIN_FORMAT_DATE_TIME_Pay				= "yyyy/MM/dd HH:mm:ss z";
+    public static final String	CERTAIN_FORMAT_DATE_TIME_PAY				= "yyyy/MM/dd HH:mm:ss z";
 
     public static final String	DEFAULT_MONEY_PATTERN						= "[1-9]{1}\\d{0,2}(\\,{0,1}\\d{3}){0,3}(\\.\\d{1,2})?";
 
@@ -62,4 +62,7 @@ public final class AppConsts {// default settings used in app
     public static final byte	DAY_OF_WEEK_THURSDAY						= 4;
     public static final byte	DAY_OF_WEEK_FRIDAY							= 5;
     public static final byte	DAY_OF_WEEK_SATURDAY						= 6;
+
+    private AppConsts() {
+    }
 }
