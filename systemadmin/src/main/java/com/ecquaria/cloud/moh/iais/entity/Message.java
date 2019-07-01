@@ -9,15 +9,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "ERRORMESSAGE")
 public class Message {
-    public static final String TABLE_NAME = "ERRORMESSAGE";
-    public static final String COL_ID = "CODE_ID";
-    public static final String COL_CODE_KEY = "CODE_KEY";
-    public static final String COL_TYPE = "TYPE";
-    public static final String COL_MESSAGE_TYPE = "MESSAGE_TYPE";
-    public static final String COL_MODULE = "MODULE";
-    public static final String COL_DESCRIPTION = "DESCRIPTION";
-    public static final String COL_STATUS = "STATUS";
-
     @Setter
     @Getter
     @Id
