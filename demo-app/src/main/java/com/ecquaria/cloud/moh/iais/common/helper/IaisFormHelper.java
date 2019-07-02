@@ -102,7 +102,7 @@ public class IaisFormHelper extends FormHelper {
         }
 
         String tinyCallback = null;
-        String formName = bpc.request.getParameter("formName");
+        String formName = bpc.request.getParameter(FORM_NAME);
 
         StringBuilder callback = new StringBuilder(
                 ServerConfig.getInstance().getFrontendURL() + EngineHelper.getContextPath());
@@ -147,7 +147,7 @@ public class IaisFormHelper extends FormHelper {
         }
     }
     public static String getFormDetailUrl(BaseProcessClass bpc) {
-        StringBuffer mcCallback = new StringBuffer();
+        StringBuilder mcCallback = new StringBuilder();
         mcCallback.append(ServerConfig.getInstance().getFrontendURL() + ConfigUtil.getString(AppConstants.CONFIG_FORM_DETAILS_URL));
         if (mcCallback.indexOf("?") > 0) {
             mcCallback.append("&");
@@ -223,7 +223,6 @@ public class IaisFormHelper extends FormHelper {
         return app;
     }
     private static String generateAppNo() {
-        // todo should be get from DB  by the applicaitonType.
         SimpleDateFormat format = new SimpleDateFormat("yyyy_MMddHHmmssSSS", Locale.US);
         return "draft-suocheng-test-app-" + format.format(new Date());
     }
