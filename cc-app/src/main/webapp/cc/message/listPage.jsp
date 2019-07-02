@@ -673,7 +673,7 @@
                                 </c:forEach>
                                 <c:if test="${count==0 }">
                                     <tr>
-                                        <td align="center" colspan="6">
+                                        <td colspan="6">
                                             <blod>
                                                 <strong><egov-smc:commonLabel>No records found</egov-smc:commonLabel></strong>
                                             </blod>

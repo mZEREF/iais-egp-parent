@@ -17,35 +17,36 @@ import com.ecquaria.cloud.helper.EngineHelper;
 public class EGPCLOUD___MyMessageManagement___1 extends BaseProcessClass {
 
 	private static final long serialVersionUID = 4715976103220995887L;
+	private static final String MY_MESSAGE_DELEGATOR = "myMessageDelegator";
+	private static final String PREPARE_DATA = "prepareData";
+	private static final String START_PROCESS = "startProcess";
+	private static final String CHANGE_PAGE = "changePage";
+	private static final String SORTING = "sorting";
+	private static final String MAIN_SEARCH = "mainSearch";
+
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-//		MessageController.prepareData(request);
-		EngineHelper.delegate("myMessageDelegator", "prepareData", request);
+		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, PREPARE_DATA, request);
 	}
 
 	public void search_OnStepProcess_0() throws Exception {
-//		MessageController.search(request);
-		EngineHelper.delegate("myMessageDelegator", "search", request);
+		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, SEARCH, request);
 	}
 
 	public void step1_OnStepProcess_0() throws Exception {
-//		MessageController.startProcess(request);
-		EngineHelper.delegate("myMessageDelegator", "startProcess", request);
+		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, START_PROCESS, request);
 	}
 
 	public void paging_OnStepProcess_0() throws Exception {
-//		MessageController.changePage(request);
-		EngineHelper.delegate("myMessageDelegator", "changePage", request);
+		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, CHANGE_PAGE, request);
 	}
 
 	public void sorting_OnStepProcess_0() throws Exception {
-//		MessageController.sorting(request);
-		EngineHelper.delegate("myMessageDelegator", "sorting", request);
+		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, SORTING, request);
 	}
 
 	public void mainSearch_OnStepProcess_0() throws Exception {
-//		MessageController.mainSearch(request);
-		EngineHelper.delegate("myMessageDelegator", "mainSearch", request);
+		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, MAIN_SEARCH, request);
 	}
 	
 }

@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.dao.MasterCodeRepository;
 import com.ecquaria.cloud.moh.iais.entity.MasterCode;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,13 +26,6 @@ public class MasterCodeServiceImpl implements MasterCodeService {
         masterCodeList = masterCodeRepository.findAll();
         return masterCodeList;
     }
-
-    @Override
-    public MasterCode addMasterCode(MasterCode mc) {
-        masterCodeRepository.save(mc);
-        return mc;
-    }
-
     @Override
     public List<MasterCode> findMasterCodeById(int id) {
         List<MasterCode> masterCodeList;

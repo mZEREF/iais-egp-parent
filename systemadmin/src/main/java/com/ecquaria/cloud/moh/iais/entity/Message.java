@@ -29,7 +29,7 @@ public class Message {
     @Setter
     @Getter
     @Column(name = "MESSAGE_TYPE")
-    private String message_type;
+    private String messageType;
 
     @Setter
     @Getter

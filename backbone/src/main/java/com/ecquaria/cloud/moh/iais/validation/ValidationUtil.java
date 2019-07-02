@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
-import com.ecquaria.cloud.moh.iais.dto.AuditTrailDto;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -11,7 +10,8 @@ import java.util.*;
 public class ValidationUtil {
     private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    public ValidationUtil() {
+    private ValidationUtil() {
+        throw new UnsupportedOperationException();
     }
 
     public static <T> ValidationResult validateEntity(T obj) {
