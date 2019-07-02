@@ -155,7 +155,7 @@ public class IaisFormHelper extends FormHelper {
             mcCallback.append("?");
         }
         mcCallback.append("caseid=").append(bpc.currentCase.getCaseId())
-                .append("&formname=").append(bpc.request.getParameter("formName"));
+                .append("&formname=").append(bpc.request.getParameter(FORM_NAME));
         return mcCallback.toString();
     }
     public static void setApplicationDraftNo(EGPCase egpcase, String appDraftNo) {
