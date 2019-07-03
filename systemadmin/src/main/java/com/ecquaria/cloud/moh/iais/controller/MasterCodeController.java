@@ -17,7 +17,7 @@ public class MasterCodeController {
     @Autowired
     private MasterCodeService masterCodeService;
 
-    public void getMasterCodeList(BaseProcessClass process){
+    public void getMasterCodeList(){
     }
 
 }
