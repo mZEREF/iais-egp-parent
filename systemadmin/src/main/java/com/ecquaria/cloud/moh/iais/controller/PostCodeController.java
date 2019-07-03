@@ -16,9 +16,9 @@ import java.util.Map;
 
 @Delegator
 public class PostCodeController {
-    private static final String POSTCODE_PATH = "D:\\Project\\MOH\\Test\\postcode\\POSTCODE.TXT" ;
-    private static final String STREETS_PATH = "D:\\Project\\MOH\\Test\\postcode\\STREETS.TXT";
-    private static final String BUILDING_PATH = "D:\\Project\\MOH\\Test\\postcode\\BUILDING.TXT";
+    private   String POSTCODE_PATH = "D:\\Project\\MOH\\Test\\postcode\\POSTCODE.TXT" ;
+    private   String STREETS_PATH = "D:\\Project\\MOH\\Test\\postcode\\STREETS.TXT";
+    private   String BUILDING_PATH = "D:\\Project\\MOH\\Test\\postcode\\BUILDING.TXT";
 
     @Autowired
     private PostCodeService postCodeService;
