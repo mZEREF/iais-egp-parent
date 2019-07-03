@@ -23,8 +23,8 @@ public class MessageTest {
         entity.setCodeKey(null);
         entity.getType();
         entity.setType(null);
-        entity.getMessage_type();
-        entity.setMessage_type(null);
+        entity.getMessageType();
+        entity.setMessageType(null);
         entity.getModule();
         entity.setModule(null);
         entity.getDescription();

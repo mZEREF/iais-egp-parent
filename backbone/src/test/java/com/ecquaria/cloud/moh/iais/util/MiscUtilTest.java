@@ -25,11 +25,11 @@ public class MiscUtilTest {
     public  void testgetClientIp(){
         Mockito.doReturn(RESULTIP+SPLIT+REMOTEIP).when(request).getHeader("x-forwarded-for");
         String ip =  MiscUtil.getClientIp(request);
-        Assert.assertEquals(ip,RESULTIP);
+        Assert.assertEquals(RESULTIP,ip);
     }
     @Test
     public void testgetClientIpRemoteAddr(){
         String ip =  MiscUtil.getClientIp(request);
-        Assert.assertEquals(ip,REMOTEIP);
+        Assert.assertEquals(REMOTEIP,ip);
     }
 }
