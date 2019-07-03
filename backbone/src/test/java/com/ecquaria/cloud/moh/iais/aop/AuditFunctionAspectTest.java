@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.aop;
 
-import com.ecquaria.cloud.moh.iais.constant.AppConsts;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +12,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.client.RestTemplate;
+import sg.gov.moh.iais.common.constant.AppConsts;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
