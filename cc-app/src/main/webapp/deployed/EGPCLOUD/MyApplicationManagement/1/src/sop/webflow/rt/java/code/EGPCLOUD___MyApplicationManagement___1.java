@@ -12,7 +12,7 @@
 package sop.webflow.rt.java.code;
 
 import com.ecquaria.cloud.helper.EngineHelper;
-import com.ecquaria.cloud.moh.iais.exception;
+import com.ecquaria.cloud.moh.iais.exception.IaisRuntimeException;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
