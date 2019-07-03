@@ -49,14 +49,14 @@ public class SearchParamTest {
         //test the sort
         sp.addSort(SORTE,SearchParam.DESCENDING);
         sp.addSortField(SORTEDFILED);
-        HashMap<String, String> sortMap = sp.getSortMap();
+        Map<String, String> sortMap = sp.getSortMap();
         Assert.assertEquals(sortMap.get(SORTE.toUpperCase()),(SearchParam.DESCENDING));
         Assert.assertEquals(sortMap.get(SORTEDFILED.toUpperCase()),(SearchParam.ASCENDING));
         sp.setSort(SORTE,SearchParam.DESCENDING);
-        HashMap<String, String> sortMap1 = sp.getSortMap();
+        Map<String, String> sortMap1 = sp.getSortMap();
         Assert.assertEquals(sortMap1.get(SORTE.toUpperCase()),(SearchParam.DESCENDING));
         sp.setSortField(SORTEDFILED);
-        HashMap<String, String> sortMap2 = sp.getSortMap();
+        Map<String, String> sortMap2 = sp.getSortMap();
         Assert.assertEquals(sortMap2.get(SORTEDFILED.toUpperCase()),(SearchParam.ASCENDING));
 
         //test test the set get method
