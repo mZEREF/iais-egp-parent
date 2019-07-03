@@ -23,13 +23,12 @@ public abstract class IFormValidator {
 
     public abstract void addRequired(List required);
     private void validateRequired(){
-         if (required!=null && required.size()>0){
+         if (required!=null && !required.isEmpty()){
              for (int i = 0;i<required.size();i++){
                  String column = (String) required.get(i);
                  String value = IaisFormHelper.getFormFieldData(process,formName,column);
                  if(StringUtil.isEmpty(value)){
                      errorCount++;
-                     // todo  get the errormessage from DB.
                      IaisFormHelper.addFieldErrorMessage(process.request,column,"age is empty!!!");
                  }
              }

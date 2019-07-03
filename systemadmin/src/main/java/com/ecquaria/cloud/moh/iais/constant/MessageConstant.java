@@ -26,4 +26,7 @@ public class MessageConstant {
 
     public static final char STATUS_ACTIVE = 'Y';
     public static final char STATUS_DEACTIVATED = 'N';
+
+    private MessageConstant() {
+    }
 }

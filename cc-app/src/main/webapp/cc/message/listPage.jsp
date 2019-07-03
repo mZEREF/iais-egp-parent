@@ -330,33 +330,23 @@
 <div>
     <ul class="nav nav-tabs" id="myTab">
         <li class="active">
-            <a data-toggle="tab" href="#messages" title="<egov-smc:commonLabel>My Messages</egov-smc:commonLabel>" name="My Messages">
-                <i class="fa fa-envelope-o"></i>
+            <a data-toggle="tab" href="#messages" title="<egov-smc:commonLabel>My Messages</egov-smc:commonLabel>">
+                <em class="fa fa-envelope-o"></em>
                 <span><egov-smc:commonLabel>My Messages</egov-smc:commonLabel></span>
             </a>
         </li>
         <li class="">
-            <a data-toggle="tab" href="#applications" onClick="SOP.Crud.cfxSubmit('', 'myApp')" title="<egov-smc:commonLabel>My Applications</egov-smc:commonLabel>"
-               name="My Applications">
+            <a data-toggle="tab" href="#applications" onClick="SOP.Crud.cfxSubmit('', 'myApp')" title="<egov-smc:commonLabel>My Applications</egov-smc:commonLabel>">
                 <em class="fa fa-pencil-square-o"></em>
                 <span><egov-smc:commonLabel>My Applications</egov-smc:commonLabel></span>
             </a>
         </li>
         <li class="">
-            <a data-toggle="tab" href="#documents" onClick="SOP.Crud.cfxSubmit('', 'myDoc')" title="<egov-smc:commonLabel>My Documents</egov-smc:commonLabel>"
-               name="My Documents">
+            <a data-toggle="tab" href="#documents" onClick="SOP.Crud.cfxSubmit('', 'myDoc')" title="<egov-smc:commonLabel>My Documents</egov-smc:commonLabel>">
                 <em class="fa fa-file-text-o"></em>
                 <span><egov-smc:commonLabel>My Documents</egov-smc:commonLabel></span>
             </a>
         </li>
-        <!--
-     <c:if test="${ifPrivMyCase }">
-			<li class="">
-				<a data-toggle="tab" href="#myCase" onClick="SOP.Crud.cfxSubmit('', 'myCase')" title="<label>My Cases</label>" name="My Cases"> <i class="fa fa-file-text-o"></i> <span><label>My Case</label></span>
-				</a>
-			</li>
-	</c:if>
-	 -->
     </ul>
 
 
@@ -547,7 +537,7 @@
                     </div>
                     <div class="panel-body">
                         <div class="table-responsive-wrap">
-                            <table width="100%" class="noti_datatable table-striped table-bordered table-hover"
+                            <table class="noti_datatable table-striped table-bordered table-hover"
                                    name="dataTable">
                                 <script type="text/javascript">
                                     sopCrud1 = new SOP.Crud.SOPCrud('entity', "");
@@ -683,7 +673,7 @@
                                 </c:forEach>
                                 <c:if test="${count==0 }">
                                     <tr>
-                                        <td align="center" colspan="6">
+                                        <td colspan="6">
                                             <blod>
                                                 <strong><egov-smc:commonLabel>No records found</egov-smc:commonLabel></strong>
                                             </blod>

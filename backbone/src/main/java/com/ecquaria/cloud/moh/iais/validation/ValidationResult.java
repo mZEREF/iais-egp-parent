@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ValidationResult {
     @Getter @Setter private boolean hasErrors;
-    private Map<String, String> errorMsg = new HashMap<String, String>();
+    private Map<String, String> errorMsg = new HashMap<>();
 
     public void addMessage(String key, String msg) {
         errorMsg.put(key, msg);

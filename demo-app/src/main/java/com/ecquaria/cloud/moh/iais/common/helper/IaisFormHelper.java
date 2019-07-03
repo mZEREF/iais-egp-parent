@@ -34,7 +34,8 @@ import java.util.Map;
 
 public class IaisFormHelper extends FormHelper {
     public static final String ATTR_APP_DRAFT_NO = "egp.app.draft.no";
-
+    public static final String FORM_NAME = "formName";
+    public static final String DRAFT = "Draft";
     public static void doSaveDraft(BaseProcessClass bpc,String projectName,String processName,String callStepName)throws BaseException{
         String draftAppNo = getApplicationDraftNo(bpc.currentCase);
         boolean flag = false;
@@ -53,17 +54,17 @@ public class IaisFormHelper extends FormHelper {
         } else {
             String formDetailUrl = getFormDetailUrl(bpc);
             String tinyCallback = null;
-            String formName = bpc.request.getParameter("formName");
-            StringBuffer callback = new StringBuffer(
+            String formName = bpc.request.getParameter(FORM_NAME);
+            StringBuilder callback = new StringBuilder(
                     ServerConfig.getInstance().getFrontendURL() + EngineHelper.getContextPath());
             callback.append("/eservice/").append(projectName).append("/").append(processName).append("/").append(callStepName)
                     .append("?caseid=").append(bpc.currentCase.getCaseId()).append("&formname=").append(formName);
 
             tinyCallback = IaisEGPHelper.getTinyUrl(callback.toString());
 
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put(JsonLabel.APP_STATUSMSG, "Draft");
-            map.put(JsonLabel.APP_STATUS, "Draft");
+            Map<String, Object> map = new HashMap<>();
+            map.put(JsonLabel.APP_STATUSMSG, DRAFT);
+            map.put(JsonLabel.APP_STATUS, DRAFT);
             map.put(JsonLabel.SVC_CALLBACK_URL, tinyCallback);
             map.put(JsonLabel.FORM_HTML, getBase64FormHtml(formName, bpc));
             map.put(JsonLabel.FORM_DETAILS_URL, formDetailUrl);
@@ -101,9 +102,9 @@ public class IaisFormHelper extends FormHelper {
         }
 
         String tinyCallback = null;
-        String formName = bpc.request.getParameter("formName");
+        String formName = bpc.request.getParameter(FORM_NAME);
 
-        StringBuffer callback = new StringBuffer(
+        StringBuilder callback = new StringBuilder(
                 ServerConfig.getInstance().getFrontendURL() + EngineHelper.getContextPath());
         callback.append("/eservice/").append(projectName).append("/").append(processName).append("/").append(callStepName)
                 .append("?caseid=").append(bpc.currentCase.getCaseId());
@@ -112,7 +113,7 @@ public class IaisFormHelper extends FormHelper {
         String formDetailUrl = getFormDetailUrl(bpc);
         Map<String, Object> propMap = new HashMap<String, Object>();
         propMap.put(JsonLabel.SVC_CALLBACK_URL, tinyCallback);
-        propMap.put(JsonLabel.APP_STATUS, "Draft");
+        propMap.put(JsonLabel.APP_STATUS, DRAFT);
 
         propMap.put(JsonLabel.FORM_DETAILS_URL, formDetailUrl);
         propMap.put(JsonLabel.FORM_HTML, getBase64FormHtml(formName,bpc));
@@ -133,7 +134,6 @@ public class IaisFormHelper extends FormHelper {
     }
     private static String getBase64FormHtml(String formName,BaseProcessClass bpc) {
         FormInstance formIns = IaisFormHelper.getFormInstanceFromCase(bpc.currentCase, formName);
-        ;
         if (null == formIns) {
             // no submitted form found.
             return null;
@@ -147,7 +147,7 @@ public class IaisFormHelper extends FormHelper {
         }
     }
     public static String getFormDetailUrl(BaseProcessClass bpc) {
-        StringBuffer mcCallback = new StringBuffer();
+        StringBuilder mcCallback = new StringBuilder();
         mcCallback.append(ServerConfig.getInstance().getFrontendURL() + ConfigUtil.getString(AppConstants.CONFIG_FORM_DETAILS_URL));
         if (mcCallback.indexOf("?") > 0) {
             mcCallback.append("&");
@@ -155,7 +155,7 @@ public class IaisFormHelper extends FormHelper {
             mcCallback.append("?");
         }
         mcCallback.append("caseid=").append(bpc.currentCase.getCaseId())
-                .append("&formname=").append(bpc.request.getParameter("formName"));
+                .append("&formname=").append(bpc.request.getParameter(FORM_NAME));
         return mcCallback.toString();
     }
     public static void setApplicationDraftNo(EGPCase egpcase, String appDraftNo) {
@@ -223,7 +223,6 @@ public class IaisFormHelper extends FormHelper {
         return app;
     }
     private static String generateAppNo() {
-        // todo should be get from DB  by the applicaitonType.
         SimpleDateFormat format = new SimpleDateFormat("yyyy_MMddHHmmssSSS", Locale.US);
         return "draft-suocheng-test-app-" + format.format(new Date());
     }

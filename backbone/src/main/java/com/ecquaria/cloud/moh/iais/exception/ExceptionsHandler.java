@@ -16,7 +16,7 @@ public class ExceptionsHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> customGenericValidationHnadler(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             map.put(fieldError.getField(), fieldError.getDefaultMessage());
         }

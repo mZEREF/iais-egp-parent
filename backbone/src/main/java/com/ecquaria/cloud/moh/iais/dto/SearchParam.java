@@ -11,18 +11,19 @@ import java.util.Map;
 public class SearchParam implements Serializable {
     public static final String ASCENDING    = "ASC";
     public static final String DESCENDING   = "DESC";
+    private static final long serialVersionUID = -2125684909112059522L;
 
-    private HashMap<String, Object> params;     // for template SQL generation
-    private LinkedHashMap<String, Object> filters;    // for SQL query
-    private LinkedHashMap<String, String> sortMap;
+    private Map<String, Object> params;     // for template SQL generation
+    private Map<String, Object> filters;    // for SQL query
+    private Map<String, String> sortMap;
     private int pageSize;
     private int pageNo;
 
     public SearchParam() {
         clear();
-        filters = new LinkedHashMap<String, Object>();
-        params = new HashMap<String, Object>();
-        sortMap = new LinkedHashMap<String, String>();
+        filters = new LinkedHashMap<>();
+        params = new HashMap<>();
+        sortMap = new LinkedHashMap<>();
     }
 
     public void addParam(String name, Object value) {
@@ -57,7 +58,7 @@ public class SearchParam implements Serializable {
     public Map<String, Object> getParams() {
         return params;
     }
-    public void setParams(HashMap<String, Object> params) {
+    public void setParams(Map<String, Object> params) {
         this.params = params;
     }
     public void setSort(String sortField, String sortType) {
@@ -72,7 +73,7 @@ public class SearchParam implements Serializable {
     public Map<String, Object> getFilters() {
         return filters;
     }
-    public void setFilters(LinkedHashMap<String, Object> filters) {
+    public void setFilters(Map<String, Object> filters) {
         this.filters = filters;
     }
     public void setSortField(String sortField) {
@@ -95,7 +96,7 @@ public class SearchParam implements Serializable {
     public void setPageNo(int pageNo) {
         this.pageNo = pageNo;
     }
-    public HashMap<String, String> getSortMap() {
+    public Map<String, String> getSortMap() {
         return sortMap;
     }
 }

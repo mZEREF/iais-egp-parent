@@ -35,6 +35,7 @@ public class AuditFunctionAspect {
 
     @Pointcut("@within(com.ecquaria.cloud.moh.iais.annotation.FunctionTrack)")
     public void auditFunction() {
+        throw new UnsupportedOperationException();
     }
 
     @Around("auditFunction()")

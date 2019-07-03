@@ -27,7 +27,7 @@ public class PostCodeController {
         Map<String,String> streetMap = initstreetMap();
         Map<String,String> buildingMap =initbuildingMap();
         List<PostCode> list = convert(streetMap,buildingMap);
-        if(list != null && list.size() > 0){
+        if(list != null && !list.isEmpty()){
             postCodeService.clean();
             postCodeService.createAll(list);
         }
