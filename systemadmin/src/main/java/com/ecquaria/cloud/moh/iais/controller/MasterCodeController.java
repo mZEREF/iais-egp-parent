@@ -18,7 +18,6 @@ public class MasterCodeController {
     private MasterCodeService masterCodeService;
 
     public void getMasterCodeList(BaseProcessClass process){
-        List<MasterCode> lc =  masterCodeService.getMasterCodeList();
     }
 
 }
