@@ -24,7 +24,20 @@
             <artifactId>engine</artifactId>
             <version>${engine-version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>sg.gov.moh.iais</groupId>
+            <artifactId>iais-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>sg.gov.moh.iais</groupId>
+            <artifactId>iais-log-audit</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
