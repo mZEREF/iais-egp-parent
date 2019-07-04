@@ -26,6 +26,6 @@ public class MasterCodeControllerTest {
 
     @Test
     public void testgetMasterCodeList(){
-        masterCodeController.getMasterCodeList(baseProcessClass);
+        masterCodeController.getMasterCodeList();
     }
 }
