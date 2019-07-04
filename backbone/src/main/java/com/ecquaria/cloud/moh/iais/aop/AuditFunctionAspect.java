@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.annotation.FunctionTrack;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -46,17 +45,8 @@ import java.util.*;
 @Slf4j
 public class AuditFunctionAspect {
 
-    @Setter
-    private RestTemplate restTemplate;
-    @Setter
+    private RestTemplate restTemplate = new RestTemplate();
     private HttpServletRequest request;
-
-
-    public AuditFunctionAspect() {
-        restTemplate = new RestTemplate();
-        request = ((ServletRequestAttributes)
-                RequestContextHolder.getRequestAttributes()).getRequest();
-    }
 
     @Pointcut("@within(com.ecquaria.cloud.moh.iais.annotation.FunctionTrack)")
     public void auditFunction() {
@@ -67,6 +57,8 @@ public class AuditFunctionAspect {
     public Object auditAroundFunction(ProceedingJoinPoint point) throws Throwable {
         AuditTrailDto dto = new AuditTrailDto();
         User user = SessionManager.getInstance(request).getCurrentUser();
+        request = ((ServletRequestAttributes)
+                RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session = request.getSession();
         if (user != null) {
             dto.setNricNumber(user.getId());
