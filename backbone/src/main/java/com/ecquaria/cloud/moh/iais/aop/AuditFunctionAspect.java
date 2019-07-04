@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.annotation.FunctionTrack;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -42,7 +41,6 @@ import java.util.*;
 
 @Aspect
 @Component
-@Slf4j
 public class AuditFunctionAspect {
 
     private RestTemplate restTemplate = new RestTemplate();
@@ -56,9 +54,9 @@ public class AuditFunctionAspect {
     @Around("auditFunction()")
     public Object auditAroundFunction(ProceedingJoinPoint point) throws Throwable {
         AuditTrailDto dto = new AuditTrailDto();
-        User user = SessionManager.getInstance(request).getCurrentUser();
         request = ((ServletRequestAttributes)
                 RequestContextHolder.getRequestAttributes()).getRequest();
+        User user = SessionManager.getInstance(request).getCurrentUser();
         HttpSession session = request.getSession();
         if (user != null) {
             dto.setNricNumber(user.getId());
@@ -107,7 +105,7 @@ public class AuditFunctionAspect {
         dtoList.add(dto);
         HttpEntity<Collection<AuditTrailDto>> jsonPart = new HttpEntity<>(dtoList, headers);
         restTemplate.exchange("http://localhost:8887/api/audittrail/cudTrail",
-                HttpMethod.POST, jsonPart, String.class).getBody();
+                HttpMethod.POST, jsonPart, String.class);
 
         return point.proceed();
     }
