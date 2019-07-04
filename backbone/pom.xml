@@ -34,7 +34,6 @@
             <groupId>sg.gov.moh.iais</groupId>
             <artifactId>iais-log-audit</artifactId>
             <version>${revision}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
