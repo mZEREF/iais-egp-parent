@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
 import org.powermock.core.classloader.annotations.MockPolicy;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import sop.util.Assert;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest({SearchParam.class})
 public class SearchParamTest {
     private static final String PARAMKEY = "paramkey";
