@@ -93,7 +93,7 @@
 
     </Properties>
     <Children>
-        <Control type="sopform.controls.standard.TextBox" ref="control_3"
+        <Control type="sopform.controls.standard.TextBox" ref="name"
         dataType="single-value"
  position="0">
     <Properties>
@@ -140,7 +140,7 @@
 
     </Properties>
 </Control>
-<Control type="sopform.controls.standard.TextBox" ref="iais.test.age"
+<Control type="sopform.controls.standard.TextBox" ref="age"
         dataType="single-value"
  position="1">
     <Properties>
