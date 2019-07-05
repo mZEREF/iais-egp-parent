@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="9" minorVersion="0" name="suochengTest" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="11" minorVersion="0" name="suochengTest" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
 <Resources>
 </Resources>
 <WebServices>
@@ -108,9 +108,9 @@
 </Conditions>
 <Switches>
 <Switch defClass="" defaultComponent="" executor="" leftOperand="crud_action_type" name="Switch0" x="694" y="89"><Description />
-<SwitchCase component="/Steps/AutomaticStep/Validate" value="&quot;submit&quot;">
-</SwitchCase>
 <SwitchCase component="/Steps/AutomaticStep/SaveDraft" value="&quot;draft&quot;">
+</SwitchCase>
+<SwitchCase component="/Steps/AutomaticStep/Validate" value="&quot;submit&quot;">
 </SwitchCase>
 </Switch>
 </Switches>
