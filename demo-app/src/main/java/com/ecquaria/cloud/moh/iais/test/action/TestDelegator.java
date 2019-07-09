@@ -10,7 +10,7 @@ import com.ecquaria.egp.core.forms.util.FormRuntimeUtil;
 import ecq.commons.exception.BaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sg.gov.moh.iais.common.validation.ValidationResult;
+import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.i18n.MultiLangUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
