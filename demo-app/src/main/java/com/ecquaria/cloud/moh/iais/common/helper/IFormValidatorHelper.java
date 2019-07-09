@@ -14,7 +14,7 @@
 package com.ecquaria.cloud.moh.iais.common.helper;
 
 import com.ecquaria.cloud.moh.iais.common.util.StringUtil;
-import sg.gov.moh.iais.common.validation.ValidationResult;
+import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
