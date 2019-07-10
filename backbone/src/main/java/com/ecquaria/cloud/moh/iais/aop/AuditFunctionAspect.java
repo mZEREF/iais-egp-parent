@@ -15,6 +15,7 @@ package com.ecquaria.cloud.moh.iais.aop;
 import com.ecquaria.cloud.moh.iais.annotation.FunctionTrack;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -82,23 +83,8 @@ public class AuditFunctionAspect {
         }
         if (method.isAnnotationPresent(SearchTrack.class)) {
             Object[] args = point.getArgs();
-            if (args != null && args.length > 0) {
-                for (Object obj : args) {
-                    if (obj instanceof SearchParam) {
-                        SearchParam param = (SearchParam) obj;
-                        Map<String, Object> filters = param.getFilters();
-                        ObjectMapper mapper = new ObjectMapper();
-                        Map<String, Object> json = new HashMap<>();
-                        for (Map.Entry<String, Object> ent : filters.entrySet()) {
-                            json.put(ent.getKey(), ent.getValue());
-                        }
-                        dto.setViewParams(mapper.writeValueAsString(json));
-                        break;
-                    }
-                }
-            }
+            keepSearchParam(args, dto);
         }
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         List<AuditTrailDto> dtoList = new ArrayList<>();
@@ -110,4 +96,21 @@ public class AuditFunctionAspect {
         return point.proceed();
     }
 
+    private void keepSearchParam(Object[] args, AuditTrailDto dto) throws JsonProcessingException {
+        if (args != null && args.length > 0) {
+            for (Object obj : args) {
+                if (obj instanceof SearchParam) {
+                    SearchParam param = (SearchParam) obj;
+                    Map<String, Object> filters = param.getFilters();
+                    ObjectMapper mapper = new ObjectMapper();
+                    Map<String, Object> json = new HashMap<>();
+                    for (Map.Entry<String, Object> ent : filters.entrySet()) {
+                        json.put(ent.getKey(), ent.getValue());
+                    }
+                    dto.setViewParams(mapper.writeValueAsString(json));
+                    break;
+                }
+            }
+        }
+    }
 }
