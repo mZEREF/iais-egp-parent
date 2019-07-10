@@ -45,7 +45,6 @@ import java.util.*;
 public class AuditFunctionAspect {
 
     private RestTemplate restTemplate = new RestTemplate();
-    private HttpServletRequest request;
 
     @Pointcut("@within(com.ecquaria.cloud.moh.iais.annotation.FunctionTrack)")
     public void auditFunction() {
@@ -55,7 +54,7 @@ public class AuditFunctionAspect {
     @Around("auditFunction()")
     public Object auditAroundFunction(ProceedingJoinPoint point) throws Throwable {
         AuditTrailDto dto = new AuditTrailDto();
-        request = ((ServletRequestAttributes)
+        HttpServletRequest request = ((ServletRequestAttributes)
                 RequestContextHolder.getRequestAttributes()).getRequest();
         User user = SessionManager.getInstance(request).getCurrentUser();
         HttpSession session = request.getSession();
