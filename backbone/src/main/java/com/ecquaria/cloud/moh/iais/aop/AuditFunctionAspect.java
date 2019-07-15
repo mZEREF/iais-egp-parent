@@ -46,7 +46,7 @@ public class AuditFunctionAspect {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    @Pointcut("@within(com.ecquaria.cloud.moh.iais.annotation.FunctionTrack)")
+    @Pointcut("@annotation(com.ecquaria.cloud.moh.iais.annotation.FunctionTrack)")
     public void auditFunction() {
         throw new UnsupportedOperationException();
     }
