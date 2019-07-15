@@ -58,7 +58,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
 @PowerMockIgnore("javax.management.*")
-@PrepareForTest({AuditFunctionAspect.class, RequestContextHolder.class})
+@PrepareForTest({AuditFunctionAspect.class, RequestContextHolder.class, SessionManager.class})
 @ContextConfiguration("classpath*:**spring-config.xml")
 public class AuditFunctionAspectTest {
     @Autowired
@@ -114,7 +114,6 @@ public class AuditFunctionAspectTest {
         filters.put("aaaa", "bbbb");
         tft.searchForSomething(param);
         lif.setUser(null);
-        tft.searchForSomething(param);
         assertNotNull(tft);
     }
 
