@@ -66,10 +66,10 @@ public class AuditFunctionAspectTest {
     private TestFunctionTrack tft;
     @Autowired
     @InjectMocks
-    TestNonFunctionTrack tnf;
+    private TestNonFunctionTrack tnf;
 
     @Autowired
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     @Mock
     private RestTemplate restTemplate;
