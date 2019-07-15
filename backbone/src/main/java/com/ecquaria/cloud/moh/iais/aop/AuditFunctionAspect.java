@@ -50,10 +50,53 @@ public class AuditFunctionAspect {
     public void auditFunction() {
         throw new UnsupportedOperationException();
     }
+    @Pointcut("@within(com.ecquaria.cloud.moh.iais.annotation.FunctionTrack)")
+    public void auditClass() {
+        throw new UnsupportedOperationException();
+    }
 
     @Around("auditFunction()")
     public Object auditAroundFunction(ProceedingJoinPoint point) throws Throwable {
         AuditTrailDto dto = new AuditTrailDto();
+        getLoginInfo(dto);
+        Method method = ((MethodSignature) point.getSignature()).getMethod();
+        if (method.isAnnotationPresent(FunctionTrack.class)) {
+            FunctionTrack logInfo = method.getAnnotation(FunctionTrack.class);
+            dto.setOperation(logInfo.auditType());
+            dto.setFunctionName(logInfo.funcName());
+            dto.setModule(logInfo.moduleName());
+        }
+        if (method.isAnnotationPresent(SearchTrack.class)) {
+            Object[] args = point.getArgs();
+            keepSearchParam(args, dto);
+        }
+        callRestApi(dto);
+
+        return point.proceed();
+    }
+
+    @Around("auditClass()")
+    public Object auditAroundClass(ProceedingJoinPoint point) throws Throwable {
+        AuditTrailDto dto = new AuditTrailDto();
+        getLoginInfo(dto);
+        Class clazz = point.getSignature().getDeclaringType();
+        if (clazz.isAnnotationPresent(FunctionTrack.class)) {
+            FunctionTrack logInfo = (FunctionTrack) clazz.getAnnotation(FunctionTrack.class);
+            dto.setOperation(logInfo.auditType());
+            dto.setFunctionName(logInfo.funcName());
+            dto.setModule(logInfo.moduleName());
+        }
+        Method method = ((MethodSignature) point.getSignature()).getMethod();
+        if (method.isAnnotationPresent(SearchTrack.class)) {
+            Object[] args = point.getArgs();
+            keepSearchParam(args, dto);
+        }
+        callRestApi(dto);
+
+        return point.proceed();
+    }
+
+    private void getLoginInfo(AuditTrailDto dto) {
         HttpServletRequest request = ((ServletRequestAttributes)
                 RequestContextHolder.getRequestAttributes()).getRequest();
         User user = SessionManager.getInstance(request).getCurrentUser();
@@ -66,33 +109,6 @@ public class AuditFunctionAspect {
         dto.setSessionId(session.getId());
         dto.setClientIp(MiscUtil.getClientIp(request));
         dto.setUserAgent(request.getHeader("User-Agent"));
-        Class clazz = point.getSignature().getDeclaringType();
-        if (clazz.isAnnotationPresent(FunctionTrack.class)) {
-            FunctionTrack logInfo = (FunctionTrack) clazz.getAnnotation(FunctionTrack.class);
-            dto.setOperation(logInfo.auditType());
-            dto.setFunctionName(logInfo.funcName());
-            dto.setModule(logInfo.moduleName());
-        }
-        Method method = ((MethodSignature) point.getSignature()).getMethod();
-        if (method.isAnnotationPresent(FunctionTrack.class)) {
-            FunctionTrack logInfo = method.getAnnotation(FunctionTrack.class);
-            dto.setOperation(logInfo.auditType());
-            dto.setFunctionName(logInfo.funcName());
-            dto.setModule(logInfo.moduleName());
-        }
-        if (method.isAnnotationPresent(SearchTrack.class)) {
-            Object[] args = point.getArgs();
-            keepSearchParam(args, dto);
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        List<AuditTrailDto> dtoList = new ArrayList<>();
-        dtoList.add(dto);
-        HttpEntity<Collection<AuditTrailDto>> jsonPart = new HttpEntity<>(dtoList, headers);
-        restTemplate.exchange("http://localhost:8887/api/audittrail/cudTrail",
-                HttpMethod.POST, jsonPart, String.class);
-
-        return point.proceed();
     }
 
     private void keepSearchParam(Object[] args, AuditTrailDto dto) throws JsonProcessingException {
@@ -111,5 +127,15 @@ public class AuditFunctionAspect {
                 }
             }
         }
+    }
+
+    private void callRestApi(AuditTrailDto dto) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        List<AuditTrailDto> dtoList = new ArrayList<>();
+        dtoList.add(dto);
+        HttpEntity<Collection<AuditTrailDto>> jsonPart = new HttpEntity<>(dtoList, headers);
+        restTemplate.exchange("http://localhost:8887/api/audittrail/cudTrail",
+                HttpMethod.POST, jsonPart, String.class);
     }
 }

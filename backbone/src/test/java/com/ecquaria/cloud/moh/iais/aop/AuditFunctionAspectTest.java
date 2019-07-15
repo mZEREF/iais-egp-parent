@@ -127,4 +127,9 @@ public class AuditFunctionAspectTest {
     public void testAuditFunction() {
         aspect.auditFunction();
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testAuditClass() {
+        aspect.auditClass();
+    }
 }
