@@ -76,10 +76,12 @@ public class IFormValidatorHelper {
     public static void addErrorToForm(BaseProcessClass bpc,ValidationResult result){
         if(result.isHasErrors()){
             Map<String, String> errors = result.retrieveAll();
-            for (String key:errors.keySet()){
-                String value = errors.get(key);
-                IaisFormHelper.addFieldErrorMessage(bpc.request,key,value);
+            for(Map.Entry<String,String> ent : errors.entrySet()){
+               String key = ent.getKey();
+               String value = ent.getValue();
+               IaisFormHelper.addFieldErrorMessage(bpc.request,key,value);
             }
+
         }
     }
 }
