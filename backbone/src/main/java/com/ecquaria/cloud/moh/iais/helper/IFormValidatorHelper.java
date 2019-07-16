@@ -11,11 +11,13 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.common.helper;
+package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.common.util.StringUtil;
-import sg.gov.moh.iais.common.validation.ValidationResult;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
+import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.lang.reflect.Field;
@@ -28,6 +30,7 @@ import java.util.Map;
  * @author suocheng
  * @date 7/5/2019
  */
+@Slf4j
 public class IFormValidatorHelper {
 
     /**
@@ -37,37 +40,42 @@ public class IFormValidatorHelper {
      * @param: [bpc, formName, formDto]
      * @return: sg.gov.moh.iais.common.validation.ValidationResult
      */
-    public static ValidationResult validateForm(BaseProcessClass bpc,String formName,Class formDto) throws Exception {
-     return validateForm(bpc,formName,formDto,true);
-    }
-    /**
-     * @description: do the validate for the form
-     *
-     * @author: suocheng on 7/5/2019 3:55 PM
-     * @param: [bpc, formName, formDto, isAddToForm]
-     * @return: sg.gov.moh.iais.common.validation.ValidationResult
-     */
     public static ValidationResult validateForm(BaseProcessClass bpc,String formName,Class formDto,boolean isAddToForm) throws Exception {
-      Field[] fields =formDto.getDeclaredFields();
-      Object obj = formDto.newInstance();
-      if(fields!=null && fields.length>0){
-          for(Field field:fields){
-              String name = field.getName();
-              String value = IaisFormHelper.getFormFieldData(bpc,formName,name);
-              if(!StringUtil.isEmpty(value)){
-                  field.setAccessible(true);
-                  field.set(obj,value);
-              }
-          }
-      }
+      Object obj = fillFormDataToDto(bpc,formName,formDto);
       ValidationResult result = ValidationUtils.validateEntity(obj);
-      if(isAddToForm){
-          addErrorToForm(bpc,result);
-      }
+      if(isAddToForm){ addErrorToForm(bpc,result); }
       return result;
     }
-
-    private static void addErrorToForm(BaseProcessClass bpc,ValidationResult result){
+    /**
+     * @description: get the form data to Dto
+     *
+     * @author: suocheng on 7/15/2019 4:04 PM
+     * @param: [bpc, formName, formDto]
+     * @return: java.lang.Object
+     */
+    public static Object fillFormDataToDto(BaseProcessClass bpc,String formName,Class formDto) throws IllegalAccessException, InstantiationException {
+        Field[] fields =formDto.getDeclaredFields();
+         Object obj = formDto.newInstance();
+         if(fields!=null && fields.length>0){
+             for(Field field:fields){
+                 String name = field.getName();
+                 String value = IaisFormHelper.getFormFieldData(bpc,formName,name);
+                 if(!StringUtils.isEmpty(value)){
+                     field.setAccessible(true);
+                     field.set(obj,value);
+                 }
+             }
+         }
+         return obj;
+     }
+    /**
+     * @description: add the ValidationResult messge to the Form
+     *
+     * @author: suocheng on 7/15/2019 4:17 PM
+     * @param: [bpc, result]
+     * @return: void
+     */
+    public static void addErrorToForm(BaseProcessClass bpc,ValidationResult result){
         if(result.isHasErrors()){
             Map<String, String> errors = result.retrieveAll();
             Iterator<String> i = errors.keySet().iterator();
