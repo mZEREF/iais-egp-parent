@@ -1,12 +1,9 @@
 package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.entity.MasterCode;
+import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.List;
 
 @Delegator(value = "masterCodeController")
 public class MasterCodeController {
@@ -18,6 +15,7 @@ public class MasterCodeController {
     private MasterCodeService masterCodeService;
 
     public void getMasterCodeList(){
+        throw new UnsupportedOperationException();
     }
 
 }

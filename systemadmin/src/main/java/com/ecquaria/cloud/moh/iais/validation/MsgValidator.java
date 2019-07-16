@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MsgValidator {
 
-    public boolean validCodeId(Integer id){
+    public boolean validCodeId(){
 
         return true;
     }

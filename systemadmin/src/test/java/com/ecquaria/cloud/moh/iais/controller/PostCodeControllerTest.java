@@ -49,7 +49,7 @@ public class PostCodeControllerTest {
     @Test
     public void testimportPostCode() throws Exception {
         try {
-            postCodeController.importPostCode(baseProcessClass);
+            postCodeController.importPostCode();
         } catch (IOException e) {
             e.printStackTrace();
             Assert.assertTrue(false);

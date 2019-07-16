@@ -1,16 +1,16 @@
 package com.ecquaria.cloud.moh.iais.test.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.helper.IFormValidatorHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.IaisFormHelper;
+import com.ecquaria.cloud.moh.iais.helper.IFormValidatorHelper;
 import com.ecquaria.cloud.moh.iais.test.dto.FormTestDto;
 import com.ecquaria.egov.core.common.constants.AppConstants;
 import com.ecquaria.egp.core.forms.util.FormRuntimeUtil;
 import ecq.commons.exception.BaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sg.gov.moh.iais.common.validation.ValidationResult;
+import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.i18n.MultiLangUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -37,7 +37,7 @@ public final class TestDelegator {
     }
 
     public  void validate(BaseProcessClass base) throws Exception {
-        ValidationResult result = IFormValidatorHelper.validateForm(base,FORM_NAME,FormTestDto.class);
+        ValidationResult result = IFormValidatorHelper.validateForm(base,FORM_NAME,FormTestDto.class,true);
         if(result.isHasErrors()){
             base.request.setAttribute("validate",false);
         }else{

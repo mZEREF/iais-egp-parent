@@ -14,14 +14,12 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
+import sg.gov.moh.iais.common.utils.StringUtils;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.lang.reflect.Field;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -30,7 +28,7 @@ import java.util.Map;
  * @author suocheng
  * @date 7/5/2019
  */
-@Slf4j
+
 public class IFormValidatorHelper {
 
     /**
@@ -78,9 +76,7 @@ public class IFormValidatorHelper {
     public static void addErrorToForm(BaseProcessClass bpc,ValidationResult result){
         if(result.isHasErrors()){
             Map<String, String> errors = result.retrieveAll();
-            Iterator<String> i = errors.keySet().iterator();
-            while (i.hasNext()){
-                String key = i.next();
+            for (String key:errors.keySet()){
                 String value = errors.get(key);
                 IaisFormHelper.addFieldErrorMessage(bpc.request,key,value);
             }

@@ -6,9 +6,11 @@ import com.ecquaria.cloud.moh.iais.entity.PostCode;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +25,7 @@ public class PostCodeController {
     @Autowired
     private PostCodeService postCodeService;
 
-    public void importPostCode(BaseProcessClass bpc) throws IOException {
+    public void importPostCode() throws IOException {
         Map<String,String> streetMap = initstreetMap();
         Map<String,String> buildingMap =initbuildingMap();
         List<PostCode> list = convert(streetMap,buildingMap);
