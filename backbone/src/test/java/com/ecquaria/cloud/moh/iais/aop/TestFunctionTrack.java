@@ -13,9 +13,9 @@
 
 package com.ecquaria.cloud.moh.iais.aop;
 
-import com.ecquaria.cloud.moh.iais.annotation.FunctionTrack;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
+import sg.gov.moh.iais.common.annotation.LogInfo;
 
 /**
  * Class TestFunctionTrack
@@ -25,7 +25,7 @@ import com.ecquaria.cloud.moh.iais.dto.SearchParam;
  */
 
 public class TestFunctionTrack {
-    @FunctionTrack(funcName="testSearch", moduleName="modaa")
+    @LogInfo(funcName="testSearch", moduleName="modaa")
     @SearchTrack
     public void searchForSomething(SearchParam param) {
 
