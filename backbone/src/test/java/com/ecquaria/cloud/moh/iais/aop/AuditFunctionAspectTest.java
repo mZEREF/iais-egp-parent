@@ -33,9 +33,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.AopTestUtils;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import sg.gov.moh.iais.common.constant.AppConsts;
+import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
@@ -58,7 +57,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
 @PowerMockIgnore("javax.management.*")
-@PrepareForTest({AuditFunctionAspect.class, RequestContextHolder.class})
+@PrepareForTest({AuditFunctionAspect.class, MiscUtil.class})
 @ContextConfiguration("classpath*:**spring-config.xml")
 public class AuditFunctionAspectTest {
     @Autowired
@@ -101,9 +100,8 @@ public class AuditFunctionAspectTest {
         field.set(aspect, restTemplate);
         when(restTemplate.exchange("http://localhost:8887/api/audittrail/cudTrail",
                 HttpMethod.POST, jsonPart, String.class)).thenReturn(new ResponseEntity(HttpStatus.OK));
-        PowerMockito.mockStatic(RequestContextHolder.class);
-        ServletRequestAttributes sra = new ServletRequestAttributes(request);
-        PowerMockito.when(RequestContextHolder.getRequestAttributes()).thenReturn(sra);
+        PowerMockito.mockStatic(MiscUtil.class);
+        PowerMockito.when(MiscUtil.getCurrentRequest()).thenReturn(request);
     }
 
     @Test

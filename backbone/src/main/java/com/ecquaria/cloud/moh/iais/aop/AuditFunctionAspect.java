@@ -14,6 +14,7 @@ package com.ecquaria.cloud.moh.iais.aop;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,16 +28,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import sg.gov.moh.iais.common.annotation.LogInfo;
-import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -58,14 +52,14 @@ public class AuditFunctionAspect {
     @Around("auditFunction()")
     public Object auditAroundFunction(ProceedingJoinPoint point) throws Throwable {
         AuditTrailDto dto = new AuditTrailDto();
-        getLoginInfo(dto);
+        IaisEGPHelper.setAuditLoginUserInfo(dto);
         return auditFunction(point, dto);
     }
 
     @Around("auditClass()")
     public Object auditAroundClass(ProceedingJoinPoint point) throws Throwable {
         AuditTrailDto dto = new AuditTrailDto();
-        getLoginInfo(dto);
+        IaisEGPHelper.setAuditLoginUserInfo(dto);
         Class clazz = point.getSignature().getDeclaringType();
         if (clazz.isAnnotationPresent(LogInfo.class)) {
             LogInfo logInfo = (LogInfo) clazz.getAnnotation(LogInfo.class);
@@ -92,21 +86,6 @@ public class AuditFunctionAspect {
         callRestApi(dto);
 
         return point.proceed();
-    }
-
-    private void getLoginInfo(AuditTrailDto dto) {
-        HttpServletRequest request = ((ServletRequestAttributes)
-                RequestContextHolder.getRequestAttributes()).getRequest();
-        User user = SessionManager.getInstance(request).getCurrentUser();
-        HttpSession session = request.getSession();
-        if (user != null) {
-            dto.setNricNumber(user.getId());
-            dto.setMohUserId(user.getId());
-            dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
-        }
-        dto.setSessionId(session.getId());
-        dto.setClientIp(MiscUtil.getClientIp(request));
-        dto.setUserAgent(request.getHeader("User-Agent"));
     }
 
     private void keepSearchParam(Object[] args, AuditTrailDto dto) throws JsonProcessingException {
