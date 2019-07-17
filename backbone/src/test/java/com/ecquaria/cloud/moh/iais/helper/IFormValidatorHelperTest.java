@@ -57,6 +57,7 @@ public class IFormValidatorHelperTest {
     @Before
     public void setup(){
         PowerMockito.mockStatic(FormHelper.class);
+        PowerMockito.mockStatic(ValidationUtils.class);
     }
 
     //validateForm
