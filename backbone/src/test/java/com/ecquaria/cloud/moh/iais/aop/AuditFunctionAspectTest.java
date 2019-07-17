@@ -113,8 +113,6 @@ public class AuditFunctionAspectTest {
         Map<String, Object> filters = param.getFilters();
         filters.put("aaaa", "bbbb");
         tft.searchForSomething(param);
-        lif.setUser(null);
-        tft.searchForSomething(param);
         assertNotNull(tft);
     }
 
