@@ -24,6 +24,13 @@ import javax.servlet.http.HttpSession;
 
 public final class IaisEGPHelper extends EGPHelper {
 
+    /**
+     * @description: The method to set login user info into Audit trail from request
+     *
+     * @author: Jinhua on 2019/7/17 17:34
+     * @param: [dto]
+     * @return: void
+     */
     public static void setAuditLoginUserInfo(AuditTrailDto dto) {
         if (dto == null)
             return;
