@@ -11,9 +11,16 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.helper;
+package com.ecquaria.cloud.moh.iais.test.dao;
 
-import com.ecquaria.egp.core.helper.ServiceRegistryHelper;
+import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public class IaisServiceRegistryHelper extends ServiceRegistryHelper {
+/**
+ * Org User Account Dao
+ *
+ * @author suocheng
+ * @date 7/12/2019
+ */
+public interface OrgUserAccountDao extends JpaRepository<OrgUserAccount,Long> {
 }

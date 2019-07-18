@@ -11,9 +11,16 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.helper;
+package com.ecquaria.cloud.moh.iais.test.service;
 
-import com.ecquaria.egp.api.EGPHelper;
+import com.ecquaria.cloud.moh.iais.test.entity.Organization;
 
-public class IaisEGPHelper extends EGPHelper {
+/**
+ * OrganizationService
+ *
+ * @author suocheng
+ * @date 7/12/2019
+ */
+public interface OrganizationService {
+    public Organization getOrganizationByUenNo(String uenNo);
 }
