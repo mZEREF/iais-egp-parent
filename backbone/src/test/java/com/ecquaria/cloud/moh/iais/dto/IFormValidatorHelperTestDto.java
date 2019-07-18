@@ -13,7 +13,6 @@
 
 package com.ecquaria.cloud.moh.iais.dto;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,7 +37,6 @@ public class IFormValidatorHelperTestDto {
     private String name;
 
     @Setter @Getter
-    @ApiModelProperty(required = true)
     @Min(18)
     @Max(100)
     private String age;
