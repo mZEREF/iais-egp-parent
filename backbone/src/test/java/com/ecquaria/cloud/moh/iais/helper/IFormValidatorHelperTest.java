@@ -27,7 +27,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
-import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -43,7 +42,7 @@ import java.util.Map;
 
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({ValidationUtils.class,FormHelper.class,IFormValidatorHelper.class})
+@PrepareForTest({WebValidationHelper.class,FormHelper.class,IFormValidatorHelper.class})
 @PowerMockIgnore("javax.management.*")
 @SuppressStaticInitializationFor("sg.gov.moh.iais.common.validation.ValidationUtils")
 public class IFormValidatorHelperTest {
@@ -57,7 +56,7 @@ public class IFormValidatorHelperTest {
     @Before
     public void setup(){
         PowerMockito.mockStatic(FormHelper.class);
-        PowerMockito.mockStatic(ValidationUtils.class);
+        PowerMockito.mockStatic(WebValidationHelper.class);
     }
 
     //validateForm
