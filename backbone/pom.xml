@@ -24,33 +24,6 @@
             <artifactId>engine</artifactId>
             <version>${engine-version}</version>
         </dependency>
-        <dependency>
-            <groupId>sg.gov.moh.iais</groupId>
-            <artifactId>iais-common</artifactId>
-            <version>${revision}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>sg.gov.moh.iais</groupId>
-            <artifactId>iais-log-audit</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

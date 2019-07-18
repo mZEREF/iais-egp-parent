@@ -57,7 +57,7 @@ import static org.powermock.api.mockito.PowerMockito.doNothing;
 @MockPolicy(Slf4jMockPolicy.class)
 @PowerMockIgnore("javax.management.*")
 @PrepareForTest({AuditFunctionAspect.class, MiscUtil.class, AuditLogUtil.class})
-@ContextConfiguration("classpath*:**spring-config.xml")
+@ContextConfiguration("classpath*:spring-config.xml")
 public class AuditFunctionAspectTest {
     @Autowired
     @InjectMocks

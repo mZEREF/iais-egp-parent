@@ -36,6 +36,7 @@
         <module>backbone</module>
         <module>iais-console</module>
         <module>systemadmin</module>
+        <module>web-common</module>
     </modules>
     <dependencyManagement>
         <dependencies>
