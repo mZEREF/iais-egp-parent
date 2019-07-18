@@ -14,7 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 
-import sg.gov.moh.iais.common.utils.StringUtils;
+import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -58,7 +58,7 @@ public class IFormValidatorHelper {
              for(Field field:fields){
                  String name = field.getName();
                  String value = IaisFormHelper.getFormFieldData(bpc,formName,name);
-                 if(!StringUtils.isEmpty(value)){
+                 if(!StringUtil.isEmpty(value)){
                      field.setAccessible(true);
                      field.set(obj,value);
                  }
