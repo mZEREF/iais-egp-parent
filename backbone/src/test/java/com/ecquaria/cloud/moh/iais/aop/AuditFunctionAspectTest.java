@@ -20,6 +20,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
+import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -52,6 +54,7 @@ import static org.powermock.api.mockito.PowerMockito.doNothing;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
+@MockPolicy(Slf4jMockPolicy.class)
 @PowerMockIgnore("javax.management.*")
 @PrepareForTest({AuditFunctionAspect.class, MiscUtil.class, AuditLogUtil.class})
 @ContextConfiguration("classpath*:**spring-config.xml")
