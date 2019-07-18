@@ -15,7 +15,6 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 
 import sg.gov.moh.iais.common.utils.StringUtil;
-import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -40,7 +39,7 @@ public class IFormValidatorHelper {
      */
     public static ValidationResult validateForm(BaseProcessClass bpc,String formName,Class formDto,boolean isAddToForm) throws Exception {
       Object obj = fillFormDataToDto(bpc,formName,formDto);
-      ValidationResult result = ValidationUtils.validateEntity(obj);
+      ValidationResult result = WebValidationHelper.validateEntity(obj);
       if(isAddToForm){ addErrorToForm(bpc,result); }
       return result;
     }
