@@ -18,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -27,26 +26,23 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.AopTestUtils;
-import org.springframework.web.client.RestTemplate;
 import sg.gov.moh.iais.common.constant.AppConsts;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
+import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
 
 /**
  * AuditFunctionAspectTest.java
@@ -57,7 +53,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
 @PowerMockIgnore("javax.management.*")
-@PrepareForTest({AuditFunctionAspect.class, MiscUtil.class})
+@PrepareForTest({AuditFunctionAspect.class, MiscUtil.class, AuditLogUtil.class})
 @ContextConfiguration("classpath*:**spring-config.xml")
 public class AuditFunctionAspectTest {
     @Autowired
@@ -70,24 +66,17 @@ public class AuditFunctionAspectTest {
     @Autowired
     ApplicationContext applicationContext;
 
-    @Mock
-    private RestTemplate restTemplate;
-
     @Autowired
     private AuditFunctionAspect aspect;
 
-    private HttpEntity<Collection<AuditTrailDto>> jsonPart;
     private MockHttpServletRequest request = null;
     private SessionManager.LoginInformation lif;
 
     @Before
-    public void setup() throws NoSuchFieldException, IllegalAccessException {
+    public void setup() throws Exception {
         request = new MockHttpServletRequest();
         MockitoAnnotations.initMocks(this);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        List<AuditTrailDto> adList = new ArrayList<>();
-        jsonPart = new HttpEntity<>(adList, headers);
+
         User user = new User();
         user.setId("Test User");
         user.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
@@ -95,17 +84,15 @@ public class AuditFunctionAspectTest {
         lif.setUser(user);
         request.getSession().setAttribute(SessionManager.SOP_LOGIN_INFO, lif);
         request.addHeader("User-Agent", "firefox");
-        Field field = AuditFunctionAspect.class.getDeclaredField("restTemplate");
-        field.setAccessible(true);
-        field.set(aspect, restTemplate);
-        when(restTemplate.exchange("http://localhost:8887/api/audittrail/cudTrail",
-                HttpMethod.POST, jsonPart, String.class)).thenReturn(new ResponseEntity(HttpStatus.OK));
         PowerMockito.mockStatic(MiscUtil.class);
         PowerMockito.when(MiscUtil.getCurrentRequest()).thenReturn(request);
     }
 
     @Test
-    public void testAround() {
+    public void testAround() throws Exception {
+        PowerMockito.mockStatic(AuditLogUtil.class);
+        List<AuditTrailDto> adList = new ArrayList<>();
+        doNothing().when(AuditLogUtil.class, "callAuditRestApi", adList);
         AopTestUtils.getTargetObject(tft);
         SearchParam param = new SearchParam();
         Map<String, Object> filters = param.getFilters();
@@ -115,9 +102,13 @@ public class AuditFunctionAspectTest {
     }
 
     @Test
-    public void testNon() {
+    public void testNon() throws Exception {
+        PowerMockito.mockStatic(AuditLogUtil.class);
+        List<AuditTrailDto> adList = new ArrayList<>();
+        doNothing().when(AuditLogUtil.class, "callAuditRestApi", adList);
         AopTestUtils.getTargetObject(tnf);
         tnf.test();
+        assertNotNull(tnf);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -128,5 +119,12 @@ public class AuditFunctionAspectTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testAuditClass() {
         aspect.auditClass();
+    }
+
+    @Test
+    public void testException() {
+        AopTestUtils.getTargetObject(tnf);
+        tnf.test();
+        assertNotNull(tnf);
     }
 }

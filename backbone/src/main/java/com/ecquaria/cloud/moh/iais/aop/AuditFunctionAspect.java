@@ -17,28 +17,27 @@ import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 import sg.gov.moh.iais.common.annotation.LogInfo;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
+import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Aspect
 @Component
+@Slf4j
 public class AuditFunctionAspect {
-
-    private RestTemplate restTemplate = new RestTemplate();
 
     @Pointcut("@annotation(sg.gov.moh.iais.common.annotation.LogInfo)")
     public void auditFunction() {
@@ -107,12 +106,12 @@ public class AuditFunctionAspect {
     }
 
     private void callRestApi(AuditTrailDto dto) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
         List<AuditTrailDto> dtoList = new ArrayList<>();
         dtoList.add(dto);
-        HttpEntity<Collection<AuditTrailDto>> jsonPart = new HttpEntity<>(dtoList, headers);
-        restTemplate.exchange("http://localhost:8887/api/audittrail/cudTrail",
-                HttpMethod.POST, jsonPart, String.class);
+        try {
+            AuditLogUtil.callAuditRestApi(dtoList);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 }
