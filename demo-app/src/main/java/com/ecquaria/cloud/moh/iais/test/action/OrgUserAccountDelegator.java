@@ -16,7 +16,6 @@ package com.ecquaria.cloud.moh.iais.test.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.test.service.OrgUserAccountService;
-import com.ecquaria.cloud.moh.iais.test.sqlExecute.InformationDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,8 +35,8 @@ public class OrgUserAccountDelegator {
 
     @Autowired
     private OrgUserAccountService orgUserAccountService;
-    @Autowired
-    private InformationDao informationDao;
+//    @Autowired
+//    private InformationDao informationDao;
 
     public  void prepareData(BaseProcessClass bpc){
         log.info("The prepareData start ...");
@@ -50,17 +49,17 @@ public class OrgUserAccountDelegator {
 
         log.info("********************************"+lists.size());
         log.info("********************************"+lists.get(0).getId());
-        List list = informationDao.testSQl();
-        log.info("************list size--->:"+list.size());
-        for (Object item : list) {
-            Object[] obj = (Object[]) item;
-            for(Object o:obj){
-                if (o != null) {
-                    log.info(o.toString());
-                    log.info("   ");
-                }
-            }
-        }
+//        List list = informationDao.testSQl();
+//        log.info("************list size--->:"+list.size());
+//        for (Object item : list) {
+//            Object[] obj = (Object[]) item;
+//            for(Object o:obj){
+//                if (o != null) {
+//                    log.info(o.toString());
+//                    log.info("   ");
+//                }
+//            }
+//        }
 
 
         log.info("The prepareData end ...");
