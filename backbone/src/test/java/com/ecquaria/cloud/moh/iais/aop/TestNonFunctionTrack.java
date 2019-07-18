@@ -13,8 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.aop;
 
-import com.ecquaria.cloud.moh.iais.annotation.FunctionTrack;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import sg.gov.moh.iais.common.annotation.LogInfo;
 
 /**
  * Class Description
@@ -22,7 +22,7 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
  * @author Jinhua
  * @date 2019/7/4 17:06
  */
-@FunctionTrack
+@LogInfo
 public class TestNonFunctionTrack {
     @SearchTrack
     public void test() {
