@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
@@ -22,6 +23,8 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * WebValidationHelperTest
@@ -38,5 +41,10 @@ public class WebValidationHelperTest {
     @Before
     public void setup() {
         PowerMockito.mockStatic(ValidationUtils.class);
+    }
+
+    @Test
+    public void testTrue() {
+        assertTrue(true);
     }
 }
