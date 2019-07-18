@@ -70,6 +70,12 @@
                 <artifactId>jackson-annotations</artifactId>
                 <version>2.9.8</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/net.sf.oval/oval -->
+            <dependency>
+                <groupId>net.sf.oval</groupId>
+                <artifactId>oval</artifactId>
+                <version>1.90</version>
+            </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
