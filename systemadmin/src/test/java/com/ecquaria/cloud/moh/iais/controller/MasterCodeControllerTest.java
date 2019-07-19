@@ -24,7 +24,7 @@ public class MasterCodeControllerTest {
     @Mock
     private BaseProcessClass baseProcessClass;
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testgetMasterCodeList(){
         masterCodeController.getMasterCodeList();
     }
