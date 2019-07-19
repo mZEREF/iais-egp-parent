@@ -16,7 +16,6 @@ package com.ecquaria.cloud.moh.iais.initializer;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -39,7 +38,6 @@ public class AppInitializer implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         log.info("---------- Application is initializing... ----------");
         try {
-            ServletContext ctx = sce.getServletContext();
             SqlMapLoader sqlMapLoader = new SqlMapLoader();
             sqlMapLoader.loadSqlMap();
         } catch (Exception ex) {
