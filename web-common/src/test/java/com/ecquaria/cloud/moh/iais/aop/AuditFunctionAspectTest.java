@@ -97,7 +97,7 @@ public class AuditFunctionAspectTest {
         List<AuditTrailDto> adList = new ArrayList<>();
         doNothing().when(AuditLogUtil.class, "callAuditRestApi", adList);
         AopTestUtils.getTargetObject(tft);
-        SearchParam param = new SearchParam();
+        SearchParam param = new SearchParam(tft.getClass());
         Map<String, Object> filters = param.getFilters();
         filters.put("aaaa", "bbbb");
         tft.searchForSomething(param);

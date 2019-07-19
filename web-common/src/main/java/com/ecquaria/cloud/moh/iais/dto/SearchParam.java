@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
 
+import lombok.Getter;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -30,9 +31,11 @@ public class SearchParam implements Serializable {
     private Map<String, String> sortMap;
     private int pageSize;
     private int pageNo;
+    @Getter private Class entityCls;
 
-    public SearchParam() {
+    public SearchParam(Class entityCls) {
         clear();
+        this.entityCls = entityCls;
         filters = new LinkedHashMap<>();
         params = new HashMap<>();
         sortMap = new LinkedHashMap<>();
@@ -59,6 +62,7 @@ public class SearchParam implements Serializable {
     }
 
     public void clear() {
+        this.entityCls = null;
         filters = null;
         params = null;
         pageSize = 0;
