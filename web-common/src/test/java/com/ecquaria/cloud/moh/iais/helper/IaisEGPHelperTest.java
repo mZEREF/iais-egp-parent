@@ -30,8 +30,11 @@ import sop.rbac.user.User;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * IaisEGPHelperTest
@@ -44,6 +47,7 @@ import static org.junit.Assert.assertEquals;
 @PrepareForTest({IaisEGPHelper.class, MiscUtil.class})
 @PowerMockIgnore("javax.management.*")
 public class IaisEGPHelperTest {
+
     @Test(expected = IllegalStateException.class)
     public void testConstructor() throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
@@ -58,7 +62,7 @@ public class IaisEGPHelperTest {
         IaisEGPHelper.setAuditLoginUserInfo(null);
         AuditTrailDto dto = new AuditTrailDto();
         PowerMockito.mockStatic(MiscUtil.class);
-        PowerMockito.when(MiscUtil.getCurrentRequest()).thenReturn(null);
+        when(MiscUtil.getCurrentRequest()).thenReturn(null);
         IaisEGPHelper.setAuditLoginUserInfo(dto);
         MockHttpServletRequest request = new MockHttpServletRequest();
         User user = new User();
@@ -68,8 +72,14 @@ public class IaisEGPHelperTest {
         lif.setUser(user);
         request.getSession().setAttribute(SessionManager.SOP_LOGIN_INFO, lif);
         request.addHeader("User-Agent", "firefox");
-        PowerMockito.when(MiscUtil.getCurrentRequest()).thenReturn(request);
+        when(MiscUtil.getCurrentRequest()).thenReturn(request);
         IaisEGPHelper.setAuditLoginUserInfo(dto);
         assertEquals("Test User", dto.getMohUserId());
+    }
+
+    @Test
+    public void testGetRootPath() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
+        String path = IaisEGPHelper.getRootPath();
+        assertNotNull(path);
     }
 }
