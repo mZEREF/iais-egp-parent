@@ -13,9 +13,6 @@
 
 package com.ecquaria.cloud.moh.iais.sql;
 
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import sg.gov.moh.iais.common.constant.AppConsts;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +33,8 @@ public class SqlMapLoader {
      * @throws Exception
      */
     public void loadSqlMap() throws Exception {
-        File rootPath = new File(IaisEGPHelper.getRootPath() + "WEB-INF" + AppConsts.FILE_SEPARATOR
-                + "classes" + AppConsts.FILE_SEPARATOR, SQL_DIR);
+        File rootPath = new File(Thread.currentThread().getContextClassLoader().getResource("")
+                .getPath(), SQL_DIR);
         FolderFileList ffl = new FolderFileList(rootPath);
         List<String> files = ffl.getFiles();
         List<Sql> sqls = null;
