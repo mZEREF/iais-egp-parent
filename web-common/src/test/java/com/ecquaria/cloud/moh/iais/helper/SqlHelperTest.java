@@ -72,4 +72,10 @@ public class SqlHelperTest {
         sp.setPageSize(10);
         SqlHelper.getQuerySql("testSqlMap2", "searchNothing2", sp);
     }
+
+    @Test(expected = IaisRuntimeException.class)
+    public void testGetSqlExp2() {
+        SearchParam sp = new SearchParam(SqlHelperTest.class);
+        SqlHelper.getQuerySql("testSqlMap333", "searchNothing33", sp);
+    }
 }
