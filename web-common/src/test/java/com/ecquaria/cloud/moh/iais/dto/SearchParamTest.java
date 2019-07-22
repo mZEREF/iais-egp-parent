@@ -35,7 +35,7 @@ public class SearchParamTest {
 
     @Test
     public void test(){
-        SearchParam sp = new SearchParam();
+        SearchParam sp = new SearchParam(SearchParam.class);
         // test the filter
         sp.addFilter(FILTERSKEY,FILTERSVALUE);
         Map<String, Object> foilters = sp.getFilters();

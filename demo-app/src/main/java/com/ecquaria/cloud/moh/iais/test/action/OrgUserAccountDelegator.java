@@ -14,6 +14,9 @@
 package com.ecquaria.cloud.moh.iais.test.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
+import com.ecquaria.cloud.moh.iais.test.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.test.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +38,8 @@ public class OrgUserAccountDelegator {
 
     @Autowired
     private OrgUserAccountService orgUserAccountService;
-//    @Autowired
-//    private InformationDao informationDao;
+    @Autowired
+    private QueryDao<DemoQuery> demoQueryDao;
 
     public  void prepareData(BaseProcessClass bpc){
         log.info("The prepareData start ...");
@@ -49,18 +52,15 @@ public class OrgUserAccountDelegator {
 
         log.info("********************************"+lists.size());
         log.info("********************************"+lists.get(0).getId());
-//        List list = informationDao.testSQl();
-//        log.info("************list size--->:"+list.size());
-//        for (Object item : list) {
-//            Object[] obj = (Object[]) item;
-//            for(Object o:obj){
-//                if (o != null) {
-//                    log.info(o.toString());
-//                    log.info("   ");
-//                }
-//            }
-//        }
-
+        SearchParam param = new SearchParam(DemoQuery.class);
+        param.setPageSize(1);
+        param.setPageNo(1);
+        param.setSort("user_id", SearchParam.ASCENDING);
+        List<DemoQuery> list = demoQueryDao.doQuery(param, "demo", "searchDemo");
+        log.info("************list size--->:"+list.size());
+        for (DemoQuery item : list) {
+            log.info(item.getNuicNum() + "===========" + item.getUenNo());
+        }
 
         log.info("The prepareData end ...");
     }

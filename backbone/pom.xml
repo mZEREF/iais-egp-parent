@@ -20,6 +20,11 @@
             <type>war</type>
         </dependency>
         <dependency>
+            <artifactId>web-common</artifactId>
+            <groupId>sg.gov.moh.iais-egp</groupId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
             <groupId>com.ecquaria.egp</groupId>
             <artifactId>engine</artifactId>
             <version>${engine-version}</version>
