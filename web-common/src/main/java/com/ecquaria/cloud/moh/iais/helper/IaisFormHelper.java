@@ -29,9 +29,8 @@ import com.ecquaria.egp.core.bat.AppStatusHelper;
 import com.ecquaria.egp.core.bat.FormHelper;
 import com.ecquaria.egp.core.forms.instance.FormInstance;
 import com.ecquaria.egp.core.service.security.Base64;
-import ecq.commons.exception.BaseException;
-import ecq.commons.exception.BaseRuntimeException;
 import org.springframework.util.StringUtils;
+import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 import sop.config.ConfigUtil;
 import sop.i18n.MultiLangUtil;
 import sop.webflow.eservice.EGPCase;
@@ -49,7 +48,7 @@ public class IaisFormHelper extends FormHelper {
     public static final String ATTR_APP_DRAFT_NO = "egp.app.draft.no";
     public static final String FORM_NAME = "formName";
     public static final String DRAFT = "Draft";
-    public static void doSaveDraft(BaseProcessClass bpc,String projectName,String processName,String callStepName)throws BaseException{
+    public static void doSaveDraft(BaseProcessClass bpc,String projectName,String processName,String callStepName)throws IaisRuntimeException {
         String draftAppNo = getApplicationDraftNo(bpc.currentCase);
         boolean flag = false;
         Application app = bindApplication(bpc);
@@ -72,7 +71,6 @@ public class IaisFormHelper extends FormHelper {
                     ServerConfig.getInstance().getFrontendURL() + EngineHelper.getContextPath());
             callback.append("/eservice/").append(projectName).append("/").append(processName).append("/").append(callStepName)
                     .append("?caseid=").append(bpc.currentCase.getCaseId()).append("&formname=").append(formName);
-
             tinyCallback = IaisEGPHelper.getTinyUrl(callback.toString());
 
             Map<String, Object> map = new HashMap<>();
@@ -84,21 +82,21 @@ public class IaisFormHelper extends FormHelper {
             try {
                 MessageCenterHelper.updateApplication(app, map);
             } catch (Exception e) {
-                throw new BaseException(e);
+                throw new IaisRuntimeException(e);
             }
         }
 
         bpc.request.setAttribute("successmsg", MultiLangUtil.translate(bpc.request, AppConstants.KEY_TRANSLATION_MODULE_MESSAGE, "DraftSaveSuccess", "Draft Form data Saved Successfully."));
 
     }
-    public static void deleteDraft(BaseProcessClass bpc)throws BaseException{
+    public static void deleteDraft(BaseProcessClass bpc)throws IaisRuntimeException{
         String draftAppNo = getApplicationDraftNo(bpc.currentCase);
         Applicant applicant = getApplication(bpc.currentCase);
         if (applicant != null && !StringUtils.isEmpty(draftAppNo)) {
             try {
                 MessageCenterHelper.deleteApplication(applicant.getUserId(), draftAppNo);
             } catch (Exception e) {
-                throw new BaseException(e);
+                throw new IaisRuntimeException(e);
             }
         }
     }
@@ -132,17 +130,14 @@ public class IaisFormHelper extends FormHelper {
         propMap.put(JsonLabel.FORM_HTML, getBase64FormHtml(formName,bpc));
         MessageCenterHelper.ResponseInfo resInfo = null;
         try {
+            System.out.println("the propMap -->: "+propMap);
             resInfo = MessageCenterHelper.saveApplication(app, propMap);
         } catch (Exception e) {
-            throw new BaseRuntimeException(
-                    "Can't save application to message center: "
-                            + e.getMessage(), e);
+            throw new IaisRuntimeException("Can't save application to message center: " + e.getMessage(), e);
         }
 
         if (!resInfo.isSuccessful()) {
-            throw new BaseRuntimeException(
-                    "Error occurs when saving application to message center: "
-                            + resInfo.getDevMessage());
+            throw new IaisRuntimeException("Error occurs when saving application to message center: " + resInfo.getDevMessage());
         }
     }
     private static String getBase64FormHtml(String formName,BaseProcessClass bpc) {
@@ -151,12 +146,10 @@ public class IaisFormHelper extends FormHelper {
             // no submitted form found.
             return null;
         }
-
         try {
             return Base64.encodeToString(IaisFormHelper.getViewFormHtml(formIns).getBytes(), false);
         } catch (Exception e) {
-            throw new BaseRuntimeException("Form html can not be generated: "
-                    + e.getMessage(), e);
+            throw new IaisRuntimeException("Form html can not be generated: " + e.getMessage(), e);
         }
     }
     public static String getFormDetailUrl(BaseProcessClass bpc) {
@@ -194,20 +187,16 @@ public class IaisFormHelper extends FormHelper {
         app.setAppNo(generateAppNo());
         app.setSvcName(svc.getServiceName());
         app.setSvcId(svc.getServiceId());
-        Agency agency = AgencyService.getInstance().retrieveByShortName(
-                svc.getAgencyShortName());
+        Agency agency = AgencyService.getInstance().retrieveByShortName(svc.getAgencyShortName());
         app.setAgcId(agency.getAgencyId());
         app.setAgcName(agency.getName());
         app.setDateSubmitted(new Date());
         app.setCreatedDate(new Date());
         app.setUpdatedDate(new Date());
-        app.setAppStatus(AppStatusHelper.getInstance().getStartStatus()
-                .getCode());
+        app.setAppStatus(AppStatusHelper.getInstance().getStartStatus().getCode());
 
-        EGPCaseData submitterData = bpc.currentCase
-                .getCaseData(EGPConstants.SUBMITTER);
-        if (submitterData != null
-                && submitterData.getValue() instanceof Submitter) {
+        EGPCaseData submitterData = bpc.currentCase.getCaseData(EGPConstants.SUBMITTER);
+        if (submitterData != null && submitterData.getValue() instanceof Submitter) {
             Submitter submitter = (Submitter) submitterData.getValue();
             app.setSubmitterDomain(submitter.getUserDomain());
             app.setSubmitterId(submitter.getUserId());
@@ -219,8 +208,7 @@ public class IaisFormHelper extends FormHelper {
             app.setSubmitterMailAddress(submitter.getMailAddress());
         }
 
-        EGPCaseData applicantData = bpc.currentCase
-                .getCaseData(EGPConstants.APPLICANT);
+        EGPCaseData applicantData = bpc.currentCase.getCaseData(EGPConstants.APPLICANT);
         if (applicantData != null
                 && applicantData.getValue() instanceof Applicant) {
             Applicant applicant = (Applicant) applicantData.getValue();
@@ -242,7 +230,7 @@ public class IaisFormHelper extends FormHelper {
     private static ServiceRegistry loadServiceInfo(BaseProcessClass bpc) {
         EGPCaseData caseData = bpc.currentCase.getCaseData(EGPConstants.ATTR_SERVICE_INFO);
         if (null == caseData) {
-            throw new BaseRuntimeException("The eService has not been registered.");
+            throw new IaisRuntimeException("The eService has not been registered.");
         }
 
         return IaisServiceRegistryHelper.getServiceRegistryFromCase(bpc.currentCase);
