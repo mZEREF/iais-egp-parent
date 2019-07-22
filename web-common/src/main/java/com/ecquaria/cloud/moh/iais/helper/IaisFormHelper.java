@@ -72,7 +72,6 @@ public class IaisFormHelper extends FormHelper {
                     ServerConfig.getInstance().getFrontendURL() + EngineHelper.getContextPath());
             callback.append("/eservice/").append(projectName).append("/").append(processName).append("/").append(callStepName)
                     .append("?caseid=").append(bpc.currentCase.getCaseId()).append("&formname=").append(formName);
-
             tinyCallback = IaisEGPHelper.getTinyUrl(callback.toString());
 
             Map<String, Object> map = new HashMap<>();
@@ -132,17 +131,14 @@ public class IaisFormHelper extends FormHelper {
         propMap.put(JsonLabel.FORM_HTML, getBase64FormHtml(formName,bpc));
         MessageCenterHelper.ResponseInfo resInfo = null;
         try {
+            System.out.println("the propMap -->: "+propMap);
             resInfo = MessageCenterHelper.saveApplication(app, propMap);
         } catch (Exception e) {
-            throw new BaseRuntimeException(
-                    "Can't save application to message center: "
-                            + e.getMessage(), e);
+            throw new BaseRuntimeException("Can't save application to message center: " + e.getMessage(), e);
         }
 
         if (!resInfo.isSuccessful()) {
-            throw new BaseRuntimeException(
-                    "Error occurs when saving application to message center: "
-                            + resInfo.getDevMessage());
+            throw new BaseRuntimeException("Error occurs when saving application to message center: " + resInfo.getDevMessage());
         }
     }
     private static String getBase64FormHtml(String formName,BaseProcessClass bpc) {
@@ -151,12 +147,10 @@ public class IaisFormHelper extends FormHelper {
             // no submitted form found.
             return null;
         }
-
         try {
             return Base64.encodeToString(IaisFormHelper.getViewFormHtml(formIns).getBytes(), false);
         } catch (Exception e) {
-            throw new BaseRuntimeException("Form html can not be generated: "
-                    + e.getMessage(), e);
+            throw new BaseRuntimeException("Form html can not be generated: " + e.getMessage(), e);
         }
     }
     public static String getFormDetailUrl(BaseProcessClass bpc) {
@@ -194,20 +188,16 @@ public class IaisFormHelper extends FormHelper {
         app.setAppNo(generateAppNo());
         app.setSvcName(svc.getServiceName());
         app.setSvcId(svc.getServiceId());
-        Agency agency = AgencyService.getInstance().retrieveByShortName(
-                svc.getAgencyShortName());
+        Agency agency = AgencyService.getInstance().retrieveByShortName(svc.getAgencyShortName());
         app.setAgcId(agency.getAgencyId());
         app.setAgcName(agency.getName());
         app.setDateSubmitted(new Date());
         app.setCreatedDate(new Date());
         app.setUpdatedDate(new Date());
-        app.setAppStatus(AppStatusHelper.getInstance().getStartStatus()
-                .getCode());
+        app.setAppStatus(AppStatusHelper.getInstance().getStartStatus().getCode());
 
-        EGPCaseData submitterData = bpc.currentCase
-                .getCaseData(EGPConstants.SUBMITTER);
-        if (submitterData != null
-                && submitterData.getValue() instanceof Submitter) {
+        EGPCaseData submitterData = bpc.currentCase.getCaseData(EGPConstants.SUBMITTER);
+        if (submitterData != null && submitterData.getValue() instanceof Submitter) {
             Submitter submitter = (Submitter) submitterData.getValue();
             app.setSubmitterDomain(submitter.getUserDomain());
             app.setSubmitterId(submitter.getUserId());
@@ -219,8 +209,7 @@ public class IaisFormHelper extends FormHelper {
             app.setSubmitterMailAddress(submitter.getMailAddress());
         }
 
-        EGPCaseData applicantData = bpc.currentCase
-                .getCaseData(EGPConstants.APPLICANT);
+        EGPCaseData applicantData = bpc.currentCase.getCaseData(EGPConstants.APPLICANT);
         if (applicantData != null
                 && applicantData.getValue() instanceof Applicant) {
             Applicant applicant = (Applicant) applicantData.getValue();
