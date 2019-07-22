@@ -28,7 +28,6 @@ import com.ecquaria.egp.core.bat.FormHelper;
 import com.ecquaria.egp.core.forms.instance.FormInstance;
 import com.ecquaria.egp.core.helper.ServiceRegistryHelper;
 import ecq.commons.exception.BaseException;
-import ecq.commons.exception.BaseRuntimeException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +39,7 @@ import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
 import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 import sop.config.ConfigUtil;
 import sop.i18n.MultiLangUtil;
 import sop.webflow.eservice.EGPCase;
@@ -206,7 +206,7 @@ public class IaisFormHelperTest {
         Assert.assertTrue(true);
     }
 
-    @Test(expected = BaseRuntimeException.class )
+    @Test(expected = IaisRuntimeException.class )
     public void testsaveAppToMC() throws BaseException {
         //MessageCenterHelper.isMCEnabled()
         PowerMockito.when(MessageCenterHelper.isMCEnabled()).thenReturn(true);
@@ -251,7 +251,7 @@ public class IaisFormHelperTest {
     }
 
     // Test the loadServiceInfo throw exception
-    @Test(expected = BaseRuntimeException.class)
+    @Test(expected = IaisRuntimeException.class)
     public void testloadServiceInfo() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
        bpc.currentCase=egpCase;
        Mockito.doReturn(null).when(egpCase).getCaseData(EGPConstants.ATTR_SERVICE_INFO);
@@ -274,7 +274,7 @@ public class IaisFormHelperTest {
        Assert.assertNotNull(url);
     }
 
-    @Test(expected = BaseRuntimeException.class)
+    @Test(expected = IaisRuntimeException.class)
     public void testgetBase64FormHtml() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         bpc.currentCase=egpCase;
         PowerMockito.when(IaisFormHelper.getFormInstanceFromCase(bpc.currentCase,formName)).thenReturn(formIns);

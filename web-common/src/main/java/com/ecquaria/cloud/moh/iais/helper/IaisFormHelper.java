@@ -29,9 +29,8 @@ import com.ecquaria.egp.core.bat.AppStatusHelper;
 import com.ecquaria.egp.core.bat.FormHelper;
 import com.ecquaria.egp.core.forms.instance.FormInstance;
 import com.ecquaria.egp.core.service.security.Base64;
-import ecq.commons.exception.BaseException;
-import ecq.commons.exception.BaseRuntimeException;
 import org.springframework.util.StringUtils;
+import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 import sop.config.ConfigUtil;
 import sop.i18n.MultiLangUtil;
 import sop.webflow.eservice.EGPCase;
@@ -49,7 +48,7 @@ public class IaisFormHelper extends FormHelper {
     public static final String ATTR_APP_DRAFT_NO = "egp.app.draft.no";
     public static final String FORM_NAME = "formName";
     public static final String DRAFT = "Draft";
-    public static void doSaveDraft(BaseProcessClass bpc,String projectName,String processName,String callStepName)throws BaseException{
+    public static void doSaveDraft(BaseProcessClass bpc,String projectName,String processName,String callStepName)throws IaisRuntimeException {
         String draftAppNo = getApplicationDraftNo(bpc.currentCase);
         boolean flag = false;
         Application app = bindApplication(bpc);
@@ -83,21 +82,21 @@ public class IaisFormHelper extends FormHelper {
             try {
                 MessageCenterHelper.updateApplication(app, map);
             } catch (Exception e) {
-                throw new BaseException(e);
+                throw new IaisRuntimeException(e);
             }
         }
 
         bpc.request.setAttribute("successmsg", MultiLangUtil.translate(bpc.request, AppConstants.KEY_TRANSLATION_MODULE_MESSAGE, "DraftSaveSuccess", "Draft Form data Saved Successfully."));
 
     }
-    public static void deleteDraft(BaseProcessClass bpc)throws BaseException{
+    public static void deleteDraft(BaseProcessClass bpc)throws IaisRuntimeException{
         String draftAppNo = getApplicationDraftNo(bpc.currentCase);
         Applicant applicant = getApplication(bpc.currentCase);
         if (applicant != null && !StringUtils.isEmpty(draftAppNo)) {
             try {
                 MessageCenterHelper.deleteApplication(applicant.getUserId(), draftAppNo);
             } catch (Exception e) {
-                throw new BaseException(e);
+                throw new IaisRuntimeException(e);
             }
         }
     }
@@ -134,11 +133,11 @@ public class IaisFormHelper extends FormHelper {
             System.out.println("the propMap -->: "+propMap);
             resInfo = MessageCenterHelper.saveApplication(app, propMap);
         } catch (Exception e) {
-            throw new BaseRuntimeException("Can't save application to message center: " + e.getMessage(), e);
+            throw new IaisRuntimeException("Can't save application to message center: " + e.getMessage(), e);
         }
 
         if (!resInfo.isSuccessful()) {
-            throw new BaseRuntimeException("Error occurs when saving application to message center: " + resInfo.getDevMessage());
+            throw new IaisRuntimeException("Error occurs when saving application to message center: " + resInfo.getDevMessage());
         }
     }
     private static String getBase64FormHtml(String formName,BaseProcessClass bpc) {
@@ -150,7 +149,7 @@ public class IaisFormHelper extends FormHelper {
         try {
             return Base64.encodeToString(IaisFormHelper.getViewFormHtml(formIns).getBytes(), false);
         } catch (Exception e) {
-            throw new BaseRuntimeException("Form html can not be generated: " + e.getMessage(), e);
+            throw new IaisRuntimeException("Form html can not be generated: " + e.getMessage(), e);
         }
     }
     public static String getFormDetailUrl(BaseProcessClass bpc) {
@@ -231,7 +230,7 @@ public class IaisFormHelper extends FormHelper {
     private static ServiceRegistry loadServiceInfo(BaseProcessClass bpc) {
         EGPCaseData caseData = bpc.currentCase.getCaseData(EGPConstants.ATTR_SERVICE_INFO);
         if (null == caseData) {
-            throw new BaseRuntimeException("The eService has not been registered.");
+            throw new IaisRuntimeException("The eService has not been registered.");
         }
 
         return IaisServiceRegistryHelper.getServiceRegistryFromCase(bpc.currentCase);
