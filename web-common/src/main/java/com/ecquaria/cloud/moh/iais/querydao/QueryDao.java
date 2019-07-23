@@ -14,12 +14,18 @@
 package com.ecquaria.cloud.moh.iais.querydao;
 
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import sg.gov.moh.iais.common.exception.IaisRuntimeException;
+import sg.gov.moh.iais.common.utils.StringUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -30,18 +36,71 @@ import java.util.Map;
  * @date 2019/7/19 16:16
  */
 @Component
+@Slf4j
 public class QueryDao<T> {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public <T> List<T> doQuery(SearchParam param, String catalog, String key){
-        String sql = SqlHelper.getQuerySql(catalog, key, param);
-        Query query = entityManager.createNativeQuery(sql, param.getEntityCls());
+    public <T> SearchResult<T> doQuery(SearchParam param, String catalog, String key){
+        String mainSql = getMainSql(catalog, key, param);
+        String querySql = getQuerySql(mainSql, param);
+        String countSql = getCountSql(mainSql);
+        Query query = entityManager.createNativeQuery(querySql, param.getEntityCls());
+        Query count = entityManager.createNativeQuery(countSql, Integer.class);
         for (Map.Entry<String, Object> ent : param.getFilters().entrySet()) {
             query.setParameter(ent.getKey(), ent.getValue());
+            count.setParameter(ent.getKey(), ent.getValue());
         }
         List<T> list = query.getResultList();
+        Integer num = (Integer) count.getSingleResult();
+        SearchResult<T> reslt = new SearchResult<>();
+        reslt.setRows(list);
+        reslt.setRowCount(num);
 
-        return list;
+        return reslt;
+    }
+
+    private String getMainSql(String catalog, String key, SearchParam param) {
+        String sql = null;
+        try {
+            sql = SqlMap.INSTANCE.getSql(catalog, key, param.getParams());
+        } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
+        }
+
+        return sql;
+    }
+
+    private String getQuerySql(String mainSql, SearchParam param) {
+        String sql = mainSql;
+        // order by clause
+        String orderStr = "";
+        if (!param.getSortMap().isEmpty()) {
+            StringBuffer orderBySql = new StringBuffer();
+            orderBySql.append(" ORDER BY ");
+            for (Map.Entry<String, String> ent : param.getSortMap().entrySet()) {
+                orderBySql.append(ent.getKey()).append(" ").append(ent.getValue()).append(",");
+            }
+            orderStr = orderBySql.substring(0, orderBySql.length() - 1);
+        }
+        // paging, it's only for SQL Server
+        if (param.getPageSize() > 0 && param.getPageNo() > 0) {
+            if (StringUtil.isEmpty(orderStr))
+                throw new IaisRuntimeException("If used paging, there must be a default sorting column!!");
+
+            int from = (param.getPageNo() - 1) * param.getPageSize() + 1;
+            int to = param.getPageNo() * param.getPageSize();
+            sql = "SELECT * FROM (SELECT ROW_NUMBER() OVER(" + orderStr + ") AS ROWNUM, a.* FROM ("
+                    + mainSql + ") a) b WHERE b.ROWNUM <= " + to + " AND b.ROWNUM >= " + from;
+        } else {
+            sql = mainSql + orderStr;
+        }
+
+        return sql;
+    }
+
+    private String getCountSql(String mainSql) {
+        return "SELECT COUNT(*) FROM (" + mainSql + ") b";
     }
 }
