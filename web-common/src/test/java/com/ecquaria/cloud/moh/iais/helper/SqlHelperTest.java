@@ -13,7 +13,6 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +22,6 @@ import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -40,6 +38,12 @@ import java.lang.reflect.InvocationTargetException;
 @PowerMockIgnore("javax.management.*")
 public class SqlHelperTest {
 
+    @Before
+    public void setup() throws Exception {
+        SqlMapLoader sqlMapLoader = new SqlMapLoader();
+        sqlMapLoader.loadSqlMap();
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testConstructor() throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
@@ -49,33 +53,5 @@ public class SqlHelperTest {
         con.newInstance(null);
     }
 
-    @Before
-    public void setup() throws Exception {
-        SqlMapLoader sqlMapLoader = new SqlMapLoader();
-        sqlMapLoader.loadSqlMap();
-    }
 
-    @Test
-    public void testGetSql() {
-        SearchParam sp = new SearchParam(SqlHelperTest.class);
-        SqlHelper.getQuerySql("testSqlMap2", "searchNothing2", sp);
-        sp.addSortField("aaaa");
-        sp.setPageSize(10);
-        sp.setPageNo(1);
-        sp.addFilter("as", "dd", true);
-        SqlHelper.getQuerySql("testSqlMap2", "searchNothing2", sp);
-    }
-
-    @Test(expected = IaisRuntimeException.class)
-    public void testGetSqlExp() {
-        SearchParam sp = new SearchParam(SqlHelperTest.class);
-        sp.setPageSize(10);
-        SqlHelper.getQuerySql("testSqlMap2", "searchNothing2", sp);
-    }
-
-    @Test(expected = IaisRuntimeException.class)
-    public void testGetSqlExp2() {
-        SearchParam sp = new SearchParam(SqlHelperTest.class);
-        SqlHelper.getQuerySql("testSqlMap333", "searchNothing33", sp);
-    }
 }
