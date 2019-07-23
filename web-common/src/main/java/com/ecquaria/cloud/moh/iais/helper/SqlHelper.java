@@ -66,5 +66,38 @@ public class SqlHelper {
         return sql;
     }
 
+    /**
+     * @description: The method to get in SQL with ?
+     *
+     * @author: Jinhua on 2019/7/23 10:48
+     * @param: [fieldName, size]
+     * @return: java.lang.String
+     */
+    public static String constructInCondition(String fieldName, int size) {
+        StringBuffer sBuffer = new StringBuffer();
+        if (size > 0){
+            sBuffer.append(" ((").append(fieldName).append(" in (?");
+
+            int counter = 1;
+            for (int i = 1; i < size; i++) {
+                if (counter < 900) {
+                    sBuffer.append(", ?");
+                    counter++;
+                } else {
+                    //split for every 900 elements
+                    sBuffer.append(")) or (").append(fieldName).append(" in (:").append(fieldName).append(i);
+                    counter = 0;
+                }
+            }
+
+            sBuffer.append(")))");
+        }else{
+            sBuffer.append(" 1 = 2 ");
+        }
+
+        return sBuffer.toString();
+    }
+
+
     private SqlHelper() {throw new IllegalStateException("Utility class");}
 }
