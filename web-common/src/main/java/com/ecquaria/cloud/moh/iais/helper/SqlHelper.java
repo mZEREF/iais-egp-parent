@@ -76,12 +76,12 @@ public class SqlHelper {
     public static String constructInCondition(String fieldName, int size) {
         StringBuffer sBuffer = new StringBuffer();
         if (size > 0){
-            sBuffer.append(" ((").append(fieldName).append(" in (?");
+            sBuffer.append(" ((").append(fieldName).append(" in (:").append(fieldName).append(0);
 
             int counter = 1;
             for (int i = 1; i < size; i++) {
                 if (counter < 900) {
-                    sBuffer.append(", ?");
+                    sBuffer.append(", :").append(fieldName).append(i);
                     counter++;
                 } else {
                     //split for every 900 elements
