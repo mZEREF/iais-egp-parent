@@ -52,7 +52,10 @@ public class QueryDao<T> {
             count.setParameter(ent.getKey(), ent.getValue());
         }
         List<T> list = query.getResultList();
-        Integer num = (Integer) count.getSingleResult();
+        Integer num = list.size();
+        if (param.getPageSize() > 0 && param.getPageNo() > 0)
+            num = (Integer) count.getSingleResult();
+
         SearchResult<T> reslt = new SearchResult<>();
         reslt.setRows(list);
         reslt.setRowCount(num);
