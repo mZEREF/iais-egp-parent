@@ -13,8 +13,6 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
@@ -25,6 +23,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * SqlHelperTest
@@ -38,12 +38,6 @@ import java.lang.reflect.InvocationTargetException;
 @PowerMockIgnore("javax.management.*")
 public class SqlHelperTest {
 
-    @Before
-    public void setup() throws Exception {
-        SqlMapLoader sqlMapLoader = new SqlMapLoader();
-        sqlMapLoader.loadSqlMap();
-    }
-
     @Test(expected = IllegalStateException.class)
     public void testConstructor() throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException, InstantiationException {
@@ -53,5 +47,10 @@ public class SqlHelperTest {
         con.newInstance(null);
     }
 
-
+    @Test
+    public void testConstructInCondition() {
+        SqlHelper.constructInCondition("testField", 0);
+        String sql = SqlHelper.constructInCondition("testField", 1022);
+        assertNotNull(sql);
+    }
 }
