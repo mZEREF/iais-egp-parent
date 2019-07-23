@@ -67,7 +67,7 @@ public class SqlHelper {
     }
 
     /**
-     * @description: The method to get in SQL with ?
+     * @description: The method to get in SQL with param
      *
      * @author: Jinhua on 2019/7/23 10:48
      * @param: [fieldName, size]
