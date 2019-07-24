@@ -13,7 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
-import com.ecquaria.cloud.moh.iais.util.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import sg.gov.moh.iais.common.utils.Formatter;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
