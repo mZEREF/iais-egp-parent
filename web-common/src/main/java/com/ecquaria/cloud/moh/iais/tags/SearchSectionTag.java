@@ -13,7 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
-import sg.gov.moh.iais.common.utils.AccessUtil;
+import com.ecquaria.cloud.moh.iais.util.AccessUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.jsp.JspException;
