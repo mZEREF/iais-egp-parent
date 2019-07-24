@@ -11,46 +11,55 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.helper;
+package com.ecquaria.cloud.moh.iais.dto;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Spy;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
 import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
- * SqlHelperTest
+ * SearchResultTest
  *
  * @author Jinhua
- * @date 2019/7/22 17:07
+ * @date 2019/7/23 17:35
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({SqlHelper.class})
 @PowerMockIgnore("javax.management.*")
-public class SqlHelperTest {
+@PrepareForTest({SearchResult.class})
+public class SearchResultTest {
+    @Spy
+    private SearchResult rs = new SearchResult();
 
-    @Test(expected = IllegalStateException.class)
-    public void testConstructor() throws NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException, InstantiationException {
-        Class cls = SqlHelper.class;
-        Constructor<SqlHelper> con = cls.getDeclaredConstructor(null);
-        con.setAccessible(true);
-        con.newInstance(null);
+    private List<String> strList = new ArrayList<>();
+
+    @Before
+    public void setup() {
+        strList.clear();
+        strList.add("a");
+        strList.add("b");
+        strList.add("c");
     }
 
     @Test
-    public void testConstructInCondition() {
-        SqlHelper.constructInCondition("testField", 0);
-        String sql = SqlHelper.constructInCondition("testField", 1022);
-        assertNotNull(sql);
+    public void testGettersAndSetters() {
+        new SearchResult<String>(strList, strList.size());
+        rs.setRowCount(strList.size());
+        rs.setRows(strList);
+        int ps = rs.getPageCount(1);
+        assertTrue(ps == 3);
+        rs.remove("a");
+        assertTrue(rs.getRowCount() == 2);
     }
 }
