@@ -61,9 +61,5 @@ public final class IaisEGPHelper extends EGPHelper {
         return path;
     }
 
-    public static String getClassPath() {
-        return Thread.currentThread().getContextClassLoader().getResource("") .getPath();
-    }
-
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
 }
