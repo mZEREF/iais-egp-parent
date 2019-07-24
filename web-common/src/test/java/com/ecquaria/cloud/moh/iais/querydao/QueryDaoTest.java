@@ -69,6 +69,7 @@ public class QueryDaoTest {
         sqlMapLoader.loadSqlMap();
         Whitebox.setInternalState(dao, "entityManager", entityManager);
         when(entityManager.createNativeQuery(anyString(), (Class) anyObject())).thenReturn(query);
+        when(entityManager.createNativeQuery(anyString())).thenReturn(query);
         List<QueryDao> list = new ArrayList<>();
         list.add(new QueryDao());
         when(query.getResultList()).thenReturn(list);

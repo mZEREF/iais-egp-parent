@@ -46,7 +46,7 @@ public class QueryDao<T> {
         String querySql = getQuerySql(mainSql, param);
         String countSql = getCountSql(mainSql);
         Query query = entityManager.createNativeQuery(querySql, param.getEntityCls());
-        Query count = entityManager.createNativeQuery(countSql, Integer.class);
+        Query count = entityManager.createNativeQuery(countSql);
         for (Map.Entry<String, Object> ent : param.getFilters().entrySet()) {
             query.setParameter(ent.getKey(), ent.getValue());
             count.setParameter(ent.getKey(), ent.getValue());
