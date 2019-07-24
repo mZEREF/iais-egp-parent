@@ -13,9 +13,9 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sg.gov.moh.iais.common.utils.AccessUtil;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
