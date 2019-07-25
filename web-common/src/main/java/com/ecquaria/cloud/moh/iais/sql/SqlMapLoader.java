@@ -13,6 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.sql;
 
+import sg.gov.moh.iais.common.utils.MiscUtil;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +35,7 @@ public class SqlMapLoader {
      * @throws Exception
      */
     public void loadSqlMap() throws Exception {
-        File rootPath = new File(Thread.currentThread().getContextClassLoader().getResource("")
-                .getPath(), SQL_DIR);
+        File rootPath = new File(MiscUtil.getClassRootPath(), SQL_DIR);
         FolderFileList ffl = new FolderFileList(rootPath);
         List<String> files = ffl.getFiles();
         List<Sql> sqls = null;
