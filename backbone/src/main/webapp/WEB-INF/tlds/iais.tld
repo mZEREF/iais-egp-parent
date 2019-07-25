@@ -312,7 +312,7 @@
   </tag>
 
   <tag>
-    <description>Pagination.</description>
+    <description>Pagination</description>
     <name>pagination</name>
     <tag-class>com.ecquaria.cloud.moh.iais.tags.PaginationTag</tag-class>
     <body-content>empty</body-content>
@@ -320,7 +320,6 @@
       <name>param</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.String</type>
     </attribute>
     <attribute>
       <name>result</name>
@@ -328,20 +327,15 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>tableId</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <type>java.lang.Integer</type>
-    </attribute>
-    <attribute>
-      <name>canChangeSize</name>
+      <name>jsFunc</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-      <name>cssClass</name>
+      <name>needRowNum</name>
       <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
+      <rtexprvalue>false</rtexprvalue>
+      <type>boolean</type>
     </attribute>
   </tag>
 
@@ -710,11 +704,6 @@
     <name>message</name>
     <tag-class>com.ecquaria.cloud.moh.iais.tags.MessageTag</tag-class>
     <body-content>empty</body-content>
-    <attribute>
-      <name>base</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
     <attribute>
       <name>key</name>
       <required>false</required>
