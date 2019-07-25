@@ -22,7 +22,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author suocheng
  * @date 7/11/2019
  */
-public interface OrganizationDao extends JpaRepository<Organization,Long> {
+public interface OrganizationDao extends JpaRepository<Organization,Integer> {
 
 
 }

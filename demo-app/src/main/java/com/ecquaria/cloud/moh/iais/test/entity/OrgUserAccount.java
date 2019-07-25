@@ -32,6 +32,7 @@ import java.util.Date;
 @Table(name = "ORG_USER_ACCOUNT")
 public class OrgUserAccount implements Serializable {
 
+    private static final long serialVersionUID = 6984899936975396716L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")

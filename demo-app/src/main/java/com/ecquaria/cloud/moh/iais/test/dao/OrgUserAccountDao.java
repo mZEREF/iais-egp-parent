@@ -22,5 +22,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author suocheng
  * @date 7/12/2019
  */
-public interface OrgUserAccountDao extends JpaRepository<OrgUserAccount,Long> {
+public interface OrgUserAccountDao extends JpaRepository<OrgUserAccount,Integer> {
+
 }

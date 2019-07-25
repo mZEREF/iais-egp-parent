@@ -26,35 +26,21 @@ package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class IAIS___OrgUserAccount___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="orgUserAccountDelegator";
-	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		PrepareData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareData", this);
-	}
-	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	// 		PrepareSwitch->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareSwitch", this);
-	}
-	public void doSearch_OnStepProcess_0() throws Exception {
-	// 		doSearch->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doSearch", this);
-	}
-	public void doSorting_OnStepProcess_0() throws Exception {
-	// 		doSorting->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doSorting", this);
-	}
-	public void doPaging_OnStepProcess_0() throws Exception {
-	// 		doPaging->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doPaging", this);
-	}
-	public void doDelete_OnStepProcess_0() throws Exception {
-	// 		doDelete->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doDelete", this);
-	}
+public class IAIS___OrgUserAccountCreate___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="orgUserAccountController";
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doStart", this);
+		EngineHelper.delegate(DELEGATOR, "doCreateStart", this);
+	}
+
+	public void prepareData_OnStepProcess_0() throws Exception {
+	// 		PrepareData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareCreateData", this);
+	}
+
+	public void doCreate_OnStepProcess_0() throws Exception {
+	// 		doCreate->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCreate", this);
 	}
 
 }

@@ -28,6 +28,7 @@ import javax.persistence.Id;
  */
 @Entity
 public class DemoQuery {
+
     @Id
     @Column(name = "user_id")
     @Getter @Setter private int userId;
@@ -35,4 +36,10 @@ public class DemoQuery {
     @Getter @Setter private String nuicNum;
     @Column(name = "UEN_NO")
     @Getter @Setter private String uenNo;
+    @Column(name = "ROWGUID")
+    @Getter @Setter
+    private String rowguid;
+    @Column(name = "ORGANIZATION_ID")
+    @Getter @Setter
+    private String orgId;
 }
