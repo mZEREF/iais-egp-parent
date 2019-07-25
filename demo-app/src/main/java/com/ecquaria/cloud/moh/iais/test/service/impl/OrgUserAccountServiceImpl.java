@@ -14,11 +14,9 @@
 package com.ecquaria.cloud.moh.iais.test.service.impl;
 
 import com.ecquaria.cloud.moh.iais.test.dao.OrgUserAccountDao;
-import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.test.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,18 +32,10 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     @Autowired
     private OrgUserAccountDao orgUserAccountDao;
 
+
     @Override
-    public Page<OrgUserAccount> getOrgUserAccountsByOrgId(Integer orgId,int pageNumber,int pageSize) {
-        Sort.Direction sort = Sort.Direction.DESC;
-        Pageable pageable =  new PageRequest(pageNumber,pageSize,sort,"id");
+    public void deleteOrgUserAccountsById(String id) {
+        orgUserAccountDao.delete(Integer.parseInt(id));
 
-        OrgUserAccount orgUserAccount = new OrgUserAccount();
-        orgUserAccount.setOrgId(orgId);
-        ExampleMatcher exampleMatcher =
-                ExampleMatcher.matching().withMatcher("orgId",ExampleMatcher.GenericPropertyMatchers.exact());
-
-        Example<OrgUserAccount> example = Example.of(orgUserAccount,exampleMatcher);
-
-        return orgUserAccountDao.findAll(example,pageable);
     }
 }

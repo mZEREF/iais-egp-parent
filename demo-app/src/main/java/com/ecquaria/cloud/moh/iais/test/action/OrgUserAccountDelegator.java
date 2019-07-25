@@ -15,16 +15,14 @@ package com.ecquaria.cloud.moh.iais.test.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.test.entity.DemoQuery;
-import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.test.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import sg.gov.moh.iais.common.utils.StringUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.List;
 
 /**
  * OrgUserAccountController
@@ -36,58 +34,96 @@ import java.util.List;
 @Slf4j
 public class OrgUserAccountDelegator {
 
+    private static final String SEARCHPARAM = "searchParam";
+    private static final String SEARCHRESULT = "searchResult";
     @Autowired
     private OrgUserAccountService orgUserAccountService;
+
     @Autowired
     private QueryDao<DemoQuery> demoQueryDao;
 
+    public void doStart(BaseProcessClass bpc){
+        log.info("The doStart start ...");
+        bpc.request.getSession().setAttribute(SEARCHPARAM,null);
+        bpc.request.getSession().setAttribute(SEARCHRESULT,null);
+        log.info("The doStart end ...");
+    }
     public  void prepareData(BaseProcessClass bpc){
         log.info("The prepareData start ...");
-        Page<OrgUserAccount> page = orgUserAccountService.getOrgUserAccountsByOrgId(0,0,2);
-        long totalElememts =page.getTotalElements();
-        int  totalPages =  page.getTotalPages();
-        List<OrgUserAccount> lists = page.getContent();
-
-        bpc.request.setAttribute("lists",lists);
-
-        log.info("********************************"+lists.size());
-        log.info("********************************"+lists.get(0).getId());
-        SearchParam param = new SearchParam(DemoQuery.class);
-        param.setPageSize(1);
-        param.setPageNo(1);
-        param.setSort("user_id", SearchParam.ASCENDING);
-        List<DemoQuery> list = demoQueryDao.doQuery(param, "demo", "searchDemo");
-        log.info("************list size--->:"+list.size());
-        for (DemoQuery item : list) {
-            log.info(item.getNuicNum() + "===========" + item.getUenNo());
-        }
-
+        SearchParam param = getSearchParam(bpc);
+        //param.addFilter("nric_no","12345678",true);
+        SearchResult searchResult = demoQueryDao.doQuery(param, "demo", "searchDemo");
+        bpc.request.setAttribute(SEARCHPARAM,param);
+        bpc.request.setAttribute(SEARCHRESULT,searchResult);
         log.info("The prepareData end ...");
+    }
+    private SearchParam getSearchParam(BaseProcessClass bpc){
+        SearchParam param = (SearchParam)bpc.request.getSession().getAttribute(SEARCHPARAM);
+        if(param == null){
+            param = new SearchParam(DemoQuery.class);
+            param.setPageSize(1);
+            param.setPageNo(1);
+            param.setSort("user_id", SearchParam.ASCENDING);
+            bpc.request.getSession().setAttribute(SEARCHPARAM,param);
+        }
+        return param;
     }
     public  void prepareSwitch(BaseProcessClass bpc){
         log.info("The prepareSwitch start ...");
-
+          String  action = bpc.request.getParameter("crud_action_type");
+        log.info("*******************action-->:"+action);
         log.info("The prepareSwitch end ...");
     }
     public  void doSearch(BaseProcessClass bpc){
         log.info("The prepareSwitch start ...");
+        SearchParam param = getSearchParam(bpc);
+        String nric_no = bpc.request.getParameter("nric_no");
+        if(!StringUtil.isEmpty(nric_no)){
+            param.addFilter("nric_no",nric_no,true);
+        }else{
+            param.removeParam("nric_no");
+            param.removeFilter("nric_no");
+        }
 
         log.info("The prepareSwitch end ...");
     }
     public  void doSorting(BaseProcessClass bpc){
-        log.info("The prepareSwitch start ...");
-
-        log.info("The prepareSwitch end ...");
+        log.info("The doSorting start ...");
+        String sortFieldName = bpc.request.getParameter("crud_action_value");
+        String sortType = bpc.request.getParameter("crud_action_additional");
+        SearchParam param = getSearchParam(bpc);
+        param.setSort(sortFieldName,sortType);
+        log.info("The doSorting end ...");
     }
     public  void doPaging(BaseProcessClass bpc){
         log.info("The prepareSwitch start ...");
-
+          String  pageNo = bpc.request.getParameter("pageJumpNoTextchangePage");
+        SearchParam param = getSearchParam(bpc);
+          if(!StringUtil.isEmpty(pageNo)){
+              param.setPageNo(Integer.parseInt(pageNo));
+          }
         log.info("The prepareSwitch end ...");
     }
     public  void doDelete(BaseProcessClass bpc){
         log.info("The prepareSwitch start ...");
-
+        String id = bpc.request.getParameter("crud_action_value");
+        if(!StringUtil.isEmpty(id)){
+            orgUserAccountService.deleteOrgUserAccountsById(id);
+        }
         log.info("The prepareSwitch end ...");
     }
 
+    public void doCreateStart(BaseProcessClass bpc){
+        log.info("The doCreateStart start ...");
+
+        log.info("The doCreateStart end ...");
+    }
+    public void prepareCreateData(BaseProcessClass bpc){
+        log.info("The doCreateStart start ...");
+        log.info("The doCreateStart end ...");
+    }
+    public void doCreate(BaseProcessClass bpc){
+        log.info("The doCreateStart start ...");
+        log.info("The doCreateStart end ...");
+    }
 }

@@ -34,6 +34,7 @@ import java.util.List;
 @Table(name = "ORGANIZATION")
 public class Organization implements Serializable {
 
+    private static final long serialVersionUID = -3080390299524919112L;
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="ID")

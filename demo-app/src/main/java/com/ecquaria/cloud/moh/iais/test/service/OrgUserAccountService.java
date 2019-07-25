@@ -13,9 +13,6 @@
 
 package com.ecquaria.cloud.moh.iais.test.service;
 
-import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
-import org.springframework.data.domain.Page;
-
 /**
  * OrgUserAccountService
  *
@@ -23,5 +20,6 @@ import org.springframework.data.domain.Page;
  * @date 7/12/2019
  */
 public interface OrgUserAccountService {
- public Page<OrgUserAccount> getOrgUserAccountsByOrgId(Integer orgId,int pageNumber,int pageSize);
+
+ public void deleteOrgUserAccountsById(String id);
 }
