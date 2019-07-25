@@ -13,11 +13,15 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
+import sg.gov.moh.iais.common.utils.MessageUtil;
+import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
+import java.util.Map;
 
 
 /**
@@ -30,9 +34,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 public final class MessageTag extends TagSupport {
     private static final long serialVersionUID = 4071660568914826715L;
 
-    private String base;
     private String key;
-    //private String lang;
     private String params;
     private boolean escape;
 
@@ -43,9 +45,9 @@ public final class MessageTag extends TagSupport {
 
     // resets local state
     private void init() {
-        base = null;
         key = null;
-        //lang = null;
+        params = null;
+        escape = true;
     }
 
     // Releases any resources we may have (or inherit)
@@ -56,18 +58,16 @@ public final class MessageTag extends TagSupport {
 
     public int doStartTag() throws JspException {
         try {
-            String[] parameters = null;
+            Map paramMap = null;
             if (!StringUtil.isEmpty(params)) {
-                parameters = params.split(",");
+                paramMap = (Map) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), params);
             }
             String message = null;
-//            if (StringUtil.isEmpty(base)) {
-//                message = MessageUtil.getMessage(key, parameters);
-//            }
-
-            /*else {
-                message = MessageUtil.getMessage(base, key, parameters, lang);
-            }*/
+            if (paramMap != null) {
+                message = MessageUtil.getMessageDesc(key, paramMap);
+            } else {
+                message = MessageUtil.getMessageDesc(key);
+            }
             if (escape) {
                 pageContext.getOut().print(StringUtil.escapeJavascript(message));
             } else {
@@ -84,15 +84,9 @@ public final class MessageTag extends TagSupport {
         return EVAL_PAGE;
     }
 
-    public void setBase(String base) {
-        this.base = base;
-    }
     public void setKey(String key) {
         this.key = key;
     }
-    /*public void setLang(String lang) {
-        this.lang = lang;
-    }*/
     public void setParams(String params) {
         this.params = params;
     }
