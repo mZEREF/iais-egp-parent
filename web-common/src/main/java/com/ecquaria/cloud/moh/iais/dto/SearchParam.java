@@ -60,6 +60,10 @@ public class SearchParam implements Serializable {
             params.put(name, value);
         }
     }
+    public void removeFilter(String name) {
+        if (filters.get(name) != null)
+            filters.remove(name);
+    }
 
     public void clear() {
         this.entityCls = null;
