@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.sql;
 
 import freemarker.cache.StringTemplateLoader;
+import freemarker.core.TemplateClassResolver;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -49,6 +50,7 @@ public class SqlMap {
             }
         }
         cfg.setTemplateLoader(loader);
+        cfg.setNewBuiltinClassResolver(TemplateClassResolver.SAFER_RESOLVER);
     }
 
     public Sql getSql(String catalog, String key) {
