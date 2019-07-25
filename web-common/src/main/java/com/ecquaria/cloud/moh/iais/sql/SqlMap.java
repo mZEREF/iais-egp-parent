@@ -38,7 +38,7 @@ import java.util.Map;
 public class SqlMap {
     public static final SqlMap INSTANCE = new SqlMap();
     private Map<String, Sql> sqlMap;
-    private static final Configuration cfg = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+    private static final Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 
     public void initSqlMap(List<Sql> sqls) {
         StringTemplateLoader loader = new StringTemplateLoader();
