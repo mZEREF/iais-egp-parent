@@ -31,18 +31,6 @@ public class OrgUserAccountTest {
         entity.setStatus(null);
         entity.getOrgId();
         entity.setOrgId(null);
-        entity.getCreateBy();
-        entity.setCreateBy(null);
-        entity.getCreateDm();
-        entity.setCreateDm(null);
-        entity.getCreateDt();
-        entity.setCreateDt(null);
-        entity.getUpdateBy();
-        entity.setUpdateBy(null);
-        entity.getUpdateDm();
-        entity.setUpdateDm(null);
-        entity.getUpdateDt();
-        entity.setUpdateDt(null);
         entity.getOrganization();
         entity.setOrganization(null);
         assertNotNull(entity);
