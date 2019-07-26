@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="4" minorVersion="0" name="OrgUserAccount" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="OrgUserAccount" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
@@ -63,15 +63,29 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="doCreate" processname="OrgUserAccountCreate" project="IAIS" version="-1" x="500" y="280">
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareCreate" x="500" y="190">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
-  </InvokeStep>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareCreate_OnStepProcess_0" name="prepareCreate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doCreate" x="500" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doCreate_OnStepProcess_0" name="doCreate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="orgUserAccountList" stageIndicator="" x="420" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="doCreatePage" stageIndicator="" x="490" y="280">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -131,14 +145,30 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(870,490)(270,488)(260,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/doCreate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(860,120)(520,300)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCreate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(860,120)(520,210)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/doCreate" style="oblique">
-   <position>{(520,300)(870,490)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/doCreatePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareCreate" style="rectanular">
+   <position>{(520,210)(510,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(520,450)(870,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCreate" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(520,450)(436,321)(520,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCreate" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/doCreatePage" style="rectanular">
+   <position>{(510,300)(520,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doCreate" style="rectanular">
+   <position>{(520,380)(520,450)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareCreate" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="500" y="430">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="840" y="100">
    <Description/>
@@ -148,7 +178,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value=""/>
    <SwitchCase component="/Steps/InvokeStep/doView" value="&quot;doView&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/doEdit" value="&quot;doEdit&quot;"/>
-   <SwitchCase component="/Steps/InvokeStep/doCreate" value="&quot;doCreate&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCreate" value="&quot;doCreate&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

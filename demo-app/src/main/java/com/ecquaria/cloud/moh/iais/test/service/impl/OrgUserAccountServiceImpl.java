@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.test.service.impl;
 
 import com.ecquaria.cloud.moh.iais.test.dao.OrgUserAccountDao;
+import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.test.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,10 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     public void deleteOrgUserAccountsById(String id) {
         orgUserAccountDao.delete(Integer.parseInt(id));
 
+    }
+
+    @Override
+    public void saveOrgUserAccounts(OrgUserAccount orgUserAccount) {
+        orgUserAccountDao.save(orgUserAccount);
     }
 }

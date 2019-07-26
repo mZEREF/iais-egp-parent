@@ -17,12 +17,19 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
+import com.ecquaria.cloud.moh.iais.test.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.test.entity.DemoQuery;
+import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.test.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
+import sg.gov.moh.iais.common.validation.ValidationUtils;
+import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.Map;
 
 /**
  * OrgUserAccountController
@@ -51,7 +58,8 @@ public class OrgUserAccountDelegator {
     public  void prepareData(BaseProcessClass bpc){
         log.info("The prepareData start ...");
         SearchParam param = getSearchParam(bpc);
-        //param.addFilter("nric_no","12345678",true);
+        param.addFilter("ORGANIZATION_ID","0",true);
+        bpc.request.setAttribute("ORGANIZATION_ID",0);
         SearchResult searchResult = demoQueryDao.doQuery(param, "demo", "searchDemo");
         bpc.request.setAttribute(SEARCHPARAM,param);
         bpc.request.setAttribute(SEARCHRESULT,searchResult);
@@ -61,7 +69,7 @@ public class OrgUserAccountDelegator {
         SearchParam param = (SearchParam)bpc.request.getSession().getAttribute(SEARCHPARAM);
         if(param == null){
             param = new SearchParam(DemoQuery.class);
-            param.setPageSize(1);
+            param.setPageSize(10);
             param.setPageNo(1);
             param.setSort("user_id", SearchParam.ASCENDING);
             bpc.request.getSession().setAttribute(SEARCHPARAM,param);
@@ -78,11 +86,18 @@ public class OrgUserAccountDelegator {
         log.info("The prepareSwitch start ...");
         SearchParam param = getSearchParam(bpc);
         String nric_no = bpc.request.getParameter("nric_no");
+        String uen_no = bpc.request.getParameter("uen_no");
         if(!StringUtil.isEmpty(nric_no)){
             param.addFilter("nric_no",nric_no,true);
         }else{
             param.removeParam("nric_no");
             param.removeFilter("nric_no");
+        }
+        if(!StringUtil.isEmpty(uen_no)){
+            param.addFilter("uen_no",uen_no,true);
+        }else{
+            param.removeParam("uen_no");
+            param.removeFilter("uen_no");
         }
 
         log.info("The prepareSwitch end ...");
@@ -120,10 +135,39 @@ public class OrgUserAccountDelegator {
     }
     public void prepareCreateData(BaseProcessClass bpc){
         log.info("The doCreateStart start ...");
+        String orgId = bpc.request.getParameter("crud_action_value");
+        bpc.request.setAttribute("orgId",orgId);
+        log.info("******************-->:"+orgId);
         log.info("The doCreateStart end ...");
     }
     public void doCreate(BaseProcessClass bpc){
         log.info("The doCreateStart start ...");
+        String type = bpc.request.getParameter("crud_action_type");
+        if("save".equals(type)){
+            String orgId = bpc.request.getParameter("crud_action_value");
+            String name = bpc.request.getParameter("name");
+            String nircNo = bpc.request.getParameter("nircNo");
+            String corpPassId = bpc.request.getParameter("corpPassId");
+            OrgUserAccountDto accountDto = new OrgUserAccountDto();
+            accountDto.setOrgId(orgId);
+            accountDto.setCorpPassId(corpPassId);
+            accountDto.setName(name);
+            accountDto.setNircNo(nircNo);
+            ValidationResult validationResult =ValidationUtils.validateEntity(accountDto);
+            if (validationResult.isHasErrors()){
+                log.error("****************Error");
+                Map<String,String> errorMap = validationResult.retrieveAll();
+                bpc.request.setAttribute("errorMap",errorMap);
+                bpc.request.setAttribute("isValid","N");
+            }else{
+                OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
+                orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
+                bpc.request.setAttribute("isValid","Y");
+            }
+        }else{
+            bpc.request.setAttribute("isValid","Y");
+        }
+
         log.info("The doCreateStart end ...");
     }
 }

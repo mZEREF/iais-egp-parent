@@ -13,6 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.test.service;
 
+import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
+
 /**
  * OrgUserAccountService
  *
@@ -22,4 +24,5 @@ package com.ecquaria.cloud.moh.iais.test.service;
 public interface OrgUserAccountService {
 
  public void deleteOrgUserAccountsById(String id);
+ public void saveOrgUserAccounts(OrgUserAccount orgUserAccount);
 }

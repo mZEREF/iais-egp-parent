@@ -39,7 +39,7 @@ public class OrgUserAccount implements Serializable {
     @Getter @Setter
     private Integer id;
 
-    @Column(name = "ROWGUID", columnDefinition = "uniqueidentifier")
+    @Column(name = "ROWGUID", insertable = false)
     @Getter @Setter
     private String rowguid;
 
