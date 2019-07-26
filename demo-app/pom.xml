@@ -55,6 +55,11 @@
             <artifactId>web-common</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>sg.gov.moh.iais</groupId>
+            <artifactId>iais-log-audit</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>demo</finalName>
