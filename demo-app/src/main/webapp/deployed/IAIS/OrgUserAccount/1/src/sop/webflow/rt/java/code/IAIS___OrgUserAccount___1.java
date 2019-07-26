@@ -24,6 +24,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class IAIS___OrgUserAccount___1 extends BaseProcessClass {
@@ -55,6 +56,14 @@ public class IAIS___OrgUserAccount___1 extends BaseProcessClass {
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doStart", this);
+	}
+	public void prepareCreate_OnStepProcess_0() throws Exception {
+	// 		PrepareCreate->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareCreateData", this);	
+	}
+	public void doCreate_OnStepProcess_0() throws Exception {
+	// 		doCreate->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCreate", this);
 	}
 
 }
