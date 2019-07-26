@@ -12,10 +12,19 @@
   ~   without the prior written permission of Ecquaria Technologies Pte Ltd.
   -->
 
-<sqls catalog="message">
+<sqls catalog="initializer">
     <sql key="retrieveAllMsg" remarks="To get all the messages">
         <![CDATA[
           SELECT msg_id, code_key, description FROM CM_MESSAGE
-  ]]>
+        ]]>
+    </sql>
+    <sql key="retrieveAllMasterCodes" remarks="To get all the masterCodes">
+        <![CDATA[
+          SELECT master_code_id, master_code_key, code_category, code_value, code_description, filter_value,
+          sequence, status, effective_from, effective_to, version
+          FROM CM_MASTER_CODE
+          WHERE 1 = 1
+          <#if onlyActive??>AND status = 1 AND effective_from > getdate() AND effective_to <= getdate()</#if>
+        ]]>
     </sql>
 </sqls>

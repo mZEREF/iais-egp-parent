@@ -16,10 +16,11 @@ package com.ecquaria.cloud.moh.iais.initializer;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.entity.MessageCode;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import sg.gov.moh.iais.common.utils.MessageUtil;
 
 import javax.servlet.ServletContextEvent;
@@ -37,7 +38,6 @@ import java.util.Map;
 @WebListener
 @Slf4j
 public class AppInitializer implements ServletContextListener {
-    @Autowired
     private QueryDao dao;
 
     @Override
@@ -48,10 +48,12 @@ public class AppInitializer implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         log.info("---------- Application is initializing... ----------");
+        dao = WebApplicationContextUtils.getWebApplicationContext(sce.getServletContext()).getBean(QueryDao.class);
         try {
             SqlMapLoader sqlMapLoader = new SqlMapLoader();
             sqlMapLoader.loadSqlMap();
             initMessages();
+            MasterCodeUtil.refreshCache(dao);
         } catch (Exception ex) {
             log.error("Failed to initialize the application.", ex);
         }
@@ -60,7 +62,7 @@ public class AppInitializer implements ServletContextListener {
 
     private void initMessages() {
         SearchParam param = new SearchParam(MessageCode.class);
-        SearchResult<MessageCode> sr = dao.doQuery(param, "message", "retrieveAllMsg");
+        SearchResult<MessageCode> sr = dao.doQuery(param, "initializer", "retrieveAllMsg");
         if (sr.getRowCount() > 0) {
             Map<String, String> map = new HashMap<>();
             for (MessageCode mc : sr.getRows()) {
