@@ -13,14 +13,11 @@
 
 package com.ecquaria.cloud.moh.iais.test.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
+import sg.gov.moh.iais.common.entity.BaseEntity;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Org User Account
@@ -30,8 +27,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "ORG_USER_ACCOUNT")
-public class OrgUserAccount implements Serializable {
-
+public class OrgUserAccount extends BaseEntity {
     private static final long serialVersionUID = 6984899936975396716L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,33 +59,6 @@ public class OrgUserAccount implements Serializable {
     @Getter @Setter
     private Integer orgId;
 
-    @Column(name = "CREATE_BY")
-    @Getter @Setter
-    private String createBy;
-
-    @Column(name = "CREATE_DM")
-    @Getter @Setter
-    private String createDm;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "CREATE_DT")
-    @Getter @Setter
-    private Date createDt;
-
-    @Column(name = "UPDATE_BY")
-    @Getter @Setter
-    private String updateBy;
-
-    @Column(name = "UPDATE_DM")
-    @Getter @Setter
-    private String updateDm;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "UPDATE_DT")
-    @Getter @Setter
-    private Date updateDt;
 
     @ManyToOne(cascade = {CascadeType.REFRESH},optional = true)
     @JoinColumn(name="ORGANIZATION_ID",insertable = false,updatable = false)

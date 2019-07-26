@@ -29,6 +29,5 @@ sop.webflow.rt.api.BaseProcessClass process =
 
 <form method="post" action=<%=process.runtime.continueURL()%>>
 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-<input type = "text" name = "text"></input>
-<input type = "submit" value = "submit"></input>
+Sub process confim
 </form>

@@ -19,9 +19,26 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<webui:setAttribute name="title">
-    Org Account Create
+
+
+<webui:setAttribute name="header-ext">
+    <%
+        /* You can add additional content (SCRIPT, STYLE elements)
+         * which need to be placed inside HEAD element here.
+         */
+    %>
 </webui:setAttribute>
+
+<webui:setAttribute name="title">
+    <%
+        /* You can set your page title here. */
+    %>
+
+    <%=process.runtime.getCurrentComponentName()%>
+
+</webui:setAttribute>
+
+
 
 <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -33,19 +50,54 @@
 
     <br/>
     <h2>Org Account Create</h2>
+    <iais:error>
+        <c:if test = "${not empty errorMap}">
+             <div class="error">
+                 <c:forEach items="${errorMap}" var="map">
+                     ${map.key}  ${map.value} <br/>
+                 </c:forEach>
+             </div>
+        </c:if>
+    </iais:error>
     <iais:section title="Org Account Create" id="orgAccountCreate">
-      <iais:row>
-          <iais:field value="name"></iais:field>
-          <iais:value width="8">
+        <iais:row>
+          <iais:field value="name" required="true"></iais:field>
+          <iais:value width="7">
               <input type="text" name="name" value="" />
           </iais:value>
-      </iais:row>
+        </iais:row>
+        <iais:row>
+            <iais:field value="nirc No" required="true"></iais:field>
+            <iais:value width="7">
+                <input type="text" name="nircNo" value="" />
+            </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field value="corp Pass Id No" required="true"></iais:field>
+            <iais:value width="7">
+                <input type="text" name="corpPassId" value="" />
+            </iais:value>
+        </iais:row>
+        <iais:action>
+            <button type="button"  class="btn btn-default" onclick="javascript:doCancel();">Cancel</button>
+            <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doSave('${orgId}');">Submit</button>
+        </iais:action>
     </iais:section>
 
 </iais:body>
 
 
 </form>
+
+<script type="text/javascript">
+function doCancel(){
+SOP.Crud.cfxSubmit("mainForm","cancel");
+}
+function doSave(orgId){
+SOP.Crud.cfxSubmit("mainForm","save",orgId);
+}
+
+</script>
 
 
 
