@@ -27,6 +27,8 @@ import java.util.List;
  * @date 2019/7/22 17:51
  */
 public class SearchResult<E> implements Serializable {
+    private static final long serialVersionUID = -8104178963933476893L;
+
     @Getter @Setter private List<E> rows;
     @Getter @Setter private int rowCount;   // total number of records
 
