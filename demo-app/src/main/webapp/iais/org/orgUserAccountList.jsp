@@ -41,9 +41,22 @@
     <h2>demo List</h2>
     <iais:section title="demo List" id = "demoList">
         <iais:row>
-            <iais:field value="Nirc Name"/>
+            <iais:field value="Nirc No"/>
             <iais:value width="7">
                 <input type="text" name="nric_no" value="${searchParam.filters['nric_no']}" />
+            </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field value="UEN No"/>
+            <iais:value width="7">
+                <input type="text" name="uen_no" value="${searchParam.filters['uen_no']}" />
+            </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field value="Create Date"/>
+            <iais:value width="7">
+                <!--<iais:dates name="create_date" value="${searchParam.filters['create_date']}" fromYear="1980" last1Years="2222"></iais:dates>-->
+                <iais:datePicker id = "fromDate" name = "fromDate" value = ""></iais:datePicker>
             </iais:value>
         </iais:row>
         <iais:action >
@@ -68,6 +81,7 @@
                 </colgroup>
                 <thead>
                 <tr>
+
                     <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"   field="user_id" value="User Id"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"   field="NRIC_NO" value="Nuic Num"></iais:sortableHeader>
@@ -76,9 +90,19 @@
                 </tr>
                 </thead>
                 <tbody style="text-align: center">
-
+                 <c:choose>
+                     <c:when test="${empty searchResult.rows}">
+                            <tr>
+                                <td colspan="6">
+                                     <iais:message key="ACK00001" escape="true"></iais:message>
+                                    <!--No Record!!-->
+                                </td>
+                            </tr>
+                     </c:when>
+                     <c:otherwise>
                         <c:forEach var="demoQuery" items="${searchResult.rows}" varStatus="status">
                             <tr>
+
                                 <td class="row_no">${(status.index + 1) + (searchParam.pageNo - 1) * searchParam.pageSize}</td>
                                 <td>${demoQuery.userId}</td>
                                 <td>${demoQuery.nuicNum}</td>
@@ -89,14 +113,15 @@
                                 </td>
                             </tr>
                         </c:forEach>
-
+                     </c:otherwise>
+                 </c:choose>
                 </tbody>
             </table>
         </div>
     </iais:searchSection>
     <iais:pagination  param="searchParam" result="searchResult"/>
     <iais:action>
-        <button class="btn btn-lg btn-login-submit" type="button" onclick="javascript:doCreat('${demoQuery.orgId}');">Create</button>
+        <button class="btn btn-lg btn-login-submit" type="button" onclick="javascript:doCreat('${ORGANIZATION_ID}');">Create</button>
     </iais:action>
 </iais:body>
 </form>
@@ -113,39 +138,17 @@
         SOP.Crud.cfxSubmit("mainForm","changePage");
     }
     function doDelete(userId){
-        SOP.Crud.cfxSubmit("mainForm","doDelete",userId);
+        if(confirm('Are you sure you want to delete?')){
+            SOP.Crud.cfxSubmit("mainForm","doDelete",userId);
+        }
     }
 
     function doCreat(orgId) {
-        OP.Crud.cfxSubmit("mainForm","doCreate",userId);
-    }
-
-    function doEdit(guid) {
-        $('#guid').val(guid);
-        submitAction("doPrepareEdit");
-    }
-
-    function doAddPremises(guid) {
-        $('#guid').val(guid);
-        submitAction("doPrepareEditPremise");
-    }
-
-    function changePage(pageNo) {
-        $('#pageNo').val(pageNo);
-        submitAction('page');
-    }
-
-    function doSort(field, type) {
-        $('input[name="sortField"]').val(field);
-        $('input[name="sortType"]').val(type);
-        submitAction('sort');
-    }
-
-    function changePageSize() {
-        submitAction('pageSize');
+        SOP.Crud.cfxSubmit("mainForm","doCreate",orgId);
     }
 
     function doClear() {
-        $('input[name="searchname"]').val("");
+        $('input[name="nric_no"]').val("");
+        $('input[name="uen_no"]').val("");
     }
 </script>
