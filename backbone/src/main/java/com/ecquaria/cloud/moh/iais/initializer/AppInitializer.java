@@ -53,7 +53,7 @@ public class AppInitializer implements ServletContextListener {
             SqlMapLoader sqlMapLoader = new SqlMapLoader();
             sqlMapLoader.loadSqlMap();
             initMessages();
-            MasterCodeUtil.refreshCache(dao);
+            MasterCodeUtil.refreshCache();
         } catch (Exception ex) {
             log.error("Failed to initialize the application.", ex);
         }
