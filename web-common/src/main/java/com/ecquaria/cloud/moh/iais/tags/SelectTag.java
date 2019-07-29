@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
@@ -102,10 +103,9 @@ public class SelectTag extends TagSupport {
             List<SelectOption> sos = null;
             if (!StringUtil.isEmpty(options)) {
                 sos = (List<SelectOption>) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), options);
+            } else if (codeCategoryId > 0) {
+                sos = MasterCodeUtil.retrieveOptionsByCate(String.valueOf(codeCategoryId));
             }
-//            else if (codeCategoryId > 0) {
-//                sos = MasterCodeUtil.getSelectOptions(codeCategoryId);
-//            }
 //            if (needMask) {
 //                MaskUtil.maskSelectOptions(name, sos);
 //            }
