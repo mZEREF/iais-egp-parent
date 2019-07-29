@@ -24,7 +24,7 @@
           sequence, status, effective_from, effective_to, version
           FROM CM_MASTER_CODE
           WHERE 1 = 1
-          <#if onlyActive??>AND status = 1 AND effective_from > getdate() AND effective_to <= getdate()</#if>
+          <#if onlyActive??>AND status = 1 AND effective_from < getdate() AND effective_to >= getdate()</#if>
         ]]>
     </sql>
 </sqls>
