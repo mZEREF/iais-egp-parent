@@ -81,10 +81,13 @@
         <iais:row>
             <iais:field value="Status" required="true"></iais:field>
             <iais:value width="7">
-                <select name="status" id="">
-                    <option value="pending">pending</option>
-                    <option value="procing">Procing</option>
-                </select>
+                <iais:select name="status" options="statusSelect"/>
+            </iais:value>
+        </iais:row>
+        <iais:row>
+            <iais:field value="Test" required="true"></iais:field>
+            <iais:value width="7">
+                <iais:select name="test" codeCategory="CATE_ID_NATIONALITY"/>
             </iais:value>
         </iais:row>
         <iais:action>
