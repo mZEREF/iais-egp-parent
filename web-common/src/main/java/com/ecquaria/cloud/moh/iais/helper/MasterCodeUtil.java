@@ -111,6 +111,13 @@ public final class MasterCodeUtil {
         }
     }
 
+    /**
+     * @description: The method to retrieve Master codes by Category
+     *
+     * @author: Jinhua on 2019/7/29 17:42
+     * @param: [cateId]
+     * @return: java.util.List<com.ecquaria.cloud.moh.iais.dto.MasterCodeDto>
+     */
     public static List<MasterCodeDto> retrieveByCategory(String cateId) {
         List<MasterCodeDto> list = retrieveCateSource(cateId);
         List<MasterCodeDto> mcList = new ArrayList<>();
@@ -121,6 +128,13 @@ public final class MasterCodeUtil {
         return mcList;
     }
 
+    /**
+     * @description: The method to retrieve Select Options of Master codes by Category
+     *
+     * @author: Jinhua on 2019/7/29 17:44
+     * @param: [cateId]
+     * @return: java.util.List<com.ecquaria.cloud.moh.iais.tags.SelectOption>
+     */
     public static List<SelectOption> retrieveOptionsByCate(String cateId) {
         List<MasterCodeDto> list = retrieveCateSource(cateId);
         List<SelectOption> opts = new ArrayList<>();
@@ -131,6 +145,13 @@ public final class MasterCodeUtil {
         return opts;
     }
 
+    /**
+     * @description: The method to get master code value by code
+     *
+     * @author: Jinhua on 2019/7/29 17:50
+     * @param: [code]
+     * @return: java.lang.String
+     */
     public static String getCodeDesc(String code) {
         String desc = RedisCacheHelper.getInstance().get(CACHE_NAME_CODE, code, String.class);
         if (StringUtil.isEmpty(desc)) {
@@ -148,6 +169,13 @@ public final class MasterCodeUtil {
         return desc;
     }
 
+    /**
+     * @description: The method to retrieve Select Options of Master codes by Filter
+     *
+     * @author: Jinhua on 2019/7/29 17:51
+     * @param: [filter]
+     * @return: java.util.List<com.ecquaria.cloud.moh.iais.tags.SelectOption>
+     */
     public static List<SelectOption> retrieveOptionsByFilter(String filter) {
         List<MasterCodeDto> list = retrieveFilterSource(filter);
         List<SelectOption> opts = new ArrayList<>();
@@ -158,6 +186,13 @@ public final class MasterCodeUtil {
         return opts;
     }
 
+    /**
+     * @description: The method to retrieve Master codes by Filter
+     *
+     * @author: Jinhua on 2019/7/29 17:53
+     * @param: [filter]
+     * @return: java.util.List<com.ecquaria.cloud.moh.iais.dto.MasterCodeDto>
+     */
     public static List<MasterCodeDto> retrieveByFilter(String filter) {
         List<MasterCodeDto> list = retrieveFilterSource(filter);
         List<MasterCodeDto> mcList = new ArrayList<>();
@@ -166,6 +201,25 @@ public final class MasterCodeUtil {
         });
 
         return mcList;
+    }
+
+    /**
+     * @description: The method to retrieve Select Options of Master codes by Master Codes
+     *
+     * @author: Jinhua on 2019/7/29 17:52
+     * @param: [filter]
+     * @return: java.util.List<com.ecquaria.cloud.moh.iais.tags.SelectOption>
+     */
+    public static List<SelectOption> retrieveOptionsByCodes(String[] codes) {
+        List<SelectOption> opts = new ArrayList<>();
+        if (codes == null)
+            return opts;
+
+        for (String c : codes) {
+            opts.add(new SelectOption(c, getCodeDesc(c)));
+        }
+
+        return opts;
     }
 
     /******************************************************************************************************************
