@@ -14,7 +14,6 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import sg.gov.moh.iais.common.utils.ParamUtil;
@@ -70,46 +69,43 @@ public class SelectTag extends TagSupport {
         init();
     }
 
-    @SuppressWarnings("unchecked")
     public int doStartTag() throws JspException {
         try {
-            long codeCategoryId = -1L;
-            if (!StringUtils.isEmpty(codeCategory)) {
-                codeCategoryId = Long.parseLong(StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("codeCategory",
-                        codeCategory.toString(), Object.class, this, pageContext)));
+            if (!StringUtil.isEmpty(codeCategory)) {
+                codeCategory = MasterCodeUtil.getCategoryId(codeCategory);
             }
-            if (StringUtils.isEmpty(cssClass) && StringUtils.isEmpty(style)) {
+            if (StringUtil.isEmpty(cssClass) && StringUtil.isEmpty(style)) {
                 cssClass = "input-large";
             }
             StringBuffer html = new StringBuffer();
             html.append("<select name=\"").append(name).append("\"");
-            if (!StringUtils.isEmpty(id)) {
+            if (!StringUtil.isEmpty(id)) {
                 id = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("id",
                         id.toString(), Object.class, this, pageContext));
                 html.append(" id=\"").append(id).append("\"");
             } else {
                 html.append(" id=\"").append(name).append("\"");
             }
-            if (!StringUtils.isEmpty(cssClass)) {
+            if (!StringUtil.isEmpty(cssClass)) {
                 html.append(" class=\"").append(cssClass).append("\"");
             }
-            if (!StringUtils.isEmpty(style)) {
+            if (!StringUtil.isEmpty(style)) {
                 html.append(" style=\"").append(style).append("\"");
             }
-            if (!StringUtils.isEmpty(onchange)) {
+            if (!StringUtil.isEmpty(onchange)) {
                 html.append(" onchange=\"").append(onchange).append("\"");
             }
             html.append(">");
             List<SelectOption> sos = null;
             if (!StringUtil.isEmpty(options)) {
                 sos = (List<SelectOption>) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), options);
-            } else if (codeCategoryId > 0) {
-                sos = MasterCodeUtil.retrieveOptionsByCate(String.valueOf(codeCategoryId));
+            } else if (!StringUtil.isEmpty(codeCategory)) {
+                sos = MasterCodeUtil.retrieveOptionsByCate(codeCategory);
             }
 //            if (needMask) {
 //                MaskUtil.maskSelectOptions(name, sos);
 //            }
-            if (!StringUtils.isEmpty(firstOption)) {
+            if (!StringUtil.isEmpty(firstOption)) {
                 html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append("</option>");
             }
             if (sos != null) {

@@ -20,9 +20,11 @@ import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
+import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -33,11 +35,16 @@ import java.util.*;
  */
 @Slf4j
 public final class MasterCodeUtil {
-    private static final String CACHE_NAME_CATEGORY         = "iaisMcCate";
-    private static final String CACHE_NAME_FILTER           = "iaisMcFilter";
-    private static final String CACHE_NAME_CODE             = "iaisMcCode";
+    //Cache names
+    private static final String CACHE_NAME_CATE_MAP                     = "iaisMcCateMap";
+    private static final String CACHE_NAME_FILTER                       = "iaisMcFilterMap";
+    private static final String CACHE_NAME_CODE                         = "iaisMcCode";
+
+    //Code Categorys
+    public static final String CATE_ID_NATIONALITY                      = "1";
 
     private static QueryDao queryDao = SpringContextHelper.getContext().getBean(QueryDao.class);
+
     /**
      * @description: refresh the master codes into cache
      *
@@ -69,7 +76,7 @@ public final class MasterCodeUtil {
                 codes.add(mc);
             }
         });
-        saveInCache(CACHE_NAME_CATEGORY, cateMap);
+        saveInCache(CACHE_NAME_CATE_MAP, cateMap);
         list.forEach(mc -> {
             if (StringUtil.isEmpty(mc.getFilterValue())) {
                 //Do nothing
@@ -83,6 +90,18 @@ public final class MasterCodeUtil {
             }
         });
         saveInCache(CACHE_NAME_FILTER, filterMap);
+    }
+
+    public static String getCategoryId(String cateKey){
+        try {
+            Field field = MasterCodeUtil.class.getDeclaredField(cateKey);
+            return (String) field.get(null);
+        } catch (NoSuchFieldException e) {
+            return cateKey;
+        } catch (IllegalAccessException e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
+        }
     }
 
     public static List<MasterCodeDto> retrieveByCategory(String cateId) {
@@ -124,7 +143,7 @@ public final class MasterCodeUtil {
 
     private static List<MasterCodeDto> retrieveCateSource(String cateId) {
         String cate = String.valueOf(cateId);
-        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATEGORY, cate, List.class);
+        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cate, List.class);
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeDto.class);
             param.setSort("sequence", SearchParam.ASCENDING);
@@ -135,7 +154,7 @@ public final class MasterCodeUtil {
                 list.forEach(m -> {
                     RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue());
                 });
-                RedisCacheHelper.getInstance().set(CACHE_NAME_CATEGORY, cate, list);
+                RedisCacheHelper.getInstance().set(CACHE_NAME_CATE_MAP, cate, list);
             } else {
                 return new ArrayList<>();
             }
@@ -156,12 +175,12 @@ public final class MasterCodeUtil {
         RedisCacheHelper rch = RedisCacheHelper.getInstance();
         rch.set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
         String cate = String.valueOf(mc.getCategory());
-        List<MasterCodeDto> list = rch.get(CACHE_NAME_CATEGORY, cate, List.class);
+        List<MasterCodeDto> list = rch.get(CACHE_NAME_CATE_MAP, cate, List.class);
         if (list == null)
             list = new ArrayList<>();
 
         list.add(mc);
-        rch.set(CACHE_NAME_CATEGORY, cate, list);
+        rch.set(CACHE_NAME_CATE_MAP, cate, list);
         if (StringUtil.isEmpty(mc.getFilterValue()))
             return;
 
