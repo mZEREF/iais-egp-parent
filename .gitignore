@@ -1,5 +1,6 @@
 HELP.md
 /target/
+/logs/
 /overlays/
 !.mvn/wrapper/maven-wrapper.jar
 
