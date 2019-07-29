@@ -18,8 +18,6 @@ import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import sg.gov.moh.iais.common.constant.AppConsts;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
@@ -79,6 +77,13 @@ public final class MasterCodeUtil {
             }
         });
         saveInCache(CACHE_NAME_FILTER, filterMap);
+    }
+
+    public static List<MasterCodeDto> retrieveByCategory(int cateId) {
+        String cate = String.valueOf(cateId);
+        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATEGORY, cate, List.class);
+
+        return list;
     }
 
     private static void saveInCache(String cacheName, Map<String, List<MasterCodeDto>> conMap) {
