@@ -43,6 +43,10 @@ public class QueryDao<T> {
 
     public <T> SearchResult<T> doQuery(SearchParam param, String catalog, String key){
         String mainSql = getMainSql(catalog, key, param);
+        return doQueryBySql(param, mainSql);
+    }
+
+    public <T> SearchResult<T> doQueryBySql(SearchParam param, String mainSql){
         String querySql = getQuerySql(mainSql, param);
         String countSql = getCountSql(mainSql);
         Query query = entityManager.createNativeQuery(querySql, param.getEntityCls());
