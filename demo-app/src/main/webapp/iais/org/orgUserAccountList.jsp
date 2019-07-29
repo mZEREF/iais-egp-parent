@@ -59,6 +59,13 @@
                 <iais:datePicker id = "fromDate" name = "fromDate" value = ""></iais:datePicker>
             </iais:value>
         </iais:row>
+        <iais:row>
+            <iais:field value="status"/>
+            <iais:value width="7">
+                <input type="checkbox" name="status" value="pending">Pending</input>
+                <input type="checkbox" name="status" value="procing">Procing</input>
+            </iais:value>
+        </iais:row>
         <iais:action >
             <button class="btn btn-lg btn-login-clear" type="button" onclick="javascript:doClear()">Clear</button>
             <button class="btn btn-lg btn-login-submit" type="button" onclick="javascript:doSearch()">Search</button>
@@ -81,7 +88,7 @@
                 </colgroup>
                 <thead>
                 <tr>
-
+                    <th><input type="checkbox" id="allEntitiesCb1" name="allEntitiesCb1" onclick="sopCrud1.setAllCheckBox(this.checked)"></th>
                     <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"   field="user_id" value="User Id"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"   field="NRIC_NO" value="Nuic Num"></iais:sortableHeader>
@@ -102,7 +109,7 @@
                      <c:otherwise>
                         <c:forEach var="demoQuery" items="${searchResult.rows}" varStatus="status">
                             <tr>
-
+                                <td><input type="checkbox" onclick="sopCrud1.updateAllCheckBox()" value="${demoQuery.userId}" name="demo" id="entityUids_${demoQuery.userId}"></td>
                                 <td class="row_no">${(status.index + 1) + (searchParam.pageNo - 1) * searchParam.pageSize}</td>
                                 <td>${demoQuery.userId}</td>
                                 <td>${demoQuery.nuicNum}</td>

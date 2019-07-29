@@ -78,6 +78,15 @@
                 <input type="text" name="corpPassId" value="" />
             </iais:value>
         </iais:row>
+        <iais:row>
+            <iais:field value="Status" required="true"></iais:field>
+            <iais:value width="7">
+                <select name="status" id="">
+                    <option value="pending">pending</option>
+                    <option value="procing">Procing</option>
+                </select>
+            </iais:value>
+        </iais:row>
         <iais:action>
             <button type="button"  class="btn btn-default" onclick="javascript:doCancel();">Cancel</button>
             <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doSave('${orgId}');">Submit</button>

@@ -16,6 +16,8 @@ package com.ecquaria.cloud.moh.iais.test.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.test.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.test.entity.DemoQuery;
@@ -41,6 +43,7 @@ import java.util.Map;
 @Slf4j
 public class OrgUserAccountDelegator {
 
+    private static final String SEARCHPARAMSESSION = "OrgUserAccountDelegator_searchParam";
     private static final String SEARCHPARAM = "searchParam";
     private static final String SEARCHRESULT = "searchResult";
     @Autowired
@@ -50,109 +53,102 @@ public class OrgUserAccountDelegator {
     private QueryDao<DemoQuery> demoQueryDao;
 
     public void doStart(BaseProcessClass bpc){
-        log.info("The doStart start ...");
-        bpc.request.getSession().setAttribute(SEARCHPARAM,null);
+        log.debug("The doStart start ...");
+        bpc.request.getSession().setAttribute(SEARCHPARAMSESSION,null);
         bpc.request.getSession().setAttribute(SEARCHRESULT,null);
-        log.info("The doStart end ...");
+        log.debug("The doStart end ...");
     }
     public  void prepareData(BaseProcessClass bpc){
-        log.info("The prepareData start ...");
+        log.debug("The prepareData start ...");
         SearchParam param = getSearchParam(bpc);
         param.addFilter("ORGANIZATION_ID","0",true);
         bpc.request.setAttribute("ORGANIZATION_ID",0);
         SearchResult searchResult = demoQueryDao.doQuery(param, "demo", "searchDemo");
         bpc.request.setAttribute(SEARCHPARAM,param);
         bpc.request.setAttribute(SEARCHRESULT,searchResult);
-        log.info("The prepareData end ...");
+        log.debug("The prepareData end ...");
     }
     private SearchParam getSearchParam(BaseProcessClass bpc){
-        SearchParam param = (SearchParam)bpc.request.getSession().getAttribute(SEARCHPARAM);
-        if(param == null){
+        return getSearchParam(bpc, false);
+    }
+    private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
+        SearchParam param = (SearchParam)bpc.request.getSession().getAttribute(SEARCHPARAMSESSION);
+        if(param == null || isNew){
             param = new SearchParam(DemoQuery.class);
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort("user_id", SearchParam.ASCENDING);
-            bpc.request.getSession().setAttribute(SEARCHPARAM,param);
+            bpc.request.getSession().setAttribute(SEARCHPARAMSESSION,param);
         }
         return param;
     }
     public  void prepareSwitch(BaseProcessClass bpc){
-        log.info("The prepareSwitch start ...");
+        log.debug("The prepareSwitch start ...");
           String  action = bpc.request.getParameter("crud_action_type");
-        log.info("*******************action-->:"+action);
-        log.info("The prepareSwitch end ...");
+        log.debug("*******************action-->:"+action);
+        log.debug("The prepareSwitch end ...");
     }
     public  void doSearch(BaseProcessClass bpc){
-        log.info("The prepareSwitch start ...");
-        SearchParam param = getSearchParam(bpc);
+        log.debug("The prepareSwitch start ...");
+        SearchParam param = getSearchParam(bpc,true);
         String nric_no = bpc.request.getParameter("nric_no");
         String uen_no = bpc.request.getParameter("uen_no");
+        String[] status = bpc.request.getParameterValues("status");
         if(!StringUtil.isEmpty(nric_no)){
             param.addFilter("nric_no",nric_no,true);
-        }else{
-            param.removeParam("nric_no");
-            param.removeFilter("nric_no");
         }
         if(!StringUtil.isEmpty(uen_no)){
             param.addFilter("uen_no",uen_no,true);
-        }else{
-            param.removeParam("uen_no");
-            param.removeFilter("uen_no");
         }
-
-        log.info("The prepareSwitch end ...");
+        if(status != null && status.length>0){
+            String statusStr = SqlHelper.constructInCondition("account.STATUS",status.length);
+            param.addParam("status",statusStr);
+            for (int i = 0 ; i<status.length; i++ ) {
+                param.addFilter("account.STATUS"+i,status[i]);
+            }
+        }
+        log.debug("The prepareSwitch end ...");
     }
     public  void doSorting(BaseProcessClass bpc){
-        log.info("The doSorting start ...");
-        String sortFieldName = bpc.request.getParameter("crud_action_value");
-        String sortType = bpc.request.getParameter("crud_action_additional");
-        SearchParam param = getSearchParam(bpc);
-        param.setSort(sortFieldName,sortType);
-        log.info("The doSorting end ...");
+        log.debug("The doSorting start ...");
+        SearchParam searchParam = getSearchParam(bpc);
+        CrudHelper.doSorting(searchParam,  bpc.request);
+        log.debug("The doSorting end ...");
     }
     public  void doPaging(BaseProcessClass bpc){
-        log.info("The prepareSwitch start ...");
-          String  pageNo = bpc.request.getParameter("pageJumpNoTextchangePage");
-        SearchParam param = getSearchParam(bpc);
-          if(!StringUtil.isEmpty(pageNo)){
-              param.setPageNo(Integer.parseInt(pageNo));
-          }
-        log.info("The prepareSwitch end ...");
+        log.debug("The prepareSwitch start ...");
+        SearchParam searchParam = getSearchParam(bpc);
+        CrudHelper.doPaging(searchParam,bpc.request);
+        log.debug("The prepareSwitch end ...");
     }
     public  void doDelete(BaseProcessClass bpc){
-        log.info("The prepareSwitch start ...");
+        log.debug("The prepareSwitch start ...");
         String id = bpc.request.getParameter("crud_action_value");
         if(!StringUtil.isEmpty(id)){
             orgUserAccountService.deleteOrgUserAccountsById(id);
         }
-        log.info("The prepareSwitch end ...");
+        log.debug("The prepareSwitch end ...");
     }
 
     public void doCreateStart(BaseProcessClass bpc){
-        log.info("The doCreateStart start ...");
+        log.debug("The doCreateStart start ...");
 
-        log.info("The doCreateStart end ...");
+        log.debug("The doCreateStart end ...");
     }
     public void prepareCreateData(BaseProcessClass bpc){
-        log.info("The doCreateStart start ...");
+        log.debug("The doCreateStart start ...");
         String orgId = bpc.request.getParameter("crud_action_value");
         bpc.request.setAttribute("orgId",orgId);
-        log.info("******************-->:"+orgId);
-        log.info("The doCreateStart end ...");
+        log.debug("******************-->:"+orgId);
+        log.debug("The doCreateStart end ...");
     }
     public void doCreate(BaseProcessClass bpc){
-        log.info("The doCreateStart start ...");
+        log.debug("The doCreateStart start ...");
         String type = bpc.request.getParameter("crud_action_type");
         if("save".equals(type)){
             String orgId = bpc.request.getParameter("crud_action_value");
-            String name = bpc.request.getParameter("name");
-            String nircNo = bpc.request.getParameter("nircNo");
-            String corpPassId = bpc.request.getParameter("corpPassId");
-            OrgUserAccountDto accountDto = new OrgUserAccountDto();
+            OrgUserAccountDto accountDto = MiscUtil.generateDtoFromParam(bpc.request,OrgUserAccountDto.class);
             accountDto.setOrgId(orgId);
-            accountDto.setCorpPassId(corpPassId);
-            accountDto.setName(name);
-            accountDto.setNircNo(nircNo);
             ValidationResult validationResult =ValidationUtils.validateEntity(accountDto);
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
@@ -168,6 +164,6 @@ public class OrgUserAccountDelegator {
             bpc.request.setAttribute("isValid","Y");
         }
 
-        log.info("The doCreateStart end ...");
+        log.debug("The doCreateStart end ...");
     }
 }

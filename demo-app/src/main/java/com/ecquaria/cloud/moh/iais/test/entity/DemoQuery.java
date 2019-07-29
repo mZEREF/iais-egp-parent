@@ -42,4 +42,8 @@ public class DemoQuery {
     @Column(name = "ORGANIZATION_ID")
     @Getter @Setter
     private String orgId;
+    @Column(name="STATUS")
+    @Getter @Setter
+    private String status;
+
 }
