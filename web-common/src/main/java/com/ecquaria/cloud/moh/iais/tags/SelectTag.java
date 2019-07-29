@@ -34,6 +34,7 @@ public class SelectTag extends TagSupport {
     private String options;
     private String firstOption;
     private String codeCategory;
+    private String filterCode;
     private String onchange;
     private String value;
     private String cssClass;
@@ -53,6 +54,7 @@ public class SelectTag extends TagSupport {
         id = null;
         name = null;
         codeCategory = "";
+        filterCode = "";
         firstOption = null;
         options = null;
         value = null;
@@ -101,6 +103,8 @@ public class SelectTag extends TagSupport {
                 sos = (List<SelectOption>) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), options);
             } else if (!StringUtil.isEmpty(codeCategory)) {
                 sos = MasterCodeUtil.retrieveOptionsByCate(codeCategory);
+            } else if (!StringUtil.isEmpty(filterCode)) {
+                sos = MasterCodeUtil.retrieveOptionsByFilter(filterCode);
             }
 //            if (needMask) {
 //                MaskUtil.maskSelectOptions(name, sos);
@@ -187,6 +191,9 @@ public class SelectTag extends TagSupport {
     }
     public void setNeedMask(boolean needMask) {
         this.needMask = needMask;
+    }
+    public void setFilterCode(String filterCode) {
+        this.filterCode = filterCode;
     }
 	
 }

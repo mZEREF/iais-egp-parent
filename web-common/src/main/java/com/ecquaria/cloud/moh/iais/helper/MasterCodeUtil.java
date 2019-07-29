@@ -92,6 +92,13 @@ public final class MasterCodeUtil {
         saveInCache(CACHE_NAME_FILTER, filterMap);
     }
 
+    /**
+     * @description: The method to get the category id by constant name
+     *
+     * @author: Jinhua on 2019/7/29 16:12
+     * @param: [cateKey] -- CATE_ID_NATIONALITY
+     * @return: java.lang.String -- 1
+     */
     public static String getCategoryId(String cateKey){
         try {
             Field field = MasterCodeUtil.class.getDeclaredField(cateKey);
@@ -141,9 +148,31 @@ public final class MasterCodeUtil {
         return desc;
     }
 
+    public static List<SelectOption> retrieveOptionsByFilter(String filter) {
+        List<MasterCodeDto> list = retrieveFilterSource(filter);
+        List<SelectOption> opts = new ArrayList<>();
+        list.forEach(m -> {
+            opts.add(new SelectOption(m.getCode(), m.getCodeValue()));
+        });
+
+        return opts;
+    }
+
+    public static List<MasterCodeDto> retrieveByFilter(String filter) {
+        List<MasterCodeDto> list = retrieveFilterSource(filter);
+        List<MasterCodeDto> mcList = new ArrayList<>();
+        list.forEach(m -> {
+            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeDto.class));
+        });
+
+        return mcList;
+    }
+
+    /******************************************************************************************************************
+         Private methods
+     ******************************************************************************************************************/
     private static List<MasterCodeDto> retrieveCateSource(String cateId) {
-        String cate = String.valueOf(cateId);
-        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cate, List.class);
+        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cateId, List.class);
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeDto.class);
             param.setSort("sequence", SearchParam.ASCENDING);
@@ -154,7 +183,28 @@ public final class MasterCodeUtil {
                 list.forEach(m -> {
                     RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue());
                 });
-                RedisCacheHelper.getInstance().set(CACHE_NAME_CATE_MAP, cate, list);
+                RedisCacheHelper.getInstance().set(CACHE_NAME_CATE_MAP, cateId, list);
+            } else {
+                return new ArrayList<>();
+            }
+        }
+
+        return list;
+    }
+
+    private static List<MasterCodeDto> retrieveFilterSource(String filter) {
+        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_FILTER, filter, List.class);
+        if (list == null) {
+            SearchParam param = new SearchParam(MasterCodeDto.class);
+            param.setSort("sequence", SearchParam.ASCENDING);
+            param.addFilter("filterAttr", filter, true);
+            SearchResult<MasterCodeDto> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
+            if (sr.getRowCount() > 0) {
+                list = sr.getRows();
+                list.forEach(m -> {
+                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue());
+                });
+                RedisCacheHelper.getInstance().set(CACHE_NAME_FILTER, filter, list);
             } else {
                 return new ArrayList<>();
             }

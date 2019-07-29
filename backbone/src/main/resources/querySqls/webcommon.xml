@@ -20,6 +20,7 @@
           WHERE status = 1 AND effective_from < getdate() AND effective_to >= getdate()
           <#if cateFilter??>AND code_category = :cateFilter</#if>
           <#if codeFilter??>AND master_code_key = :codeFilter</#if>
+          <#if filterAttr??>AND filter_value = :filterAttr</#if>
         ]]>
   </sql>
 </sqls>
