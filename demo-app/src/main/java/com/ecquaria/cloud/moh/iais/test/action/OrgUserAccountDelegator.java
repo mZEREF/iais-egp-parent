@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
+import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import com.ecquaria.cloud.moh.iais.test.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.test.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
@@ -31,6 +32,8 @@ import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -139,6 +142,12 @@ public class OrgUserAccountDelegator {
         log.debug("The doCreateStart start ...");
         String orgId = bpc.request.getParameter("crud_action_value");
         bpc.request.setAttribute("orgId",orgId);
+        List statusSelect = new ArrayList<SelectOption>();
+        SelectOption sp1 = new SelectOption("pending","Pending");
+        statusSelect.add(sp1);
+        SelectOption sp2 = new SelectOption("procing","Procing");
+        statusSelect.add(sp2);
+        bpc.request.setAttribute("statusSelect",statusSelect);
         log.debug("******************-->:"+orgId);
         log.debug("The doCreateStart end ...");
     }
