@@ -42,7 +42,7 @@ public class MasterCodeDto implements Serializable {
     @Column(name = "code_category")
     @Getter @Setter private int category;
     @Column(name = "code_description")
-    @Getter @Setter private int description;
+    @Getter @Setter private String description;
     @Column(name = "filter_value")
     @Getter @Setter private String filterValue;
     @Column(name = "sequence")
