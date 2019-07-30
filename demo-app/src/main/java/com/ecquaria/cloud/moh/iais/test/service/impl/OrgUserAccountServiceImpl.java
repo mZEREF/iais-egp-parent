@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.test.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 /**
@@ -43,5 +44,16 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     @Override
     public void saveOrgUserAccounts(OrgUserAccount orgUserAccount) {
         orgUserAccountDao.save(orgUserAccount);
+    }
+
+    @Override
+    public OrgUserAccount getOrgUserAccountByRowguId(String rowguId) {
+        OrgUserAccount orgUserAccount = new OrgUserAccount();
+        orgUserAccount.setRowguid(rowguId);
+        ExampleMatcher exampleMatcher =
+                ExampleMatcher.matching().withMatcher("rowguid",ExampleMatcher.GenericPropertyMatchers.exact());
+
+        Example<OrgUserAccount> example = Example.of(orgUserAccount,exampleMatcher);
+        return orgUserAccountDao.findOne(example);
     }
 }

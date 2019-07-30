@@ -25,4 +25,5 @@ public interface OrgUserAccountService {
 
  public void deleteOrgUserAccountsById(String id);
  public void saveOrgUserAccounts(OrgUserAccount orgUserAccount);
+ public OrgUserAccount getOrgUserAccountByRowguId(String rowguId);
 }

@@ -49,6 +49,8 @@ public class OrgUserAccountDelegator {
     private static final String SEARCHPARAMSESSION = "OrgUserAccountDelegator_searchParam";
     private static final String SEARCHPARAM = "searchParam";
     private static final String SEARCHRESULT = "searchResult";
+    private static final String ORGUSERACCOUNT = "orgUserAccount";
+    private static final String ORGUSERACCOUNTTILE = "orgUserAccountEditTile";
     @Autowired
     private OrgUserAccountService orgUserAccountService;
 
@@ -133,11 +135,6 @@ public class OrgUserAccountDelegator {
         log.debug("The prepareSwitch end ...");
     }
 
-    public void doCreateStart(BaseProcessClass bpc){
-        log.debug("The doCreateStart start ...");
-
-        log.debug("The doCreateStart end ...");
-    }
     public void prepareCreateData(BaseProcessClass bpc){
         log.debug("The doCreateStart start ...");
         String orgId = bpc.request.getParameter("crud_action_value");
@@ -148,6 +145,7 @@ public class OrgUserAccountDelegator {
         SelectOption sp2 = new SelectOption("procing","Procing");
         statusSelect.add(sp2);
         bpc.request.setAttribute("statusSelect",statusSelect);
+        bpc.request.setAttribute(ORGUSERACCOUNTTILE,"Org Account Create");
         log.debug("******************-->:"+orgId);
         log.debug("The doCreateStart end ...");
     }
@@ -174,5 +172,49 @@ public class OrgUserAccountDelegator {
         }
 
         log.debug("The doCreateStart end ...");
+    }
+    public void prepareEdit(BaseProcessClass bpc){
+        log.debug("The prepareEdit start ...");
+        String rowguid = bpc.request.getParameter("crud_action_value");
+        OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
+        bpc.request.setAttribute(ORGUSERACCOUNT,orgUserAccount);
+        bpc.request.setAttribute(ORGUSERACCOUNTTILE,"Org Account Edit");
+        List statusSelect = new ArrayList<SelectOption>();
+        SelectOption sp1 = new SelectOption("pending","Pending");
+        statusSelect.add(sp1);
+        SelectOption sp2 = new SelectOption("procing","Procing");
+        statusSelect.add(sp2);
+        bpc.request.setAttribute("statusSelect",statusSelect);
+        log.debug("The prepareEdit end ...");
+    }
+    public void doEdit(BaseProcessClass bpc){
+        log.debug("The doEdit start ...");
+        String type = bpc.request.getParameter("crud_action_type");
+        if("edit".equals(type)){
+            String rowguid = bpc.request.getParameter("crud_action_value");
+            OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
+            String name = bpc.request.getParameter("name");
+            String nircNo = bpc.request.getParameter("nircNo");
+            String corpPassId = bpc.request.getParameter("corpPassId");
+            String status = bpc.request.getParameter("status");
+            orgUserAccount.setName(name);
+            orgUserAccount.setNircNo(nircNo);
+            orgUserAccount.setCorpPassId(corpPassId);
+            orgUserAccount.setStatus(status);
+            OrgUserAccountDto accountDto =  MiscUtil.transferEntityDto(orgUserAccount,OrgUserAccountDto.class);
+            ValidationResult validationResult =ValidationUtils.validateEntity(accountDto);
+            if (validationResult.isHasErrors()){
+                log.error("****************Error");
+                Map<String,String> errorMap = validationResult.retrieveAll();
+                bpc.request.setAttribute("errorMap",errorMap);
+                bpc.request.setAttribute("isValid","N");
+            }else{
+                orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
+                bpc.request.setAttribute("isValid","Y");
+            }
+        }else{
+            bpc.request.setAttribute("isValid","Y");
+        }
+        log.debug("The doEdit end ...");
     }
 }

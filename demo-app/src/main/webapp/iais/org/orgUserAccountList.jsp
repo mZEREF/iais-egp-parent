@@ -115,7 +115,7 @@
                                 <td>${demoQuery.nuicNum}</td>
                                 <td>${demoQuery.uenNo}</td>
                                 <td>
-                                    <iais:link icon="form_edit" title="Edit" onclick="javascript:doEdit('${demoQuery.userId}');"/>
+                                    <iais:link icon="form_edit" title="Edit" onclick="javascript:doEdit('${demoQuery.rowguid}');"/>
                                     <iais:link icon="form_delete" title="Delete" onclick="javascript:doDelete('${demoQuery.userId}');"/>
                                 </td>
                             </tr>
@@ -152,6 +152,9 @@
 
     function doCreat(orgId) {
         SOP.Crud.cfxSubmit("mainForm","doCreate",orgId);
+    }
+    function doEdit(rowguid){
+        SOP.Crud.cfxSubmit("mainForm","doEdit",rowguid);
     }
 
     function doClear() {
