@@ -31,7 +31,7 @@ import sg.gov.moh.iais.web.logging.aop.AuditCudAspect;
 @Component
 @Slf4j
 public class AuditWebCudAspect {
-    private static final AuditCudAspect ASP = new AuditCudAspect("findOne");
+    private static final AuditCudAspect ASP = new AuditCudAspect();
 
     @Pointcut("execution(public * sg.gov.moh.iais..dao.*.save*(..)) " +
             "|| execution(public * sg.gov.moh.iais..dao.*.delete*(..)) " +
