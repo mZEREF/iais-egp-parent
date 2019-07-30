@@ -49,7 +49,14 @@
 <iais:body >
 
     <br/>
-    <h2>Org Account Create</h2>
+    <c:choose>
+        <c:when test="${empty orgUserAccount}">
+            <h2>Org Account Create</h2>
+        </c:when>
+        <c:otherwise>
+            <h2>Org Account Edit</h2>
+        </c:otherwise>
+    </c:choose>
     <iais:error>
         <c:if test = "${not empty errorMap}">
              <div class="error">
@@ -59,29 +66,29 @@
              </div>
         </c:if>
     </iais:error>
-    <iais:section title="Org Account Create" id="orgAccountCreate">
+    <iais:section title="${orgUserAccountEditTile}" id="orgAccountCreate">
         <iais:row>
           <iais:field value="name" required="true"></iais:field>
           <iais:value width="7">
-              <input type="text" name="name" value="" />
+              <input type="text" name="name" value="${orgUserAccount.name}" />
           </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="nirc No" required="true"></iais:field>
             <iais:value width="7">
-                <input type="text" name="nircNo" value="" />
+                <input type="text" name="nircNo" value="${orgUserAccount.nircNo}" />
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="corp Pass Id No" required="true"></iais:field>
             <iais:value width="7">
-                <input type="text" name="corpPassId" value="" />
+                <input type="text" name="corpPassId" value="${orgUserAccount.corpPassId}" />
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Status" required="true"></iais:field>
             <iais:value width="7">
-                <iais:select name="status" options="statusSelect"/>
+                <iais:select name="status" options="statusSelect" firstOption="Please select" />
             </iais:value>
         </iais:row>
         <iais:row>
@@ -92,7 +99,14 @@
         </iais:row>
         <iais:action>
             <button type="button"  class="btn btn-default" onclick="javascript:doCancel();">Cancel</button>
-            <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doSave('${orgId}');">Submit</button>
+            <c:choose>
+                <c:when test="${empty orgUserAccount}">
+                    <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doCreate('${orgId}');">Submit</button>
+                </c:when>
+                <c:otherwise>
+                    <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doEdit('${orgUserAccount.rowguid}');">Edit</button>
+                </c:otherwise>
+            </c:choose>
         </iais:action>
     </iais:section>
 
@@ -105,8 +119,11 @@
 function doCancel(){
 SOP.Crud.cfxSubmit("mainForm","cancel");
 }
-function doSave(orgId){
+function doCreate(orgId){
 SOP.Crud.cfxSubmit("mainForm","save",orgId);
+}
+function doEdit(rowguid){
+    SOP.Crud.cfxSubmit("mainForm","edit",rowguid);
 }
 
 </script>

@@ -65,5 +65,13 @@ public class IAIS___OrgUserAccount___1 extends BaseProcessClass {
 	// 		doCreate->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doCreate", this);
 	}
+	public void prepareEdit_OnStepProcess_0() throws Exception {
+	// 		PrepareEdit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareEdit", this);
+	}
+	public void doEdit_OnStepProcess_0() throws Exception {
+	// 		doEdit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doEdit", this);
+	}
 
 }
