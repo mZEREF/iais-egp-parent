@@ -25,7 +25,6 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.common.annotation.NoAuditTrail;
 import sg.gov.moh.iais.common.constant.AuditTrailConsts;
 import sg.gov.moh.iais.common.entity.BaseEntity;
-import sg.gov.moh.iais.web.logging.aop.AuditCudAspect;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
 
@@ -158,6 +157,7 @@ public class AuditWebCudAspect {
         at.setOperation(AuditTrailConsts.OPERATION_DELETE_INTRANET);
         if (methodName.equals("deleteById")){
             Method meth = obj.getClass().getMethod("findOne", entity.getClass());
+            meth.setAccessible(true);
             Object beEnt = meth.invoke(obj, entity);
             if (beEnt instanceof Optional) {
                 Optional optional = (Optional) beEnt;
@@ -222,6 +222,7 @@ public class AuditWebCudAspect {
             InvocationTargetException, IllegalAccessException, JsonProcessingException {
 
         Method meth = target.getClass().getMethod("findOne", pk.getClass());
+        meth.setAccessible(true);
         Object beEnt = meth.invoke(target, pk);
         if (beEnt instanceof Optional) {
             Optional optional = (Optional) beEnt;
