@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * OrgUserAccountController
+ * Process: OrgUserAccount
  *
  * @author suocheng
  * @date 7/12/2019
@@ -45,7 +45,6 @@ import java.util.Map;
 @Delegator
 @Slf4j
 public class OrgUserAccountDelegator {
-
     private static final String SEARCHPARAMSESSION = "OrgUserAccountDelegator_searchParam";
     private static final String SEARCHPARAM = "searchParam";
     private static final String SEARCHRESULT = "searchResult";
@@ -56,14 +55,27 @@ public class OrgUserAccountDelegator {
 
     @Autowired
     private QueryDao<DemoQuery> demoQueryDao;
-
+    /**
+     * StartStep: Start
+     *
+     * @param bpc
+     * @throws
+     */
     public void doStart(BaseProcessClass bpc){
+
         log.debug("The doStart start ...");
         bpc.request.getSession().setAttribute(SEARCHPARAMSESSION,null);
         bpc.request.getSession().setAttribute(SEARCHRESULT,null);
         log.debug("The doStart end ...");
     }
+    /**
+     * AutoStep: PrepareData
+     *
+     * @param bpc
+     * @throws
+     */
     public  void prepareData(BaseProcessClass bpc){
+
         log.debug("The prepareData start ...");
         SearchParam param = getSearchParam(bpc);
         param.addFilter("ORGANIZATION_ID","0",true);
@@ -87,12 +99,24 @@ public class OrgUserAccountDelegator {
         }
         return param;
     }
+    /**
+     * AutoStep: PrepareSwitch
+     *
+     * @param bpc
+     * @throws
+     */
     public  void prepareSwitch(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
           String  action = bpc.request.getParameter("crud_action_type");
         log.debug("*******************action-->:"+action);
         log.debug("The prepareSwitch end ...");
     }
+    /**
+     * AutoStep: doSearch
+     *
+     * @param bpc
+     * @throws
+     */
     public  void doSearch(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
         SearchParam param = getSearchParam(bpc,true);
@@ -114,18 +138,36 @@ public class OrgUserAccountDelegator {
         }
         log.debug("The prepareSwitch end ...");
     }
+    /**
+     * AutoStep: doSorting
+     *
+     * @param bpc
+     * @throws
+     */
     public  void doSorting(BaseProcessClass bpc){
         log.debug("The doSorting start ...");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doSorting(searchParam,  bpc.request);
         log.debug("The doSorting end ...");
     }
+    /**
+     * AutoStep: doPaging
+     *
+     * @param bpc
+     * @throws
+     */
     public  void doPaging(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
         log.debug("The prepareSwitch end ...");
     }
+    /**
+     * AutoStep: doDelete
+     *
+     * @param bpc
+     * @throws
+     */
     public  void doDelete(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
         String id = bpc.request.getParameter("crud_action_value");
@@ -134,7 +176,12 @@ public class OrgUserAccountDelegator {
         }
         log.debug("The prepareSwitch end ...");
     }
-
+    /**
+     * AutoStep: PrepareCreate
+     *
+     * @param bpc
+     * @throws
+     */
     public void prepareCreateData(BaseProcessClass bpc){
         log.debug("The doCreateStart start ...");
         String orgId = bpc.request.getParameter("crud_action_value");
@@ -149,6 +196,12 @@ public class OrgUserAccountDelegator {
         log.debug("******************-->:"+orgId);
         log.debug("The doCreateStart end ...");
     }
+    /**
+     * AutoStep: doCreate
+     *
+     * @param bpc
+     * @throws
+     */
     public void doCreate(BaseProcessClass bpc){
         log.debug("The doCreateStart start ...");
         String type = bpc.request.getParameter("crud_action_type");
@@ -173,6 +226,12 @@ public class OrgUserAccountDelegator {
 
         log.debug("The doCreateStart end ...");
     }
+    /**
+     * AutoStep: PrepareEdit
+     *
+     * @param bpc
+     * @throws
+     */
     public void prepareEdit(BaseProcessClass bpc){
         log.debug("The prepareEdit start ...");
         String rowguid = bpc.request.getParameter("crud_action_value");
@@ -187,6 +246,12 @@ public class OrgUserAccountDelegator {
         bpc.request.setAttribute("statusSelect",statusSelect);
         log.debug("The prepareEdit end ...");
     }
+    /**
+     * AutoStep: doEdit
+     *
+     * @param bpc
+     * @throws
+     */
     public void doEdit(BaseProcessClass bpc){
         log.debug("The doEdit start ...");
         String type = bpc.request.getParameter("crud_action_type");
