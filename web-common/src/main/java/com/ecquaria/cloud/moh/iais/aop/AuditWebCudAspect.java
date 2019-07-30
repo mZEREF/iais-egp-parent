@@ -31,7 +31,7 @@ import sg.gov.moh.iais.web.logging.aop.AuditCudAspect;
 @Component
 @Slf4j
 public class AuditWebCudAspect {
-    private AuditCudAspect asp = new AuditCudAspect();
+    private static final AuditCudAspect ASP = new AuditCudAspect("findOne");
 
     @Pointcut("execution(public * sg.gov.moh.iais..dao.*.save*(..)) " +
             "|| execution(public * sg.gov.moh.iais..dao.*.delete*(..)) " +
@@ -43,6 +43,6 @@ public class AuditWebCudAspect {
 
     @Around(value = "daoTrail()")
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        return asp.doAround(joinPoint);
+        return ASP.doAround(joinPoint);
     }
 }
