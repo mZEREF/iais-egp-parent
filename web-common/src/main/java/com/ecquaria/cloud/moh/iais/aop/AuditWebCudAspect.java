@@ -13,31 +13,13 @@
 
 package com.ecquaria.cloud.moh.iais.aop;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.common.annotation.NoAuditTrail;
-import sg.gov.moh.iais.common.constant.AuditTrailConsts;
-import sg.gov.moh.iais.common.entity.BaseEntity;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
-import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import sg.gov.moh.iais.web.logging.aop.AuditCudAspect;
 
 /**
  * AuditWebCudAspect
@@ -49,6 +31,8 @@ import java.util.Optional;
 @Component
 @Slf4j
 public class AuditWebCudAspect {
+    private static AuditCudAspect ASP = new AuditCudAspect();
+
     @Pointcut("execution(public * sg.gov.moh.iais..dao.*.save*(..)) " +
             "|| execution(public * sg.gov.moh.iais..dao.*.delete*(..)) " +
             "|| execution(public * com.ecquaria.cloud.moh.iais..dao.*.delete*(..)) " +
@@ -59,225 +43,7 @@ public class AuditWebCudAspect {
 
     @Around(value = "daoTrail()")
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object result = null;
-        //Before proceed
-        Object obj = joinPoint.getTarget();
-        String methodName = joinPoint.getSignature().getName();
-        Object[] args = joinPoint.getArgs();
-        Map<Object, AuditTrailDto> map = new HashMap<>();
-        boolean isDelete = false;
-        if (args != null && args.length > 0) {
-            Object entity = args[0];
-            if (!needAuditTrail(entity))
-                return joinPoint.proceed();
-
-            if (methodName.startsWith("save")) {
-                saveData(methodName, entity, map, obj);
-            } else if (methodName.startsWith("delete")) {
-                isDelete = true;
-                delete(methodName, entity, map, obj);
-            }
-        } else if (methodName.startsWith("deleteAll")) {
-            isDelete = true;
-            Method meth = obj.getClass().getMethod("findAll", null);
-            Object beEnt = meth.invoke(obj, null);
-            deleteAll(beEnt, map);
-        }
-        //Processing
-        result = joinPoint.proceed();
-        //Do after
-        afterProcess(isDelete, result, map, obj);
-
-        return result;
+        return ASP.doAround(joinPoint);
     }
 
-    private boolean needAuditTrail(Object entity) {
-        boolean needAudit = true;
-        if (entity.getClass().getAnnotation(NoAuditTrail.class) != null) {
-            needAudit = false;
-        } else if (entity instanceof Iterable) {
-            Iterable<Object> its = (Iterable<Object>) entity;
-            for (Object ob : its) {
-                if (ob.getClass().getAnnotation(NoAuditTrail.class) != null) {
-                    needAudit = false;
-                    break;
-                }
-            }
-        }
-
-        return needAudit;
-    }
-
-    private void afterProcess(boolean isDelete, Object result, Map<Object, AuditTrailDto> map, Object obj)
-            throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, JsonProcessingException {
-        if (!isDelete) {
-            setAfterActionForDel(result, map, obj);
-        }
-        try {
-            AuditLogUtil.callAuditRestApi(map.values());
-        } catch (Exception e) {
-            log.error("Exception when calling Audit Trail API:", e);
-        }
-    }
-
-    private void setAfterActionForDel(Object result, Map<Object, AuditTrailDto> map, Object obj)
-            throws JsonProcessingException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        if (result instanceof Iterable) {
-            for (Object et : (Iterable) result) {
-                AuditTrailDto atd = map.get(et);
-                if (atd != null && !StringUtils.isEmpty(atd.getBeforeAction())) {
-                    atd.setAfterAction(generateDelEntityJson(et, obj));
-                }
-            }
-        } else {
-            AuditTrailDto atd = map.get(result);
-            if (atd != null && !StringUtils.isEmpty(atd.getBeforeAction())) {
-                atd.setAfterAction(generateDelEntityJson(result, obj));
-            }
-        }
-    }
-
-    private void saveData(String methodName, Object entity, Map<Object, AuditTrailDto> map,
-                          Object obj) throws JsonProcessingException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
-        if ("saveAll".equals(methodName)) {
-            Iterable<Object> its = (Iterable<Object>) entity;
-            for (Object ent : its) {
-                map.put(ent, generateSaveAuditTrailDto(ent, obj));
-            }
-        } else {
-            map.put(entity, generateSaveAuditTrailDto(entity, obj));
-        }
-    }
-
-    private void delete(String methodName, Object entity, Map<Object, AuditTrailDto> map,
-                        Object obj) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException,
-            JsonProcessingException {
-        AuditTrailDto at = new AuditTrailDto();
-        at.setOperation(AuditTrailConsts.OPERATION_DELETE_INTRANET);
-        if (methodName.equals("deleteById")){
-            Method meth = obj.getClass().getMethod("findOne", entity.getClass());
-            meth.setAccessible(true);
-            Object beEnt = meth.invoke(obj, entity);
-            if (beEnt instanceof Optional) {
-                Optional optional = (Optional) beEnt;
-                if(optional.isPresent()){
-                    beEnt = optional.get();
-                }
-            }
-            at.setBeforeAction(generateJsonEntity(beEnt));
-            map.put(beEnt, at);
-        } else if (methodName.equals("delete")) {
-            at.setBeforeAction(generateDelEntityJson(entity, obj));
-        } else if (methodName.startsWith("deleteAll")) {
-            deleteAll(entity, map);
-        }
-    }
-
-    private void deleteAll(Object beEnt, Map<Object, AuditTrailDto> map) throws JsonProcessingException,
-            NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Iterable<Object> its = (Iterable<Object>) beEnt;
-        for (Object ent : its) {
-            AuditTrailDto att = new AuditTrailDto();
-            att.setOperation(AuditTrailConsts.OPERATION_DELETE_INTRANET);
-            att.setBeforeAction(generateJsonEntity(ent));
-            map.put(ent, att);
-        }
-    }
-
-    private AuditTrailDto generateSaveAuditTrailDto(Object entity, Object target) throws NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException, JsonProcessingException {
-        AuditTrailDto at = new AuditTrailDto();
-
-        Field[] fields = entity.getClass().getDeclaredFields();
-        at.setOperation(AuditTrailConsts.OPERATION_INSERT_INTRANET);
-        for (Field field : fields) {
-            Id idcol = field.getAnnotation(Id.class);
-            if (idcol != null){
-                String fieldName = field.getName();
-                Method getMed = entity.getClass().getMethod("get" + StringUtils.capitalize(fieldName));
-                Object fieldVal = getMed.invoke(entity, null);
-                Number idNum = (Number) fieldVal;
-                if (idNum != null && idNum.doubleValue() > 0) {
-                    at.setOperation(AuditTrailConsts.OPERATION_UPDATE_INTRANET);
-                    at.setBeforeAction(getBeforeUpdate(fieldVal, target));
-                    break;
-                }
-            }
-        }
-        if (entity instanceof BaseEntity) {
-            Date now = new Date();
-            BaseEntity be = (BaseEntity) entity;
-            be.setModifiedAt(now);
-            if (AuditTrailConsts.OPERATION_INSERT_INTRANET == at.getOperation()) {
-                be.setCreatedAt(now);
-            }
-        }
-        at.setAfterAction(generateJsonEntity(entity));
-
-        return at;
-    }
-
-    private String getBeforeUpdate(Object pk, Object target) throws NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException, JsonProcessingException {
-
-        Method meth = target.getClass().getMethod("findOne", pk.getClass());
-        meth.setAccessible(true);
-        Object beEnt = meth.invoke(target, pk);
-        if (beEnt instanceof Optional) {
-            Optional optional = (Optional) beEnt;
-            if(optional.isPresent()){
-                beEnt = optional.get();
-            }
-        }
-
-        return generateJsonEntity(beEnt);
-    }
-
-    private String generateDelEntityJson(Object entity, Object dao) throws NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException, JsonProcessingException {
-        String retStr = null;
-        Field[] fields = entity.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            Id idcol = field.getAnnotation(Id.class);
-            if (idcol != null) {
-                Method getMed = entity.getClass().getMethod("get" + StringUtils.capitalize(field.getName()));
-                Object fieldVal = getMed.invoke(entity, null);
-                retStr = getBeforeUpdate(fieldVal, dao);
-                break;
-            }
-        }
-
-        return retStr;
-    }
-
-    private String generateJsonEntity(Object beEnt) throws NoSuchMethodException, InvocationTargetException,
-            IllegalAccessException, JsonProcessingException {
-        Map<String, Object> json = new HashMap<>();
-        Table tbl = beEnt.getClass().getAnnotation(Table.class);
-        String tableName = tbl.name();
-        json.put("tableName", tableName);
-        Field[] fields = beEnt.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            Column col = field.getAnnotation(Column.class);
-            if (col == null)
-                continue;
-
-            String columnName = field.getName();
-            if (!StringUtils.isEmpty(col.name()))
-                columnName = col.name();
-
-            String stat = "get";
-            if (field.getType().equals(boolean.class))
-                stat = "is";
-
-            Method getMed = beEnt.getClass().getMethod(stat + StringUtils.capitalize(field.getName()));
-            Object fieldVal = getMed.invoke(beEnt, null);
-            if (!(fieldVal instanceof byte[]))
-                json.put(columnName, fieldVal);
-        }
-        ObjectMapper mapper = new ObjectMapper();
-
-        return mapper.writeValueAsString(json);
-    }
 }
