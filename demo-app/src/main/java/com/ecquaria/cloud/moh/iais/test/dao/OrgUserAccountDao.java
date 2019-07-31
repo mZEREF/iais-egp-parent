@@ -23,5 +23,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @date 7/12/2019
  */
 public interface OrgUserAccountDao extends JpaRepository<OrgUserAccount,Integer> {
-
+    public OrgUserAccount findById(Object id);
 }
