@@ -13,7 +13,11 @@
 
 package com.ecquaria.cloud.moh.iais.test.service.impl;
 
+import com.ecquaria.cloud.moh.iais.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.test.dao.OrgUserAccountDao;
+import com.ecquaria.cloud.moh.iais.test.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.test.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +37,8 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
 
     @Autowired
     private OrgUserAccountDao orgUserAccountDao;
-
+    @Autowired
+    private QueryDao<DemoQuery> demoQueryDao;
 
     @Override
     public void deleteOrgUserAccountsById(String id) {
@@ -55,5 +60,10 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
 
         Example<OrgUserAccount> example = Example.of(orgUserAccount,exampleMatcher);
         return orgUserAccountDao.findOne(example);
+    }
+
+    @Override
+    public SearchResult<DemoQuery> doQuery(SearchParam param, String catalog, String key) {
+        return demoQueryDao.doQuery(param, catalog, key);
     }
 }
