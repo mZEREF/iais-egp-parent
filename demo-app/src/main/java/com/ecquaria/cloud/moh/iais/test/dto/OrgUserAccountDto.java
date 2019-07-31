@@ -30,6 +30,11 @@ import net.sf.oval.constraint.NotNull;
 
 public class OrgUserAccountDto {
 
+    @Getter @Setter
+    private String id;
+
+    @Getter @Setter
+    private String rowguid;
 
     @Getter @Setter
     private String name;
@@ -41,7 +46,6 @@ public class OrgUserAccountDto {
     @Getter @Setter
     private String nircNo;
 
-
     @Getter @Setter
     private String corpPassId;
 
@@ -50,6 +54,5 @@ public class OrgUserAccountDto {
 
     @Getter @Setter
     private String orgId;
-
 
 }

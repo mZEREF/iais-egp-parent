@@ -39,6 +39,13 @@
 
     <br/>
     <h2>demo List</h2>
+    <c:if test = "${not empty successMap}">
+        <iais:success>
+            <c:forEach items="${successMap}" var="map">
+                ${map.key}  ${map.value} <br/>
+            </c:forEach>
+        </iais:success>
+    </c:if>
     <iais:section title="demo List" id = "demoList">
         <iais:row>
             <iais:field value="Nirc No"/>

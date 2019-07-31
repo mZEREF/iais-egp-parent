@@ -88,7 +88,7 @@
         <iais:row>
             <iais:field value="Status" required="true"></iais:field>
             <iais:value width="7">
-                <iais:select name="status" options="statusSelect" firstOption="Please select" />
+                <iais:select name="status" options="statusSelect" firstOption="Please select" value="${orgUserAccount.status}" ></iais:select>
             </iais:value>
         </iais:row>
         <iais:row>

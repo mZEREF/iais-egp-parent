@@ -33,6 +33,7 @@ import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,6 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doStart(BaseProcessClass bpc){
-
         log.debug("The doStart start ...");
         bpc.request.getSession().setAttribute(SEARCHPARAMSESSION,null);
         bpc.request.getSession().setAttribute(SEARCHRESULT,null);
@@ -258,15 +258,15 @@ public class OrgUserAccountDelegator {
         if("edit".equals(type)){
             String rowguid = bpc.request.getParameter("crud_action_value");
             OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
+            OrgUserAccountDto accountDto =  MiscUtil.transferEntityDto(orgUserAccount,OrgUserAccountDto.class);
             String name = bpc.request.getParameter("name");
             String nircNo = bpc.request.getParameter("nircNo");
             String corpPassId = bpc.request.getParameter("corpPassId");
             String status = bpc.request.getParameter("status");
-            orgUserAccount.setName(name);
-            orgUserAccount.setNircNo(nircNo);
-            orgUserAccount.setCorpPassId(corpPassId);
-            orgUserAccount.setStatus(status);
-            OrgUserAccountDto accountDto =  MiscUtil.transferEntityDto(orgUserAccount,OrgUserAccountDto.class);
+            accountDto.setName(name);
+            accountDto.setNircNo(nircNo);
+            accountDto.setCorpPassId(corpPassId);
+            accountDto.setStatus(status);
             ValidationResult validationResult =ValidationUtils.validateEntity(accountDto);
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
@@ -274,8 +274,12 @@ public class OrgUserAccountDelegator {
                 bpc.request.setAttribute("errorMap",errorMap);
                 bpc.request.setAttribute("isValid","N");
             }else{
-                orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
+                Map<String,String> successMap = new HashMap<>();
+                successMap.put("test","suceess");
+                OrgUserAccount orgUserAccount1 = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
+                orgUserAccountService.saveOrgUserAccounts(orgUserAccount1);
                 bpc.request.setAttribute("isValid","Y");
+                bpc.request.setAttribute("successMap",successMap);
             }
         }else{
             bpc.request.setAttribute("isValid","Y");
