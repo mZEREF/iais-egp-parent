@@ -13,6 +13,9 @@
 
 package com.ecquaria.cloud.moh.iais.test.service;
 
+import com.ecquaria.cloud.moh.iais.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.test.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
 
 /**
@@ -26,4 +29,5 @@ public interface OrgUserAccountService {
  public void deleteOrgUserAccountsById(String id);
  public void saveOrgUserAccounts(OrgUserAccount orgUserAccount);
  public OrgUserAccount getOrgUserAccountByRowguId(String rowguId);
+ public  SearchResult<DemoQuery> doQuery(SearchParam param, String catalog, String key);
 }

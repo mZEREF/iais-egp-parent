@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import com.ecquaria.cloud.moh.iais.test.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.test.entity.DemoQuery;
@@ -54,8 +53,6 @@ public class OrgUserAccountDelegator {
     @Autowired
     private OrgUserAccountService orgUserAccountService;
 
-    @Autowired
-    private QueryDao<DemoQuery> demoQueryDao;
     /**
      * StartStep: Start
      *
@@ -80,7 +77,7 @@ public class OrgUserAccountDelegator {
         SearchParam param = getSearchParam(bpc);
         param.addFilter("ORGANIZATION_ID","0",true);
         bpc.request.setAttribute("ORGANIZATION_ID",0);
-        SearchResult searchResult = demoQueryDao.doQuery(param, "demo", "searchDemo");
+        SearchResult searchResult = orgUserAccountService.doQuery(param, "demo", "searchDemo");
         bpc.request.setAttribute(SEARCHPARAM,param);
         bpc.request.setAttribute(SEARCHRESULT,searchResult);
         log.debug("The prepareData end ...");
