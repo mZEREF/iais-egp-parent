@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
@@ -103,11 +102,8 @@ public final class MasterCodeUtil {
         try {
             Field field = MasterCodeUtil.class.getDeclaredField(cateKey);
             return (String) field.get(null);
-        } catch (NoSuchFieldException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             return cateKey;
-        } catch (IllegalAccessException e) {
-            log.error(e.getMessage(), e);
-            throw new IaisRuntimeException(e);
         }
     }
 
