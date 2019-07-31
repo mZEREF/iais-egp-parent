@@ -14,14 +14,13 @@ package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * PaginationTag.java
@@ -29,9 +28,9 @@ import javax.servlet.jsp.tagext.TagSupport;
  * @author jinhua
  *
  */
-public class PaginationTag extends TagSupport {
+@Slf4j
+public class PaginationTag extends DivTagSupport {
     private static final long serialVersionUID = 3640193450482281014L;
-    private static Logger log = Logger.getLogger(PaginationTag.class.getName());
 
     private String param;
     private String result;
@@ -44,7 +43,7 @@ public class PaginationTag extends TagSupport {
     }
 
     // resets local state
-    private void init() {
+    protected void init() {
         param = null;
         result = null;
         jsFunc = null;

@@ -14,19 +14,17 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.TagSupport;
 import java.util.Map;
-
-public class SortableHeaderTag extends TagSupport {
+@Slf4j
+public class SortableHeaderTag extends DivTagSupport {
     private static final long serialVersionUID = 6803399323616533101L;
-    private static Logger log = Logger.getLogger(SortableHeaderTag.class.getName());
 
     private String field;
     private String value;
@@ -40,7 +38,7 @@ public class SortableHeaderTag extends TagSupport {
     }
 
     // resets local state
-    private void init() {
+    protected void init() {
         field = "";
         value = "";
         param = "";

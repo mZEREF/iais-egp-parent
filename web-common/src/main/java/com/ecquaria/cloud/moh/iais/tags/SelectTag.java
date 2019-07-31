@@ -14,7 +14,7 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
@@ -22,14 +22,11 @@ import sg.gov.moh.iais.common.utils.StringUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.TagSupport;
 import java.util.List;
 
-
-public class SelectTag extends TagSupport {
+@Slf4j
+public class SelectTag extends DivTagSupport {
     private static final long serialVersionUID = -4091387584439337660L;
-    private static Logger log = Logger.getLogger(SelectTag.class.getName());
-
     private String name;
     private String options;
     private String firstOption;
@@ -50,7 +47,7 @@ public class SelectTag extends TagSupport {
     }
 
     // resets local state
-    private void init() {
+    protected void init() {
         id = null;
         name = null;
         codeCategory = "";
@@ -170,9 +167,8 @@ public class SelectTag extends TagSupport {
     public void setOnchange(String onchange) {
         this.onchange = onchange;
     }
-    public void setValue(String value) throws JspException {
-        this.value = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("value",
-                value.toString(), Object.class, this, pageContext));
+    public void setValue(String value) {
+        this.value = value;
     }
     public void setCodeCategory(String codeCategory) throws JspException {
         this.codeCategory = codeCategory;
