@@ -156,6 +156,7 @@ public final class MasterCodeUtil {
             SearchResult<MasterCodeDto> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
             if (sr.getRowCount() > 0) {
                 MasterCodeDto mc = sr.getRows().get(0);
+                desc = mc.getCodeValue();
                 addMcToCache(mc);
             } else {
                 return "";
