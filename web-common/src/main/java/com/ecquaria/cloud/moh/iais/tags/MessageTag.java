@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.util.Map;
+import java.util.HashMap;
 
 
 /**
@@ -58,9 +58,9 @@ public final class MessageTag extends TagSupport {
 
     public int doStartTag() throws JspException {
         try {
-            Map paramMap = null;
+            HashMap paramMap = null;
             if (!StringUtil.isEmpty(params)) {
-                paramMap = (Map) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), params);
+                paramMap = (HashMap) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), params);
             }
             String message = null;
             if (paramMap != null) {
