@@ -13,12 +13,14 @@
 
 package com.ecquaria.cloud.moh.iais.demo.dto;
 
+import com.ecquaria.cloud.moh.iais.demo.validate.OrgUserAccountValidate;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotEmpty;
 import net.sf.oval.constraint.NotNull;
+import sg.gov.moh.iais.common.validation.annotations.CustomValidate;
 
 
 /**
@@ -27,7 +29,7 @@ import net.sf.oval.constraint.NotNull;
  * @author suocheng
  * @date 7/11/2019
  */
-
+@CustomValidate(impClass = OrgUserAccountValidate.class, properties = {"create","edit"})
 public class OrgUserAccountDto {
 
     @Getter @Setter
@@ -40,7 +42,7 @@ public class OrgUserAccountDto {
     private String name;
 
     @ApiModelProperty(value = "nircNo", required = true)
-    @NotNull(message = "nircNo is mandatory null.")
+    @NotNull(message = "nircNo is mandatory null.", profiles = "create")
     @NotEmpty(message = "nircNo is mandatory empty.")
     @NotBlank(message = "nircNo is mandatory Blank.")
     @Getter @Setter

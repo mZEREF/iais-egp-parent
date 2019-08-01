@@ -206,7 +206,8 @@ public class OrgUserAccountDelegator {
             String orgId = bpc.request.getParameter("crud_action_value");
             OrgUserAccountDto accountDto = MiscUtil.generateDtoFromParam(bpc.request,OrgUserAccountDto.class);
             accountDto.setOrgId(orgId);
-            ValidationResult validationResult =ValidationUtils.validateEntity(accountDto);
+//            ValidationResult validationResult =ValidationUtils.validateEntity(accountDto);
+            ValidationResult validationResult =ValidationUtils.validateProperty(accountDto,"create,edit");
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
