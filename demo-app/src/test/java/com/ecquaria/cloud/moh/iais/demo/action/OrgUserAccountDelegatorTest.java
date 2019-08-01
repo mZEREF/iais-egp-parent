@@ -52,16 +52,16 @@ public class OrgUserAccountDelegatorTest {
     private OrgUserAccountService orgUserAccountService = new OrgUserAccountServiceImpl();
     @Mock
     private BaseProcessClass bpc;
-    @Spy
+
     private MockHttpServletRequest request = new MockHttpServletRequest(); ;
 
     @Mock
     private QueryDao<DemoQuery> demoQueryDao;
-    @Mock
+
     private SearchResult searchResult;
     @Mock
     private OrgUserAccountDao orgUserAccountDao;
-    @Spy
+
     private OrgUserAccount orgUserAccount = new OrgUserAccount() ;
 
     @Before
@@ -156,4 +156,5 @@ public class OrgUserAccountDelegatorTest {
         orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
     }
+
 }
