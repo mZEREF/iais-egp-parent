@@ -18,6 +18,9 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.test.dao.OrgUserAccountDao;
 import com.ecquaria.cloud.moh.iais.test.entity.DemoQuery;
+import com.ecquaria.cloud.moh.iais.test.entity.OrgUserAccount;
+import com.ecquaria.cloud.moh.iais.test.service.OrgUserAccountService;
+import com.ecquaria.cloud.moh.iais.test.service.impl.OrgUserAccountServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,13 +28,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
+import org.springframework.data.domain.Example;
+import org.springframework.mock.web.MockHttpServletRequest;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * OrgUserAccountDelegatorTest
@@ -40,28 +44,36 @@ import javax.servlet.http.HttpSession;
  * @date 7/31/2019
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OrgUserAccountDelegator.class,CrudHelper.class})
+@PrepareForTest({OrgUserAccountDelegator.class,CrudHelper.class,OrgUserAccountServiceImpl.class})
 public class OrgUserAccountDelegatorTest {
     @InjectMocks
     private OrgUserAccountDelegator orgUserAccountDelegator;
+    @Spy
+    private OrgUserAccountService orgUserAccountService = new OrgUserAccountServiceImpl();
     @Mock
     private BaseProcessClass bpc;
-    @Mock
-    private HttpServletRequest request;
-    @Mock
-    private HttpSession session;
+    @Spy
+    private MockHttpServletRequest request = new MockHttpServletRequest(); ;
+
     @Mock
     private QueryDao<DemoQuery> demoQueryDao;
     @Mock
     private SearchResult searchResult;
     @Mock
     private OrgUserAccountDao orgUserAccountDao;
+    @Spy
+    private OrgUserAccount orgUserAccount = new OrgUserAccount() ;
+
     @Before
     public void setup(){
         bpc.request=request;
-        PowerMockito.when(request.getSession()).thenReturn(session);
         PowerMockito.mockStatic(CrudHelper.class);
         PowerMockito.doNothing().when(orgUserAccountDao).delete(Mockito.anyInt());
+        PowerMockito.when(orgUserAccountDao.findOne((Example)Mockito.anyObject())).thenReturn(orgUserAccount);
+        Whitebox.setInternalState(orgUserAccountDelegator,"orgUserAccountService",orgUserAccountService);
+        Whitebox.setInternalState(orgUserAccountService,"demoQueryDao",demoQueryDao);
+        Whitebox.setInternalState(orgUserAccountService,"orgUserAccountDao",orgUserAccountDao);
+
     }
 
     @Test
@@ -83,8 +95,9 @@ public class OrgUserAccountDelegatorTest {
     }
     @Test
     public void testdoSearch(){
-        PowerMockito.when(request.getParameter(Mockito.anyString())).thenReturn("0");
-        PowerMockito.when(request.getParameterValues(Mockito.anyString())).thenReturn(new String[] {"pending"});
+        request.addParameter("nric_no","nric_no");
+        request.addParameter("uen_no","uen_no");
+        request.addParameter("status","pending");
         orgUserAccountDelegator.doSearch(bpc);
         Assert.assertTrue(true);
     }
@@ -101,7 +114,8 @@ public class OrgUserAccountDelegatorTest {
     }
     @Test
     public void testdoDelete(){
-        PowerMockito.when(request.getParameter(Mockito.anyString())).thenReturn("0");
+        request.addParameter("crud_action_value","0");
+        PowerMockito.doNothing().when(orgUserAccountDao).delete(Mockito.anyInt());
         orgUserAccountDelegator.doDelete(bpc);
         Assert.assertTrue(true);
     }
@@ -111,9 +125,35 @@ public class OrgUserAccountDelegatorTest {
         Assert.assertTrue(true);
     }
     @Test
-    public void testdoCreate(){
-        PowerMockito.when(request.getParameter("crud_action_type")).thenReturn("save");
+    public void testdoCreateValidateHasError(){
+        request.addParameter("crud_action_type","save");
         orgUserAccountDelegator.doCreate(bpc);
+        Assert.assertTrue(true);
+    }
+    @Test
+    public void testdoCreate(){
+        request.addParameter("crud_action_type","save");
+        request.addParameter("nircNo","test0");
+        orgUserAccountDelegator.doCreate(bpc);
+        Assert.assertTrue(true);
+    }
+
+    @Test
+    public void testprepareEdit(){
+        orgUserAccountDelegator.prepareEdit(bpc);
+        Assert.assertTrue(true);
+    }
+    @Test
+    public void testdoEditValidateHasError(){
+        request.addParameter("crud_action_type","edit");
+        orgUserAccountDelegator.doEdit(bpc);
+        Assert.assertTrue(true);
+    }
+    @Test
+    public void testdoEdit(){
+        request.addParameter("crud_action_type","edit");
+        request.addParameter("nircNo","test0");
+        orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
     }
 }
