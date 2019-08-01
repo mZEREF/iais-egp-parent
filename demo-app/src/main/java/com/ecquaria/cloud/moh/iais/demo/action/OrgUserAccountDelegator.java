@@ -230,6 +230,7 @@ public class OrgUserAccountDelegator {
         String rowguid = ParamUtil.getString(request,"crud_action_value");
         OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
         OrgUserAccountDto dto = MiscUtil.transferEntityDto(orgUserAccount, OrgUserAccountDto.class);
+        dto.setOldNricNo(dto.getNircNo());
         ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, dto);
         ParamUtil.setRequestAttr(request, ORG_USER_ACCOUNT_TILE,"Org Account Edit");
         List statusSelect = new ArrayList<SelectOption>();
