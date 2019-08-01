@@ -13,6 +13,13 @@
 
 package com.ecquaria.cloud.moh.iais.demo.validate;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.demo.action.OrgUserAccountDelegator;
+import com.ecquaria.cloud.moh.iais.demo.dao.OrgUserAccountDao;
+import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
+import sg.gov.moh.iais.common.utils.ParamUtil;
+import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.interfaces.CustomizeValidator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,11 +33,21 @@ import java.util.Map;
  * @date 8/1/2019
  */
 public class OrgUserAccountValidate implements CustomizeValidator {
+    private OrgUserAccountDao userDao = SpringContextHelper.getContext().getBean(OrgUserAccountDao.class);
+
     @Override
-    public Map<String, String> validate(HttpServletRequest httpServletRequest) {
+    public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = new HashMap<>();
-        String nircNo =httpServletRequest.getParameter("nircNo");
-        errMap.put("nircNo","The nircNo has error!!!");
+        OrgUserAccountDto dto = (OrgUserAccountDto) ParamUtil.getSessionAttr(request,
+                OrgUserAccountDelegator.ORG_USER_DTO_ATTR);
+        if (dto == null || StringUtil.isEmpty(dto.getNircNo()))
+            return errMap;
+
+        OrgUserAccount oua = userDao.findByIdNo(dto.getNircNo());
+        if (oua != null && oua.getId() != dto.getId()) {
+            errMap.put("nircNo", "Duplicate NRIC No.");
+        }
+
         return errMap;
     }
 }

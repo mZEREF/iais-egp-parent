@@ -50,7 +50,7 @@
 
     <br/>
     <c:choose>
-        <c:when test="${empty orgUserAccount}">
+        <c:when test="${empty orgUserAccountDto}">
             <h2>Org Account Create</h2>
         </c:when>
         <c:otherwise>
@@ -70,25 +70,25 @@
         <iais:row>
           <iais:field value="name" required="true"></iais:field>
           <iais:value width="7">
-              <input type="text" name="name" value="${orgUserAccount.name}" />
+              <input type="text" name="name" value="${orgUserAccountDto.name}" />
           </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="nirc No" required="true"></iais:field>
             <iais:value width="7">
-                <input type="text" name="nircNo" value="${orgUserAccount.nircNo}" />
+                <input type="text" name="nircNo" value="${orgUserAccountDto.nircNo}" />
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="corp Pass Id No" required="true"></iais:field>
             <iais:value width="7">
-                <input type="text" name="corpPassId" value="${orgUserAccount.corpPassId}" />
+                <input type="text" name="corpPassId" value="${orgUserAccountDto.corpPassId}" />
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Status" required="true"></iais:field>
             <iais:value width="7">
-                <iais:select name="status" options="statusSelect" firstOption="Please select" value="${orgUserAccount.status}" ></iais:select>
+                <iais:select name="status" options="statusSelect" firstOption="Please select" value="${orgUserAccountDto.status}" ></iais:select>
             </iais:value>
         </iais:row>
         <iais:row>
@@ -100,11 +100,11 @@
         <iais:action>
             <button type="button"  class="btn btn-default" onclick="javascript:doCancel();">Cancel</button>
             <c:choose>
-                <c:when test="${empty orgUserAccount}">
+                <c:when test="${empty orgUserAccountDto}">
                     <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doCreate('${orgId}');">Submit</button>
                 </c:when>
                 <c:otherwise>
-                    <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doEdit('${orgUserAccount.rowguid}');">Edit</button>
+                    <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doEdit('${orgUserAccountDto.rowguid}');">Edit</button>
                 </c:otherwise>
             </c:choose>
         </iais:action>

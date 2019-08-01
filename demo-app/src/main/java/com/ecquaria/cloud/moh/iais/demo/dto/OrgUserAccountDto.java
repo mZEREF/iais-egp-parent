@@ -18,9 +18,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.oval.constraint.NotBlank;
-import net.sf.oval.constraint.NotEmpty;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.constraint.ValidateWithMethod;
+import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.annotations.CustomValidate;
+
+import java.io.Serializable;
 
 
 /**
@@ -29,11 +32,12 @@ import sg.gov.moh.iais.common.validation.annotations.CustomValidate;
  * @author suocheng
  * @date 7/11/2019
  */
-@CustomValidate(impClass = OrgUserAccountValidate.class, properties = {"create","edit"})
-public class OrgUserAccountDto {
+@CustomValidate(impClass = OrgUserAccountValidate.class, properties = {"create", "edit"})
+public class OrgUserAccountDto implements Serializable {
+    private static final long serialVersionUID = 2178140403780660322L;
 
     @Getter @Setter
-    private String id;
+    private Integer id;
 
     @Getter @Setter
     private String rowguid;
@@ -42,11 +46,13 @@ public class OrgUserAccountDto {
     private String name;
 
     @ApiModelProperty(value = "nircNo", required = true)
-    @NotNull(message = "nircNo is mandatory null.", profiles = "create")
-    @NotEmpty(message = "nircNo is mandatory empty.")
-    @NotBlank(message = "nircNo is mandatory Blank.")
+    @NotNull(message = "nircNo is mandatory null.", profiles = {"create", "edit"})
+    @NotBlank(message = "nircNo is mandatory Blank.", profiles = {"create", "edit"})
+    @ValidateWithMethod(methodName = "validateNricEdit", parameterType = String.class, message = "Cannot change NRIC No.",
+            profiles="edit")
     @Getter @Setter
     private String nircNo;
+    @Getter @Setter private String oldNricNo;
 
     @Getter @Setter
     private String corpPassId;
@@ -54,7 +60,25 @@ public class OrgUserAccountDto {
     @Getter @Setter
     private String status;
 
+    @ValidateWithMethod.List(value={@ValidateWithMethod(methodName = "fakeValidateA", parameterType = String.class,
+            message = "12117", profiles={"create","edit"}),
+            @ValidateWithMethod(methodName = "fakeValidateB", parameterType = String.class, message = "12134")})
     @Getter @Setter
     private String orgId;
 
+    //Validation method
+    public boolean validateNricEdit(String nric) {
+        if (StringUtil.isEmpty(nric))
+            return true;
+
+        return nric.equals(oldNricNo);
+    }
+
+    public boolean fakeValidateA(String arg) {
+        return true;
+    }
+
+    public boolean fakeValidateB(String arg) {
+        return true;
+    }
 }

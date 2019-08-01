@@ -14,23 +14,25 @@
 package com.ecquaria.cloud.moh.iais.demo.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
+import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
+import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
-import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
-import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
-import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.common.utils.MiscUtil;
+import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,11 +47,11 @@ import java.util.Map;
 @Delegator
 @Slf4j
 public class OrgUserAccountDelegator {
-    private static final String SEARCHPARAMSESSION = "OrgUserAccountDelegator_searchParam";
-    private static final String SEARCHPARAM = "searchParam";
-    private static final String SEARCHRESULT = "searchResult";
-    private static final String ORGUSERACCOUNT = "orgUserAccount";
-    private static final String ORGUSERACCOUNTTILE = "orgUserAccountEditTile";
+    public static final String SEARCH_PARAM                        = "demoSearchParam";
+    public static final String SEARCH_RESULT                       = "demoSearchResult";
+    public static final String ORG_USER_ACCOUNT_TILE               = "orgUserAccountEditTile";
+    public static final String ORG_USER_DTO_ATTR                   = "orgUserAccountDto";
+
     @Autowired
     private OrgUserAccountService orgUserAccountService;
 
@@ -61,8 +63,10 @@ public class OrgUserAccountDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug("The doStart start ...");
-        bpc.request.getSession().setAttribute(SEARCHPARAMSESSION,null);
-        bpc.request.getSession().setAttribute(SEARCHRESULT,null);
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request, SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(request, SEARCH_RESULT, null);
+        ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, null);
         log.debug("The doStart end ...");
     }
     /**
@@ -72,30 +76,17 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public  void prepareData(BaseProcessClass bpc){
-
         log.debug("The prepareData start ...");
+        HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc);
         param.addFilter("ORGANIZATION_ID","0",true);
-        bpc.request.setAttribute("ORGANIZATION_ID",0);
+        ParamUtil.setRequestAttr(request,"ORGANIZATION_ID", 0);
         SearchResult searchResult = orgUserAccountService.doQuery(param, "demo", "searchDemo");
-        bpc.request.setAttribute(SEARCHPARAM,param);
-        bpc.request.setAttribute(SEARCHRESULT,searchResult);
+        ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
+        ParamUtil.setRequestAttr(request, SEARCH_RESULT, searchResult);
         log.debug("The prepareData end ...");
     }
-    private SearchParam getSearchParam(BaseProcessClass bpc){
-        return getSearchParam(bpc, false);
-    }
-    private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
-        SearchParam param = (SearchParam)bpc.request.getSession().getAttribute(SEARCHPARAMSESSION);
-        if(param == null || isNew){
-            param = new SearchParam(DemoQuery.class);
-            param.setPageSize(10);
-            param.setPageNo(1);
-            param.setSort("user_id", SearchParam.ASCENDING);
-            bpc.request.getSession().setAttribute(SEARCHPARAMSESSION,param);
-        }
-        return param;
-    }
+
     /**
      * AutoStep: PrepareSwitch
      *
@@ -104,7 +95,7 @@ public class OrgUserAccountDelegator {
      */
     public  void prepareSwitch(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
-          String  action = bpc.request.getParameter("crud_action_type");
+        String  action = ParamUtil.getString(bpc.request,"crud_action_type");
         log.debug("*******************action-->:"+action);
         log.debug("The prepareSwitch end ...");
     }
@@ -116,10 +107,11 @@ public class OrgUserAccountDelegator {
      */
     public  void doSearch(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
+        HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
-        String nric_no = bpc.request.getParameter("nric_no");
-        String uen_no = bpc.request.getParameter("uen_no");
-        String[] status = bpc.request.getParameterValues("status");
+        String nric_no = ParamUtil.getString(request, "nric_no");
+        String uen_no = ParamUtil.getString(request,"uen_no");
+        String[] status = ParamUtil.getStrings(request,"status");
         if(!StringUtil.isEmpty(nric_no)){
             param.addFilter("nric_no",nric_no,true);
         }
@@ -167,7 +159,7 @@ public class OrgUserAccountDelegator {
      */
     public  void doDelete(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
-        String id = bpc.request.getParameter("crud_action_value");
+        String id = ParamUtil.getString(bpc.request,"crud_action_value");
         if(!StringUtil.isEmpty(id)){
             orgUserAccountService.deleteOrgUserAccountsById(id);
         }
@@ -181,15 +173,16 @@ public class OrgUserAccountDelegator {
      */
     public void prepareCreateData(BaseProcessClass bpc){
         log.debug("The doCreateStart start ...");
-        String orgId = bpc.request.getParameter("crud_action_value");
-        bpc.request.setAttribute("orgId",orgId);
+        HttpServletRequest request = bpc.request;
+        String orgId = ParamUtil.getString(request,"crud_action_value");
+        ParamUtil.setRequestAttr(request, "orgId", orgId);
         List statusSelect = new ArrayList<SelectOption>();
         SelectOption sp1 = new SelectOption("pending","Pending");
         statusSelect.add(sp1);
         SelectOption sp2 = new SelectOption("procing","Procing");
         statusSelect.add(sp2);
-        bpc.request.setAttribute("statusSelect",statusSelect);
-        bpc.request.setAttribute(ORGUSERACCOUNTTILE,"Org Account Create");
+        ParamUtil.setRequestAttr(request,"statusSelect",statusSelect);
+        ParamUtil.setRequestAttr(request, ORG_USER_ACCOUNT_TILE,"Org Account Create");
         log.debug("******************-->:"+orgId);
         log.debug("The doCreateStart end ...");
     }
@@ -201,25 +194,26 @@ public class OrgUserAccountDelegator {
      */
     public void doCreate(BaseProcessClass bpc){
         log.debug("The doCreateStart start ...");
-        String type = bpc.request.getParameter("crud_action_type");
+        HttpServletRequest request = bpc.request;
+        String type = ParamUtil.getString(request, "crud_action_type");
         if("save".equals(type)){
-            String orgId = bpc.request.getParameter("crud_action_value");
+            String orgId = ParamUtil.getString(request,"crud_action_value");
             OrgUserAccountDto accountDto = MiscUtil.generateDtoFromParam(bpc.request,OrgUserAccountDto.class);
             accountDto.setOrgId(orgId);
-//            ValidationResult validationResult =ValidationUtils.validateEntity(accountDto);
-            ValidationResult validationResult =ValidationUtils.validateProperty(accountDto,"create,edit");
+            ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, accountDto);
+            ValidationResult validationResult =ValidationUtils.validateProperty(accountDto,"create");
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
-                bpc.request.setAttribute("errorMap",errorMap);
-                bpc.request.setAttribute("isValid","N");
+                ParamUtil.setRequestAttr(request,"errorMap",errorMap);
+                ParamUtil.setRequestAttr(request,"isValid","N");
             }else{
                 OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
                 orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
-                bpc.request.setAttribute("isValid","Y");
+                ParamUtil.setRequestAttr(request,"isValid","Y");
             }
         }else{
-            bpc.request.setAttribute("isValid","Y");
+            ParamUtil.setRequestAttr(request,"isValid","Y");
         }
 
         log.debug("The doCreateStart end ...");
@@ -232,16 +226,18 @@ public class OrgUserAccountDelegator {
      */
     public void prepareEdit(BaseProcessClass bpc){
         log.debug("The prepareEdit start ...");
-        String rowguid = bpc.request.getParameter("crud_action_value");
+        HttpServletRequest request = bpc.request;
+        String rowguid = ParamUtil.getString(request,"crud_action_value");
         OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
-        bpc.request.setAttribute(ORGUSERACCOUNT,orgUserAccount);
-        bpc.request.setAttribute(ORGUSERACCOUNTTILE,"Org Account Edit");
+        OrgUserAccountDto dto = MiscUtil.transferEntityDto(orgUserAccount, OrgUserAccountDto.class);
+        ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, dto);
+        ParamUtil.setRequestAttr(request, ORG_USER_ACCOUNT_TILE,"Org Account Edit");
         List statusSelect = new ArrayList<SelectOption>();
         SelectOption sp1 = new SelectOption("pending","Pending");
         statusSelect.add(sp1);
         SelectOption sp2 = new SelectOption("procing","Procing");
         statusSelect.add(sp2);
-        bpc.request.setAttribute("statusSelect",statusSelect);
+        ParamUtil.setRequestAttr(request, "statusSelect",statusSelect);
         log.debug("The prepareEdit end ...");
     }
     /**
@@ -252,36 +248,56 @@ public class OrgUserAccountDelegator {
      */
     public void doEdit(BaseProcessClass bpc){
         log.debug("The doEdit start ...");
-        String type = bpc.request.getParameter("crud_action_type");
+        HttpServletRequest request = bpc.request;
+        String type = ParamUtil.getString(request,"crud_action_type");
         if("edit".equals(type)){
-            String rowguid = bpc.request.getParameter("crud_action_value");
-            OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
-            OrgUserAccountDto accountDto =  MiscUtil.transferEntityDto(orgUserAccount,OrgUserAccountDto.class);
-            String name = bpc.request.getParameter("name");
-            String nircNo = bpc.request.getParameter("nircNo");
-            String corpPassId = bpc.request.getParameter("corpPassId");
-            String status = bpc.request.getParameter("status");
+            String rowguid = ParamUtil.getString(request,"crud_action_value");
+            OrgUserAccountDto accountDto = (OrgUserAccountDto) ParamUtil.getSessionAttr(request, ORG_USER_DTO_ATTR);
+            String name = ParamUtil.getString(request,"name");
+            String nircNo = ParamUtil.getString(request,"nircNo");
+            String corpPassId = ParamUtil.getString(request,"corpPassId");
+            String status = ParamUtil.getString(request,"status");
             accountDto.setName(name);
             accountDto.setNircNo(nircNo);
             accountDto.setCorpPassId(corpPassId);
             accountDto.setStatus(status);
-            ValidationResult validationResult =ValidationUtils.validateEntity(accountDto);
+            ValidationResult validationResult =ValidationUtils.validateProperty(accountDto, "edit");
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
-                bpc.request.setAttribute("errorMap",errorMap);
-                bpc.request.setAttribute("isValid","N");
+                ParamUtil.setRequestAttr(request,"errorMap",errorMap);
+                ParamUtil.setRequestAttr(request,"isValid","N");
             }else{
                 Map<String,String> successMap = new HashMap<>();
                 successMap.put("test","suceess");
                 OrgUserAccount orgUserAccount1 = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
                 orgUserAccountService.saveOrgUserAccounts(orgUserAccount1);
-                bpc.request.setAttribute("isValid","Y");
-                bpc.request.setAttribute("successMap",successMap);
+                ParamUtil.setRequestAttr(request,"isValid","Y");
+                ParamUtil.setRequestAttr(request,"successMap",successMap);
             }
         }else{
-            bpc.request.setAttribute("isValid","Y");
+            ParamUtil.setRequestAttr(request,"isValid","Y");
         }
         log.debug("The doEdit end ...");
+    }
+
+    /******************************************************************************************************************
+     Private methods
+     ******************************************************************************************************************/
+    private SearchParam getSearchParam(BaseProcessClass bpc){
+        return getSearchParam(bpc, false);
+    }
+
+    private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
+        HttpServletRequest request = bpc.request;
+        SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, SEARCH_PARAM);
+        if(param == null || isNew){
+            param = new SearchParam(DemoQuery.class);
+            param.setPageSize(10);
+            param.setPageNo(1);
+            param.setSort("user_id", SearchParam.ASCENDING);
+            ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
+        }
+        return param;
     }
 }

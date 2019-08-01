@@ -82,7 +82,7 @@
     <div class="clear"></div>
     <br/>
     <br/>
-    <iais:pagination  param="searchParam" result="searchResult"/>
+    <iais:pagination  param="demoSearchParam" result="demoSearchResult"/>
     <iais:searchSection title="Account List" onclick="" >
         <div class="table-responsive" id="no-more-tables">
             <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
@@ -105,7 +105,7 @@
                 </thead>
                 <tbody style="text-align: center">
                  <c:choose>
-                     <c:when test="${empty searchResult.rows}">
+                     <c:when test="${empty demoSearchResult.rows}">
                             <tr>
                                 <td colspan="6">
                                      <iais:message key="ACK00001" escape="true"></iais:message>
@@ -114,10 +114,10 @@
                             </tr>
                      </c:when>
                      <c:otherwise>
-                        <c:forEach var="demoQuery" items="${searchResult.rows}" varStatus="status">
+                        <c:forEach var="demoQuery" items="${demoSearchResult.rows}" varStatus="status">
                             <tr>
                                 <td><input type="checkbox" onclick="sopCrud1.updateAllCheckBox()" value="${demoQuery.userId}" name="demo" id="entityUids_${demoQuery.userId}"></td>
-                                <td class="row_no">${(status.index + 1) + (searchParam.pageNo - 1) * searchParam.pageSize}</td>
+                                <td class="row_no">${(status.index + 1) + (demoSearchParam.pageNo - 1) * demoSearchParam.pageSize}</td>
                                 <td>${demoQuery.userId}</td>
                                 <td>${demoQuery.nuicNum}</td>
                                 <td>${demoQuery.uenNo}</td>
