@@ -54,11 +54,8 @@ public class OrgUserAccountDelegatorTest {
     private BaseProcessClass bpc;
 
     private MockHttpServletRequest request = new MockHttpServletRequest(); ;
-
     @Mock
     private QueryDao<DemoQuery> demoQueryDao;
-
-    private SearchResult searchResult;
     @Mock
     private OrgUserAccountDao orgUserAccountDao;
 
@@ -73,7 +70,6 @@ public class OrgUserAccountDelegatorTest {
         Whitebox.setInternalState(orgUserAccountDelegator,"orgUserAccountService",orgUserAccountService);
         Whitebox.setInternalState(orgUserAccountService,"demoQueryDao",demoQueryDao);
         Whitebox.setInternalState(orgUserAccountService,"orgUserAccountDao",orgUserAccountDao);
-
     }
 
     @Test
@@ -84,6 +80,7 @@ public class OrgUserAccountDelegatorTest {
 
     @Test
     public void testprepareDatat(){
+        SearchResult searchResult = new SearchResult();
         PowerMockito.when(demoQueryDao.doQuery(Mockito.anyObject(),Mockito.anyString(),Mockito.anyString())).thenReturn(searchResult);
         orgUserAccountDelegator.prepareData(bpc);
         Assert.assertTrue(true);
