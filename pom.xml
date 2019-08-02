@@ -148,8 +148,7 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
+                        <id>default-report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
