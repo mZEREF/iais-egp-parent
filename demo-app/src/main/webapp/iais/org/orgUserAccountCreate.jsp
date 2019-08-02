@@ -100,11 +100,11 @@
         <iais:action>
             <button type="button"  class="btn btn-default" onclick="javascript:doCancel();">Cancel</button>
             <c:choose>
-                <c:when test="${empty orgUserAccountDto}">
+                <c:when test="${empty orgUserAccountDto || !orgUserAccountDto.editFlag}">
                     <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doCreate('${orgId}');">Submit</button>
                 </c:when>
                 <c:otherwise>
-                    <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doEdit('${orgUserAccountDto.rowguid}');">Edit</button>
+                    <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doEdit('');">Edit</button>
                 </c:otherwise>
             </c:choose>
         </iais:action>
