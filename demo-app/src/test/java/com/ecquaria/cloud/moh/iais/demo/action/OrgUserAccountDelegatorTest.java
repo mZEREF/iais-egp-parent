@@ -161,7 +161,9 @@ public class OrgUserAccountDelegatorTest {
     @Test
     public void testdoEdit(){
         request.addParameter("crud_action_type","edit");
-        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, new OrgUserAccountDto());
+        OrgUserAccountDto dto = new OrgUserAccountDto();
+        dto.setOldNricNo("test0");
+        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, dto);
         request.addParameter("nircNo","test0");
         orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
