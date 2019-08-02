@@ -13,14 +13,16 @@
 
 package com.ecquaria.cloud.moh.iais.demo.action;
 
-import com.ecquaria.cloud.moh.iais.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.demo.dao.OrgUserAccountDao;
+import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.demo.service.impl.OrgUserAccountServiceImpl;
+import com.ecquaria.cloud.moh.iais.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,9 +35,13 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Example;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * OrgUserAccountDelegatorTest
@@ -44,7 +50,8 @@ import sop.webflow.rt.api.BaseProcessClass;
  * @date 7/31/2019
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OrgUserAccountDelegator.class,CrudHelper.class,OrgUserAccountServiceImpl.class})
+@PrepareForTest({OrgUserAccountDelegator.class,CrudHelper.class,OrgUserAccountServiceImpl.class,
+        SpringContextHelper.class})
 public class OrgUserAccountDelegatorTest {
     @InjectMocks
     private OrgUserAccountDelegator orgUserAccountDelegator;
@@ -66,10 +73,14 @@ public class OrgUserAccountDelegatorTest {
         bpc.request=request;
         PowerMockito.mockStatic(CrudHelper.class);
         PowerMockito.doNothing().when(orgUserAccountDao).delete(Mockito.anyInt());
-        PowerMockito.when(orgUserAccountDao.findOne((Example)Mockito.anyObject())).thenReturn(orgUserAccount);
+        when(orgUserAccountDao.findOne((Example)Mockito.anyObject())).thenReturn(orgUserAccount);
         Whitebox.setInternalState(orgUserAccountDelegator,"orgUserAccountService",orgUserAccountService);
         Whitebox.setInternalState(orgUserAccountService,"demoQueryDao",demoQueryDao);
         Whitebox.setInternalState(orgUserAccountService,"orgUserAccountDao",orgUserAccountDao);
+        PowerMockito.mockStatic(SpringContextHelper.class);
+        ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
+        when(SpringContextHelper.getContext()).thenReturn(context);
+        doReturn(orgUserAccountDao).when(context).getBean(OrgUserAccountDao.class);
     }
 
     @Test
@@ -81,7 +92,7 @@ public class OrgUserAccountDelegatorTest {
     @Test
     public void testprepareDatat(){
         SearchResult searchResult = new SearchResult();
-        PowerMockito.when(demoQueryDao.doQuery(Mockito.anyObject(),Mockito.anyString(),Mockito.anyString())).thenReturn(searchResult);
+        when(demoQueryDao.doQuery(Mockito.anyObject(),Mockito.anyString(),Mockito.anyString())).thenReturn(searchResult);
         orgUserAccountDelegator.prepareData(bpc);
         Assert.assertTrue(true);
     }
@@ -143,12 +154,14 @@ public class OrgUserAccountDelegatorTest {
     @Test
     public void testdoEditValidateHasError(){
         request.addParameter("crud_action_type","edit");
+        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, new OrgUserAccountDto());
         orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
     }
     @Test
     public void testdoEdit(){
         request.addParameter("crud_action_type","edit");
+        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, new OrgUserAccountDto());
         request.addParameter("nircNo","test0");
         orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
