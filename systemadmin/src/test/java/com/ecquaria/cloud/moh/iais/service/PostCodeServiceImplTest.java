@@ -39,7 +39,7 @@ public class PostCodeServiceImplTest {
         Mockito.doReturn(postCode).when(postCodeDao).getPostCodeByCode(POSTCODE);
         Mockito.doReturn(postCode).when(postCodeDao).saveAndFlush(postCode);
         Mockito.doNothing().when(postCodeDao).deleteAll();
-        Mockito.doNothing().when(postCodeDao).save(list);
+        Mockito.doReturn(list).when(postCodeDao).save(list);
     }
 
     //getPostCodeByCode
