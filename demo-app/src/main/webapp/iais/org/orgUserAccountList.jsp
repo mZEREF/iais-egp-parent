@@ -50,19 +50,19 @@
         <iais:row>
             <iais:field value="Nirc No"/>
             <iais:value width="7">
-                <input type="text" name="nric_no" value="${searchParam.filters['nric_no']}" />
+                <input type="text" name="nric_no" value="${demoSearchParam.filters['nric_no']}" />
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="UEN No"/>
             <iais:value width="7">
-                <input type="text" name="uen_no" value="${searchParam.filters['uen_no']}" />
+                <input type="text" name="uen_no" value="${demoSearchParam.filters['uen_no']}" />
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field value="Create Date"/>
             <iais:value width="7">
-                <!--<iais:dates name="create_date" value="${searchParam.filters['create_date']}" fromYear="1980" last1Years="2222"></iais:dates>-->
+                <!--<iais:dates name="create_date" value="${demoSearchParam.filters['create_date']}" fromYear="1980" last1Years="2222"></iais:dates>-->
                 <iais:datePicker id = "fromDate" name = "fromDate" value = ""></iais:datePicker>
             </iais:value>
         </iais:row>
@@ -82,7 +82,7 @@
     <div class="clear"></div>
     <br/>
     <br/>
-    <iais:pagination  param="demoSearchParam" result="demoSearchResult"/>
+    <iais:pagination  param="demodemoSearchParam" result="demoSearchResult"/>
     <iais:searchSection title="Account List" onclick="" >
         <div class="table-responsive" id="no-more-tables">
             <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
