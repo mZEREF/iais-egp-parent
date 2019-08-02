@@ -198,7 +198,8 @@ public class OrgUserAccountDelegator {
         String type = ParamUtil.getString(request, "crud_action_type");
         if("save".equals(type)){
             String orgId = ParamUtil.getString(request,"crud_action_value");
-            OrgUserAccountDto accountDto = MiscUtil.generateDtoFromParam(bpc.request,OrgUserAccountDto.class);
+            OrgUserAccountDto accountDto = new OrgUserAccountDto();
+            getValueFromPage(accountDto, request);
             accountDto.setOrgId(orgId);
             ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, accountDto);
             ValidationResult validationResult =ValidationUtils.validateProperty(accountDto,"create");
@@ -252,16 +253,8 @@ public class OrgUserAccountDelegator {
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request,"crud_action_type");
         if("edit".equals(type)){
-            String rowguid = ParamUtil.getString(request,"crud_action_value");
             OrgUserAccountDto accountDto = (OrgUserAccountDto) ParamUtil.getSessionAttr(request, ORG_USER_DTO_ATTR);
-            String name = ParamUtil.getString(request,"name");
-            String nircNo = ParamUtil.getString(request,"nircNo");
-            String corpPassId = ParamUtil.getString(request,"corpPassId");
-            String status = ParamUtil.getString(request,"status");
-            accountDto.setName(name);
-            accountDto.setNircNo(nircNo);
-            accountDto.setCorpPassId(corpPassId);
-            accountDto.setStatus(status);
+            getValueFromPage(accountDto, request);
             ValidationResult validationResult =ValidationUtils.validateProperty(accountDto, "edit");
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
@@ -300,5 +293,16 @@ public class OrgUserAccountDelegator {
             ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
         }
         return param;
+    }
+
+    private void getValueFromPage(OrgUserAccountDto accountDto, HttpServletRequest request) {
+        String name = ParamUtil.getString(request,"name");
+        String nircNo = ParamUtil.getString(request,"nircNo");
+        String corpPassId = ParamUtil.getString(request,"corpPassId");
+        String status = ParamUtil.getString(request,"status");
+        accountDto.setName(name);
+        accountDto.setNircNo(nircNo);
+        accountDto.setCorpPassId(corpPassId);
+        accountDto.setStatus(status);
     }
 }

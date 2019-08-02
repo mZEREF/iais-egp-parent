@@ -65,6 +65,7 @@ public class OrgUserAccountDto implements Serializable {
             @ValidateWithMethod(methodName = "fakeValidateB", parameterType = String.class, message = "12134")})
     @Getter @Setter
     private String orgId;
+    @Getter @Setter private boolean editFlag;
 
     //Validation method
     public boolean validateNricEdit(String nric) {
