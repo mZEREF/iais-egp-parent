@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
+import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +36,8 @@ public class CrudHelper {
      * @return: void
      */
     public static void doSorting(SearchParam searchParam, HttpServletRequest request){
-        String sortFieldName = request.getParameter("crud_action_value");
-        String sortType = request.getParameter("crud_action_additional");
+        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
         searchParam.setSort(sortFieldName,sortType);
     }
     /**
@@ -47,7 +48,7 @@ public class CrudHelper {
      * @return: void
      */
     public static void doPaging(SearchParam searchParam, HttpServletRequest request){
-        String  pageNo = request.getParameter("pageJumpNoTextchangePage");
+        String  pageNo = ParamUtil.getString(request,"pageJumpNoTextchangePage");
         if(!StringUtil.isEmpty(pageNo)){
             searchParam.setPageNo(Integer.parseInt(pageNo));
         }
