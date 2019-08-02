@@ -82,7 +82,7 @@
     <div class="clear"></div>
     <br/>
     <br/>
-    <iais:pagination  param="demodemoSearchParam" result="demoSearchResult"/>
+    <iais:pagination  param="demoSearchParam" result="demoSearchResult"/>
     <iais:searchSection title="Account List" onclick="" >
         <div class="table-responsive" id="no-more-tables">
             <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
