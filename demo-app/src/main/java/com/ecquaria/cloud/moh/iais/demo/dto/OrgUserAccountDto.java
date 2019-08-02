@@ -49,7 +49,7 @@ public class OrgUserAccountDto implements Serializable {
     @NotNull(message = "nircNo is mandatory null.", profiles = {"create", "edit"})
     @NotBlank(message = "nircNo is mandatory Blank.", profiles = {"create", "edit"})
     @ValidateWithMethod(methodName = "validateNricEdit", parameterType = String.class, message = "Cannot change NRIC No.",
-            profiles="edit")
+            profiles ="edit")
     @Getter @Setter
     private String nircNo;
     @Getter @Setter private String oldNricNo;
