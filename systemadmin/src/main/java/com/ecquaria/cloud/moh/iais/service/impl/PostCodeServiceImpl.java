@@ -41,6 +41,6 @@ public class PostCodeServiceImpl implements PostCodeService {
 
     @Override
     public void createAll(List list) {
-        postCodeDao.saveAll(list);
+        postCodeDao.save(list);
     }
 }
