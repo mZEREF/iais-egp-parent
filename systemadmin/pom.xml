@@ -18,9 +18,9 @@
             <version>${engine-version}</version>
         </dependency>
        <dependency>
-           <groupId>com.ecquaria.egp</groupId>
+           <groupId>sg.gov.moh.iais-egp</groupId>
            <artifactId>backbone</artifactId>
-           <version>${engine-version}</version>
+           <version>${revision}</version>
            <type>war</type>
        </dependency>
         <dependency>
