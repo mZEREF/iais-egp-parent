@@ -166,16 +166,12 @@ public final class FieldTag extends DivTagSupport {
         html.append("\">");
 
         if (!StringUtil.isEmpty(code)) {
-            try {
-                String key = codeType;
-                if (StringUtil.isEmpty(codeType)) {
-                    key = isBackend ? "be" : "fe";
-                }
-                //TODO
-                //value = MessageUtil.getField(key + "." + code);
-            } catch (Exception e) {
-                log.error("Fail to get file value[key=\"" + code + "\"]", e);
+            String key = codeType;
+            if (StringUtil.isEmpty(codeType)) {
+                key = isBackend ? "be" : "fe";
             }
+            //TODO
+            //value = MessageUtil.getField(key + "." + code);
         }
         html.append(value);
         if (!StringUtil.isEmpty(info)) {
