@@ -23,6 +23,12 @@ public class DemoQueryTest {
         entity.setNuicNum(null);
         entity.getUenNo();
         entity.setUenNo(null);
+        entity.getRowguid();
+        entity.setRowguid(null);
+        entity.getOrgId();
+        entity.setOrgId(null);
+        entity.getStatus();
+        entity.setStatus(null);
         assertNotNull(entity);
     }
 }

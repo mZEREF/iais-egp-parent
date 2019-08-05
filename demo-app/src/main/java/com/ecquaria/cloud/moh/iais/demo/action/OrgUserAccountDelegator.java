@@ -106,7 +106,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public  void doSearch(BaseProcessClass bpc){
-        log.debug("The prepareSwitch start ...");
+        log.debug("The doSearch start ...");
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
         String nric_no = ParamUtil.getString(request, "nric_no");
@@ -125,7 +125,7 @@ public class OrgUserAccountDelegator {
                 param.addFilter("account.STATUS"+i,status[i]);
             }
         }
-        log.debug("The prepareSwitch end ...");
+        log.debug("The doSearch end ...");
     }
     /**
      * AutoStep: doSorting
@@ -146,10 +146,10 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public  void doPaging(BaseProcessClass bpc){
-        log.debug("The prepareSwitch start ...");
+        log.debug("The doPaging start ...");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
-        log.debug("The prepareSwitch end ...");
+        log.debug("The doPaging end ...");
     }
     /**
      * AutoStep: doDelete
@@ -158,12 +158,12 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public  void doDelete(BaseProcessClass bpc){
-        log.debug("The prepareSwitch start ...");
+        log.debug("The doDelete start ...");
         String id = ParamUtil.getString(bpc.request,"crud_action_value");
         if(!StringUtil.isEmpty(id)){
             orgUserAccountService.deleteOrgUserAccountsById(id);
         }
-        log.debug("The prepareSwitch end ...");
+        log.debug("The doDelete end ...");
     }
     /**
      * AutoStep: PrepareCreate
@@ -172,7 +172,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void prepareCreateData(BaseProcessClass bpc){
-        log.debug("The doCreateStart start ...");
+        log.debug("The prepareCreateData start ...");
         HttpServletRequest request = bpc.request;
         String orgId = ParamUtil.getString(request,"crud_action_value");
         ParamUtil.setRequestAttr(request, "orgId", orgId);
@@ -184,7 +184,7 @@ public class OrgUserAccountDelegator {
         ParamUtil.setRequestAttr(request,"statusSelect",statusSelect);
         ParamUtil.setRequestAttr(request, ORG_USER_ACCOUNT_TILE,"Org Account Create");
         log.debug("******************-->:"+orgId);
-        log.debug("The doCreateStart end ...");
+        log.debug("The prepareCreateData end ...");
     }
     /**
      * AutoStep: doCreate
@@ -193,7 +193,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doCreate(BaseProcessClass bpc){
-        log.debug("The doCreateStart start ...");
+        log.debug("The doCreate start ...");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, "crud_action_type");
         if("save".equals(type)){
@@ -217,7 +217,7 @@ public class OrgUserAccountDelegator {
             ParamUtil.setRequestAttr(request,"isValid","Y");
         }
 
-        log.debug("The doCreateStart end ...");
+        log.debug("The doCreate end ...");
     }
     /**
      * AutoStep: PrepareEdit

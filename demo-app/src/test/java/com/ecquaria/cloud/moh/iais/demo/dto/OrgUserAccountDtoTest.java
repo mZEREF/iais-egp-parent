@@ -17,8 +17,14 @@ public class OrgUserAccountDtoTest {
 
     @Test
     public void testGetterSetter() {
+        entity.getId();
+        entity.setId(1);
+        entity.getRowguid();
+        entity.setRowguid(null);
         entity.getName();
         entity.setName(null);
+        entity.getOldNricNo();
+        entity.setOldNricNo(null);
         entity.getNircNo();
         entity.setNircNo(null);
         entity.getCorpPassId();
@@ -27,6 +33,11 @@ public class OrgUserAccountDtoTest {
         entity.setStatus(null);
         entity.getOrgId();
         entity.setOrgId(null);
+        entity.isEditFlag();
+        entity.setEditFlag(false);
+        entity.validateNricEdit("nric");
+        entity.fakeValidateA("");
+        entity.fakeValidateB("");
         assertNotNull(entity);
     }
 }
