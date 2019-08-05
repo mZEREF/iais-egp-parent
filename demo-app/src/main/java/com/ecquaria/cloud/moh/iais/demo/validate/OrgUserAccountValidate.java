@@ -44,7 +44,7 @@ public class OrgUserAccountValidate implements CustomizeValidator {
             return errMap;
 
         OrgUserAccount oua = userDao.findByIdNo(dto.getNircNo());
-        if (oua != null && oua.getId() != dto.getId()) {
+        if (oua != null && !oua.getId().equals(dto.getId())) {
             errMap.put("nircNo", "Duplicate NRIC No.");
         }
 
