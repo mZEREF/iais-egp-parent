@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<sqls catalog="messageSql">
+    <sql key = "query" remarks = "query message sql">
+        <![CDATA[
+            SELECT msg_id, rowguid, code_key, domain_type, msg_type, module, description, status
+            FROM EGPCLOUDFE.dbo.CM_MESSAGE
+            WHERE 1=1;
+        ]]>
+
+    </sql>
+
+</sqls>
+
