@@ -14,8 +14,7 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
@@ -29,11 +28,10 @@ import javax.servlet.jsp.JspTagException;
  * @date        7/23/2019
  * @author      suocheng
  */
+@Slf4j
 public final class FieldTag extends DivTagSupport {
     private static final long serialVersionUID = -8544224262301150921L;
     
-    private static final Logger logger = LoggerFactory.getLogger(FieldTag.class);
-
     private String code;
     private String codeType;
     private String value;
@@ -176,7 +174,7 @@ public final class FieldTag extends DivTagSupport {
                 //TODO
                 //value = MessageUtil.getField(key + "." + code);
             } catch (Exception e) {
-                logger.error("Fail to get file value[key=\"" + code + "\"]", e);
+                log.error("Fail to get file value[key=\"" + code + "\"]", e);
             }
         }
         html.append(value);
