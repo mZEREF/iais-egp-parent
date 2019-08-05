@@ -41,4 +41,8 @@ public class AccessUtil {
     public static boolean isFrontend() {
         return true;
     }
+
+    private AccessUtil() {
+        throw new IllegalStateException("Utility class");
+    }
 }
