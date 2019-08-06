@@ -34,7 +34,7 @@ public class RedisCacheHelper {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    public final static long SESSION_DEFAULT_EXPIRE = 60 * 30;
+    public final static long SESSION_DEFAULT_EXPIRE = 60L * 30L;
     /**  set do not expire */
     public final static long NOT_EXPIRE = -1;
 
