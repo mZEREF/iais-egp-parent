@@ -41,4 +41,15 @@ public class AccessUtil {
     public static boolean isFrontend() {
         return true;
     }
+
+    /**
+     * @description: judge is the Administrator
+     *
+     * @author: yichen on 8/2/2019 9:31 AM
+     * @param: []
+     * @return: boolean
+     */
+    public static boolean isAdministrator(){
+        return true;
+    }
 }

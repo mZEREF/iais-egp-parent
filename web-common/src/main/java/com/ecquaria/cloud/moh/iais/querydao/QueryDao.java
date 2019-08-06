@@ -43,6 +43,7 @@ public class QueryDao<T> {
 
     public <T> SearchResult<T> doQuery(SearchParam param, String catalog, String key){
         String mainSql = getMainSql(catalog, key, param);
+        log.debug("[QueryDao doQuery]   mainSql: ---->>> " + mainSql);
         return doQueryBySql(param, mainSql);
     }
 
