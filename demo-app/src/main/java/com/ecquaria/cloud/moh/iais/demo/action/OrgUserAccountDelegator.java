@@ -20,12 +20,12 @@ import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sg.gov.moh.iais.common.annotation.LogInfo;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
@@ -45,7 +45,7 @@ import java.util.Map;
  * @author suocheng
  * @date 7/12/2019
  */
-@Delegator
+@Delegator("orgUserAccountDelegator")
 @Slf4j
 public class OrgUserAccountDelegator {
     public static final String SEARCH_PARAM                        = "demoSearchParam";
@@ -62,8 +62,8 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    @LogInfo(moduleName = "demo", funcName="Org User Account")
     public void doStart(BaseProcessClass bpc){
+        AuditTrailHelper.auditFunction("demo", "manage org user");
         log.debug("The doStart start ...");
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, null);
