@@ -29,7 +29,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
-
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -39,17 +38,17 @@ import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
- * ValueTagTest
+ * SuccessTagTest
  *
  * @author suocheng
  * @date 8/6/2019
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({ValueTag.class})
-public class ValueTagTest {
+@PrepareForTest({SuccessTag.class})
+public class SuccessTagTest {
     @Spy
-    private ValueTag tag = new ValueTag();
+    private SuccessTag tag = new SuccessTag();
     @Mock
     private JspWriter jw;
 
@@ -59,19 +58,14 @@ public class ValueTagTest {
         Whitebox.setInternalState(tag, "pageContext", pageContext);
         when(pageContext.getOut()).thenReturn(jw);
         doNothing().when(jw).print(anyString());
-        tag.setId("idd");
         tag.setStyle("ssss");
     }
 
     @Test
     public void testdoStartTag() throws JspException {
-        tag.setWidth(2);
-        tag.setAlign(true);
-        tag.setLabel(true);
-        tag.setCssClass("css");
-        tag.setOffset(true);
+        tag.setCanClose(true);
         int ret = tag.doStartTag();
-        assertEquals(ValueTag.EVAL_BODY_INCLUDE, ret);
+        assertEquals(SuccessTag.EVAL_BODY_INCLUDE, ret);
     }
     @Test(expected = JspTagException.class)
     public void testDoStartTagExp() throws JspException, IOException {
@@ -81,7 +75,7 @@ public class ValueTagTest {
     @Test
     public void testDoEndTag() throws JspException {
         int ret = tag.doEndTag();
-        assertEquals(ValueTag.EVAL_PAGE, ret);
+        assertEquals(SuccessTag.EVAL_PAGE, ret);
         tag.release();
     }
 
