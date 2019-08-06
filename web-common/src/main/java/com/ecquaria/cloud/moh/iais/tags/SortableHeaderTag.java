@@ -67,7 +67,7 @@ public class SortableHeaderTag extends DivTagSupport {
             if (searchParam != null) {
                 Map<String, String> sortMap = searchParam.getSortMap();
                 if (sortMap.containsKey(field.toUpperCase())) {
-                    String type = sortMap.get(field);
+                    String type = sortMap.get(field.toUpperCase());
                     if (!StringUtil.isEmpty(type)) {
                         if (SearchParam.ASCENDING.equals(type))
                             isActiveUp = " active";
