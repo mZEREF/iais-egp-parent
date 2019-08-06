@@ -131,8 +131,6 @@ public class SelectTag extends DivTagSupport {
             }
 
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
-        }catch (RuntimeException e){
-        	throw e;
         } catch (Exception ex) {
             log.error("", ex);
             throw new JspTagException("SelectTag: " + ex.getMessage());
