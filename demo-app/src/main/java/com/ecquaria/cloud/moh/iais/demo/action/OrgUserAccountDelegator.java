@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sg.gov.moh.iais.common.annotation.LogInfo;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
@@ -61,6 +62,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
+    @LogInfo(moduleName = "demo", funcName="Org User Account")
     public void doStart(BaseProcessClass bpc){
         log.debug("The doStart start ...");
         HttpServletRequest request = bpc.request;
@@ -105,7 +107,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    public  void doSearch(BaseProcessClass bpc){
+    public void doSearch(BaseProcessClass bpc){
         log.debug("The doSearch start ...");
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
@@ -133,7 +135,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    public  void doSorting(BaseProcessClass bpc){
+    public void doSorting(BaseProcessClass bpc){
         log.debug("The doSorting start ...");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doSorting(searchParam,  bpc.request);
@@ -145,7 +147,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    public  void doPaging(BaseProcessClass bpc){
+    public void doPaging(BaseProcessClass bpc){
         log.debug("The doPaging start ...");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
@@ -157,7 +159,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    public  void doDelete(BaseProcessClass bpc){
+    public void doDelete(BaseProcessClass bpc){
         log.debug("The doDelete start ...");
         String id = ParamUtil.getString(bpc.request,"crud_action_value");
         if(!StringUtil.isEmpty(id)){
