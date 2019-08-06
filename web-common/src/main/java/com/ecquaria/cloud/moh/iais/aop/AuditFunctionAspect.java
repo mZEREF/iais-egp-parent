@@ -12,10 +12,8 @@
  */
 package com.ecquaria.cloud.moh.iais.aop;
 
-import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -25,6 +23,9 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import sg.gov.moh.iais.common.annotation.LogInfo;
+import sg.gov.moh.iais.common.constant.AuditTrailConsts;
+import sg.gov.moh.iais.common.utils.MiscUtil;
+import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
 
@@ -47,17 +48,29 @@ public class AuditFunctionAspect {
     public void auditClass() {
         throw new UnsupportedOperationException();
     }
+    @Pointcut("@annotation(com.ecquaria.cloud.moh.iais.annotation.SearchTrack)")
+    public void auditSearch() {
+        throw new UnsupportedOperationException();
+    }
 
     @Around("auditFunction()")
     public Object auditAroundFunction(ProceedingJoinPoint point) throws Throwable {
-        AuditTrailDto dto = new AuditTrailDto();
+        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(MiscUtil.getCurrentRequest(),
+                AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        if (dto == null)
+            dto = new AuditTrailDto();
+
         IaisEGPHelper.setAuditLoginUserInfo(dto);
         return auditFunction(point, dto);
     }
 
     @Around("auditClass()")
     public Object auditAroundClass(ProceedingJoinPoint point) throws Throwable {
-        AuditTrailDto dto = new AuditTrailDto();
+        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(MiscUtil.getCurrentRequest(),
+                AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        if (dto == null)
+            dto = new AuditTrailDto();
+
         IaisEGPHelper.setAuditLoginUserInfo(dto);
         Class clazz = point.getSignature().getDeclaringType();
         if (clazz.isAnnotationPresent(LogInfo.class)) {
@@ -70,24 +83,11 @@ public class AuditFunctionAspect {
         return auditFunction(point, dto);
     }
 
-    private Object auditFunction(ProceedingJoinPoint point, AuditTrailDto dto) throws Throwable {
-        Method method = ((MethodSignature) point.getSignature()).getMethod();
-        if (method.isAnnotationPresent(LogInfo.class)) {
-            LogInfo logInfo = method.getAnnotation(LogInfo.class);
-            dto.setOperation(logInfo.auditType());
-            dto.setFunctionName(logInfo.funcName());
-            dto.setModule(logInfo.moduleName());
-        }
-        if (method.isAnnotationPresent(SearchTrack.class)) {
-            Object[] args = point.getArgs();
-            keepSearchParam(args, dto);
-        }
-        callRestApi(dto);
-
-        return point.proceed();
-    }
-
-    private void keepSearchParam(Object[] args, AuditTrailDto dto) throws JsonProcessingException {
+    @Around("auditSearch()")
+    public Object keepSearchParam(ProceedingJoinPoint point) throws Throwable {
+        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(MiscUtil.getCurrentRequest(),
+                AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        Object[] args = point.getArgs();
         if (args != null && args.length > 0) {
             for (Object obj : args) {
                 if (obj instanceof SearchParam) {
@@ -103,6 +103,22 @@ public class AuditFunctionAspect {
                 }
             }
         }
+        callRestApi(dto);
+
+        return point.proceed();
+    }
+
+    private Object auditFunction(ProceedingJoinPoint point, AuditTrailDto dto) throws Throwable {
+        Method method = ((MethodSignature) point.getSignature()).getMethod();
+        if (method.isAnnotationPresent(LogInfo.class)) {
+            LogInfo logInfo = method.getAnnotation(LogInfo.class);
+            dto.setOperation(logInfo.auditType());
+            dto.setFunctionName(logInfo.funcName());
+            dto.setModule(logInfo.moduleName());
+        }
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), AuditTrailConsts.SESSION_ATTR_PARAM_NAME, dto);
+
+        return point.proceed();
     }
 
     private void callRestApi(AuditTrailDto dto) {

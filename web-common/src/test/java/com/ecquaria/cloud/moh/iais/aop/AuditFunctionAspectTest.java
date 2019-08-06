@@ -124,6 +124,11 @@ public class AuditFunctionAspectTest {
         aspect.auditClass();
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testAuditAuditSearch() {
+        aspect.auditSearch();
+    }
+
     @Test
     public void testException() {
         AopTestUtils.getTargetObject(tnf);
