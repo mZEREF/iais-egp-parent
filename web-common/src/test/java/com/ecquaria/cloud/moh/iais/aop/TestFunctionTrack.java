@@ -26,7 +26,7 @@ import sg.gov.moh.iais.common.annotation.LogInfo;
 
 public class TestFunctionTrack {
     @LogInfo(funcName="testSearch", moduleName="modaa")
-    @SearchTrack
+    @SearchTrack(catalog = "aaa", key = "bbb")
     public void searchForSomething(SearchParam param) {
 
     }

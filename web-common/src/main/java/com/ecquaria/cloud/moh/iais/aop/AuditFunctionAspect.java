@@ -24,12 +24,12 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import sg.gov.moh.iais.common.annotation.LogInfo;
+import sg.gov.moh.iais.common.audit.AuditTrailDto;
 import sg.gov.moh.iais.common.constant.AuditTrailConsts;
+import sg.gov.moh.iais.common.utils.AuditLogUtil;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
-import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
