@@ -41,6 +41,7 @@ public class SearchParamTest {
         Map<String, Object> foilters = sp.getFilters();
         Assert.assertEquals(FILTERSVALUE,foilters.get(FILTERSKEY));
         sp.addFilter(FILTERSKEY,FILTERSVALUE,true);
+        sp.removeFilter(FILTERSKEY);
         //test the param
         sp.addParam(PARAMKEY,PARAMVALUE);
         Map<String, Object> param = sp.getParams();
@@ -66,9 +67,12 @@ public class SearchParamTest {
          Assert.assertEquals(sp.getPageNo(),PAGENO);
          sp.setPageSize(PAGSIZE);
          Assert.assertEquals(sp.getPageSize(),PAGSIZE);
+         Assert.assertEquals(SearchParam.class,sp.getEntityCls());
          sp.clear();
          sp.setParams(params);
          sp.setFilters(filters);
+
+
     }
 
 

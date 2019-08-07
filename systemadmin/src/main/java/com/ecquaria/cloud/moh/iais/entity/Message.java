@@ -3,46 +3,53 @@ package com.ecquaria.cloud.moh.iais.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "ERRORMESSAGE")
-public class Message {
-    @Setter
+@Table(name = "CM_MESSAGE")
+public class Message implements Serializable {
     @Getter
+    @Setter
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    private Integer codeId;
+    private Integer msgId;
 
-
-    @Setter
     @Getter
-    @Column(name="CODE_KEY")
+    @Setter
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "rowguid")
+    private String rowguid;
+
+    @Getter
+    @Setter
+    @Column(name = "code_key")
     private String codeKey;
 
-    @Setter
     @Getter
-    @Column(name="TYPE")
-    private String type;
+    @Setter
+    @Column(name = "domain_type")
+    private String domainType;
 
-    @Setter
     @Getter
-    @Column(name = "MESSAGE_TYPE")
-    private String messageType;
+    @Setter
+    @Column(name = "msg_type")
+    private String msgType;
 
-    @Setter
     @Getter
-    @Column(name="MODULE")
+    @Setter
+    @Column(name = "module")
     private String module;
 
-    @Setter
     @Getter
-    @Column(name="DESCRIPTION")
+    @Setter
+    @Column(name = "description")
     private String description;
 
-    @Setter
     @Getter
-    @Column(name="STATUS")
-    private String status;
+    @Setter
+    @Column(name = "status")
+    private Integer status;
 }
