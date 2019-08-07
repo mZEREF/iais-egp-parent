@@ -32,10 +32,10 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.AopTestUtils;
-import sg.gov.moh.iais.common.audit.AuditTrailDto;
 import sg.gov.moh.iais.common.constant.AppConsts;
-import sg.gov.moh.iais.common.utils.AuditLogUtil;
 import sg.gov.moh.iais.common.utils.MiscUtil;
+import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
+import sg.gov.moh.iais.web.logging.util.AuditLogUtil;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 

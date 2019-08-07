@@ -38,6 +38,7 @@ import org.powermock.reflect.Whitebox;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Example;
 import org.springframework.mock.web.MockHttpServletRequest;
+import sg.gov.moh.iais.common.utils.MiscUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import static org.powermock.api.mockito.PowerMockito.doReturn;
@@ -51,7 +52,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({OrgUserAccountDelegator.class,CrudHelper.class,OrgUserAccountServiceImpl.class,
-        SpringContextHelper.class})
+        SpringContextHelper.class, MiscUtil.class})
 public class OrgUserAccountDelegatorTest {
     @InjectMocks
     private OrgUserAccountDelegator orgUserAccountDelegator;
@@ -81,6 +82,8 @@ public class OrgUserAccountDelegatorTest {
         ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
         when(SpringContextHelper.getContext()).thenReturn(context);
         doReturn(orgUserAccountDao).when(context).getBean(OrgUserAccountDao.class);
+        PowerMockito.mockStatic(MiscUtil.class);
+        when(MiscUtil.getCurrentRequest()).thenReturn(request);
     }
 
     @Test
