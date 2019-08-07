@@ -64,7 +64,7 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     }
 
     @Override
-    @SearchTrack
+    @SearchTrack(catalog = "demo", key = "searchDemo")
     public SearchResult<DemoQuery> doQuery(SearchParam param, String catalog, String key) {
         return demoQueryDao.doQuery(param, catalog, key);
     }

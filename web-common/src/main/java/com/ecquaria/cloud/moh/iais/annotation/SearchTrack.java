@@ -7,4 +7,6 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface SearchTrack {
+    String catalog() default "";
+    String key() default "";
 }
