@@ -53,6 +53,10 @@ public class OrgUserAccountDelegator {
     public static final String SEARCH_RESULT                       = "demoSearchResult";
     public static final String ORG_USER_ACCOUNT_TILE               = "orgUserAccountEditTile";
     public static final String ORG_USER_DTO_ATTR                   = "orgUserAccountDto";
+    public static final String CRUD_ACTION_TYPE                    = "crud_action_type";
+    public static final String STATUS                              = "status";
+    public static final String CRUD_ACTION_VALUE                   = "crud_action_value";
+    public static final String ISVALID                             = "isValid";
 
     @Autowired
     private OrgUserAccountService orgUserAccountService;
@@ -98,7 +102,7 @@ public class OrgUserAccountDelegator {
      */
     public  void prepareSwitch(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
-        String  action = ParamUtil.getString(bpc.request,"crud_action_type");
+        String  action = ParamUtil.getString(bpc.request,CRUD_ACTION_TYPE);
         log.debug("*******************action-->:"+action);
         log.debug("The prepareSwitch end ...");
     }
@@ -112,18 +116,18 @@ public class OrgUserAccountDelegator {
         log.debug("The doSearch start ...");
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
-        String nric_no = ParamUtil.getString(request, "nric_no");
-        String uen_no = ParamUtil.getString(request,"uen_no");
-        String[] status = ParamUtil.getStrings(request,"status");
-        if(!StringUtil.isEmpty(nric_no)){
-            param.addFilter("nric_no",nric_no,true);
+        String nricNo = ParamUtil.getString(request, "nric_no");
+        String uenNo = ParamUtil.getString(request,"uen_no");
+        String[] status = ParamUtil.getStrings(request,STATUS);
+        if(!StringUtil.isEmpty(nricNo)){
+            param.addFilter("nric_no",nricNo,true);
         }
-        if(!StringUtil.isEmpty(uen_no)){
-            param.addFilter("uen_no",uen_no,true);
+        if(!StringUtil.isEmpty(uenNo)){
+            param.addFilter("uen_no",uenNo,true);
         }
         if(status != null && status.length>0){
             String statusStr = SqlHelper.constructInCondition("account.STATUS",status.length);
-            param.addParam("status",statusStr);
+            param.addParam(STATUS,statusStr);
             for (int i = 0 ; i<status.length; i++ ) {
                 param.addFilter("account.STATUS"+i,status[i]);
             }
@@ -162,7 +166,7 @@ public class OrgUserAccountDelegator {
      */
     public void doDelete(BaseProcessClass bpc){
         log.debug("The doDelete start ...");
-        String id = ParamUtil.getString(bpc.request,"crud_action_value");
+        String id = ParamUtil.getString(bpc.request,CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(id)){
             orgUserAccountService.deleteOrgUserAccountsById(id);
         }
@@ -177,7 +181,7 @@ public class OrgUserAccountDelegator {
     public void prepareCreateData(BaseProcessClass bpc){
         log.debug("The prepareCreateData start ...");
         HttpServletRequest request = bpc.request;
-        String orgId = ParamUtil.getString(request,"crud_action_value");
+        String orgId = ParamUtil.getString(request,CRUD_ACTION_VALUE);
         ParamUtil.setRequestAttr(request, "orgId", orgId);
         List statusSelect = new ArrayList<SelectOption>();
         SelectOption sp1 = new SelectOption("pending","Pending");
@@ -202,9 +206,9 @@ public class OrgUserAccountDelegator {
     public void doCreate(BaseProcessClass bpc){
         log.debug("The doCreate start ...");
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request, "crud_action_type");
+        String type = ParamUtil.getString(request, CRUD_ACTION_TYPE);
         if("save".equals(type)){
-            String orgId = ParamUtil.getString(request,"crud_action_value");
+            String orgId = ParamUtil.getString(request,CRUD_ACTION_VALUE);
             OrgUserAccountDto accountDto = new OrgUserAccountDto();
             getValueFromPage(accountDto, request);
             accountDto.setOrgId(orgId);
@@ -214,14 +218,14 @@ public class OrgUserAccountDelegator {
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(request,"errorMap",errorMap);
-                ParamUtil.setRequestAttr(request,"isValid","N");
+                ParamUtil.setRequestAttr(request,ISVALID,"N");
             }else{
                 OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
                 orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
-                ParamUtil.setRequestAttr(request,"isValid","Y");
+                ParamUtil.setRequestAttr(request,ISVALID,"Y");
             }
         }else{
-            ParamUtil.setRequestAttr(request,"isValid","Y");
+            ParamUtil.setRequestAttr(request,ISVALID,"Y");
         }
 
         log.debug("The doCreate end ...");
@@ -235,7 +239,7 @@ public class OrgUserAccountDelegator {
     public void prepareEdit(BaseProcessClass bpc){
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
-        String rowguid = ParamUtil.getString(request,"crud_action_value");
+        String rowguid = ParamUtil.getString(request,CRUD_ACTION_VALUE);
         OrgUserAccountDto dto;
         if(StringUtil.isEmpty(rowguid)){
             dto = (OrgUserAccountDto)ParamUtil.getSessionAttr(request,ORG_USER_DTO_ATTR);
@@ -264,7 +268,7 @@ public class OrgUserAccountDelegator {
     public void doEdit(BaseProcessClass bpc){
         log.debug("The doEdit start ...");
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request,"crud_action_type");
+        String type = ParamUtil.getString(request,CRUD_ACTION_TYPE);
         if("edit".equals(type)){
             OrgUserAccountDto accountDto = (OrgUserAccountDto) ParamUtil.getSessionAttr(request, ORG_USER_DTO_ATTR);
             getValueFromPage(accountDto, request);
@@ -273,17 +277,17 @@ public class OrgUserAccountDelegator {
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(request,"errorMap",errorMap);
-                ParamUtil.setRequestAttr(request,"isValid","N");
+                ParamUtil.setRequestAttr(request,ISVALID,"N");
             }else{
                 Map<String,String> successMap = new HashMap<>();
                 successMap.put("test","suceess");
                 OrgUserAccount orgUserAccount1 = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
                 orgUserAccountService.saveOrgUserAccounts(orgUserAccount1);
-                ParamUtil.setRequestAttr(request,"isValid","Y");
+                ParamUtil.setRequestAttr(request,ISVALID,"Y");
                 ParamUtil.setRequestAttr(request,"successMap",successMap);
             }
         }else{
-            ParamUtil.setRequestAttr(request,"isValid","Y");
+            ParamUtil.setRequestAttr(request,ISVALID,"Y");
         }
         log.debug("The doEdit end ...");
     }
@@ -312,7 +316,7 @@ public class OrgUserAccountDelegator {
         String name = ParamUtil.getString(request,"name");
         String nircNo = ParamUtil.getString(request,"nircNo");
         String corpPassId = ParamUtil.getString(request,"corpPassId");
-        String status = ParamUtil.getString(request,"status");
+        String status = ParamUtil.getString(request,STATUS);
         accountDto.setName(name);
         accountDto.setNircNo(nircNo);
         accountDto.setCorpPassId(corpPassId);
