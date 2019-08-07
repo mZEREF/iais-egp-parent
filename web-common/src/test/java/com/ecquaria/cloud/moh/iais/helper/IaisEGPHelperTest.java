@@ -22,9 +22,9 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
+import sg.gov.moh.iais.common.audit.AuditTrailDto;
 import sg.gov.moh.iais.common.constant.AppConsts;
 import sg.gov.moh.iais.common.utils.MiscUtil;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 

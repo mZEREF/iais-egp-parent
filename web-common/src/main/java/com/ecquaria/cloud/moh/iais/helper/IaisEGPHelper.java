@@ -15,9 +15,9 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import com.ecquaria.egp.api.EGPHelper;
+import sg.gov.moh.iais.common.audit.AuditTrailDto;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 

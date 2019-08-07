@@ -15,10 +15,10 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import sg.gov.moh.iais.common.audit.AuditTrailDto;
+import sg.gov.moh.iais.common.utils.AuditLogUtil;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
-import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
