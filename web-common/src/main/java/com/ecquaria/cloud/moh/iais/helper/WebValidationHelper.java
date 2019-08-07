@@ -47,6 +47,7 @@ public class WebValidationHelper {
      */
     public static <T> ValidationResult validateEntity(T obj) {
         ValidationResult rslt = ValidationUtils.validateEntity(obj);
+        saveAuditTrail(rslt);
 
         return rslt;
     }
@@ -62,6 +63,7 @@ public class WebValidationHelper {
      */
     public static <T> ValidationResult validateProperty(T obj, String propertyName) {
         ValidationResult rslt = ValidationUtils.validateProperty(obj, propertyName);
+        saveAuditTrail(rslt);
 
         return rslt;
     }
