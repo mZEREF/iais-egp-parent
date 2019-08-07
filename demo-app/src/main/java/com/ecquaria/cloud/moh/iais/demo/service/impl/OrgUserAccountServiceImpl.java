@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.demo.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
@@ -63,6 +64,7 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     }
 
     @Override
+    @SearchTrack(catalog = "demo", key = "searchDemo")
     public SearchResult<DemoQuery> doQuery(SearchParam param, String catalog, String key) {
         return demoQueryDao.doQuery(param, catalog, key);
     }

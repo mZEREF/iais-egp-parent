@@ -31,7 +31,7 @@ import javax.servlet.jsp.JspTagException;
 @Slf4j
 public final class FieldTag extends DivTagSupport {
     private static final long serialVersionUID = -8544224262301150921L;
-    
+
     private String code;
     private String codeType;
     private String value;

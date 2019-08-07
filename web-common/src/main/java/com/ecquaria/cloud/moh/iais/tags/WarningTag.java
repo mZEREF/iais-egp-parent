@@ -18,12 +18,15 @@ import sg.gov.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-
 /**
- * <fams2:section>...</fams2:section>
+ * Warning Tag
  *
+ *
+ * @date        8/6/2019
+ * @author      suocheng
  */
 public final class WarningTag extends DivTagSupport {
+
     private static final long serialVersionUID = 2507648507715155034L;
 
     private boolean canClose;

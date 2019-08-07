@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -44,7 +45,7 @@ import java.util.Map;
  * @author suocheng
  * @date 7/12/2019
  */
-@Delegator
+@Delegator("orgUserAccountDelegator")
 @Slf4j
 public class OrgUserAccountDelegator {
     public static final String SEARCH_PARAM                        = "demoSearchParam";
@@ -62,6 +63,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doStart(BaseProcessClass bpc){
+        AuditTrailHelper.auditFunction("demo", "manage org user");
         log.debug("The doStart start ...");
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, null);
@@ -105,7 +107,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    public  void doSearch(BaseProcessClass bpc){
+    public void doSearch(BaseProcessClass bpc){
         log.debug("The doSearch start ...");
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
@@ -133,7 +135,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    public  void doSorting(BaseProcessClass bpc){
+    public void doSorting(BaseProcessClass bpc){
         log.debug("The doSorting start ...");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doSorting(searchParam,  bpc.request);
@@ -145,7 +147,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    public  void doPaging(BaseProcessClass bpc){
+    public void doPaging(BaseProcessClass bpc){
         log.debug("The doPaging start ...");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
@@ -157,7 +159,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    public  void doDelete(BaseProcessClass bpc){
+    public void doDelete(BaseProcessClass bpc){
         log.debug("The doDelete start ...");
         String id = ParamUtil.getString(bpc.request,"crud_action_value");
         if(!StringUtil.isEmpty(id)){
