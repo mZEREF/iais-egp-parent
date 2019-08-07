@@ -12,6 +12,7 @@
  */
 package com.ecquaria.cloud.moh.iais.aop;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +27,7 @@ import sg.gov.moh.iais.common.annotation.LogInfo;
 import sg.gov.moh.iais.common.constant.AuditTrailConsts;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
+import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
 
@@ -88,6 +90,13 @@ public class AuditFunctionAspect {
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(MiscUtil.getCurrentRequest(),
                 AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
         Object[] args = point.getArgs();
+        Method method = ((MethodSignature) point.getSignature()).getMethod();
+        Map<String, Object> json = new HashMap<>();
+        SearchTrack logInfo = method.getAnnotation(SearchTrack.class);
+        if (!StringUtil.isEmpty(logInfo.catalog()) && !StringUtil.isEmpty(logInfo.key())) {
+            json.put("sql_catalog", logInfo.catalog());
+            json.put("sql_key", logInfo.key());
+        }
         dto.setOperation(AuditTrailConsts.OPERATION_INTERNET_VIEW_RECORD);
         if (args != null && args.length > 0) {
             for (Object obj : args) {
@@ -95,7 +104,7 @@ public class AuditFunctionAspect {
                     SearchParam param = (SearchParam) obj;
                     Map<String, Object> filters = param.getFilters();
                     ObjectMapper mapper = new ObjectMapper();
-                    Map<String, Object> json = new HashMap<>();
+                    json.put("current_page", param.getPageNo());
                     for (Map.Entry<String, Object> ent : filters.entrySet()) {
                         json.put(ent.getKey(), ent.getValue());
                     }
