@@ -15,8 +15,11 @@ package com.ecquaria.cloud.moh.iais.demo.dao;
 
 import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.io.Serializable;
 
 /**
  * Org User Account Dao
@@ -24,7 +27,9 @@ import org.springframework.data.repository.query.Param;
  * @author suocheng
  * @date 7/12/2019
  */
-public interface OrgUserAccountDao extends JpaRepository<OrgUserAccount,Integer> {
+public interface OrgUserAccountDao extends JpaRepository<OrgUserAccount,Integer>,
+        JpaSpecificationExecutor<OrgUserAccount>,
+        Serializable {
     public OrgUserAccount findById(Object id);
     @Query(value = "select * from ORG_USER_ACCOUNT where NRIC_NO = :userIdNo",nativeQuery = true)
     public OrgUserAccount findByIdNo(@Param("userIdNo") String userIdNo);
