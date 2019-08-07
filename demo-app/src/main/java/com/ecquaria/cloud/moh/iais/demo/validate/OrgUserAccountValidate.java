@@ -33,11 +33,7 @@ import java.util.Map;
  * @date 8/1/2019
  */
 public class OrgUserAccountValidate implements CustomizeValidator {
-    //private OrgUserAccountDao userDao = SpringContextHelper.getContext().getBean(OrgUserAccountDao.class);
 
-    private  OrgUserAccountDao getOrgUserAccountDao(){
-        return SpringContextHelper.getContext().getBean(OrgUserAccountDao.class);
-    }
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = new HashMap<>();
@@ -52,5 +48,9 @@ public class OrgUserAccountValidate implements CustomizeValidator {
         }
 
         return errMap;
+    }
+
+    private  OrgUserAccountDao getOrgUserAccountDao(){
+        return SpringContextHelper.getContext().getBean(OrgUserAccountDao.class);
     }
 }
