@@ -33,8 +33,11 @@ import java.util.Map;
  * @date 8/1/2019
  */
 public class OrgUserAccountValidate implements CustomizeValidator {
-    private OrgUserAccountDao userDao = SpringContextHelper.getContext().getBean(OrgUserAccountDao.class);
+    //private OrgUserAccountDao userDao = SpringContextHelper.getContext().getBean(OrgUserAccountDao.class);
 
+    private  OrgUserAccountDao getOrgUserAccountDao(){
+        return SpringContextHelper.getContext().getBean(OrgUserAccountDao.class);
+    }
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = new HashMap<>();
@@ -43,7 +46,7 @@ public class OrgUserAccountValidate implements CustomizeValidator {
         if (dto == null || StringUtil.isEmpty(dto.getNircNo()))
             return errMap;
 
-        OrgUserAccount oua = userDao.findByIdNo(dto.getNircNo());
+        OrgUserAccount oua = getOrgUserAccountDao().findByIdNo(dto.getNircNo());
         if (oua != null && !oua.getId().equals(dto.getId())) {
             errMap.put("nircNo", "Duplicate NRIC No.");
         }
