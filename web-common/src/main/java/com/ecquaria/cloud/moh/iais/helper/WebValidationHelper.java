@@ -13,17 +13,9 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.common.audit.AuditTrailDto;
-import sg.gov.moh.iais.common.utils.AuditLogUtil;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * WebValidationHelper
@@ -43,7 +35,6 @@ public class WebValidationHelper {
      */
     public static <T> ValidationResult validateEntity(T obj) {
         ValidationResult rslt = ValidationUtils.validateEntity(obj);
-        saveAuditTrail(rslt);
 
         return rslt;
     }
@@ -59,7 +50,6 @@ public class WebValidationHelper {
      */
     public static <T> ValidationResult validateProperty(T obj, String propertyName) {
         ValidationResult rslt = ValidationUtils.validateProperty(obj, propertyName);
-        saveAuditTrail(rslt);
 
         return rslt;
     }
@@ -84,29 +74,8 @@ public class WebValidationHelper {
      */
     public static ValidationResult doValidate(Object[] objs, String[] profiles) {
         ValidationResult rslt = ValidationUtils.doValidate(objs, profiles);
-        saveAuditTrail(rslt);
 
         return rslt;
     }
 
-    private static void saveAuditTrail(ValidationResult rslt) {
-        if (!rslt.isHasErrors())
-            return;
-
-        AuditTrailDto dto = new AuditTrailDto();
-        IaisEGPHelper.setAuditLoginUserInfo(dto);
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> json = new HashMap<>();
-        for (Map.Entry<String, String> ent : rslt.retrieveAll().entrySet()) {
-            json.put(ent.getKey(), ent.getValue());
-        }
-        try {
-            dto.setViewParams(mapper.writeValueAsString(json));
-            List<AuditTrailDto> dtos = new ArrayList<>();
-            dtos.add(dto);
-            AuditLogUtil.callAuditRestApi(dtos);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
 }

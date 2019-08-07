@@ -139,5 +139,6 @@ public class AuditFunctionAspect {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+        dto.setViewParams(null);
     }
 }
