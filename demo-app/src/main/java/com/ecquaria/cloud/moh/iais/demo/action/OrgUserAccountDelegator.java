@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
@@ -185,6 +186,10 @@ public class OrgUserAccountDelegator {
         statusSelect.add(sp2);
         ParamUtil.setRequestAttr(request,"statusSelect",statusSelect);
         ParamUtil.setRequestAttr(request, ORG_USER_ACCOUNT_TILE,"Org Account Create");
+        Map<String,String> errorMap = (Map<String, String>) ParamUtil.getRequestAttr(request,"errorMap");
+        if(MapUtils.isEmpty(errorMap)){
+            ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, null);
+        }
         log.debug("******************-->:"+orgId);
         log.debug("The prepareCreateData end ...");
     }
@@ -231,10 +236,15 @@ public class OrgUserAccountDelegator {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
         String rowguid = ParamUtil.getString(request,"crud_action_value");
-        OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
-        OrgUserAccountDto dto = MiscUtil.transferEntityDto(orgUserAccount, OrgUserAccountDto.class);
-        dto.setEditFlag(true);
-        dto.setOldNricNo(dto.getNircNo());
+        OrgUserAccountDto dto;
+        if(StringUtil.isEmpty(rowguid)){
+            dto = (OrgUserAccountDto)ParamUtil.getSessionAttr(request,ORG_USER_DTO_ATTR);
+        }else{
+            OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
+            dto = MiscUtil.transferEntityDto(orgUserAccount, OrgUserAccountDto.class);
+            dto.setEditFlag(true);
+            dto.setOldNricNo(dto.getNircNo());
+        }
         ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, dto);
         ParamUtil.setRequestAttr(request, ORG_USER_ACCOUNT_TILE,"Org Account Edit");
         List statusSelect = new ArrayList<SelectOption>();
