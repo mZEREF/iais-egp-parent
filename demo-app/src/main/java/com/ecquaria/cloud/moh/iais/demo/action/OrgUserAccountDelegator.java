@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
@@ -30,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
-import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -209,7 +209,7 @@ public class OrgUserAccountDelegator {
             getValueFromPage(accountDto, request);
             accountDto.setOrgId(orgId);
             ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, accountDto);
-            ValidationResult validationResult =ValidationUtils.validateProperty(accountDto,"create");
+            ValidationResult validationResult =WebValidationHelper.validateProperty(accountDto,"create");
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
@@ -268,7 +268,7 @@ public class OrgUserAccountDelegator {
         if("edit".equals(type)){
             OrgUserAccountDto accountDto = (OrgUserAccountDto) ParamUtil.getSessionAttr(request, ORG_USER_DTO_ATTR);
             getValueFromPage(accountDto, request);
-            ValidationResult validationResult =ValidationUtils.validateProperty(accountDto, "edit");
+            ValidationResult validationResult =WebValidationHelper.validateProperty(accountDto, "edit");
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
