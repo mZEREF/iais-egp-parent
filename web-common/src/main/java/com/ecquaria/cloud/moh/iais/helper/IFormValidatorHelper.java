@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 
+import com.ecquaria.egp.core.forms.validation.FormValidationHelper;
 import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -40,7 +41,7 @@ public class IFormValidatorHelper {
     public static ValidationResult validateForm(BaseProcessClass bpc,String formName,Class formDto,boolean isAddToForm) throws InstantiationException, IllegalAccessException {
       Object obj = fillFormDataToDto(bpc,formName,formDto);
       ValidationResult result = WebValidationHelper.validateEntity(obj);
-      if(isAddToForm){ addErrorToForm(bpc,result); }
+      if(isAddToForm){ addErrorToForm(bpc,formName,result); }
       return result;
     }
     /**
@@ -72,13 +73,14 @@ public class IFormValidatorHelper {
      * @param: [bpc, result]
      * @return: void
      */
-    public static void addErrorToForm(BaseProcessClass bpc,ValidationResult result){
+    public static void addErrorToForm(BaseProcessClass bpc,String formName ,ValidationResult result){
         if(result.isHasErrors()){
             Map<String, String> errors = result.retrieveAll();
             for(Map.Entry<String,String> ent : errors.entrySet()){
                String key = ent.getKey();
                String value = ent.getValue();
-               IaisFormHelper.addFieldErrorMessage(bpc.request,key,value);
+               FormValidationHelper.addFieldErrorMessage(bpc.currentCase, formName, key, value);
+
             }
 
         }
