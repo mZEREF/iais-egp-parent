@@ -26,6 +26,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
+import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class WebValidationHelperTest {
 
     @Test
     public void testValidateEntity() {
+        AuditTrailDto.setThreadDto(new AuditTrailDto());
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("key","value");
         PowerMockito.when(ValidationUtils.validateEntity(Mockito.anyObject())).thenReturn(validationResult);
