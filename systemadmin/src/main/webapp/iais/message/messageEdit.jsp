@@ -28,6 +28,7 @@
 <!-- START: CSS -->
 
 <!-- END: CSS -->
+${msgRequestDto.domainType}
 
 <form id = "messageForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -36,53 +37,65 @@
     <input type="hidden" name="crud_action_additional" value="">
 
     <iais:body>
-    <h2>Message List Page</h2>
-
     <iais:section title="Message List" id="msgList">
+        <iais:error>
+            <c:if test = "${not empty errorMap}">
+                <div class="error">
+                    <c:forEach items="${errorMap}" var="map">
+                        ${map.key}  ${map.value} <br/>
+                    </c:forEach>
+                </div>
+            </c:if>
+        </iais:error>
+
         <iais:row>
             <iais:field value="Domain Type" required="true"></iais:field>
             <iais:value width="7">
-                <iais:select name="domainType" options="domainTypeSelect" firstOption="Please select" otherOptionValue="${msgRequestDto.domainType}"></iais:select>
+                <iais:select name="domainType" options="domainTypeSelect" firstOption="Please select" value="${msgRequestDto.domainType}" ></iais:select>
             </iais:value>
         </iais:row>
 
         <iais:row>
             <iais:field value="Msg Type" required="true"></iais:field>
             <iais:value width="7">
-                <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" otherOptionValue="${msgRequestDto.msgType}"></iais:select>
+                <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" value="${msgRequestDto.msgType}" ></iais:select>
             </iais:value>
         </iais:row>
 
         <iais:row>
-        <iais:field value="Module" required="false"></iais:field>
-        <iais:value width="7">
-            <iais:select name="module" options="moduleTypeSelect" firstOption="Please select" otherOptionValue="${msgRequestDto.module}"></iais:select>
-        </iais:value>
-    </iais:row>
+            <iais:field value="Module" required="false"></iais:field>
+            <iais:value width="7">
+                <iais:select name="module" options="moduleTypeSelect" firstOption="Please select" value="${msgRequestDto.module}"></iais:select>
+            </iais:value>
+        </iais:row>
 
-    <iais:row>
-        <iais:field value="description" required="false"></iais:field>
-        <iais:value width="7">
-            <input type="text" name="description" value="${msgRequestDto.description}" />
-        </iais:value>
-    </iais:row>
 
-        <iais:action>
-            <button type="button" class="search btn" onclick="javascript:doEdit();">Update</button>
-        </iais:action>
-        <iais:action>
-            <button type="button" class="search btn" onclick="javascript:doCancel();">Cancel</button>
-        </iais:action>
+        <iais:row>
+            <iais:field value="description" required="false"></iais:field>
+            <iais:value width="7">
+                <input type="text" name="description" value="${msgRequestDto.description}" />
+            </iais:value>
+        </iais:row>
+
     </iais:section>
-
-    </br>
-
         </iais:body>
+
+    <iais:action>
+        <button type="button" class="btn" onclick="javascript:doEdit(${msgRequestDto.id});">Update</button>
+    </iais:action>
+
+    <iais:action>
+        <button type="button" class="btn" onclick="javascript:doCancel();">Cancel</button>
+    </iais:action>
 </form>
 
 <script type="text/javascript">
-    function doUpdate(){
-        SOP.Crud.cfxSubmit("messageForm", "doEdit");
+
+
+    function doEdit(msgId){
+        if(confirm('are sure you want to edit ? ')){
+            SOP.Crud.cfxSubmit("messageForm", "doEdit", msgId);
+        }
     }
 
     function doCancel(){

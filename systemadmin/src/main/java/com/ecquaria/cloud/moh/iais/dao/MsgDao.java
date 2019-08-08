@@ -11,8 +11,7 @@ import com.ecquaria.cloud.moh.iais.entity.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-
 @Repository
 public interface MsgDao extends JpaRepository<Message,Integer> {
-
+    Message findById(Object msgId);
 }

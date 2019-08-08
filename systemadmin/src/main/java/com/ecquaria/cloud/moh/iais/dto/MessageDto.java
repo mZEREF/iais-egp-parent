@@ -8,7 +8,6 @@ package com.ecquaria.cloud.moh.iais.dto;
  */
 
 import com.ecquaria.cloud.moh.iais.validate.MessageValidate;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.oval.constraint.Length;
@@ -16,31 +15,36 @@ import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotNull;
 import sg.gov.moh.iais.common.validation.annotations.CustomValidate;
 
+import java.io.Serializable;
+
 @CustomValidate(impClass = MessageValidate.class, properties = {"search", "edit", "create"})
-public class MessageDto {
+public class MessageDto implements Serializable {
     public static final String MESSAGE_REQUEST_DTO = "msgRequestDto";
 
     @Setter @Getter
-    private String msgId;
+    private String id;
     @Setter @Getter
-    private String rowId;
+    private String rowguid;
 
     @Setter @Getter
-    @ApiModelProperty(required = true,value = "domainType")
-    @NotNull(message = "Domain Type can not is null!", profiles = {"search", "edit", "create"})
-    @Length(min = 1)
     private String domainType;
     @Setter @Getter
-    @Length(min = 1)
     private String msgType;
 
     @Setter @Getter
-    @Length(min = 1)
     private String module;
 
     @Setter @Getter
     @Length(min = 1, max = 255)
-    @NotBlank(message = "Description  can not is blank!", profiles = {"edit", "create"})
-    @NotNull(message = "Description  can not is null!", profiles = {"edit", "create"})
+    @NotBlank(message = "Description  can not is blank!", profiles = {"edit"})
+    @NotNull(message = "Description  can not is null!", profiles = {"edit"})
     private String description;
+
+    @Getter
+    @Setter
+    private Integer status;
+
+    @Getter
+    @Setter
+    private String codeKey;
 }
