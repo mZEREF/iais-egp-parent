@@ -54,6 +54,7 @@ public class WebValidationHelperTest {
 
     @Test
     public void testValidateEntity() {
+        AuditTrailDto.setThreadDto(new AuditTrailDto());
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("key","value");
         PowerMockito.when(ValidationUtils.validateEntity(Mockito.anyObject())).thenReturn(validationResult);
