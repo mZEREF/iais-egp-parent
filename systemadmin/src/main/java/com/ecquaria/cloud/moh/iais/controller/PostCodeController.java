@@ -4,6 +4,7 @@ package com.ecquaria.cloud.moh.iais.controller;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.entity.PostCode;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Delegator
+@Slf4j
 public class PostCodeController {
     private   String postCodePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/POSTCODE.TXT" ;
     private   String streetsPath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/STREETS.TXT";
@@ -53,6 +55,8 @@ public class PostCodeController {
                 break;
             }
         }
+        }catch (Exception e){
+          log.error(e.getMessage(),e);
         }finally {
             if(br != null){
                 br.close();
@@ -78,6 +82,8 @@ public class PostCodeController {
                     break;
                 }
             }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
         }finally {
             if(br != null){
                 br.close();
@@ -120,7 +126,9 @@ public class PostCodeController {
                     break;
                 }
             }
-        } finally {
+        } catch (Exception e){
+            log.error(e.getMessage(),e);
+        }finally {
             if (br != null) {
                 br.close();
             }
