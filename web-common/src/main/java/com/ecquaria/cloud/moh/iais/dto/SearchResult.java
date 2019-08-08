@@ -34,12 +34,12 @@ public class SearchResult<E> implements Serializable {
     @Getter @Setter private int rowCount;   // total number of records
 
     public SearchResult(){
-        rows = new ArrayList<E>();
+        rows = new ArrayList<>();
     }
 
     public SearchResult(List<E> rows, int rowCount) {
         if(this.rows == null){
-            this.rows= new ArrayList();
+            this.rows= new ArrayList<>();
         }else{
             this.rows.clear();
         }
@@ -68,7 +68,7 @@ public class SearchResult<E> implements Serializable {
 
     public void setRows(List<E> rows) {
         if(this.rows == null){
-            this.rows= new ArrayList();
+            this.rows= new ArrayList<>();
         }else{
             this.rows.clear();
         }
