@@ -37,7 +37,7 @@ public class IFormValidatorHelper {
      * @param: [bpc, formName, formDto]
      * @return: sg.gov.moh.iais.common.validation.ValidationResult
      */
-    public static ValidationResult validateForm(BaseProcessClass bpc,String formName,Class formDto,boolean isAddToForm) throws Exception {
+    public static ValidationResult validateForm(BaseProcessClass bpc,String formName,Class formDto,boolean isAddToForm) throws InstantiationException, IllegalAccessException {
       Object obj = fillFormDataToDto(bpc,formName,formDto);
       ValidationResult result = WebValidationHelper.validateEntity(obj);
       if(isAddToForm){ addErrorToForm(bpc,result); }
@@ -82,5 +82,8 @@ public class IFormValidatorHelper {
             }
 
         }
+    }
+    private IFormValidatorHelper() {
+        throw new IllegalStateException("Utility class");
     }
 }
