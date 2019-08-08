@@ -26,6 +26,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
+import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ import java.util.Map;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({WebValidationHelper.class, ValidationUtils.class})
+@PrepareForTest({WebValidationHelper.class, ValidationUtils.class,AuditTrailDto.class})
 @PowerMockIgnore("javax.management.*")
 public class WebValidationHelperTest {
 
@@ -47,6 +48,7 @@ public class WebValidationHelperTest {
 
     @Before
     public void setup() {
+        PowerMockito.mockStatic(AuditTrailDto.class);
         PowerMockito.mockStatic(ValidationUtils.class);
     }
 
@@ -57,6 +59,8 @@ public class WebValidationHelperTest {
         PowerMockito.when(ValidationUtils.validateEntity(Mockito.anyObject())).thenReturn(validationResult);
         PowerMockito.when(validationResult.isHasErrors()).thenReturn(true);
         PowerMockito.when(validationResult.retrieveAll()).thenReturn(errorMap);
+        AuditTrailDto dto = new AuditTrailDto();
+        PowerMockito.when(AuditTrailDto.getThreadDto()).thenReturn(dto);
         WebValidationHelper.validateEntity(new Object());
     }
     @Test
