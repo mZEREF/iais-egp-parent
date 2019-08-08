@@ -64,8 +64,6 @@ public class FieldTagTest {
         tag.setCodeType("codeType");
         tag.setValue("valueddd");
         tag.setAnnoId("");
-        tag.setAnnoValue("annoValue");
-        tag.setAnnoTarget("annoTar");
         tag.setRequired(true);
         tag.setInfo("information");
         tag.setIndex("1");
