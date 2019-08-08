@@ -25,6 +25,7 @@ import java.util.Map;
 public class SearchParam implements Serializable {
     public static final String ASCENDING    = "ASC";
     public static final String DESCENDING   = "DESC";
+    private static final long serialVersionUID = -5074317624732926224L;
 
     private Map<String, Object> params;     // for template SQL generation
     private Map<String, Object> filters;    // for SQL query
