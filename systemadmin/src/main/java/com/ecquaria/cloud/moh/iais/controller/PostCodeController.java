@@ -18,9 +18,9 @@ import java.util.Map;
 
 @Delegator
 public class PostCodeController {
-    private   String POSTCODE_PATH = "D:\\Project\\MOH\\Test\\postcode\\POSTCODE.TXT" ;
-    private   String STREETS_PATH = "D:\\Project\\MOH\\Test\\postcode\\STREETS.TXT";
-    private   String BUILDING_PATH = "D:\\Project\\MOH\\Test\\postcode\\BUILDING.TXT";
+    private   String postCodePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/POSTCODE.TXT" ;
+    private   String streetsPath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/STREETS.TXT";
+    private   String buildingPath= Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/BUILDING.TXT";
 
     @Autowired
     private PostCodeService postCodeService;
@@ -43,7 +43,7 @@ public class PostCodeController {
         String key = null;
         String value = null;
         //street
-        br = new BufferedReader(new InputStreamReader(new FileInputStream(STREETS_PATH)));
+        br = new BufferedReader(new InputStreamReader(new FileInputStream(streetsPath)));
         while ((line = br.readLine()) != null){
             if(!StringUtils.isEmpty(line) && line.trim().length() > 0){
                 key = line.substring(0,7).trim();
@@ -68,7 +68,7 @@ public class PostCodeController {
             String key = null;
             String value = null;
             //building
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(BUILDING_PATH)));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(buildingPath)));
             while ((line = br.readLine()) != null){
                 if(!StringUtils.isEmpty(line) && line.trim().length() > 0){
                     key = line.substring(0,6).trim();
@@ -94,7 +94,7 @@ public class PostCodeController {
         BufferedReader br = null;
         List<PostCode> list = new ArrayList<>();
         try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(POSTCODE_PATH)));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(postCodePath)));
             String line = null;
             String postalCode = null;
             String addressType = null;
