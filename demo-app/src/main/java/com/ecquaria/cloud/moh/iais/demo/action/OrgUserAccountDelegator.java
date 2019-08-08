@@ -57,6 +57,7 @@ public class OrgUserAccountDelegator {
     public static final String STATUS                              = "status";
     public static final String CRUD_ACTION_VALUE                   = "crud_action_value";
     public static final String ISVALID                             = "isValid";
+    public static final String ERRORMAP                            = "errorMap";
 
     @Autowired
     private OrgUserAccountService orgUserAccountService;
@@ -190,7 +191,7 @@ public class OrgUserAccountDelegator {
         statusSelect.add(sp2);
         ParamUtil.setRequestAttr(request,"statusSelect",statusSelect);
         ParamUtil.setRequestAttr(request, ORG_USER_ACCOUNT_TILE,"Org Account Create");
-        Map<String,String> errorMap = (Map<String, String>) ParamUtil.getRequestAttr(request,"errorMap");
+        Map<String,String> errorMap = (Map<String, String>) ParamUtil.getRequestAttr(request,ERRORMAP);
         if(MapUtils.isEmpty(errorMap)){
             ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, null);
         }
@@ -217,7 +218,7 @@ public class OrgUserAccountDelegator {
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(request,"errorMap",errorMap);
+                ParamUtil.setRequestAttr(request,ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,ISVALID,"N");
             }else{
                 OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
@@ -276,7 +277,7 @@ public class OrgUserAccountDelegator {
             if (validationResult.isHasErrors()){
                 log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(request,"errorMap",errorMap);
+                ParamUtil.setRequestAttr(request,ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,ISVALID,"N");
             }else{
                 Map<String,String> successMap = new HashMap<>();
