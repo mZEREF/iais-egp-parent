@@ -62,7 +62,6 @@
         <iais:row>
             <iais:field value="Create Date"/>
             <iais:value width="7">
-                <!--<iais:dates name="create_date" value="${demoSearchParam.filters['create_date']}" fromYear="1980" last1Years="2222"></iais:dates>-->
                 <iais:datePicker id = "fromDate" name = "fromDate" value = ""></iais:datePicker>
             </iais:value>
         </iais:row>
