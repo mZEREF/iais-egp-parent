@@ -14,7 +14,9 @@ public class Message implements Serializable {
     @Getter
     @Setter
     @Id
-    private Integer msgId;
+    @Column(name = "msg_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private Integer id;
 
     @Getter
     @Setter

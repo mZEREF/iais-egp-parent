@@ -75,14 +75,16 @@
                 <col width="5%"/>
                 <col width="15%"/>
                 <col width="15%"/>
-                <col width="15%"/>
-                <col width="8%"/>
+                <col width="35%"/>
+                <col width="50%"/>
             </colgroup>
             <thead>
             <tr>
-                <iais:sortableHeader needSort="true"  field="domainType" value="Domain Type"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="msgType" value="Message Type"></iais:sortableHeader>
+                <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"  field="domain_type" value="Domain Type"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
             </tr>
             </thead>
 
@@ -96,15 +98,17 @@
                     </tr>
                 </c:when>
                 <c:otherwise>
+                                                <%-- message entity--%>
                     <c:forEach var = "msgQuery" items = "${msgSearchResult.rows}" varStatus="status">
                         <tr>
                             <td class="row_no">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
                             <td>${msgQuery.domainType}</td>
                             <td>${msgQuery.msgType}</td>
                             <td>${msgQuery.module}</td>
+                            <td>${msgQuery.description}</td>
                             <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:doEdit('${msgQuery.msgId}');"/>
-                                <iais:link icon="form_delete" title="Delete" onclick="javascript:doDelete('${msgQuery.msgId}');"/>
+                                <iais:link icon="form_edit" title="Edit" onclick="javascript:perpareEdit('${msgQuery.id}');"/>
+                                <iais:link icon="form_delete" title="Delete" onclick="javascript:doDelete('${msgQuery.id}');"/>
                             </td>
                         </tr>
                     </c:forEach>
@@ -123,19 +127,23 @@
         SOP.Crud.cfxSubmit("messageForm", "doSearch");
     }
 
-    function doCreate(){
-
+    function sortRecords(sortFieldName,sortType){
+        SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
     }
 
-    function doEdit(msgId){
+    function jumpToPagechangePage(){
+        SOP.Crud.cfxSubmit("mainForm","changePage");
+    }
+
+    function perpareEdit(id){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "doEdit", msgId);
+            SOP.Crud.cfxSubmit("messageForm", "perpareEdit", id);
         }
     }
 
-    function doDelete(msgId){
+    function doDelete(id){
         if(confirm('are sure you want to delete ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "doDelete", msgId);
+            SOP.Crud.cfxSubmit("messageForm", "doDelete", id);
         }
     }
 

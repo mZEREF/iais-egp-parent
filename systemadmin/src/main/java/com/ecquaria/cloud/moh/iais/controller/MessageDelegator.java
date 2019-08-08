@@ -5,14 +5,16 @@ import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.entity.Message;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MsgService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
-import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -49,35 +51,38 @@ public class MessageDelegator {
     @Autowired
     private MsgService msgService;
 
+    /**
+     * setup option to web page
+     * @param request
+     */
     private void preSelectOption(HttpServletRequest request){
-        Map<String , List<String>> optMap = new HashMap<String , List<String>>(){{
-            put("domainTypeSelect", new ArrayList<String>(){{
-                add("Internet");
-                add("Intranet");
-            }});
+        List<String> domainOptionList =  new ArrayList<>();
+        domainOptionList.add("INTER");
+        domainOptionList.add("INTRA");
 
-            put("msgTypeSelect", new ArrayList<String>(){{
-                add("Acknowledgement");
-                add("Error");
-            }});
+        List<String> msgOptionList =  new ArrayList<>();
+        msgOptionList.add("Acknowledgement");
+        msgOptionList.add("Error");
 
-            put("moduleTypeSelect", new ArrayList<String>(){{
-                add("New");
-                add("Renewal");
-                add("Cessation");
-                add("Amendment");
-                add("Reinstate");
-                add("Audit");
-                add("Common");
-                add("Others");
-            }});
-        }};
+        List<String> moduleOptionList =  new ArrayList<>();
+        moduleOptionList.add("New");
+        moduleOptionList.add("Renewal");
+        moduleOptionList.add("Cessation");
+        moduleOptionList.add("Amendment");
+        moduleOptionList.add("Reinstate");
+        moduleOptionList.add("Audit");
+        moduleOptionList.add("Common");
+        moduleOptionList.add("Others");
 
-        IaisEGPHelper.setOptionToList(request, optMap);
-
+        Map<String , List<String>> map = new HashMap<>();
+        map.put("domainTypeSelect", domainOptionList);
+        map.put("msgTypeSelect", msgOptionList);
+        map.put("moduleTypeSelect", moduleOptionList);
+        IaisEGPHelper.setOptionToList(request, map);
     }
 
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
+        AuditTrailHelper.auditFunction("Error and Acknowledgement Message", "Function is used by MOH system administrator (users given the administrator rights and have the rights to modify the information");
         HttpServletRequest request = bpc.request;
         clearSessionAttr(request, MessageDelegator.class);
     }
@@ -87,7 +92,6 @@ public class MessageDelegator {
      * @param bpc
      */
     public void prepareData(BaseProcessClass bpc){
-        log.debug("errors and acknowledgements pre-setup data");
         HttpServletRequest request = bpc.request;
 
         preSelectOption(request);
@@ -99,27 +103,33 @@ public class MessageDelegator {
         ParamUtil.setSessionAttr(request, PARAM_MESSAGE_SEARCH, param);
         ParamUtil.setRequestAttr(request, PARAM_MESSAGE_SEARCH_RESULT, result);
 
-        log.debug("The prepareData end ...");
-
     }
 
-    public void doCreate(BaseProcessClass bpc){
-        log.debug("errors and acknowledgements doCreate");
-
-        log.debug("errors and acknowledgements doCreate");
-    }
-
+    /**
+     * user do edit with message management
+     * @param bpc
+     */
     public void doEdit(BaseProcessClass bpc){
-        log.debug("errors and acknowledgements doEdit");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request,"crud_action_type");
         if(!"doEdit".equals(type)){
             return;
         }
-        MessageDto dto = (MessageDto) ParamUtil.getRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO);
-        log.debug("errors and acknowledgements dto" + dto);
-        ValidationResult validationResult = ValidationUtils.validateProperty(dto, "edit");
-        if(validationResult.isHasErrors()){
+
+        String domainType = ParamUtil.getString(request, "domainType");
+        String msgType = ParamUtil.getString(request, "msgType");
+        String module = ParamUtil.getString(request, "module");
+        String description = ParamUtil.getString(request, "description");
+
+        MessageDto dto = (MessageDto) ParamUtil.getSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO);
+        dto.setDomainType(domainType);
+        dto.setMsgType(msgType);
+        dto.setModule(module);
+        dto.setDescription(description);
+
+        ParamUtil.setRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "edit");
+        if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,"errorMap",errorMap);
             ParamUtil.setRequestAttr(request,"isValid","N");
@@ -132,12 +142,13 @@ public class MessageDelegator {
             ParamUtil.setRequestAttr(request,"successMap",successMap);
         }
 
-
-        log.debug("errors and acknowledgements doEdit");
     }
 
+    /**
+     * delete message
+     * @param bpc
+     */
     public void doDelete(BaseProcessClass bpc){
-        log.debug("errors and acknowledgements delete-action start");
         HttpServletRequest request = bpc.request;
         String msgId = ParamUtil.getString(bpc.request,"crud_action_value");
         if(!StringUtil.isEmpty(msgId)) {
@@ -148,12 +159,13 @@ public class MessageDelegator {
                 e.printStackTrace();
             }
         }
-
-        log.debug("errors and acknowledgements delete-action end");
     }
 
+    /**
+     * search message
+     * @param bpc
+     */
     public void doSearch(BaseProcessClass bpc){
-        log.debug("errors and acknowledgements doSearch start");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, "crud_action_type");
         if(!"doSearch".equals(type)){
@@ -164,9 +176,6 @@ public class MessageDelegator {
         String msgType = ParamUtil.getString(request, "msgType");
         String module = ParamUtil.getString(request, "module");
 
-        log.debug("domainType =>>>>>>>>" + domainType);
-        log.debug("msgType =>>>>>>>>" + msgType);
-        log.debug("module =>>>>>>>>" + module);
         SearchParam param = getSearchParam(bpc, true);
         if(!StringUtil.isEmpty(domainType)){
             param.addFilter("domainType", domainType, true);
@@ -179,8 +188,6 @@ public class MessageDelegator {
         if(!StringUtil.isEmpty(module)){
             param.addFilter("module", module, true);
         }
-
-        log.debug("errors and acknowledgements doSearch end");
     }
 
     /**
@@ -197,8 +204,11 @@ public class MessageDelegator {
     }
 
 
+    /**
+     * preparation before editing
+     * @param bpc
+     */
     public void perpareEdit(BaseProcessClass bpc){
-        log.debug("The perpareEdit start ...");
         HttpServletRequest request = bpc.request;
         String  action = ParamUtil.getString(bpc.request,"crud_action_type");
         String msgId = ParamUtil.getString(bpc.request,"crud_action_value");
@@ -208,15 +218,22 @@ public class MessageDelegator {
                 Integer id = Integer.valueOf(msgId);
                 Message msg = msgService.getMessageByMsgId(id);
                 MessageDto dto = MiscUtil.transferEntityDto(msg, MessageDto.class);
-                ParamUtil.setRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
+                ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
             }catch (NumberFormatException e){
                 e.printStackTrace();
             }
 
         }
+    }
 
-        log.debug("*******************action-->: " + action);
-        log.debug("The perpareEdit end ...");
+    public void doPaging(BaseProcessClass bpc){
+        SearchParam searchParam = getSearchParam(bpc);
+        CrudHelper.doPaging(searchParam,bpc.request);
+    }
+
+    public void doSorting(BaseProcessClass bpc){
+        SearchParam searchParam = getSearchParam(bpc);
+        CrudHelper.doSorting(searchParam,  bpc.request);
     }
 
     private void clearSessionAttr(HttpServletRequest request, Class<?> clz) throws IllegalAccessException {
@@ -224,14 +241,11 @@ public class MessageDelegator {
             return;
         }
 
-        log.debug("[clearSessionAttr Class Name] ==>>>" + clz.getName());
-
         Field[]  fields = clz.getFields();
         if(fields != null){
             for(Field f : fields){
                 String fieldName = f.getName();
                 if(fieldName.startsWith("PARAM_")){
-                    log.debug("param clear session =====>>>>>>>>>>> " + fieldName);
                     ParamUtil.setSessionAttr(request, (String) f.get(fieldName), null);
                 }
             }
@@ -241,14 +255,12 @@ public class MessageDelegator {
     private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
         HttpServletRequest request = bpc.request;
         SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, PARAM_MESSAGE_SEARCH);
-        log.debug("SearchParam param ======>>>>>>" + param);
         if(param == null || isNew){
             param = new SearchParam(Message.class);
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort("msg_id", SearchParam.ASCENDING);
             ParamUtil.setSessionAttr(request, PARAM_MESSAGE_SEARCH, param);
-            log.debug("new param ===>>>>>>>>>>>>");
         }
         return param;
     }
