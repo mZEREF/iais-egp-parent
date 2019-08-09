@@ -18,7 +18,7 @@ public class MasterCodeTest {
     @Test
     public void testGetterSetter() {
         entity.getId();
-        entity.setId(1);
+        entity.setId(1L);
         entity.getMasterCodeKey();
         entity.setMasterCodeKey(null);
         entity.getCodeCategory();

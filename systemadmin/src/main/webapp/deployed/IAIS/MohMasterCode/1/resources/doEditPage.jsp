@@ -1,16 +1,20 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%
-
+/*
+  You can customize this default file:
+  /E:/eclipse4.12-SIT-win32-x86_64/eclipse/plugins/com.ecquaria.eclipse.sit_6.1.1/WebPage.jsp.default
+*/
 
 //handle to the Engine APIs
 sop.webflow.rt.api.BaseProcessClass process =
 (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+
 <webui:setAttribute name="header-ext">
 <%
-/* You can add additional content (SCRIPT, STYLE elements) 
-* which need to be placed inside HEAD element here. 
-*/
+/* You can add additional content (SCRIPT, STYLE elements)
+ * which need to be placed inside HEAD element here.
+ */
 %>
 </webui:setAttribute>
 
@@ -22,8 +26,7 @@ sop.webflow.rt.api.BaseProcessClass process =
 <%=process.runtime.getCurrentComponentName()%>
 
 </webui:setAttribute>
-<jsp:include page = "WEB-INF/jsp/mastercode.jsp" flush="true"></jsp:include>
 
-<form method="post" class="__egovform" action=<%=process.runtime.continueURL()%>>
+<form method="post" action=<%=process.runtime.continueURL()%>>
 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 </form>
