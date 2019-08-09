@@ -40,4 +40,7 @@ public class AuditTrailHelper {
         dto.setFunctionName(functionName);
         ParamUtil.setSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME, dto);
     }
+    private AuditTrailHelper() {
+        throw new IllegalStateException("Utility class");
+    }
 }

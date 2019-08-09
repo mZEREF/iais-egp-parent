@@ -48,7 +48,7 @@ public class IaisFormHelper extends FormHelper {
     public static final String ATTR_APP_DRAFT_NO = "egp.app.draft.no";
     public static final String FORM_NAME = "formName";
     public static final String DRAFT = "Draft";
-    public static void doSaveDraft(BaseProcessClass bpc,String projectName,String processName,String callStepName)throws IaisRuntimeException {
+    public static void doSaveDraft(BaseProcessClass bpc,String projectName,String processName,String callStepName) {
         String draftAppNo = getApplicationDraftNo(bpc.currentCase);
         boolean flag = false;
         Application app = bindApplication(bpc);
@@ -89,7 +89,7 @@ public class IaisFormHelper extends FormHelper {
         bpc.request.setAttribute("successmsg", MultiLangUtil.translate(bpc.request, AppConstants.KEY_TRANSLATION_MODULE_MESSAGE, "DraftSaveSuccess", "Draft Form data Saved Successfully."));
 
     }
-    public static void deleteDraft(BaseProcessClass bpc)throws IaisRuntimeException{
+    public static void deleteDraft(BaseProcessClass bpc){
         String draftAppNo = getApplicationDraftNo(bpc.currentCase);
         Applicant applicant = getApplication(bpc.currentCase);
         if (applicant != null && !StringUtils.isEmpty(draftAppNo)) {
@@ -122,7 +122,7 @@ public class IaisFormHelper extends FormHelper {
 
         tinyCallback = IaisEGPHelper.getTinyUrl(callback.toString());
         String formDetailUrl = getFormDetailUrl(bpc);
-        Map<String, Object> propMap = new HashMap<String, Object>();
+        Map<String, Object> propMap = new HashMap<>();
         propMap.put(JsonLabel.SVC_CALLBACK_URL, tinyCallback);
         propMap.put(JsonLabel.APP_STATUS, DRAFT);
 
@@ -130,7 +130,6 @@ public class IaisFormHelper extends FormHelper {
         propMap.put(JsonLabel.FORM_HTML, getBase64FormHtml(formName,bpc));
         MessageCenterHelper.ResponseInfo resInfo = null;
         try {
-            System.out.println("the propMap -->: "+propMap);
             resInfo = MessageCenterHelper.saveApplication(app, propMap);
         } catch (Exception e) {
             throw new IaisRuntimeException("Can't save application to message center: " + e.getMessage(), e);

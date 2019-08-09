@@ -70,12 +70,12 @@ public class OrgUserAccountDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction("demo", "manage org user");
-        log.debug("The doStart start ...");
+        log.debug(StringUtil.changeForLog("The doStart start ..."));
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(request, SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, null);
-        log.debug("The doStart end ...");
+        log.debug(StringUtil.changeForLog("The doStart end ..."));
     }
     /**
      * AutoStep: PrepareData
@@ -84,7 +84,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public  void prepareData(BaseProcessClass bpc){
-        log.debug("The prepareData start ...");
+        log.debug(StringUtil.changeForLog("The prepareData start ..."));
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc);
         param.addFilter("ORGANIZATION_ID","0",true);
@@ -92,7 +92,7 @@ public class OrgUserAccountDelegator {
         SearchResult searchResult = orgUserAccountService.doQuery(param, "demo", "searchDemo");
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
         ParamUtil.setRequestAttr(request, SEARCH_RESULT, searchResult);
-        log.debug("The prepareData end ...");
+        log.debug(StringUtil.changeForLog("The prepareData end ..."));
     }
 
     /**
@@ -102,10 +102,10 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public  void prepareSwitch(BaseProcessClass bpc){
-        log.debug("The prepareSwitch start ...");
+        log.debug(StringUtil.changeForLog("The prepareSwitch start ..."));
         String  action = ParamUtil.getString(bpc.request,CRUD_ACTION_TYPE);
-        log.debug("*******************action-->:"+action);
-        log.debug("The prepareSwitch end ...");
+        log.debug(StringUtil.changeForLog("*******************action-->:"+action));
+        log.debug(StringUtil.changeForLog("The prepareSwitch end ..."));
     }
     /**
      * AutoStep: doSearch
@@ -114,7 +114,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doSearch(BaseProcessClass bpc){
-        log.debug("The doSearch start ...");
+        log.debug(StringUtil.changeForLog("The doSearch start ..."));
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
         String nricNo = ParamUtil.getString(request, "nric_no");
@@ -133,7 +133,7 @@ public class OrgUserAccountDelegator {
                 param.addFilter("account.STATUS"+i,status[i]);
             }
         }
-        log.debug("The doSearch end ...");
+        log.debug(StringUtil.changeForLog("The doSearch end ..."));
     }
     /**
      * AutoStep: doSorting
@@ -142,10 +142,10 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doSorting(BaseProcessClass bpc){
-        log.debug("The doSorting start ...");
+        log.debug(StringUtil.changeForLog("The doSorting start ..."));
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doSorting(searchParam,  bpc.request);
-        log.debug("The doSorting end ...");
+        log.debug(StringUtil.changeForLog("The doSorting end ..."));
     }
     /**
      * AutoStep: doPaging
@@ -154,10 +154,10 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doPaging(BaseProcessClass bpc){
-        log.debug("The doPaging start ...");
+        log.debug(StringUtil.changeForLog("The doPaging start ..."));
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
-        log.debug("The doPaging end ...");
+        log.debug(StringUtil.changeForLog("The doPaging end ..."));
     }
     /**
      * AutoStep: doDelete
@@ -166,12 +166,12 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doDelete(BaseProcessClass bpc){
-        log.debug("The doDelete start ...");
+        log.debug(StringUtil.changeForLog("The doDelete start ..."));
         String id = ParamUtil.getString(bpc.request,CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(id)){
             orgUserAccountService.deleteOrgUserAccountsById(id);
         }
-        log.debug("The doDelete end ...");
+        log.debug(StringUtil.changeForLog("The doDelete end ..."));
     }
     /**
      * AutoStep: PrepareCreate
@@ -180,7 +180,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void prepareCreateData(BaseProcessClass bpc){
-        log.debug("The prepareCreateData start ...");
+        log.debug(StringUtil.changeForLog("The prepareCreateData start ..."));
         HttpServletRequest request = bpc.request;
         String orgId = ParamUtil.getString(request,CRUD_ACTION_VALUE);
         ParamUtil.setRequestAttr(request, "orgId", orgId);
@@ -195,8 +195,8 @@ public class OrgUserAccountDelegator {
         if(MapUtils.isEmpty(errorMap)){
             ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, null);
         }
-        log.debug("******************-->:"+orgId);
-        log.debug("The prepareCreateData end ...");
+        log.debug(StringUtil.changeForLog("******************-->:"+orgId));
+        log.debug(StringUtil.changeForLog("The prepareCreateData end ..."));
     }
     /**
      * AutoStep: doCreate
@@ -205,7 +205,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doCreate(BaseProcessClass bpc){
-        log.debug("The doCreate start ...");
+        log.debug(StringUtil.changeForLog("The doCreate start ..."));
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, CRUD_ACTION_TYPE);
         if("save".equals(type)){
@@ -216,7 +216,7 @@ public class OrgUserAccountDelegator {
             ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, accountDto);
             ValidationResult validationResult =WebValidationHelper.validateProperty(accountDto,"create");
             if (validationResult.isHasErrors()){
-                log.error("****************Error");
+                log.error(StringUtil.changeForLog("****************Error"));
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(request,ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,ISVALID,"N");
@@ -229,7 +229,7 @@ public class OrgUserAccountDelegator {
             ParamUtil.setRequestAttr(request,ISVALID,"Y");
         }
 
-        log.debug("The doCreate end ...");
+        log.debug(StringUtil.changeForLog("The doCreate end ..."));
     }
     /**
      * AutoStep: PrepareEdit
@@ -238,7 +238,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void prepareEdit(BaseProcessClass bpc){
-        log.debug("The prepareEdit start ...");
+        log.debug(StringUtil.changeForLog("The prepareEdit start ..."));
         HttpServletRequest request = bpc.request;
         String rowguid = ParamUtil.getString(request,CRUD_ACTION_VALUE);
         OrgUserAccountDto dto;
@@ -258,7 +258,7 @@ public class OrgUserAccountDelegator {
         SelectOption sp2 = new SelectOption("procing","Procing");
         statusSelect.add(sp2);
         ParamUtil.setRequestAttr(request, "statusSelect",statusSelect);
-        log.debug("The prepareEdit end ...");
+        log.debug(StringUtil.changeForLog("The prepareEdit end ..."));
     }
     /**
      * AutoStep: doEdit
@@ -267,7 +267,7 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doEdit(BaseProcessClass bpc){
-        log.debug("The doEdit start ...");
+        log.debug(StringUtil.changeForLog("The doEdit start ..."));
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request,CRUD_ACTION_TYPE);
         if("edit".equals(type)){
@@ -290,7 +290,7 @@ public class OrgUserAccountDelegator {
         }else{
             ParamUtil.setRequestAttr(request,ISVALID,"Y");
         }
-        log.debug("The doEdit end ...");
+        log.debug(StringUtil.changeForLog("The doEdit end ..."));
     }
 
     /******************************************************************************************************************

@@ -36,8 +36,6 @@ public final class FieldTag extends DivTagSupport {
     private String codeType;
     private String value;
     private String annoId;
-    private String annoValue;
-    private String annoTarget;
     private boolean required;
     private String info;
     private String index;
@@ -54,13 +52,12 @@ public final class FieldTag extends DivTagSupport {
     }
 
     // resets local state
+    @Override
     protected void init() {
         super.init();
         code = null;
         value = null;
         annoId = null;
-        annoValue = null;
-        annoTarget = null;
         required = false;
         info = null;
         index = null;
@@ -73,15 +70,16 @@ public final class FieldTag extends DivTagSupport {
     }
 
     // Releases any resources we may have (or inherit)
+    @Override
     public void release() {
         super.release();
         init();
     }
-
+    @Override
     public int doStartTag() throws JspException {
         boolean isBackend = AccessUtil.isBackend();
-        StringBuffer html = new StringBuffer();
-        StringBuffer script = new StringBuffer();
+        StringBuilder html = new StringBuilder();
+        StringBuilder script = new StringBuilder();
 
         int width = isBackend ? 3 : 4;
         if (withCheckbox) {
@@ -130,34 +128,7 @@ public final class FieldTag extends DivTagSupport {
         if (!StringUtil.isEmpty(cssClass)) {
             html.append(" ").append(cssClass);
         }
-        if (!StringUtil.isEmpty(annoId)) {
-//            html.append(" anno-fld\" id=\"annoFld_").append(annoId);
-//            if (!StringUtil.isEmpty(annoTarget)) {
-//                html.append("\" data-anno-target=\"").append(annoTarget);
-//            }
-//
-//            // anno script
-//            String shortName = (String) pageContext.getAttribute("secName");
-//            String annotation = annoValue;
-//            if (annotation == null) {
-//            	//TODO
-////                Annotation annos = (Annotation) pageContext.getAttribute("annos");
-////                if (annos != null) {
-////                    String key = annoId;
-////                    if (!StringUtil.isEmpty(shortName)) {
-////                        key = StringUtil.uncapitalize(key.substring(shortName.length()));
-////                    }
-////                    annotation = annos.get(key);
-////                }
-//            }
-//
-//            if (annotation != null) {
-//                JsonObject jsonObj = new JsonObject();
-//                jsonObj.addProperty("id", "annoFld_" + annoId);
-//                jsonObj.addProperty("value", annotation);
-//                script.append("<script type=\"testUcoCollector/javascript\">").append("MS_ANNOTATIONS.push(").append(jsonObj).append(");").append("</script>");
-//            }
-        } else if (!StringUtil.isEmpty(id)) {
+         if (!StringUtil.isEmpty(id)) {
             html.append("\" id=\"").append(id);
         }
         if (!StringUtil.isEmpty(style)) {
@@ -165,14 +136,6 @@ public final class FieldTag extends DivTagSupport {
         }
         html.append("\">");
 
-        if (!StringUtil.isEmpty(code)) {
-            String key = codeType;
-            if (StringUtil.isEmpty(codeType)) {
-                key = isBackend ? "be" : "fe";
-            }
-            //TODO
-            //value = MessageUtil.getField(key + "." + code);
-        }
         html.append(value);
         if (!StringUtil.isEmpty(info)) {
             html.append("&nbsp;<span><i class=\"fa fa-info-circle\" data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"bottom\" title=\"")
@@ -195,7 +158,7 @@ public final class FieldTag extends DivTagSupport {
         }
         return SKIP_BODY;
     }
-
+    @Override
     public int doEndTag() {
         init();
         return EVAL_PAGE;
@@ -213,12 +176,6 @@ public final class FieldTag extends DivTagSupport {
     }
     public void setAnnoId(String annoId) {
         this.annoId = annoId;
-    }
-    public void setAnnoValue(String annoValue) {
-        this.annoValue = annoValue;
-    }
-    public void setAnnoTarget(String annoTarget) {
-        this.annoTarget = annoTarget;
     }
     public void setRequired(boolean required) {
         this.required = required;

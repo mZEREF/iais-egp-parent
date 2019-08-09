@@ -73,7 +73,6 @@ public class SelectTagTest {
         tag.setStyle("ssss");
         tag.setCssClass("css");
         tag.setNeedErrorSpan(true);
-        tag.setNeedMask(true);
         tag.setFilterCode("filterCode");
 
         List<SelectOption> options =  new ArrayList<>() ;

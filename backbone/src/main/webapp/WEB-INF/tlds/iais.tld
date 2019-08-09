@@ -517,48 +517,6 @@
   </tag>
 
   <tag>
-    <description>Generate date fields (DD MM YYYY).</description>
-    <name>dates</name>
-    <tag-class>com.ecquaria.cloud.moh.iais.tags.DatesTag</tag-class>
-    <body-content>empty</body-content>
-    <attribute>
-      <name>name</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>id</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>value</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>onchange</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>last2Years</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>fromYear</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-      <name>last1Years</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-
-  <tag>
     <description>Select Dropdown tag</description>
     <name>select</name>
     <tag-class>com.ecquaria.cloud.moh.iais.tags.SelectTag</tag-class>

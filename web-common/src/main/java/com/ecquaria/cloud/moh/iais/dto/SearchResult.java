@@ -15,6 +15,7 @@ package com.ecquaria.cloud.moh.iais.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,15 +30,22 @@ import java.util.List;
 public class SearchResult<E> implements Serializable {
     private static final long serialVersionUID = -8104178963933476893L;
 
-    @Getter @Setter private List<E> rows;
+    private ArrayList<E> rows;
     @Getter @Setter private int rowCount;   // total number of records
 
     public SearchResult(){
-        rows = new ArrayList<E>();
+        rows = new ArrayList<>();
     }
 
     public SearchResult(List<E> rows, int rowCount) {
-        this.rows = rows;
+        if(this.rows == null){
+            this.rows= new ArrayList<>();
+        }else{
+            this.rows.clear();
+        }
+        if(!CollectionUtils.isEmpty(rows)){
+            this.rows.addAll(rows);
+        }
         this.rowCount = rowCount;
     }
 
@@ -52,5 +60,20 @@ public class SearchResult<E> implements Serializable {
     public void remove(E e){
         rows.remove(e);
         rowCount--;
+    }
+
+    public ArrayList<E> getRows() {
+        return rows;
+    }
+
+    public void setRows(List<E> rows) {
+        if(this.rows == null){
+            this.rows= new ArrayList<>();
+        }else{
+            this.rows.clear();
+        }
+        if(!CollectionUtils.isEmpty(rows)){
+            this.rows.addAll(rows);
+        }
     }
 }
