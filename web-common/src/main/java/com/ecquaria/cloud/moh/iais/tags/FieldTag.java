@@ -71,30 +71,8 @@ public final class FieldTag extends DivTagSupport {
 
         int width = isBackend ? 3 : 4;
         if (withCheckbox && !isBackend) {
-                width = width - 1;
-                html.append("<div class=\"col-lg-1 col-md-12 col-sm-12 float-left\">");
-                html.append("<label class=\"checkbox-custom check-primary\">");
-                html.append("<input type=\"checkbox\"");
-                if (StringUtil.isEmpty(checkboxId)) {
-                    checkboxId = MiscUtil.formatDummyId();
-                }
-                html.append(" id=\"").append(checkboxId).append("\"");
-                if (!StringUtil.isEmpty(checkboxName)) {
-                    html.append(" name=\"").append(checkboxName).append("\"");
-                }
-                if (!StringUtil.isEmpty(checkboxVal)) {
-                    html.append(" value=\"").append(checkboxVal).append("\"");
-                }
-                if (checked) {
-                    html.append(" checked");
-                }
-                if (!StringUtil.isEmpty(onclick)) {
-                    html.append(" onclick=\"").append(onclick).append("\"");
-                }
-                html.append(">");
-                html.append("<label for=\"").append(checkboxId).append("\" style=\"display: inline;\"></label>");
-                html.append(ENDLABLE);
-                html.append("</div>");
+            width = width - 1;
+            generateNotBEHtml(html);
         }
         if (index != null) {
             width = width - 1;
@@ -111,23 +89,7 @@ public final class FieldTag extends DivTagSupport {
             html.append("<label class=\"col-lg-").append(width).append(" col-md-12 col-sm-12 control-label float-left");
         }
 
-        if (!StringUtil.isEmpty(cssClass)) {
-            html.append(" ").append(cssClass);
-        }
-         if (!StringUtil.isEmpty(id)) {
-            html.append("\" id=\"").append(id);
-        }
-        if (!StringUtil.isEmpty(style)) {
-            html.append("\" style=\"").append(style);
-        }
-        html.append("\">");
-
-        html.append(value);
-        if (!StringUtil.isEmpty(info)) {
-            html.append("&nbsp;<span><i class=\"fa fa-info-circle\" data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"bottom\" title=\"")
-            .append(info).append("\"></i></span>&nbsp;");
-        }
-
+        generateHtml(html);
         if (isBackend && required) {
             html.append("<span class=\"text-mandatory\">*</span>");
         } else if (required) {
@@ -143,6 +105,51 @@ public final class FieldTag extends DivTagSupport {
             throw new JspTagException("FieldTag: " + ex.getMessage());
         }
         return SKIP_BODY;
+    }
+    private void generateHtml(StringBuilder html){
+        if (!StringUtil.isEmpty(cssClass)) {
+            html.append(" ").append(cssClass);
+        }
+        if (!StringUtil.isEmpty(id)) {
+            html.append("\" id=\"").append(id);
+        }
+        if (!StringUtil.isEmpty(style)) {
+            html.append("\" style=\"").append(style);
+        }
+        html.append("\">");
+
+        html.append(value);
+        if (!StringUtil.isEmpty(info)) {
+            html.append("&nbsp;<span><i class=\"fa fa-info-circle\" data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"bottom\" title=\"")
+                    .append(info).append("\"></i></span>&nbsp;");
+        }
+
+
+    }
+    private void generateNotBEHtml(StringBuilder html){
+        html.append("<div class=\"col-lg-1 col-md-12 col-sm-12 float-left\">");
+        html.append("<label class=\"checkbox-custom check-primary\">");
+        html.append("<input type=\"checkbox\"");
+        if (StringUtil.isEmpty(checkboxId)) {
+            checkboxId = MiscUtil.formatDummyId();
+        }
+        html.append(" id=\"").append(checkboxId).append("\"");
+        if (!StringUtil.isEmpty(checkboxName)) {
+            html.append(" name=\"").append(checkboxName).append("\"");
+        }
+        if (!StringUtil.isEmpty(checkboxVal)) {
+            html.append(" value=\"").append(checkboxVal).append("\"");
+        }
+        if (checked) {
+            html.append(" checked");
+        }
+        if (!StringUtil.isEmpty(onclick)) {
+            html.append(" onclick=\"").append(onclick).append("\"");
+        }
+        html.append(">");
+        html.append("<label for=\"").append(checkboxId).append("\" style=\"display: inline;\"></label>");
+        html.append(ENDLABLE);
+        html.append("</div>");
     }
     @Override
     public int doEndTag() {
