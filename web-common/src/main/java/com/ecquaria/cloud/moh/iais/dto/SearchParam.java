@@ -81,8 +81,12 @@ public class SearchParam implements Serializable {
         return params;
     }
     public void setParams(Map<String, Object> params) {
-        this.params.clear();
-        if(MapUtils.isEmpty(params)){
+        if(MapUtils.isEmpty(this.params)){
+            this.params = new HashMap<>();
+        }else{
+            this.params.clear();
+        }
+        if(!MapUtils.isEmpty(params)){
            this.params.putAll(params);
         }
     }
@@ -99,7 +103,12 @@ public class SearchParam implements Serializable {
         return filters;
     }
     public void setFilters(Map<String, Object> filters) {
-        this.filters.clear();
+        if(MapUtils.isEmpty(this.filters)){
+            this.filters = new LinkedHashMap<>();
+        }else{
+            this.filters.clear();
+        }
+
         if(MapUtils.isEmpty(filters)){
             this.filters.putAll(filters);
         }
