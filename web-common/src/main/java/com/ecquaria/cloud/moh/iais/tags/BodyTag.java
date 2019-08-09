@@ -25,18 +25,14 @@ public final class BodyTag extends DivTagSupport {
         init();
     }
 
-    // resets local state
-    protected void init() {
-        super.init();
-    }
-
+    @Override
     public void release() {
         super.release();
         init();
     }
-
+    @Override
     public int doStartTag() throws JspException {
-        StringBuffer html = new StringBuffer();
+        StringBuilder html = new StringBuilder();
         boolean isBE = AccessUtil.isBackend();
         if (isBE) {
             html.append("<iframe id=\"txtArea1\" style=\"display:none\"></iframe>");
@@ -60,7 +56,7 @@ public final class BodyTag extends DivTagSupport {
         }
         return EVAL_BODY_INCLUDE;
     }
-
+    @Override
     public int doEndTag() throws JspException {
         try {
             pageContext.getOut().print("</div>");
