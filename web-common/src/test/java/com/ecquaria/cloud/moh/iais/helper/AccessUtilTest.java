@@ -55,4 +55,10 @@ public class AccessUtilTest {
         boolean isFe = AccessUtil.isFrontend();
         assertTrue(isFe);
     }
+
+    @Test
+    public void testIsAdministrator() {
+        boolean isFe = AccessUtil.isAdministrator();
+        assertTrue(isFe);
+    }
 }

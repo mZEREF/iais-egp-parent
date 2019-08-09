@@ -40,16 +40,19 @@ public final class IaisEGPHelper extends EGPHelper {
             return;
         }
 
-        for (String s : optMap.keySet()) {
+        for(Map.Entry<String, List<String>> entry : optMap.entrySet()){
+            String key = entry.getKey();
+            List<String> list = entry.getValue();
             List<SelectOption> selectList = new ArrayList<>();
-            List<String> ls = optMap.get(s);
-            ls.stream().forEach(i -> {
-                SelectOption sp1 = new SelectOption(i, i);
+            list.stream().forEach(i -> {
+                String value = i;
+                String text = i;
+                SelectOption sp1 = new SelectOption(value, text);
                 selectList.add(sp1);
             });
-
-            ParamUtil.setRequestAttr(request, s, selectList);
+            ParamUtil.setRequestAttr(request, key, selectList);
         }
+
     }
 
     /**

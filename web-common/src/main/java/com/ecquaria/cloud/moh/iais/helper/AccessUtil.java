@@ -42,6 +42,16 @@ public class AccessUtil {
         return true;
     }
 
+   /**
+   * @description: judge is the administrator
+   * @param: 
+   * @return: 
+   * @author: yichen 
+   */
+    public static boolean isAdministrator(){
+        return true;
+    }
+
     private AccessUtil() {
         throw new IllegalStateException("Utility class");
     }
