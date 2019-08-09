@@ -37,14 +37,14 @@ import java.util.Map;
 @Slf4j
 public class SqlMap {
     public static final SqlMap INSTANCE = new SqlMap();
-    private Map<String, Sql> sqlMap;
+    private Map<String, Sql> mapforSql;
     private static final Configuration cfg = new Configuration(Configuration.VERSION_2_3_28);
 
     public void initSqlMap(List<Sql> sqls) {
         StringTemplateLoader loader = new StringTemplateLoader();
         for (Sql sql : sqls) {
             String key = getKey(sql.getCatalog(), sql.getKey());
-            sqlMap.put(key, sql);
+            mapforSql.put(key, sql);
             if (isDynamicSql(sql.getSql())) {
                 loader.putTemplate(key, sql.getSql());
             }
@@ -55,7 +55,7 @@ public class SqlMap {
 
     public Sql getSql(String catalog, String key) {
         String ck = getKey(catalog, key);
-        Sql sql = (Sql) sqlMap.get(ck);
+        Sql sql =  mapforSql.get(ck);
         if (sql == null) {
             String msg = String.format("The SQL [%s] of catalog [%s] is not found in the cache.", key, catalog);
             log.error(msg);
@@ -112,6 +112,6 @@ public class SqlMap {
     }
 
     private SqlMap() {
-        sqlMap = new HashMap<String, Sql>();
+        mapforSql = new HashMap<>();
     }
 }
