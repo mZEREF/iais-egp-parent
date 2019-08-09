@@ -82,38 +82,7 @@ public class SelectTag extends DivTagSupport {
                 html.append(" onchange=\"").append(onchange).append("\"");
             }
             html.append(">");
-            List<SelectOption> sos = null;
-            if (!StringUtil.isEmpty(options)) {
-                sos = (List<SelectOption>) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), options);
-            } else if (!StringUtil.isEmpty(codeCategory)) {
-                sos = MasterCodeUtil.retrieveOptionsByCate(codeCategory);
-            } else if (!StringUtil.isEmpty(filterCode)) {
-                sos = MasterCodeUtil.retrieveOptionsByFilter(filterCode);
-            }
-            if (!StringUtil.isEmpty(firstOption)) {
-                html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append(ENDOPTION);
-            }
-            if (sos != null) {
-                for (SelectOption option : sos) {
-                    String val = StringUtil.viewNonNullHtml(option.getValue());
-                    String txt = StringUtil.escapeHtml(option.getText());
-                    String selected = option.getValue().equals(value) ? " selected" : "";
-                    html.append("<option value=\"").append(val).append("\"").append(selected).append(">").append(txt).append(ENDOPTION);
-                }
-            }
-            
-            if (! StringUtil.isEmpty(otherOption)) {
-            	String selected = otherOptionValue.equals(value) ? " selected" : "";
-            	html.append("<option value=\"").append(StringUtil.viewNonNullHtml(otherOptionValue))
-            	    .append("\"").append(selected).append(">").append(StringUtil.escapeHtml(otherOption)).append(ENDOPTION);
-            }
-            
-            html.append("</select>");
-            if (needErrorSpan) {
-                html.append("<div style=\"color:#b94a48\" class=\"help-inline-block\"><span id=\"error_").append(name).append("\"");
-                html.append(" name=\"emsErrorMsg\"></span></div>");
-            }
-
+            generateOptionHtml(html);
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
             log.error("", ex);
@@ -123,6 +92,41 @@ public class SelectTag extends DivTagSupport {
 
         return SKIP_BODY;
     }
+
+    private void generateOptionHtml(StringBuilder html){
+        List<SelectOption> sos = null;
+        if (!StringUtil.isEmpty(options)) {
+            sos = (List<SelectOption>) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), options);
+        } else if (!StringUtil.isEmpty(codeCategory)) {
+            sos = MasterCodeUtil.retrieveOptionsByCate(codeCategory);
+        } else if (!StringUtil.isEmpty(filterCode)) {
+            sos = MasterCodeUtil.retrieveOptionsByFilter(filterCode);
+        }
+        if (!StringUtil.isEmpty(firstOption)) {
+            html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append(ENDOPTION);
+        }
+        if (sos != null) {
+            for (SelectOption option : sos) {
+                String val = StringUtil.viewNonNullHtml(option.getValue());
+                String txt = StringUtil.escapeHtml(option.getText());
+                String selected = option.getValue().equals(value) ? " selected" : "";
+                html.append("<option value=\"").append(val).append("\"").append(selected).append(">").append(txt).append(ENDOPTION);
+            }
+        }
+
+        if (! StringUtil.isEmpty(otherOption)) {
+            String selected = otherOptionValue.equals(value) ? " selected" : "";
+            html.append("<option value=\"").append(StringUtil.viewNonNullHtml(otherOptionValue))
+                    .append("\"").append(selected).append(">").append(StringUtil.escapeHtml(otherOption)).append(ENDOPTION);
+        }
+
+        html.append("</select>");
+        if (needErrorSpan) {
+            html.append("<div style=\"color:#b94a48\" class=\"help-inline-block\"><span id=\"error_").append(name).append("\"");
+            html.append(" name=\"emsErrorMsg\"></span></div>");
+        }
+    }
+
     @Override
     public int doEndTag() {
         return EVAL_PAGE;

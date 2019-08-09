@@ -20,7 +20,12 @@ public class MasterCode implements Serializable {
     @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "master_code_id")
-    private int id;
+    private Long id;
+
+    @Getter
+    @Setter
+    @Column(name = "rowguid")
+    private String Rowguid;
 
     @Getter
     @Setter

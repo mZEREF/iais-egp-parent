@@ -1,68 +1,224 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohMasterCode" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
-<Resources>
-</Resources>
-<WebServices>
-</WebServices>
-<RestServices>
-</RestServices>
-<Steps>
-<StartStep defClass="" executor="" name="Step1" x="88" y="167"><Description/><probepoint type="none"/>
-<OnStepProcess>
-</OnStepProcess>
-</StartStep>
-<AutomaticStep defClass="" executor="" name="init" x="323" y="153"><Description/><probepoint type="none"/>
-<OnStepProcess>
-<JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0">
-</JavaCode>
-</OnStepProcess>
-</AutomaticStep>
-</Steps>
-<Pages>
-<WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" name="MasterCode" stageIndicator="" x="475" y="147"><Description/><probepoint type="none"/>
-<OnPageLoad>
-</OnPageLoad>
-<OnPageSubmit>
-</OnPageSubmit>
-</WebPage>
-</Pages>
-<Forms>
-<Form autoFilledMyInfo="on" defClass="" editable="true" executor="" formInstance="" icon="" name="Form0" x="677" y="158"><Description/><probepoint type="none"/>
-<OnPageLoad>
-</OnPageLoad>
-<OnPageSubmit>
-</OnPageSubmit>
-<OnValidateRequest>
-</OnValidateRequest>
-<OnFormDataFilter>
-</OnFormDataFilter>
-</Form>
-</Forms>
-<Conditions>
-</Conditions>
-<Switches>
-</Switches>
-<Branches>
-</Branches>
-<Merges>
-</Merges>
-<StudioLabels>
-</StudioLabels>
-<StageIndicator>
-</StageIndicator>
-<AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="">
-</AuthenticationRequire>
-<BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions="">
-</BatFlowsSelected>
-<Links>
-<SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1">
-<position>{(88,167)(323,153)}</position>
-</SynchronousLink>
-<SynchronousLink destinationName="/Pages/WebPage/MasterCode" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/init">
-<position>{(323,153)(475,147)}</position>
-</SynchronousLink>
-<SynchronousLink destinationName="/Forms/Form/Form0" linkstyle="Direct" name="" sourceName="/Pages/WebPage/MasterCode">
-<position>{(475,147)(677,158)}</position>
-</SynchronousLink>
-</Links>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohMasterCode" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+ <WebServices/>
+ <RestServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="0" y="0">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="180" y="0">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareSwitch" x="500" y="0">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="530" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSorting" x="630" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSorting_OnStepProcess_0" name="doSorting_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doPaging" x="700" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPaging_OnStepProcess_0" name="doPaging_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doDelete" x="810" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doDelete_OnStepProcess_0" name="doDelete_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="doView" processname="" project="" version="" x="920" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareCreate" x="300" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareCreate_OnStepProcess_0" name="prepareCreate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareEdit" x="420" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareEdit_OnStepProcess_0" name="prepareEdit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doCreate" x="310" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doCreate_OnStepProcess_0" name="doCreate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doEdit" x="440" y="320">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doEdit_OnStepProcess_0" name="doEdit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="masterCodeList" stageIndicator="" x="360" y="0">
+   <Description/>
+   <probepoint type="none"/>
+   <OnPageLoad/>
+   <OnPageSubmit/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="doCreatePage" stageIndicator="" x="300" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnPageLoad/>
+   <OnPageSubmit/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="doEditPage" stageIndicator="" x="430" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnPageLoad/>
+   <OnPageSubmit/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareData" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="340" y="440">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareData" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="500" y="380">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="640" y="0">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEdit" value="&quot;doEdit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSearch" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sortRecords&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;changePage&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doDelete" value="&quot;doDelete&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/doView" value="&quot;doView&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCreate" value="&quot;doCreate&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="780" y="420">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions=""/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(20,20)(200,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/masterCodeList" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
+   <position>{(200,20)(380,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/masterCodeList" style="rectanular">
+   <position>{(380,20)(520,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareSwitch" style="rectanular">
+   <position>{(520,20)(660,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(660,20)(550,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSorting" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(660,20)(650,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPaging" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(660,20)(720,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doDelete" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(660,20)(830,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/doView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(660,20)(940,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doSearch" style="rectanular">
+   <position>{(550,180)(800,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doSorting" style="rectanular">
+   <position>{(650,180)(800,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPaging" style="rectanular">
+   <position>{(720,180)(800,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/doView" style="rectanular">
+   <position>{(940,180)(800,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doDelete" style="rectanular">
+   <position>{(830,180)(800,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCreate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(660,20)(320,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareEdit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(660,20)(440,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/doCreatePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareCreate" style="rectanular">
+   <position>{(320,180)(320,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/doEditPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareEdit" style="rectanular">
+   <position>{(440,180)(450,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(360,460)(789,461)(800,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doEdit" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/doEditPage" style="rectanular">
+   <position>{(450,270)(460,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doEdit" style="rectanular">
+   <position>{(460,340)(520,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(520,400)(800,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCreate" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/doCreatePage" style="rectanular">
+   <position>{(320,270)(330,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doCreate" style="rectanular">
+   <position>{(330,360)(360,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCreate" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(360,460)(222,458)(320,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareEdit" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(520,400)(440,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(800,440)(208,567)(200,20)}</position>
+  </SynchronousLink>
+ </Links>
 </Application>

@@ -59,45 +59,13 @@ public class SortableHeaderTag extends DivTagSupport {
                 Map<String, String> sortMap = searchParam.getSortMap();
                 if (sortMap.containsKey(field.toUpperCase())) {
                     String type = sortMap.get(field.toUpperCase());
-                    if (!StringUtil.isEmpty(type)) {
-                        if (SearchParam.ASCENDING.equals(type))
-                            isActiveUp = ACTIVE;
-                        else if (SearchParam.DESCENDING.equals(type))
-                            isActiveDown = ACTIVE;
-                    }
+                    if (SearchParam.ASCENDING.equals(type))
+                        isActiveUp = ACTIVE;
+                    else if (SearchParam.DESCENDING.equals(type))
+                        isActiveDown = ACTIVE;
                 }
             }
-            if (StringUtil.isEmpty(jsFunc)) {
-                jsFunc = "sortRecords";
-            }
-            sb.append("<a class=\"sort-up");
-            sb.append(isActiveUp).append("\"").append(" href=\"");
-            if (!ACTIVE.equals(isActiveUp)) {
-                sb.append("javascript:");
-                sb.append(jsFunc);
-                sb.append("('");
-                sb.append(field);
-                sb.append("', '");
-                sb.append(SearchParam.ASCENDING);
-                sb.append("');");
-            } else {
-                sb.append("#");
-            }
-            sb.append("\"  title=\"Sort up\"></a>");
-            sb.append("<a class=\"sort-down");
-            sb.append(isActiveDown).append("\"").append(" href=\"");
-            if (!ACTIVE.equals(isActiveDown)) {
-                sb.append("javascript:");
-                sb.append(jsFunc);
-                sb.append("('");
-                sb.append(field);
-                sb.append("', '");
-                sb.append(SearchParam.DESCENDING);
-                sb.append("');");
-            } else {
-                sb.append("#");
-            }
-            sb.append("\" title=\"Sort down\"></a></span>");
+            generateHtml(sb,isActiveUp,isActiveDown);
         }
         sb.append("</th>");
 
@@ -110,6 +78,40 @@ public class SortableHeaderTag extends DivTagSupport {
         release();
 
         return SKIP_BODY;
+    }
+
+    private void generateHtml(StringBuilder sb,String isActiveUp,String isActiveDown){
+        if (StringUtil.isEmpty(jsFunc)) {
+            jsFunc = "sortRecords";
+        }
+        sb.append("<a class=\"sort-up");
+        sb.append(isActiveUp).append("\"").append(" href=\"");
+        if (!ACTIVE.equals(isActiveUp)) {
+            sb.append("javascript:");
+            sb.append(jsFunc);
+            sb.append("('");
+            sb.append(field);
+            sb.append("', '");
+            sb.append(SearchParam.ASCENDING);
+            sb.append("');");
+        } else {
+            sb.append("#");
+        }
+        sb.append("\"  title=\"Sort up\"></a>");
+        sb.append("<a class=\"sort-down");
+        sb.append(isActiveDown).append("\"").append(" href=\"");
+        if (!ACTIVE.equals(isActiveDown)) {
+            sb.append("javascript:");
+            sb.append(jsFunc);
+            sb.append("('");
+            sb.append(field);
+            sb.append("', '");
+            sb.append(SearchParam.DESCENDING);
+            sb.append("');");
+        } else {
+            sb.append("#");
+        }
+        sb.append("\" title=\"Sort down\"></a></span>");
     }
     @Override
     public int doEndTag() {
