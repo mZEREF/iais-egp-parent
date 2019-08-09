@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
@@ -38,7 +39,6 @@ public class MessageDelegator {
     public static final String PARAM_MESSAGE_SEARCH = "msgSearchParam";
     public static final String PARAM_MESSAGE_SEARCH_RESULT = "msgSearchResult";
 
-
     public static final String PARAM_MSG_ID = "param_msg_id";
     public static final String PARAM_ROW_ID = "param_row_id";
     public static final String PARAM_CODE_KEY = "param_code_key";
@@ -57,8 +57,8 @@ public class MessageDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<String> domainOptionList =  new ArrayList<>();
-        domainOptionList.add("INTER");
-        domainOptionList.add("INTRA");
+        domainOptionList.add("Internet");
+        domainOptionList.add("Intranet");
 
         List<String> msgOptionList =  new ArrayList<>();
         msgOptionList.add("Acknowledgement");
@@ -106,13 +106,36 @@ public class MessageDelegator {
     }
 
     /**
+     * INTRA INTER Internet Intranet
+     * @param str
+     * @return
+     */
+    private String convertDomainType(String str){
+        if(str == null || str.length() == 0){
+            return str;
+        }
+
+        int len = str.length() - 1;
+        Integer uCode = Integer.valueOf(str.charAt(len));
+        if(uCode == 116){
+            return str.substring(0,5).toUpperCase();
+        }else{
+            return str.charAt(0) + str.substring(1,5).toLowerCase() + "net";
+        }
+    }
+
+
+    /**
      * user do edit with message management
      * @param bpc
      */
     public void doEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request,"crud_action_type");
-        if(!"doEdit".equals(type)){
+        String type = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("cancel".equals(type)){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            return;
+        }else if(!"doEdit".equals(type)){
             return;
         }
 
@@ -122,7 +145,7 @@ public class MessageDelegator {
         String description = ParamUtil.getString(request, "description");
 
         MessageDto dto = (MessageDto) ParamUtil.getSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO);
-        dto.setDomainType(domainType);
+        dto.setDomainType(convertDomainType(domainType));
         dto.setMsgType(msgType);
         dto.setModule(module);
         dto.setDescription(description);
@@ -131,15 +154,15 @@ public class MessageDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,"errorMap",errorMap);
-            ParamUtil.setRequestAttr(request,"isValid","N");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
         }else {
             Map<String,String> successMap = new HashMap<>();
             successMap.put("edit message","suceess");
             Message message = MiscUtil.transferEntityDto(dto, Message.class);
             msgService.saveMessage(message);
-            ParamUtil.setRequestAttr(request,"isValid","Y");
-            ParamUtil.setRequestAttr(request,"successMap",successMap);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
         }
 
     }
@@ -150,7 +173,7 @@ public class MessageDelegator {
      */
     public void doDelete(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String msgId = ParamUtil.getString(bpc.request,"crud_action_value");
+        String msgId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(msgId)) {
             try {
                 Integer id = Integer.valueOf(msgId);
@@ -167,12 +190,12 @@ public class MessageDelegator {
      */
     public void doSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request, "crud_action_type");
+        String type = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!"doSearch".equals(type)){
             return;
         }
 
-        String domainType = ParamUtil.getString(request, "domainType");
+        String domainType = convertDomainType(ParamUtil.getString(request, "domainType"));
         String msgType = ParamUtil.getString(request, "msgType");
         String module = ParamUtil.getString(request, "module");
 
@@ -198,7 +221,7 @@ public class MessageDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
-        String action = ParamUtil.getString(bpc.request, "crud_action_type");
+        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.debug("*******************action-->:" + action);
         log.debug("The prepareSwitch end ...");
     }
@@ -210,14 +233,14 @@ public class MessageDelegator {
      */
     public void perpareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String  action = ParamUtil.getString(bpc.request,"crud_action_type");
-        String msgId = ParamUtil.getString(bpc.request,"crud_action_value");
+        String msgId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         preSelectOption(request);
         if(!StringUtil.isEmpty(msgId)){
             try {
                 Integer id = Integer.valueOf(msgId);
                 Message msg = msgService.getMessageByMsgId(id);
                 MessageDto dto = MiscUtil.transferEntityDto(msg, MessageDto.class);
+                dto.setDomainType(convertDomainType(dto.getDomainType()));
                 ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
             }catch (NumberFormatException e){
                 e.printStackTrace();

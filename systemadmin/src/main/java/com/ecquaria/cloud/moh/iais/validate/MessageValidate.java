@@ -24,11 +24,11 @@ public class MessageValidate implements CustomizeValidator {
         MessageDto dto = (MessageDto) ParamUtil.getRequestAttr(request,
                 MessageDto.MESSAGE_REQUEST_DTO);
         if(dto == null){
-            errMap.put("domainType" , "Is null");
+            errMap.put("domainType" , "domainType is null");
             return errMap;
         }
 
-        if(dto.getDescription().length() <= 0 || dto.getDescription().length() > 255){
+        if(dto.getDescription().length() == 0 || dto.getDescription().length() > 255){
             errMap.put("description" , "Description length is no correct");
             return errMap;
         }
