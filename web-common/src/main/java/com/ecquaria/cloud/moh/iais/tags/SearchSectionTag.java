@@ -55,60 +55,9 @@ public final class SearchSectionTag extends DivTagSupport {
         // header
         html.append("<div class=\"epd_tb collapsed\">");
         if (isBE) {
-            html.append("<div class=\"dash-header epdtitle\">");
-            html.append("<div class=\"row\">");
-            html.append("<div class=\"col-sm-12 col-md-12 col-lg-9 wsearch\">").append(title).append(ENDDIV);
-            html.append("<div class=\"col-sm-12 col-md-12 col-lg-3 searchspacing\">");
-            if (!StringUtil.isEmpty(onclick)) {
-                html.append("<div class=\"search-iconic-input\">");
-                html.append("<a href=\"javascript:void(0);\"");
-
-                html.append(" onclick=\"").append(onclick).append("\"");
-
-                html.append("><i class=\"fa fa-search\"></i></a>");
-                html.append("<input type=\"text\" class=\"form-control search-box\" placeholder=\"").append(placeholder).append("\"");
-                html.append(" name=\"").append(fieldName).append("\"");
-                if (!StringUtil.isEmpty(value)) {
-                    html.append(" value=\"").append(StringUtil.escapeHtml(value)).append("\"");
-                }
-                html.append("></div>");
-            }
-            html.append(ENDDIV);
-            html.append(ENDDIV);
-            html.append(ENDDIV);
-            // body
-            html.append("<div class=\"dash-body no-dash-pads epdct_tb\"");
-            if (hide) {
-                html.append(" style=\"display:none;\"");
-            }
-            html.append(">");
+            html= generateBEHtml(html);
         } else {
-            html.append("<div class=\"epdtitle epdtitle_tb1\">");
-            html.append("<div class=\"floatleft bold\"><span><font12>").append(title).append("</font12></span></div>");
-            html.append("<div class=\"floatright\">");
-            if (!StringUtil.isEmpty(onclick)) {
-                html.append("<div class=\"search-iconic-input\">");
-                html.append("<a href=\"javascript:void(0);\"");
-                html.append(" onclick=\"").append(onclick).append("\"");
-                html.append("><i class=\"fa fa-search\"></i></a>");
-                html.append("<input type=\"text\" class=\"searchapp searchwidth no-form-control\" placeholder=\"").append(placeholder).append("\"");
-                html.append(" alt=\"").append(placeholder).append("\"");
-                html.append(" name=\"").append(fieldName).append("\"");
-                if (!StringUtil.isEmpty(value)) {
-                    html.append(" value=\"").append(StringUtil.escapeHtml(value)).append("\"");
-                }
-                html.append("></div>");
-            }
-
-            html.append(ENDDIV);
-            html.append("<div class=\"clear\"></div>");
-            html.append(ENDDIV);
-            // body
-            html.append("<div class=\"epdct_tb\"");
-            if (hide) {
-                html.append(" style=\"display:none;\"");
-            }
-            html.append(">");
+            html =generateFEHtml(html);
         }
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
@@ -116,6 +65,65 @@ public final class SearchSectionTag extends DivTagSupport {
             throw new JspTagException("RowTag: " + ex.getMessage());
         }
         return EVAL_BODY_INCLUDE;
+    }
+    private StringBuilder generateBEHtml(StringBuilder html){
+        html.append("<div class=\"dash-header epdtitle\">");
+        html.append("<div class=\"row\">");
+        html.append("<div class=\"col-sm-12 col-md-12 col-lg-9 wsearch\">").append(title).append(ENDDIV);
+        html.append("<div class=\"col-sm-12 col-md-12 col-lg-3 searchspacing\">");
+        if (!StringUtil.isEmpty(onclick)) {
+            html.append("<div class=\"search-iconic-input\">");
+            html.append("<a href=\"javascript:void(0);\"");
+
+            html.append(" onclick=\"").append(onclick).append("\"");
+
+            html.append("><i class=\"fa fa-search\"></i></a>");
+            html.append("<input type=\"text\" class=\"form-control search-box\" placeholder=\"").append(placeholder).append("\"");
+            html.append(" name=\"").append(fieldName).append("\"");
+            if (!StringUtil.isEmpty(value)) {
+                html.append(" value=\"").append(StringUtil.escapeHtml(value)).append("\"");
+            }
+            html.append("></div>");
+        }
+        html.append(ENDDIV);
+        html.append(ENDDIV);
+        html.append(ENDDIV);
+        // body
+        html.append("<div class=\"dash-body no-dash-pads epdct_tb\"");
+        if (hide) {
+            html.append(" style=\"display:none;\"");
+        }
+        html.append(">");
+        return html;
+    }
+    private StringBuilder generateFEHtml(StringBuilder html){
+        html.append("<div class=\"epdtitle epdtitle_tb1\">");
+        html.append("<div class=\"floatleft bold\"><span><font12>").append(title).append("</font12></span></div>");
+        html.append("<div class=\"floatright\">");
+        if (!StringUtil.isEmpty(onclick)) {
+            html.append("<div class=\"search-iconic-input\">");
+            html.append("<a href=\"javascript:void(0);\"");
+            html.append(" onclick=\"").append(onclick).append("\"");
+            html.append("><i class=\"fa fa-search\"></i></a>");
+            html.append("<input type=\"text\" class=\"searchapp searchwidth no-form-control\" placeholder=\"").append(placeholder).append("\"");
+            html.append(" alt=\"").append(placeholder).append("\"");
+            html.append(" name=\"").append(fieldName).append("\"");
+            if (!StringUtil.isEmpty(value)) {
+                html.append(" value=\"").append(StringUtil.escapeHtml(value)).append("\"");
+            }
+            html.append("></div>");
+        }
+
+        html.append(ENDDIV);
+        html.append("<div class=\"clear\"></div>");
+        html.append(ENDDIV);
+        // body
+        html.append("<div class=\"epdct_tb\"");
+        if (hide) {
+            html.append(" style=\"display:none;\"");
+        }
+        html.append(">");
+        return html;
     }
     @Override
     public int doEndTag() throws JspException {
