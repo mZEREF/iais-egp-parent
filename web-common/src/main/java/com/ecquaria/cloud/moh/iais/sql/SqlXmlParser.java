@@ -40,7 +40,7 @@ public class SqlXmlParser extends DefaultHandler {
     private List<Sql> sqls;
     private String catalog;
     private String key;
-    private StringBuffer sqlStat; // accumulator
+    private StringBuilder sqlStat; // accumulator
 
     public List<Sql> parseSqlXml(String xmlFileName) throws SAXException, ParserConfigurationException, IOException {
         SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -52,12 +52,14 @@ public class SqlXmlParser extends DefaultHandler {
     }
 
     // Document Events - START
+    @Override
     public void startDocument() throws SAXException {
-        sqls = new ArrayList<Sql>();
-        sqlStat = new StringBuffer();
+        sqls = new ArrayList<>();
+        sqlStat = new StringBuilder();
     }
 
     // Element Events - START
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
             throws SAXException {
         if (qName.equalsIgnoreCase(ELEM_SQLS)) {
@@ -70,13 +72,13 @@ public class SqlXmlParser extends DefaultHandler {
             key = attributes.getValue(ATTR_KEY);
         }
     }
-
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        //tempVal = new String(ch, start, length);
         sqlStat.append(ch, start, length);
     }
 
     // Element Events - END
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (qName.equalsIgnoreCase(ELEM_SQL)) {
             // add it to the list
@@ -90,6 +92,7 @@ public class SqlXmlParser extends DefaultHandler {
     }
 
     // Document Events - END
+    @Override
     public void endDocument() throws SAXException {
         // end of parsing
     }
