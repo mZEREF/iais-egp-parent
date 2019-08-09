@@ -55,9 +55,9 @@ public final class SearchSectionTag extends DivTagSupport {
         // header
         html.append("<div class=\"epd_tb collapsed\">");
         if (isBE) {
-            html= generateBEHtml(html);
+             generateBEHtml(html);
         } else {
-            html =generateFEHtml(html);
+            generateFEHtml(html);
         }
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
@@ -66,7 +66,7 @@ public final class SearchSectionTag extends DivTagSupport {
         }
         return EVAL_BODY_INCLUDE;
     }
-    private StringBuilder generateBEHtml(StringBuilder html){
+    private void generateBEHtml(StringBuilder html){
         html.append("<div class=\"dash-header epdtitle\">");
         html.append("<div class=\"row\">");
         html.append("<div class=\"col-sm-12 col-md-12 col-lg-9 wsearch\">").append(title).append(ENDDIV);
@@ -94,9 +94,8 @@ public final class SearchSectionTag extends DivTagSupport {
             html.append(" style=\"display:none;\"");
         }
         html.append(">");
-        return html;
     }
-    private StringBuilder generateFEHtml(StringBuilder html){
+    private void generateFEHtml(StringBuilder html){
         html.append("<div class=\"epdtitle epdtitle_tb1\">");
         html.append("<div class=\"floatleft bold\"><span><font12>").append(title).append("</font12></span></div>");
         html.append("<div class=\"floatright\">");
@@ -123,7 +122,6 @@ public final class SearchSectionTag extends DivTagSupport {
             html.append(" style=\"display:none;\"");
         }
         html.append(">");
-        return html;
     }
     @Override
     public int doEndTag() throws JspException {
