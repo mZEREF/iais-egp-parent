@@ -58,12 +58,12 @@ public class SelectOption implements Serializable, Comparable {
 			if (other.text != null)
 				return false;
 		} else if (!text.equals(other.text))
-			return false;
+			       return false;
 		if (value == null) {
 			if (other.value != null)
 				return false;
 		} else if (!value.equals(other.value))
-			return false;
+			       return false;
 		return true;
 	}
 
