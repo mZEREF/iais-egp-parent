@@ -24,18 +24,19 @@ public final class ActionTag extends DivTagSupport {
     }
 
     // resets local state
+    @Override
     protected void init() {
         super.init();
         this.validator = null;
     }
-
+    @Override
     public void release() {
         super.release();
         init();
     }
-
+    @Override
     public int doStartTag() throws JspException {
-        StringBuffer html = new StringBuffer();
+        StringBuilder html = new StringBuilder();
         html.append("<div class=\"alignctr\"");
         if (!StringUtil.isEmpty(id)) {
             html.append(" id=\"").append(id).append("\"");
@@ -54,7 +55,7 @@ public final class ActionTag extends DivTagSupport {
         }
         return EVAL_BODY_INCLUDE;
     }
-
+    @Override
     public int doEndTag() throws JspException {
         try {
             pageContext.getOut().print("</div>");
