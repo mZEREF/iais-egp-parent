@@ -15,6 +15,7 @@ package com.ecquaria.cloud.moh.iais.dto;
 
 
 import lombok.Getter;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -25,10 +26,11 @@ import java.util.Map;
 public class SearchParam implements Serializable {
     public static final String ASCENDING    = "ASC";
     public static final String DESCENDING   = "DESC";
+    private static final long serialVersionUID = -5074317624732926224L;
 
-    private Map<String, Object> params;     // for template SQL generation
-    private Map<String, Object> filters;    // for SQL query
-    private Map<String, String> sortMap;
+    private HashMap<String, Object> params;     // for template SQL generation
+    private LinkedHashMap<String, Object> filters;    // for SQL query
+    private LinkedHashMap<String, String> sortMap;
     private int pageSize;
     private int pageNo;
     @Getter private Class entityCls;
@@ -79,7 +81,14 @@ public class SearchParam implements Serializable {
         return params;
     }
     public void setParams(Map<String, Object> params) {
-        this.params = params;
+        if(MapUtils.isEmpty(this.params)){
+            this.params = new HashMap<>();
+        }else{
+            this.params.clear();
+        }
+        if(!MapUtils.isEmpty(params)){
+           this.params.putAll(params);
+        }
     }
     public void setSort(String sortField, String sortType) {
         sortMap.clear();
@@ -94,7 +103,15 @@ public class SearchParam implements Serializable {
         return filters;
     }
     public void setFilters(Map<String, Object> filters) {
-        this.filters = filters;
+        if(MapUtils.isEmpty(this.filters)){
+            this.filters = new LinkedHashMap<>();
+        }else{
+            this.filters.clear();
+        }
+
+        if(MapUtils.isEmpty(filters)){
+            this.filters.putAll(filters);
+        }
     }
     public void setSortField(String sortField) {
         sortMap.clear();

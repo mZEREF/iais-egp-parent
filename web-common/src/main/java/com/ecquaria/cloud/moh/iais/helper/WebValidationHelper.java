@@ -13,15 +13,19 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import sg.gov.moh.iais.common.constant.AuditTrailConsts;
+import sg.gov.moh.iais.common.exception.IaisRuntimeException;
+import sg.gov.moh.iais.common.utils.MiscUtil;
+import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
-import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
+import sg.gov.moh.iais.web.logging.util.AuditLogUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,24 +93,31 @@ public class WebValidationHelper {
         return rslt;
     }
 
-    private static void saveAuditTrail(ValidationResult rslt) {
-        if (!rslt.isHasErrors())
+    private static void saveAuditTrail(ValidationResult result) {
+        if (!result.isHasErrors())
             return;
 
-        AuditTrailDto dto = new AuditTrailDto();
-        IaisEGPHelper.setAuditLoginUserInfo(dto);
+        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(MiscUtil.getCurrentRequest(),
+                AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        if (dto == null)
+            dto = AuditTrailDto.getThreadDto();
+
+        Map<String, String> errors = result.retrieveAll();
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> json = new HashMap<>();
-        for (Map.Entry<String, String> ent : rslt.retrieveAll().entrySet()) {
-            json.put(ent.getKey(), ent.getValue());
-        }
         try {
-            dto.setViewParams(mapper.writeValueAsString(json));
-            List<AuditTrailDto> dtos = new ArrayList<>();
-            dtos.add(dto);
-            AuditLogUtil.callAuditRestApi(dtos);
+            dto.setValidationFail(mapper.writeValueAsString(errors));
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException(e);
+        }
+        List<AuditTrailDto> dtoList = new ArrayList<>();
+        dtoList.add(dto);
+        dto.setOperation(AuditTrailConsts.OPERATION_INTERNET_VALIDATION_FAIL);
+        try {
+            AuditLogUtil.callAuditRestApi(dtoList);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+        dto.setValidationFail(null);
     }
 }

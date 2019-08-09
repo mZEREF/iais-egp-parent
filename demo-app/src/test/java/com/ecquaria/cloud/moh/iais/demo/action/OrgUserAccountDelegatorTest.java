@@ -38,6 +38,9 @@ import org.powermock.reflect.Whitebox;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Example;
 import org.springframework.mock.web.MockHttpServletRequest;
+import sg.gov.moh.iais.common.utils.MiscUtil;
+import sg.gov.moh.iais.common.utils.ParamUtil;
+import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import static org.powermock.api.mockito.PowerMockito.doReturn;
@@ -51,7 +54,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({OrgUserAccountDelegator.class,CrudHelper.class,OrgUserAccountServiceImpl.class,
-        SpringContextHelper.class})
+        SpringContextHelper.class, MiscUtil.class,AuditTrailDto.class,ParamUtil.class})
 public class OrgUserAccountDelegatorTest {
     @InjectMocks
     private OrgUserAccountDelegator orgUserAccountDelegator;
@@ -60,7 +63,8 @@ public class OrgUserAccountDelegatorTest {
     @Mock
     private BaseProcessClass bpc;
 
-    private MockHttpServletRequest request = new MockHttpServletRequest(); ;
+    private MockHttpServletRequest request = new MockHttpServletRequest();
+
     @Mock
     private QueryDao<DemoQuery> demoQueryDao;
     @Mock
@@ -81,6 +85,11 @@ public class OrgUserAccountDelegatorTest {
         ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
         when(SpringContextHelper.getContext()).thenReturn(context);
         doReturn(orgUserAccountDao).when(context).getBean(OrgUserAccountDao.class);
+        PowerMockito.mockStatic(MiscUtil.class);
+        when(MiscUtil.getCurrentRequest()).thenReturn(request);
+        PowerMockito.mockStatic(AuditTrailDto.class);
+        AuditTrailDto dto = new AuditTrailDto();
+        PowerMockito.when(AuditTrailDto.getThreadDto()).thenReturn(dto);
     }
 
     @Test
@@ -148,6 +157,9 @@ public class OrgUserAccountDelegatorTest {
 
     @Test
     public void testprepareEdit(){
+        PowerMockito.mockStatic(ParamUtil.class);
+        PowerMockito.when(ParamUtil.getString(Mockito.anyObject(),Mockito.anyObject())).thenReturn("rowguid");
+        PowerMockito.when(MiscUtil.transferEntityDto(Mockito.anyObject(),Mockito.anyObject())).thenReturn(new OrgUserAccountDto());
         orgUserAccountDelegator.prepareEdit(bpc);
         Assert.assertTrue(true);
     }

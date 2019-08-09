@@ -62,8 +62,7 @@
         <iais:row>
             <iais:field value="Create Date"/>
             <iais:value width="7">
-                <!--<iais:dates name="create_date" value="${demoSearchParam.filters['create_date']}" fromYear="1980" last1Years="2222"></iais:dates>-->
-                <iais:datePicker id = "fromDate" name = "fromDate" value = ""></iais:datePicker>
+                <iais:datePicker id = "fromDate" name = "fromDate"></iais:datePicker>
             </iais:value>
         </iais:row>
         <iais:row>
@@ -87,11 +86,12 @@
         <div class="table-responsive" id="no-more-tables">
             <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
                 <colgroup>
-                    <col width="5%"/>
-                    <col width="15%"/>
-                    <col width="15%"/>
-                    <col width="15%"/>
-                    <col width="8%"/>
+                    <col style="width: 10%;"/>
+                    <col style="width: 20%;"/>
+                    <col style="width: 20%;"/>
+                    <col style="width: 20%;"/>
+                    <col style="width: 20%;"/>
+                    <col style="width: 10%;"/>
                 </colgroup>
                 <thead>
                 <tr>

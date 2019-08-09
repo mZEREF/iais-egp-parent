@@ -33,14 +33,14 @@ public class PostCodeControllerTest {
     @Before
     public void setup() throws IllegalAccessException, NoSuchFieldException {
      //Field field1 = PowerMockito.field(PostCodeController.class,"POSTCODE_PATH");
-        Field field1 = postCodeController.getClass().getDeclaredField("STREETS_PATH");
+        Field field1 = postCodeController.getClass().getDeclaredField("streetsPath");
         field1.setAccessible(true);
         field1.set(postCodeController,Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/STREETS.TXT");
-        Field field2 = postCodeController.getClass().getDeclaredField("POSTCODE_PATH");
+        Field field2 = postCodeController.getClass().getDeclaredField("postCodePath");
         field2.setAccessible(true);
         field2.set(postCodeController,Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/POSTCODE.TXT");
 
-        Field field3 = postCodeController.getClass().getDeclaredField("BUILDING_PATH");
+        Field field3 = postCodeController.getClass().getDeclaredField("buildingPath");
         field3.setAccessible(true);
         field3.set(postCodeController,Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/BUILDING.TXT");
 

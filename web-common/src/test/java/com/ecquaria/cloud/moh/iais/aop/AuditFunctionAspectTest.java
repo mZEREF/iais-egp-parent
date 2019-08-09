@@ -35,7 +35,7 @@ import org.springframework.test.util.AopTestUtils;
 import sg.gov.moh.iais.common.constant.AppConsts;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
-import sg.gov.moh.iais.web.logging.utils.AuditLogUtil;
+import sg.gov.moh.iais.web.logging.util.AuditLogUtil;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
@@ -122,6 +122,11 @@ public class AuditFunctionAspectTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testAuditClass() {
         aspect.auditClass();
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testAuditAuditSearch() {
+        aspect.auditSearch();
     }
 
     @Test

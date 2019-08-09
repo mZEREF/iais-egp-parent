@@ -13,9 +13,12 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
 import org.powermock.core.classloader.annotations.MockPolicy;
@@ -23,8 +26,11 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
+import sg.gov.moh.iais.common.validation.dto.ValidationResult;
+import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 
-import static org.junit.Assert.assertTrue;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * WebValidationHelperTest
@@ -34,17 +40,44 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({WebValidationHelper.class, ValidationUtils.class})
+@PrepareForTest({WebValidationHelper.class, ValidationUtils.class,AuditTrailDto.class})
 @PowerMockIgnore("javax.management.*")
 public class WebValidationHelperTest {
 
+    @Mock
+    private ValidationResult validationResult;
+
     @Before
     public void setup() {
+        PowerMockito.mockStatic(AuditTrailDto.class);
         PowerMockito.mockStatic(ValidationUtils.class);
     }
 
     @Test
-    public void testTrue() {
-        assertTrue(true);
+    public void testValidateEntity() {
+        AuditTrailDto.setThreadDto(new AuditTrailDto());
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("key","value");
+        PowerMockito.when(ValidationUtils.validateEntity(Mockito.anyObject())).thenReturn(validationResult);
+        PowerMockito.when(validationResult.isHasErrors()).thenReturn(true);
+        PowerMockito.when(validationResult.retrieveAll()).thenReturn(errorMap);
+        AuditTrailDto dto = new AuditTrailDto();
+        PowerMockito.when(AuditTrailDto.getThreadDto()).thenReturn(dto);
+        WebValidationHelper.validateEntity(new Object());
+        Assert.assertTrue(true);
+    }
+    @Test
+    public void testValidateProperty() {
+        PowerMockito.when(ValidationUtils.validateProperty(Mockito.anyObject(),Mockito.anyString())).thenReturn(validationResult);
+        PowerMockito.when(validationResult.isHasErrors()).thenReturn(false);
+        WebValidationHelper.validateProperty(new Object(),"");
+        Assert.assertTrue(true);
+    }
+    @Test
+    public void testDoValidate() {
+        PowerMockito.when(ValidationUtils.doValidate(Mockito.anyObject(),Mockito.anyObject())).thenReturn(validationResult);
+        PowerMockito.when(validationResult.isHasErrors()).thenReturn(false);
+        WebValidationHelper.doValidate(new Object[]{});
+        Assert.assertTrue(true);
     }
 }

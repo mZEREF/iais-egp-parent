@@ -53,4 +53,7 @@ public class CrudHelper {
             searchParam.setPageNo(Integer.parseInt(pageNo));
         }
     }
+    private CrudHelper() {
+        throw new IllegalStateException("Utility class");
+    }
 }

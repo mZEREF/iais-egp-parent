@@ -13,9 +13,13 @@
 
 package com.ecquaria.cloud.moh.iais.sql;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.xml.sax.SAXException;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,17 +38,17 @@ public class SqlMapLoader {
      * @param
      * @throws Exception
      */
-    public void loadSqlMap() throws Exception {
+    public void loadSqlMap() throws IOException, SAXException, ParserConfigurationException {
         File rootPath = new File(MiscUtil.getClassRootPath(), SQL_DIR);
         FolderFileList ffl = new FolderFileList(rootPath);
         List<String> files = ffl.getFiles();
         List<Sql> sqls = null;
         SqlXmlParser sxp = new SqlXmlParser();
         if (files != null) {
-            sqls = new ArrayList<Sql>();
+            sqls = new ArrayList<>();
             for (String file : files) {
                 List<Sql> sqlsInFile = sxp.parseSqlXml(file);
-                if (sqlsInFile != null && sqlsInFile.size() > 0) {
+                if (!CollectionUtils.isEmpty(sqlsInFile)) {
                     sqls.addAll(sqlsInFile);
                 }
             }
@@ -56,7 +60,7 @@ public class SqlMapLoader {
         private List<String> files;
 
         public FolderFileList(File rootPath) {
-            files = new ArrayList<String>();
+            files = new ArrayList<>();
             listFilesForFolder(rootPath);
         }
 
@@ -69,9 +73,7 @@ public class SqlMapLoader {
                 return;
 
             for (File fileEntry : fileArrays) {
-                if (fileEntry == null){
-                    continue;
-                } else {
+                if (fileEntry != null){
                     if (fileEntry.isDirectory()) {
                         listFilesForFolder(fileEntry);
                     } else {

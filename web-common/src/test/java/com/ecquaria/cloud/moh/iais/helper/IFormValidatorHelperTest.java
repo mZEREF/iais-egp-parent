@@ -15,6 +15,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.dto.IFormValidatorHelperTestDto;
 import com.ecquaria.egp.core.bat.FormHelper;
+import com.ecquaria.egp.core.forms.validation.FormValidationHelper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +45,7 @@ import java.util.Map;
 
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({WebValidationHelper.class,FormHelper.class,IFormValidatorHelper.class})
+@PrepareForTest({WebValidationHelper.class,FormHelper.class,IFormValidatorHelper.class,FormValidationHelper.class})
 @PowerMockIgnore("javax.management.*")
 @SuppressStaticInitializationFor("sg.gov.moh.iais.common.validation.ValidationUtils")
 public class IFormValidatorHelperTest {
@@ -57,6 +60,7 @@ public class IFormValidatorHelperTest {
     public void setup(){
         PowerMockito.mockStatic(FormHelper.class);
         PowerMockito.mockStatic(WebValidationHelper.class);
+        PowerMockito.mockStatic(FormValidationHelper.class);
     }
 
     //validateForm
@@ -74,8 +78,15 @@ public class IFormValidatorHelperTest {
         errors.put("fieldName","ErrorMessage");
         PowerMockito.doReturn(true).when(result).isHasErrors();
         PowerMockito.doReturn(errors).when(result).retrieveAll();
-        IFormValidatorHelper.addErrorToForm(bpc,result);
+        IFormValidatorHelper.addErrorToForm(bpc,"formName",result);
         Assert.assertTrue(true);
     }
-
+    @Test(expected = IllegalStateException.class)
+    public void testConstructor() throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException, InstantiationException {
+        Class cls = IFormValidatorHelper.class;
+        Constructor<IFormValidatorHelper> con = cls.getDeclaredConstructor(null);
+        con.setAccessible(true);
+        con.newInstance(null);
+    }
 }
