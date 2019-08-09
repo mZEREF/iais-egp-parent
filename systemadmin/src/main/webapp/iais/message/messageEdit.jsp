@@ -28,8 +28,6 @@
 <!-- START: CSS -->
 
 <!-- END: CSS -->
-${msgRequestDto.domainType}
-
 <form id = "messageForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
@@ -80,13 +78,18 @@ ${msgRequestDto.domainType}
     </iais:section>
         </iais:body>
 
-    <iais:action>
-        <button type="button" class="btn" onclick="javascript:doEdit(${msgRequestDto.id});">Update</button>
-    </iais:action>
+    <tr>
+        <iais:action>
+            <button type="button" class="btn" onclick="javascript:doEdit(${msgRequestDto.id});">Update</button>
+        </iais:action>
 
-    <iais:action>
-        <button type="button" class="btn" onclick="javascript:doCancel();">Cancel</button>
-    </iais:action>
+        <iais:action>
+            <button type="button" class="btn" onclick="javascript:doCancel();">Cancel</button>
+        </iais:action>
+    </tr>
+
+
+
 </form>
 
 <script type="text/javascript">
