@@ -62,7 +62,7 @@ public class SearchResult<E extends Serializable> implements Serializable {
         rowCount--;
     }
 
-    public ArrayList<E> getRows() {
+    public List<E> getRows() {
         return rows;
     }
 
