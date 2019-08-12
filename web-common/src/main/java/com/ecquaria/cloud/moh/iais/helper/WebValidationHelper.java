@@ -37,6 +37,9 @@ import java.util.Map;
  */
 @Slf4j
 public class WebValidationHelper {
+    private WebValidationHelper() {
+        throw new IllegalStateException("Utility class");
+    }
     /**
      * The method to do the validation for entity class
      *
