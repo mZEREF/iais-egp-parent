@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MsgService;
+import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.common.utils.MiscUtil;
@@ -57,8 +58,9 @@ public class MessageDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<String> domainOptionList =  new ArrayList<>();
-        domainOptionList.add("Internet");
-        domainOptionList.add("Intranet");
+        List<SelectOption> domain = new ArrayList<>();
+        domain.add(new SelectOption("INTER", "Internet"));
+        domain.add(new SelectOption("INTRA", "Intranet"));
 
         List<String> msgOptionList =  new ArrayList<>();
         msgOptionList.add("Acknowledgement");
@@ -75,10 +77,9 @@ public class MessageDelegator {
         moduleOptionList.add("Others");
 
         Map<String , List<String>> map = new HashMap<>();
-        map.put("domainTypeSelect", domainOptionList);
+        ParamUtil.setRequestAttr(request, "domainTypeSelect", domain);
         map.put("msgTypeSelect", msgOptionList);
         map.put("moduleTypeSelect", moduleOptionList);
-        IaisEGPHelper.setOptionToList(request, map);
     }
 
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {

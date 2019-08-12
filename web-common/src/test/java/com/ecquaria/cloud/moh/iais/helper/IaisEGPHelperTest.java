@@ -31,10 +31,6 @@ import sop.rbac.user.User;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -85,41 +81,5 @@ public class IaisEGPHelperTest {
     public void testGetRootPath() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
         String path = IaisEGPHelper.getRootPath();
         assertNotNull(path);
-    }
-
-    @Test
-    public void testSetOptionToList(){
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        Map<String , List<String>> map = new HashMap<String , List<String>>(){{
-            put("domainTypeSelect", new ArrayList<String>(){{
-                add("Internet");
-                add("Intranet");
-            }});
-
-            put("msgTypeSelect", new ArrayList<String>(){{
-                add("Acknowledgement");
-                add("Error");
-            }});
-
-            put("moduleTypeSelect", new ArrayList<String>(){{
-                add("New");
-                add("Renewal");
-                add("Cessation");
-                add("Amendment");
-                add("Reinstate");
-                add("Audit");
-                add("Common");
-                add("Others");
-            }});
-        }};
-
-
-        IaisEGPHelper.setOptionToList(request,map);
-
-        IaisEGPHelper.setOptionToList(null,null);
-
-        IaisEGPHelper.setOptionToList(request,null);
-
-        IaisEGPHelper.setOptionToList(null, map);
     }
 }
