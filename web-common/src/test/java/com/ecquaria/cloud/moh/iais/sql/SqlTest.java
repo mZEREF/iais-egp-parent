@@ -39,8 +39,8 @@ public class SqlTest {
         sql.getCatalog();
         sql.setKey(null);
         sql.getKey();
-        sql.setSql("ss");
-        sql.getSql();
+        sql.setSqlStr("ss");
+        sql.getSqlStr();
         sql.setCached("s");
         sql.getCached();
         assertNotNull(sql);

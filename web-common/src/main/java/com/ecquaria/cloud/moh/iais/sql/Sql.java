@@ -25,8 +25,9 @@ import java.io.Serializable;
  * @date 2019/7/18 17:22
  */
 public class Sql implements Serializable {
+    private static final long serialVersionUID = 846350935385614071L;
     @Getter @Setter private String catalog;
     @Getter @Setter private String key;
-    @Getter @Setter private String sql;
+    @Getter @Setter private String sqlStr;
     @Getter @Setter private String cached;
 }
