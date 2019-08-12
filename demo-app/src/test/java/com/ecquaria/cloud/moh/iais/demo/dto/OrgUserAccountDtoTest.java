@@ -35,9 +35,12 @@ public class OrgUserAccountDtoTest {
         entity.setOrgId(null);
         entity.isEditFlag();
         entity.setEditFlag(false);
-        entity.validateNricEdit("nric");
+        entity.validateNricEdit("");
         entity.fakeValidateA("");
         entity.fakeValidateB("");
+        entity.validateNricEdit("nric");
+        entity.fakeValidateA("arg");
+        entity.fakeValidateB("arg");
         assertNotNull(entity);
     }
 }
