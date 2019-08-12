@@ -38,7 +38,9 @@ public final class MasterCodeUtil {
     private static final String CACHE_NAME_CATE_MAP                     = "iaisMcCateMap";
     private static final String CACHE_NAME_FILTER                       = "iaisMcFilterMap";
     private static final String CACHE_NAME_CODE                         = "iaisMcCode";
-
+    private static final String SEQUENCE                                = "sequence";
+    private static final String WEBCOMMON                               = "webcommon";
+    private static final String RETRIEVE_MASTER_CODES                     = "retrieveMasterCodes";
     //Code Categorys
     public static final String CATE_ID_NATIONALITY                      = "1";
 
@@ -53,8 +55,8 @@ public final class MasterCodeUtil {
      */
     public static void refreshCache() {
         SearchParam param = new SearchParam(MasterCodeView.class);
-        param.setSort("sequence", SearchParam.ASCENDING);
-        SearchResult<MasterCodeView> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
+        param.setSort(SEQUENCE, SearchParam.ASCENDING);
+        SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
         if (sr == null || sr.getRowCount() <= 0)
             return;
 
@@ -153,7 +155,7 @@ public final class MasterCodeUtil {
         if (StringUtil.isEmpty(desc)) {
             SearchParam param = new SearchParam(MasterCodeView.class);
             param.addFilter("codeFilter", code, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
             if (sr.getRowCount() > 0) {
                 MasterCodeView mc = sr.getRows().get(0);
                 desc = mc.getCodeValue();
@@ -226,9 +228,9 @@ public final class MasterCodeUtil {
         List<MasterCodeView> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cateId);
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class);
-            param.setSort("sequence", SearchParam.ASCENDING);
+            param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("cateFilter", cateId, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m -> {
@@ -247,9 +249,9 @@ public final class MasterCodeUtil {
         List<MasterCodeView> list = RedisCacheHelper.getInstance().get(CACHE_NAME_FILTER, filter);
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class);
-            param.setSort("sequence", SearchParam.ASCENDING);
+            param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("filterAttr", filter, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m -> {

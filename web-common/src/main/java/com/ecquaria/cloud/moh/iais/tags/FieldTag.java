@@ -20,10 +20,7 @@ import javax.servlet.jsp.JspTagException;
 public final class FieldTag extends DivTagSupport {
     private static final long serialVersionUID = -8544224262301150921L;
     private static final String ENDLABLE = "</label>";
-    private String code;
-    private String codeType;
     private String value;
-    private String annoId;
     private boolean required;
     private String info;
     private String index;
@@ -43,9 +40,7 @@ public final class FieldTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        code = null;
         value = null;
-        annoId = null;
         required = false;
         info = null;
         index = null;
@@ -157,19 +152,11 @@ public final class FieldTag extends DivTagSupport {
         return EVAL_PAGE;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-    public void setCodeType(String codeType) {
-        this.codeType = codeType;
-    }
 
     public void setValue(String value) {
         this.value = value;
     }
-    public void setAnnoId(String annoId) {
-        this.annoId = annoId;
-    }
+
     public void setRequired(boolean required) {
         this.required = required;
     }

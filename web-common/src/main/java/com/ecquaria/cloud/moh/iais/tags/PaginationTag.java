@@ -60,7 +60,7 @@ public class PaginationTag extends DivTagSupport {
 
         Object obj = ParamUtil.getScopeAttr((HttpServletRequest)pageContext.getRequest(), param);
 
-        if (obj != null && (obj instanceof SearchParam)) {
+        if (obj instanceof SearchParam) {
                 SearchParam sp = (SearchParam) obj;
                 pageNo = sp.getPageNo();
                 pageSize = sp.getPageSize();
