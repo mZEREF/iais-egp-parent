@@ -14,6 +14,7 @@ import java.util.Date;
 @Data
 @Table(name = "cm_master_code")
 public class MasterCode implements Serializable {
+    private static final long serialVersionUID = 4934028881970802955L;
 
     @Id
     @Getter
@@ -25,7 +26,7 @@ public class MasterCode implements Serializable {
     @Getter
     @Setter
     @Column(name = "rowguid")
-    private String Rowguid;
+    private String rowguid;
 
     @Getter
     @Setter
