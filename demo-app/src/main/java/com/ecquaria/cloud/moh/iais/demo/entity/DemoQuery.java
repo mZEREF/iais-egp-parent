@@ -19,6 +19,7 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * DemoQuery
@@ -27,7 +28,8 @@ import javax.persistence.Id;
  * @date 2019/7/19 13:57
  */
 @Entity
-public class DemoQuery {
+public class DemoQuery implements Serializable {
+    private static final long serialVersionUID = -8254013396556504175L;
 
     @Id
     @Column(name = "user_id")

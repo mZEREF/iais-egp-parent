@@ -119,9 +119,9 @@ public final class MasterCodeUtil {
     public static List<MasterCodeView> retrieveByCategory(String cateId) {
         List<MasterCodeView> list = retrieveCateSource(cateId);
         List<MasterCodeView> mcList = new ArrayList<>();
-        list.forEach(m -> {
-            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class));
-        });
+        list.forEach(m ->
+            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class))
+        );
 
         return mcList;
     }
@@ -136,9 +136,9 @@ public final class MasterCodeUtil {
     public static List<SelectOption> retrieveOptionsByCate(String cateId) {
         List<MasterCodeView> list = retrieveCateSource(cateId);
         List<SelectOption> opts = new ArrayList<>();
-        list.forEach(m -> {
-            opts.add(new SelectOption(m.getCode(), m.getCodeValue()));
-        });
+        list.forEach(m ->
+            opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
+        );
 
         return opts;
     }

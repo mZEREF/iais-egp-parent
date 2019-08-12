@@ -27,7 +27,7 @@ import java.util.List;
  * @author Jinhua
  * @date 2019/7/22 17:51
  */
-public class SearchResult<E> implements Serializable {
+public class SearchResult<E extends Serializable> implements Serializable {
     private static final long serialVersionUID = -8104178963933476893L;
 
     private ArrayList<E> rows;
@@ -62,7 +62,7 @@ public class SearchResult<E> implements Serializable {
         rowCount--;
     }
 
-    public ArrayList<E> getRows() {
+    public List<E> getRows() {
         return rows;
     }
 

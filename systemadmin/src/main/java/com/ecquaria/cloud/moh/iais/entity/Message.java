@@ -11,6 +11,8 @@ import java.io.Serializable;
 @Entity
 @Table(name = "CM_MESSAGE")
 public class Message implements Serializable {
+    private static final long serialVersionUID = 5644597696826887178L;
+
     @Getter
     @Setter
     @Id

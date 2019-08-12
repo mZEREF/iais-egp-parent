@@ -19,6 +19,7 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * MessageCode
@@ -27,7 +28,9 @@ import javax.persistence.Id;
  * @date 2019/7/24 17:58
  */
 @Entity
-public class MessageCode {
+public class MessageCode implements Serializable {
+    private static final long serialVersionUID = 1971470358993800500L;
+
     @Id
     @Column(name = "msg_id")
     @Getter @Setter private int msgId;

@@ -1,5 +1,3 @@
-
-
 package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
@@ -9,7 +7,6 @@ import sg.gov.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -23,7 +20,8 @@ public final class DatePickerTag extends DivTagSupport {
     private static final long serialVersionUID = 1824510660131941025L;
 
     private String name;
-    private Serializable value;
+    private String value;
+    private Date dateVal;
     private String onchange;
     private String onclick;
     private String onblur;
@@ -32,8 +30,8 @@ public final class DatePickerTag extends DivTagSupport {
     private boolean workingDay;
     private String title;
     private String disableWeekDay; // 0 - 6
-    private Serializable startDate;
-    private Serializable endDate;
+    private String startDate;
+    private String endDate;
     
     public DatePickerTag() {
         super();
@@ -46,6 +44,7 @@ public final class DatePickerTag extends DivTagSupport {
         super.init();
         name = null;
         value = null;
+        dateVal = null;
         onchange = null;
         onblur = null;
         onclick = null;
@@ -75,11 +74,9 @@ public final class DatePickerTag extends DivTagSupport {
     
     public String generateHtml() {
         boolean isBE = AccessUtil.isBackend();
-        String id = this.id;
-        if (StringUtil.isEmpty(id)) {
-            id = String.valueOf(MiscUtil.getDummyId());
+        if (StringUtil.isEmpty(this.id)) {
+            this.id = String.valueOf(MiscUtil.getDummyId());
         }
-
         StringBuilder html = new StringBuilder();
         generateStartHtml(html,isBE);
         generateFromToHtml(html);
@@ -113,22 +110,14 @@ public final class DatePickerTag extends DivTagSupport {
         if (fromNow) {
             html.append(" data-date-start-date=\"0d\"");
         } else if (startDate != null) {
-            if (Date.class.isAssignableFrom(startDate.getClass())) {
-                html.append(" data-date-start-date=\"").append(Formatter.formatDate((Date) startDate)).append("\"");
-            } else {
-                html.append(" data-date-start-date=\"").append(startDate).append("\"");
-            }
+            html.append(" data-date-start-date=\"").append(startDate).append("\"");
         } else {
             html.append(" data-date-start-date=\"01/01/1900\"");
         }
         if (toNow) {
             html.append(" data-date-end-date=\"0d\"");
         } else if (endDate != null) {
-            if (Date.class.isAssignableFrom(endDate.getClass())) {
-                html.append(" data-date-end-date=\"").append(Formatter.formatDate((Date) endDate)).append("\"");
-            } else {
-                html.append(" data-date-end-date=\"").append(endDate).append("\"");
-            }
+            html.append(" data-date-end-date=\"").append(endDate).append("\"");
         }
     }
     private void generateEndHtml(StringBuilder html,boolean isBE) {
@@ -136,13 +125,10 @@ public final class DatePickerTag extends DivTagSupport {
             html.append(" data-date-days-of-week-disabled=\"").append(disableWeekDay).append("\"");
         }
         if (value != null) {
-            String val = null;
-            if (value instanceof Date) {
-                val = Formatter.formatDate((Date) value);
-            } else {
-                val = StringUtil.escapeHtml(value.toString());
-            }
+            String val = StringUtil.escapeHtml(value);
             html.append(" value=\"").append(val).append("\"");
+        } else if (dateVal != null) {
+            html.append(" value=\"").append(Formatter.formatDate(dateVal)).append("\"");
         }
         if (!StringUtil.isEmpty(onclick)) {
             html.append(" onclick=\"").append(onclick).append("\"");
@@ -169,8 +155,11 @@ public final class DatePickerTag extends DivTagSupport {
     public void setName(String name) {
         this.name = name;
     }
-    public void setValue(Serializable value) {
+    public void setValue(String value) {
         this.value = value;
+    }
+    public void setDateVal(Date dateVal) {
+        this.dateVal = dateVal;
     }
     public void setOnchange(String onchange) {
         this.onchange = onchange;
@@ -196,10 +185,10 @@ public final class DatePickerTag extends DivTagSupport {
     public void setDisableWeekDay(String disableWeekDay) {
         this.disableWeekDay = disableWeekDay;
     }
-    public void setStartDate(Serializable startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
-    public void setEndDate(Serializable endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
