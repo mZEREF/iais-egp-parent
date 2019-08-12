@@ -90,9 +90,9 @@ public class RedisCacheHelperTest {
 
     @Test
     public void testGet() {
-        rch.get(KEY, String.class);
-        rch.get(KEY, String.class, EXPIRE);
-        rch.get("cname", "key", String.class);
+        rch.get(KEY);
+        rch.get(KEY, EXPIRE);
+        rch.get("cname", "key");
         assertNotNull(rch);
     }
 

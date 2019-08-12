@@ -149,7 +149,7 @@ public final class MasterCodeUtil {
      * @return: java.lang.String
      */
     public static String getCodeDesc(String code) {
-        String desc = RedisCacheHelper.getInstance().get(CACHE_NAME_CODE, code, String.class);
+        String desc = RedisCacheHelper.getInstance().get(CACHE_NAME_CODE, code);
         if (StringUtil.isEmpty(desc)) {
             SearchParam param = new SearchParam(MasterCodeDto.class);
             param.addFilter("codeFilter", code, true);
@@ -223,7 +223,7 @@ public final class MasterCodeUtil {
          Private methods
      ******************************************************************************************************************/
     private static List<MasterCodeDto> retrieveCateSource(String cateId) {
-        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cateId, List.class);
+        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cateId);
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeDto.class);
             param.setSort("sequence", SearchParam.ASCENDING);
@@ -244,7 +244,7 @@ public final class MasterCodeUtil {
     }
 
     private static List<MasterCodeDto> retrieveFilterSource(String filter) {
-        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_FILTER, filter, List.class);
+        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_FILTER, filter);
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeDto.class);
             param.setSort("sequence", SearchParam.ASCENDING);
@@ -276,7 +276,7 @@ public final class MasterCodeUtil {
         RedisCacheHelper rch = RedisCacheHelper.getInstance();
         rch.set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
         String cate = String.valueOf(mc.getCategory());
-        List<MasterCodeDto> list = rch.get(CACHE_NAME_CATE_MAP, cate, List.class);
+        List<MasterCodeDto> list = rch.get(CACHE_NAME_CATE_MAP, cate);
         if (list == null)
             list = new ArrayList<>();
 
@@ -285,7 +285,7 @@ public final class MasterCodeUtil {
         if (StringUtil.isEmpty(mc.getFilterValue()))
             return;
 
-        list = rch.get(CACHE_NAME_FILTER, mc.getFilterValue(), List.class);
+        list = rch.get(CACHE_NAME_FILTER, mc.getFilterValue());
         if (list == null)
             list = new ArrayList<>();
 

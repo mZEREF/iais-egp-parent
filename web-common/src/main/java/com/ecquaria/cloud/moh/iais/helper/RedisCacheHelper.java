@@ -34,9 +34,9 @@ public class RedisCacheHelper {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    public final static long SESSION_DEFAULT_EXPIRE = 60L * 30L;
+    public static final  long SESSION_DEFAULT_EXPIRE = 60L * 30L;
     /**  set do not expire */
-    public final static long NOT_EXPIRE = -1;
+    public static final  long NOT_EXPIRE = -1;
 
     public static RedisCacheHelper getInstance() {
         return SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
@@ -63,7 +63,7 @@ public class RedisCacheHelper {
         set(cacheName + ":" + key, value, expire);
     }
 
-    public <T> T get(String key, Class<T> clazz, long expire) {
+    public <T> T get(String key, long expire) {
         byte[] value = (byte[])this.redisTemplate.opsForValue().get(key);
         if(expire != NOT_EXPIRE){
             redisTemplate.expire(key, expire, TimeUnit.SECONDS);
@@ -74,12 +74,12 @@ public class RedisCacheHelper {
         return value == null ? null : (T)valueSerializer.deserialize(value);
     }
 
-    public <T> T get(String key, Class<T> clazz) {
-        return get(key, clazz, NOT_EXPIRE);
+    public <T> T get(String key) {
+        return get(key, NOT_EXPIRE);
     }
 
-    public <T> T get(String cacheName, String key, Class<T> clazz){
-        return get(cacheName + ":" + key, clazz);
+    public <T> T get(String cacheName, String key){
+        return get(cacheName + ":" + key);
     }
 
     public void delete(String key) {
