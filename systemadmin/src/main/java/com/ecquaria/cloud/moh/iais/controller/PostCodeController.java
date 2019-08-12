@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,41 +36,32 @@ public class PostCodeController {
     }
 
     private Map<String,String> initstreetMap() throws IOException {
-        BufferedReader br = null;
         Map<String,String> streetMap = new HashMap<>();
-        try {
-        String line = null;
-        String key = null;
-        String value = null;
-        //street
-        br = new BufferedReader(new InputStreamReader(new FileInputStream(streetsPath)));
-        while ((line = br.readLine()) != null){
-            if(!StringUtils.isEmpty(line) && line.trim().length() > 0){
-                key = line.substring(0,7).trim();
-                value = line.substring(7,39).trim();
-                streetMap.put(key, value);
-            }else{
-                break;
+        try(BufferedReader  br = new BufferedReader(new FileReader(streetsPath));){
+            String line = null;
+            String key = null;
+            String value = null;
+            while ((line = br.readLine()) != null){
+                if(!StringUtils.isEmpty(line) && line.trim().length() > 0){
+                    key = line.substring(0,7).trim();
+                    value = line.substring(7,39).trim();
+                    streetMap.put(key, value);
+                }else{
+                    break;
+                }
             }
-        }
         }catch (Exception e){
           log.error(StringUtil.changeForLog(e.getMessage()),e);
-        }finally {
-            if(br != null){
-                br.close();
-            }
         }
         return streetMap;
     }
     private Map<String,String> initbuildingMap() throws IOException {
-        BufferedReader br = null;
         Map<String,String> buildingMap = new HashMap<>();
-        try {
+        try (BufferedReader  br = new BufferedReader(new FileReader(buildingPath)); ){
             String line = null;
             String key = null;
             String value = null;
             //building
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(buildingPath)));
             while ((line = br.readLine()) != null){
                 if(!StringUtils.isEmpty(line) && line.trim().length() > 0){
                     key = line.substring(0,6).trim();
@@ -85,10 +73,6 @@ public class PostCodeController {
             }
         }catch (Exception e){
             log.error(StringUtil.changeForLog(e.getMessage()),e);
-        }finally {
-            if(br != null){
-                br.close();
-            }
         }
         return buildingMap;
     }
@@ -98,10 +82,8 @@ public class PostCodeController {
      * read file, use inited Map convert data to SingpostAddress
      */
     private  List<PostCode> convert(Map<String,String> streetMap,Map<String,String> buildingMap) throws IOException {
-        BufferedReader br = null;
         List<PostCode> list = new ArrayList<>();
-        try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(postCodePath)));
+        try(BufferedReader br = new BufferedReader(new FileReader(postCodePath));){
             String line = null;
             String postalCode = null;
             String addressType = null;
@@ -129,10 +111,6 @@ public class PostCodeController {
             }
         } catch (Exception e){
             log.error(StringUtil.changeForLog(e.getMessage()),e);
-        }finally {
-            if (br != null) {
-                br.close();
-            }
         }
          return list;
     }
