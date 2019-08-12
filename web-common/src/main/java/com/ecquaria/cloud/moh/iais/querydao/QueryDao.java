@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -37,31 +38,31 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class QueryDao<T> {
+public class QueryDao<E extends Serializable> {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public <T> SearchResult<T> doQuery(SearchParam param, String catalog, String key){
+    public SearchResult<E> doQuery(SearchParam param, String catalog, String key){
         String mainSql = getMainSql(catalog, key, param);
         log.debug("[QueryDao doQuery]   mainSql: ---->>> " + mainSql);
         return doQueryBySql(param, mainSql);
     }
 
-    public <T> SearchResult<T> doQueryBySql(SearchParam param, String mainSql){
+    public  SearchResult<E> doQueryBySql(SearchParam param, String mainSql){
         String querySql = getQuerySql(mainSql, param);
         String countSql = getCountSql(mainSql);
         Query query = entityManager.createNativeQuery(querySql, param.getEntityCls());
         Query count = entityManager.createNativeQuery(countSql);
-        for (Map.Entry<String, Object> ent : param.getFilters().entrySet()) {
+        for (Map.Entry<String, Serializable> ent : param.getFilters().entrySet()) {
             query.setParameter(ent.getKey(), ent.getValue());
             count.setParameter(ent.getKey(), ent.getValue());
         }
-        List<T> list = query.getResultList();
+        List<E> list = query.getResultList();
         Integer num = list.size();
         if (param.getPageSize() > 0 && param.getPageNo() > 0)
             num = (Integer) count.getSingleResult();
 
-        SearchResult<T> reslt = new SearchResult<>();
+        SearchResult<E> reslt = new SearchResult<>();
         reslt.setRows(list);
         reslt.setRowCount(num);
 
@@ -81,11 +82,11 @@ public class QueryDao<T> {
     }
 
     private String getQuerySql(String mainSql, SearchParam param) {
-        String sql = mainSql;
+        String querySql;
         // order by clause
         String orderStr = "";
         if (!param.getSortMap().isEmpty()) {
-            StringBuffer orderBySql = new StringBuffer();
+            StringBuilder orderBySql = new StringBuilder();
             orderBySql.append(" ORDER BY ");
             for (Map.Entry<String, String> ent : param.getSortMap().entrySet()) {
                 orderBySql.append(ent.getKey()).append(" ").append(ent.getValue()).append(",");
@@ -99,13 +100,13 @@ public class QueryDao<T> {
 
             int from = (param.getPageNo() - 1) * param.getPageSize() + 1;
             int to = param.getPageNo() * param.getPageSize();
-            sql = "SELECT * FROM (SELECT ROW_NUMBER() OVER(" + orderStr + ") AS ROWNUM, a.* FROM ("
+            querySql = "SELECT * FROM (SELECT ROW_NUMBER() OVER(" + orderStr + ") AS ROWNUM, a.* FROM ("
                     + mainSql + ") a) b WHERE b.ROWNUM <= " + to + " AND b.ROWNUM >= " + from;
         } else {
-            sql = mainSql + orderStr;
+            querySql = mainSql + orderStr;
         }
 
-        return sql;
+        return querySql;
     }
 
     private String getCountSql(String mainSql) {

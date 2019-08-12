@@ -9,11 +9,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MasterCodeDto.class})
-public class MasterCodeDtoTest {
+@PrepareForTest({MasterCodeView.class})
+public class MasterCodeViewTest {
 
     @Spy
-    MasterCodeDto entity = new MasterCodeDto();
+    MasterCodeView entity = new MasterCodeView();
 
     @Test
     public void testGetterSetter() {

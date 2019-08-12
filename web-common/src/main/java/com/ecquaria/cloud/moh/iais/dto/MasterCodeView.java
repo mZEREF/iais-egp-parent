@@ -29,7 +29,7 @@ import java.util.Date;
  * @date 2019/7/25 16:49
  */
 @Entity
-public class MasterCodeDto implements Serializable {
+public class MasterCodeView implements Serializable {
     private static final long serialVersionUID = -7118511997100636148L;
 
     @Id

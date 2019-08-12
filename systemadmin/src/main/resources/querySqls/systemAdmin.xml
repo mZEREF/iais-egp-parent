@@ -34,5 +34,17 @@
             <#if master_code_id??> AND mc.master_code_id = :master_code_id</#if>
         ]]>
     </sql>
+
+    <sql key = "queryMessage" remarks = "query message sql">
+        <![CDATA[
+            SELECT msg_id, rowguid, code_key, domain_type, msg_type, module, description, status
+            FROM EGPCLOUDFE.dbo.CM_MESSAGE
+            WHERE 1=1
+            <#if domainType??> AND domain_type = :domainType</#if>
+            <#if msgType??> AND msg_type = :msgType</#if>
+            <#if module??> AND module = :module</#if>
+        ]]>
+
+    </sql>
 </sqls>
 

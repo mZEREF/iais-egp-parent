@@ -32,6 +32,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
@@ -42,6 +44,14 @@ public class CrudHelperTest {
     @Mock
     private HttpServletRequest request;
 
+    @Test(expected = IllegalStateException.class)
+    public void testConstructor() throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException, InstantiationException {
+        Class cls = CrudHelper.class;
+        Constructor<CrudHelper> con = cls.getDeclaredConstructor(null);
+        con.setAccessible(true);
+        con.newInstance(null);
+    }
     @Test
     public void testdoSorting(){
         CrudHelper.doSorting(searchParam,request);

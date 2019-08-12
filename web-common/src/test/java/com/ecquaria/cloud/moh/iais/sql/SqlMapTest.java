@@ -27,6 +27,7 @@ import sg.gov.moh.iais.common.constant.AppConsts;
 import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,12 +58,12 @@ public class SqlMapTest {
         List<Sql> sqlList = new ArrayList<>();
         Sql sql = new Sql();
         sql.setCached(AppConsts.NO);
-        sql.setSql("Select * from AAA");
+        sql.setSqlStr("Select * from AAA");
         sql.setKey(KEY_1);
         sql.setCatalog(CATA);
         sqlList.add(sql);
         sql = new Sql();
-        sql.setSql("selct dad <#if nric_no??>   dafdsa </#if>");
+        sql.setSqlStr("selct dad <#if nric_no??>   dafdsa </#if>");
         sql.setKey(KEY_D);
         sql.setCatalog(CATA);
         sqlList.add(sql);
@@ -82,7 +83,7 @@ public class SqlMapTest {
 
     @Test
     public void testGetSqlParam() throws IOException, TemplateException {
-        Map<String, Object> param = new HashMap<>();
+        Map<String, Serializable> param = new HashMap<>();
         param.put("nric_no", "dsas");
         String s = sm.getSql(CATA, KEY_D, param);
         assertNotNull(s);

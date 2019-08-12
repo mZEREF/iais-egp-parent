@@ -85,6 +85,14 @@ public class SelectTagTest {
         int ret = tag.doStartTag();
         assertEquals(SelectTag.SKIP_BODY, ret);
     }
+    @Test
+    public void testdoStartNullTag() throws JspException {
+        tag.setId(null);
+        tag.setCssClass(null);
+        tag.setStyle(null);
+        int ret = tag.doStartTag();
+        assertEquals(SelectTag.SKIP_BODY, ret);
+    }
     @Test(expected = JspTagException.class)
     public void testDoStartTagExp() throws JspException, IOException {
         doThrow(new RuntimeException()).when(jw).print(anyString());

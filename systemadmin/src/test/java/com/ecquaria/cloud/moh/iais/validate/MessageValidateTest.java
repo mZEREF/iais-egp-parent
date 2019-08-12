@@ -65,4 +65,31 @@ public class MessageValidateTest {
         messageValidate.validate(request);
         Assert.assertTrue(true);
     }
+
+    @Test
+    public void testValidate4(){
+        MessageDto messageDto = new MessageDto();
+        messageDto.setDomainType("Internet");
+        messageDto.setMsgType("Error");
+        messageDto.setModule("New");
+        messageDto.setDescription("lengthaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        PowerMockito.when((MessageDto) ParamUtil.getRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
+        messageValidate.validate(request);
+        Assert.assertTrue(true);
+    }
+
+    @Test
+    public void testValidate5(){
+        MessageDto messageDto = new MessageDto();
+        messageDto.setDomainType("Internet");
+        messageDto.setMsgType("Error");
+        messageDto.setModule("New");
+        messageDto.setDescription("hhahaa");
+        PowerMockito.when((MessageDto) ParamUtil.getRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
+        messageValidate.validate(request);
+        Assert.assertTrue(true);
+    }
 }

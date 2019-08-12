@@ -28,8 +28,8 @@ public class SearchParam implements Serializable {
     public static final String DESCENDING   = "DESC";
     private static final long serialVersionUID = -5074317624732926224L;
 
-    private HashMap<String, Object> params;     // for template SQL generation
-    private LinkedHashMap<String, Object> filters;    // for SQL query
+    private HashMap<String, Serializable> params;     // for template SQL generation
+    private LinkedHashMap<String, Serializable> filters;    // for SQL query
     private LinkedHashMap<String, String> sortMap;
     private int pageSize;
     private int pageNo;
@@ -43,7 +43,7 @@ public class SearchParam implements Serializable {
         sortMap = new LinkedHashMap<>();
     }
 
-    public void addParam(String name, Object value) {
+    public void addParam(String name, Serializable value) {
         params.put(name, value);
     }
 
@@ -52,11 +52,11 @@ public class SearchParam implements Serializable {
             params.remove(name);
     }
 
-    public void addFilter(String name, Object value) {
+    public void addFilter(String name, Serializable value) {
         filters.put(name, value);
     }
 
-    public void addFilter(String name, Object value, boolean isTemplateParam) {
+    public void addFilter(String name, Serializable value, boolean isTemplateParam) {
         filters.put(name, value);
         if (isTemplateParam) {
             params.put(name, value);
@@ -77,10 +77,10 @@ public class SearchParam implements Serializable {
             sortMap.clear();
     }
 
-    public Map<String, Object> getParams() {
+    public Map<String, Serializable> getParams() {
         return params;
     }
-    public void setParams(Map<String, Object> params) {
+    public void setParams(Map<String, Serializable> params) {
         if(MapUtils.isEmpty(this.params)){
             this.params = new HashMap<>();
         }else{
@@ -99,10 +99,10 @@ public class SearchParam implements Serializable {
         if (!StringUtils.isEmpty(sortField))
             sortMap.put(sortField.toUpperCase(), sortType);
     }
-    public Map<String, Object> getFilters() {
+    public Map<String, Serializable> getFilters() {
         return filters;
     }
-    public void setFilters(Map<String, Object> filters) {
+    public void setFilters(Map<String, Serializable> filters) {
         if(MapUtils.isEmpty(this.filters)){
             this.filters = new LinkedHashMap<>();
         }else{

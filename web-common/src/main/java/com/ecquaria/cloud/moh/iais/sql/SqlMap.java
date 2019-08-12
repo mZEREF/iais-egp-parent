@@ -23,6 +23,7 @@ import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -45,8 +46,8 @@ public class SqlMap {
         for (Sql sql : sqls) {
             String key = getKey(sql.getCatalog(), sql.getKey());
             mapforSql.put(key, sql);
-            if (isDynamicSql(sql.getSql())) {
-                loader.putTemplate(key, sql.getSql());
+            if (isDynamicSql(sql.getSqlStr())) {
+                loader.putTemplate(key, sql.getSqlStr());
             }
         }
         cfg.setTemplateLoader(loader);
@@ -65,9 +66,9 @@ public class SqlMap {
         return sql;
     }
 
-    public String getSql(String catalog, String key, Map<String, Object> params) throws IOException, TemplateException {
+    public String getSql(String catalog, String key, Map<String, Serializable> params) throws IOException, TemplateException {
         Sql sql = getSql(catalog, key);
-        String sqlStat = sql.getSql();
+        String sqlStat = sql.getSqlStr();
         if (isDynamicSql(sqlStat)) {
             StringWriter writer = new StringWriter();
             Template temp = cfg.getTemplate(getKey(sql.getCatalog(), sql.getKey()));
@@ -106,7 +107,7 @@ public class SqlMap {
             String ck = getCacheKey(sql.getCatalog(), sql.getKey());
             StringTemplateLoader loader = (StringTemplateLoader) cfg.getTemplateLoader();
             if (loader.findTemplateSource(ck) == null) {
-                loader.putTemplate(ck, sql.getSql());
+                loader.putTemplate(ck, sql.getSqlStr());
             }
         }
     }

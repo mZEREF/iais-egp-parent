@@ -457,6 +457,11 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>dateVal</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>onclick</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
