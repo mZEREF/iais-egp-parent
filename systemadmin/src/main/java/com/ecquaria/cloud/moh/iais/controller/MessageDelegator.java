@@ -103,26 +103,6 @@ public class MessageDelegator {
     }
 
     /**
-     * INTRA INTER Internet Intranet
-     * @param str
-     * @return
-     *//*
-    private String convertDomainType(String str){
-        if(str == null || str.length() == 0){
-            return str;
-        }
-
-        int len = str.length() - 1;
-        Integer uCode = Integer.valueOf(str.charAt(len));
-        if(uCode == 116){
-            return str.substring(0,5).toUpperCase();
-        }else{
-            return str.charAt(0) + str.substring(1,5).toLowerCase() + "net";
-        }
-    }*/
-
-
-    /**
      * user do edit with message management
      * @param bpc
      */
@@ -176,7 +156,7 @@ public class MessageDelegator {
                 Integer id = Integer.valueOf(msgId);
                 msgService.deleteMessageById(id);
             }catch (NumberFormatException e){
-                e.printStackTrace();
+                log.debug(e.getMessage());
             }
         }
     }
@@ -240,7 +220,7 @@ public class MessageDelegator {
                 dto.setDomainType(dto.getDomainType());
                 ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
             }catch (NumberFormatException e){
-                e.printStackTrace();
+                log.debug(e.getMessage());
             }
 
         }
