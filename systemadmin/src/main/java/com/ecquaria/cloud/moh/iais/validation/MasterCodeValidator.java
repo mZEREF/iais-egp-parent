@@ -1,10 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.controller.MasterCodeDelegator;
-import com.ecquaria.cloud.moh.iais.dao.MasterCodeRepository;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
-import com.ecquaria.cloud.moh.iais.entity.MasterCode;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -15,7 +12,6 @@ import java.util.Map;
 
 public class MasterCodeValidator implements CustomizeValidator {
 
-    private MasterCodeRepository masterCodeRepository = SpringContextHelper.getContext().getBean(MasterCodeRepository.class);
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errMap = new HashMap<>();
@@ -24,8 +20,7 @@ public class MasterCodeValidator implements CustomizeValidator {
         if (dto == null || StringUtil.isEmpty(dto.getMasterCodeId()))
             return errMap;
 
-        MasterCode masterCode = masterCodeRepository.findOne(Long.valueOf(dto.getMasterCodeId()));
-        if (masterCode != null && masterCode.getId()!= dto.getMasterCodeId()) {
+        if (dto != null && !StringUtil.isEmpty(dto.getMasterCodeId())) {
             errMap.put("masterCodeId", "Duplicate MasterCode");
         }
 

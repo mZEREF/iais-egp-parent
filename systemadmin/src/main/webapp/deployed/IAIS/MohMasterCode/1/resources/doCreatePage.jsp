@@ -74,6 +74,12 @@
                 </iais:value>
             </iais:row>
             <iais:row>
+                <iais:field value="rowguid" required="true"></iais:field>
+                <iais:value width="7">
+                    <input type="text" name="rowguid" value="${MasterCodeDto.rowguid}" />
+                </iais:value>
+            </iais:row>
+            <iais:row>
                 <iais:field value="codeCategory" required="true"></iais:field>
                 <iais:value width="7">
                     <input type="text" name="code_category" value="${MasterCodeDto.codeCategory}" />

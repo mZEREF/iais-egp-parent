@@ -3,13 +3,10 @@ package com.ecquaria.cloud.moh.iais.dto;
 import com.ecquaria.cloud.moh.iais.validation.MasterCodeValidator;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotNull;
 import sg.gov.moh.iais.common.validation.annotations.CustomValidate;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -29,7 +26,7 @@ public class MasterCodeDto implements Serializable {
     @NotBlank(message = "masterCodeId is mandatory Blank.", profiles = {"create", "edit"})
     private int masterCodeId;
 
-    private String Rowguid;
+    private String rowguid;
 
     private String masterCodeKey;
 

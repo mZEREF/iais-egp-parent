@@ -25,7 +25,7 @@ public class MasterCode implements Serializable {
     @Getter
     @Setter
     @Column(name = "rowguid")
-    private String Rowguid;
+    private String rowguid;
 
     @Getter
     @Setter

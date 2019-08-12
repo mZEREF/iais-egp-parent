@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dao;
 
 
-import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.entity.MasterCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

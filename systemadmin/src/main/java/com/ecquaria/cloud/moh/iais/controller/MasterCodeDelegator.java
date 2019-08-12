@@ -55,10 +55,8 @@ public class MasterCodeDelegator {
         log.debug("The prepareData start ...");
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc);
-//        param.addFilter("master_code_id","1",true);
         ParamUtil.setRequestAttr(request,"master_code_id", 1);
         SearchResult searchResult = masterCodeService.doQuery(param, "systemAdmin", "masterCodeQuery");
-        System.out.println("**** The RowCount is "+searchResult.getRowCount());
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
         ParamUtil.setRequestAttr(request, SEARCH_RESULT, searchResult);
         log.debug("The prepareData end ...");
@@ -92,6 +90,7 @@ public class MasterCodeDelegator {
         log.debug("The prepareCreateData start ...");
         HttpServletRequest request = bpc.request;
         String masterCodeId = ParamUtil.getString(request,"crud_action_value");
+        log.info("The crud_action_value is ---->"+masterCodeId);
         ParamUtil.setRequestAttr(request, "masterCodeId", masterCodeId);
         List statusSelect = new ArrayList<SelectOption>();
         SelectOption sp1 = new SelectOption("pending","Pending");
@@ -100,7 +99,6 @@ public class MasterCodeDelegator {
         statusSelect.add(sp2);
         ParamUtil.setRequestAttr(request,"statusSelect",statusSelect);
         ParamUtil.setRequestAttr(request, MASTERCODE_USER_ACCOUNT_TILE,"Master Code Create");
-        log.debug("******************-->:"+masterCodeId);
         log.debug("The prepareCreateData end ...");
     }
 
@@ -108,6 +106,7 @@ public class MasterCodeDelegator {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
         String rowguid = ParamUtil.getString(request,"crud_action_value");
+        log.info("The crud_action_value is ---->"+rowguid);
         MasterCode masterCode = masterCodeService.findMasterCodeByRowguid(rowguid);
         MasterCodeDto masterCodeDto = MiscUtil.transferEntityDto(masterCode, MasterCodeDto.class);
         ParamUtil.setSessionAttr(request, MASTERCODE_USER_DTO_ATTR, masterCodeDto);
@@ -121,7 +120,7 @@ public class MasterCodeDelegator {
         log.debug("The prepareEdit end ...");
     }
 
-    public void doSearch(BaseProcessClass bpc)throws Exception{
+    public void doSearch(BaseProcessClass bpc){
         log.debug("The doSearch start ...");
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
@@ -168,19 +167,18 @@ public class MasterCodeDelegator {
         log.debug("The doDelete end ...");
     }
 
-    public void doCreate(BaseProcessClass bpc) throws Exception{
+    public void doCreate(BaseProcessClass bpc){
         log.debug("The doCreate start ...");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, "crud_action_type");
         if("save".equals(type)){
-            String masterCodeId = ParamUtil.getString(request,"crud_action_value");
+            int masterCodeId = ParamUtil.getInt(request,"crud_action_value");
             MasterCodeDto masterCodeDto = new MasterCodeDto();
             getValueFromPage(masterCodeDto, request);
-            masterCodeDto.setMasterCodeId(masterCodeId=="1"?1:0);
+            masterCodeDto.setMasterCodeId(masterCodeId);
             ParamUtil.setSessionAttr(request, MASTERCODE_USER_DTO_ATTR, masterCodeDto);
             ValidationResult validationResult = ValidationUtils.validateProperty(masterCodeDto,"create");
             if (validationResult.isHasErrors()){
-                log.error("******* Error *******");
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(request,"errorMap",errorMap);
                 ParamUtil.setRequestAttr(request,"isValid","N");
@@ -196,7 +194,7 @@ public class MasterCodeDelegator {
         log.debug("The doCreate end ...");
     }
 
-    public void doEdit(BaseProcessClass bpc)throws Exception{
+    public void doEdit(BaseProcessClass bpc){
         log.debug("The doEdit start ...");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request,"crud_action_type");
@@ -223,14 +221,16 @@ public class MasterCodeDelegator {
         log.debug("The doEdit end ...");
     }
 
-    private void getValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request) throws Exception{
+    private void getValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request){
         String masterCodeKey = ParamUtil.getString(request,"master_code_key");
+        String rowguid = ParamUtil.getString(request,"rowguid");
         int codeCategory = ParamUtil.getInt(request,"code_category");
         String codeValue = ParamUtil.getString(request,"code_value");
-        String status = ParamUtil.getString(request,"status");
+        int status = ParamUtil.getInt(request,"status");
         masterCodeDto.setMasterCodeKey(masterCodeKey);
+        masterCodeDto.setMasterCodeKey(rowguid);
         masterCodeDto.setCodeCategory(codeCategory);
         masterCodeDto.setCodeValue(codeValue);
-        masterCodeDto.setStatus(status=="1"?1:0);
+        masterCodeDto.setStatus(status);
     }
 }
