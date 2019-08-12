@@ -13,7 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
+import com.ecquaria.cloud.moh.iais.dto.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -65,20 +65,20 @@ public class MasterCodeUtilTest {
         PowerMockito.mockStatic(RedisCacheHelper.class);
         when(RedisCacheHelper.getInstance()).thenReturn(rch);
         doNothing().when(rch).set(anyString(), anyString(), anyObject());
-        SearchResult<MasterCodeDto> sr = new SearchResult<>();
-        List<MasterCodeDto> list = new ArrayList<>();
-        MasterCodeDto dto = new MasterCodeDto();
+        SearchResult<MasterCodeView> sr = new SearchResult<>();
+        List<MasterCodeView> list = new ArrayList<>();
+        MasterCodeView dto = new MasterCodeView();
         dto.setCategory(1);
         dto.setFilterValue("E");
         dto.setCode("E02");
         dto.setCodeValue("Error 02");
         list.add(dto);
-        dto = new MasterCodeDto();
+        dto = new MasterCodeView();
         dto.setCategory(1);
         dto.setFilterValue("E");
         dto.setCode("E01");
         dto.setCodeValue("Error 01");
-        list.add(dto);dto = new MasterCodeDto();
+        list.add(dto);dto = new MasterCodeView();
         dto.setCategory(1);
         dto.setCode("E03");
         dto.setCodeValue("Error 03");
@@ -111,7 +111,7 @@ public class MasterCodeUtilTest {
 
     @Test
     public void testRetrieveByCategory() {
-        List<MasterCodeDto> list = MasterCodeUtil.retrieveByCategory("1");
+        List<MasterCodeView> list = MasterCodeUtil.retrieveByCategory("1");
         assertNotNull(list);
         SearchResult sr = new SearchResult();
         when(queryDao.doQuery(anyObject(), anyString(), anyString())).thenReturn(sr);
@@ -126,7 +126,7 @@ public class MasterCodeUtilTest {
 
     @Test
     public void testRetrieveByFilter() {
-        List<MasterCodeDto> list = MasterCodeUtil.retrieveByFilter("E");
+        List<MasterCodeView> list = MasterCodeUtil.retrieveByFilter("E");
         assertNotNull(list);
         SearchResult sr = new SearchResult();
         when(queryDao.doQuery(anyObject(), anyString(), anyString())).thenReturn(sr);

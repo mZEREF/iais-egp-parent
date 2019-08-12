@@ -14,7 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
+import com.ecquaria.cloud.moh.iais.dto.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
@@ -52,26 +52,26 @@ public final class MasterCodeUtil {
      * @return: void
      */
     public static void refreshCache() {
-        SearchParam param = new SearchParam(MasterCodeDto.class);
+        SearchParam param = new SearchParam(MasterCodeView.class);
         param.setSort("sequence", SearchParam.ASCENDING);
-        SearchResult<MasterCodeDto> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
+        SearchResult<MasterCodeView> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
         if (sr == null || sr.getRowCount() <= 0)
             return;
 
-        Map<String, List<MasterCodeDto>> cateMap = new LinkedHashMap<>();
-        Map<String, List<MasterCodeDto>> filterMap = new HashMap<>();
-        List<MasterCodeDto> list = sr.getRows();
+        Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
+        Map<String, List<MasterCodeView>> filterMap = new HashMap<>();
+        List<MasterCodeView> list = sr.getRows();
         list.forEach(mc -> {
             RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
         });
         list.forEach(mc -> {
             String cateStr = String.valueOf(mc.getCategory());
             if (cateMap.get(cateStr) == null) {
-                List<MasterCodeDto> codes = new ArrayList<>();
+                List<MasterCodeView> codes = new ArrayList<>();
                 codes.add(mc);
                 cateMap.put(cateStr, codes);
             } else {
-                List<MasterCodeDto> codes = cateMap.get(cateStr);
+                List<MasterCodeView> codes = cateMap.get(cateStr);
                 codes.add(mc);
             }
         });
@@ -80,11 +80,11 @@ public final class MasterCodeUtil {
             if (StringUtil.isEmpty(mc.getFilterValue())) {
                 //Do nothing
             } else if (filterMap.get(mc.getFilterValue()) == null) {
-                List<MasterCodeDto> codes = new ArrayList<>();
+                List<MasterCodeView> codes = new ArrayList<>();
                 codes.add(mc);
                 filterMap.put(mc.getFilterValue(), codes);
             } else {
-                List<MasterCodeDto> codes = filterMap.get(mc.getFilterValue());
+                List<MasterCodeView> codes = filterMap.get(mc.getFilterValue());
                 codes.add(mc);
             }
         });
@@ -112,13 +112,13 @@ public final class MasterCodeUtil {
      *
      * @author: Jinhua on 2019/7/29 17:42
      * @param: [cateId]
-     * @return: java.util.List<com.ecquaria.cloud.moh.iais.dto.MasterCodeDto>
+     * @return: java.util.List<com.ecquaria.cloud.moh.iais.dto.MasterCodeView>
      */
-    public static List<MasterCodeDto> retrieveByCategory(String cateId) {
-        List<MasterCodeDto> list = retrieveCateSource(cateId);
-        List<MasterCodeDto> mcList = new ArrayList<>();
+    public static List<MasterCodeView> retrieveByCategory(String cateId) {
+        List<MasterCodeView> list = retrieveCateSource(cateId);
+        List<MasterCodeView> mcList = new ArrayList<>();
         list.forEach(m -> {
-            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeDto.class));
+            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class));
         });
 
         return mcList;
@@ -132,7 +132,7 @@ public final class MasterCodeUtil {
      * @return: java.util.List<com.ecquaria.cloud.moh.iais.tags.SelectOption>
      */
     public static List<SelectOption> retrieveOptionsByCate(String cateId) {
-        List<MasterCodeDto> list = retrieveCateSource(cateId);
+        List<MasterCodeView> list = retrieveCateSource(cateId);
         List<SelectOption> opts = new ArrayList<>();
         list.forEach(m -> {
             opts.add(new SelectOption(m.getCode(), m.getCodeValue()));
@@ -151,11 +151,11 @@ public final class MasterCodeUtil {
     public static String getCodeDesc(String code) {
         String desc = RedisCacheHelper.getInstance().get(CACHE_NAME_CODE, code, String.class);
         if (StringUtil.isEmpty(desc)) {
-            SearchParam param = new SearchParam(MasterCodeDto.class);
+            SearchParam param = new SearchParam(MasterCodeView.class);
             param.addFilter("codeFilter", code, true);
-            SearchResult<MasterCodeDto> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
             if (sr.getRowCount() > 0) {
-                MasterCodeDto mc = sr.getRows().get(0);
+                MasterCodeView mc = sr.getRows().get(0);
                 desc = mc.getCodeValue();
                 addMcToCache(mc);
             } else {
@@ -174,7 +174,7 @@ public final class MasterCodeUtil {
      * @return: java.util.List<com.ecquaria.cloud.moh.iais.tags.SelectOption>
      */
     public static List<SelectOption> retrieveOptionsByFilter(String filter) {
-        List<MasterCodeDto> list = retrieveFilterSource(filter);
+        List<MasterCodeView> list = retrieveFilterSource(filter);
         List<SelectOption> opts = new ArrayList<>();
         list.forEach(m -> {
             opts.add(new SelectOption(m.getCode(), m.getCodeValue()));
@@ -188,13 +188,13 @@ public final class MasterCodeUtil {
      *
      * @author: Jinhua on 2019/7/29 17:53
      * @param: [filter]
-     * @return: java.util.List<com.ecquaria.cloud.moh.iais.dto.MasterCodeDto>
+     * @return: java.util.List<com.ecquaria.cloud.moh.iais.dto.MasterCodeView>
      */
-    public static List<MasterCodeDto> retrieveByFilter(String filter) {
-        List<MasterCodeDto> list = retrieveFilterSource(filter);
-        List<MasterCodeDto> mcList = new ArrayList<>();
+    public static List<MasterCodeView> retrieveByFilter(String filter) {
+        List<MasterCodeView> list = retrieveFilterSource(filter);
+        List<MasterCodeView> mcList = new ArrayList<>();
         list.forEach(m -> {
-            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeDto.class));
+            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class));
         });
 
         return mcList;
@@ -222,13 +222,13 @@ public final class MasterCodeUtil {
     /******************************************************************************************************************
          Private methods
      ******************************************************************************************************************/
-    private static List<MasterCodeDto> retrieveCateSource(String cateId) {
-        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cateId, List.class);
+    private static List<MasterCodeView> retrieveCateSource(String cateId) {
+        List<MasterCodeView> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cateId, List.class);
         if (list == null) {
-            SearchParam param = new SearchParam(MasterCodeDto.class);
+            SearchParam param = new SearchParam(MasterCodeView.class);
             param.setSort("sequence", SearchParam.ASCENDING);
             param.addFilter("cateFilter", cateId, true);
-            SearchResult<MasterCodeDto> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m -> {
@@ -243,13 +243,13 @@ public final class MasterCodeUtil {
         return list;
     }
 
-    private static List<MasterCodeDto> retrieveFilterSource(String filter) {
-        List<MasterCodeDto> list = RedisCacheHelper.getInstance().get(CACHE_NAME_FILTER, filter, List.class);
+    private static List<MasterCodeView> retrieveFilterSource(String filter) {
+        List<MasterCodeView> list = RedisCacheHelper.getInstance().get(CACHE_NAME_FILTER, filter, List.class);
         if (list == null) {
-            SearchParam param = new SearchParam(MasterCodeDto.class);
+            SearchParam param = new SearchParam(MasterCodeView.class);
             param.setSort("sequence", SearchParam.ASCENDING);
             param.addFilter("filterAttr", filter, true);
-            SearchResult<MasterCodeDto> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, "webcommon", "retrieveMasterCodes");
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m -> {
@@ -264,7 +264,7 @@ public final class MasterCodeUtil {
         return list;
     }
 
-    private static void saveInCache(String cacheName, Map<String, List<MasterCodeDto>> conMap) {
+    private static void saveInCache(String cacheName, Map<String, List<MasterCodeView>> conMap) {
         RedisCacheHelper rch = RedisCacheHelper.getInstance();
         rch.clear(cacheName);
         conMap.entrySet().forEach(ent -> {
@@ -272,11 +272,11 @@ public final class MasterCodeUtil {
         });
     }
 
-    private static void addMcToCache(MasterCodeDto mc) {
+    private static void addMcToCache(MasterCodeView mc) {
         RedisCacheHelper rch = RedisCacheHelper.getInstance();
         rch.set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
         String cate = String.valueOf(mc.getCategory());
-        List<MasterCodeDto> list = rch.get(CACHE_NAME_CATE_MAP, cate, List.class);
+        List<MasterCodeView> list = rch.get(CACHE_NAME_CATE_MAP, cate, List.class);
         if (list == null)
             list = new ArrayList<>();
 
