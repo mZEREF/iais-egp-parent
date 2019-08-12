@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 @CustomValidate(impClass = MessageValidate.class, properties = {"search", "edit", "create"})
 public class MessageDto implements Serializable {
+    private static final long serialVersionUID = -2542988198043832001L;
     public static final String MESSAGE_REQUEST_DTO = "msgRequestDto";
 
     @Setter @Getter
