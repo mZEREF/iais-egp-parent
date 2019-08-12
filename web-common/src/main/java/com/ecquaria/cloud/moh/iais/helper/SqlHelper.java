@@ -32,28 +32,28 @@ public class SqlHelper {
      * @return: java.lang.String
      */
     public static String constructInCondition(String fieldName, int size) {
-        StringBuffer sBuffer = new StringBuffer();
+        StringBuilder sBuilder = new StringBuilder();
         if (size > 0){
-            sBuffer.append(" ((").append(fieldName).append(" in (:").append(fieldName).append(0);
+            sBuilder.append(" ((").append(fieldName).append(" in (:").append(fieldName).append(0);
 
             int counter = 1;
             for (int i = 1; i < size; i++) {
                 if (counter < 900) {
-                    sBuffer.append(", :").append(fieldName).append(i);
+                    sBuilder.append(", :").append(fieldName).append(i);
                     counter++;
                 } else {
                     //split for every 900 elements
-                    sBuffer.append(")) or (").append(fieldName).append(" in (:").append(fieldName).append(i);
+                    sBuilder.append(")) or (").append(fieldName).append(" in (:").append(fieldName).append(i);
                     counter = 0;
                 }
             }
 
-            sBuffer.append(")))");
+            sBuilder.append(")))");
         }else{
-            sBuffer.append(" 1 = 2 ");
+            sBuilder.append(" 1 = 2 ");
         }
 
-        return sBuffer.toString();
+        return sBuilder.toString();
     }
 
 
