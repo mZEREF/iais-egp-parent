@@ -74,11 +74,9 @@ public final class DatePickerTag extends DivTagSupport {
     
     public String generateHtml() {
         boolean isBE = AccessUtil.isBackend();
-        String id = this.id;
-        if (StringUtil.isEmpty(id)) {
-            id = String.valueOf(MiscUtil.getDummyId());
+        if (StringUtil.isEmpty(this.id)) {
+            this.id = String.valueOf(MiscUtil.getDummyId());
         }
-
         StringBuilder html = new StringBuilder();
         generateStartHtml(html,isBE);
         generateFromToHtml(html);
@@ -127,7 +125,7 @@ public final class DatePickerTag extends DivTagSupport {
             html.append(" data-date-days-of-week-disabled=\"").append(disableWeekDay).append("\"");
         }
         if (value != null) {
-            String val = StringUtil.escapeHtml(value.toString());
+            String val = StringUtil.escapeHtml(value);
             html.append(" value=\"").append(val).append("\"");
         } else if (dateVal != null) {
             html.append(" value=\"").append(Formatter.formatDate(dateVal)).append("\"");
