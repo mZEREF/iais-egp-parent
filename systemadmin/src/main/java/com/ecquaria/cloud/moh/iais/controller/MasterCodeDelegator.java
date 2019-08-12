@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.entity.MasterCode;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -222,18 +221,16 @@ public class MasterCodeDelegator {
     }
 
     private void preSelectOption(HttpServletRequest request){
-        List<String> statusOptionList = new ArrayList<>();
-        statusOptionList.add("Procing");
-        statusOptionList.add("Pending");
+        List<SelectOption> statusOptionList = new ArrayList<>();
+        statusOptionList.add(new SelectOption("Procing", "Procing"));
+        statusOptionList.add(new SelectOption("Pending", "Pending"));
 
-        List<String> codeDescriptionOptionList = new ArrayList<>();
-        codeDescriptionOptionList.add("import");
-        codeDescriptionOptionList.add("ordinary");
+        List<SelectOption> codeDescriptionOptionList = new ArrayList<>();
+        codeDescriptionOptionList.add(new SelectOption("import", "import"));
+        codeDescriptionOptionList.add(new SelectOption("ordinary", "ordinary"));
 
-        Map<String,List<String>> optionMap = new HashMap<>();
-        optionMap.put("StatusOption",statusOptionList);
-        optionMap.put("CodeDesOption",codeDescriptionOptionList);
-        IaisEGPHelper.setOptionToList(request, optionMap);
+        ParamUtil.setRequestAttr(request, "StatusOption", statusOptionList);
+        ParamUtil.setRequestAttr(request, "CodeDesOption", codeDescriptionOptionList);
     }
 
     private void logAboutStart(String methodName){
