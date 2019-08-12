@@ -38,17 +38,17 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class QueryDao<T extends Serializable> {
+public class QueryDao<E extends Serializable> {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public <T extends Serializable> SearchResult<T> doQuery(SearchParam param, String catalog, String key){
+    public SearchResult<E> doQuery(SearchParam param, String catalog, String key){
         String mainSql = getMainSql(catalog, key, param);
         log.debug("[QueryDao doQuery]   mainSql: ---->>> " + mainSql);
         return doQueryBySql(param, mainSql);
     }
 
-    public <T extends Serializable> SearchResult<T> doQueryBySql(SearchParam param, String mainSql){
+    public  SearchResult<E> doQueryBySql(SearchParam param, String mainSql){
         String querySql = getQuerySql(mainSql, param);
         String countSql = getCountSql(mainSql);
         Query query = entityManager.createNativeQuery(querySql, param.getEntityCls());
@@ -57,12 +57,12 @@ public class QueryDao<T extends Serializable> {
             query.setParameter(ent.getKey(), ent.getValue());
             count.setParameter(ent.getKey(), ent.getValue());
         }
-        List<T> list = query.getResultList();
+        List<E> list = query.getResultList();
         Integer num = list.size();
         if (param.getPageSize() > 0 && param.getPageNo() > 0)
             num = (Integer) count.getSingleResult();
 
-        SearchResult<T> reslt = new SearchResult<>();
+        SearchResult<E> reslt = new SearchResult<>();
         reslt.setRows(list);
         reslt.setRowCount(num);
 
