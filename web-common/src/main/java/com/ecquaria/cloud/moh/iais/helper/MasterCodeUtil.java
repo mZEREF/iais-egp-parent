@@ -63,9 +63,9 @@ public final class MasterCodeUtil {
         Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
         Map<String, List<MasterCodeView>> filterMap = new HashMap<>();
         List<MasterCodeView> list = sr.getRows();
-        list.forEach(mc -> {
-            RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
-        });
+        list.forEach(mc ->
+            RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue())
+        );
         list.forEach(mc -> {
             String cateStr = String.valueOf(mc.getCategory());
             if (cateMap.get(cateStr) == null) {
@@ -178,9 +178,9 @@ public final class MasterCodeUtil {
     public static List<SelectOption> retrieveOptionsByFilter(String filter) {
         List<MasterCodeView> list = retrieveFilterSource(filter);
         List<SelectOption> opts = new ArrayList<>();
-        list.forEach(m -> {
-            opts.add(new SelectOption(m.getCode(), m.getCodeValue()));
-        });
+        list.forEach(m ->
+            opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
+        );
 
         return opts;
     }
@@ -195,9 +195,9 @@ public final class MasterCodeUtil {
     public static List<MasterCodeView> retrieveByFilter(String filter) {
         List<MasterCodeView> list = retrieveFilterSource(filter);
         List<MasterCodeView> mcList = new ArrayList<>();
-        list.forEach(m -> {
-            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class));
-        });
+        list.forEach(m ->
+            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class))
+        );
 
         return mcList;
     }
@@ -233,9 +233,9 @@ public final class MasterCodeUtil {
             SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
-                list.forEach(m -> {
-                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue());
-                });
+                list.forEach(m ->
+                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue())
+                );
                 RedisCacheHelper.getInstance().set(CACHE_NAME_CATE_MAP, cateId, list);
             } else {
                 return new ArrayList<>();
@@ -254,9 +254,9 @@ public final class MasterCodeUtil {
             SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
-                list.forEach(m -> {
-                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue());
-                });
+                list.forEach(m ->
+                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue())
+                );
                 RedisCacheHelper.getInstance().set(CACHE_NAME_FILTER, filter, list);
             } else {
                 return new ArrayList<>();
@@ -269,9 +269,9 @@ public final class MasterCodeUtil {
     private static void saveInCache(String cacheName, Map<String, List<MasterCodeView>> conMap) {
         RedisCacheHelper rch = RedisCacheHelper.getInstance();
         rch.clear(cacheName);
-        conMap.entrySet().forEach(ent -> {
-            rch.set(cacheName, ent.getKey(), ent.getValue());
-        });
+        conMap.entrySet().forEach(ent ->
+            rch.set(cacheName, ent.getKey(), ent.getValue())
+        );
     }
 
     private static void addMcToCache(MasterCodeView mc) {

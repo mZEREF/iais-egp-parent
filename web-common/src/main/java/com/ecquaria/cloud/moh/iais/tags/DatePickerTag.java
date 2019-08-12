@@ -81,6 +81,12 @@ public final class DatePickerTag extends DivTagSupport {
         }
 
         StringBuilder html = new StringBuilder();
+        generateStartHtml(html,isBE);
+        generateFromToHtml(html);
+        generateEndHtml(html,isBE);
+        return html.toString();
+    }
+    private void generateStartHtml(StringBuilder html,boolean isBE) {
         if (isBE) {
             html.append("<div class=\"input-group date form_date\"");
             html.append(" id=\"").append(id).append("Gp\"");
@@ -102,6 +108,8 @@ public final class DatePickerTag extends DivTagSupport {
             html.append(" name=\"").append(name).append("\"");
         }
         html.append(" id=\"").append(id).append("\"");
+    }
+    private void generateFromToHtml(StringBuilder html) {
         if (fromNow) {
             html.append(" data-date-start-date=\"0d\"");
         } else if (startDate != null) {
@@ -122,6 +130,8 @@ public final class DatePickerTag extends DivTagSupport {
                 html.append(" data-date-end-date=\"").append(endDate).append("\"");
             }
         }
+    }
+    private void generateEndHtml(StringBuilder html,boolean isBE) {
         if (!StringUtil.isEmpty(disableWeekDay)) {
             html.append(" data-date-days-of-week-disabled=\"").append(disableWeekDay).append("\"");
         }
@@ -151,7 +161,6 @@ public final class DatePickerTag extends DivTagSupport {
             html.append("<span class=\"input-group-addon\">");
             html.append("<button type=\"button\" style=\"margin-right:0px\" class=\"btn btn-primary date-set wxdate-set\"><i class=\"fa fa-calendar\"></i></button></span></div>");
         }
-        return html.toString();
     }
     @Override
     public int doEndTag() {

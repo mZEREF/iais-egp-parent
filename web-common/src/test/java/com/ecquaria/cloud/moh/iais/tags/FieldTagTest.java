@@ -60,10 +60,7 @@ public class FieldTagTest {
         doNothing().when(jw).print(anyString());
         tag.setId("idd");
         tag.setStyle("ssss");
-        tag.setCode("code");
-        tag.setCodeType("codeType");
         tag.setValue("valueddd");
-        tag.setAnnoId("");
         tag.setRequired(true);
         tag.setInfo("information");
         tag.setIndex("1");

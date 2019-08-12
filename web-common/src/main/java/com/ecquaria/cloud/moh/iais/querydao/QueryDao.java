@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class QueryDao<T> {
         String countSql = getCountSql(mainSql);
         Query query = entityManager.createNativeQuery(querySql, param.getEntityCls());
         Query count = entityManager.createNativeQuery(countSql);
-        for (Map.Entry<String, Object> ent : param.getFilters().entrySet()) {
+        for (Map.Entry<String, Serializable> ent : param.getFilters().entrySet()) {
             query.setParameter(ent.getKey(), ent.getValue());
             count.setParameter(ent.getKey(), ent.getValue());
         }
