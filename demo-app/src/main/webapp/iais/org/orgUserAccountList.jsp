@@ -62,7 +62,7 @@
         <iais:row>
             <iais:field value="Create Date"/>
             <iais:value width="7">
-                <iais:datePicker id = "fromDate" name = "fromDate"></iais:datePicker>
+                <iais:datePicker id = "fromDate" name = "fromDate" value="20/10/2019"></iais:datePicker>
             </iais:value>
         </iais:row>
         <iais:row>
