@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,7 +13,7 @@ import java.util.Date;
 @Table(name = "SYSTEM_PARAMETERS")
 @Entity
 public class SystemParam implements Serializable {
-
+	private static final long serialVersionUID = -803672949726865567L;
 
 	@Setter
 	@Getter
