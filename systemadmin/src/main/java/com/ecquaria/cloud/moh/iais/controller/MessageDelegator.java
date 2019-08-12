@@ -176,7 +176,7 @@ public class MessageDelegator {
                 Integer id = Integer.valueOf(msgId);
                 msgService.deleteMessageById(id);
             }catch (NumberFormatException e){
-                e.printStackTrace();
+                log.debug(e.getMessage());
             }
         }
     }
@@ -240,7 +240,7 @@ public class MessageDelegator {
                 dto.setDomainType(dto.getDomainType());
                 ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
             }catch (NumberFormatException e){
-                e.printStackTrace();
+                log.debug(e.getMessage());
             }
 
         }
