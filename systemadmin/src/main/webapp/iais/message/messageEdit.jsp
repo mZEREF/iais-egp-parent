@@ -81,9 +81,6 @@
     <tr>
         <iais:action>
             <button type="button" class="btn" onclick="javascript:doEdit(${msgRequestDto.id});">Update</button>
-        </iais:action>
-
-        <iais:action>
             <button type="button" class="btn" onclick="javascript:doCancel();">Cancel</button>
         </iais:action>
     </tr>

@@ -53,7 +53,7 @@ public class QueryDao<T extends Serializable> {
         String countSql = getCountSql(mainSql);
         Query query = entityManager.createNativeQuery(querySql, param.getEntityCls());
         Query count = entityManager.createNativeQuery(countSql);
-        for (Map.Entry<String, Object> ent : param.getFilters().entrySet()) {
+        for (Map.Entry<String, Serializable> ent : param.getFilters().entrySet()) {
             query.setParameter(ent.getKey(), ent.getValue());
             count.setParameter(ent.getKey(), ent.getValue());
         }

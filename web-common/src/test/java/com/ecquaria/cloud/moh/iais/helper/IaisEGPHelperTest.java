@@ -82,4 +82,5 @@ public class IaisEGPHelperTest {
         String path = IaisEGPHelper.getRootPath();
         assertNotNull(path);
     }
+
 }

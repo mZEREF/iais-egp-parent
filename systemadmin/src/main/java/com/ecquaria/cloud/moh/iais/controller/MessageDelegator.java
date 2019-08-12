@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.entity.Message;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MsgService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -57,29 +56,26 @@ public class MessageDelegator {
      * @param request
      */
     private void preSelectOption(HttpServletRequest request){
-        List<String> domainOptionList =  new ArrayList<>();
-        List<SelectOption> domain = new ArrayList<>();
-        domain.add(new SelectOption("INTER", "Internet"));
-        domain.add(new SelectOption("INTRA", "Intranet"));
+        List<SelectOption> domainOptionList = new ArrayList<>();
+        domainOptionList.add(new SelectOption("Inter", "Internet"));
+        domainOptionList.add(new SelectOption("Intra", "Intranet"));
+        ParamUtil.setRequestAttr(request, "domainTypeSelect", domainOptionList);
 
-        List<String> msgOptionList =  new ArrayList<>();
-        msgOptionList.add("Acknowledgement");
-        msgOptionList.add("Error");
+        List<SelectOption> msgOptionList = new ArrayList<>();
+        msgOptionList.add(new SelectOption("Acknowledgement", "Acknowledgement"));
+        msgOptionList.add(new SelectOption("Error", "Error"));
+        ParamUtil.setRequestAttr(request, "msgTypeSelect", msgOptionList);
 
-        List<String> moduleOptionList =  new ArrayList<>();
-        moduleOptionList.add("New");
-        moduleOptionList.add("Renewal");
-        moduleOptionList.add("Cessation");
-        moduleOptionList.add("Amendment");
-        moduleOptionList.add("Reinstate");
-        moduleOptionList.add("Audit");
-        moduleOptionList.add("Common");
-        moduleOptionList.add("Others");
-
-        Map<String , List<String>> map = new HashMap<>();
-        ParamUtil.setRequestAttr(request, "domainTypeSelect", domain);
-        map.put("msgTypeSelect", msgOptionList);
-        map.put("moduleTypeSelect", moduleOptionList);
+        List<SelectOption> moduleList =  new ArrayList<>();
+        moduleList.add(new SelectOption("New", "New"));
+        moduleList.add(new SelectOption("Renewal", "Renewal"));
+        moduleList.add(new SelectOption("Cessation", "Cessation"));
+        moduleList.add(new SelectOption("Amendment", "Amendment"));
+        moduleList.add(new SelectOption("Reinstate", "Reinstate"));
+        moduleList.add(new SelectOption("Audit", "Audit"));
+        moduleList.add(new SelectOption("Common", "Common"));
+        moduleList.add(new SelectOption("Others", "Others"));
+        ParamUtil.setRequestAttr(request, "moduleTypeSelect", moduleList);
     }
 
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
@@ -99,7 +95,7 @@ public class MessageDelegator {
 
         //default false, go to pre-data
         SearchParam param = getSearchParam(bpc);
-        SearchResult result = msgService.doSearch(param, "messageSql", "search");
+        SearchResult result = msgService.doSearch(param, "systemAdmin", "queryMessage");
 
         ParamUtil.setSessionAttr(request, PARAM_MESSAGE_SEARCH, param);
         ParamUtil.setRequestAttr(request, PARAM_MESSAGE_SEARCH_RESULT, result);
@@ -110,7 +106,7 @@ public class MessageDelegator {
      * INTRA INTER Internet Intranet
      * @param str
      * @return
-     */
+     *//*
     private String convertDomainType(String str){
         if(str == null || str.length() == 0){
             return str;
@@ -123,7 +119,7 @@ public class MessageDelegator {
         }else{
             return str.charAt(0) + str.substring(1,5).toLowerCase() + "net";
         }
-    }
+    }*/
 
 
     /**
@@ -146,7 +142,7 @@ public class MessageDelegator {
         String description = ParamUtil.getString(request, "description");
 
         MessageDto dto = (MessageDto) ParamUtil.getSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO);
-        dto.setDomainType(convertDomainType(domainType));
+        dto.setDomainType(domainType);
         dto.setMsgType(msgType);
         dto.setModule(module);
         dto.setDescription(description);
@@ -196,7 +192,7 @@ public class MessageDelegator {
             return;
         }
 
-        String domainType = convertDomainType(ParamUtil.getString(request, "domainType"));
+        String domainType = ParamUtil.getString(request, "domainType");
         String msgType = ParamUtil.getString(request, "msgType");
         String module = ParamUtil.getString(request, "module");
 
@@ -241,7 +237,7 @@ public class MessageDelegator {
                 Integer id = Integer.valueOf(msgId);
                 Message msg = msgService.getMessageByMsgId(id);
                 MessageDto dto = MiscUtil.transferEntityDto(msg, MessageDto.class);
-                dto.setDomainType(convertDomainType(dto.getDomainType()));
+                dto.setDomainType(dto.getDomainType());
                 ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
             }catch (NumberFormatException e){
                 e.printStackTrace();

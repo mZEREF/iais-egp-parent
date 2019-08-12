@@ -10,6 +10,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import sop.util.Assert;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,22 +30,22 @@ public class SearchParamTest {
     private static final int PAGENO = 2;
 
     @Mock
-    private HashMap<String, Object> params;
+    private HashMap<String, Serializable> params;
     @Mock
-    private LinkedHashMap<String, Object> filters;
+    private LinkedHashMap<String, Serializable> filters;
 
     @Test
     public void test(){
         SearchParam sp = new SearchParam(SearchParam.class);
         // test the filter
         sp.addFilter(FILTERSKEY,FILTERSVALUE);
-        Map<String, Object> foilters = sp.getFilters();
+        Map<String, Serializable> foilters = sp.getFilters();
         Assert.assertEquals(FILTERSVALUE,foilters.get(FILTERSKEY));
         sp.addFilter(FILTERSKEY,FILTERSVALUE,true);
         sp.removeFilter(FILTERSKEY);
         //test the param
         sp.addParam(PARAMKEY,PARAMVALUE);
-        Map<String, Object> param = sp.getParams();
+        Map<String, Serializable> param = sp.getParams();
         Assert.assertEquals(PARAMVALUE,param.get(PARAMKEY));
         Assert.assertEquals(FILTERSVALUE,param.get(FILTERSKEY));
         sp.removeParam(PARAMKEY);
