@@ -85,7 +85,7 @@ public class SqlXmlParser extends DefaultHandler {
             Sql sql = new Sql();
             sql.setCatalog(catalog);
             sql.setKey(key);
-            sql.setSql(sqlStat.toString());
+            sql.setSqlStr(sqlStat.toString());
 
             sqls.add(sql);
         }

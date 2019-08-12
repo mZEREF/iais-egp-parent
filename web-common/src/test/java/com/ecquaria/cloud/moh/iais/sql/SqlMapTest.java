@@ -58,12 +58,12 @@ public class SqlMapTest {
         List<Sql> sqlList = new ArrayList<>();
         Sql sql = new Sql();
         sql.setCached(AppConsts.NO);
-        sql.setSql("Select * from AAA");
+        sql.setSqlStr("Select * from AAA");
         sql.setKey(KEY_1);
         sql.setCatalog(CATA);
         sqlList.add(sql);
         sql = new Sql();
-        sql.setSql("selct dad <#if nric_no??>   dafdsa </#if>");
+        sql.setSqlStr("selct dad <#if nric_no??>   dafdsa </#if>");
         sql.setKey(KEY_D);
         sql.setCatalog(CATA);
         sqlList.add(sql);
