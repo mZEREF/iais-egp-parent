@@ -103,26 +103,6 @@ public class MessageDelegator {
     }
 
     /**
-     * INTRA INTER Internet Intranet
-     * @param str
-     * @return
-     *//*
-    private String convertDomainType(String str){
-        if(str == null || str.length() == 0){
-            return str;
-        }
-
-        int len = str.length() - 1;
-        Integer uCode = Integer.valueOf(str.charAt(len));
-        if(uCode == 116){
-            return str.substring(0,5).toUpperCase();
-        }else{
-            return str.charAt(0) + str.substring(1,5).toLowerCase() + "net";
-        }
-    }*/
-
-
-    /**
      * user do edit with message management
      * @param bpc
      */
