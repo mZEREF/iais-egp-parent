@@ -20,7 +20,7 @@ sop.webflow.rt.api.BaseProcessClass process =
 <%=process.runtime.getCurrentComponentName()%>
 
 </webui:setAttribute>
-<form method="post" class="__egovform" action=<%=process.runtime.continueURL()%>>
+<form id="masterCodeListForm" method="post" class="__egovform" action=<%=process.runtime.continueURL()%>>
 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 <input type="hidden" name="crud_action_type" value="">
 <input type="hidden" name="crud_action_value" value="">
@@ -127,26 +127,26 @@ sop.webflow.rt.api.BaseProcessClass process =
 <script type="text/javascript">
     function doSearch() {
         // submitForm("doSearch");
-        SOP.Crud.cfxSubmit("mainForm","doSearch");
+        SOP.Crud.cfxSubmit("masterCodeListForm","doSearch");
     }
     function sortRecords(sortFieldName,sortType){
-        SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
+        SOP.Crud.cfxSubmit("masterCodeListForm","sortRecords",sortFieldName,sortType);
     }
 
     function jumpToPagechangePage(){
-        SOP.Crud.cfxSubmit("mainForm","changePage");
+        SOP.Crud.cfxSubmit("masterCodeListForm","changePage");
     }
     function doDelete(masterCodeId){
         if(confirm('Are you sure you want to delete?')){
-            SOP.Crud.cfxSubmit("mainForm","doDelete",masterCodeId);
+            SOP.Crud.cfxSubmit("masterCodeListForm","doDelete",masterCodeId);
         }
     }
 
     function doCreat(master_code_id) {
-        SOP.Crud.cfxSubmit("mainForm","doCreate",master_code_id);
+        SOP.Crud.cfxSubmit("masterCodeListForm","doCreate",master_code_id);
     }
     function doEdit(rowguid){
-        SOP.Crud.cfxSubmit("mainForm","doEdit",rowguid);
+        SOP.Crud.cfxSubmit("masterCodeListForm","doEdit",rowguid);
     }
 
     function doClear() {

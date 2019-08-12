@@ -1,12 +1,14 @@
 package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeQuery;
 import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.entity.MasterCode;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -43,23 +45,22 @@ public class MasterCodeDelegator {
     private MasterCodeService masterCodeService;
 
     public void doStart(BaseProcessClass bpc){
-        log.debug("The doStart start ...");
+        logAboutStart("doStart");
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(request, SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(request, MASTERCODE_USER_DTO_ATTR, null);
-        log.debug("The doStart end ...");
     }
 
     public void prepareData(BaseProcessClass bpc){
-        log.debug("The prepareData start ...");
+        logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
+        preSelectOption(request);
         SearchParam param = getSearchParam(bpc);
         ParamUtil.setRequestAttr(request,"master_code_id", 1);
         SearchResult searchResult = masterCodeService.doQuery(param, "systemAdmin", "masterCodeQuery");
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
         ParamUtil.setRequestAttr(request, SEARCH_RESULT, searchResult);
-        log.debug("The prepareData end ...");
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){
@@ -80,17 +81,14 @@ public class MasterCodeDelegator {
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
-        log.debug("The prepareSwitch start ...");
-        String  action = ParamUtil.getString(bpc.request,"crud_action_type");
-        log.debug("**** The Next Step is -->:"+action);
-        log.debug("The prepareSwitch end ...");
+        logAboutStart("prepareSwitch");
+        String  action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
     }
 
     public void prepareCreate(BaseProcessClass bpc){
-        log.debug("The prepareCreateData start ...");
+        logAboutStart("prepareCreate");
         HttpServletRequest request = bpc.request;
-        String masterCodeId = ParamUtil.getString(request,"crud_action_value");
-        log.info("The crud_action_value is ---->"+masterCodeId);
+        String masterCodeId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         ParamUtil.setRequestAttr(request, "masterCodeId", masterCodeId);
         List statusSelect = new ArrayList<SelectOption>();
         SelectOption sp1 = new SelectOption("pending","Pending");
@@ -99,14 +97,13 @@ public class MasterCodeDelegator {
         statusSelect.add(sp2);
         ParamUtil.setRequestAttr(request,"statusSelect",statusSelect);
         ParamUtil.setRequestAttr(request, MASTERCODE_USER_ACCOUNT_TILE,"Master Code Create");
-        log.debug("The prepareCreateData end ...");
     }
 
     public void prepareEdit(BaseProcessClass bpc){
-        log.debug("The prepareEdit start ...");
+        logAboutStart("prepareEdit");
         HttpServletRequest request = bpc.request;
-        String rowguid = ParamUtil.getString(request,"crud_action_value");
-        log.info("The crud_action_value is ---->"+rowguid);
+        preSelectOption(request);
+        String rowguid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         MasterCode masterCode = masterCodeService.findMasterCodeByRowguid(rowguid);
         MasterCodeDto masterCodeDto = MiscUtil.transferEntityDto(masterCode, MasterCodeDto.class);
         ParamUtil.setSessionAttr(request, MASTERCODE_USER_DTO_ATTR, masterCodeDto);
@@ -117,11 +114,10 @@ public class MasterCodeDelegator {
         SelectOption sp2 = new SelectOption("procing","Procing");
         statusSelect.add(sp2);
         ParamUtil.setRequestAttr(request, "statusSelect",statusSelect);
-        log.debug("The prepareEdit end ...");
     }
 
     public void doSearch(BaseProcessClass bpc){
-        log.debug("The doSearch start ...");
+        logAboutStart("doSearch");
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
         String master_code_key = ParamUtil.getString(request, "master_code_key");
@@ -140,39 +136,34 @@ public class MasterCodeDelegator {
                 param.addFilter("mc.STATUS"+i,status[i]);
             }
         }
-        log.debug("The doSearch end ...");
-
     }
 
     public void doSorting(BaseProcessClass bpc){
-        log.debug("The doSorting start ...");
+        logAboutStart("doSorting");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doSorting(searchParam,  bpc.request);
-        log.debug("The doSorting end ...");
     }
 
     public void doPaging(BaseProcessClass bpc){
-        log.debug("The doPaging start ...");
+        logAboutStart("doPaging");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
-        log.debug("The doPaging end ...");
     }
 
     public void doDelete(BaseProcessClass bpc){
-        log.debug("The doDelete start ...");
-        String id = ParamUtil.getString(bpc.request,"crud_action_value");
+        logAboutStart("doDelete");
+        String id = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(id)){
             masterCodeService.deleteMasterCodeById(Long.valueOf(id));
         }
-        log.debug("The doDelete end ...");
     }
 
     public void doCreate(BaseProcessClass bpc){
-        log.debug("The doCreate start ...");
+        logAboutStart("doCreate");
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request, "crud_action_type");
+        String type = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("save".equals(type)){
-            int masterCodeId = ParamUtil.getInt(request,"crud_action_value");
+            int masterCodeId = ParamUtil.getInt(request,IaisEGPConstant.CRUD_ACTION_VALUE);
             MasterCodeDto masterCodeDto = new MasterCodeDto();
             getValueFromPage(masterCodeDto, request);
             masterCodeDto.setMasterCodeId(masterCodeId);
@@ -180,45 +171,41 @@ public class MasterCodeDelegator {
             ValidationResult validationResult = ValidationUtils.validateProperty(masterCodeDto,"create");
             if (validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(request,"errorMap",errorMap);
-                ParamUtil.setRequestAttr(request,"isValid","N");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }else{
                 MasterCode masterCode = MiscUtil.transferEntityDto(masterCodeDto,MasterCode.class);
                 masterCodeService.saveMasterCode(masterCode);
-                ParamUtil.setRequestAttr(request,"isValid","Y");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             }
         }else{
-            ParamUtil.setRequestAttr(request,"isValid","Y");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }
-
-        log.debug("The doCreate end ...");
     }
 
     public void doEdit(BaseProcessClass bpc){
-        log.debug("The doEdit start ...");
+        logAboutStart("doEdit");
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request,"crud_action_type");
+        String type = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if("edit".equals(type)){
             MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MASTERCODE_USER_DTO_ATTR);
             getValueFromPage(masterCodeDto, request);
             ValidationResult validationResult =ValidationUtils.validateProperty(masterCodeDto, "edit");
             if (validationResult.isHasErrors()){
-                log.error("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(request,"errorMap",errorMap);
-                ParamUtil.setRequestAttr(request,"isValid","N");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }else{
                 Map<String,String> successMap = new HashMap<>();
                 successMap.put("test","suceess");
                 MasterCode masterCode = MiscUtil.transferEntityDto(masterCodeDto,MasterCode.class);
                 masterCodeService.saveMasterCode(masterCode);
-                ParamUtil.setRequestAttr(request,"isValid","Y");
-                ParamUtil.setRequestAttr(request,"successMap",successMap);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.SUCCESSMAP,successMap);
             }
         }else{
-            ParamUtil.setRequestAttr(request,"isValid","Y");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }
-        log.debug("The doEdit end ...");
     }
 
     private void getValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request){
@@ -232,5 +219,25 @@ public class MasterCodeDelegator {
         masterCodeDto.setCodeCategory(codeCategory);
         masterCodeDto.setCodeValue(codeValue);
         masterCodeDto.setStatus(status);
+    }
+
+    private void preSelectOption(HttpServletRequest request){
+        List<String> statusOptionList = new ArrayList<>();
+        statusOptionList.add("Procing");
+        statusOptionList.add("Pending");
+
+        List<String> codeDescriptionOptionList = new ArrayList<>();
+        codeDescriptionOptionList.add("import");
+        codeDescriptionOptionList.add("ordinary");
+
+        Map<String,List<String>> optionMap = new HashMap<>();
+        optionMap.put("StatusOption",statusOptionList);
+        optionMap.put("CodeDesOption",codeDescriptionOptionList);
+        IaisEGPHelper.setOptionToList(request, optionMap);
+    }
+
+    private void logAboutStart(String methodName){
+        log.debug("**** The"+methodName+"Start ****");
+
     }
 }

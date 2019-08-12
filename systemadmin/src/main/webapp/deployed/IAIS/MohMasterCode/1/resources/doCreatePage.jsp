@@ -40,7 +40,7 @@
 
 
 
-<form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+<form id="masterCodeCreateForm" method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -95,7 +95,7 @@
             <iais:action>
                 <button type="button"  class="btn btn-default" onclick="javascript:doCancel();">Cancel</button>
                 <c:choose>
-                    <c:when test="${empty MasterCodeDto || !MasterCodeDto.editFlag}">
+                    <c:when test="${empty MasterCodeDto }">
                         <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doCreate('${master_code_id}');">Submit</button>
                     </c:when>
                     <c:otherwise>
@@ -112,13 +112,13 @@
 
 <script type="text/javascript">
     function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","cancel");
+        SOP.Crud.cfxSubmit("masterCodeCreateForm","cancel");
     }
     function doCreate(master_code_id){
-        SOP.Crud.cfxSubmit("mainForm","save",master_code_id);
+        SOP.Crud.cfxSubmit("masterCodeCreateForm","save",master_code_id);
     }
     function doEdit(rowguid){
-        SOP.Crud.cfxSubmit("mainForm","edit",rowguid);
+        SOP.Crud.cfxSubmit("masterCodeCreateForm","edit",rowguid);
     }
 
 </script>

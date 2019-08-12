@@ -19,7 +19,7 @@ sop.webflow.rt.api.BaseProcessClass process =
 <%=process.runtime.getCurrentComponentName()%>
 </webui:setAttribute>
 
-<form method="post" action=<%=process.runtime.continueURL()%>>
+<form id="masterCodeEditForm" method="post" action=<%=process.runtime.continueURL()%>>
 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 <input type="hidden" name="crud_action_type" value="">
 <input type="hidden" name="crud_action_value" value="">
@@ -44,5 +44,40 @@ sop.webflow.rt.api.BaseProcessClass process =
                 </div>
             </c:if>
         </iais:error>
+        <iais:section title="${MasterCodeEditTile}" id="MasterCodeEdit">
+            <iais:row>
+                <iais:field value="Code Description" required="true"></iais:field>
+                <iais:value width="7">
+                    <iais:select name="codeDescription" options="CodeDesOption" firstOption="Please select" value="${MasterCodeDto.codeDescription}" ></iais:select>
+                </iais:value>
+            </iais:row>
+            <iais:row>
+                <iais:field value="Status" required="true"></iais:field>
+                <iais:value width="7">
+                    <iais:select name="Status" options="StatusOption" firstOption="Please select" value="${MasterCodeDto.status}" ></iais:select>
+                </iais:value>
+            </iais:row>
+        </iais:section>
+
+            <iais:action>
+                <button type="button" class="btn" onclick="javascript:doEdit(${MasterCodeDto.masterCodeId});">Update</button>
+                <button type="button" class="btn" onclick="javascript:doCancel();">Cancel</button>
+            </iais:action>
     </iais:body>
 </form>
+
+
+<script type="text/javascript">
+msc
+
+    function doEdit(mscId){
+        if(confirm('Are sure you want to edit ? ')){
+            SOP.Crud.cfxSubmit("masterCodeEditForm", "doEdit", mscId);
+        }
+    }
+
+    function doCancel(){
+        SOP.Crud.cfxSubmit("masterCodeEditForm","cancel");
+    }
+
+</script>

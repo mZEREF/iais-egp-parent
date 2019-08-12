@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,6 @@ import java.util.Date;
 
 @Entity
 @Component
-@Data
 @Table(name = "cm_master_code")
 public class MasterCode implements Serializable {
 
