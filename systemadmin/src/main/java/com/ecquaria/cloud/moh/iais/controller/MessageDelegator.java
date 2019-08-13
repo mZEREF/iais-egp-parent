@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 /*
- *File Name: ErrorMessageController
+ *File Name: MessageDelegator
  *Creator: yichen
  *Creation time:2019/8/2 9:08
  *Describe:
@@ -57,8 +57,8 @@ public class MessageDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> domainOptionList = new ArrayList<>();
-        domainOptionList.add(new SelectOption("Inter", "Internet"));
-        domainOptionList.add(new SelectOption("Intra", "Intranet"));
+        domainOptionList.add(new SelectOption("INTER", "Internet"));
+        domainOptionList.add(new SelectOption("INTRA", "Intranet"));
         ParamUtil.setRequestAttr(request, "domainTypeSelect", domainOptionList);
 
         List<SelectOption> msgOptionList = new ArrayList<>();
@@ -78,14 +78,20 @@ public class MessageDelegator {
         ParamUtil.setRequestAttr(request, "moduleTypeSelect", moduleList);
     }
 
+    /**
+     * StartStep: startStep
+     * @param bpc
+     * @throws IllegalAccessException
+     */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction("Error and Acknowledgement Message", "Function is used by MOH system administrator (users given the administrator rights and have the rights to modify the information");
         HttpServletRequest request = bpc.request;
         clearSessionAttr(request, MessageDelegator.class);
     }
 
+
     /**
-     * prepare data to msg main page
+     *  AutoStep: prepareData
      * @param bpc
      */
     public void prepareData(BaseProcessClass bpc){
@@ -102,7 +108,9 @@ public class MessageDelegator {
 
     }
 
+
     /**
+     * AutoStep: doEdit
      * user do edit with message management
      * @param bpc
      */
@@ -127,7 +135,6 @@ public class MessageDelegator {
         dto.setModule(module);
         dto.setDescription(description);
 
-        ParamUtil.setRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
@@ -145,24 +152,21 @@ public class MessageDelegator {
     }
 
     /**
-     * delete message
+     * AutoStep: disableStatus
      * @param bpc
      */
-    public void doDelete(BaseProcessClass bpc){
+    public void disableStatus(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String msgId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(!StringUtil.isEmpty(msgId)) {
-            try {
-                Integer id = Integer.valueOf(msgId);
-                msgService.deleteMessageById(id);
-            }catch (NumberFormatException e){
-                log.debug(e.getMessage());
-            }
+        String rowguid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(!StringUtil.isEmpty(rowguid)) {
+            Message msg = msgService.getMessageByRowguid(rowguid);
+            msg.setStatus(0);
+            msgService.saveMessage(msg);
         }
     }
 
     /**
-     * search message
+     * AutoStep: doSearch
      * @param bpc
      */
     public void doSearch(BaseProcessClass bpc){
@@ -171,22 +175,32 @@ public class MessageDelegator {
         if(!"doSearch".equals(type)){
             return;
         }
-
+        MessageDto dto = new MessageDto();
         String domainType = ParamUtil.getString(request, "domainType");
         String msgType = ParamUtil.getString(request, "msgType");
         String module = ParamUtil.getString(request, "module");
 
+        dto.setDomainType(domainType);
+        dto.setMsgType(msgType);
+        dto.setModule(module);
+
         SearchParam param = getSearchParam(bpc, true);
-        if(!StringUtil.isEmpty(domainType)){
+        ParamUtil.setRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "search");
+        if(validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
+        }else {
             param.addFilter("domainType", domainType, true);
-        }
 
-        if(!StringUtil.isEmpty(msgType)){
-            param.addFilter("msgType", msgType, true);
-        }
+            if(!StringUtil.isEmpty(msgType)){
+                param.addFilter("msgType", msgType, true);
+            }
 
-        if(!StringUtil.isEmpty(module)){
-            param.addFilter("module", module, true);
+            if(!StringUtil.isEmpty(module)){
+                param.addFilter("module", module, true);
+            }
         }
     }
 
@@ -205,32 +219,33 @@ public class MessageDelegator {
 
 
     /**
-     * preparation before editing
+     * AutoStep: editBefore
      * @param bpc
      */
     public void perpareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String msgId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String rowguid = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         preSelectOption(request);
-        if(!StringUtil.isEmpty(msgId)){
-            try {
-                Integer id = Integer.valueOf(msgId);
-                Message msg = msgService.getMessageByMsgId(id);
-                MessageDto dto = MiscUtil.transferEntityDto(msg, MessageDto.class);
-                dto.setDomainType(dto.getDomainType());
-                ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
-            }catch (NumberFormatException e){
-                log.debug(e.getMessage());
-            }
-
+        if(!StringUtil.isEmpty(rowguid)){
+            Message msg = msgService.getMessageByRowguid(rowguid);
+            MessageDto dto = MiscUtil.transferEntityDto(msg, MessageDto.class);
+            ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
         }
     }
 
+    /**
+     * AutoStep: changePage
+     * @param bpc
+     */
     public void doPaging(BaseProcessClass bpc){
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
+    /**
+     * AutoStep: sortRecords
+     * @param bpc
+     */
     public void doSorting(BaseProcessClass bpc){
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doSorting(searchParam,  bpc.request);

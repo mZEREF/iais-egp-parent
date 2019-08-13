@@ -61,7 +61,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field value="Module" required="false"></iais:field>
+            <iais:field value="Module" required="true"></iais:field>
             <iais:value width="7">
                 <iais:select name="module" options="moduleTypeSelect" firstOption="Please select" value="${msgRequestDto.module}"></iais:select>
             </iais:value>
@@ -69,7 +69,7 @@
 
 
         <iais:row>
-            <iais:field value="description" required="false"></iais:field>
+            <iais:field value="Description" required="false"></iais:field>
             <iais:value width="7">
                 <input type="text" name="description" value="${msgRequestDto.description}" />
             </iais:value>
@@ -80,7 +80,7 @@
 
     <tr>
         <iais:action>
-            <button type="button" class="btn" onclick="javascript:doEdit(${msgRequestDto.id});">Update</button>
+            <button type="button" class="btn" onclick="javascript:doEdit('${msgRequestDto.rowguid}');">Update</button>
             <button type="button" class="btn" onclick="javascript:doCancel();">Cancel</button>
         </iais:action>
     </tr>
@@ -92,9 +92,9 @@
 <script type="text/javascript">
 
 
-    function doEdit(msgId){
+    function doEdit(rowguid){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "doEdit", msgId);
+            SOP.Crud.cfxSubmit("messageForm", "doEdit", rowguid);
         }
     }
 

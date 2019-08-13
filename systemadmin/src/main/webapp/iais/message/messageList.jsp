@@ -37,6 +37,15 @@
 
 <iais:body>
     <h2>Message List Page</h2>
+        <iais:error>
+            <c:if test = "${not empty errorMap}">
+                <div class="error">
+                    <c:forEach items="${errorMap}" var="map">
+                        ${map.key}  ${map.value} <br/>
+                    </c:forEach>
+                </div>
+            </c:if>
+        </iais:error>
 
         <iais:section title="Message List" id="msgList">
             <iais:row>
@@ -47,7 +56,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Msg Type" required="true"></iais:field>
+                <iais:field value="Msg Type" required="false"></iais:field>
                 <iais:value width="7">
                     <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" ></iais:select>
                 </iais:value>
@@ -107,8 +116,8 @@
                             <td>${msgQuery.module}</td>
                             <td>${msgQuery.description}</td>
                             <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:perpareEdit('${msgQuery.id}');"/>
-                                <iais:link icon="form_delete" title="Delete" onclick="javascript:doDelete('${msgQuery.id}');"/>
+                                <iais:link icon="form_edit" title="Edit" onclick="javascript:perpareEdit('${msgQuery.rowguid}');"/>
+                                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.rowguid}');"/>
                             </td>
                         </tr>
                     </c:forEach>
@@ -135,20 +144,16 @@
         SOP.Crud.cfxSubmit("mainForm","changePage");
     }
 
-    function perpareEdit(id){
+    function perpareEdit(rowguid){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "perpareEdit", id);
+            SOP.Crud.cfxSubmit("messageForm", "perpareEdit", rowguid);
         }
     }
 
-    function doDelete(id){
-        if(confirm('are sure you want to delete ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "doDelete", id);
+    function disable(rowguid){
+        if(confirm('are sure you want to disable ? ')){
+            SOP.Crud.cfxSubmit("messageForm", "disableStatus", rowguid);
         }
-    }
-
-    function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","cancel");
     }
 
 </script>
