@@ -168,22 +168,32 @@ public class MessageDelegator {
         if(!"doSearch".equals(type)){
             return;
         }
-
+        MessageDto dto = new MessageDto();
         String domainType = ParamUtil.getString(request, "domainType");
         String msgType = ParamUtil.getString(request, "msgType");
         String module = ParamUtil.getString(request, "module");
 
+        dto.setDomainType(domainType);
+        dto.setMsgType(msgType);
+        dto.setModule(module);
+
         SearchParam param = getSearchParam(bpc, true);
-        if(!StringUtil.isEmpty(domainType)){
+        ParamUtil.setRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "search");
+        if(validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
+        }else {
             param.addFilter("domainType", domainType, true);
-        }
 
-        if(!StringUtil.isEmpty(msgType)){
-            param.addFilter("msgType", msgType, true);
-        }
+            if(!StringUtil.isEmpty(msgType)){
+                param.addFilter("msgType", msgType, true);
+            }
 
-        if(!StringUtil.isEmpty(module)){
-            param.addFilter("module", module, true);
+            if(!StringUtil.isEmpty(module)){
+                param.addFilter("module", module, true);
+            }
         }
     }
 

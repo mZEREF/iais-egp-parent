@@ -28,8 +28,8 @@ public class MessageDto implements Serializable {
     private String rowguid;
 
     @Setter @Getter
-    @NotBlank(message = "can not is blank!", profiles = {"edit"})
-    @NotNull(message = "can not is null!", profiles = {"edit"})
+    @NotBlank(message = "can not is blank!", profiles = {"edit", "search"})
+    @NotNull(message = "can not is null!", profiles = {"edit", "search"})
     private String domainType;
 
     @Setter @Getter

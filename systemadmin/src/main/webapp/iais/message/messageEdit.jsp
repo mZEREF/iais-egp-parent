@@ -61,7 +61,7 @@
         </iais:row>
 
         <iais:row>
-            <iais:field value="Module" required="false"></iais:field>
+            <iais:field value="Module" required="true"></iais:field>
             <iais:value width="7">
                 <iais:select name="module" options="moduleTypeSelect" firstOption="Please select" value="${msgRequestDto.module}"></iais:select>
             </iais:value>

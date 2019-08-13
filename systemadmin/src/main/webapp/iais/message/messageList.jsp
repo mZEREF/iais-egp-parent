@@ -37,6 +37,15 @@
 
 <iais:body>
     <h2>Message List Page</h2>
+        <iais:error>
+            <c:if test = "${not empty errorMap}">
+                <div class="error">
+                    <c:forEach items="${errorMap}" var="map">
+                        ${map.key}  ${map.value} <br/>
+                    </c:forEach>
+                </div>
+            </c:if>
+        </iais:error>
 
         <iais:section title="Message List" id="msgList">
             <iais:row>
@@ -47,7 +56,7 @@
             </iais:row>
 
             <iais:row>
-                <iais:field value="Msg Type" required="true"></iais:field>
+                <iais:field value="Msg Type" required="false"></iais:field>
                 <iais:value width="7">
                     <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" ></iais:select>
                 </iais:value>
