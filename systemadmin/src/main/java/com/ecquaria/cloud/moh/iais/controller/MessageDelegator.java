@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 /*
- *File Name: ErrorMessageController
+ *File Name: MessageDelegator
  *Creator: yichen
  *Creation time:2019/8/2 9:08
  *Describe:
@@ -78,14 +78,20 @@ public class MessageDelegator {
         ParamUtil.setRequestAttr(request, "moduleTypeSelect", moduleList);
     }
 
+    /**
+     * StartStep: startStep
+     * @param bpc
+     * @throws IllegalAccessException
+     */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction("Error and Acknowledgement Message", "Function is used by MOH system administrator (users given the administrator rights and have the rights to modify the information");
         HttpServletRequest request = bpc.request;
         clearSessionAttr(request, MessageDelegator.class);
     }
 
+
     /**
-     * prepare data to msg main page
+     *  AutoStep: prepareData
      * @param bpc
      */
     public void prepareData(BaseProcessClass bpc){
@@ -102,7 +108,9 @@ public class MessageDelegator {
 
     }
 
+
     /**
+     * AutoStep: doEdit
      * user do edit with message management
      * @param bpc
      */
@@ -127,7 +135,6 @@ public class MessageDelegator {
         dto.setModule(module);
         dto.setDescription(description);
 
-        ParamUtil.setRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
@@ -145,7 +152,7 @@ public class MessageDelegator {
     }
 
     /**
-     * disable status
+     * AutoStep: disableStatus
      * @param bpc
      */
     public void disableStatus(BaseProcessClass bpc){
@@ -159,7 +166,7 @@ public class MessageDelegator {
     }
 
     /**
-     * search message
+     * AutoStep: doSearch
      * @param bpc
      */
     public void doSearch(BaseProcessClass bpc){
@@ -212,7 +219,7 @@ public class MessageDelegator {
 
 
     /**
-     * preparation before editing
+     * AutoStep: editBefore
      * @param bpc
      */
     public void perpareEdit(BaseProcessClass bpc){
@@ -226,11 +233,19 @@ public class MessageDelegator {
         }
     }
 
+    /**
+     * AutoStep: changePage
+     * @param bpc
+     */
     public void doPaging(BaseProcessClass bpc){
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
+    /**
+     * AutoStep: sortRecords
+     * @param bpc
+     */
     public void doSorting(BaseProcessClass bpc){
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doSorting(searchParam,  bpc.request);
