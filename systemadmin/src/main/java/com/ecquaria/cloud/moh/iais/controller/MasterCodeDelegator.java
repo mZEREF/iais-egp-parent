@@ -39,10 +39,18 @@ public class MasterCodeDelegator {
     public static final String MASTERCODE_USER_ACCOUNT_TILE        = "MasterCodeEditTile";
     public static final String MASTERCODE_USER_DTO_ATTR            = "MasterCodeDto";
 
+    public static final String MASTERCODE_ID                       = "master_code_id";
+
 
     @Autowired
     private MasterCodeService masterCodeService;
 
+    /**
+     * StartStep: Start
+     *
+     * @param bpc
+     * @throws
+     */
     public void doStart(BaseProcessClass bpc){
         logAboutStart("doStart");
         HttpServletRequest request = bpc.request;
@@ -51,12 +59,18 @@ public class MasterCodeDelegator {
         ParamUtil.setSessionAttr(request, MASTERCODE_USER_DTO_ATTR, null);
     }
 
+    /**
+     * AutoStep: PrepareData
+     *
+     * @param bpc
+     * @throws
+     */
     public void prepareData(BaseProcessClass bpc){
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
         SearchParam param = getSearchParam(bpc);
-        ParamUtil.setRequestAttr(request,"master_code_id", 1);
+        ParamUtil.setRequestAttr(request,MASTERCODE_ID, 1);
         SearchResult searchResult = masterCodeService.doQuery(param, "systemAdmin", "masterCodeQuery");
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
         ParamUtil.setRequestAttr(request, SEARCH_RESULT, searchResult);
@@ -73,17 +87,29 @@ public class MasterCodeDelegator {
             param = new SearchParam(MasterCodeQuery.class);
             param.setPageSize(10);
             param.setPageNo(1);
-            param.setSort("master_code_id", SearchParam.ASCENDING);
+            param.setSort(MASTERCODE_ID, SearchParam.ASCENDING);
             ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
         }
         return param;
     }
 
+    /**
+     * AutoStep: PrepareSwitch
+     *
+     * @param bpc
+     * @throws
+     */
     public void prepareSwitch(BaseProcessClass bpc){
         logAboutStart("prepareSwitch");
         String  action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
     }
 
+    /**
+     * AutoStep: PrepareCreate
+     *
+     * @param bpc
+     * @throws
+     */
     public void prepareCreate(BaseProcessClass bpc){
         logAboutStart("prepareCreate");
         HttpServletRequest request = bpc.request;
@@ -98,6 +124,12 @@ public class MasterCodeDelegator {
         ParamUtil.setRequestAttr(request, MASTERCODE_USER_ACCOUNT_TILE,"Master Code Create");
     }
 
+    /**
+     * AutoStep: prepareEdit
+     *
+     * @param bpc
+     * @throws
+     */
     public void prepareEdit(BaseProcessClass bpc){
         logAboutStart("prepareEdit");
         HttpServletRequest request = bpc.request;
@@ -115,18 +147,24 @@ public class MasterCodeDelegator {
         ParamUtil.setRequestAttr(request, "statusSelect",statusSelect);
     }
 
+    /**
+     * AutoStep: doSearch
+     *
+     * @param bpc
+     * @throws
+     */
     public void doSearch(BaseProcessClass bpc){
         logAboutStart("doSearch");
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
-        String master_code_key = ParamUtil.getString(request, "master_code_key");
-        String code_value = ParamUtil.getString(request,"code_value");
+        String masterCodeKey = ParamUtil.getString(request, "master_code_key");
+        String codeValue = ParamUtil.getString(request,"code_value");
         String[] status = ParamUtil.getStrings(request,"status");
-        if(!StringUtil.isEmpty(master_code_key)){
-            param.addFilter("master_code_key",master_code_key,true);
+        if(!StringUtil.isEmpty(masterCodeKey)){
+            param.addFilter("master_code_key",masterCodeKey,true);
         }
-        if(!StringUtil.isEmpty(code_value)){
-            param.addFilter("code_value",code_value,true);
+        if(!StringUtil.isEmpty(codeValue)){
+            param.addFilter("code_value",codeValue,true);
         }
         if(status != null && status.length>0){
             String statusStr = SqlHelper.constructInCondition("mc.STATUS",status.length);
@@ -137,18 +175,36 @@ public class MasterCodeDelegator {
         }
     }
 
+    /**
+     * AutoStep: doSorting
+     *
+     * @param bpc
+     * @throws
+     */
     public void doSorting(BaseProcessClass bpc){
         logAboutStart("doSorting");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doSorting(searchParam,  bpc.request);
     }
 
+    /**
+     * AutoStep: doPaging
+     *
+     * @param bpc
+     * @throws
+     */
     public void doPaging(BaseProcessClass bpc){
         logAboutStart("doPaging");
         SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
+    /**
+     * AutoStep: doDelete
+     *
+     * @param bpc
+     * @throws
+     */
     public void doDelete(BaseProcessClass bpc){
         logAboutStart("doDelete");
         String id = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
@@ -157,6 +213,12 @@ public class MasterCodeDelegator {
         }
     }
 
+    /**
+     * AutoStep: doCreate
+     *
+     * @param bpc
+     * @throws
+     */
     public void doCreate(BaseProcessClass bpc){
         logAboutStart("doCreate");
         HttpServletRequest request = bpc.request;
@@ -182,6 +244,12 @@ public class MasterCodeDelegator {
         }
     }
 
+    /**
+     * AutoStep: doEdit
+     *
+     * @param bpc
+     * @throws
+     */
     public void doEdit(BaseProcessClass bpc){
         logAboutStart("doEdit");
         HttpServletRequest request = bpc.request;
@@ -214,7 +282,7 @@ public class MasterCodeDelegator {
         String codeValue = ParamUtil.getString(request,"code_value");
         int status = ParamUtil.getInt(request,"status");
         masterCodeDto.setMasterCodeKey(masterCodeKey);
-        masterCodeDto.setMasterCodeKey(rowguid);
+        masterCodeDto.setRowguid(rowguid);
         masterCodeDto.setCodeCategory(codeCategory);
         masterCodeDto.setCodeValue(codeValue);
         masterCodeDto.setStatus(status);
