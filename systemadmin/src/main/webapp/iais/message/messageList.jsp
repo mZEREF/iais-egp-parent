@@ -107,8 +107,8 @@
                             <td>${msgQuery.module}</td>
                             <td>${msgQuery.description}</td>
                             <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:perpareEdit('${msgQuery.id}');"/>
-                                <iais:link icon="form_delete" title="Delete" onclick="javascript:doDelete('${msgQuery.id}');"/>
+                                <iais:link icon="form_edit" title="Edit" onclick="javascript:perpareEdit('${msgQuery.rowguid}');"/>
+                                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.rowguid}');"/>
                             </td>
                         </tr>
                     </c:forEach>
@@ -135,20 +135,16 @@
         SOP.Crud.cfxSubmit("mainForm","changePage");
     }
 
-    function perpareEdit(id){
+    function perpareEdit(rowguid){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "perpareEdit", id);
+            SOP.Crud.cfxSubmit("messageForm", "perpareEdit", rowguid);
         }
     }
 
-    function doDelete(id){
-        if(confirm('are sure you want to delete ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "doDelete", id);
+    function disable(rowguid){
+        if(confirm('are sure you want to disable ? ')){
+            SOP.Crud.cfxSubmit("messageForm", "disableStatus", rowguid);
         }
-    }
-
-    function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","cancel");
     }
 
 </script>

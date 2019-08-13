@@ -36,5 +36,9 @@ public class MessageDtoTest {
         dto.setMsgType(null);
         dto.setDescription(null);
         dto.setStatus(null);
+
+        dto.validateDescriptionRegEx("");
+        dto.validateDescriptionRegEx("asd");
+        dto.validateDescriptionRegEx("&*()");
     }
 }

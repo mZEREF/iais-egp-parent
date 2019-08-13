@@ -100,17 +100,17 @@ public class MessageDelegatorTest {
     }
 
     @Test
-    public void testDoDeleteNotException(){
+    public void testDisableStatus(){
         PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE)).thenReturn("1");
-        messageDelegator.doDelete(bpc);
+        PowerMockito.doReturn(message).when(msgDao).findByRowguid(Mockito.anyString());
+        messageDelegator.disableStatus(bpc);
         Assert.assertTrue(true);
     }
 
     @Test
-    public void testDoDeleteThrowException(){
-        PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE)).thenReturn("assd");
-        PowerMockito.when(msgService.getMessageByMsgId(Mockito.anyInt())).thenThrow(NumberFormatException.class);
-        messageDelegator.doDelete(bpc);
+    public void testDisableStatus2(){
+        PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE)).thenReturn("");
+        messageDelegator.disableStatus(bpc);
         Assert.assertTrue(true);
     }
 
@@ -141,7 +141,7 @@ public class MessageDelegatorTest {
     @Test
     public void testPerpareEditOfSuccess(){
         PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE)).thenReturn("11");
-        PowerMockito.doReturn(message).when(msgDao).findById(Mockito.anyInt());
+        PowerMockito.doReturn(message).when(msgDao).findByRowguid(Mockito.anyString());
         MessageDto messageDto = new MessageDto();
         messageDto.setDomainType("Internet");
         PowerMockito.when(MiscUtil.transferEntityDto(message, MessageDto.class)).thenReturn(messageDto);
@@ -151,8 +151,7 @@ public class MessageDelegatorTest {
 
     @Test
     public void testPerpareEditOfError(){
-        PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE)).thenReturn("abc");
-        PowerMockito.when(msgService.getMessageByMsgId(Mockito.anyInt())).thenThrow(NumberFormatException.class);
+        PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE)).thenReturn("");
         messageDelegator.perpareEdit(bpc);
         Assert.assertTrue(true);
     }

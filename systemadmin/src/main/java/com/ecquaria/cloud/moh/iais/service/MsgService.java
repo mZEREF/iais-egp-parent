@@ -14,9 +14,7 @@ import com.ecquaria.cloud.moh.iais.entity.Message;
 public interface MsgService {
     SearchResult<Message> doSearch(SearchParam param, String catalog, String key);
 
-    void deleteMessageById(Integer id);
-
     void saveMessage(Message msg);
 
-    Message getMessageByMsgId(Integer id);
+    Message getMessageByRowguid(String rowguid);
 }

@@ -57,8 +57,8 @@ public class MessageDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> domainOptionList = new ArrayList<>();
-        domainOptionList.add(new SelectOption("Inter", "Internet"));
-        domainOptionList.add(new SelectOption("Intra", "Intranet"));
+        domainOptionList.add(new SelectOption("INTER", "Internet"));
+        domainOptionList.add(new SelectOption("INTRA", "Intranet"));
         ParamUtil.setRequestAttr(request, "domainTypeSelect", domainOptionList);
 
         List<SelectOption> msgOptionList = new ArrayList<>();
@@ -145,19 +145,16 @@ public class MessageDelegator {
     }
 
     /**
-     * delete message
+     * disable status
      * @param bpc
      */
-    public void doDelete(BaseProcessClass bpc){
+    public void disableStatus(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String msgId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(!StringUtil.isEmpty(msgId)) {
-            try {
-                Integer id = Integer.valueOf(msgId);
-                msgService.deleteMessageById(id);
-            }catch (NumberFormatException e){
-                log.debug(e.getMessage());
-            }
+        String rowguid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(!StringUtil.isEmpty(rowguid)) {
+            Message msg = msgService.getMessageByRowguid(rowguid);
+            msg.setStatus(0);
+            msgService.saveMessage(msg);
         }
     }
 
@@ -210,19 +207,12 @@ public class MessageDelegator {
      */
     public void perpareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String msgId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String rowguid = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         preSelectOption(request);
-        if(!StringUtil.isEmpty(msgId)){
-            try {
-                Integer id = Integer.valueOf(msgId);
-                Message msg = msgService.getMessageByMsgId(id);
-                MessageDto dto = MiscUtil.transferEntityDto(msg, MessageDto.class);
-                dto.setDomainType(dto.getDomainType());
-                ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
-            }catch (NumberFormatException e){
-                log.debug(e.getMessage());
-            }
-
+        if(!StringUtil.isEmpty(rowguid)){
+            Message msg = msgService.getMessageByRowguid(rowguid);
+            MessageDto dto = MiscUtil.transferEntityDto(msg, MessageDto.class);
+            ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
         }
     }
 

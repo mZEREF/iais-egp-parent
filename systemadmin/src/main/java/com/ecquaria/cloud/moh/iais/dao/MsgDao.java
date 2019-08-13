@@ -13,5 +13,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MsgDao extends JpaRepository<Message,Integer> {
-    Message findById(Object msgId);
+
+    Message findByRowguid(String rowguid);
+
+    Message findById(Object id);
 }

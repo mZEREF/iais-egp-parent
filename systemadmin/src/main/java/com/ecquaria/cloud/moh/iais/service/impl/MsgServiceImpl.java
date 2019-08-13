@@ -33,16 +33,12 @@ public class MsgServiceImpl implements MsgService {
     }
 
     @Transactional
-    public void deleteMessageById(Integer id) {
-        msgDao.delete(id);
-    }
-
-    @Transactional
     public void saveMessage(Message msg) {
         msgDao.save(msg);
     }
 
-    public Message getMessageByMsgId(Integer id) {
-        return msgDao.findById(id);
+    public Message getMessageByRowguid(String rowguid) {
+        return msgDao.findByRowguid(rowguid);
     }
+
 }

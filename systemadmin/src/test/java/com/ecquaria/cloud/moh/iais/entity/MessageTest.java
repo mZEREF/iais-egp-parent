@@ -30,6 +30,7 @@ public class MessageTest {
         msg.setDomainType(null);
         msg.setCodeKey(null);
         msg.setMsgType(null);
+        msg.setModule(null);
         msg.setDescription(null);
         msg.setStatus(null);
     }
