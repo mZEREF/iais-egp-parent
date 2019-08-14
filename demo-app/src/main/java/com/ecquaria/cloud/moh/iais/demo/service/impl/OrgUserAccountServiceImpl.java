@@ -14,17 +14,18 @@
 package com.ecquaria.cloud.moh.iais.demo.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
-import com.ecquaria.cloud.moh.iais.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.demo.dao.OrgUserAccountDao;
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
+import sg.gov.moh.iais.common.dto.SearchParam;
+import sg.gov.moh.iais.common.dto.SearchResult;
+import sg.gov.moh.iais.common.querydao.QueryDao;
 
 /**
  * OrgUserAccountServiceImpl
@@ -66,6 +67,6 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     @Override
     @SearchTrack(catalog = "demo", key = "searchDemo")
     public SearchResult<DemoQuery> doQuery(SearchParam param, String catalog, String key) {
-        return demoQueryDao.doQuery(param, catalog, key);
+        return demoQueryDao.doQuery(param);
     }
 }
