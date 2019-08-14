@@ -7,8 +7,8 @@ package com.ecquaria.cloud.moh.iais.service;
  *Describe:
  */
 
-import com.ecquaria.cloud.moh.iais.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.dto.SearchResult;
+import sg.gov.moh.iais.common.dto.SearchParam;
+import sg.gov.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.entity.Message;
 
 public interface MsgService {
