@@ -271,7 +271,7 @@ public class MessageDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, PARAM_MESSAGE_SEARCH);
         if(param == null || isNew){
-            param = new SearchParam(Message.class);
+            param = new SearchParam(Message.class.getName());
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort("msg_id", SearchParam.ASCENDING);

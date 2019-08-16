@@ -17,9 +17,11 @@ import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+import sg.gov.moh.iais.common.constant.AuditTrailConsts;
 import sg.gov.moh.iais.common.dto.SearchParam;
 import sg.gov.moh.iais.common.dto.SearchResult;
 import sg.gov.moh.iais.common.utils.MiscUtil;
+import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sop.iwe.SessionManager;
@@ -85,6 +87,18 @@ public final class IaisEGPHelper extends EGPHelper {
         if(result==null)
             return null;
         return result;
+    }
+
+    public static AuditTrailDto getCurrentAuditTrailDto() {
+        AuditTrailDto dto = null;
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        if (request != null)
+            dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+
+        if (dto == null)
+            dto = AuditTrailDto.getThreadDto();
+
+        return dto;
     }
 
     private static Object callRestApi(String uri, Object entity,Class retrunClass){
