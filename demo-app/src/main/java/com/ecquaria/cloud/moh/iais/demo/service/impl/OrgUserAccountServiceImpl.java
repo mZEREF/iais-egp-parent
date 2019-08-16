@@ -34,17 +34,16 @@ import sg.gov.moh.iais.common.dto.SearchResult;
 public class OrgUserAccountServiceImpl implements OrgUserAccountService {
 
 
-//    @Override
-//    public void deleteOrgUserAccountsById(String id) {
-//        orgUserAccountDao.delete(Integer.parseInt(id));
-//
-//    }
-//
+    @Override
+    public void deleteOrgUserAccountsById(String id) {
+        IaisEGPHelper.doDelete("/api/demo/delete",id);
+    }
+
     @Override
     public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccountDto) {
         IaisEGPHelper.doSave("/api/demo/save",orgUserAccountDto);
     }
-//
+
     @Override
     public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId) {
         return (OrgUserAccountDto)IaisEGPHelper.doGetByRowguId("/api/demo/getByRowguId",rowguId,OrgUserAccountDto.class);

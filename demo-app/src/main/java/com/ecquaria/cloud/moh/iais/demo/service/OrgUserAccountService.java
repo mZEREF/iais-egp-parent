@@ -27,7 +27,7 @@ import sg.gov.moh.iais.common.dto.SearchResult;
  */
 public interface OrgUserAccountService {
 
-// public void deleteOrgUserAccountsById(String id);
+ public void deleteOrgUserAccountsById(String id);
  public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccount);
  public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId);
  public SearchResult<DemoQueryDto> doQuery(SearchParam param);

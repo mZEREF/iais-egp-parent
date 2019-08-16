@@ -165,7 +165,7 @@ public class OrgUserAccountDelegator {
         log.debug(StringUtil.changeForLog("The doDelete start ..."));
         String id = ParamUtil.getString(bpc.request,CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(id)){
-            //orgUserAccountService.deleteOrgUserAccountsById(id);
+            orgUserAccountService.deleteOrgUserAccountsById(id);
         }
         log.debug(StringUtil.changeForLog("The doDelete end ..."));
     }

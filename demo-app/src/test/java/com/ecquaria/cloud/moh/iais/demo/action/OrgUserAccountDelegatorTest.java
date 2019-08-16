@@ -15,7 +15,6 @@ package com.ecquaria.cloud.moh.iais.demo.action;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.demo.service.impl.OrgUserAccountServiceImpl;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -67,7 +66,7 @@ public class OrgUserAccountDelegatorTest {
 //    @Mock
 //    private OrgUserAccountDao orgUserAccountDao;
 
-    private OrgUserAccount orgUserAccount = new OrgUserAccount() ;
+   // private OrgUserAccount orgUserAccount = new OrgUserAccount() ;
 
     @Before
     public void setup(){

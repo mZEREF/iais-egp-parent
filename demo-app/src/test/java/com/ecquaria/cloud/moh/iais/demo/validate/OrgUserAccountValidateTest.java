@@ -16,7 +16,6 @@ package com.ecquaria.cloud.moh.iais.demo.validate;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.demo.action.OrgUserAccountDelegator;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,9 +65,9 @@ public class OrgUserAccountValidateTest {
         orgUserAccountDto.setId(0);
         ParamUtil.setSessionAttr(request,OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
 
-        OrgUserAccount oua = new OrgUserAccount();
-        oua.setId(1);
-       // PowerMockito.when(orgUserAccountDao.findByIdNo(Mockito.anyObject())).thenReturn(oua);
+//        OrgUserAccount oua = new OrgUserAccount();
+//        oua.setId(1);
+//        PowerMockito.when(orgUserAccountDao.findByIdNo(Mockito.anyObject())).thenReturn(oua);
 
         Map<String,String> errorMap = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap);
