@@ -76,11 +76,17 @@ public final class IaisEGPHelper extends EGPHelper {
         return (SearchResult)result;
     }
 
-    public static String doSave(String uri, Object entity){
+    public static boolean doSave(String uri, Object entity){
         Object result = callRestApi(uri,entity,String.class);
         if(result==null)
-            return "";
-        return (String)result;
+            return false;
+        return true;
+    }
+    public static boolean doDelete(String uri, Object entity){
+        Object result = callRestApi(uri,entity,String.class);
+        if(result==null)
+            return false;
+        return true;
     }
     public static Object doGetByRowguId(String uri, Object entity,Class retrunClass){
         Object result = callRestApi(uri,entity,retrunClass);
@@ -110,7 +116,7 @@ public final class IaisEGPHelper extends EGPHelper {
         ResponseEntity<Object> resultResponseEntity =
                 restTemplate.exchange(MiscUtil.getRestApiUrl()+uri, HttpMethod.POST, jsonPart, retrunClass);
         int status =  resultResponseEntity.getStatusCodeValue();
-         if(status == 200){
+        if(status == 200){
             return resultResponseEntity.getBody();
          }
         }else {
