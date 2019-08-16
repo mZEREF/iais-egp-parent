@@ -23,7 +23,6 @@ import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +65,7 @@ public class SqlMap {
         return sql;
     }
 
-    public String getSql(String catalog, String key, Map<String, Serializable> params) throws IOException, TemplateException {
+    public String getSql(String catalog, String key, Map<String, Object> params) throws IOException, TemplateException {
         Sql sql = getSql(catalog, key);
         String sqlStat = sql.getSqlStr();
         if (isDynamicSql(sqlStat)) {

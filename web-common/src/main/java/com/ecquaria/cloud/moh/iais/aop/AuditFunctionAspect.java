@@ -31,7 +31,6 @@ import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sg.gov.moh.iais.web.logging.util.AuditLogUtil;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,10 +102,10 @@ public class AuditFunctionAspect {
             for (Object obj : args) {
                 if (obj instanceof SearchParam) {
                     SearchParam param = (SearchParam) obj;
-                    Map<String, Serializable> filters = param.getFilters();
+                    Map<String, Object> filters = param.getFilters();
                     ObjectMapper mapper = new ObjectMapper();
                     json.put("current_page", param.getPageNo());
-                    for (Map.Entry<String, Serializable> ent : filters.entrySet()) {
+                    for (Map.Entry<String, Object> ent : filters.entrySet()) {
                         json.put(ent.getKey(), ent.getValue());
                     }
                     dto.setViewParams(mapper.writeValueAsString(json));
