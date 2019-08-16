@@ -68,41 +68,35 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static SearchResult doQuery(String uri,SearchParam param){
-        SearchResult searchResult = new SearchResult();
-        if(!StringUtil.isEmpty(uri) && param!=null){
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<SearchParam> jsonPart = new HttpEntity<>(param, headers);
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<SearchResult> resultResponseEntity =
-                    restTemplate.exchange(MiscUtil.getRestApiUrl()+uri, HttpMethod.POST, jsonPart, SearchResult.class);
-            int status =  resultResponseEntity.getStatusCodeValue();
-            if(status == 200){
-                searchResult =  resultResponseEntity.getBody();
-            }
-        }else {
-           log.error("The uri or SearchParam is null...");
-        }
-        return searchResult;
+        Object result = callRestApi(uri,param,SearchResult.class);
+        if(result==null)
+            return new SearchResult();
+        return (SearchResult)result;
     }
 
     public static String doSave(String uri, Object entity){
-        String result = "";
+        Object result = callRestApi(uri,entity,String.class);
+        if(result==null)
+            return "";
+        return (String)result;
+    }
+
+    private static Object callRestApi(String uri, Object entity,Class retrunClass){
         if(!StringUtil.isEmpty(uri) && entity!=null){
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<Object> jsonPart = new HttpEntity<>(entity, headers);
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> resultResponseEntity =
-                    restTemplate.exchange(MiscUtil.getRestApiUrl()+uri, HttpMethod.POST, jsonPart, String.class);
-            int status =  resultResponseEntity.getStatusCodeValue();
-            if(status == 200){
-                 result =  resultResponseEntity.getBody();
-            }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity jsonPart = new HttpEntity<>(entity, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Object> resultResponseEntity =
+                restTemplate.exchange(MiscUtil.getRestApiUrl()+uri, HttpMethod.POST, jsonPart, retrunClass);
+        int status =  resultResponseEntity.getStatusCodeValue();
+         if(status == 200){
+            return resultResponseEntity.getBody();
+         }
         }else {
-            log.error("The uri or SearchParam is null...");
+            log.error("The uri or entity is null...");
         }
-        return result;
+        return null;
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
