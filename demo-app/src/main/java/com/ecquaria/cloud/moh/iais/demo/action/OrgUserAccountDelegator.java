@@ -219,8 +219,8 @@ public class OrgUserAccountDelegator {
                 ParamUtil.setRequestAttr(request,ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,ISVALID,"N");
             }else{
-                OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
-                orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
+               // OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
+                orgUserAccountService.saveOrgUserAccounts(accountDto);
                 ParamUtil.setRequestAttr(request,ISVALID,"Y");
             }
         }else{
@@ -243,12 +243,12 @@ public class OrgUserAccountDelegator {
         if(StringUtil.isEmpty(rowguid)){
             dto = (OrgUserAccountDto)ParamUtil.getSessionAttr(request,ORG_USER_DTO_ATTR);
         }else{
-//            OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
-//            dto = MiscUtil.transferEntityDto(orgUserAccount, OrgUserAccountDto.class);
-//            dto.setEditFlag(true);
-//            dto.setOldNricNo(dto.getNircNo());
+            OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
+            dto = MiscUtil.transferEntityDto(orgUserAccount, OrgUserAccountDto.class);
+            dto.setEditFlag(true);
+            dto.setOldNricNo(dto.getNircNo());
         }
-       // ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, dto);
+        ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, dto);
         ParamUtil.setRequestAttr(request, ORG_USER_ACCOUNT_TILE,"Org Account Edit");
         List statusSelect = new ArrayList<SelectOption>();
         SelectOption sp1 = new SelectOption("pending","Pending");

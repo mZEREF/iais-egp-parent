@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.demo.service.impl;
 
+import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
@@ -41,20 +42,14 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
 //    }
 //
     @Override
-    public void saveOrgUserAccounts(OrgUserAccount orgUserAccount) {
-        IaisEGPHelper.doSave("/api/demo/save",orgUserAccount);
+    public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccountDto) {
+        IaisEGPHelper.doSave("/api/demo/save",orgUserAccountDto);
     }
 //
-//    @Override
-//    public OrgUserAccount getOrgUserAccountByRowguId(String rowguId) {
-//        OrgUserAccount orgUserAccount = new OrgUserAccount();
-//        orgUserAccount.setRowguid(rowguId);
-//        ExampleMatcher exampleMatcher =
-//                ExampleMatcher.matching().withMatcher("rowguid",ExampleMatcher.GenericPropertyMatchers.exact());
-//
-//        Example<OrgUserAccount> example = Example.of(orgUserAccount,exampleMatcher);
-//        return orgUserAccountDao.findOne(example);
-//    }
+    @Override
+    public OrgUserAccount getOrgUserAccountByRowguId(String rowguId) {
+        return (OrgUserAccount)IaisEGPHelper.doGetByRowguId("/api/demo/getByRowguId",rowguId,OrgUserAccount.class);
+    }
 
     @Override
     public SearchResult<DemoQuery> doQuery(SearchParam param) {
