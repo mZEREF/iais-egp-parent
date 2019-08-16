@@ -85,7 +85,7 @@ public class MasterCodeUtilTest {
         list.add(dto);
         sr.setRows(list);
         sr.setRowCount(list.size());
-        when(queryDao.doQuery(anyObject())).thenReturn(sr);
+        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -98,7 +98,7 @@ public class MasterCodeUtilTest {
     public void testRefreshCache() {
         MasterCodeUtil.refreshCache();
         assertNotNull(MasterCodeUtil.retrieveOptionsByCate("1"));
-        when(queryDao.doQuery(anyObject())).thenReturn(null);
+        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(null);
         MasterCodeUtil.refreshCache();
     }
 
@@ -114,7 +114,7 @@ public class MasterCodeUtilTest {
         List<MasterCodeView> list = MasterCodeUtil.retrieveByCategory("1");
         assertNotNull(list);
         SearchResult sr = new SearchResult();
-        when(queryDao.doQuery(anyObject())).thenReturn(sr);
+        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
         MasterCodeUtil.retrieveByCategory("1");
     }
 
@@ -129,7 +129,7 @@ public class MasterCodeUtilTest {
         List<MasterCodeView> list = MasterCodeUtil.retrieveByFilter("E");
         assertNotNull(list);
         SearchResult sr = new SearchResult();
-        when(queryDao.doQuery(anyObject())).thenReturn(sr);
+        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
         MasterCodeUtil.retrieveByFilter("E");
     }
 
@@ -144,7 +144,7 @@ public class MasterCodeUtilTest {
         String desc = MasterCodeUtil.getCodeDesc("E02");
         assertNotNull(desc);
         SearchResult sr = new SearchResult();
-        when(queryDao.doQuery(anyObject())).thenReturn(sr);
+        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
         MasterCodeUtil.getCodeDesc("E02");
     }
 
@@ -154,7 +154,7 @@ public class MasterCodeUtilTest {
         List<SelectOption> list = MasterCodeUtil.retrieveOptionsByCodes(strs);
         assertNotNull(list);
         SearchResult sr = new SearchResult();
-        when(queryDao.doQuery(anyObject())).thenReturn(sr);
+        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
         MasterCodeUtil.retrieveOptionsByCodes(strs);
         MasterCodeUtil.retrieveOptionsByCodes(null);
     }

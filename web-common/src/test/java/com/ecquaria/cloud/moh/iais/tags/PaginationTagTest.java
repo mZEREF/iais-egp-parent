@@ -69,7 +69,7 @@ public class PaginationTagTest {
         tag.setResult(null);
         tag.setJsFunc(null);
         tag.setNeedRowNum(true);
-        SearchParam param = new SearchParam(String.class);
+        SearchParam param = new SearchParam(String.class.getName());
         param.setPageNo(2);
         param.setPageSize(1);
         SearchResult<String> sr = new SearchResult<String>();

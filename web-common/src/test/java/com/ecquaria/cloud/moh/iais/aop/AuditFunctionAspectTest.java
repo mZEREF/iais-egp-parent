@@ -39,7 +39,6 @@ import sg.gov.moh.iais.web.logging.util.AuditLogUtil;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -98,8 +97,8 @@ public class AuditFunctionAspectTest {
         List<AuditTrailDto> adList = new ArrayList<>();
         doNothing().when(AuditLogUtil.class, "callAuditRestApi", adList);
         AopTestUtils.getTargetObject(tft);
-        SearchParam param = new SearchParam(tft.getClass());
-        Map<String, Serializable> filters = param.getFilters();
+        SearchParam param = new SearchParam(tft.getClass().getName());
+        Map<String, Object> filters = param.getFilters();
         filters.put("aaaa", "bbbb");
         tft.searchForSomething(param);
         assertNotNull(tft);

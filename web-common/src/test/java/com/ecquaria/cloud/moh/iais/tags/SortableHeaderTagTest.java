@@ -82,7 +82,7 @@ public class SortableHeaderTagTest {
 
     @Test
     public void testdoStartTagASC() throws JspException {
-        SearchParam param = new SearchParam(String.class);
+        SearchParam param = new SearchParam(String.class.getName());
         param.setPageNo(2);
         param.setPageSize(1);
         param.addSort("field",SearchParam.ASCENDING);
@@ -92,7 +92,7 @@ public class SortableHeaderTagTest {
     }
     @Test
     public void testdoStartTagDESC() throws JspException {
-        SearchParam param = new SearchParam(String.class);
+        SearchParam param = new SearchParam(String.class.getName());
         param.setPageNo(2);
         param.setPageSize(1);
         param.addSort("field",SearchParam.DESCENDING);

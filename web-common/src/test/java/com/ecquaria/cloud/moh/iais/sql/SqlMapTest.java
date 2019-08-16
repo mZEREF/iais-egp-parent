@@ -27,7 +27,6 @@ import sg.gov.moh.iais.common.constant.AppConsts;
 import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +82,7 @@ public class SqlMapTest {
 
     @Test
     public void testGetSqlParam() throws IOException, TemplateException {
-        Map<String, Serializable> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put("nric_no", "dsas");
         String s = sm.getSql(CATA, KEY_D, param);
         assertNotNull(s);
