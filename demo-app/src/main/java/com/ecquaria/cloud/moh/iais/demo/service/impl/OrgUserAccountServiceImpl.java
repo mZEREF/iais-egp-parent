@@ -15,7 +15,6 @@ package com.ecquaria.cloud.moh.iais.demo.service.impl;
 
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
-import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +46,8 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     }
 //
     @Override
-    public OrgUserAccount getOrgUserAccountByRowguId(String rowguId) {
-        return (OrgUserAccount)IaisEGPHelper.doGetByRowguId("/api/demo/getByRowguId",rowguId,OrgUserAccount.class);
+    public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId) {
+        return (OrgUserAccountDto)IaisEGPHelper.doGetByRowguId("/api/demo/getByRowguId",rowguId,OrgUserAccountDto.class);
     }
 
     @Override

@@ -16,7 +16,6 @@ package com.ecquaria.cloud.moh.iais.demo.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
-import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -25,7 +24,6 @@ import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.common.dto.SearchParam;
 import sg.gov.moh.iais.common.dto.SearchResult;
-import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
@@ -219,7 +217,6 @@ public class OrgUserAccountDelegator {
                 ParamUtil.setRequestAttr(request,ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,ISVALID,"N");
             }else{
-               // OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
                 orgUserAccountService.saveOrgUserAccounts(accountDto);
                 ParamUtil.setRequestAttr(request,ISVALID,"Y");
             }
@@ -243,8 +240,7 @@ public class OrgUserAccountDelegator {
         if(StringUtil.isEmpty(rowguid)){
             dto = (OrgUserAccountDto)ParamUtil.getSessionAttr(request,ORG_USER_DTO_ATTR);
         }else{
-            OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
-            dto = MiscUtil.transferEntityDto(orgUserAccount, OrgUserAccountDto.class);
+            dto = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
             dto.setEditFlag(true);
             dto.setOldNricNo(dto.getNircNo());
         }
