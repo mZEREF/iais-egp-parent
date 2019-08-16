@@ -14,8 +14,8 @@
 package com.ecquaria.cloud.moh.iais.aop;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
-import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import sg.gov.moh.iais.common.annotation.LogInfo;
+import sg.gov.moh.iais.common.dto.SearchParam;
 
 /**
  * Class TestFunctionTrack

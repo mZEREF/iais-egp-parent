@@ -13,10 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.initializer;
 
-import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.entity.MessageCode;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +30,8 @@ import org.powermock.core.classloader.annotations.SuppressStaticInitializationFo
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import sg.gov.moh.iais.common.dto.SearchResult;
+import sg.gov.moh.iais.common.querydao.QueryDao;
 
 import javax.servlet.ServletContextEvent;
 import java.util.ArrayList;
@@ -39,7 +39,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 /**
@@ -91,7 +90,7 @@ public class AppInitializerTest {
         sr.setRows(list);
         sr.setRowCount(1);
         doNothing().when(sml, "loadSqlMap");
-        when(queryDao.doQuery(anyObject(), anyString(), anyString())).thenReturn(sr);
+        when(queryDao.doQuery(anyObject())).thenReturn(sr);
         PowerMockito.mockStatic(MasterCodeUtil.class);
         doNothing().when(MasterCodeUtil.class, "refreshCache");
         init.contextInitialized(sce);

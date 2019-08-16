@@ -15,11 +15,11 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeView;
-import com.ecquaria.cloud.moh.iais.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
+import sg.gov.moh.iais.common.dto.SearchParam;
+import sg.gov.moh.iais.common.dto.SearchResult;
+import sg.gov.moh.iais.common.querydao.QueryDao;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
@@ -56,7 +56,7 @@ public final class MasterCodeUtil {
     public static void refreshCache() {
         SearchParam param = new SearchParam(MasterCodeView.class);
         param.setSort(SEQUENCE, SearchParam.ASCENDING);
-        SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
+        SearchResult<MasterCodeView> sr = queryDao.doQuery(param);
         if (sr == null || sr.getRowCount() <= 0)
             return;
 
@@ -155,7 +155,7 @@ public final class MasterCodeUtil {
         if (StringUtil.isEmpty(desc)) {
             SearchParam param = new SearchParam(MasterCodeView.class);
             param.addFilter("codeFilter", code, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param);
             if (sr.getRowCount() > 0) {
                 MasterCodeView mc = sr.getRows().get(0);
                 desc = mc.getCodeValue();
@@ -230,7 +230,7 @@ public final class MasterCodeUtil {
             SearchParam param = new SearchParam(MasterCodeView.class);
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("cateFilter", cateId, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
@@ -251,7 +251,7 @@ public final class MasterCodeUtil {
             SearchParam param = new SearchParam(MasterCodeView.class);
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("filterAttr", filter, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param, WEBCOMMON, RETRIEVE_MASTER_CODES);
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->

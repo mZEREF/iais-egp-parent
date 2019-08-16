@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
-import com.ecquaria.cloud.moh.iais.dto.SearchParam;
 import lombok.extern.slf4j.Slf4j;
+import sg.gov.moh.iais.common.dto.SearchParam;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 

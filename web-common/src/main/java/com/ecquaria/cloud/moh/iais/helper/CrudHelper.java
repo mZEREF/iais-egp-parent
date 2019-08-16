@@ -13,7 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.dto.SearchParam;
+import sg.gov.moh.iais.common.dto.SearchParam;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 
