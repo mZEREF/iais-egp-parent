@@ -13,17 +13,15 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.common.constant.AuditTrailConsts;
 import sg.gov.moh.iais.common.exception.IaisRuntimeException;
-import sg.gov.moh.iais.common.utils.MiscUtil;
-import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.validation.ValidationUtils;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
-import sg.gov.moh.iais.web.logging.util.AuditLogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,10 +98,7 @@ public class WebValidationHelper {
         if (!result.isHasErrors())
             return;
 
-        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(MiscUtil.getCurrentRequest(),
-                AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        if (dto == null)
-            dto = AuditTrailDto.getThreadDto();
+        AuditTrailDto dto = IaisEGPHelper.getCurrentAuditTrailDto();
 
         Map<String, String> errors = result.retrieveAll();
         ObjectMapper mapper = new ObjectMapper();
