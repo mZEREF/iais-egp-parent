@@ -13,8 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.demo.service;
 
+import com.ecquaria.cloud.moh.iais.demo.dto.DemoQueryDto;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
 import sg.gov.moh.iais.common.dto.SearchParam;
 import sg.gov.moh.iais.common.dto.SearchResult;
 
@@ -30,5 +30,5 @@ public interface OrgUserAccountService {
 // public void deleteOrgUserAccountsById(String id);
  public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccount);
  public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId);
- public SearchResult<DemoQuery> doQuery(SearchParam param);
+ public SearchResult<DemoQueryDto> doQuery(SearchParam param);
 }

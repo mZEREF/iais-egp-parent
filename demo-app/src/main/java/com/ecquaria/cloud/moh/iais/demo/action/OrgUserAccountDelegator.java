@@ -14,8 +14,8 @@
 package com.ecquaria.cloud.moh.iais.demo.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.demo.dto.DemoQueryDto;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -298,7 +298,7 @@ public class OrgUserAccountDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, SEARCH_PARAM);
         if(param == null || isNew){
-            param = new SearchParam(DemoQuery.class.getName());
+            param = new SearchParam(DemoQueryDto.class.getName());
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort("user_id", SearchParam.ASCENDING);

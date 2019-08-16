@@ -11,7 +11,7 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.entity;
+package com.ecquaria.cloud.moh.iais.demo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +28,7 @@ import java.io.Serializable;
  * @date 2019/7/19 13:57
  */
 @Entity
-public class DemoQuery implements Serializable {
+public class DemoQueryDto implements Serializable {
     private static final long serialVersionUID = -8254013396556504175L;
 
     @Id

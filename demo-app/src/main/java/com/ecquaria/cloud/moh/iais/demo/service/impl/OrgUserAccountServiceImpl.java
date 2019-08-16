@@ -13,8 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.demo.service.impl;
 
+import com.ecquaria.cloud.moh.iais.demo.dto.DemoQueryDto;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     }
 
     @Override
-    public SearchResult<DemoQuery> doQuery(SearchParam param) {
+    public SearchResult<DemoQueryDto> doQuery(SearchParam param) {
         return IaisEGPHelper.doQuery("/api/demo/query",param);
     }
 }
