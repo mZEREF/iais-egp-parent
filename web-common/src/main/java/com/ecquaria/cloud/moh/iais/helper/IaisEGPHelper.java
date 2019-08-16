@@ -29,6 +29,9 @@ import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
 
@@ -70,26 +73,28 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static SearchResult doQuery(String uri,SearchParam param){
-        Object result = callRestApi(uri,param,SearchResult.class);
+        Object result = callRestApi(uri,param,SearchResult.class,HttpMethod.POST);
         if(result==null)
             return new SearchResult();
         return (SearchResult)result;
     }
 
     public static boolean doSave(String uri, Object entity){
-        Object result = callRestApi(uri,entity,String.class);
+        Object result = callRestApi(uri,entity,String.class,HttpMethod.PUT);
         if(result==null)
             return false;
         return true;
     }
     public static boolean doDelete(String uri, Object entity){
-        Object result = callRestApi(uri,entity,String.class);
+        Map map = new HashMap<>();
+        map.put("id",entity);
+        Object result = callRestApi(uri,map,String.class,HttpMethod.DELETE);
         if(result==null)
             return false;
         return true;
     }
     public static Object doGetByRowguId(String uri, Object entity,Class retrunClass){
-        Object result = callRestApi(uri,entity,retrunClass);
+        Object result = callRestApi(uri,entity,retrunClass,HttpMethod.POST);
         if(result==null)
             return null;
         return result;
@@ -107,14 +112,14 @@ public final class IaisEGPHelper extends EGPHelper {
         return dto;
     }
 
-    private static Object callRestApi(String uri, Object entity,Class retrunClass){
+    private static Object callRestApi(String uri, Object entity,Class retrunClass,HttpMethod requestType){
         if(!StringUtil.isEmpty(uri) && entity!=null){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity jsonPart = new HttpEntity<>(entity, headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Object> resultResponseEntity =
-                restTemplate.exchange(MiscUtil.getRestApiUrl()+uri, HttpMethod.POST, jsonPart, retrunClass);
+                restTemplate.exchange(MiscUtil.getRestApiUrl()+uri, requestType, jsonPart, retrunClass);
         int status =  resultResponseEntity.getStatusCodeValue();
         if(status == 200){
             return resultResponseEntity.getBody();

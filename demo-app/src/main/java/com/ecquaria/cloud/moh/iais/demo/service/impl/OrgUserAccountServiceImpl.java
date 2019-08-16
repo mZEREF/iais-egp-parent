@@ -32,25 +32,23 @@ import sg.gov.moh.iais.common.dto.SearchResult;
 @Service
 @Slf4j
 public class OrgUserAccountServiceImpl implements OrgUserAccountService {
-
-
     @Override
     public void deleteOrgUserAccountsById(String id) {
-        IaisEGPHelper.doDelete("/api/demo/delete",id);
+        IaisEGPHelper.doDelete("/api/orgUserAccount/orgUserAccount",id);
     }
 
     @Override
     public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccountDto) {
-        IaisEGPHelper.doSave("/api/demo/save",orgUserAccountDto);
+        IaisEGPHelper.doSave("/api/orgUserAccount/orgUserAccount",orgUserAccountDto);
     }
 
     @Override
     public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId) {
-        return (OrgUserAccountDto)IaisEGPHelper.doGetByRowguId("/api/demo/getByRowguId",rowguId,OrgUserAccountDto.class);
+        return (OrgUserAccountDto)IaisEGPHelper.doGetByRowguId("/api/orgUserAccount/orgUserAccount",rowguId,OrgUserAccountDto.class);
     }
 
     @Override
     public SearchResult<DemoQueryDto> doQuery(SearchParam param) {
-        return IaisEGPHelper.doQuery("/api/demo/query",param);
+        return IaisEGPHelper.doQuery("/api/orgUserAccount/demoQuerys",param);
     }
 }
