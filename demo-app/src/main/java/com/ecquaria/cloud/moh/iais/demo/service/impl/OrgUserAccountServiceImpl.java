@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.demo.service.impl;
 
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
+import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -32,19 +33,17 @@ import sg.gov.moh.iais.common.dto.SearchResult;
 @Slf4j
 public class OrgUserAccountServiceImpl implements OrgUserAccountService {
 
-//    @Autowired
-//    private OrgUserAccountDao orgUserAccountDao;
-//
+
 //    @Override
 //    public void deleteOrgUserAccountsById(String id) {
 //        orgUserAccountDao.delete(Integer.parseInt(id));
 //
 //    }
 //
-//    @Override
-//    public void saveOrgUserAccounts(OrgUserAccount orgUserAccount) {
-//        orgUserAccountDao.save(orgUserAccount);
-//    }
+    @Override
+    public void saveOrgUserAccounts(OrgUserAccount orgUserAccount) {
+        IaisEGPHelper.doSave("/api/demo/save",orgUserAccount);
+    }
 //
 //    @Override
 //    public OrgUserAccount getOrgUserAccountByRowguId(String rowguId) {

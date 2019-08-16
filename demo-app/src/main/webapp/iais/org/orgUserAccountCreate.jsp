@@ -94,7 +94,7 @@
         <iais:row>
             <iais:field value="Test" required="true"></iais:field>
             <iais:value width="7">
-                <iais:select name="test" codeCategory="CATE_ID_NATIONALITY"/>
+
             </iais:value>
         </iais:row>
         <iais:action>
@@ -109,10 +109,7 @@
             </c:choose>
         </iais:action>
     </iais:section>
-
 </iais:body>
-
-
 </form>
 
 <script type="text/javascript">

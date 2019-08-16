@@ -16,6 +16,7 @@ package com.ecquaria.cloud.moh.iais.demo.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
+import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -24,6 +25,7 @@ import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.common.dto.SearchParam;
 import sg.gov.moh.iais.common.dto.SearchResult;
+import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
@@ -83,7 +85,7 @@ public class OrgUserAccountDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc);
         param.addFilter("ORGANIZATION_ID","1",true);
-        ParamUtil.setRequestAttr(request,"ORGANIZATION_ID", 0);
+        ParamUtil.setRequestAttr(request,"ORGANIZATION_ID", 1);
         QueryHelp.setMainSql("demo", "searchDemo",param);
         SearchResult searchResult = orgUserAccountService.doQuery(param);
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
@@ -217,8 +219,8 @@ public class OrgUserAccountDelegator {
                 ParamUtil.setRequestAttr(request,ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,ISVALID,"N");
             }else{
-               // OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
-              //  orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
+                OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
+                orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
                 ParamUtil.setRequestAttr(request,ISVALID,"Y");
             }
         }else{

@@ -69,7 +69,7 @@ public final class IaisEGPHelper extends EGPHelper {
 
     public static SearchResult doQuery(String uri,SearchParam param){
         SearchResult searchResult = new SearchResult();
-        if(!StringUtil.isEmpty(uri)&&param!=null){
+        if(!StringUtil.isEmpty(uri) && param!=null){
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<SearchParam> jsonPart = new HttpEntity<>(param, headers);
@@ -84,6 +84,25 @@ public final class IaisEGPHelper extends EGPHelper {
            log.error("The uri or SearchParam is null...");
         }
         return searchResult;
+    }
+
+    public static String doSave(String uri, Object entity){
+        String result = "";
+        if(!StringUtil.isEmpty(uri) && entity!=null){
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Object> jsonPart = new HttpEntity<>(entity, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> resultResponseEntity =
+                    restTemplate.exchange(MiscUtil.getRestApiUrl()+uri, HttpMethod.POST, jsonPart, String.class);
+            int status =  resultResponseEntity.getStatusCodeValue();
+            if(status == 200){
+                 result =  resultResponseEntity.getBody();
+            }
+        }else {
+            log.error("The uri or SearchParam is null...");
+        }
+        return result;
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
