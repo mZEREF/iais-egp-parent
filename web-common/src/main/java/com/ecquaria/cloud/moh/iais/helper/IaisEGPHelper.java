@@ -68,7 +68,6 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static SearchResult doQuery(String uri,SearchParam param){
-        String url = MiscUtil.getRestApiUrl();
         SearchResult searchResult = new SearchResult();
         if(!StringUtil.isEmpty(uri)&&param!=null){
             HttpHeaders headers = new HttpHeaders();
@@ -86,5 +85,6 @@ public final class IaisEGPHelper extends EGPHelper {
         }
         return searchResult;
     }
+
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
 }
