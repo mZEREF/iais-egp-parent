@@ -54,9 +54,9 @@ public final class MasterCodeUtil {
      * @return: void
      */
     public static void refreshCache() {
-        SearchParam param = new SearchParam(MasterCodeView.class);
+        SearchParam param = new SearchParam(MasterCodeView.class.getName());
         param.setSort(SEQUENCE, SearchParam.ASCENDING);
-        SearchResult<MasterCodeView> sr = queryDao.doQuery(param);
+        SearchResult<MasterCodeView> sr = queryDao.doQuery(param,null);
         if (sr == null || sr.getRowCount() <= 0)
             return;
 
@@ -153,9 +153,9 @@ public final class MasterCodeUtil {
     public static String getCodeDesc(String code) {
         String desc = RedisCacheHelper.getInstance().get(CACHE_NAME_CODE, code);
         if (StringUtil.isEmpty(desc)) {
-            SearchParam param = new SearchParam(MasterCodeView.class);
+            SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.addFilter("codeFilter", code, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param);
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param,null);
             if (sr.getRowCount() > 0) {
                 MasterCodeView mc = sr.getRows().get(0);
                 desc = mc.getCodeValue();
@@ -227,10 +227,10 @@ public final class MasterCodeUtil {
     private static List<MasterCodeView> retrieveCateSource(String cateId) {
         List<MasterCodeView> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cateId);
         if (list == null) {
-            SearchParam param = new SearchParam(MasterCodeView.class);
+            SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("cateFilter", cateId, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param);
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param,null);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
@@ -248,10 +248,10 @@ public final class MasterCodeUtil {
     private static List<MasterCodeView> retrieveFilterSource(String filter) {
         List<MasterCodeView> list = RedisCacheHelper.getInstance().get(CACHE_NAME_FILTER, filter);
         if (list == null) {
-            SearchParam param = new SearchParam(MasterCodeView.class);
+            SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("filterAttr", filter, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param);
+            SearchResult<MasterCodeView> sr = queryDao.doQuery(param,null);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
