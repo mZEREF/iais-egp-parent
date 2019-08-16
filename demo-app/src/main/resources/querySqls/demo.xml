@@ -15,7 +15,13 @@
 <sqls catalog="demo">
     <sql key="searchDemo" remarks="search for demo">
         <![CDATA[
-          select account.NRIC_NO, org.UEN_NO, account.ID user_id,account.ROWGUID,account.ORGANIZATION_ID, account.STATUS
+          select
+            account.NRIC_NO,
+            org.UEN_NO,
+            account.ID user_id,
+            account.ROWGUID,
+            account.ORGANIZATION_ID,
+            account.STATUS
           from ORG_USER_ACCOUNT as account left join ORGANIZATION as org on account.ORGANIZATION_ID = org.id
           where 1 = 1
           <#if nric_no??> AND CHARINDEX(:nric_no, account.nric_no) > 0</#if>
