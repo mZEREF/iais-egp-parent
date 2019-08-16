@@ -1,11 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.dao.MasterCodeRepository;
-import com.ecquaria.cloud.moh.iais.dto.MasterCodeQuery;
-import com.ecquaria.cloud.moh.iais.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.entity.MasterCode;
-import com.ecquaria.cloud.moh.iais.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.service.impl.MasterCodeServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,9 +23,6 @@ public class MasterCodeServiceImplTest {
     @Mock
     private MasterCodeRepository masterCodeRepository;
 
-    @Mock
-    private QueryDao<MasterCodeQuery> queryQueryDao;
-
     @Test
     public void testSaveMasterCode(){
         MasterCode masterCode = new MasterCode();
@@ -50,14 +43,5 @@ public class MasterCodeServiceImplTest {
         Mockito.doReturn(masterCode).when(masterCodeRepository).findMasterCodeByRowguid("ax");
         masterCode = masterCodeServiceImpl.findMasterCodeByRowguid("ax");
         Assert.assertNotNull(masterCode);
-    }
-
-    @Test
-    public void testDoQuery(){
-        SearchResult<MasterCodeQuery> masterCodeQuerySearchResult = new SearchResult<>();
-        SearchParam searchParam = new SearchParam(MasterCodeQuery.class);
-        Mockito.doReturn(masterCodeQuerySearchResult).when(queryQueryDao).doQuery(searchParam,"","");
-        masterCodeQuerySearchResult = masterCodeServiceImpl.doQuery(searchParam,"","");
-        Assert.assertNotNull(masterCodeQuerySearchResult);
     }
 }
