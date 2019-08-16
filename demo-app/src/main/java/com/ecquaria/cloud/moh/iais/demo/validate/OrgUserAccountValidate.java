@@ -13,11 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.demo.validate;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.demo.action.OrgUserAccountDelegator;
-import com.ecquaria.cloud.moh.iais.demo.dao.OrgUserAccountDao;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -42,15 +39,15 @@ public class OrgUserAccountValidate implements CustomizeValidator {
         if (dto == null || StringUtil.isEmpty(dto.getNircNo()))
             return errMap;
 
-        OrgUserAccount oua = getOrgUserAccountDao().findByIdNo(dto.getNircNo());
-        if (oua != null && !oua.getId().equals(dto.getId())) {
-            errMap.put("nircNo", "Duplicate NRIC No.");
-        }
+//        OrgUserAccount oua = getOrgUserAccountDao().findByIdNo(dto.getNircNo());
+//        if (oua != null && !oua.getId().equals(dto.getId())) {
+//            errMap.put("nircNo", "Duplicate NRIC No.");
+//        }
 
         return errMap;
     }
 
-    private  OrgUserAccountDao getOrgUserAccountDao(){
-        return SpringContextHelper.getContext().getBean(OrgUserAccountDao.class);
-    }
+//    private  OrgUserAccountDao getOrgUserAccountDao(){
+//        return SpringContextHelper.getContext().getBean(OrgUserAccountDao.class);
+//    }
 }

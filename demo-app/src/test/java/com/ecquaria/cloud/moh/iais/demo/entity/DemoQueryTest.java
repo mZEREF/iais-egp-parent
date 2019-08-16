@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import sg.gov.moh.iais.common.entity.DemoQuery;
 
 import static org.junit.Assert.assertNotNull;
 

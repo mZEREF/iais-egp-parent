@@ -13,8 +13,6 @@
 
 package com.ecquaria.cloud.moh.iais.demo.service;
 
-import com.ecquaria.cloud.moh.iais.demo.entity.Organization;
-
 /**
  * OrganizationService
  *
@@ -22,5 +20,5 @@ import com.ecquaria.cloud.moh.iais.demo.entity.Organization;
  * @date 7/12/2019
  */
 public interface OrganizationService {
-    public Organization getOrganizationByUenNo(String uenNo);
+   // public Organization getOrganizationByUenNo(String uenNo);
 }

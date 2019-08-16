@@ -16,19 +16,14 @@ package com.ecquaria.cloud.moh.iais.demo.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
-import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
-import sg.gov.moh.iais.common.dto.SearchParam;
-import sg.gov.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import sg.gov.moh.iais.common.utils.MiscUtil;
+import sg.gov.moh.iais.common.dto.SearchParam;
+import sg.gov.moh.iais.common.dto.SearchResult;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.common.validation.dto.ValidationResult;
@@ -87,9 +82,10 @@ public class OrgUserAccountDelegator {
         log.debug(StringUtil.changeForLog("The prepareData start ..."));
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc);
-        param.addFilter("ORGANIZATION_ID","0",true);
+        param.addFilter("ORGANIZATION_ID","1",true);
         ParamUtil.setRequestAttr(request,"ORGANIZATION_ID", 0);
-        SearchResult searchResult = orgUserAccountService.doQuery(param, "demo", "searchDemo");
+        QueryHelp.setMainSql("demo", "searchDemo",param);
+        SearchResult searchResult = orgUserAccountService.doQuery(param);
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
         ParamUtil.setRequestAttr(request, SEARCH_RESULT, searchResult);
         log.debug(StringUtil.changeForLog("The prepareData end ..."));
@@ -169,7 +165,7 @@ public class OrgUserAccountDelegator {
         log.debug(StringUtil.changeForLog("The doDelete start ..."));
         String id = ParamUtil.getString(bpc.request,CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(id)){
-            orgUserAccountService.deleteOrgUserAccountsById(id);
+            //orgUserAccountService.deleteOrgUserAccountsById(id);
         }
         log.debug(StringUtil.changeForLog("The doDelete end ..."));
     }
@@ -221,8 +217,8 @@ public class OrgUserAccountDelegator {
                 ParamUtil.setRequestAttr(request,ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,ISVALID,"N");
             }else{
-                OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
-                orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
+               // OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
+              //  orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
                 ParamUtil.setRequestAttr(request,ISVALID,"Y");
             }
         }else{
@@ -245,12 +241,12 @@ public class OrgUserAccountDelegator {
         if(StringUtil.isEmpty(rowguid)){
             dto = (OrgUserAccountDto)ParamUtil.getSessionAttr(request,ORG_USER_DTO_ATTR);
         }else{
-            OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
-            dto = MiscUtil.transferEntityDto(orgUserAccount, OrgUserAccountDto.class);
-            dto.setEditFlag(true);
-            dto.setOldNricNo(dto.getNircNo());
+//            OrgUserAccount orgUserAccount = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
+//            dto = MiscUtil.transferEntityDto(orgUserAccount, OrgUserAccountDto.class);
+//            dto.setEditFlag(true);
+//            dto.setOldNricNo(dto.getNircNo());
         }
-        ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, dto);
+       // ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, dto);
         ParamUtil.setRequestAttr(request, ORG_USER_ACCOUNT_TILE,"Org Account Edit");
         List statusSelect = new ArrayList<SelectOption>();
         SelectOption sp1 = new SelectOption("pending","Pending");
@@ -282,8 +278,8 @@ public class OrgUserAccountDelegator {
             }else{
                 Map<String,String> successMap = new HashMap<>();
                 successMap.put("test","suceess");
-                OrgUserAccount orgUserAccount1 = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
-                orgUserAccountService.saveOrgUserAccounts(orgUserAccount1);
+//                OrgUserAccount orgUserAccount1 = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
+//                orgUserAccountService.saveOrgUserAccounts(orgUserAccount1);
                 ParamUtil.setRequestAttr(request,ISVALID,"Y");
                 ParamUtil.setRequestAttr(request,"successMap",successMap);
             }
@@ -304,7 +300,7 @@ public class OrgUserAccountDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, SEARCH_PARAM);
         if(param == null || isNew){
-            param = new SearchParam(DemoQuery.class);
+            param = new SearchParam(DemoQuery.class.getName());
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort("user_id", SearchParam.ASCENDING);

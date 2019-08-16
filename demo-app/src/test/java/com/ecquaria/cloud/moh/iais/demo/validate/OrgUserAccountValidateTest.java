@@ -15,14 +15,11 @@ package com.ecquaria.cloud.moh.iais.demo.validate;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.demo.action.OrgUserAccountDelegator;
-import com.ecquaria.cloud.moh.iais.demo.dao.OrgUserAccountDao;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
@@ -36,7 +33,6 @@ import sop.util.Assert;
 
 import java.util.Map;
 
-import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -52,15 +48,15 @@ public class OrgUserAccountValidateTest {
     @Spy
     private OrgUserAccountValidate orgUserAccountValidate = new OrgUserAccountValidate();
     private MockHttpServletRequest request = new MockHttpServletRequest();
-    @Mock
-    private OrgUserAccountDao orgUserAccountDao ;
+//    @Mock
+//    private OrgUserAccountDao orgUserAccountDao ;
 
     @Before
     public void setup(){
         PowerMockito.mockStatic(SpringContextHelper.class);
         ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
         when(SpringContextHelper.getContext()).thenReturn(context);
-        doReturn(orgUserAccountDao).when(context).getBean(OrgUserAccountDao.class);
+       // doReturn(orgUserAccountDao).when(context).getBean(OrgUserAccountDao.class);
     }
 
     @Test
@@ -72,7 +68,7 @@ public class OrgUserAccountValidateTest {
 
         OrgUserAccount oua = new OrgUserAccount();
         oua.setId(1);
-        PowerMockito.when(orgUserAccountDao.findByIdNo(Mockito.anyObject())).thenReturn(oua);
+       // PowerMockito.when(orgUserAccountDao.findByIdNo(Mockito.anyObject())).thenReturn(oua);
 
         Map<String,String> errorMap = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap);

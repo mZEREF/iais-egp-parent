@@ -13,19 +13,15 @@
 
 package com.ecquaria.cloud.moh.iais.demo.service.impl;
 
-import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
-import com.ecquaria.cloud.moh.iais.demo.dao.OrgUserAccountDao;
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
-import com.ecquaria.cloud.moh.iais.demo.entity.OrgUserAccount;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import sg.gov.moh.iais.common.dto.SearchParam;
 import sg.gov.moh.iais.common.dto.SearchResult;
-import sg.gov.moh.iais.common.querydao.QueryDao;
+
 
 /**
  * OrgUserAccountServiceImpl
@@ -37,36 +33,44 @@ import sg.gov.moh.iais.common.querydao.QueryDao;
 @Slf4j
 public class OrgUserAccountServiceImpl implements OrgUserAccountService {
 
-    @Autowired
-    private OrgUserAccountDao orgUserAccountDao;
-    @Autowired
-    private QueryDao<DemoQuery> demoQueryDao;
+//    @Autowired
+//    private OrgUserAccountDao orgUserAccountDao;
+//
+//    @Override
+//    public void deleteOrgUserAccountsById(String id) {
+//        orgUserAccountDao.delete(Integer.parseInt(id));
+//
+//    }
+//
+//    @Override
+//    public void saveOrgUserAccounts(OrgUserAccount orgUserAccount) {
+//        orgUserAccountDao.save(orgUserAccount);
+//    }
+//
+//    @Override
+//    public OrgUserAccount getOrgUserAccountByRowguId(String rowguId) {
+//        OrgUserAccount orgUserAccount = new OrgUserAccount();
+//        orgUserAccount.setRowguid(rowguId);
+//        ExampleMatcher exampleMatcher =
+//                ExampleMatcher.matching().withMatcher("rowguid",ExampleMatcher.GenericPropertyMatchers.exact());
+//
+//        Example<OrgUserAccount> example = Example.of(orgUserAccount,exampleMatcher);
+//        return orgUserAccountDao.findOne(example);
+//    }
 
     @Override
-    public void deleteOrgUserAccountsById(String id) {
-        orgUserAccountDao.delete(Integer.parseInt(id));
-
-    }
-
-    @Override
-    public void saveOrgUserAccounts(OrgUserAccount orgUserAccount) {
-        orgUserAccountDao.save(orgUserAccount);
-    }
-
-    @Override
-    public OrgUserAccount getOrgUserAccountByRowguId(String rowguId) {
-        OrgUserAccount orgUserAccount = new OrgUserAccount();
-        orgUserAccount.setRowguid(rowguId);
-        ExampleMatcher exampleMatcher =
-                ExampleMatcher.matching().withMatcher("rowguid",ExampleMatcher.GenericPropertyMatchers.exact());
-
-        Example<OrgUserAccount> example = Example.of(orgUserAccount,exampleMatcher);
-        return orgUserAccountDao.findOne(example);
-    }
-
-    @Override
-    @SearchTrack(catalog = "demo", key = "searchDemo")
-    public SearchResult<DemoQuery> doQuery(SearchParam param, String catalog, String key) {
-        return demoQueryDao.doQuery(param);
+    public SearchResult<DemoQuery> doQuery(SearchParam param) {
+        SearchResult<DemoQuery> searchResult = new SearchResult();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<SearchParam> jsonPart = new HttpEntity<>(param, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<SearchResult> resultResponseEntity =
+                restTemplate.exchange("http://localhost:8886/api/demo/query", HttpMethod.POST, jsonPart, SearchResult.class);
+        int status =  resultResponseEntity.getStatusCodeValue();
+        if(status == 200){
+            searchResult =  resultResponseEntity.getBody();
+        }
+        return searchResult;
     }
 }

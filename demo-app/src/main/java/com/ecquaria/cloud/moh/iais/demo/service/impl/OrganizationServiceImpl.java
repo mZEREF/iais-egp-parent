@@ -13,12 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.demo.service.impl;
 
-import com.ecquaria.cloud.moh.iais.demo.dao.OrganizationDao;
-import com.ecquaria.cloud.moh.iais.demo.entity.Organization;
 import com.ecquaria.cloud.moh.iais.demo.service.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,16 +27,16 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class OrganizationServiceImpl implements OrganizationService {
 
-    @Autowired
-    private OrganizationDao organizationDao;
-
-    @Override
-    public Organization getOrganizationByUenNo(String uenNo) {
-        Organization organization = new Organization();
-        organization.setUenNo(uenNo);
-        Example<Organization> example = Example.of(organization);
-        return organizationDao.findOne(example);
-    }
+//    @Autowired
+//    private OrganizationDao organizationDao;
+//
+//    @Override
+//    public Organization getOrganizationByUenNo(String uenNo) {
+//        Organization organization = new Organization();
+//        organization.setUenNo(uenNo);
+//        Example<Organization> example = Example.of(organization);
+//        return organizationDao.findOne(example);
+//    }
 
 
 }
