@@ -15,10 +15,9 @@ package com.ecquaria.cloud.moh.iais.demo.service.impl;
 
 import com.ecquaria.cloud.moh.iais.demo.entity.DemoQuery;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import sg.gov.moh.iais.common.dto.SearchParam;
 import sg.gov.moh.iais.common.dto.SearchResult;
 
@@ -60,17 +59,6 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
 
     @Override
     public SearchResult<DemoQuery> doQuery(SearchParam param) {
-        SearchResult<DemoQuery> searchResult = new SearchResult();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<SearchParam> jsonPart = new HttpEntity<>(param, headers);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<SearchResult> resultResponseEntity =
-                restTemplate.exchange("http://localhost:8886/api/demo/query", HttpMethod.POST, jsonPart, SearchResult.class);
-        int status =  resultResponseEntity.getStatusCodeValue();
-        if(status == 200){
-            searchResult =  resultResponseEntity.getBody();
-        }
-        return searchResult;
+        return IaisEGPHelper.doQuery("/api/demo/query",param);
     }
 }

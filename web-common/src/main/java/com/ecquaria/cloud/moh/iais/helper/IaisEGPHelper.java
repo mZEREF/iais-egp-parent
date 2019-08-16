@@ -14,14 +14,20 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.egp.api.EGPHelper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+import sg.gov.moh.iais.common.dto.SearchParam;
+import sg.gov.moh.iais.common.dto.SearchResult;
 import sg.gov.moh.iais.common.utils.MiscUtil;
+import sg.gov.moh.iais.common.utils.StringUtil;
 import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
+@Slf4j
 public final class IaisEGPHelper extends EGPHelper {
 
     /**
@@ -61,5 +67,24 @@ public final class IaisEGPHelper extends EGPHelper {
         return path;
     }
 
+    public static SearchResult doQuery(String uri,SearchParam param){
+        String url = MiscUtil.getRestApiUrl();
+        SearchResult searchResult = new SearchResult();
+        if(!StringUtil.isEmpty(uri)&&param!=null){
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<SearchParam> jsonPart = new HttpEntity<>(param, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<SearchResult> resultResponseEntity =
+                    restTemplate.exchange(MiscUtil.getRestApiUrl()+uri, HttpMethod.POST, jsonPart, SearchResult.class);
+            int status =  resultResponseEntity.getStatusCodeValue();
+            if(status == 200){
+                searchResult =  resultResponseEntity.getBody();
+            }
+        }else {
+           log.error("The uri or SearchParam is null...");
+        }
+        return searchResult;
+    }
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
 }
