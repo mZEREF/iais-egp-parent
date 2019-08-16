@@ -16,9 +16,10 @@ public class MasterCodeValidate implements CustomizeValidator {
         Map<String, String> errMap = new HashMap<>();
         MasterCodeDto dto = (MasterCodeDto) ParamUtil.getRequestAttr(httpServletRequest,
                 MasterCodeDelegator.MASTERCODE_USER_DTO_ATTR);
-        if (dto == null )
+        if (dto == null ) {
             return errMap;
-        if (dto != null && !StringUtil.isEmpty(dto.getMasterCodeId())) {
+        }
+        if (!StringUtil.isEmpty(dto.getMasterCodeId())) {
             errMap.put("masterCodeId", "Duplicate MasterCode");
             return errMap;
         }

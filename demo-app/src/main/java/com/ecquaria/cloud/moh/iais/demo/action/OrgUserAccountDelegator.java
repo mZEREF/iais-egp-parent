@@ -282,8 +282,8 @@ public class OrgUserAccountDelegator {
             }else{
                 Map<String,String> successMap = new HashMap<>();
                 successMap.put("test","suceess");
-                OrgUserAccount orgUserAccount1 = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
-                orgUserAccountService.saveOrgUserAccounts(orgUserAccount1);
+                OrgUserAccount orgUserAccount = MiscUtil.transferEntityDto(accountDto,OrgUserAccount.class);
+                orgUserAccountService.saveOrgUserAccounts(orgUserAccount);
                 ParamUtil.setRequestAttr(request,ISVALID,"Y");
                 ParamUtil.setRequestAttr(request,"successMap",successMap);
             }

@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 @Entity
 public class MasterCodeQuery implements Serializable {
+
     private static final long serialVersionUID = -8560512906902335303L;
 
     @Id

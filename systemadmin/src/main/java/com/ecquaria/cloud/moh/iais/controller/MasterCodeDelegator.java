@@ -40,6 +40,7 @@ public class MasterCodeDelegator {
     public static final String MASTERCODE_USER_DTO_ATTR            = "MasterCodeDto";
 
     public static final String MASTERCODE_ID                       = "master_code_id";
+    public static final String MASTERCODE_KEY                      = "master_code_key";
 
 
     @Autowired
@@ -101,7 +102,6 @@ public class MasterCodeDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc){
         logAboutStart("prepareSwitch");
-        String  action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
     }
 
     /**
@@ -157,11 +157,11 @@ public class MasterCodeDelegator {
         logAboutStart("doSearch");
         HttpServletRequest request = bpc.request;
         SearchParam param = getSearchParam(bpc,true);
-        String masterCodeKey = ParamUtil.getString(request, "master_code_key");
+        String masterCodeKey = ParamUtil.getString(request, MASTERCODE_KEY);
         String codeValue = ParamUtil.getString(request,"code_value");
         String[] status = ParamUtil.getStrings(request,"status");
         if(!StringUtil.isEmpty(masterCodeKey)){
-            param.addFilter("master_code_key",masterCodeKey,true);
+            param.addFilter(MASTERCODE_KEY,masterCodeKey,true);
         }
         if(!StringUtil.isEmpty(codeValue)){
             param.addFilter("code_value",codeValue,true);
@@ -276,7 +276,7 @@ public class MasterCodeDelegator {
     }
 
     private void getValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request){
-        String masterCodeKey = ParamUtil.getString(request,"master_code_key");
+        String masterCodeKey = ParamUtil.getString(request,MASTERCODE_KEY);
         String rowguid = ParamUtil.getString(request,"rowguid");
         int codeCategory = ParamUtil.getInt(request,"code_category");
         String codeValue = ParamUtil.getString(request,"code_value");

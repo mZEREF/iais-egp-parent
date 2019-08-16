@@ -11,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * @author hc
  */
@@ -40,29 +38,10 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
-    public List<MasterCode> getMasterCodeList() {
-        List<MasterCode> masterCodeList ;
-        masterCodeList = masterCodeRepository.findAll();
-        return masterCodeList;
-    }
-    @Override
-    public List<MasterCode> findMasterCodeById(int id) {
-        List<MasterCode> masterCodeList;
-        masterCodeList = masterCodeRepository.findMasterCodeByMasterCodeId(id);
-        return masterCodeList;
-    }
-
-    @Override
     public MasterCode findMasterCodeByRowguid(String rowguid) {
         return masterCodeRepository.findMasterCodeByRowguid(rowguid);
     }
-
-    @Override
-    public MasterCode updateMasterCode(MasterCode mc) {
-        masterCodeRepository.save(mc);
-        return mc;
-    }
-
+    
     @Override
     public SearchResult<MasterCodeQuery> doQuery(SearchParam param, String catalog, String key) {
         return mastercodeQueryDao.doQuery(param, catalog, key);
