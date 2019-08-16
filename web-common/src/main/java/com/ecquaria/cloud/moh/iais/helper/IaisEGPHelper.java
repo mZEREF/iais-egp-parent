@@ -80,6 +80,12 @@ public final class IaisEGPHelper extends EGPHelper {
             return "";
         return (String)result;
     }
+    public static Object doGetByRowguId(String uri, Object entity,Class retrunClass){
+        Object result = callRestApi(uri,entity,retrunClass);
+        if(result==null)
+            return null;
+        return result;
+    }
 
     private static Object callRestApi(String uri, Object entity,Class retrunClass){
         if(!StringUtil.isEmpty(uri) && entity!=null){
