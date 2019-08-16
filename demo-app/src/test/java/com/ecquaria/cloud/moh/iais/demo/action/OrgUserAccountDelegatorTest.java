@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.demo.action;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.demo.dto.DemoQueryDto;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.demo.service.impl.OrgUserAccountServiceImpl;
@@ -33,7 +34,6 @@ import org.powermock.reflect.Whitebox;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sg.gov.moh.iais.common.dto.SearchResult;
-import sg.gov.moh.iais.common.entity.DemoQuery;
 import sg.gov.moh.iais.common.querydao.QueryDao;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
@@ -62,7 +62,7 @@ public class OrgUserAccountDelegatorTest {
     private MockHttpServletRequest request = new MockHttpServletRequest();
 
     @Mock
-    private QueryDao<DemoQuery> demoQueryDao;
+    private QueryDao<DemoQueryDto> demoQueryDao;
 //    @Mock
 //    private OrgUserAccountDao orgUserAccountDao;
 
