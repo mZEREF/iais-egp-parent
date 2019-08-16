@@ -74,7 +74,6 @@ public final class TestDelegator {
 //                columnNames.add(resultSetMetaData.getColumnName(i + 1));
 //            }
 //        }
-//        System.out.println(columnNames.get(0));
 //    }
 
 }
