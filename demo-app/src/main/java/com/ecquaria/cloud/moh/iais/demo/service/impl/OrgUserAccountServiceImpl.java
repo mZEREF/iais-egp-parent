@@ -39,6 +39,7 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
 
     @Override
     public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccountDto) {
+        orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         IaisEGPHelper.doSave("/api/orgUserAccount/orgUserAccount",orgUserAccountDto);
     }
 

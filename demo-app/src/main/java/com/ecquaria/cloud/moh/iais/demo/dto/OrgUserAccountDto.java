@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.demo.dto;
 
 import com.ecquaria.cloud.moh.iais.demo.validate.OrgUserAccountValidate;
+import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -66,6 +67,7 @@ public class OrgUserAccountDto implements Serializable {
     @Getter @Setter
     private String orgId;
     @Getter @Setter private boolean editFlag;
+    @Getter @Setter private AuditTrailDto auditTrailDto;
 
     //Validation method
     public boolean validateNricEdit(String nric) {
