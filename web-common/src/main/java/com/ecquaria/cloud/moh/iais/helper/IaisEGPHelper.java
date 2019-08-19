@@ -13,7 +13,6 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -24,6 +23,7 @@ import sg.gov.moh.iais.common.dto.SearchResult;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
+import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 

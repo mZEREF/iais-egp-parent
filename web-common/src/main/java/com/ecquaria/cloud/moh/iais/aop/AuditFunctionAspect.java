@@ -14,8 +14,6 @@ package com.ecquaria.cloud.moh.iais.aop;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -30,6 +28,8 @@ import sg.gov.moh.iais.common.dto.SearchParam;
 import sg.gov.moh.iais.common.utils.MiscUtil;
 import sg.gov.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.common.utils.StringUtil;
+import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
+import sg.gov.moh.iais.web.logging.util.AuditLogUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
