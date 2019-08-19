@@ -13,9 +13,9 @@
 
 package com.ecquaria.cloud.moh.iais.initializer;
 
+import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.common.querydao.QueryDao;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
