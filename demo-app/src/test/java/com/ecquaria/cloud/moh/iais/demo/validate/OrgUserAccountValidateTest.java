@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.demo.validate;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.demo.action.OrgUserAccountDelegator;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
 import org.junit.Before;
@@ -27,7 +28,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
-import sg.gov.moh.iais.common.utils.ParamUtil;
 import sop.util.Assert;
 
 import java.util.Map;

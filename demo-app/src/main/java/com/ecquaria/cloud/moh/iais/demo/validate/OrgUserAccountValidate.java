@@ -13,11 +13,11 @@
 
 package com.ecquaria.cloud.moh.iais.demo.validate;
 
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.demo.action.OrgUserAccountDelegator;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import sg.gov.moh.iais.common.utils.ParamUtil;
-import sg.gov.moh.iais.common.utils.StringUtil;
-import sg.gov.moh.iais.common.validation.interfaces.CustomizeValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
