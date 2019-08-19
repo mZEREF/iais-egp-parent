@@ -13,6 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.sql;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import freemarker.template.TemplateException;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +25,6 @@ import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import sg.gov.moh.iais.common.constant.AppConsts;
-import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 
 import java.io.IOException;
 import java.util.ArrayList;

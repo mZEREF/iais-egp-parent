@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +23,6 @@ import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
-import sg.gov.moh.iais.common.utils.MiscUtil;
 
 /**
  * AuditTrailHelperTest
@@ -32,7 +32,7 @@ import sg.gov.moh.iais.common.utils.MiscUtil;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({AuditTrailHelper.class,MiscUtil.class})
+@PrepareForTest({AuditTrailHelper.class, MiscUtil.class})
 public class AuditTrailHelperTest {
     private MockHttpServletRequest request = new MockHttpServletRequest();
     @Test

@@ -13,10 +13,11 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
-import sg.gov.moh.iais.common.constant.AuditTrailConsts;
-import sg.gov.moh.iais.common.utils.MiscUtil;
-import sg.gov.moh.iais.common.utils.ParamUtil;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
+
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 
 import javax.servlet.http.HttpServletRequest;
 

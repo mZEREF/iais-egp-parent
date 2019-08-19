@@ -14,14 +14,14 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.common.dto.SearchParam;
-import sg.gov.moh.iais.common.dto.SearchResult;
-import sg.gov.moh.iais.common.querydao.QueryDao;
-import sg.gov.moh.iais.common.utils.MiscUtil;
-import sg.gov.moh.iais.common.utils.StringUtil;
 
 import java.lang.reflect.Field;
 import java.util.*;

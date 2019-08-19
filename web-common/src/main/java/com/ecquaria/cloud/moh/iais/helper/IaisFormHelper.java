@@ -15,6 +15,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.ServerConfig;
 import com.ecquaria.cloud.helper.EngineHelper;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.egov.core.agency.Agency;
 import com.ecquaria.egov.core.agency.AgencyService;
 import com.ecquaria.egov.core.common.constants.AppConstants;
@@ -30,7 +31,6 @@ import com.ecquaria.egp.core.bat.FormHelper;
 import com.ecquaria.egp.core.forms.instance.FormInstance;
 import com.ecquaria.egp.core.service.security.Base64;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 import sop.config.ConfigUtil;
 import sop.i18n.MultiLangUtil;
 import sop.webflow.eservice.EGPCase;

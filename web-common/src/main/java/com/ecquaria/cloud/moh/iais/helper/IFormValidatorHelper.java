@@ -14,9 +14,9 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.egp.core.forms.validation.FormValidationHelper;
-import sg.gov.moh.iais.common.utils.StringUtil;
-import sg.gov.moh.iais.common.validation.dto.ValidationResult;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.lang.reflect.Field;
@@ -38,7 +38,7 @@ public class IFormValidatorHelper {
      * @param: [bpc, formName, formDto]
      * @return: sg.gov.moh.iais.common.validation.ValidationResult
      */
-    public static ValidationResult validateForm(BaseProcessClass bpc,String formName,Class formDto,boolean isAddToForm) throws InstantiationException, IllegalAccessException {
+    public static ValidationResult validateForm(BaseProcessClass bpc, String formName, Class formDto, boolean isAddToForm) throws InstantiationException, IllegalAccessException {
       Object obj = fillFormDataToDto(bpc,formName,formDto);
       ValidationResult result = WebValidationHelper.validateEntity(obj);
       if(isAddToForm){ addErrorToForm(bpc,formName,result); }

@@ -13,6 +13,9 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,9 +28,6 @@ import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import sg.gov.moh.iais.common.validation.ValidationUtils;
-import sg.gov.moh.iais.common.validation.dto.ValidationResult;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +40,7 @@ import java.util.Map;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({WebValidationHelper.class, ValidationUtils.class,AuditTrailDto.class})
+@PrepareForTest({WebValidationHelper.class, ValidationUtils.class, AuditTrailDto.class})
 @PowerMockIgnore("javax.management.*")
 public class WebValidationHelperTest {
 

@@ -1,10 +1,10 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.common.dto.SearchParam;
-import sg.gov.moh.iais.common.dto.SearchResult;
-import sg.gov.moh.iais.common.utils.ParamUtil;
-import sg.gov.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -65,7 +65,8 @@ public class PaginationTag extends DivTagSupport {
                 pageSize = sp.getPageSize();
         }
 
-        SearchResult<?> sr = (SearchResult<?>) ParamUtil.getScopeAttr((HttpServletRequest)pageContext.getRequest(), result);
+        SearchResult<?> sr = (SearchResult<?>) ParamUtil.getScopeAttr((HttpServletRequest)pageContext.getRequest(),
+                result);
 
         try {
             if (pageSize != 0 && sr != null) {
