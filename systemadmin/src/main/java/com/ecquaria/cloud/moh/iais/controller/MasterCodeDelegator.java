@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -13,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeQuery;
 import com.ecquaria.cloud.moh.iais.entity.MasterCode;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -72,9 +72,10 @@ public class MasterCodeDelegator {
         preSelectOption(request);
         SearchParam param = getSearchParam(bpc);
         ParamUtil.setRequestAttr(request,MASTERCODE_ID, 1);
-        SearchResult searchResult = masterCodeService.doQuery(param, "systemAdmin", "masterCodeQuery");
-        ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
-        ParamUtil.setRequestAttr(request, SEARCH_RESULT, searchResult);
+        QueryHelp.setMainSql("systemAdmin", "masterCodeQuery",param);
+        //SearchResult searchResult = masterCodeService.doQuery(param, "systemAdmin", "masterCodeQuery");
+//        ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
+//        ParamUtil.setRequestAttr(request, SEARCH_RESULT, searchResult);
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){
@@ -85,7 +86,7 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, SEARCH_PARAM);
         if(param == null || isNew){
-            param = new SearchParam(MasterCodeQuery.class);
+            param = new SearchParam(MasterCodeQuery.class.getName());
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort(MASTERCODE_ID, SearchParam.ASCENDING);

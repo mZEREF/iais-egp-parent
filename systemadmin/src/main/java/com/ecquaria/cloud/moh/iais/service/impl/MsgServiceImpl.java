@@ -29,7 +29,8 @@ public class MsgServiceImpl implements MsgService {
 
     @SearchTrack(catalog = "messageSql", key = "search")
     public SearchResult<Message> doSearch(SearchParam param, String catalog, String key) {
-        return queryDao.doQuery(param);
+        //return queryDao.doQuery(param);
+        return null;
     }
 
     @Transactional
