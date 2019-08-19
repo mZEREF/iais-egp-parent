@@ -29,6 +29,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 public class IAIS___OrgUserAccount___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="orgUserAccountDelegator";
+	private static final long serialVersionUID = 5780305468489273358L;
+
 	public void prepareData_OnStepProcess_0() throws Exception {
 	// 		PrepareData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
