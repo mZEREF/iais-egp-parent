@@ -13,10 +13,10 @@
 
 package com.ecquaria.cloud.moh.iais.demo.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.demo.dto.DemoQueryDto;
 import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import sg.gov.moh.iais.common.dto.SearchParam;
-import sg.gov.moh.iais.common.dto.SearchResult;
 
 
 /**
