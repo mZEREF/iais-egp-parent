@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.initializer;
 
+import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import org.junit.Before;
@@ -29,7 +30,6 @@ import org.powermock.core.classloader.annotations.SuppressStaticInitializationFo
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import sg.gov.moh.iais.common.querydao.QueryDao;
 
 import javax.servlet.ServletContextEvent;
 
