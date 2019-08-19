@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validate;
 
 
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.controller.MasterCodeDelegator;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import org.junit.Assert;
@@ -14,7 +15,6 @@ import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
-import sg.gov.moh.iais.common.utils.ParamUtil;
 
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)

@@ -7,6 +7,10 @@ package com.ecquaria.cloud.moh.iais.controller;
  */
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dao.MsgDao;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
@@ -15,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MsgService;
 import com.ecquaria.cloud.moh.iais.service.impl.MsgServiceImpl;
+import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +33,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import org.springframework.mock.web.MockHttpServletRequest;
-import sg.gov.moh.iais.common.dto.SearchParam;
-import sg.gov.moh.iais.common.querydao.QueryDao;
-import sg.gov.moh.iais.common.utils.MiscUtil;
-import sg.gov.moh.iais.common.utils.ParamUtil;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import static org.mockito.Mockito.when;
@@ -59,7 +59,7 @@ public class MessageDelegatorTest {
     private MsgDao msgDao;
 
 
-    private SearchParam searchParam = new SearchParam(Message.class);
+    private SearchParam searchParam = new SearchParam(Message.class.getName());
 
     private Message message = new Message();
     @Before
@@ -69,7 +69,7 @@ public class MessageDelegatorTest {
         Whitebox.setInternalState(msgService,"msgDao",msgDao);
         PowerMockito.doNothing().when(msgDao).delete(Mockito.anyInt());
 
-        PowerMockito.when(queryDao.doQuery(searchParam)).thenReturn(null);
+        //PowerMockito.when(queryDao.doQuery(searchParam)).thenReturn(null);
         PowerMockito.mockStatic(ParamUtil.class);
         PowerMockito.mockStatic(MiscUtil.class);
         when(MiscUtil.getCurrentRequest()).thenReturn(request);
