@@ -16,6 +16,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.ServerConfig;
 import com.ecquaria.cloud.helper.EngineHelper;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.egov.core.agency.Agency;
 import com.ecquaria.egov.core.agency.AgencyService;
 import com.ecquaria.egov.core.common.constants.AppConstants;
@@ -39,7 +40,6 @@ import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
 import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import sg.gov.moh.iais.common.exception.IaisRuntimeException;
 import sop.config.ConfigUtil;
 import sop.i18n.MultiLangUtil;
 import sop.webflow.eservice.EGPCase;

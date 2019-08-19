@@ -13,9 +13,9 @@
 
 package com.ecquaria.cloud.moh.iais.sql;
 
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.xml.sax.SAXException;
-import sg.gov.moh.iais.common.utils.MiscUtil;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;

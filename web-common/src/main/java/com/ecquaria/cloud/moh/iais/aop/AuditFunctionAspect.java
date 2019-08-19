@@ -13,7 +13,15 @@
 package com.ecquaria.cloud.moh.iais.aop;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.annotation.LogInfo;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -22,14 +30,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import sg.gov.moh.iais.common.annotation.LogInfo;
-import sg.gov.moh.iais.common.constant.AuditTrailConsts;
-import sg.gov.moh.iais.common.dto.SearchParam;
-import sg.gov.moh.iais.common.utils.MiscUtil;
-import sg.gov.moh.iais.common.utils.ParamUtil;
-import sg.gov.moh.iais.common.utils.StringUtil;
-import sg.gov.moh.iais.web.logging.dto.AuditTrailDto;
-import sg.gov.moh.iais.web.logging.util.AuditLogUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,11 +42,11 @@ import java.util.Map;
 @Slf4j
 public class AuditFunctionAspect {
 
-    @Pointcut("@annotation(sg.gov.moh.iais.common.annotation.LogInfo)")
+    @Pointcut("@annotation(com.ecquaria.cloud.moh.iais.common.annotation.LogInfo)")
     public void auditFunction() {
         throw new UnsupportedOperationException();
     }
-    @Pointcut("@within(sg.gov.moh.iais.common.annotation.LogInfo)")
+    @Pointcut("@within(com.ecquaria.cloud.moh.iais.common.annotation.LogInfo)")
     public void auditClass() {
         throw new UnsupportedOperationException();
     }

@@ -1,9 +1,9 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.common.dto.SearchParam;
-import sg.gov.moh.iais.common.utils.ParamUtil;
-import sg.gov.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -52,7 +52,8 @@ public class SortableHeaderTag extends DivTagSupport {
             sb.append("<span class=\"column-sort\">");
             String isActiveUp = "";
             String isActiveDown = "";
-            SearchParam searchParam = (SearchParam) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(), param);
+            SearchParam searchParam = (SearchParam) ParamUtil.getScopeAttr((HttpServletRequest) pageContext.getRequest(),
+                    param);
             if (searchParam != null) {
                 Map<String, String> sortMap = searchParam.getSortMap();
                 if (sortMap.containsKey(field.toUpperCase())) {

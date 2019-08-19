@@ -14,7 +14,7 @@
 package com.ecquaria.cloud.moh.iais.aop;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
-import sg.gov.moh.iais.common.annotation.LogInfo;
+import com.ecquaria.cloud.moh.iais.common.annotation.LogInfo;
 
 /**
  * Class Description

@@ -13,6 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +27,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 import org.springframework.mock.web.MockHttpServletRequest;
-import sg.gov.moh.iais.common.dto.SearchParam;
-import sg.gov.moh.iais.common.dto.SearchResult;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;

@@ -13,14 +13,14 @@
 
 package com.ecquaria.cloud.moh.iais.sql;
 
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.TemplateClassResolver;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.common.exception.IaisRuntimeException;
-import sg.gov.moh.iais.common.utils.StringUtil;
 
 import java.io.IOException;
 import java.io.StringWriter;

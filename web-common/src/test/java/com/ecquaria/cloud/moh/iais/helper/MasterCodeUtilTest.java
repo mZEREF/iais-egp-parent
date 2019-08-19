@@ -13,6 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import org.junit.Before;
@@ -27,8 +29,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-import sg.gov.moh.iais.common.dto.SearchResult;
-import sg.gov.moh.iais.common.querydao.QueryDao;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

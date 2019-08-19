@@ -20,6 +20,7 @@ package com.ecquaria.cloud.moh.iais.helper;
  * @date 7/31/2019
  */
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,6 @@ import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
 import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import sg.gov.moh.iais.common.dto.SearchParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Constructor;
