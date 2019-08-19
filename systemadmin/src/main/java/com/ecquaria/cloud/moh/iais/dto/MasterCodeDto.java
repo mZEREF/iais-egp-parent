@@ -1,10 +1,10 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import com.ecquaria.cloud.moh.iais.common.validation.annotations.CustomValidate;
 import com.ecquaria.cloud.moh.iais.validate.MasterCodeValidate;
 import lombok.Data;
 import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotNull;
-import sg.gov.moh.iais.common.validation.annotations.CustomValidate;
 
 import java.io.Serializable;
 import java.util.Date;

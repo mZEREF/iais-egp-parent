@@ -1,10 +1,10 @@
 package com.ecquaria.cloud.moh.iais.validate;
 
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.controller.MasterCodeDelegator;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
-import sg.gov.moh.iais.common.utils.ParamUtil;
-import sg.gov.moh.iais.common.utils.StringUtil;
-import sg.gov.moh.iais.common.validation.interfaces.CustomizeValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
