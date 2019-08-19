@@ -18,10 +18,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
 import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -35,23 +38,27 @@ import org.springframework.stereotype.Service;
 public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     @Override
     public void deleteOrgUserAccountsById(String id) {
-        IaisEGPHelper.doDelete("/api/orgUserAccount",id);
+        IaisEGPHelper.doDelete("/api/demo/orgUserAccounts",id);
     }
 
     @Override
     public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccountDto) {
         orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        IaisEGPHelper.doSave("/api/orgUserAccount",orgUserAccountDto);
+        IaisEGPHelper.doSave("/api/demo/orgUserAccounts",orgUserAccountDto);
     }
 
     @Override
     public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId) {
-        return (OrgUserAccountDto)IaisEGPHelper.doGetByRowguId("/api/orgUserAccount",rowguId,OrgUserAccountDto.class);
+        Map<String, Object> map = new HashMap<>();
+        map.put("searchField", "rowguId");
+        map.put("filterValue", rowguId);
+        return (OrgUserAccountDto)IaisEGPHelper.doGetByRowguId("/api/demo/orgUserAccounts",
+                map, OrgUserAccountDto.class);
     }
 
     @Override
     @SearchTrack
     public SearchResult<DemoQueryDto> doQuery(SearchParam param) {
-        return IaisEGPHelper.doQuery("/api/demoQuerys",param);
+        return IaisEGPHelper.doQuery("/api/demo/results",param);
     }
 }

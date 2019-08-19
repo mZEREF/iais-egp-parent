@@ -16,6 +16,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -29,6 +30,7 @@ import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
@@ -71,28 +73,27 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static SearchResult doQuery(String uri, SearchParam param){
-        Object result = callRestApi(uri,param,SearchResult.class,HttpMethod.POST);
-        if(result==null)
+        Object result = callRestApiBody(uri,param,SearchResult.class,HttpMethod.POST);
+        if (result == null)
             return new SearchResult();
+
         return (SearchResult)result;
     }
 
     public static boolean doSave(String uri, Object entity){
-        Object result = callRestApi(uri,entity,String.class,HttpMethod.PUT);
-        if(result==null)
-            return false;
-        return true;
+        Object result = callRestApiBody(uri,entity,String.class,HttpMethod.POST);
+
+        return result != null;
     }
     public static boolean doDelete(String uri, Object entity){
-        Object result = callRestApi(uri,entity,String.class,HttpMethod.DELETE);
-        if(result==null)
-            return false;
-        return true;
+        Object result = callRestApiBody(uri,entity,String.class,HttpMethod.DELETE);
+
+        return result != null;
     }
-    public static Object doGetByRowguId(String uri, Object entity,Class retrunClass){
-        Object result = callRestApi(uri,entity,retrunClass,HttpMethod.POST);
-        if(result==null)
-            return null;
+
+    public static Object doGetByRowguId(String uri, Map<String, Object> params, Class retrunClass){
+        Object result = callRestApiParam(uri,params,retrunClass);
+
         return result;
     }
 
@@ -108,21 +109,31 @@ public final class IaisEGPHelper extends EGPHelper {
         return dto;
     }
 
-    private static Object callRestApi(String uri, Object entity,Class retrunClass,HttpMethod requestType){
-        if(!StringUtil.isEmpty(uri) && entity!=null){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity jsonPart = new HttpEntity<>(entity, headers);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Object> resultResponseEntity =
-                restTemplate.exchange(MiscUtil.getRestApiUrl()+uri, requestType, jsonPart, retrunClass);
-        int status =  resultResponseEntity.getStatusCodeValue();
-        if(status == 200){
-            return resultResponseEntity.getBody();
-         }
-        }else {
-            log.error("The uri or entity is null...");
+    private static Object callRestApiParam(String uri, Map<String, Object> params, Class retrunClass) {
+        if (!StringUtil.isEmpty(uri) && params != null && !params.isEmpty()){
+            RestTemplate restTemplate = new RestTemplate();
+            return restTemplate.getForObject(MiscUtil.getRestApiUrl() + uri, retrunClass, params);
+        } else {
+            throw new IaisRuntimeException("The url or entity is null!");
         }
+    }
+
+    private static Object callRestApiBody(String uri, Object entity,Class retrunClass,HttpMethod requestType){
+        if (!StringUtil.isEmpty(uri) && entity!=null){
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity jsonPart = new HttpEntity<>(entity, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Object> resultResponseEntity =
+                    restTemplate.exchange(MiscUtil.getRestApiUrl() + uri, requestType, jsonPart, retrunClass);
+            int status =  resultResponseEntity.getStatusCodeValue();
+            if (status == 200) {
+                return resultResponseEntity.getBody();
+             }
+        } else {
+            throw new IaisRuntimeException("The url or entity is null!");
+        }
+
         return null;
     }
 
