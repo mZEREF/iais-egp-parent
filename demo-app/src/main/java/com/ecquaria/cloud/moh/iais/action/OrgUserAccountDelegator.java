@@ -64,7 +64,6 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
-    @LogInfo(moduleName = "demo", funcName = "User Account Management")
     public void doStart(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction("demo", "manage org user");
         log.debug(StringUtil.changeForLog("The doStart start ..."));
