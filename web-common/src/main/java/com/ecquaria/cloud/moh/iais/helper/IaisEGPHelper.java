@@ -29,8 +29,6 @@ import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
@@ -86,9 +84,7 @@ public final class IaisEGPHelper extends EGPHelper {
         return true;
     }
     public static boolean doDelete(String uri, Object entity){
-        Map map = new HashMap<>();
-        map.put("id",entity);
-        Object result = callRestApi(uri,map,String.class,HttpMethod.DELETE);
+        Object result = callRestApi(uri,entity,String.class,HttpMethod.DELETE);
         if(result==null)
             return false;
         return true;
