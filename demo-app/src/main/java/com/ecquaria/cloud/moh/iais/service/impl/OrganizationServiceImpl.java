@@ -11,9 +11,9 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.service.impl;
+package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.demo.service.OrganizationService;
+import com.ecquaria.cloud.moh.iais.service.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

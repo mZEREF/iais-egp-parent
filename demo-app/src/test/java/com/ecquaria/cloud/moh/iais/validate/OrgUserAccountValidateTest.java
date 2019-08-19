@@ -11,12 +11,12 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.validate;
+package com.ecquaria.cloud.moh.iais.validate;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.action.OrgUserAccountDelegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.demo.action.OrgUserAccountDelegator;
-import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +63,7 @@ public class OrgUserAccountValidateTest {
         OrgUserAccountDto orgUserAccountDto = new OrgUserAccountDto();
         orgUserAccountDto.setNircNo("NircNo");
         orgUserAccountDto.setId(0);
-        ParamUtil.setSessionAttr(request,OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
+        ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
 
 //        OrgUserAccount oua = new OrgUserAccount();
 //        oua.setId(1);

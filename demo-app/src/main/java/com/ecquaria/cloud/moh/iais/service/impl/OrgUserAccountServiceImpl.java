@@ -11,13 +11,14 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.service.impl;
+package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.demo.dto.DemoQueryDto;
-import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
+import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     }
 
     @Override
+    @SearchTrack
     public SearchResult<DemoQueryDto> doQuery(SearchParam param) {
         return IaisEGPHelper.doQuery("/api/demoQuerys",param);
     }

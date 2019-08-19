@@ -11,38 +11,24 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.entity;
+package com.ecquaria.cloud.moh.iais.service;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
 
-import javax.persistence.*;
 
 /**
- * Form test entity
+ * OrgUserAccountService
  *
  * @author suocheng
- * @date 7/4/2019
+ * @date 7/12/2019
  */
-@Entity
-@Table(name = "FORM_TEST")
-public class FormTest {
+public interface OrgUserAccountService {
 
-    @Setter @Getter
-    @Id
-    @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Setter @Getter
-    @Column(name="ROWGUID",  columnDefinition="uniqueidentifier")
-    private String rowguid;
-
-    @Setter @Getter
-    @Column(name = "NAME")
-    private String name;
-
-    @Setter @Getter
-    @Column(name = "AGE")
-    private Integer age;
+ public void deleteOrgUserAccountsById(String id);
+ public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccount);
+ public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId);
+ public SearchResult<DemoQueryDto> doQuery(SearchParam param);
 }

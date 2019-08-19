@@ -11,11 +11,11 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.dto;
+package com.ecquaria.cloud.moh.iais.dto;
 
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.annotations.CustomValidate;
-import com.ecquaria.cloud.moh.iais.demo.validate.OrgUserAccountValidate;
+import com.ecquaria.cloud.moh.iais.validate.OrgUserAccountValidate;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

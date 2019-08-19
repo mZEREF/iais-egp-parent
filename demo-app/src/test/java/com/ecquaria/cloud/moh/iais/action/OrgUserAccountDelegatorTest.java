@@ -11,17 +11,17 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.action;
+package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.demo.dto.DemoQueryDto;
-import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
-import com.ecquaria.cloud.moh.iais.demo.service.impl.OrgUserAccountServiceImpl;
+import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
+import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountServiceImpl;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import org.junit.Assert;

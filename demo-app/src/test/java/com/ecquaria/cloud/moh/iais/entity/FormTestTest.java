@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.demo.entity;
+package com.ecquaria.cloud.moh.iais.entity;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

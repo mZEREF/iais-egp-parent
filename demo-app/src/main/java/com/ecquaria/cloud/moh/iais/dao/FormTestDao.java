@@ -11,14 +11,17 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.service;
+package com.ecquaria.cloud.moh.iais.dao;
+
+import com.ecquaria.cloud.moh.iais.entity.FormTest;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * OrganizationService
+ * Class description
  *
  * @author suocheng
- * @date 7/12/2019
+ * @date 7/4/2019
  */
-public interface OrganizationService {
-   // public Organization getOrganizationByUenNo(String uenNo);
+public interface FormTestDao extends JpaRepository<FormTest, Long> {
+
 }

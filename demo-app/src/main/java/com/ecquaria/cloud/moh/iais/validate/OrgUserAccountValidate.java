@@ -11,13 +11,13 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.validate;
+package com.ecquaria.cloud.moh.iais.validate;
 
+import com.ecquaria.cloud.moh.iais.action.OrgUserAccountDelegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import com.ecquaria.cloud.moh.iais.demo.action.OrgUserAccountDelegator;
-import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;

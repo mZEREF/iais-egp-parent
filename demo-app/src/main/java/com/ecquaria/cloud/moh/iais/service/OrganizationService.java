@@ -11,24 +11,14 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.service;
-
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.demo.dto.DemoQueryDto;
-import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-
+package com.ecquaria.cloud.moh.iais.service;
 
 /**
- * OrgUserAccountService
+ * OrganizationService
  *
  * @author suocheng
  * @date 7/12/2019
  */
-public interface OrgUserAccountService {
-
- public void deleteOrgUserAccountsById(String id);
- public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccount);
- public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId);
- public SearchResult<DemoQueryDto> doQuery(SearchParam param);
+public interface OrganizationService {
+   // public Organization getOrganizationByUenNo(String uenNo);
 }

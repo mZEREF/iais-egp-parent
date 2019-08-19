@@ -1,8 +1,8 @@
-package com.ecquaria.cloud.moh.iais.demo.action;
+package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.demo.dto.FormTestDto;
+import com.ecquaria.cloud.moh.iais.dto.FormTestDto;
 import com.ecquaria.cloud.moh.iais.helper.IFormValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisFormHelper;

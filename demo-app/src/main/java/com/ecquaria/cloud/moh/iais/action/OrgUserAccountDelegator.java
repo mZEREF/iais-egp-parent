@@ -11,18 +11,19 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.action;
+package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.annotation.LogInfo;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.demo.dto.DemoQueryDto;
-import com.ecquaria.cloud.moh.iais.demo.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.demo.service.OrgUserAccountService;
+import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
@@ -63,6 +64,7 @@ public class OrgUserAccountDelegator {
      * @param bpc
      * @throws
      */
+    @LogInfo(moduleName = "demo", funcName = "User Account Management")
     public void doStart(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction("demo", "manage org user");
         log.debug(StringUtil.changeForLog("The doStart start ..."));

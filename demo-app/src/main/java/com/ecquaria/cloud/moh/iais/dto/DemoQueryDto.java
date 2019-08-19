@@ -11,7 +11,7 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.dto;
+package com.ecquaria.cloud.moh.iais.dto;
 
 import lombok.Getter;
 import lombok.Setter;

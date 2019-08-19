@@ -11,17 +11,38 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.demo.dao;
+package com.ecquaria.cloud.moh.iais.entity;
 
-import com.ecquaria.cloud.moh.iais.demo.entity.FormTest;
-import org.springframework.data.jpa.repository.JpaRepository;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 
 /**
- * Class description
+ * Form test entity
  *
  * @author suocheng
  * @date 7/4/2019
  */
-public interface FormTestDao extends JpaRepository<FormTest, Long> {
+@Entity
+@Table(name = "FORM_TEST")
+public class FormTest {
 
+    @Setter @Getter
+    @Id
+    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Setter @Getter
+    @Column(name="ROWGUID",  columnDefinition="uniqueidentifier")
+    private String rowguid;
+
+    @Setter @Getter
+    @Column(name = "NAME")
+    private String name;
+
+    @Setter @Getter
+    @Column(name = "AGE")
+    private Integer age;
 }
