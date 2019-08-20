@@ -91,8 +91,8 @@ public final class IaisEGPHelper extends EGPHelper {
         return result != null;
     }
 
-    public static Object doGetByRowguId(String uri, Map<String, Object> params, Class retrunClass){
-        Object result = callRestApiParam(uri,params,retrunClass);
+    public static Object doGetByRowguId(String uri, Map<String, Object> params, Class returnCls){
+        Object result = callRestApiParam(uri, params, returnCls);
 
         return result;
     }
@@ -109,10 +109,10 @@ public final class IaisEGPHelper extends EGPHelper {
         return dto;
     }
 
-    private static Object callRestApiParam(String uri, Map<String, Object> params, Class retrunClass) {
+    private static Object callRestApiParam(String uri, Map<String, Object> params, Class retuenCls) {
         if (!StringUtil.isEmpty(uri) && params != null && !params.isEmpty()){
             RestTemplate restTemplate = new RestTemplate();
-            return restTemplate.getForObject(MiscUtil.getRestApiUrl() + uri, retrunClass, params);
+            return restTemplate.getForObject(MiscUtil.getRestApiUrl() + uri, retuenCls, params);
         } else {
             throw new IaisRuntimeException("The url or entity is null!");
         }

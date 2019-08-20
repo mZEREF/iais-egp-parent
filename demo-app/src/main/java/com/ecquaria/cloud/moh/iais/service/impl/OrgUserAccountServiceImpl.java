@@ -38,13 +38,13 @@ import java.util.Map;
 public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     @Override
     public void deleteOrgUserAccountsById(String id) {
-        IaisEGPHelper.doDelete("/api/demo/orgUserAccounts",id);
+        IaisEGPHelper.doDelete("demo/orgUserAccounts",id);
     }
 
     @Override
     public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccountDto) {
         orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        IaisEGPHelper.doSave("/api/demo/orgUserAccounts",orgUserAccountDto);
+        IaisEGPHelper.doSave("demo/orgUserAccounts",orgUserAccountDto);
     }
 
     @Override
@@ -52,13 +52,14 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
         Map<String, Object> map = new HashMap<>();
         map.put("searchField", "rowguId");
         map.put("filterValue", rowguId);
-        return (OrgUserAccountDto)IaisEGPHelper.doGetByRowguId("/api/demo/orgUserAccounts",
+        return (OrgUserAccountDto)IaisEGPHelper.doGetByRowguId("demo/orgUserAccounts?" +
+                        "searchField={searchField}&filterValue={filterValue}",
                 map, OrgUserAccountDto.class);
     }
 
     @Override
     @SearchTrack
     public SearchResult<DemoQueryDto> doQuery(SearchParam param) {
-        return IaisEGPHelper.doQuery("/api/demo/results",param);
+        return IaisEGPHelper.doQuery("demo/results",param);
     }
 }
