@@ -39,7 +39,10 @@ import java.util.Map;
 public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     @Override
     public void deleteOrgUserAccountsById(String id) {
-        RestApiUtil.delete("demo/orgUserAccounts",id);
+        OrgUserAccountDto orgUserAccountDto = new OrgUserAccountDto();
+        orgUserAccountDto.setId(Integer.parseInt(id));
+        orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        RestApiUtil.delete("demo/orgUserAccounts",orgUserAccountDto);
     }
 
     @Override
