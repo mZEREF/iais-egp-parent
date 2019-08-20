@@ -61,7 +61,7 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     }
 
     @Override
-    @SearchTrack
+    @SearchTrack(catalog = "demo",key = "searchDemo")
     public SearchResult<DemoQueryDto> doQuery(SearchParam param) {
         return RestApiUtil.query("demo/results",param);
     }
