@@ -23,7 +23,9 @@ import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -38,6 +40,8 @@ import java.util.Map;
 public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     @Override
     public void deleteOrgUserAccountsById(String id) {
+        List ids = new ArrayList();
+        ids.add(Integer.parseInt(id));
         IaisEGPHelper.doDelete("demo/orgUserAccounts",id);
     }
 
