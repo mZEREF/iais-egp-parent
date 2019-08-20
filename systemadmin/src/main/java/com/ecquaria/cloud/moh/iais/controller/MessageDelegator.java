@@ -3,17 +3,16 @@ package com.ecquaria.cloud.moh.iais.controller;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
-import com.ecquaria.cloud.moh.iais.entity.Message;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.MsgService;
+import com.ecquaria.cloud.moh.iais.service.MessageService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class MessageDelegator {
     public static final String PARAM_STATUS = "param_status";
 
     @Autowired
-    private MsgService msgService;
+    private MessageService messageService;
 
     /**
      * setup option to web page
@@ -101,10 +100,10 @@ public class MessageDelegator {
 
         //default false, go to pre-data
         SearchParam param = getSearchParam(bpc);
-        SearchResult result = msgService.doSearch(param, "systemAdmin", "queryMessage");
-
+        QueryHelp.setMainSql("systemAdmin", "queryMessage", param);
+        SearchResult searchResult = messageService.doQuery(param);
         ParamUtil.setSessionAttr(request, PARAM_MESSAGE_SEARCH, param);
-        ParamUtil.setRequestAttr(request, PARAM_MESSAGE_SEARCH_RESULT, result);
+        ParamUtil.setRequestAttr(request, PARAM_MESSAGE_SEARCH_RESULT, searchResult);
 
     }
 
@@ -129,13 +128,13 @@ public class MessageDelegator {
         String module = ParamUtil.getString(request, "module");
         String description = ParamUtil.getString(request, "description");
 
-        MessageDto dto = (MessageDto) ParamUtil.getSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO);
-        dto.setDomainType(domainType);
-        dto.setMsgType(msgType);
-        dto.setModule(module);
-        dto.setDescription(description);
+        MessageDto messageDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO);
+        messageDto.setDomainType(domainType);
+        messageDto.setMsgType(msgType);
+        messageDto.setModule(module);
+        messageDto.setDescription(description);
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "edit");
+        ValidationResult validationResult = WebValidationHelper.validateProperty(messageDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
@@ -143,8 +142,7 @@ public class MessageDelegator {
         }else {
             Map<String,String> successMap = new HashMap<>();
             successMap.put("edit message","suceess");
-            Message message = MiscUtil.transferEntityDto(dto, Message.class);
-            msgService.saveMessage(message);
+            messageService.saveMessage(messageDto);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
         }
@@ -159,9 +157,9 @@ public class MessageDelegator {
         HttpServletRequest request = bpc.request;
         String rowguid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(rowguid)) {
-            Message msg = msgService.getMessageByRowguid(rowguid);
-            msg.setStatus(0);
-            msgService.saveMessage(msg);
+            MessageDto messageDto = messageService.getMessageByRowguid(rowguid);
+            messageDto.setStatus(0);
+            messageService.saveMessage(messageDto);
         }
     }
 
@@ -175,18 +173,18 @@ public class MessageDelegator {
         if(!"doSearch".equals(type)){
             return;
         }
-        MessageDto dto = new MessageDto();
+        MessageDto messageDto = new MessageDto();
         String domainType = ParamUtil.getString(request, "domainType");
         String msgType = ParamUtil.getString(request, "msgType");
         String module = ParamUtil.getString(request, "module");
 
-        dto.setDomainType(domainType);
-        dto.setMsgType(msgType);
-        dto.setModule(module);
+        messageDto.setDomainType(domainType);
+        messageDto.setMsgType(msgType);
+        messageDto.setModule(module);
 
         SearchParam param = getSearchParam(bpc, true);
-        ParamUtil.setRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(dto, "search");
+        ParamUtil.setRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO, messageDto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(messageDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
@@ -227,9 +225,8 @@ public class MessageDelegator {
         String rowguid = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         preSelectOption(request);
         if(!StringUtil.isEmpty(rowguid)){
-            Message msg = msgService.getMessageByRowguid(rowguid);
-            MessageDto dto = MiscUtil.transferEntityDto(msg, MessageDto.class);
-            ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, dto);
+            MessageDto messageDto = messageService.getMessageByRowguid(rowguid);
+            ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, messageDto);
         }
     }
 
@@ -271,7 +268,7 @@ public class MessageDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, PARAM_MESSAGE_SEARCH);
         if(param == null || isNew){
-            param = new SearchParam(Message.class.getName());
+            param = new SearchParam(MessageDto.class.getName());
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort("msg_id", SearchParam.ASCENDING);

@@ -38,7 +38,7 @@
     <sql key = "queryMessage" remarks = "query message sql">
         <![CDATA[
             SELECT msg_id, rowguid, code_key, domain_type, msg_type, module, description, status
-            FROM EGPCLOUDFE.dbo.CM_MESSAGE
+            FROM MOHIAIS.dbo.CM_MESSAGE
             WHERE 1=1 AND status != 0
             <#if domainType??> AND domain_type = :domainType</#if>
             <#if msgType??> AND msg_type = :msgType</#if>

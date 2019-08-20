@@ -23,7 +23,7 @@ public class MessageDto implements Serializable {
     public static final String MESSAGE_REQUEST_DTO = "msgRequestDto";
 
     @Setter @Getter
-    private String id;
+    private Integer id;
     @Setter @Getter
     private String rowguid;
 
