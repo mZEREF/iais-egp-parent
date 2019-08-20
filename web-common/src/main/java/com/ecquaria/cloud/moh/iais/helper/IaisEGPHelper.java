@@ -14,23 +14,16 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
@@ -72,31 +65,6 @@ public final class IaisEGPHelper extends EGPHelper {
         return path;
     }
 
-    public static SearchResult doQuery(String uri, SearchParam param){
-        Object result = callRestApiBody(uri,param,SearchResult.class,HttpMethod.POST);
-        if (result == null)
-            return new SearchResult();
-
-        return (SearchResult)result;
-    }
-
-    public static boolean doSave(String uri, Object entity){
-        Object result = callRestApiBody(uri,entity,String.class,HttpMethod.POST);
-
-        return result != null;
-    }
-    public static boolean doDelete(String uri, Object entity){
-        Object result = callRestApiBody(uri,entity,String.class,HttpMethod.DELETE);
-
-        return result != null;
-    }
-
-    public static Object doGetByRowguId(String uri, Map<String, Object> params, Class returnCls){
-        Object result = callRestApiParam(uri, params, returnCls);
-
-        return result;
-    }
-
     public static AuditTrailDto getCurrentAuditTrailDto() {
         AuditTrailDto dto = null;
         HttpServletRequest request = MiscUtil.getCurrentRequest();
@@ -107,34 +75,6 @@ public final class IaisEGPHelper extends EGPHelper {
             dto = AuditTrailDto.getThreadDto();
 
         return dto;
-    }
-
-    private static Object callRestApiParam(String uri, Map<String, Object> params, Class retuenCls) {
-        if (!StringUtil.isEmpty(uri) && params != null && !params.isEmpty()){
-            RestTemplate restTemplate = new RestTemplate();
-            return restTemplate.getForObject(MiscUtil.getRestApiUrl() + uri, retuenCls, params);
-        } else {
-            throw new IaisRuntimeException("The url or entity is null!");
-        }
-    }
-
-    private static Object callRestApiBody(String uri, Object entity,Class retrunClass,HttpMethod requestType){
-        if (!StringUtil.isEmpty(uri) && entity!=null){
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity jsonPart = new HttpEntity<>(entity, headers);
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<Object> resultResponseEntity =
-                    restTemplate.exchange(MiscUtil.getRestApiUrl() + uri, requestType, jsonPart, retrunClass);
-            int status =  resultResponseEntity.getStatusCodeValue();
-            if (status == 200) {
-                return resultResponseEntity.getBody();
-             }
-        } else {
-            throw new IaisRuntimeException("The url or entity is null!");
-        }
-
-        return null;
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}

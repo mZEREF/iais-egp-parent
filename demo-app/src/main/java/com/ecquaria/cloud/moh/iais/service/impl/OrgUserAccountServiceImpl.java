@@ -16,6 +16,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
 import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -38,13 +39,13 @@ import java.util.Map;
 public class OrgUserAccountServiceImpl implements OrgUserAccountService {
     @Override
     public void deleteOrgUserAccountsById(String id) {
-        IaisEGPHelper.doDelete("demo/orgUserAccounts",id);
+        RestApiUtil.delete("demo/orgUserAccounts",id);
     }
 
     @Override
     public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccountDto) {
         orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        IaisEGPHelper.doSave("demo/orgUserAccounts",orgUserAccountDto);
+        RestApiUtil.save("demo/orgUserAccounts",orgUserAccountDto);
     }
 
     @Override
@@ -52,14 +53,13 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
         Map<String, Object> map = new HashMap<>();
         map.put("searchField", "rowguId");
         map.put("filterValue", rowguId);
-        return (OrgUserAccountDto)IaisEGPHelper.doGetByRowguId("demo/orgUserAccounts?" +
-                        "searchField={searchField}&filterValue={filterValue}",
+        return RestApiUtil.getByReqParam("demo/orgUserAccounts",
                 map, OrgUserAccountDto.class);
     }
 
     @Override
     @SearchTrack
     public SearchResult<DemoQueryDto> doQuery(SearchParam param) {
-        return IaisEGPHelper.doQuery("demo/results",param);
+        return RestApiUtil.query("demo/results",param);
     }
 }
