@@ -16,9 +16,7 @@ package com.ecquaria.cloud.moh.iais.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
@@ -27,24 +25,16 @@ import java.io.Serializable;
  * @author Jinhua
  * @date 2019/7/19 13:57
  */
-@Entity
 public class DemoQueryDto implements Serializable {
     private static final long serialVersionUID = -8254013396556504175L;
 
-    @Id
-    @Column(name = "user_id")
     @Getter @Setter private int userId;
-    @Column(name = "NRIC_NO")
     @Getter @Setter private String nuicNum;
-    @Column(name = "UEN_NO")
     @Getter @Setter private String uenNo;
-    @Column(name = "ROWGUID")
     @Getter @Setter
     private String rowguid;
-    @Column(name = "ORGANIZATION_ID")
     @Getter @Setter
     private String orgId;
-    @Column(name="STATUS")
     @Getter @Setter
     private String status;
 
