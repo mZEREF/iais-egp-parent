@@ -13,13 +13,20 @@
 
 package com.ecquaria.cloud.moh.iais.initializer;
 
-import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.entity.MessageCode;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * AppInitializer
@@ -30,7 +37,6 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 @Slf4j
 public class AppInitializer implements ServletContextListener {
-    private QueryDao dao;
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
@@ -40,7 +46,6 @@ public class AppInitializer implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         log.info("---------- Application is initializing... ----------");
-        //dao = WebApplicationContextUtils.getWebApplicationContext(sce.getServletContext()).getBean(QueryDao.class);
         try {
             SqlMapLoader sqlMapLoader = new SqlMapLoader();
             sqlMapLoader.loadSqlMap();
@@ -53,14 +58,16 @@ public class AppInitializer implements ServletContextListener {
     }
 
     private void initMessages() {
-//        SearchParam param = new SearchParam(MessageCode.class);
-//        SearchResult<MessageCode> sr = dao.doQuery(param);
-//        if (sr.getRowCount() > 0) {
-//            Map<String, String> map = new HashMap<>();
-//            for (MessageCode mc : sr.getRows()) {
-//                map.put(mc.getCodeKey(), mc.getDescription());
-//            }
-//            MessageUtil.loadMessages(map);
-//        }
+        SearchParam param = new SearchParam(MessageCode.class.getName());
+        QueryHelp.setMainSql("initializer", "retrieveAllMsg", param);
+        SearchResult<Map<String, String>> sr = RestApiUtil.query("iais-message/allMsg", param);
+
+        if (sr.getRowCount() > 0) {
+            Map<String, String> map = new HashMap<>();
+            for (Map<String, String> mc : sr.getRows()) {
+                map.put(mc.get("codeKey"), mc.get("description"));
+            }
+            MessageUtil.loadMessages(map);
+        }
     }
 }
