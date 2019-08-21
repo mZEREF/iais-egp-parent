@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.dto;
  *Describe:
  */
 
+import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.oval.constraint.Length;
@@ -57,6 +58,9 @@ public class MessageDto implements Serializable {
     @Getter
     @Setter
     private String codeKey;
+
+    @Getter@Setter
+    private AuditTrailDto auditTrailDto;
 
     public boolean validateDescriptionRegEx(String description){
         String regEx = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
