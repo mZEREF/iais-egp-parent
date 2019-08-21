@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.entity.MessageCode;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,7 @@ public class AppInitializer implements ServletContextListener {
             SqlMapLoader sqlMapLoader = new SqlMapLoader();
             sqlMapLoader.loadSqlMap();
             initMessages();
-           // MasterCodeUtil.refreshCache();
+            MasterCodeUtil.refreshCache();
         } catch (Exception ex) {
             log.error("Failed to initialize the application.", ex);
         }
