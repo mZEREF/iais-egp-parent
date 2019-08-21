@@ -30,5 +30,6 @@ public interface OrgUserAccountService {
  public void deleteOrgUserAccountsById(String id);
  public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccount);
  public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId);
+ public OrgUserAccountDto getOrgUserAccountByNircNo(String nircNo);
  public SearchResult<DemoQueryDto> doQuery(SearchParam param);
 }

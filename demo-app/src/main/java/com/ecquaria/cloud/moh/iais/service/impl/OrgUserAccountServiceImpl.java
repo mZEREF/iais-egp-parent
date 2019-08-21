@@ -56,8 +56,15 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
         Map<String, Object> map = new HashMap<>();
         map.put("searchField", "rowguId");
         map.put("filterValue", rowguId);
-        return RestApiUtil.getByReqParam("demo/orgUserAccounts",
-                map, OrgUserAccountDto.class);
+        return RestApiUtil.getByReqParam("demo/orgUserAccounts", map, OrgUserAccountDto.class);
+    }
+
+    @Override
+    public OrgUserAccountDto getOrgUserAccountByNircNo(String nircNo) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("searchField", "nircNo");
+        map.put("filterValue", nircNo);
+        return RestApiUtil.getByReqParam("demo/orgUserAccounts", map, OrgUserAccountDto.class);
     }
 
     @Override
