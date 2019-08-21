@@ -16,9 +16,6 @@ package com.ecquaria.cloud.moh.iais.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
@@ -27,15 +24,10 @@ import java.io.Serializable;
  * @author Jinhua
  * @date 2019/7/24 17:58
  */
-@Entity
 public class MessageCode implements Serializable {
     private static final long serialVersionUID = 1971470358993800500L;
 
-    @Id
-    @Column(name = "msg_id")
     @Getter @Setter private int msgId;
-    @Column(name = "code_key")
     @Getter @Setter private String codeKey;
-    @Column(name = "description")
     @Getter @Setter private String description;
 }
