@@ -63,7 +63,8 @@ public final class MasterCodeUtil {
             if (obj instanceof MasterCodeView) {
                 list.add((MasterCodeView) obj);
             } else if (obj instanceof Map) {
-                list.add(MiscUtil.transferDtoFromMap((Map) obj, MasterCodeView.class));
+                MasterCodeView mcv = MiscUtil.transferDtoFromMap((Map) obj, MasterCodeView.class);
+                list.add(mcv);
             }
         });
         Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
