@@ -14,7 +14,7 @@ import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 public interface MessageService {
     SearchResult<MessageDto> doQuery(SearchParam param);
 
-    void saveMessage(MessageDto msg);
+    void saveMessage(MessageDto messageDto);
 
     MessageDto getMessageByRowguid(String rowguid);
 }
