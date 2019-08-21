@@ -17,9 +17,12 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.action.OrgUserAccountDelegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
@@ -32,6 +35,7 @@ import sop.util.Assert;
 
 import java.util.Map;
 
+import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -47,15 +51,15 @@ public class OrgUserAccountValidateTest {
     @Spy
     private OrgUserAccountValidate orgUserAccountValidate = new OrgUserAccountValidate();
     private MockHttpServletRequest request = new MockHttpServletRequest();
-//    @Mock
-//    private OrgUserAccountDao orgUserAccountDao ;
+    @Mock
+    private OrgUserAccountServiceImpl orgUserAccountService ;
 
     @Before
     public void setup(){
         PowerMockito.mockStatic(SpringContextHelper.class);
         ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
         when(SpringContextHelper.getContext()).thenReturn(context);
-       // doReturn(orgUserAccountDao).when(context).getBean(OrgUserAccountDao.class);
+        doReturn(orgUserAccountService).when(context).getBean(OrgUserAccountServiceImpl.class);
     }
 
     @Test
@@ -65,10 +69,9 @@ public class OrgUserAccountValidateTest {
         orgUserAccountDto.setId(0);
         ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
 
-//        OrgUserAccount oua = new OrgUserAccount();
-//        oua.setId(1);
-//        PowerMockito.when(orgUserAccountDao.findByIdNo(Mockito.anyObject())).thenReturn(oua);
-
+        OrgUserAccountDto orgUserAccountDto1 = new OrgUserAccountDto();
+        orgUserAccountDto1.setId(1);
+        PowerMockito.when(orgUserAccountService.getOrgUserAccountByNircNo(Mockito.anyString())).thenReturn(orgUserAccountDto1);
         Map<String,String> errorMap = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap);
     }
