@@ -68,11 +68,17 @@ public class OrgUserAccountValidateTest {
         orgUserAccountDto.setNircNo("NircNo");
         orgUserAccountDto.setId(0);
         ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
-
         OrgUserAccountDto orgUserAccountDto1 = new OrgUserAccountDto();
         orgUserAccountDto1.setId(1);
         PowerMockito.when(orgUserAccountService.getOrgUserAccountByNircNo(Mockito.anyString())).thenReturn(orgUserAccountDto1);
         Map<String,String> errorMap = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap);
+
+        // test if (dto == null || StringUtil.isEmpty(dto.getNircNo())) return errMap;
+        ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,null);
+        Map<String,String> errorMap1 = orgUserAccountValidate.validate(request);
+        Assert.assertNotNull(errorMap1);
+
+
     }
 }
