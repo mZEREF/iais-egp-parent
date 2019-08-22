@@ -29,6 +29,8 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +53,15 @@ public class WebValidationHelperTest {
     public void setup() {
         PowerMockito.mockStatic(AuditTrailDto.class);
         PowerMockito.mockStatic(ValidationUtils.class);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testConstructor() throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException, InstantiationException {
+        Class cls = WebValidationHelper.class;
+        Constructor<WebValidationHelper> con = cls.getDeclaredConstructor(null);
+        con.setAccessible(true);
+        con.newInstance(null);
     }
 
     @Test
