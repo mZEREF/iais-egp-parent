@@ -26,17 +26,4 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class OrganizationServiceImpl implements OrganizationService {
-
-//    @Autowired
-//    private OrganizationDao organizationDao;
-//
-//    @Override
-//    public Organization getOrganizationByUenNo(String uenNo) {
-//        Organization organization = new Organization();
-//        organization.setUenNo(uenNo);
-//        Example<Organization> example = Example.of(organization);
-//        return organizationDao.findOne(example);
-//    }
-
-
 }
