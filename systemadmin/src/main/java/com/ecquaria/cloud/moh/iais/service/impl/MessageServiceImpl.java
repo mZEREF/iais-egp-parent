@@ -24,8 +24,7 @@ public class MessageServiceImpl implements MessageService {
 
     @SearchTrack(catalog = "message", key = "search")
     public SearchResult<MessageDto> doQuery(SearchParam param) {
-        SearchResult<MessageDto> searchResult = RestApiUtil.query("/iais-message/results", param);
-        return searchResult;
+        return  RestApiUtil.query("/iais-message/results", param);
     }
 
     public void saveMessage(MessageDto messageDto) {
