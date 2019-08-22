@@ -28,7 +28,7 @@
         <jacoco.out.ut.file>jacoco-ut.exec</jacoco.out.ut.file>
         <sonar.jacoco.reportPaths>${project.build.directory}/${jacoco.out.ut.file}</sonar.jacoco.reportPaths>
         <buildnumber-maven-plugin.version>1.4</buildnumber-maven-plugin.version>
-        <sonar.exclusions>src/main/webapp/deployed/IAIS/**/*</sonar.exclusions>
+        <sonar.issue.ignore.allfile>extends BaseProcessClass</sonar.issue.ignore.allfile>
     </properties>
 
     <modules>
