@@ -103,9 +103,4 @@
             </plugin>
         </plugins>
     </build>
-    <properties>
-        <sonar.exclusions>
-            src/main/webapp/deployed/IAIS/**/*
-        </sonar.exclusions>
-    </properties>
 </project>
