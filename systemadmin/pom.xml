@@ -39,7 +39,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <sonar.exclusions>**/webapp/deployed/IAIS/**/*</sonar.exclusions>
+        <sonar.exclusions>src/main/webapp/deployed/IAIS/**/*</sonar.exclusions>
     </properties>
     <build>
         <finalName>systemadmin</finalName>
