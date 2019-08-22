@@ -14,7 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import org.junit.Before;
@@ -50,19 +50,18 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({MasterCodeUtil.class, RedisCacheHelper.class})
+@PrepareForTest({MasterCodeUtil.class, RedisCacheHelper.class, QueryHelp.class, RestApiUtil.class})
 @SuppressStaticInitializationFor("com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil")
 @PowerMockIgnore("javax.management.*")
 public class MasterCodeUtilTest {
-    @Mock
-    private QueryDao queryDao;
     @Mock
     private RedisCacheHelper rch;
 
     @Before
     public void setup() {
-        Whitebox.setInternalState(MasterCodeUtil.class, "queryDao", queryDao);
         PowerMockito.mockStatic(RedisCacheHelper.class);
+        PowerMockito.mockStatic(QueryHelp.class);
+        PowerMockito.mockStatic(RestApiUtil.class);
         when(RedisCacheHelper.getInstance()).thenReturn(rch);
         doNothing().when(rch).set(anyString(), anyString(), anyObject());
         SearchResult<MasterCodeView> sr = new SearchResult<>();
@@ -85,7 +84,7 @@ public class MasterCodeUtilTest {
         list.add(dto);
         sr.setRows(list);
         sr.setRowCount(list.size());
-        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
+        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -98,7 +97,7 @@ public class MasterCodeUtilTest {
     public void testRefreshCache() {
         MasterCodeUtil.refreshCache();
         assertNotNull(MasterCodeUtil.retrieveOptionsByCate("1"));
-        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(null);
+        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(null);
         MasterCodeUtil.refreshCache();
     }
 
@@ -114,7 +113,7 @@ public class MasterCodeUtilTest {
         List<MasterCodeView> list = MasterCodeUtil.retrieveByCategory("1");
         assertNotNull(list);
         SearchResult sr = new SearchResult();
-        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
+        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
         MasterCodeUtil.retrieveByCategory("1");
     }
 
@@ -129,7 +128,7 @@ public class MasterCodeUtilTest {
         List<MasterCodeView> list = MasterCodeUtil.retrieveByFilter("E");
         assertNotNull(list);
         SearchResult sr = new SearchResult();
-        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
+        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
         MasterCodeUtil.retrieveByFilter("E");
     }
 
@@ -144,7 +143,7 @@ public class MasterCodeUtilTest {
         String desc = MasterCodeUtil.getCodeDesc("E02");
         assertNotNull(desc);
         SearchResult sr = new SearchResult();
-        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
+        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
         MasterCodeUtil.getCodeDesc("E02");
     }
 
@@ -154,7 +153,7 @@ public class MasterCodeUtilTest {
         List<SelectOption> list = MasterCodeUtil.retrieveOptionsByCodes(strs);
         assertNotNull(list);
         SearchResult sr = new SearchResult();
-        when(queryDao.doQuery(anyObject(),anyObject())).thenReturn(sr);
+        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
         MasterCodeUtil.retrieveOptionsByCodes(strs);
         MasterCodeUtil.retrieveOptionsByCodes(null);
     }

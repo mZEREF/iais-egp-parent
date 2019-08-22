@@ -13,11 +13,10 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
@@ -44,8 +43,6 @@ public final class MasterCodeUtil {
     //Code Categorys
     public static final String CATE_ID_NATIONALITY                      = "1";
 
-    private static QueryDao queryDao = SpringContextHelper.getContext().getBean(QueryDao.class);
-
     /**
      * @description: refresh the master codes into cache
      *
@@ -56,13 +53,22 @@ public final class MasterCodeUtil {
     public static void refreshCache() {
         SearchParam param = new SearchParam(MasterCodeView.class.getName());
         param.setSort(SEQUENCE, SearchParam.ASCENDING);
-        SearchResult<MasterCodeView> sr = queryDao.doQuery(param,null);
+        QueryHelp.setMainSql("webcommon", "retrieveMasterCodes", param);
+        SearchResult sr = RestApiUtil.query("mastercodes/caches", param);
         if (sr == null || sr.getRowCount() <= 0)
             return;
 
+        List<MasterCodeView> list = new ArrayList<>();
+        sr.getRows().forEach(obj -> {
+            if (obj instanceof MasterCodeView) {
+                list.add((MasterCodeView) obj);
+            } else if (obj instanceof Map) {
+                MasterCodeView mcv = MiscUtil.transferDtoFromMap((Map) obj, MasterCodeView.class);
+                list.add(mcv);
+            }
+        });
         Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
         Map<String, List<MasterCodeView>> filterMap = new HashMap<>();
-        List<MasterCodeView> list = sr.getRows();
         list.forEach(mc ->
             RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue())
         );
@@ -155,7 +161,8 @@ public final class MasterCodeUtil {
         if (StringUtil.isEmpty(desc)) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.addFilter("codeFilter", code, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param,null);
+            QueryHelp.setMainSql("webcommon", "retrieveMasterCodes", param);
+            SearchResult<MasterCodeView> sr = RestApiUtil.query("mastercodes/caches", param);
             if (sr.getRowCount() > 0) {
                 MasterCodeView mc = sr.getRows().get(0);
                 desc = mc.getCodeValue();
@@ -230,7 +237,8 @@ public final class MasterCodeUtil {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("cateFilter", cateId, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param,null);
+            QueryHelp.setMainSql("webcommon", "retrieveMasterCodes", param);
+            SearchResult<MasterCodeView> sr = RestApiUtil.query("mastercodes/caches", param);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
@@ -251,7 +259,8 @@ public final class MasterCodeUtil {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("filterAttr", filter, true);
-            SearchResult<MasterCodeView> sr = queryDao.doQuery(param,null);
+            QueryHelp.setMainSql("webcommon", "retrieveMasterCodes", param);
+            SearchResult<MasterCodeView> sr = RestApiUtil.query("mastercodes/caches", param);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->

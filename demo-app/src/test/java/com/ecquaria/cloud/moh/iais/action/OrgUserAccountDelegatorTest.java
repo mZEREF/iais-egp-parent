@@ -13,17 +13,17 @@
 
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountServiceImpl;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +36,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -49,8 +48,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
  * @date 7/31/2019
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OrgUserAccountDelegator.class,CrudHelper.class,OrgUserAccountServiceImpl.class,
-        SpringContextHelper.class, MiscUtil.class,AuditTrailDto.class,ParamUtil.class})
+@PrepareForTest({OrgUserAccountDelegator.class,CrudHelper.class,WebValidationHelper.class,
+         MiscUtil.class,ParamUtil.class,RestApiUtil.class,
+        QueryHelp.class})
 public class OrgUserAccountDelegatorTest {
     @InjectMocks
     private OrgUserAccountDelegator orgUserAccountDelegator;
@@ -58,34 +58,26 @@ public class OrgUserAccountDelegatorTest {
     private OrgUserAccountService orgUserAccountService = new OrgUserAccountServiceImpl();
     @Mock
     private BaseProcessClass bpc;
+    @Mock
+    private ValidationResult validationResult;
 
     private MockHttpServletRequest request = new MockHttpServletRequest();
-
-    @Mock
-    private QueryDao<DemoQueryDto> demoQueryDao;
-//    @Mock
-//    private OrgUserAccountDao orgUserAccountDao;
-
-   // private OrgUserAccount orgUserAccount = new OrgUserAccount() ;
-
+    private SearchResult searchResult = new SearchResult();
+    private OrgUserAccountDto orgUserAccountDto = new OrgUserAccountDto();
     @Before
     public void setup(){
         bpc.request=request;
+        PowerMockito.mockStatic(RestApiUtil.class);
+        when(RestApiUtil.query(Mockito.anyString(),Mockito.anyObject())).thenReturn(searchResult);
+        when(RestApiUtil.getByReqParam(Mockito.anyString(),Mockito.anyObject(),Mockito.anyObject())).thenReturn(orgUserAccountDto);
+        PowerMockito.mockStatic(QueryHelp.class);
         PowerMockito.mockStatic(CrudHelper.class);
-       // PowerMockito.doNothing().when(orgUserAccountDao).delete(Mockito.anyInt());
-        //when(orgUserAccountDao.findOne((Example)Mockito.anyObject())).thenReturn(orgUserAccount);
+        PowerMockito.mockStatic(WebValidationHelper.class);
+        when(WebValidationHelper.validateProperty(Mockito.anyObject(),Mockito.anyString())).thenReturn(validationResult);
         Whitebox.setInternalState(orgUserAccountDelegator,"orgUserAccountService",orgUserAccountService);
-       // Whitebox.setInternalState(orgUserAccountService,"demoQueryDao",demoQueryDao);
-       // Whitebox.setInternalState(orgUserAccountService,"orgUserAccountDao",orgUserAccountDao);
-        PowerMockito.mockStatic(SpringContextHelper.class);
-        ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
-        when(SpringContextHelper.getContext()).thenReturn(context);
-        //doReturn(orgUserAccountDao).when(context).getBean(OrgUserAccountDao.class);
+
         PowerMockito.mockStatic(MiscUtil.class);
         when(MiscUtil.getCurrentRequest()).thenReturn(request);
-        PowerMockito.mockStatic(AuditTrailDto.class);
-        AuditTrailDto dto = new AuditTrailDto();
-        PowerMockito.when(AuditTrailDto.getThreadDto()).thenReturn(dto);
     }
 
     @Test
@@ -96,9 +88,7 @@ public class OrgUserAccountDelegatorTest {
 
     @Test
     public void testprepareDatat(){
-        SearchResult searchResult = new SearchResult();
-       // when(demoQueryDao.doQuery(Mockito.anyObject())).thenReturn(searchResult);
-        //orgUserAccountDelegator.prepareData(bpc);
+        orgUserAccountDelegator.prepareData(bpc);
         Assert.assertTrue(true);
     }
     @Test
@@ -128,8 +118,7 @@ public class OrgUserAccountDelegatorTest {
     @Test
     public void testdoDelete(){
         request.addParameter("crud_action_value","0");
-       // PowerMockito.doNothing().when(orgUserAccountDao).delete(Mockito.anyInt());
-       // orgUserAccountDelegator.doDelete(bpc);
+        orgUserAccountDelegator.doDelete(bpc);
         Assert.assertTrue(true);
     }
     @Test
@@ -140,14 +129,14 @@ public class OrgUserAccountDelegatorTest {
     @Test
     public void testdoCreateValidateHasError(){
         request.addParameter("crud_action_type","save");
+        when(validationResult.isHasErrors()).thenReturn(true);
         orgUserAccountDelegator.doCreate(bpc);
         Assert.assertTrue(true);
     }
     @Test
     public void testdoCreate(){
         request.addParameter("crud_action_type","save");
-        request.addParameter("nircNo","test0");
-       // orgUserAccountDelegator.doCreate(bpc);
+        orgUserAccountDelegator.doCreate(bpc);
         Assert.assertTrue(true);
     }
 
@@ -155,25 +144,25 @@ public class OrgUserAccountDelegatorTest {
     public void testprepareEdit(){
         PowerMockito.mockStatic(ParamUtil.class);
         PowerMockito.when(ParamUtil.getString(Mockito.anyObject(),Mockito.anyObject())).thenReturn("rowguid");
-        PowerMockito.when(MiscUtil.transferEntityDto(Mockito.anyObject(),Mockito.anyObject())).thenReturn(new OrgUserAccountDto());
-       // orgUserAccountDelegator.prepareEdit(bpc);
+        PowerMockito.when(MiscUtil.transferEntityDto(Mockito.anyObject(),Mockito.anyObject())).thenReturn(orgUserAccountDto);
+        orgUserAccountDelegator.prepareEdit(bpc);
         Assert.assertTrue(true);
     }
     @Test
     public void testdoEditValidateHasError(){
         request.addParameter("crud_action_type","edit");
-        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, new OrgUserAccountDto());
+        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, orgUserAccountDto);
+        when(validationResult.isHasErrors()).thenReturn(true);
         orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
     }
     @Test
     public void testdoEdit(){
         request.addParameter("crud_action_type","edit");
-        OrgUserAccountDto dto = new OrgUserAccountDto();
-        dto.setOldNricNo("test0");
-        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, dto);
+        orgUserAccountDto.setOldNricNo("test0");
+        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, orgUserAccountDto);
         request.addParameter("nircNo","test0");
-       // orgUserAccountDelegator.doEdit(bpc);
+        orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
     }
 
