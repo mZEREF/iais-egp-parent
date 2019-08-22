@@ -6,7 +6,6 @@
         <artifactId>iais-egp-parent</artifactId>
         <groupId>sg.gov.moh.iais-egp</groupId>
         <version>${revision}</version>
-
     </parent>
 
     <packaging>war</packaging>
@@ -38,9 +37,10 @@
             <artifactId>iais-log-audit</artifactId>
             <version>${revision}</version>
         </dependency>
-
-
     </dependencies>
+    <properties>
+        <sonar.exclusions>src/main/webapp/deployed/IAIS/**/*</sonar.exclusions>
+    </properties>
     <build>
         <finalName>systemadmin</finalName>
         <resources>
