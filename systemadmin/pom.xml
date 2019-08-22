@@ -6,7 +6,6 @@
         <artifactId>iais-egp-parent</artifactId>
         <groupId>sg.gov.moh.iais-egp</groupId>
         <version>${revision}</version>
-
     </parent>
 
     <packaging>war</packaging>
@@ -38,8 +37,6 @@
             <artifactId>iais-log-audit</artifactId>
             <version>${revision}</version>
         </dependency>
-
-
     </dependencies>
     <build>
         <finalName>systemadmin</finalName>
