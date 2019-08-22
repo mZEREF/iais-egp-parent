@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -38,14 +39,7 @@ public class MessageDelegator {
     public static final String PARAM_MESSAGE_SEARCH = "msgSearchParam";
     public static final String PARAM_MESSAGE_SEARCH_RESULT = "msgSearchResult";
 
-    public static final String PARAM_MSG_ID = "param_msg_id";
-    public static final String PARAM_ROW_ID = "param_row_id";
-    public static final String PARAM_CODE_KEY = "param_code_key";
-    public static final String PARAM_DOMAIN_TYPE = "param_domain_type";
-    public static final String PARAM_MSG_TYPE = "param_msg_type";
-    public static final String PARAM_MODULE = "param_module";
-    public static final String PARAM_DESCRIPTION = "param_description";
-    public static final String PARAM_STATUS = "param_status";
+
 
     @Autowired
     private MessageService messageService;
@@ -123,10 +117,10 @@ public class MessageDelegator {
             return;
         }
 
-        String domainType = ParamUtil.getString(request, "domainType");
-        String msgType = ParamUtil.getString(request, "msgType");
-        String module = ParamUtil.getString(request, "module");
-        String description = ParamUtil.getString(request, "description");
+        String domainType = ParamUtil.getString(request, MessageConstant.PARAM_DOMAIN_TYPE);
+        String msgType = ParamUtil.getString(request, MessageConstant.PARAM_MSG_TYPE);
+        String module = ParamUtil.getString(request, MessageConstant.PARAM_MODULE);
+        String description = ParamUtil.getString(request, MessageConstant.PARAM_DESCRIPTION);
 
         MessageDto messageDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO);
         messageDto.setDomainType(domainType);
@@ -174,9 +168,9 @@ public class MessageDelegator {
             return;
         }
         MessageDto messageDto = new MessageDto();
-        String domainType = ParamUtil.getString(request, "domainType");
-        String msgType = ParamUtil.getString(request, "msgType");
-        String module = ParamUtil.getString(request, "module");
+        String domainType = ParamUtil.getString(request, MessageConstant.PARAM_DOMAIN_TYPE);
+        String msgType = ParamUtil.getString(request, MessageConstant.PARAM_MSG_TYPE);
+        String module = ParamUtil.getString(request, MessageConstant.PARAM_MODULE);
 
         messageDto.setDomainType(domainType);
         messageDto.setMsgType(msgType);
@@ -190,14 +184,14 @@ public class MessageDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
-            param.addFilter("domainType", domainType, true);
+            param.addFilter(MessageConstant.PARAM_DOMAIN_TYPE, domainType, true);
 
             if(!StringUtil.isEmpty(msgType)){
-                param.addFilter("msgType", msgType, true);
+                param.addFilter(MessageConstant.PARAM_MSG_TYPE, msgType, true);
             }
 
             if(!StringUtil.isEmpty(module)){
-                param.addFilter("module", module, true);
+                param.addFilter(MessageConstant.PARAM_MODULE, module, true);
             }
         }
     }

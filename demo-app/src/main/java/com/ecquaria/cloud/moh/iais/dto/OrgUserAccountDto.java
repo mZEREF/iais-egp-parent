@@ -78,10 +78,7 @@ public class OrgUserAccountDto implements Serializable {
     }
 
     public boolean fakeValidateA(String arg) {
-        if (StringUtil.isEmpty(arg))
-            return false;
-        else
-            return true;
+        return !StringUtil.isEmpty(arg);
     }
 
     public boolean fakeValidateB(String arg) {

@@ -1,28 +1,34 @@
 package com.ecquaria.cloud.moh.iais.constant;
 
-public interface MessageConstant {
-    String CODE_ID = "CODE_ID";
-    String CODE_KEY = "CODE_KEY";
-    String TYPE = "MESSAGE_TYPE";
-    String MODULE = "MODULE";
-    String DESCRIPTION = "DESCRIPTION";
-    String STATUS = "STATUS";
+public class MessageConstant {
 
-    String TYPE_INTER = "INTER";
-    String TYPE_INTRA = "INTRA";
+    public static final String PARAM_MSG_ID = "msgId";
+    public static final String PARAM_ROW_ID = "rowguid";
+    public static final String PARAM_CODE_KEY = "codeKey";
+    public static final String PARAM_DOMAIN_TYPE = "domainType";
+    public static final String PARAM_MSG_TYPE = "msgType";
+    public static final String PARAM_MODULE = "module";
+    public static final String PARAM_DESCRIPTION = "description";
+    public static final String PARAM_STATUS = "status";
 
-    String MESSAGETYPE_ERROR = "Error";
-    String MESSAGETYPE_ACKNOWLEDGEMENT = "Acknowledgement";
+    public static final String TYPE_INTER = "INTER";
+    public static final String TYPE_INTRA = "INTRA";
 
-    String MODULE_NEW = "New";
-    String MODULE_REANWAL = "Reanwal";
-    String MODULE_CESSATION = "Cessation";
-    String MODULE_AMENDMENT = "Amendment";
-    String MODULE_REINSTATE = "Reinstate";
-    String MODULE_AUDIT = "Audit";
-    String MODULE_COMMON = "Common";
-    String MODULE_OTHERS = "Others";
+    public static final String MESSAGETYPE_ERROR = "Error";
+    public static final String MESSAGETYPE_ACKNOWLEDGEMENT = "Acknowledgement";
 
-    char STATUS_ACTIVE = 'Y';
-    char STATUS_DEACTIVATED = 'N';
+    public static final String MODULE_NEW = "New";
+    public static final String MODULE_REANWAL = "Reanwal";
+    public static final String MODULE_CESSATION = "Cessation";
+    public static final String MODULE_AMENDMENT = "Amendment";
+    public static final String MODULE_REINSTATE = "Reinstate";
+    public static final String MODULE_AUDIT = "Audit";
+    public static final String MODULE_COMMON = "Common";
+    public static final String MODULE_OTHERS = "Others";
+
+    public static final char STATUS_ACTIVE = 'Y';
+    public static final char STATUS_DEACTIVATED = 'N';
+
+    private MessageConstant() {
+    }
 }
