@@ -38,9 +38,6 @@
             <version>${revision}</version>
         </dependency>
     </dependencies>
-    <properties>
-        <sonar.exclusions>src/main/webapp/deployed/IAIS/**/*</sonar.exclusions>
-    </properties>
     <build>
         <finalName>systemadmin</finalName>
         <resources>
