@@ -81,11 +81,12 @@
         <div class="table-responsive" id="no-more-tables">
         <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
             <colgroup>
-                <col width="5%"/>
-                <col width="15%"/>
-                <col width="15%"/>
-                <col width="35%"/>
-                <col width="50%"/>
+                <col style="width: 10%;"/>
+                <col style="width: 20%;"/>
+                <col style="width: 20%;"/>
+                <col style="width: 20%;"/>
+                <col style="width: 20%;"/>
+                <col style="width: 10%;"/>
             </colgroup>
             <thead>
             <tr>
