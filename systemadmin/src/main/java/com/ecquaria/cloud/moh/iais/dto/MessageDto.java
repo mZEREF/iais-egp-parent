@@ -66,10 +66,7 @@ public class MessageDto implements Serializable {
         String regEx = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
         Pattern pattern = Pattern.compile(regEx);
         Matcher matcher = pattern.matcher(description);
-        if(matcher.find()){
-            return false;
-        }
-        return true;
+        return !matcher.find();
     }
 
 }
