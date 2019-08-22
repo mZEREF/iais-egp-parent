@@ -33,6 +33,11 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
+            <groupId>biz.paluch.maven.configurator</groupId>
+            <artifactId>configurator-maven-plugin</artifactId>
+            <version>${biz.paluch.maven.configurator.version}</version>
+        </dependency>
+        <dependency>
             <groupId>sg.gov.moh.iais</groupId>
             <artifactId>iais-log-audit</artifactId>
             <version>${revision}</version>
