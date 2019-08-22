@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import freemarker.template.TemplateException;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -55,5 +56,6 @@ public class QueryHelpTest {
         Whitebox.setInternalState(SqlMap.class,"INSTANCE",sqlMap);
         PowerMockito.when(sqlMap.getSql(Mockito.anyString(),Mockito.anyString(),Mockito.anyMap())).thenReturn("");
         QueryHelp.setMainSql("catalog","key",searchParam);
+        Assert.assertTrue(true);
     }
 }
