@@ -16,6 +16,7 @@ package com.ecquaria.cloud.moh.iais.validate;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.action.OrgUserAccountDelegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountServiceImpl;
 import org.junit.Before;
@@ -46,7 +47,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({OrgUserAccountValidate.class,SpringContextHelper.class})
+@PrepareForTest({OrgUserAccountValidate.class,SpringContextHelper.class,RestApiUtil.class,})
 public class OrgUserAccountValidateTest {
     @Spy
     private OrgUserAccountValidate orgUserAccountValidate = new OrgUserAccountValidate();
@@ -57,6 +58,7 @@ public class OrgUserAccountValidateTest {
     @Before
     public void setup(){
         PowerMockito.mockStatic(SpringContextHelper.class);
+        PowerMockito.mockStatic(RestApiUtil.class);
         ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
         when(SpringContextHelper.getContext()).thenReturn(context);
         doReturn(orgUserAccountService).when(context).getBean(OrgUserAccountServiceImpl.class);
@@ -70,7 +72,7 @@ public class OrgUserAccountValidateTest {
         ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
         OrgUserAccountDto orgUserAccountDto1 = new OrgUserAccountDto();
         orgUserAccountDto1.setId(1);
-        PowerMockito.when(orgUserAccountService.getOrgUserAccountByNircNo(Mockito.anyString())).thenReturn(orgUserAccountDto1);
+        PowerMockito.when(RestApiUtil.getByReqParam(Mockito.anyString(),Mockito.anyMap(),Mockito.anyObject())).thenReturn(orgUserAccountDto1);
         Map<String,String> errorMap = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap);
 
