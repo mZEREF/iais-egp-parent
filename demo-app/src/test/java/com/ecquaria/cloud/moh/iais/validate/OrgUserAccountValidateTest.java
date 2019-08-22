@@ -22,9 +22,9 @@ import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
 import org.powermock.core.classloader.annotations.MockPolicy;
@@ -49,8 +49,8 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @MockPolicy(Slf4jMockPolicy.class)
 @PrepareForTest({OrgUserAccountValidate.class,SpringContextHelper.class,RestApiUtil.class,})
 public class OrgUserAccountValidateTest {
-    @Spy
-    private OrgUserAccountValidate orgUserAccountValidate = new OrgUserAccountValidate();
+    @InjectMocks
+    private OrgUserAccountValidate orgUserAccountValidate ;
     private MockHttpServletRequest request = new MockHttpServletRequest();
     @Mock
     private OrgUserAccountServiceImpl orgUserAccountService ;
