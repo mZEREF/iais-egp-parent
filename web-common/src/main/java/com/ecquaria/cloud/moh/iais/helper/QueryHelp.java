@@ -17,6 +17,9 @@ import java.io.IOException;
  */
 @Slf4j
 public class QueryHelp {
+    private QueryHelp() {
+        throw new IllegalStateException("Utility class");
+    }
     private static String getMainSql(String catalog, String key, SearchParam param) {
         String sql = null;
         try {
