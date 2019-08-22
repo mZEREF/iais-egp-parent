@@ -84,7 +84,6 @@ public class OrgUserAccountDelegator {
         SearchParam param = getSearchParam(bpc);
         param.addFilter("ORGANIZATION_ID","1",true);
         ParamUtil.setRequestAttr(request,"ORGANIZATION_ID", 1);
-        QueryHelp.setMainSql("demo", "searchDemo",param);
         SearchResult searchResult = orgUserAccountService.doQuery(param);
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
         ParamUtil.setRequestAttr(request, SEARCH_RESULT, searchResult);
@@ -301,6 +300,7 @@ public class OrgUserAccountDelegator {
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort("user_id", SearchParam.ASCENDING);
+            QueryHelp.setMainSql("demo", "searchDemo",param);
             ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
         }
         return param;
