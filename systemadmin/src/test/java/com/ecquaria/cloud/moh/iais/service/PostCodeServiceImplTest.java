@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.dto.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.service.impl.PostCodeServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,29 +38,6 @@ public class PostCodeServiceImplTest {
 //        Mockito.doReturn(list).when(postCodeDao).save(list);
     }
 
-    //getPostCodeByCode
-    @Test
-    public void testgetPostCodeByCode(){
-//        PostCode pc = postCodeServiceImpl.getPostCodeByCode(POSTCODE);
-//        Assert.assertEquals(pc.getPostalCode(),POSTCODE);
-    }
-
-    //savePostCode
-    @Test
-    public void testsavePostCode(){
-        PostCodeDto postCodet = new PostCodeDto();
-        postCodet.setPostalCode(POSTCODE);
-        String  cpde = postCodeServiceImpl.savePostCode(postCodet);
-        Assert.assertEquals(cpde,POSTCODE);
-    }
-
-//    //clean
-//    @Test
-//    public void testclean(){
-//        postCodeServiceImpl.clean();
-//        Assert.assertTrue(true);
-//    }
-    //createAll
     @Test
     public void testcreateAll(){
         postCodeServiceImpl.createAll(list);
