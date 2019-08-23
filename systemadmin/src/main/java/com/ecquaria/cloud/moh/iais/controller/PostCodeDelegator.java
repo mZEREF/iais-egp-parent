@@ -35,6 +35,7 @@ public class PostCodeDelegator {
         if(!list.isEmpty()){
             postCodeService.createAll(list);
         }
+        bpc.request.setAttribute("success","success");
     }
 
     private Map<String,String> initstreetMap() throws IOException {
