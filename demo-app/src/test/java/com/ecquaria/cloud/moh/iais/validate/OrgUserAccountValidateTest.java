@@ -18,12 +18,12 @@ import com.ecquaria.cloud.moh.iais.action.OrgUserAccountDelegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
@@ -52,8 +52,7 @@ public class OrgUserAccountValidateTest {
     @InjectMocks
     private OrgUserAccountValidate orgUserAccountValidate ;
     private MockHttpServletRequest request = new MockHttpServletRequest();
-    @Mock
-    private OrgUserAccountServiceImpl orgUserAccountService ;
+    private OrgUserAccountService orgUserAccountService = new OrgUserAccountServiceImpl();
 
     @Before
     public void setup(){
@@ -67,6 +66,12 @@ public class OrgUserAccountValidateTest {
     @Test
     public void testValidate(){
         OrgUserAccountDto orgUserAccountDto = new OrgUserAccountDto();
+        // test if (dto == null || StringUtil.isEmpty(dto.getNircNo())) return errMap;
+        orgUserAccountDto.setNircNo(null);
+        ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
+        Map<String,String> errorMap1 = orgUserAccountValidate.validate(request);
+        Assert.assertNotNull(errorMap1);
+
         orgUserAccountDto.setNircNo("NircNo");
         orgUserAccountDto.setId(0);
         ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
@@ -76,11 +81,7 @@ public class OrgUserAccountValidateTest {
         Map<String,String> errorMap = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap);
 
-        // test if (dto == null || StringUtil.isEmpty(dto.getNircNo())) return errMap;
-        orgUserAccountDto.setNircNo(null);
-        ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
-        Map<String,String> errorMap1 = orgUserAccountValidate.validate(request);
-        Assert.assertNotNull(errorMap1);
+
 
 
     }
