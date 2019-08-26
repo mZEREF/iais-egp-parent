@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
+import com.ecquaria.cloud.moh.iais.dto.MessageQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -177,7 +178,6 @@ public class MessageDelegator {
         messageDto.setModule(module);
 
         SearchParam param = getSearchParam(bpc, true);
-        ParamUtil.setRequestAttr(request, MessageDto.MESSAGE_REQUEST_DTO, messageDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(messageDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
@@ -208,7 +208,6 @@ public class MessageDelegator {
         log.debug("*******************action-->:" + action);
         log.debug("The prepareSwitch end ...");
     }
-
 
     /**
      * AutoStep: editBefore
@@ -262,7 +261,7 @@ public class MessageDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, PARAM_MESSAGE_SEARCH);
         if(param == null || isNew){
-            param = new SearchParam(MessageDto.class.getName());
+            param = new SearchParam(MessageQueryDto.class.getName());
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort("msg_id", SearchParam.ASCENDING);

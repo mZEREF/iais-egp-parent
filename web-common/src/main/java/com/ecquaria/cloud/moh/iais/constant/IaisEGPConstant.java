@@ -7,6 +7,11 @@ package com.ecquaria.cloud.moh.iais.constant;
  */
 
 public class IaisEGPConstant {
+
+    private IaisEGPConstant(){
+
+    }
+
     public static final String CRUD_ACTION_TYPE                    = "crud_action_type";
     public static final String CRUD_ACTION_VALUE                   = "crud_action_value";
     public static final String ISVALID                             = "isValid";
