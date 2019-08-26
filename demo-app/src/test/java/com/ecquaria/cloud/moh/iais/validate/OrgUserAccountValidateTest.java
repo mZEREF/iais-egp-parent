@@ -47,7 +47,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({OrgUserAccountValidate.class,SpringContextHelper.class,RestApiUtil.class,})
+@PrepareForTest({OrgUserAccountValidate.class,SpringContextHelper.class,RestApiUtil.class,OrgUserAccountServiceImpl.class})
 public class OrgUserAccountValidateTest {
     @InjectMocks
     private OrgUserAccountValidate orgUserAccountValidate ;
@@ -72,7 +72,7 @@ public class OrgUserAccountValidateTest {
         ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
         OrgUserAccountDto orgUserAccountDto1 = new OrgUserAccountDto();
         orgUserAccountDto1.setId(1);
-        PowerMockito.when(RestApiUtil.getByReqParam(Mockito.anyString(),Mockito.anyMap(),Mockito.anyObject())).thenReturn(orgUserAccountDto1);
+        PowerMockito.when(RestApiUtil.getByReqParam(Mockito.anyString(),Mockito.anyMap(),Mockito.any(Class.class))).thenReturn(orgUserAccountDto1);
         Map<String,String> errorMap = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap);
 
