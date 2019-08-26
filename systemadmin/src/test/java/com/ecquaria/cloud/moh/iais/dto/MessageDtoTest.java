@@ -28,6 +28,7 @@ public class MessageDtoTest {
         dto.getMsgType();
         dto.getDescription();
         dto.getStatus();
+        dto.getAuditTrailDto();
 
         dto.setId(null);
         dto.setRowguid(null);
@@ -40,5 +41,7 @@ public class MessageDtoTest {
         dto.validateDescriptionRegEx("");
         dto.validateDescriptionRegEx("asd");
         dto.validateDescriptionRegEx("&*()");
+
+        dto.setAuditTrailDto(null);
     }
 }
