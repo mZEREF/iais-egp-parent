@@ -52,5 +52,11 @@ public class PostCodeControllerTest {
         postCodeController.importPostCode(baseProcessClass);
         Assert.assertTrue(true);
 
+        Whitebox.setInternalState(postCodeController,"streetsPath","");
+        Whitebox.setInternalState(postCodeController,"postCodePath","");
+        Whitebox.setInternalState(postCodeController,"buildingPath","");
+         postCodeController.importPostCode(baseProcessClass);
+        Assert.assertTrue(true);
+
     }
 }
