@@ -24,6 +24,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * AuditTrailHelperTest
  *
@@ -41,5 +44,14 @@ public class AuditTrailHelperTest {
         PowerMockito.when(MiscUtil.getCurrentRequest()).thenReturn(request);
         AuditTrailHelper.auditFunction("UnitTest","testAuditFunction");
         Assert.assertTrue(true);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testConstructor() throws NoSuchMethodException, IllegalAccessException,
+            InvocationTargetException, InstantiationException {
+        Class cls = AuditTrailHelper.class;
+        Constructor<AuditTrailHelper> con = cls.getDeclaredConstructor(null);
+        con.setAccessible(true);
+        con.newInstance(null);
     }
 }

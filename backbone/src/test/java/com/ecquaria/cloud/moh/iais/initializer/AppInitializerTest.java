@@ -13,8 +13,10 @@
 
 package com.ecquaria.cloud.moh.iais.initializer;
 
-import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,12 +30,16 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContextEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 /**
@@ -44,7 +50,8 @@ import static org.powermock.api.mockito.PowerMockito.*;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({AppInitializer.class, WebApplicationContextUtils.class, MasterCodeUtil.class})
+@PrepareForTest({AppInitializer.class, MasterCodeUtil.class, QueryHelp.class,
+        RestApiUtil.class})
 @SuppressStaticInitializationFor("com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil")
 @PowerMockIgnore("javax.management.*")
 public class AppInitializerTest {
@@ -53,19 +60,15 @@ public class AppInitializerTest {
 
     @Mock
     private SqlMapLoader sml;
+
     @Mock
     private ServletContextEvent sce;
-    @Mock
-    private QueryDao queryDao;
 
     @Before
     public void setup() throws Exception {
         PowerMockito.whenNew(SqlMapLoader.class).withNoArguments().thenReturn(sml);
-        PowerMockito.mockStatic(WebApplicationContextUtils.class);
-        WebApplicationContext wac = PowerMockito.mock(WebApplicationContext.class);
-        doReturn(null).when(sce).getServletContext();
-        when(WebApplicationContextUtils.getWebApplicationContext(null)).thenReturn(wac);
-        doReturn(queryDao).when(wac).getBean(QueryDao.class);
+        PowerMockito.mockStatic(QueryHelp.class);
+        PowerMockito.mockStatic(RestApiUtil.class);
     }
 
     @Test
@@ -76,19 +79,19 @@ public class AppInitializerTest {
 
     @Test
     public void testContextInitialized() throws Exception {
-//        SearchResult<MessageCode> sr = new SearchResult<MessageCode>();
-//        List<MessageCode> list = new ArrayList<>();
-//        MessageCode mc = new MessageCode();
-//        mc.setCodeKey("aaaa");
-//        mc.setDescription("bbbbbb");
-//        list.add(mc);
-//        sr.setRows(list);
-//        sr.setRowCount(1);
-//        doNothing().when(sml, "loadSqlMap");
-//        when(queryDao.doQuery(anyObject())).thenReturn(sr);
-//        PowerMockito.mockStatic(MasterCodeUtil.class);
-//        doNothing().when(MasterCodeUtil.class, "refreshCache");
-//        init.contextInitialized(sce);
+        SearchResult<Map<String, String>> sr = new SearchResult<Map<String, String>>();
+        List<Map<String, String>> list = new ArrayList<>();
+        Map<String, String> mc = new HashMap<>();
+        mc.put("codeKey", "aaaa");
+        mc.put("description", "bbbbbb");
+        list.add(mc);
+        sr.setRows(list);
+        sr.setRowCount(1);
+        doNothing().when(sml, "loadSqlMap");
+        when(RestApiUtil.query(anyString(), anyObject())).thenReturn(sr);
+        PowerMockito.mockStatic(MasterCodeUtil.class);
+        doNothing().when(MasterCodeUtil.class, "refreshCache");
+        init.contextInitialized(sce);
         assertNotNull(init);
     }
 

@@ -3,11 +3,12 @@ package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.entity.PostCode;
+import com.ecquaria.cloud.moh.iais.dto.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 @Delegator
 @Slf4j
-public class PostCodeController {
+public class PostCodeDelegator {
     private   String postCodePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/POSTCODE.TXT" ;
     private   String streetsPath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/STREETS.TXT";
     private   String buildingPath= Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/BUILDING.TXT";
@@ -27,14 +28,14 @@ public class PostCodeController {
     @Autowired
     private PostCodeService postCodeService;
 
-    public void importPostCode() throws IOException {
+    public void importPostCode(BaseProcessClass bpc) throws IOException {
         Map<String,String> streetMap = initstreetMap();
         Map<String,String> buildingMap =initbuildingMap();
-        List<PostCode> list = convert(streetMap,buildingMap);
+        List<PostCodeDto> list = convert(streetMap,buildingMap);
         if(!list.isEmpty()){
-            postCodeService.clean();
             postCodeService.createAll(list);
         }
+        bpc.request.setAttribute("success","success");
     }
 
     private Map<String,String> initstreetMap() throws IOException {
@@ -83,8 +84,8 @@ public class PostCodeController {
     /**
      * read file, use inited Map convert data to SingpostAddress
      */
-    private  List<PostCode> convert(Map<String,String> streetMap,Map<String,String> buildingMap) throws IOException {
-        List<PostCode> list = new ArrayList<>();
+    private  List<PostCodeDto> convert(Map<String,String> streetMap,Map<String,String> buildingMap) throws IOException {
+        List<PostCodeDto> list = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(postCodePath));){
             String line = null;
             String postalCode = null;
@@ -100,7 +101,7 @@ public class PostCodeController {
                     blkHseNo = line.substring(7, 14).trim();
                     streetKey = line.substring(14, 21).trim();
                     buildingKey = line.substring(21).trim();
-                    PostCode sa = new PostCode();
+                    PostCodeDto sa = new PostCodeDto();
                     sa.setPostalCode(postalCode);
                     sa.setAddressType(addressType);
                     sa.setBlkHseNo(blkHseNo);

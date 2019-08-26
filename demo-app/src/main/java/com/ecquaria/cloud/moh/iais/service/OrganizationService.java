@@ -20,5 +20,4 @@ package com.ecquaria.cloud.moh.iais.service;
  * @date 7/12/2019
  */
 public interface OrganizationService {
-   // public Organization getOrganizationByUenNo(String uenNo);
 }

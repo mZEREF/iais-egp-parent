@@ -16,6 +16,8 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.dto.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,8 @@ import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
@@ -76,6 +80,18 @@ public final class IaisEGPHelper extends EGPHelper {
 
         return dto;
     }
-
+    /**
+     * @description: get the PostCodeDto by the postalCode
+     *
+     * @author: suocheng on 8/23/2019 4:27 PM
+     * @param: [postalCode]
+     * @return: com.ecquaria.cloud.moh.iais.dto.PostCodeDto
+     */
+    public PostCodeDto getPostCodeByCode(String postalCode) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("searchField", "postalCode");
+        map.put("filterValue", postalCode);
+        return RestApiUtil.getByReqParam("postcodes", map, PostCodeDto.class);
+    }
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
 }

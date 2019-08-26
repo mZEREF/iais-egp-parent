@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.entity;
+package com.ecquaria.cloud.moh.iais.dto;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,16 +9,18 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({PostCode.class})
-public class PostCodeTest {
+@PrepareForTest({PostCodeDto.class})
+public class PostCodeDtoTest {
 
     @Spy
-    PostCode entity = new PostCode();
+    PostCodeDto entity = new PostCodeDto();
 
     @Test
     public void testGetterSetter() {
         entity.getId();
         entity.setId(null);
+        entity.getRowguid();
+        entity.setRowguid(null);
         entity.getPostalCode();
         entity.setPostalCode(null);
         entity.getAddressType();

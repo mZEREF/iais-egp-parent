@@ -11,19 +11,28 @@
  *   without the prior written permission of Ecquaria Technologies Pte Ltd.
  */
 
-package com.ecquaria.cloud.moh.iais.service.impl;
+package com.ecquaria.cloud.moh.iais.dto;
 
-import com.ecquaria.cloud.moh.iais.service.OrganizationService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
 
 /**
- * OrganizationServiceImpl
+ * PostCodeDto
  *
  * @author suocheng
- * @date 7/12/2019
+ * @date 8/23/2019
  */
-@Service
-@Slf4j
-public class OrganizationServiceImpl implements OrganizationService {
+
+public class PostCodeDto implements Serializable {
+    private static final long serialVersionUID = -7599135028356374528L;
+
+    @Getter @Setter private Integer id;
+    @Getter @Setter private String rowguid;
+    @Getter @Setter private String postalCode;
+    @Getter @Setter private String addressType;
+    @Getter @Setter private String blkHseNo;
+    @Getter @Setter private String streetName;
+    @Getter @Setter private String buildingName;
 }
