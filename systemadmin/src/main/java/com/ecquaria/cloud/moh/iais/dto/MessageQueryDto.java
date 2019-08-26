@@ -12,8 +12,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@ToString
-@AllArgsConstructor
 @NoArgsConstructor
 public class MessageQueryDto implements Serializable {
 

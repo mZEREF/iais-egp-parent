@@ -20,8 +20,6 @@ import java.util.regex.Pattern;
 
 @Getter
 @Setter
-@ToString
-@AllArgsConstructor
 @NoArgsConstructor
 public class MessageDto implements Serializable {
     private static final long serialVersionUID = -2542988198043832001L;
