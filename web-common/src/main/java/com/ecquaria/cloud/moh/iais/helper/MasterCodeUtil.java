@@ -40,6 +40,7 @@ public final class MasterCodeUtil {
     private static final String SEQUENCE                                = "sequence";
     private static final String WEBCOMMON                               = "webcommon";
     private static final String RETRIEVE_MASTER_CODES                     = "retrieveMasterCodes";
+    private static final String MASTERCODE_CACHES                     = "mastercodes/caches";
     //Code Categorys
     public static final String CATE_ID_NATIONALITY                      = "1";
 
@@ -53,8 +54,8 @@ public final class MasterCodeUtil {
     public static void refreshCache() {
         SearchParam param = new SearchParam(MasterCodeView.class.getName());
         param.setSort(SEQUENCE, SearchParam.ASCENDING);
-        QueryHelp.setMainSql("webcommon", "retrieveMasterCodes", param);
-        SearchResult sr = RestApiUtil.query("mastercodes/caches", param);
+        QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
+        SearchResult sr = RestApiUtil.query(MASTERCODE_CACHES, param);
         if (sr == null || sr.getRowCount() <= 0)
             return;
 
@@ -161,8 +162,8 @@ public final class MasterCodeUtil {
         if (StringUtil.isEmpty(desc)) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.addFilter("codeFilter", code, true);
-            QueryHelp.setMainSql("webcommon", "retrieveMasterCodes", param);
-            SearchResult<MasterCodeView> sr = RestApiUtil.query("mastercodes/caches", param);
+            QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
+            SearchResult<MasterCodeView> sr = RestApiUtil.query(MASTERCODE_CACHES, param);
             if (sr.getRowCount() > 0) {
                 MasterCodeView mc = sr.getRows().get(0);
                 desc = mc.getCodeValue();
@@ -237,8 +238,8 @@ public final class MasterCodeUtil {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("cateFilter", cateId, true);
-            QueryHelp.setMainSql("webcommon", "retrieveMasterCodes", param);
-            SearchResult<MasterCodeView> sr = RestApiUtil.query("mastercodes/caches", param);
+            QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
+            SearchResult<MasterCodeView> sr = RestApiUtil.query(MASTERCODE_CACHES, param);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
@@ -259,8 +260,8 @@ public final class MasterCodeUtil {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("filterAttr", filter, true);
-            QueryHelp.setMainSql("webcommon", "retrieveMasterCodes", param);
-            SearchResult<MasterCodeView> sr = RestApiUtil.query("mastercodes/caches", param);
+            QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
+            SearchResult<MasterCodeView> sr = RestApiUtil.query(MASTERCODE_CACHES, param);
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
