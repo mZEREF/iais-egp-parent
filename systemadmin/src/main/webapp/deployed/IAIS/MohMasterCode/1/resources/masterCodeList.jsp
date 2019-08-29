@@ -68,11 +68,11 @@ sop.webflow.rt.api.BaseProcessClass process =
             <div class="table-responsive" id="no-more-tables">
                 <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
                     <colgroup>
-                        <col width="5%"/>
-                        <col width="20%"/>
-                        <col width="20%"/>
-                        <col width="15%"/>
-                        <col width="30%"/>
+                        <col style="width:5%; "/>
+                        <col style="width:20% ;"/>
+                        <col style="width:20% ;"/>
+                        <col style="width:15% ;"/>
+                        <col style="width:30% ;"/>
                     </colgroup>
                     <thead>
                     <tr>

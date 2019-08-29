@@ -10,7 +10,6 @@ import java.util.Date;
 
 @Entity
 @Component
-@Table(name = "cm_master_code")
 public class MasterCode implements Serializable {
     private static final long serialVersionUID = 4934028881970802955L;
 
