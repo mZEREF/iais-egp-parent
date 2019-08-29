@@ -16,7 +16,7 @@ import java.util.List;
 public interface MasterCodeRepository extends JpaRepository<MasterCode,Long>,
         JpaSpecificationExecutor<MasterCode>,
         Serializable {
-    @Query(value = "select * from cm_master_code where master_code_id = :master_code_key",nativeQuery = true)
+        @Query(value = "select * from cm_master_code where master_code_id = :master_code_key",nativeQuery = true)
     List<MasterCode> findMasterCodeByMasterCodeId(@Param("master_code_key") int masterCodeKey);
 
     @Query(value = "select * from cm_master_code where rowguid = :rowguid",nativeQuery = true)
