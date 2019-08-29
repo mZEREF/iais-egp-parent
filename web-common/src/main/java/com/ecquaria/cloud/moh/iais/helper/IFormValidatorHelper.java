@@ -51,9 +51,9 @@ public class IFormValidatorHelper {
      * @param: [bpc, formName, formDto]
      * @return: java.lang.Object
      */
-    public static Object fillFormDataToDto(BaseProcessClass bpc,String formName,Class formDto) throws IllegalAccessException, InstantiationException {
+    public static <T> T fillFormDataToDto(BaseProcessClass bpc,String formName,Class<T> formDto) throws IllegalAccessException, InstantiationException {
         Field[] fields =formDto.getDeclaredFields();
-         Object obj = formDto.newInstance();
+         T obj = formDto.newInstance();
          if(fields!=null && fields.length>0){
              for(Field field:fields){
                  String name = field.getName();

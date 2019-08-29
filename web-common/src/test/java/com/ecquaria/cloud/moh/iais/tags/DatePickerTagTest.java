@@ -30,6 +30,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
@@ -71,6 +72,7 @@ public class DatePickerTagTest {
         tag.setStartDate("01/01/2010");
         tag.setEndDate("01/01/2020");
         tag.setCssClass("sss");
+        tag.setDateVal(new Date());
     }
 
     @Test
