@@ -82,7 +82,7 @@ public class MasterCodeDelegatorTest {
 
     @Test
     public void testprepareSwitch(){
-        masterCodeDelegator.prepareSwitch(bpc);
+        masterCodeDelegator.prepareSwitch();
         Assert.assertTrue(true);
     }
 
