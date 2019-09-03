@@ -34,15 +34,15 @@ import java.util.*;
 @Slf4j
 public final class MasterCodeUtil {
     //Cache names
-    private static final String CACHE_NAME_CATE_MAP                     = "iaisMcCateMap";
-    private static final String CACHE_NAME_FILTER                       = "iaisMcFilterMap";
-    private static final String CACHE_NAME_CODE                         = "iaisMcCode";
-    private static final String SEQUENCE                                = "sequence";
-    private static final String WEBCOMMON                               = "webcommon";
-    private static final String RETRIEVE_MASTER_CODES                     = "retrieveMasterCodes";
-    private static final String MASTERCODE_CACHES                     = "mastercodes/caches";
+    private static final String CACHE_NAME_CATE_MAP                = "iaisMcCateMap";
+    private static final String CACHE_NAME_FILTER                  = "iaisMcFilterMap";
+    private static final String CACHE_NAME_CODE                    = "iaisMcCode";
+    private static final String SEQUENCE                           = "sequence";
+    private static final String WEBCOMMON                          = "webcommon";
+    private static final String RETRIEVE_MASTER_CODES              = "retrieveMasterCodes";
+    private static final String MASTERCODE_CACHES                  = "system-admin-service:8886/iais-mastercode/caches";
     //Code Categorys
-    public static final String CATE_ID_NATIONALITY                      = "1";
+    public static final String CATE_ID_NATIONALITY                 = "1";
 
     /**
      * @description: refresh the master codes into cache
