@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.dao.MasterCodeRepository;
-import com.ecquaria.cloud.moh.iais.entity.MasterCode;
+import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.service.impl.MasterCodeServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,8 +25,8 @@ public class MasterCodeServiceImplTest {
 
     @Test
     public void testSaveMasterCode(){
-        MasterCode masterCode = new MasterCode();
-        masterCode.setId(1L);
+        MasterCodeDto masterCode = new MasterCodeDto();
+        masterCode.setMasterCodeId(1);
         masterCodeServiceImpl.saveMasterCode(masterCode);
         Assert.assertTrue(true);
     }
@@ -39,7 +39,7 @@ public class MasterCodeServiceImplTest {
 
     @Test
     public void testfindMasterCodeByRowguid(){
-        MasterCode masterCode = new MasterCode();
+        MasterCodeDto masterCode = new MasterCodeDto();
         Mockito.doReturn(masterCode).when(masterCodeRepository).findMasterCodeByRowguid("ax");
         masterCode = masterCodeServiceImpl.findMasterCodeByRowguid("ax");
         Assert.assertNotNull(masterCode);
