@@ -61,7 +61,7 @@ public class AppInitializer implements ServletContextListener {
     private void initMessages() {
         SearchParam param = new SearchParam(MessageCode.class.getName());
         QueryHelp.setMainSql("initializer", "retrieveAllMsg", param);
-        SearchResult<Map<String, String>> sr = RestApiUtil.query("iais-message/allMsg", param);
+        SearchResult<Map<String, String>> sr = RestApiUtil.query("system-admin-service:8886/iais-message/allMsg", param);
 
         if (sr.getRowCount() > 0) {
             Map<String, String> map = new HashMap<>();
