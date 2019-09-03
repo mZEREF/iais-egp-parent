@@ -15,7 +15,7 @@
 <sqls catalog="initializer">
     <sql key="retrieveAllMsg" remarks="To get all the messages">
         <![CDATA[
-          SELECT msg_id, code_key, description FROM CM_MESSAGE
+          SELECT msg_id, code_key, message FROM CM_MESSAGE
         ]]>
     </sql>
 </sqls>
