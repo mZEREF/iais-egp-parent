@@ -42,13 +42,13 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
         OrgUserAccountDto orgUserAccountDto = new OrgUserAccountDto();
         orgUserAccountDto.setId(Integer.parseInt(id));
         orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        RestApiUtil.delete("demo",orgUserAccountDto);
+        RestApiUtil.delete("sample-service:8889",orgUserAccountDto);
     }
 
     @Override
     public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccountDto) {
         orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        RestApiUtil.save("demo",orgUserAccountDto);
+        RestApiUtil.save("sample-service:8889",orgUserAccountDto);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
         Map<String, Object> map = new HashMap<>();
         map.put("searchField", "rowguId");
         map.put("filterValue", rowguId);
-        return RestApiUtil.getByReqParam("demo", map, OrgUserAccountDto.class);
+        return RestApiUtil.getByReqParam("sample-service:8889", map, OrgUserAccountDto.class);
     }
 
     @Override
@@ -64,12 +64,12 @@ public class OrgUserAccountServiceImpl implements OrgUserAccountService {
         Map<String, Object> map = new HashMap<>();
         map.put("searchField", "nircNo");
         map.put("filterValue", nircNo);
-        return RestApiUtil.getByReqParam("demo", map, OrgUserAccountDto.class);
+        return RestApiUtil.getByReqParam("sample-service:8889", map, OrgUserAccountDto.class);
     }
 
     @Override
     @SearchTrack(catalog = "demo",key = "searchDemo")
     public SearchResult<DemoQueryDto> doQuery(SearchParam param) {
-        return RestApiUtil.query("demo/results",param);
+        return RestApiUtil.query("sample-service:8889/results", param);
     }
 }
