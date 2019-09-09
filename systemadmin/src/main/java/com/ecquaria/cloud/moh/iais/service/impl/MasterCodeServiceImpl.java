@@ -48,5 +48,5 @@ public class MasterCodeServiceImpl implements MasterCodeService {
         map.put("rowguid",rowguid);
         return RestApiUtil.getByReqParam("/iais-mastercode/{rowguid}",map, MasterCode.class);
     }
-    
+
 }
