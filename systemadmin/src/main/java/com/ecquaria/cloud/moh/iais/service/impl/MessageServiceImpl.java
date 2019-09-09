@@ -24,18 +24,18 @@ public class MessageServiceImpl implements MessageService {
 
     @SearchTrack(catalog = "message", key = "search")
     public SearchResult<MessageDto> doQuery(SearchParam param) {
-        return  RestApiUtil.query("/iais-message/results", param);
+        return  RestApiUtil.query("system-admin-service:8886/iais-message/results", param);
     }
 
     public void saveMessage(MessageDto messageDto) {
         messageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        RestApiUtil.save("/iais-message/messages", messageDto);
+        RestApiUtil.save("system-admin-service:8886/iais-message", messageDto);
     }
 
     public MessageDto getMessageByRowguid(String rowguid) {
         Map<String, Object> map = new HashMap<>();
         map.put("rowguid", rowguid);
-        return RestApiUtil.getByReqParam("/iais-message/{rowguid}", map, MessageDto.class);
+        return RestApiUtil.getByReqParam("system-admin-service:8886/iais-message/{rowguid}", map, MessageDto.class);
     }
 
 }

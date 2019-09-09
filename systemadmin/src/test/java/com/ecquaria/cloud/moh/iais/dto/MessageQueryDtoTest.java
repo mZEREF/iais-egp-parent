@@ -31,6 +31,7 @@ public class MessageQueryDtoTest {
         entity.getMsgType();
         entity.getDescription();
         entity.getStatus();
+        entity.getMessage();
 
         entity.setId(null);
         entity.setRowguid(null);
@@ -39,6 +40,7 @@ public class MessageQueryDtoTest {
         entity.setMsgType(null);
         entity.setDescription(null);
         entity.setStatus(null);
+        entity.setMessage(null);
         assertNotNull(entity);
     }
 

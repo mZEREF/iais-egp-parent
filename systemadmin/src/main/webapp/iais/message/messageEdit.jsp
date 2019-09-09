@@ -34,6 +34,7 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
 
+
     <iais:body>
     <iais:section title="Message List" id="msgList">
         <iais:error>
@@ -72,6 +73,13 @@
             <iais:field value="Description" required="false"></iais:field>
             <iais:value width="7">
                 <input type="text" name="description" value="${msgRequestDto.description}" />
+            </iais:value>
+        </iais:row>
+
+        <iais:row>
+            <iais:field value="Message" required="false"></iais:field>
+            <iais:value width="7">
+                <input type="text" name="message" value="${msgRequestDto.message}" />
             </iais:value>
         </iais:row>
 

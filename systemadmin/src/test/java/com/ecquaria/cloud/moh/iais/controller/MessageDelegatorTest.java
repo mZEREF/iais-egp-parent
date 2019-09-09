@@ -7,12 +7,15 @@ package com.ecquaria.cloud.moh.iais.controller;
  */
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
+import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -38,7 +41,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MessageDelegator.class, CrudHelper.class, MessageServiceImpl.class,
-        SpringContextHelper.class, MiscUtil.class, AuditTrailDto.class, ParamUtil.class, WebValidationHelper.class, ValidationResult.class, IaisEGPHelper.class, QueryHelp.class, RestApiUtil.class})
+        SpringContextHelper.class, MiscUtil.class, AuditTrailDto.class,
+        ParamUtil.class, WebValidationHelper.class, ValidationResult.class, IaisEGPHelper.class, QueryHelp.class, RestApiUtil.class})
 public class MessageDelegatorTest {
     @InjectMocks
     private MessageDelegator messageDelegator;
@@ -53,9 +57,17 @@ public class MessageDelegatorTest {
 
     private MessageDto messageDto = new MessageDto();
 
+    @Spy
+    private QueryCondition qc = new QueryCondition();
+
     @Before
     public void setup(){
         bpc.request = request;
+
+        qc.setClz(MessageDto.class);
+        qc.setSearchAttr("test");
+        qc.setPageNo(1);
+        qc.setPageSize(10);
 
         //PowerMockito.when(queryDao.doQuery(searchParam)).thenReturn(null);
         PowerMockito.mockStatic(ParamUtil.class);
@@ -87,6 +99,7 @@ public class MessageDelegatorTest {
     @Test
     public void testPrepareData(){
         PowerMockito.when(messageService.doQuery(null)).thenReturn(null);
+
         messageDelegator.prepareData(bpc);
         Assert.assertTrue(true);
     }
@@ -109,6 +122,8 @@ public class MessageDelegatorTest {
 
     @Test
     public void testDoSearchToSucess(){
+        SearchParam param = new SearchParam(qc.getClz().getName());
+        PowerMockito.when(IaisEGPHelper.getSearchParam(request, true, qc)).thenReturn(param);
         PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE)).thenReturn("doSearch");
         PowerMockito.when(ParamUtil.getString(request, "domainType")).thenReturn("INTRA");
         PowerMockito.when(ParamUtil.getString(request, "msgType")).thenReturn("Error");
@@ -149,19 +164,21 @@ public class MessageDelegatorTest {
         MessageDto messageDto = new MessageDto();
         messageDto.setDomainType("Internet");
 
-        messageDelegator.perpareEdit(bpc);
+        messageDelegator.prepareEdit(bpc);
         Assert.assertTrue(true);
     }
 
     @Test
     public void testPerpareEditOfError(){
         PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE)).thenReturn("");
-        messageDelegator.perpareEdit(bpc);
+        messageDelegator.prepareEdit(bpc);
         Assert.assertTrue(true);
     }
 
     @Test
     public void testDoSorting(){
+        SearchParam param = new SearchParam(qc.getClz().getName());
+        PowerMockito.when(IaisEGPHelper.getSearchParam(request, qc)).thenReturn(param);
         messageDelegator.doSorting(bpc);
         Assert.assertTrue(true);
     }
@@ -178,11 +195,11 @@ public class MessageDelegatorTest {
         PowerMockito.when(ParamUtil.getString(request, "msgType")).thenReturn("Error");
         PowerMockito.when(ParamUtil.getString(request, "module")).thenReturn("New");
         MessageDto messageDto = new MessageDto();
-        PowerMockito.when(ParamUtil.getSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
+        PowerMockito.when(ParamUtil.getSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
         PowerMockito.mockStatic(AuditTrailDto.class);
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         PowerMockito.when(IaisEGPHelper.getCurrentAuditTrailDto()).thenReturn(auditTrailDto);
-        request.getSession().setAttribute(MessageDto.MESSAGE_REQUEST_DTO, messageDto);
+        request.getSession().setAttribute(MessageConstant.MESSAGE_REQUEST_DTO, messageDto);
 
         messageDelegator.doEdit(bpc);
         Assert.assertTrue(true);
@@ -197,7 +214,7 @@ public class MessageDelegatorTest {
         request.addParameter("description","sadsadasdas");
 
         MessageDto messageDto = new MessageDto();
-        PowerMockito.when(ParamUtil.getSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
+        PowerMockito.when(ParamUtil.getSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
         messageDto.setDomainType("INTRA");
         messageDto.setMsgType("Error");
         messageDto.setModule("New");

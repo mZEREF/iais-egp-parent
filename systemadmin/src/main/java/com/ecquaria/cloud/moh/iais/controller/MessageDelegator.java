@@ -10,10 +10,8 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.dto.MessageQueryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,12 +34,12 @@ import java.util.Map;
 @Delegator
 @Slf4j
 public class MessageDelegator {
-    public static final String PARAM_MESSAGE_SEARCH = "msgSearchParam";
-    public static final String PARAM_MESSAGE_SEARCH_RESULT = "msgSearchResult";
+
+    @Autowired(required = true)
+    private QueryCondition qc;
 
 
-
-    @Autowired
+    @Autowired(required = true)
     private MessageService messageService;
 
     /**
@@ -63,12 +60,12 @@ public class MessageDelegator {
         List<SelectOption> moduleList =  new ArrayList<>();
         moduleList.add(new SelectOption("New", "New"));
         moduleList.add(new SelectOption("Renewal", "Renewal"));
-        moduleList.add(new SelectOption("Cessation", "Cessation"));
-        moduleList.add(new SelectOption("Amendment", "Amendment"));
-        moduleList.add(new SelectOption("Reinstate", "Reinstate"));
-        moduleList.add(new SelectOption("Audit", "Audit"));
-        moduleList.add(new SelectOption("Common", "Common"));
-        moduleList.add(new SelectOption("Others", "Others"));
+        moduleList.add(new SelectOption("Request For Change", "Request For Change"));
+        moduleList.add(new SelectOption("Withdrawal", "Withdrawal"));
+        moduleList.add(new SelectOption("Suspension", "Suspension"));
+        moduleList.add(new SelectOption("Revocation", "Revocation"));
+        moduleList.add(new SelectOption("Reinstatement", "Reinstatement"));
+        moduleList.add(new SelectOption("Appeal", "Appeal"));
         ParamUtil.setRequestAttr(request, "moduleTypeSelect", moduleList);
     }
 
@@ -80,7 +77,7 @@ public class MessageDelegator {
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction("Error and Acknowledgement Message", "Function is used by MOH system administrator (users given the administrator rights and have the rights to modify the information");
         HttpServletRequest request = bpc.request;
-        clearSessionAttr(request, MessageDelegator.class);
+        IaisEGPHelper.clearSessionAttr(request, MessageConstant.class);
     }
 
 
@@ -93,12 +90,17 @@ public class MessageDelegator {
 
         preSelectOption(request);
 
-        //default false, go to pre-data
-        SearchParam param = getSearchParam(bpc);
+        //setting of query default value
+        qc.setClz(MessageQueryDto.class);
+        qc.setSortField("msg_id");
+        qc.setSearchAttr(MessageConstant.PARAM_MESSAGE_SEARCH);
+        qc.setResultAttr(MessageConstant.PARAM_MESSAGE_SEARCH_RESULT);
+
+        SearchParam param = IaisEGPHelper.getSearchParam(request, qc);
         QueryHelp.setMainSql("systemAdmin", "queryMessage", param);
         SearchResult searchResult = messageService.doQuery(param);
-        ParamUtil.setSessionAttr(request, PARAM_MESSAGE_SEARCH, param);
-        ParamUtil.setRequestAttr(request, PARAM_MESSAGE_SEARCH_RESULT, searchResult);
+        ParamUtil.setSessionAttr(request, MessageConstant.PARAM_MESSAGE_SEARCH, param);
+        ParamUtil.setRequestAttr(request, MessageConstant.PARAM_MESSAGE_SEARCH_RESULT, searchResult);
 
     }
 
@@ -122,12 +124,15 @@ public class MessageDelegator {
         String msgType = ParamUtil.getString(request, MessageConstant.PARAM_MSG_TYPE);
         String module = ParamUtil.getString(request, MessageConstant.PARAM_MODULE);
         String description = ParamUtil.getString(request, MessageConstant.PARAM_DESCRIPTION);
+        String message = ParamUtil.getString(request, MessageConstant.PARAM_MESSAGE);
 
-        MessageDto messageDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO);
+
+        MessageDto messageDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO);
         messageDto.setDomainType(domainType);
         messageDto.setMsgType(msgType);
         messageDto.setModule(module);
         messageDto.setDescription(description);
+        messageDto.setMessage(message);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(messageDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
@@ -153,7 +158,7 @@ public class MessageDelegator {
         String rowguid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(rowguid)) {
             MessageDto messageDto = messageService.getMessageByRowguid(rowguid);
-            messageDto.setStatus(0);
+            messageDto.setStatus(MessageConstant.STATUS_DEACTIVATED);
             messageService.saveMessage(messageDto);
         }
     }
@@ -177,7 +182,7 @@ public class MessageDelegator {
         messageDto.setMsgType(msgType);
         messageDto.setModule(module);
 
-        SearchParam param = getSearchParam(bpc, true);
+        SearchParam param = IaisEGPHelper.getSearchParam(request, true, qc);
         ValidationResult validationResult = WebValidationHelper.validateProperty(messageDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
@@ -213,13 +218,13 @@ public class MessageDelegator {
      * AutoStep: editBefore
      * @param bpc
      */
-    public void perpareEdit(BaseProcessClass bpc){
+    public void prepareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String rowguid = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         preSelectOption(request);
         if(!StringUtil.isEmpty(rowguid)){
             MessageDto messageDto = messageService.getMessageByRowguid(rowguid);
-            ParamUtil.setSessionAttr(request, MessageDto.MESSAGE_REQUEST_DTO, messageDto);
+            ParamUtil.setSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO, messageDto);
         }
     }
 
@@ -228,7 +233,8 @@ public class MessageDelegator {
      * @param bpc
      */
     public void doPaging(BaseProcessClass bpc){
-        SearchParam searchParam = getSearchParam(bpc);
+        HttpServletRequest request = bpc.request;
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, qc);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
@@ -237,40 +243,9 @@ public class MessageDelegator {
      * @param bpc
      */
     public void doSorting(BaseProcessClass bpc){
-        SearchParam searchParam = getSearchParam(bpc);
+        HttpServletRequest request = bpc.request;
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, qc);
         CrudHelper.doSorting(searchParam,  bpc.request);
     }
 
-    private void clearSessionAttr(HttpServletRequest request, Class<?> clz) throws IllegalAccessException {
-        if(request == null || clz == null){
-            return;
-        }
-
-        Field[]  fields = clz.getFields();
-        if(fields != null){
-            for(Field f : fields){
-                String fieldName = f.getName();
-                if(fieldName.startsWith("PARAM_")){
-                    ParamUtil.setSessionAttr(request, (String) f.get(fieldName), null);
-                }
-            }
-        }
-    }
-
-    private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
-        HttpServletRequest request = bpc.request;
-        SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, PARAM_MESSAGE_SEARCH);
-        if(param == null || isNew){
-            param = new SearchParam(MessageQueryDto.class.getName());
-            param.setPageSize(10);
-            param.setPageNo(1);
-            param.setSort("msg_id", SearchParam.ASCENDING);
-            ParamUtil.setSessionAttr(request, PARAM_MESSAGE_SEARCH, param);
-        }
-        return param;
-    }
-
-    private SearchParam getSearchParam(BaseProcessClass bpc){
-        return getSearchParam(bpc, false);
-    }
 }

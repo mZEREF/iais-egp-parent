@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohErrorMessage" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="7" minorVersion="0" name="MohErrorMessage" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
  <WebServices/>
  <RestServices/>
  <Steps>
@@ -38,13 +38,6 @@
     <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="editBefore" x="1430" y="20">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="editBefore_OnStepProcess_0" name="editBefore_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doEdit" x="1450" y="420">
    <Description/>
    <probepoint type="none"/>
@@ -73,6 +66,13 @@
     <JavaCode defClass="" executor="" methodName="disableStatus_OnStepProcess_0" name="disableStatus_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareEdit" x="1400" y="60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareEdit_OnStepProcess_0" name="prepareEdit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="messageList" stageIndicator="" x="520" y="60">
@@ -90,19 +90,19 @@
  </Pages>
  <Forms/>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/editBefore" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1280" y="530">
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1280" y="530">
    <Description/>
   </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch0" x="1068" y="24">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/editBefore" value="&quot;perpareEdit&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doCreate" value="&quot;doCreate&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/changePage" value="&quot;changePage&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/sortRecords" value="&quot;sortRecords&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/disableStatus" value="&quot;disableStatus&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareEdit" value="&quot;prepareEdit&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
@@ -143,12 +143,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(1050,620)(337,616)(320,80)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/editBefore" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch0" style="oblique">
-   <position>{(1088,44)(1450,40)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/editPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/editBefore" style="oblique">
-   <position>{(1450,40)(1460,320)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doEdit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/editPage" style="oblique">
    <position>{(1460,320)(1470,440)}</position>
   </SynchronousLink>
@@ -170,14 +164,20 @@
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doEdit" style="rectanular">
    <position>{(1470,440)(1300,550)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/editBefore" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(1300,550)(1384,421)(1384,297)(1450,40)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/disableStatus" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch0" style="oblique">
    <position>{(1088,44)(890,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/disableStatus" style="oblique">
    <position>{(890,240)(1050,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareEdit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch0" style="rectanular">
+   <position>{(1088,44)(1420,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/editPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareEdit" style="rectanular">
+   <position>{(1420,80)(1460,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareEdit" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(1300,550)(1420,80)}</position>
   </SynchronousLink>
  </Links>
 </Application>

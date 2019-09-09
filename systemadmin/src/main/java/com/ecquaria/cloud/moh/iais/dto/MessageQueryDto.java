@@ -29,7 +29,9 @@ public class MessageQueryDto implements Serializable {
 
     private String description;
 
-    private Integer status;
+    private Character status;
 
     private String codeKey;
+
+    private String message;
 }

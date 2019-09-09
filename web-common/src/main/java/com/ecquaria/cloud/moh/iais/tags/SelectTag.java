@@ -24,6 +24,7 @@ public class SelectTag extends DivTagSupport {
     private String value;
     private String otherOption;
     private String otherOptionValue = "00";
+    private String hidden;
     private boolean needErrorSpan;
 
     public SelectTag() {
@@ -44,7 +45,12 @@ public class SelectTag extends DivTagSupport {
         cssClass = "";
         style = "";
         otherOption = null;
+        hidden = "";
         needErrorSpan = true;
+    }
+
+    public void setHidden(String hidden) {
+        this.hidden = hidden;
     }
 
     // Releases any resources we may have (or inherit)
@@ -80,6 +86,12 @@ public class SelectTag extends DivTagSupport {
             if (!StringUtil.isEmpty(onchange)) {
                 html.append(" onchange=\"").append(onchange).append("\"");
             }
+
+            if (!StringUtil.isEmpty(hidden)){
+                html.append(" hidden=\"").append(onchange).append("\"");
+            }
+
+
             html.append(">");
             generateOptionHtml(html);
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));

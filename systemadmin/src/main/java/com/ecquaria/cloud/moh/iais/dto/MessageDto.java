@@ -23,13 +23,10 @@ import java.util.regex.Pattern;
 @NoArgsConstructor
 public class MessageDto implements Serializable {
     private static final long serialVersionUID = -2542988198043832001L;
-    public static final String MESSAGE_REQUEST_DTO = "msgRequestDto";
-
 
     private Integer id;
 
     private String rowguid;
-
 
     @NotBlank(message = "can not is blank!", profiles = {"edit", "search"})
     @NotNull(message = "can not is null!", profiles = {"edit", "search"})
@@ -46,7 +43,7 @@ public class MessageDto implements Serializable {
     private String module;
 
 
-    @Length(min = 1, max = 255, message = "can not is blank!", profiles = {"edit"})
+    @Length(min = 1, max = 255, message = "length should in 1 - 255", profiles = {"edit"})
     @NotBlank(message = "can not is blank!", profiles = {"edit"})
     @NotNull(message = "can not is null!", profiles = {"edit"})
     @ValidateWithMethod(methodName = "validateDescriptionRegEx", parameterType = String.class, message = "no special characters are allowed",
@@ -54,11 +51,16 @@ public class MessageDto implements Serializable {
     private String description;
 
 
-    private Integer status;
-
+    private Character status;
 
     private String codeKey;
 
+    @Length(min = 1,  message = "can not is blank!", profiles = {"edit"})
+    @NotBlank(message = "can not is blank!", profiles = {"edit"})
+    @NotNull(message = "can not is null!", profiles = {"edit"})
+    @ValidateWithMethod(methodName = "validateDescriptionRegEx", parameterType = String.class, message = "no special characters are allowed",
+            profiles ="edit")
+    private String message;
 
     private AuditTrailDto auditTrailDto;
 
