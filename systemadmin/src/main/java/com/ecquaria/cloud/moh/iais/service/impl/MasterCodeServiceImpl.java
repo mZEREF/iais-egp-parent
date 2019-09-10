@@ -33,8 +33,8 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
-    public void saveMasterCode(MasterCodeDto masterCodeDto) {
-        RestApiUtil.save("/iais-mastercode", masterCodeDto);
+    public void saveMasterCode(MasterCode masterCode) {
+        RestApiUtil.save("/iais-mastercode", masterCode);
     }
 
     @Override
@@ -43,10 +43,10 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
-    public MasterCodeDto findMasterCodeByRowguid(String rowguid) {
+    public MasterCode findMasterCodeByRowguid(String rowguid) {
         Map<String,Object> map = new HashMap<>();
         map.put("rowguid",rowguid);
-        return RestApiUtil.getByReqParam("/iais-mastercode/{rowguid}",map, MasterCodeDto.class);
+        return RestApiUtil.getByReqParam("/iais-mastercode/{rowguid}",map, MasterCode.class);
     }
-    
+
 }

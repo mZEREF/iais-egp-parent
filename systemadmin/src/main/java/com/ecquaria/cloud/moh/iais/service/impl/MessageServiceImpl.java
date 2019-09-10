@@ -35,7 +35,7 @@ public class MessageServiceImpl implements MessageService {
     public MessageDto getMessageByRowguid(String rowguid) {
         Map<String, Object> map = new HashMap<>();
         map.put("rowguid", rowguid);
-        return RestApiUtil.getByReqParam("/iais-message/{rowguid}", map, MessageDto.class);
+        return RestApiUtil.getByReqParam("/iais-message/rowguid", map, MessageDto.class);
     }
 
 }

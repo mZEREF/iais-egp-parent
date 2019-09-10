@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.entity.MasterCode;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
@@ -253,7 +254,7 @@ public class MasterCodeDelegator {
         if("edit".equals(type)){
             MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MASTERCODE_USER_DTO_ATTR);
             getValueFromPage(masterCodeDto, request);
-            ValidationResult validationResult =ValidationUtils.validateProperty(masterCodeDto, "edit");
+            ValidationResult validationResult =WebValidationHelper.validateProperty(masterCodeDto, "edit");
             if (validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(request,MasterCodeConstant.ERRORMAP,errorMap);
