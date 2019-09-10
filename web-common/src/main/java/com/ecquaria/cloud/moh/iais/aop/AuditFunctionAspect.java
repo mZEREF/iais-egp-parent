@@ -135,7 +135,7 @@ public class AuditFunctionAspect {
         List<AuditTrailDto> dtoList = new ArrayList<>();
         dtoList.add(dto);
         try {
-            AuditLogUtil.callAuditRestApi(dtoList);
+            AuditLogUtil.callKafkaSendMessage(dtoList);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
