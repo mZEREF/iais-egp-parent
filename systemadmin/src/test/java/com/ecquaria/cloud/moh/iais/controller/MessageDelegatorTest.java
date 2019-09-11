@@ -40,7 +40,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MessageDelegator.class, CrudHelper.class, MessageServiceImpl.class,
+@PrepareForTest({CrudHelper.class,
         SpringContextHelper.class, MiscUtil.class, AuditTrailDto.class,
         ParamUtil.class, WebValidationHelper.class, ValidationResult.class, IaisEGPHelper.class, QueryHelp.class, RestApiUtil.class})
 public class MessageDelegatorTest {
@@ -69,7 +69,6 @@ public class MessageDelegatorTest {
         qc.setPageNo(1);
         qc.setPageSize(10);
 
-        //PowerMockito.when(queryDao.doQuery(searchParam)).thenReturn(null);
         PowerMockito.mockStatic(ParamUtil.class);
         PowerMockito.mockStatic(MiscUtil.class);
         PowerMockito.mockStatic(IaisEGPHelper.class);
@@ -209,7 +208,7 @@ public class MessageDelegatorTest {
     public void testDoEditSuccess(){
         PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE)).thenReturn("doEdit");
         request.addParameter("domainType","INTRA");
-        request.addParameter("msgType","Error");
+        request.addParameter("module","Error");
         request.addParameter("module","New");
         request.addParameter("description","sadsadasdas");
 
@@ -237,4 +236,5 @@ public class MessageDelegatorTest {
 
         Assert.assertTrue(true);
     }
+
 }

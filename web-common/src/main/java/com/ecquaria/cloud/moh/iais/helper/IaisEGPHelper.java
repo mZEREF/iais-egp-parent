@@ -101,20 +101,20 @@ public final class IaisEGPHelper extends EGPHelper {
     /**
      * use by delegator to clear session attr, prefix of param need use 'Param_'
      * @param request HttpServletRequest
-     * @param clz   Delegator Class
+     * @param delegatorClz   Delegator Class
      * @throws IllegalAccessException
      */
-    public static void clearSessionAttr(HttpServletRequest request, Class<?> clz) throws IllegalAccessException {
-        if(request == null || clz == null){
+    public static void clearSessionAttr(HttpServletRequest request, Class<?> delegatorClz) throws IllegalAccessException {
+        if(request == null || delegatorClz == null){
             return;
         }
 
-        Field[]  fields = clz.getFields();
+        Field[] fields = delegatorClz.getFields();
         if(fields != null){
-            for(Field f : fields){
-                String fieldName = f.getName();
+            for(Field field : fields){
+                String fieldName = field.getName();
                 if(fieldName.startsWith("PARAM_")){
-                    ParamUtil.setSessionAttr(request, (String) f.get(fieldName), null);
+                    ParamUtil.setSessionAttr(request, (String) field.get(fieldName), null);
                 }
             }
         }
@@ -123,28 +123,28 @@ public final class IaisEGPHelper extends EGPHelper {
     /**
      * Get query conditions by parameters
      * @param request HttpServletRequest
-     * @param qc QueryCondition
+     * @param queryCondition
      * @return
      */
-    public static SearchParam getSearchParam(HttpServletRequest request, QueryCondition qc){
-        return getSearchParam(request, false, qc);
+    public static SearchParam getSearchParam(HttpServletRequest request, QueryCondition queryCondition){
+        return getSearchParam(request, false, queryCondition);
     }
 
     public static SearchParam getSearchParam(HttpServletRequest request,
-                                             boolean isNew, QueryCondition qc){
-        SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, qc.getSearchAttr());
+                                             boolean isNew, QueryCondition queryCondition){
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, queryCondition.getSearchAttr());
         try {
-            if(param == null || isNew){
-                param = new SearchParam(qc.getClz().getName());
-                param.setPageSize(qc.getPageSize());
-                param.setPageNo(qc.getPageNo());
-                param.setSort(qc.getSortField(), SearchParam.ASCENDING);
-                ParamUtil.setSessionAttr(request, qc.getSearchAttr(), param);
+            if(searchParam == null || isNew){
+                searchParam = new SearchParam(queryCondition.getClz().getName());
+                searchParam.setPageSize(queryCondition.getPageSize());
+                searchParam.setPageNo(queryCondition.getPageNo());
+                searchParam.setSort(queryCondition.getSortField(), SearchParam.ASCENDING);
+                ParamUtil.setSessionAttr(request, queryCondition.getSearchAttr(), searchParam);
             }
         }catch (NullPointerException e){
-            log.info("getSearchParam qc===>>>> " + e.getMessage());
+            log.info("getSearchParam ===>>>> " + e.getMessage());
         }
-        return param;
+        return searchParam;
     }
 
     /**
@@ -155,10 +155,10 @@ public final class IaisEGPHelper extends EGPHelper {
      * @param <T>
      * @return
      */
-    public static <T> T getReocrdByRowguid(String serviceName, String rowguid, Class<? extends Serializable> clz){
-        Map<String, Object> map = new HashMap<>();
-        map.put("rowguid", rowguid);
-        return (T) RestApiUtil.getByReqParam(serviceName + "/{rowguid}", map, clz);
+    public static <T> T getRecordByRowguid(String serviceName, String rowguid, Class<? extends Serializable> clz){
+        Map<String, Object> paramMapper = new HashMap<>();
+        paramMapper.put("rowguid", rowguid);
+        return (T) RestApiUtil.getByReqParam(serviceName + "/{rowguid}", paramMapper, clz);
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}

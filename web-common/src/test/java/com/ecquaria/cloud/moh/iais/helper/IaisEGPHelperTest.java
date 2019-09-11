@@ -169,7 +169,7 @@ public class IaisEGPHelperTest {
     public void testGetReocrdByRowguid(){
         PowerMockito.mockStatic(RestApiUtil.class);
         when(RestApiUtil.getByPathParam("test", "dsadasd", null)).thenReturn(null);
-        IaisEGPHelper.getReocrdByRowguid("test", "dsadasd", null);
+        IaisEGPHelper.getRecordByRowguid("test", "dsadasd", null);
         Assert.assertTrue(true);
     }
 }

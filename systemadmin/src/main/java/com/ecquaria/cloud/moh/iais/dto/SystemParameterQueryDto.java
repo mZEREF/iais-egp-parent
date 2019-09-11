@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.sf.oval.constraint.NotBlank;
+import net.sf.oval.constraint.NotNull;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,6 +22,8 @@ public class SystemParameterQueryDto implements Serializable {
 
     private String rowguid;
 
+    @NotBlank(message = "can not is blank!", profiles = {"edit", "search"})
+    @NotNull(message = "can not is null!", profiles = {"edit", "search"})
     private String domainType;
 
     private String module;

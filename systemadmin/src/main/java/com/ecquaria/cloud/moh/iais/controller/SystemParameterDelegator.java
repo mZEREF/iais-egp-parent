@@ -33,12 +33,14 @@ import java.util.Map;
 @Slf4j
 public class SystemParameterDelegator {
 
-    @Autowired(required = true)
-    private QueryCondition qc;
+    private final QueryCondition queryCondition;
+    private final SystemParameterService parameterService;
 
-
-    @Autowired(required = true)
-    private SystemParameterService service;
+    @Autowired
+    public SystemParameterDelegator(QueryCondition queryCondition, SystemParameterService parameterService){
+        this.queryCondition = queryCondition;
+        this.parameterService = parameterService;
+    }
 
     /**
      * setup option to web page
@@ -73,8 +75,8 @@ public class SystemParameterDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
-        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        log.debug("*******************action-->:" + action);
+        String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        log.debug("*******************crudAction-->:" + crudAction);
         log.debug("The prepareSwitch end ...");
     }
 
@@ -96,15 +98,15 @@ public class SystemParameterDelegator {
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
 
-        qc.setClz(SystemParameterQueryDto.class);
-        qc.setSearchAttr(SystemParameterConstant.PARAM_SEARCH);
-        qc.setResultAttr(SystemParameterConstant.PARAM_SEARCHRESULT);
-        qc.setSortField("pid");
+        queryCondition.setClz(SystemParameterQueryDto.class);
+        queryCondition.setSearchAttr(SystemParameterConstant.PARAM_SEARCH);
+        queryCondition.setResultAttr(SystemParameterConstant.PARAM_SEARCHRESULT);
+        queryCondition.setSortField("pid");
 
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, qc);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
         QueryHelp.setMainSql("systemAdmin", "querySystemParam", searchParam);
 
-        SearchResult searchResult = service.doQuery(searchParam);
+        SearchResult searchResult = parameterService.doQuery(searchParam);
         ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_SEARCH, searchParam);
         ParamUtil.setRequestAttr(request, SystemParameterConstant.PARAM_SEARCHRESULT, searchResult);
     }
@@ -116,12 +118,12 @@ public class SystemParameterDelegator {
      */
     public void doQuery(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"doQuery".equals(type)){
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!"doQuery".equals(currentAction)){
             return;
         }
 
-        SystemParameterDto queryDto = new SystemParameterDto();
+        SystemParameterQueryDto queryDto = new SystemParameterQueryDto();
 
         String domainType = ParamUtil.getString(request, SystemParameterConstant.PARAM_DOMAIN_TYPE);
         String module = ParamUtil.getString(request, SystemParameterConstant.PARAM_MODULE);
@@ -132,7 +134,7 @@ public class SystemParameterDelegator {
         queryDto.setModule(module);
         queryDto.setStatus(status != null ? status.charAt(0) : null);
         queryDto.setDescription(description);
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, qc);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, queryCondition);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
@@ -158,11 +160,11 @@ public class SystemParameterDelegator {
      */
     public void doEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if("cancel".equals(type)){
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("cancel".equals(currentAction)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
-        }else if(!"doEdit".equals(type)){
+        }else if(!"doEdit".equals(currentAction)){
             return;
         }
 
@@ -186,7 +188,7 @@ public class SystemParameterDelegator {
         }else {
             Map<String,String> successMap = new HashMap<>();
             successMap.put("edit parameter","suceess");
-            service.saveSystemParameter(editDto);
+            parameterService.saveSystemParameter(editDto);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
         }
@@ -201,9 +203,9 @@ public class SystemParameterDelegator {
         HttpServletRequest request = bpc.request;
         String rowguid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(rowguid)) {
-            SystemParameterDto dto = service.getParameterByRowguid(rowguid);
+            SystemParameterDto dto = parameterService.getParameterByRowguid(rowguid);
             dto.setStatus(SystemParameterConstant.STATUS_DEACTIVATED);
-            service.saveSystemParameter(dto);
+            parameterService.saveSystemParameter(dto);
         }
     }
 
@@ -216,7 +218,7 @@ public class SystemParameterDelegator {
         String rowguid = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         preSelectOption(request);
         if(!StringUtil.isEmpty(rowguid)){
-            SystemParameterDto dto = service.getParameterByRowguid(rowguid);
+            SystemParameterDto dto = parameterService.getParameterByRowguid(rowguid);
             ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, dto);
         }
     }
@@ -227,7 +229,7 @@ public class SystemParameterDelegator {
      */
     public void changePage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, qc);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
@@ -237,7 +239,7 @@ public class SystemParameterDelegator {
      */
     public void sortRecords(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, qc);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
         CrudHelper.doSorting(searchParam,  request);
     }
 }

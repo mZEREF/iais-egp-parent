@@ -34,13 +34,14 @@ import java.util.Map;
 @Delegator
 @Slf4j
 public class MessageDelegator {
+    private  final QueryCondition queryCondition;
+    private  final MessageService messageService;
 
-    @Autowired(required = true)
-    private QueryCondition qc;
-
-
-    @Autowired(required = true)
-    private MessageService messageService;
+    @Autowired
+    public MessageDelegator(QueryCondition queryCondition, MessageService messageService){
+        this.queryCondition = queryCondition;
+        this.messageService = messageService;
+    }
 
     /**
      * setup option to web page
@@ -91,12 +92,12 @@ public class MessageDelegator {
         preSelectOption(request);
 
         //setting of query default value
-        qc.setClz(MessageQueryDto.class);
-        qc.setSortField("msg_id");
-        qc.setSearchAttr(MessageConstant.PARAM_MESSAGE_SEARCH);
-        qc.setResultAttr(MessageConstant.PARAM_MESSAGE_SEARCH_RESULT);
+        queryCondition.setClz(MessageQueryDto.class);
+        queryCondition.setSortField("msg_id");
+        queryCondition.setSearchAttr(MessageConstant.PARAM_MESSAGE_SEARCH);
+        queryCondition.setResultAttr(MessageConstant.PARAM_MESSAGE_SEARCH_RESULT);
 
-        SearchParam param = IaisEGPHelper.getSearchParam(request, qc);
+        SearchParam param = IaisEGPHelper.getSearchParam(request, queryCondition);
         QueryHelp.setMainSql("systemAdmin", "queryMessage", param);
         SearchResult searchResult = messageService.doQuery(param);
         ParamUtil.setSessionAttr(request, MessageConstant.PARAM_MESSAGE_SEARCH, param);
@@ -112,11 +113,11 @@ public class MessageDelegator {
      */
     public void doEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if("cancel".equals(type)){
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("cancel".equals(currentAction)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
-        }else if(!"doEdit".equals(type)){
+        }else if(!"doEdit".equals(currentAction)){
             return;
         }
 
@@ -127,14 +128,14 @@ public class MessageDelegator {
         String message = ParamUtil.getString(request, MessageConstant.PARAM_MESSAGE);
 
 
-        MessageDto messageDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO);
-        messageDto.setDomainType(domainType);
-        messageDto.setMsgType(msgType);
-        messageDto.setModule(module);
-        messageDto.setDescription(description);
-        messageDto.setMessage(message);
+        MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO);
+        editDto.setDomainType(domainType);
+        editDto.setMsgType(msgType);
+        editDto.setModule(module);
+        editDto.setDescription(description);
+        editDto.setMessage(message);
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(messageDto, "edit");
+        ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
@@ -142,7 +143,7 @@ public class MessageDelegator {
         }else {
             Map<String,String> successMap = new HashMap<>();
             successMap.put("edit message","suceess");
-            messageService.saveMessage(messageDto);
+            messageService.saveMessage(editDto);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
         }
@@ -169,34 +170,34 @@ public class MessageDelegator {
      */
     public void doSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"doSearch".equals(type)){
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!"doSearch".equals(currentAction)){
             return;
         }
-        MessageDto messageDto = new MessageDto();
+        MessageQueryDto queryDto = new MessageQueryDto();
         String domainType = ParamUtil.getString(request, MessageConstant.PARAM_DOMAIN_TYPE);
         String msgType = ParamUtil.getString(request, MessageConstant.PARAM_MSG_TYPE);
         String module = ParamUtil.getString(request, MessageConstant.PARAM_MODULE);
 
-        messageDto.setDomainType(domainType);
-        messageDto.setMsgType(msgType);
-        messageDto.setModule(module);
+        queryDto.setDomainType(domainType);
+        queryDto.setMsgType(msgType);
+        queryDto.setModule(module);
 
-        SearchParam param = IaisEGPHelper.getSearchParam(request, true, qc);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(messageDto, "search");
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, queryCondition);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
-            param.addFilter(MessageConstant.PARAM_DOMAIN_TYPE, domainType, true);
+            searchParam.addFilter(MessageConstant.PARAM_DOMAIN_TYPE, domainType, true);
 
             if(!StringUtil.isEmpty(msgType)){
-                param.addFilter(MessageConstant.PARAM_MSG_TYPE, msgType, true);
+                searchParam.addFilter(MessageConstant.PARAM_MSG_TYPE, msgType, true);
             }
 
             if(!StringUtil.isEmpty(module)){
-                param.addFilter(MessageConstant.PARAM_MODULE, module, true);
+                searchParam.addFilter(MessageConstant.PARAM_MODULE, module, true);
             }
         }
     }
@@ -209,8 +210,8 @@ public class MessageDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc) {
         log.debug("The prepareSwitch start ...");
-        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        log.debug("*******************action-->:" + action);
+        String nextAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        log.debug("*******************nextAction-->:" + nextAction);
         log.debug("The prepareSwitch end ...");
     }
 
@@ -234,7 +235,7 @@ public class MessageDelegator {
      */
     public void doPaging(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, qc);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
@@ -244,7 +245,7 @@ public class MessageDelegator {
      */
     public void doSorting(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, qc);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
         CrudHelper.doSorting(searchParam,  bpc.request);
     }
 

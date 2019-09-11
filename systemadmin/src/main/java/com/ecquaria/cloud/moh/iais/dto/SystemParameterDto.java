@@ -57,7 +57,6 @@ public class SystemParameterDto implements Serializable {
     private String valueType;
 
     @Length(profiles = {"edit"})
-    /*@ValidateWithMethod()*/
     @ValidateWithMethod(methodName = "validValueSize", parameterType = String.class, message = "Wrong size or length", profiles ="edit")
     private String value;
 
@@ -87,14 +86,10 @@ public class SystemParameterDto implements Serializable {
     }
 
     private boolean verifyPageSize(int value){
-        String pageSizeMin = properties.getProperty("PageSizeMin");
-        String pageSizeMax = properties.getProperty("PageSizeMax");
-        return value < Integer.valueOf(pageSizeMin) || value > Integer.valueOf(pageSizeMax) ? false : true;
+        return value < 10 || value > 50 ? false : true;
     }
 
     public boolean verifyFileUploadSize(int value){
-        String maxFileUploadMin = properties.getProperty("MaxFileUploadMin");
-        String maxFileUploadMax = properties.getProperty("MaxFileUploadMax");
-        return value < Integer.valueOf(maxFileUploadMin) || value > Integer.valueOf(maxFileUploadMax) ? false : true;
+        return value < 1 || value > 50 ? false : true;
     }
 }

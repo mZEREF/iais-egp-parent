@@ -26,6 +26,6 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     @Override
     public SystemParameterDto getParameterByRowguid(String rowguid) {
-        return IaisEGPHelper.getReocrdByRowguid("system-admin-service:8886/system-parameter", rowguid, SystemParameterDto.class);
+        return IaisEGPHelper.getRecordByRowguid("system-admin-service:8886/system-parameter", rowguid, SystemParameterDto.class);
     }
 }
