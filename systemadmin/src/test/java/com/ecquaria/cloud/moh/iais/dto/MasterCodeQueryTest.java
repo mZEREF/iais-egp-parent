@@ -1,4 +1,3 @@
-/*
 package com.ecquaria.cloud.moh.iais.dto;
 
 import org.junit.Test;
@@ -34,4 +33,4 @@ public class MasterCodeQueryTest {
         entity.setStatus(1);
         assertNotNull(entity);
     }
-}*/
+}
