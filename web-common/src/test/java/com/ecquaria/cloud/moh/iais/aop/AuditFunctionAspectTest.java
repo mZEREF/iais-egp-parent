@@ -30,8 +30,10 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -44,7 +46,10 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * AuditFunctionAspectTest.java
@@ -89,6 +94,9 @@ public class AuditFunctionAspectTest {
         request.addHeader("User-Agent", "firefox");
         PowerMockito.mockStatic(MiscUtil.class);
         PowerMockito.when(MiscUtil.getCurrentRequest()).thenReturn(request);
+        KafkaTemplate<String, String> kafkaTemplate = PowerMockito.mock(KafkaTemplate.class);
+        Whitebox.setInternalState(aspect, "kafkaTemplate", kafkaTemplate);
+        when(kafkaTemplate, "send", new Object[]{anyString(), anyObject()}).thenReturn(null);
     }
 
     @Test

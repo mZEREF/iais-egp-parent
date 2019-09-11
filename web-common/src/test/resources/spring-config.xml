@@ -29,10 +29,10 @@
   <!-- scan the package and the sub package -->
   <mvc:annotation-driven/>
   <context:component-scan base-package="com.ecquaria.cloud.moh.iais.web.logging"/>
-
+  <context:property-placeholder location="classpath:bootstrap.properties"/>
   <bean id="auditFunctionAspect" class="com.ecquaria.cloud.moh.iais.aop.AuditFunctionAspect"/>
   <bean id="testFunctionTrack" class="com.ecquaria.cloud.moh.iais.aop.TestFunctionTrack"/>
   <bean id="testNonFunctionTrack" class="com.ecquaria.cloud.moh.iais.aop.TestNonFunctionTrack"/>
-
+  <bean class="com.ecquaria.cloud.moh.iais.common.config.KafkaConfig"/>
   <aop:aspectj-autoproxy/>
 </beans>
