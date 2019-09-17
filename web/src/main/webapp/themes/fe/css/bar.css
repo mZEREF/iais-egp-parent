@@ -1,0 +1,56 @@
+/*! MOH-IAIS 30-08-2019 */
+
+	
+/* -------------------------------------------------- 
+-    Extra Small Device, Phones 320 and BELOW
+-------------------------------------------------- */ 
+@media screen and (max-width : 320px) {
+	.covertitle { font-size:28px; top:170px;}
+	.coversubtitle { font-size:14px; top:140px;}
+}
+
+
+/* -------------------------------------------------- 
+-         Super Small Device, Phones 360 
+-------------------------------------------------- */ 
+@media screen and (max-width : 360px) {
+	.covertitle { font-size:28px; top:170px;}
+	.coversubtitle { font-size:14px; top:140px;}
+	.col-md-3f { width:100%;}
+	.col-md-3fa { width:100%;}
+	.col-md-8f { width:100%;}
+}
+
+
+/* -------------------------------------------------- 
+-         Extra Small Devices, Phones 480
+-------------------------------------------------- */ 
+@media screen and (max-width : 480px) {
+	.covertitle { font-size:32px; top:170px;}
+	.coversubtitle { font-size:14px; top:140px;}
+	.getstart { text-align: center;}
+	.col-md-3f { width:100%;}
+	.col-md-3fa { width:100%;}
+	.col-md-8f { width:100%;}
+}
+
+/* -------------------------------------------------- 
+-               Tablets, Desktop 767
+-------------------------------------------------- */ 
+@media (max-width: 768px) { 
+	.getstart { text-align: center;}
+	.col-md-3f { width:100%;}
+	.col-md-3fa { width:100%;}
+	.col-md-8f { width:100%;}
+	.fixheight { height  }
+}
+
+/* -------------------------------------------------- 
+-               Tablets, Desktop 991
+-------------------------------------------------- */ 
+@media screen and (max-width : 991px) {
+	.getstart { text-align: center;}
+	.getstart img { margin:40px 0px;}
+	.otherresources, .border h1, h2, h3, h4, p { text-align: center;}
+	.
+}

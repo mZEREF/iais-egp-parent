@@ -1,0 +1,160 @@
+/*! MOH-IAIS 30-08-2019 */
+
+	
+/* -------------------------------------------------- 
+-    Extra Small Device, Phones 320 and BELOW
+-------------------------------------------------- */ 
+@media screen and (max-width : 320px) {
+	.covertitle { font-size:30px !important; top:170px !important;}
+	.coversubtitle { font-size:14px !important; top:140px !important;}
+	/*Nav Tabs*/
+	.nav-tabs > li > a 		{ font-size: 30px; padding: 5px 10px;}
+	.navbar-default .navbar-nav > li > a { padding-bottom:3px;}
+  .navbar-default .navbar-nav > li > a:first-child { top:-10px;}
+  /*form Buttons*/
+  .form .btn {margin-right: 0;clear: both;width:90%;}
+  .form-group .btn {margin-right: 0;clear: both;width:90%;}
+  /*Table*/
+  .table-responsive-wrap 	{ overflow: auto; width: 100%;}
+  .panel-heading .mesg-count 	{ width: 100%;}
+  .panel-body {padding:0px; margin:0px;}
+  /*Header Title*/
+  .wrapper-content h4 {margin-left: 0px;}
+  .wrapper-content .subheader {padding-left: 0px;}
+  /*Fix StepbyStep Confirm Page Aligment*/
+  .content-body div.control { display:block;}
+  /*Navigation*/
+  .dropdown-menu li > a:hover {color:#f8ca2c !important;background:#1448a6 !important; line-height:35px;}
+}
+/* -------------------------------------------------- 
+-         Super Small Device, Phones 360 
+-------------------------------------------------- */ 
+@media screen and (max-width : 360px) {
+	.covertitle { font-size:30px; top:170px;}
+	.coversubtitle { font-size:14px; top:140px;}
+	.col-md-3f { width:100%;}
+	.col-md-3fa { width:100%;}
+	.col-md-8f { width:100%;}
+	/*Nav Tabs*/
+	.nav-tabs > li > a 		{ font-size: 30px; padding: 5px 10px;}
+	.nav-tabs > li > a span { display: none;}
+  .navbar-default .navbar-nav > li > a:first-child { top:-10px;}
+  /*form Buttons*/
+  .form .btn {margin-right: 0;clear: both;width:90%;}
+  .form-group .btn {margin-right: 0;clear: both;width:90%;}
+	/*Table*/
+	.table-responsive-wrap 	{ 	overflow: auto; width: 100%;}
+  .panel-heading .mesg-count 	{ 	width: 100%;}
+  .panel-body {padding:0px; margin:0px;}
+  /*Header Title*/
+  .wrapper-content h4 {margin-left: 0px;}
+  .wrapper-content .subheader {padding-left: 0px;}
+  /*Fix StepbyStep Confirm Page Aligment*/
+  .content-body div.control { display:block !important;}
+  /*Navigation*/
+  .dropdown-menu li > a:hover {color:#f8ca2c !important;background:#1448a6 !important; line-height:35px;}
+}
+/* -------------------------------------------------- 
+-         Extra Small Devices, Phones 480
+-------------------------------------------------- */ 
+@media screen and (max-width : 480px) {
+	.covertitle { font-size:36px; top:220px;}
+	.coversubtitle { font-size:14px; top:190px;}
+	.getstart { text-align: center;}
+	.col-md-3f { width:100%;}
+	.col-md-3fa { width:100%;}
+	.col-md-8f { width:100%;}
+	/*Nav Tabs*/
+	.nav-tabs > li > a 		{ font-size: 30px; padding: 5px 10px;}
+	.nav-tabs > li > a span { display: none;}
+  .navbar-default .navbar-nav > li > a:first-child { top:-10px;}
+  /*form Buttons*/
+  .form .btn {margin-right: 0;clear: both;width:90%;}
+  .form-group .btn {margin-right: 0;clear: both;width:90%;}
+  /*Table*/
+  .table-responsive-wrap 	{ 	overflow: auto; width: 100%;}
+  .panel-heading .mesg-count 	{ 	width: 100%;}
+  /*Header Title*/
+  .wrapper-content h4 {margin-left: 0px;}
+  .wrapper-content .subheader {padding-left: 0px;}
+  /*Fix StepbyStep Confirm Page Aligment*/
+  .content-body div.control { display:block !important;}
+  /*Navigation*/
+  .logo-text {font-size:14px !important; top:18px !important;}
+  .dropdown-menu li > a:hover {color:#f8ca2c !important;background:#1448a6 !important; line-height:35px;}
+}
+
+/* -------------------------------------------------- 
+-               Tablets, Desktop 767
+-------------------------------------------------- */ 
+@media (max-width: 768px) { 
+	.getstart { text-align: center;}
+	.col-md-3f { width:100%;}
+	.col-md-3fa { width:100%;}
+	.col-md-8f { width:100%;}
+  /*Nav Tabs*/
+  .navbar { border:none;}
+	.nav-tabs > li > a 		{ font-size: 30px; padding: 5px 10px;}
+	.nav-tabs > li > a span { display: none;}
+  /*form Buttons*/
+  .form .btn {margin-right: 0;clear: both;width:90%;}
+  .form-group .btn {margin-right: 0;clear: both;width:90%;}
+  /*Table*/
+  .table-responsive-wrap 	{ overflow: auto; width: 100%;}
+  /*Header Title*/
+  .wrapper-content h4 {margin-left: 0px;}
+  .wrapper-content .subheader {padding-left: 0px;}
+  /*navigationfixed*/
+  .navbar-default .navbar-nav .open .dropdown-menu>li>a { color:#ffffff;} 
+  .navbar-default .navbar-nav .open .dropdown-menu>li>a:hover {color:#f8ca2c; }
+  .navbar-default .navbar-nav > li > a:first-child { top:-10px;}
+  .navbar-default .navbar-nav li { background:#1550bc;}
+  .nav {background:#1550bc;}
+  .navbar {background:#1550bc;border-bottom: 1px solid #3167c8;}
+  .navbar-nav { margin: 3.5px -15px;}
+  .navbar-collapse.in {overflow: hidden;max-height: none !important; height: auto !important;}
+  /*ModalPopupfixed*/
+  .modal-open .modal {padding-left: 20px !important;padding-right: 20px !important;}
+}
+
+/* -------------------------------------------------- 
+-               Tablets, iPads 
+-------------------------------------------------- */
+/* iPads (landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : landscape) {
+  .covertitle { font-size:55px; top:13%;}
+  .coversubtitle { font-size:18px; top:12%; }
+  .arrow-down {margin-top:250px;}
+
+}
+/* iPads (portrait) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : portrait) {
+  .covertitle { font-size:55px; top:13%;}
+  .coversubtitle { font-size:18px; top:12%; }
+  .arrow-down {margin-top:250px;}
+}
+
+/* -------------------------------------------------- 
+-               Tablets, Desktop 991
+-------------------------------------------------- */ 
+@media screen and (max-width : 991px) {
+  .navbar { border:none;}
+	.getstart { text-align: center;}
+	.getstart img { margin:40px 0px;}
+	.otherresources, .border h1, h2, h3, h4, p { text-align: center;}
+  }
+/* -------------------------------------------------- 
+-               Tablets, Desktop 1440
+-------------------------------------------------- */ 
+@media (min-width: 1440px) and (max-width: 9999px) {
+  .covertitle { font-size:55px; top:13%;}
+  .coversubtitle { font-size:18px; top:12%; }
+  .arrow-down {margin-top:250px;}
+}
+
