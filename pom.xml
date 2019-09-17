@@ -37,6 +37,7 @@
         <module>iais-console</module>
         <module>systemadmin</module>
         <module>web-common</module>
+        <module>web</module>
     </modules>
     <dependencyManagement>
         <dependencies>

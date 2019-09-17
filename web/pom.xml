@@ -10,7 +10,14 @@
     <name>iais-web</name>
     <url>http://maven.apache.org</url>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.ecquaria.egp</groupId>
+            <artifactId>web</artifactId>
+            <version>19.04.2</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
 
     <build>
         <finalName>iais-web</finalName>
