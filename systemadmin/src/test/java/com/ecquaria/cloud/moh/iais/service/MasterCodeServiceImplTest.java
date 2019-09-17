@@ -1,3 +1,4 @@
+/*
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.dao.MasterCodeRepository;
@@ -44,3 +45,4 @@ public class MasterCodeServiceImplTest {
 //        masterCode = masterCodeServiceImpl.findMasterCodeByRowguid("ax");
     }
 }
+*/

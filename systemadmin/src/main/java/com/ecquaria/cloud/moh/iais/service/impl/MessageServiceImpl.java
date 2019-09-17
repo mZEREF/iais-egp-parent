@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
+import com.ecquaria.cloud.moh.iais.dto.MessageQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
 import org.springframework.stereotype.Service;
@@ -23,19 +24,17 @@ import java.util.Map;
 public class MessageServiceImpl implements MessageService {
 
     @SearchTrack(catalog = "message", key = "search")
-    public SearchResult<MessageDto> doQuery(SearchParam param) {
-        return  RestApiUtil.query("/iais-message/results", param);
+    public SearchResult<MessageQueryDto> doQuery(SearchParam searchParam) {
+        return  RestApiUtil.query("system-admin-service:8886/iais-message/results", searchParam);
     }
 
     public void saveMessage(MessageDto messageDto) {
         messageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        RestApiUtil.save("/iais-message/messages", messageDto);
+        RestApiUtil.save("system-admin-service:8886/iais-message", messageDto);
     }
 
     public MessageDto getMessageByRowguid(String rowguid) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("rowguid", rowguid);
-        return RestApiUtil.getByReqParam("/iais-message/rowguid", map, MessageDto.class);
+        return IaisEGPHelper.getRecordByRowguid("system-admin-service:8886/iais-message", rowguid, MessageDto.class);
     }
 
 }

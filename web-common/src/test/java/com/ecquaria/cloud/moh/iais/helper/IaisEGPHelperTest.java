@@ -14,8 +14,13 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -44,9 +49,11 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({IaisEGPHelper.class, MiscUtil.class})
+@PrepareForTest({IaisEGPHelper.class, MiscUtil.class, ParamUtil.class, RestApiUtil.class})
 @PowerMockIgnore("javax.management.*")
 public class IaisEGPHelperTest {
+
+    public static final String PARAM_TEST_FLEID = "test";
 
     @Test(expected = IllegalStateException.class)
     public void testConstructor() throws NoSuchMethodException, IllegalAccessException,
@@ -83,4 +90,86 @@ public class IaisEGPHelperTest {
         assertNotNull(path);
     }
 
+    @Test
+    public void testGetPostCodeByCode(){
+        PowerMockito.mockStatic(RestApiUtil.class);
+        IaisEGPHelper.getPostCodeByCode("ts");
+        Assert.assertTrue(true);
+    }
+
+
+    @Test
+    public void testGetSearchParam(){
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setSearchAttr("test");
+        Class clz = ParamUtil.class;
+        queryCondition.setClz(clz);
+        PowerMockito.mockStatic(ParamUtil.class);
+        when(ParamUtil.getSessionAttr(mockHttpServletRequest, queryCondition.getSearchAttr())).thenReturn(null);
+        assertNotNull(IaisEGPHelper.getSearchParam(mockHttpServletRequest, queryCondition));
+    }
+
+    @Test
+    public void testClearSessionAttrToError(){
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        try {
+            IaisEGPHelper.clearSessionAttr(mockHttpServletRequest, null);
+
+            IaisEGPHelper.clearSessionAttr(null, IaisEGPHelperTest.class);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testClearSessionAttrToSuccess(){
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        try {
+            IaisEGPHelper.clearSessionAttr(mockHttpServletRequest, IaisEGPHelperTest.class);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(true);
+    }
+
+    @Test
+    public void testGetSearchParamToError(){
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        QueryCondition queryCondition = new QueryCondition();
+        queryCondition.setSearchAttr("test");
+        queryCondition.setClz(null);
+        PowerMockito.mockStatic(ParamUtil.class);
+        SearchParam param = new SearchParam();
+        when(ParamUtil.getSessionAttr(mockHttpServletRequest, queryCondition.getSearchAttr())).thenReturn(param);
+        IaisEGPHelper.getSearchParam(mockHttpServletRequest, queryCondition);
+        assertNotNull(param);
+    }
+
+    @Test
+    public void testGetCurrentAuditTrailDto(){
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+
+        PowerMockito.mockStatic(MiscUtil.class);
+        when(MiscUtil.getCurrentRequest()).thenReturn(mockHttpServletRequest);
+        IaisEGPHelper.getCurrentAuditTrailDto();
+        Assert.assertTrue(true);
+    }
+
+
+
+    @Test(expected = NullPointerException.class)
+    public void testGetSearchParamToException(){
+        MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
+        QueryCondition queryCondition = null;
+        assertNotNull(IaisEGPHelper.getSearchParam(mockHttpServletRequest, true, queryCondition));
+    }
+
+    @Test
+    public void testGetReocrdByRowguid(){
+        PowerMockito.mockStatic(RestApiUtil.class);
+        when(RestApiUtil.getByPathParam("test", "dsadasd", null)).thenReturn(null);
+        IaisEGPHelper.getRecordByRowguid("test", "dsadasd", null);
+        Assert.assertTrue(true);
+    }
 }

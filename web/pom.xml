@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>sg.gov.moh.iais-egp</groupId>
+    <artifactId>iais-web</artifactId>
+    <version>0.1</version>
+    <packaging>war</packaging>
+    <name>iais-web</name>
+    <url>http://maven.apache.org</url>
+
+
+
+    <build>
+        <finalName>iais-web</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>sz-nexus</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>nexus-repo</id>
+                    <name>Nexus Repository</name>
+                    <url>http://nexus:8081/repository/maven-public/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+                <repository>
+                    <id>nexus-repo-snapshots</id>
+                    <name>Nexus Repository</name>
+                    <url>http://nexus:8081/repository/maven-snapshots/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
+            <id>sg-nexus</id>
+            <repositories>
+                <repository>
+                    <id>nexus3-repo</id>
+                    <name>Nexus Repository</name>
+                    <url>http://192.168.4.165/repository/public-maven/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+            </repositories>
+        </profile>
+
+    </profiles>
+</project>

@@ -10,9 +10,10 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
+import com.ecquaria.cloud.moh.iais.dto.MessageQueryDto;
 
 public interface MessageService {
-    SearchResult<MessageDto> doQuery(SearchParam param);
+    SearchResult<MessageQueryDto> doQuery(SearchParam param);
 
     void saveMessage(MessageDto messageDto);
 

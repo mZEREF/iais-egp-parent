@@ -36,36 +36,25 @@
     <input type="hidden" name="crud_action_additional" value="">
 
 <iais:body>
-    <h2>Message List Page</h2>
-        <iais:error>
-            <c:if test = "${not empty errorMap}">
-                <div class="error">
-                    <c:forEach items="${errorMap}" var="map">
-                        ${map.key}  ${map.value} <br/>
-                    </c:forEach>
-                </div>
-            </c:if>
-        </iais:error>
-
         <iais:section title="Message List" id="msgList">
             <iais:row>
                 <iais:field value="Domain Type" required="true"></iais:field>
                 <iais:value width="7">
-                    <iais:select name="domainType" options="domainTypeSelect" firstOption="Please select" ></iais:select>
+                    <iais:select name="domainType" id="domainType" options="domainTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
                 </iais:value>
             </iais:row>
 
-            <iais:row>
+            <iais:row id="msgTypeRow" style="display:none">
                 <iais:field value="Msg Type" required="false"></iais:field>
                 <iais:value width="7">
                     <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" ></iais:select>
                 </iais:value>
             </iais:row>
 
-            <iais:row>
+            <iais:row id="moduleTypeRow" style="display:none">
                 <iais:field value="Module" required="false"></iais:field>
                 <iais:value width="7">
-                    <iais:select name="module" options="moduleTypeSelect" firstOption="Please select" ></iais:select>
+                    <iais:select name="module"  options="moduleTypeSelect" firstOption="Please select" ></iais:select>
                 </iais:value>
             </iais:row>
 
@@ -73,6 +62,18 @@
                 <button type="button" class="search btn" onclick="javascript:doSearch();">Search</button>
             </iais:action>
     </iais:section>
+
+    </br>
+
+    <iais:error>
+        <c:if test = "${not empty errorMap}">
+            <div class="error">
+                <c:forEach items="${errorMap}" var="map">
+                    ${map.key}  ${map.value} <br/>
+                </c:forEach>
+            </div>
+        </c:if>
+    </iais:error>
 
     </br>
 
@@ -95,6 +96,7 @@
                 <iais:sortableHeader needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="message" value="Message"></iais:sortableHeader>
             </tr>
             </thead>
 
@@ -116,8 +118,9 @@
                             <td>${msgQuery.msgType}</td>
                             <td>${msgQuery.module}</td>
                             <td>${msgQuery.description}</td>
+                            <td>${msgQuery.message}</td>
                             <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:perpareEdit('${msgQuery.rowguid}');"/>
+                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.rowguid}');"/>
                                 <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.rowguid}');"/>
                             </td>
                         </tr>
@@ -145,9 +148,9 @@
         SOP.Crud.cfxSubmit("mainForm","changePage");
     }
 
-    function perpareEdit(rowguid){
+    function prepareEdit(rowguid){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "perpareEdit", rowguid);
+            SOP.Crud.cfxSubmit("messageForm", "prepareEdit", rowguid);
         }
     }
 
@@ -155,6 +158,20 @@
         if(confirm('are sure you want to disable ? ')){
             SOP.Crud.cfxSubmit("messageForm", "disableStatus", rowguid);
         }
+    }
+
+    function displaySection(){
+       var val = document.getElementById("domainType").value;
+       if(val == null){
+           return;
+       }
+
+       var msgTypeRow = document.getElementById("msgTypeRow");
+       var moduleTypeRow = document.getElementById("moduleTypeRow");
+       if(msgTypeRow && moduleTypeRow){
+           msgTypeRow.style = "block";
+           moduleTypeRow.style = "block";
+       }
     }
 
 </script>

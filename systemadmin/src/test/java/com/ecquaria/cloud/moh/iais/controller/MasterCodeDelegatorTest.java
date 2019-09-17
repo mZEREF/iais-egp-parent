@@ -3,13 +3,12 @@ package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.querydao.QueryDao;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dao.MasterCodeRepository;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeQuery;
-import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
@@ -48,16 +47,14 @@ public class MasterCodeDelegatorTest {
 
     private MockHttpServletRequest request = new MockHttpServletRequest();
 
-    @Mock
-    private QueryDao<MasterCodeQuery> mastercodeQueryDao;
 
     @Mock
     private MasterCodeRepository masterCodeRepository;
 
     @Before
     public void setup(){
-
         SearchParam searchParam = new SearchParam(MasterCodeQuery.class.getName());
+
 
         bpc.request = request;
       //  Whitebox.setInternalState(masterCodeService,"mastercodeQueryDao",mastercodeQueryDao);
@@ -168,7 +165,7 @@ public class MasterCodeDelegatorTest {
         PowerMockito.when(AuditTrailDto.getThreadDto()).thenReturn(auditTrailDto);
         PowerMockito.mockStatic(WebValidationHelper.class);
         PowerMockito.when(WebValidationHelper.validateProperty(Mockito.anyObject(), Mockito.anyString())).thenReturn(null);
-        request.getSession().setAttribute(MessageDto.MESSAGE_REQUEST_DTO, masterCodeDto);
+        request.getSession().setAttribute(MessageConstant.MESSAGE_REQUEST_DTO, masterCodeDto);
         masterCodeDelegator.doEdit(bpc);
         Assert.assertTrue(true);
     }

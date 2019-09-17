@@ -33,10 +33,6 @@ private static final String DELEGATOR ="messageDelegator";
 		EngineHelper.delegate(DELEGATOR, "startStep", this);
 	}
 
-	public void editBefore_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "perpareEdit", this);
-	}
-
 	public void doCreate_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doCreate", this);
 	}
@@ -47,6 +43,10 @@ private static final String DELEGATOR ="messageDelegator";
 
 	public void disableStatus_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "disableStatus", this);
+	}
+
+	public void prepareEdit_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "prepareEdit", this);
 	}
 
 	

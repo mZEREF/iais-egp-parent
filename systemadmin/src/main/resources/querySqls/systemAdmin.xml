@@ -37,14 +37,25 @@
 
     <sql key = "queryMessage" remarks = "query message sql">
         <![CDATA[
-            SELECT msg_id, rowguid, code_key, domain_type, msg_type, module, description, status
+            SELECT msg_id, rowguid, code_key, domain_type, msg_type, module, description, message, status
             FROM MOHIAIS.dbo.CM_MESSAGE
-            WHERE 1=1 AND status != 0
+            WHERE 1=1 AND status != 'N'
             <#if domainType??> AND domain_type = :domainType</#if>
             <#if msgType??> AND msg_type = :msgType</#if>
             <#if module??> AND module = :module</#if>
         ]]>
+    </sql>
 
+    <sql key="querySystemParam" remarks="query system param sql">
+        <![CDATA[
+            SELECT pid, rowguid ,domain_type , module, description, value_type, value, status, updated_by ,updated_on
+            FROM MOHIAIS.dbo.CM_SYSTEM_PARAMETERS
+            WHERE 1=1 AND status != 'N'
+            <#if domainType??> AND domain_type = :domainType</#if>
+            <#if module??> AND module = :module</#if>
+            <#if description??> AND description like %:description</#if>
+            <#if status??> AND status = :status</#if>
+        ]]>
     </sql>
 </sqls>
 

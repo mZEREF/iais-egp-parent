@@ -6,6 +6,8 @@ import org.mockito.Spy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.assertNotNull;
+
 /*
  *author: yichen
  *date time:2019/8/8 16:56
@@ -29,6 +31,7 @@ public class MessageDtoTest {
         dto.getDescription();
         dto.getStatus();
         dto.getAuditTrailDto();
+        dto.getMessage();
 
         dto.setId(null);
         dto.setRowguid(null);
@@ -37,11 +40,13 @@ public class MessageDtoTest {
         dto.setMsgType(null);
         dto.setDescription(null);
         dto.setStatus(null);
+        dto.setMessage(null);
 
         dto.validateDescriptionRegEx("");
         dto.validateDescriptionRegEx("asd");
         dto.validateDescriptionRegEx("&*()");
 
         dto.setAuditTrailDto(null);
+        assertNotNull(dto);
     }
 }

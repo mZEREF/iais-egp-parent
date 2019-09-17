@@ -14,10 +14,12 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,8 @@ import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,11 +91,75 @@ public final class IaisEGPHelper extends EGPHelper {
      * @param: [postalCode]
      * @return: com.ecquaria.cloud.moh.iais.dto.PostCodeDto
      */
-    public PostCodeDto getPostCodeByCode(String postalCode) {
+    public static  PostCodeDto getPostCodeByCode(String postalCode) {
         Map<String, Object> map = new HashMap<>();
         map.put("searchField", "postalCode");
         map.put("filterValue", postalCode);
         return RestApiUtil.getByReqParam("postcodes", map, PostCodeDto.class);
     }
+
+    /**
+     * use by delegator to clear session attr, prefix of param need use 'Param_'
+     * @param request HttpServletRequest
+     * @param delegatorClz   Delegator Class
+     * @throws IllegalAccessException
+     */
+    public static void clearSessionAttr(HttpServletRequest request, Class<?> delegatorClz) throws IllegalAccessException {
+        if(request == null || delegatorClz == null){
+            return;
+        }
+
+        Field[] fields = delegatorClz.getFields();
+        if(fields != null){
+            for(Field field : fields){
+                String fieldName = field.getName();
+                if(fieldName.startsWith("PARAM_")){
+                    ParamUtil.setSessionAttr(request, (String) field.get(fieldName), null);
+                }
+            }
+        }
+    }
+
+    /**
+     * Get query conditions by parameters
+     * @param request HttpServletRequest
+     * @param queryCondition
+     * @return
+     */
+    public static SearchParam getSearchParam(HttpServletRequest request, QueryCondition queryCondition){
+        return getSearchParam(request, false, queryCondition);
+    }
+
+    public static SearchParam getSearchParam(HttpServletRequest request,
+                                             boolean isNew, QueryCondition queryCondition){
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, queryCondition.getSearchAttr());
+        try {
+            if(searchParam == null || isNew){
+                searchParam = new SearchParam(queryCondition.getClz().getName());
+                searchParam.setPageSize(queryCondition.getPageSize());
+                searchParam.setPageNo(queryCondition.getPageNo());
+                searchParam.setSort(queryCondition.getSortField(), SearchParam.ASCENDING);
+                ParamUtil.setSessionAttr(request, queryCondition.getSearchAttr(), searchParam);
+            }
+        }catch (NullPointerException e){
+            log.info("getSearchParam ===>>>> " + e.getMessage());
+        }
+        return searchParam;
+    }
+
+    /**
+     * Get the record by rowguid
+     * @param serviceName
+     * @param rowguid
+     * @param clz
+     * @param <T>
+     * @return
+     */
+    public static <T> T getRecordByRowguid(String serviceName, String rowguid, Class<? extends Serializable> clz){
+        Map<String, Object> paramMapper = new HashMap<>();
+        paramMapper.put("rowguid", rowguid);
+        return (T) RestApiUtil.getByReqParam(serviceName + "/{rowguid}", paramMapper, clz);
+    }
+
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
 }

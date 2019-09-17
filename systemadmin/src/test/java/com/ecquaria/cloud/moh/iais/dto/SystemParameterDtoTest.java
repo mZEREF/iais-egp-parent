@@ -1,0 +1,44 @@
+package com.ecquaria.cloud.moh.iais.dto;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Spy;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+/*
+ *author: yichen
+ *date time:9/10/2019 4:31 PM
+ *description:
+ */
+@RunWith(PowerMockRunner.class)
+public class SystemParameterDtoTest {
+    @Spy
+    SystemParameterDto dto = new SystemParameterDto();
+
+    @Test
+    public void testGetterSetter() {
+        dto.getId();
+        dto.getDescription();
+        dto.getDomainType();
+        dto.getModule();
+        dto.getStatus();
+        dto.getValue();
+        dto.getValueType();
+        dto.getRowguid();
+        dto.getUpdatedBy();
+        dto.getUpdatedOn();
+
+
+        dto.setId(null);
+        dto.setDescription(null);
+        dto.setDomainType(null);
+        dto.setModule(null);
+        dto.setStatus(null);
+        dto.setValue(null);
+        dto.setValueType(null);
+        dto.setRowguid(null);
+        dto.setUpdatedBy(null);
+        dto.setUpdatedOn(null);
+
+    }
+}

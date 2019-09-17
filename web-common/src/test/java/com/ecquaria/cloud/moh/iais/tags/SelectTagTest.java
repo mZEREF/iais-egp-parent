@@ -74,7 +74,7 @@ public class SelectTagTest {
         tag.setCssClass("css");
         tag.setNeedErrorSpan(true);
         tag.setFilterCode("filterCode");
-
+        tag.setHidden("hidden");
         List<SelectOption> options =  new ArrayList<>() ;
         options.add(selectOption);
         request.setAttribute("options",options);
