@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <%
-    String webroot="iais-web/themes/fe/";
+    String webroot="web/themes/fe/";
 %>
 <head>
     <meta charset="utf-8">
