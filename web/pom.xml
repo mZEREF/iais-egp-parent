@@ -7,7 +7,7 @@
     <artifactId>iais-web</artifactId>
     <version>0.1</version>
     <packaging>war</packaging>
-    <name>web</name>
+    <name>iais-web</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
@@ -20,7 +20,7 @@
     </dependencies>
 
     <build>
-        <finalName>web</finalName>
+        <finalName>iais-web</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
