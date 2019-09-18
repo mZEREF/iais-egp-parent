@@ -1,5 +1,6 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisCCConstant" %>
 <%
-    String webroot="/web/themes/fe/";
+    String webroot=IaisCCConstant.FE_CSS_ROOT;
 %>
 <meta charset="utf-8">
 <meta http-equiv="x-ua-compatible" content="ie=edge">

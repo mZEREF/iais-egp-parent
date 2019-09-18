@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisCCConstant" %>
 <%
-    String webroot1="/web/themes/fe/";
+    String webroot1=IaisCCConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-cc"/>
 

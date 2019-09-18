@@ -1,5 +1,6 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisCCConstant" %>
 <%
-    String webrooth="/web/themes/fe/";
+    String webrooth=IaisCCConstant.FE_CSS_ROOT;
 %>
 <header>
     <div class="container">
