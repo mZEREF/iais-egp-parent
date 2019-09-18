@@ -1,44 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%
-    String webroot="web/themes/fe/";
+    String webroot1="/web/themes/fe/";
 %>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <title>MOH IAIS - Application</title>
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
-    <link href="<%=webroot%>css/bootstrap.min.css" rel="stylesheet">
-    <link href="<%=webroot%>css/custom.css" rel="stylesheet">
-    <link href="<%=webroot%>css/responsiveindex.css" rel="stylesheet">
-    <link href="<%=webroot%>css/font-awesome.min.css" rel="stylesheet">
-    <link href="<%=webroot%>css/nice-select.css" rel="stylesheet">
-    <link href="<%=webroot%>css/swiper.css" rel="stylesheet">
-    <link href="<%=webroot%>css/jquery.mCustomScrollbar.css" rel="stylesheet">
-    <link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
-</head>
-<body>
-<header>
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-10 col-lg-6">
-                <div class="logo-img"><a href="#"><img src="<%=webroot%>img/moh-logo.svg" alt="Ministry of Health" width="235" height="64">
-                    <p class="logo-txt">Integrated Application and Inspection System</p></a></div>
-            </div>
-            <div class="col-xs-2 col-lg-6">
-                <ul class="list-inline hidden-xs hidden-sm">
-                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer">A-</a></li>
-                    <li class="site-fontsizer-cont"><a class="decrease-font fontsizer">A+</a></li>
-                </ul>
-                <div class="sg-gov-logo hidden-xs hidden-sm"><a href="https://www.gov.sg/"> <img src="img/singapore-gov-logo.svg" alt="Singapore Government" width="270" height="42"></a></div>
-            </div>
-        </div>
-    </div>
-</header>
-<div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
+<webui:setLayout name="iais-cc"/>
+
+
+<div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
             <div class="row">
@@ -576,40 +543,4 @@
         </div>
     </div>
 </div>
-<footer class="footerlogin">
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-md-7">
-                <div class="footer-link">
-                    <ul class="list-inline">
-                        <li><a href="#">Privacy Statement</a></li>
-                        <li><a href="#">Terms Of Use</a></li>
-                        <li><a href="#">Rate This E-Service</a></li>
-                        <li><a href="#">Sitemap</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-5">
-                <div class="copyright">
-                    <p class="text-right">	&copy; <span class="year">2019</span>  Government Of Singapore. Last Updated 18 Feb 2018.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="<%=webroot%>js/bootstrap.min.js"></script>
-<script src="<%=webroot%>js/particles.js"></script>
-<script src="<%=webroot%>js/app.js"></script>
-<script src="<%=webroot%>js/lib/stats.js"></script>
-<script src="<%=webroot%>js/scrollup.js"></script>
-<script src="<%=webroot%>js/anchor.js"></script>
-<script src="<%=webroot%>js/mynav.js"></script>
-<script src="<%=webroot%>js/navbarscroll.js"></script>
-<script src="<%=webroot%>js/dropdown.js"></script>
-<script src="<%=webroot%>js/jquery.nice-select.js"></script>
-<script src="<%=webroot%>js/swiper.js"></script>
-<script src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
-<script src="<%=webroot%>js/cpl_app.js"></script>
-</body>
-</html>
+
