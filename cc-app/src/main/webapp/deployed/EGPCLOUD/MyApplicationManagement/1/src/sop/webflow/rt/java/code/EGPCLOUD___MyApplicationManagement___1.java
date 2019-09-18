@@ -12,7 +12,6 @@
 package sop.webflow.rt.java.code;
 
 import com.ecquaria.cloud.helper.EngineHelper;
-import com.ecquaria.cloud.moh.iais.exception.IaisRuntimeException;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -20,49 +19,34 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class EGPCLOUD___MyApplicationManagement___1 extends BaseProcessClass {
 
 	private static final long serialVersionUID = 4369944332551696190L;
-	private static final String APPLICATION_DELEGATOR = "applicationDelegator";
-	private static final String ON_PREPARE_DATA = "onPrepareData";
-	private static final String ON_START_PROCESS = "onStartProcess";
-	private static final String ON_SEARCH = "onSearch";
-	private static final String ON_SORTING = "onSorting";
-	private static final String ON_PAGING = "onPaging";
-	private static final String ON_MAIN_SEARCH = "onMainSearch";
-	private static final String ON_BIND_ACTION = "onBindAction";
 
-	public void prepareData_OnStepProcess_0() {
-		throw new IaisRuntimeException(ON_PREPARE_DATA);
-		EngineHelper.delegate(APPLICATION_DELEGATOR, ON_PREPARE_DATA, request);
+	public void prepareData_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate("applicationDelegator", "onPrepareData", request);
 	}
 
-	public void start_OnStepProcess_0() {
-		throw new IaisRuntimeException(ON_START_PROCESS);
-		EngineHelper.delegate(APPLICATION_DELEGATOR, ON_START_PROCESS, request);
+	public void start_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate("applicationDelegator", "onStartProcess", request);
 	}
 
-	public void search_OnStepProcess_0() {
-		throw new IaisRuntimeException(ON_SEARCH);
-		EngineHelper.delegate(APPLICATION_DELEGATOR, ON_SEARCH, request);
-		
+	public void search_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate("applicationDelegator", "onSearch", request);
+
 	}
 
-	public void sorting_OnStepProcess_0() {
-		throw new IaisRuntimeException(ON_SORTING);
-		EngineHelper.delegate(APPLICATION_DELEGATOR, ON_SORTING, request);
+	public void sorting_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate("applicationDelegator", "onSorting", request);
 	}
 
-	public void paging_OnStepProcess_0() {
-		throw new IaisRuntimeException(ON_PAGING);
-		EngineHelper.delegate(APPLICATION_DELEGATOR, ON_PAGING, request);
+	public void paging_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate("applicationDelegator", "onPaging", request);
 	}
 
-	public void mainSearch_OnStepProcess_0() {
-		throw new IaisRuntimeException(ON_MAIN_SEARCH);
-		EngineHelper.delegate(APPLICATION_DELEGATOR, ON_MAIN_SEARCH, request);
+	public void mainSearch_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate("applicationDelegator", "onMainSearch", request);
 	}
 
-	public void bindAction_OnStepProcess_0() {
-		throw new IaisRuntimeException(ON_BIND_ACTION);
-		EngineHelper.delegate(APPLICATION_DELEGATOR, ON_BIND_ACTION, request);
+	public void bindAction_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate("applicationDelegator", "onBindAction", request);
 	}
 
 }
