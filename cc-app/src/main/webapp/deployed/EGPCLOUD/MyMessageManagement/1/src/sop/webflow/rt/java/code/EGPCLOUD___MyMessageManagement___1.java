@@ -10,10 +10,9 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import com.ecquaria.cloud.helper.EngineHelper;
 import com.ecquaria.cloud.moh.iais.exception.IaisRuntimeException;
+import sop.webflow.rt.api.BaseProcessClass;
 
 public class EGPCLOUD___MyMessageManagement___1 extends BaseProcessClass {
 
@@ -26,33 +25,27 @@ public class EGPCLOUD___MyMessageManagement___1 extends BaseProcessClass {
 	private static final String MAIN_SEARCH = "mainSearch";
 
 
-	public void prepareData_OnStepProcess_0() {
-		throw new IaisRuntimeException(PREPARE_DATA);
+	public void prepareData_OnStepProcess_0() throws Exception{
 		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, PREPARE_DATA, request);
 	}
 
-	public void search_OnStepProcess_0()  {
-		throw new IaisRuntimeException(SEARCH);
+	public void search_OnStepProcess_0()  throws Exception{
 		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, SEARCH, request);
 	}
 
-	public void step1_OnStepProcess_0() {
-		throw new IaisRuntimeException(START_PROCESS);
+	public void step1_OnStepProcess_0() throws Exception{
 		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, START_PROCESS, request);
 	}
 
-	public void paging_OnStepProcess_0()  {
-		throw new IaisRuntimeException(CHANGE_PAGE);
+	public void paging_OnStepProcess_0()  throws Exception{
 		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, CHANGE_PAGE, request);
 	}
 
-	public void sorting_OnStepProcess_0() {
-		throw new IaisRuntimeException(SORTING);
+	public void sorting_OnStepProcess_0() throws Exception{
 		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, SORTING, request);
 	}
 
-	public void mainSearch_OnStepProcess_0() {
-		throw new IaisRuntimeException(MAIN_SEARCH);
+	public void mainSearch_OnStepProcess_0() throws Exception{
 		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, MAIN_SEARCH, request);
 	}
 	
