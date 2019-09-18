@@ -11,7 +11,6 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
-import com.ecquaria.cloud.moh.iais.exception.IaisRuntimeException;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class EGPCLOUD___MyMessageManagement___1 extends BaseProcessClass {
@@ -22,6 +21,7 @@ public class EGPCLOUD___MyMessageManagement___1 extends BaseProcessClass {
 	private static final String START_PROCESS = "startProcess";
 	private static final String CHANGE_PAGE = "changePage";
 	private static final String SORTING = "sorting";
+	private static final String SEARCH = "search";
 	private static final String MAIN_SEARCH = "mainSearch";
 
 
