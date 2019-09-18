@@ -10,10 +10,9 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import com.ecquaria.cloud.helper.EngineHelper;
 import com.ecquaria.cloud.moh.iais.exception.IaisRuntimeException;
+import sop.webflow.rt.api.BaseProcessClass;
 
 public class EGPCLOUD___MyMessageManagement___1 extends BaseProcessClass {
 
@@ -34,8 +33,7 @@ public class EGPCLOUD___MyMessageManagement___1 extends BaseProcessClass {
 		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, SEARCH, request);
 	}
 
-	public void step1_OnStepProcess_0() {
-		throw new IaisRuntimeException(START_PROCESS);
+	public void step1_OnStepProcess_0() throws Exception{
 		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, START_PROCESS, request);
 	}
 
