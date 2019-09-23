@@ -18,7 +18,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import org.junit.Assert;
 import org.junit.Test;
@@ -101,13 +102,13 @@ public class IaisEGPHelperTest {
     @Test
     public void testGetSearchParam(){
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        QueryCondition queryCondition = new QueryCondition();
-        queryCondition.setSearchAttr("test");
+        FilterParameter filterParameter = new FilterParameter();
+        filterParameter.setSearchAttr("test");
         Class clz = ParamUtil.class;
-        queryCondition.setClz(clz);
+        filterParameter.setClz(clz);
         PowerMockito.mockStatic(ParamUtil.class);
-        when(ParamUtil.getSessionAttr(mockHttpServletRequest, queryCondition.getSearchAttr())).thenReturn(null);
-        assertNotNull(IaisEGPHelper.getSearchParam(mockHttpServletRequest, queryCondition));
+        when(ParamUtil.getSessionAttr(mockHttpServletRequest, filterParameter.getSearchAttr())).thenReturn(null);
+        assertNotNull(IaisEGPHelper.getSearchParam(mockHttpServletRequest, filterParameter));
     }
 
     @Test
@@ -136,13 +137,13 @@ public class IaisEGPHelperTest {
     @Test
     public void testGetSearchParamToError(){
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        QueryCondition queryCondition = new QueryCondition();
-        queryCondition.setSearchAttr("test");
-        queryCondition.setClz(null);
+        FilterParameter filterParameter = new FilterParameter();
+        filterParameter.setSearchAttr("test");
+        filterParameter.setClz(null);
         PowerMockito.mockStatic(ParamUtil.class);
         SearchParam param = new SearchParam();
-        when(ParamUtil.getSessionAttr(mockHttpServletRequest, queryCondition.getSearchAttr())).thenReturn(param);
-        IaisEGPHelper.getSearchParam(mockHttpServletRequest, queryCondition);
+        when(ParamUtil.getSessionAttr(mockHttpServletRequest, filterParameter.getSearchAttr())).thenReturn(param);
+        IaisEGPHelper.getSearchParam(mockHttpServletRequest, filterParameter);
         assertNotNull(param);
     }
 
@@ -161,8 +162,8 @@ public class IaisEGPHelperTest {
     @Test(expected = NullPointerException.class)
     public void testGetSearchParamToException(){
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        QueryCondition queryCondition = null;
-        assertNotNull(IaisEGPHelper.getSearchParam(mockHttpServletRequest, true, queryCondition));
+        FilterParameter filterParameter = null;
+        assertNotNull(IaisEGPHelper.getSearchParam(mockHttpServletRequest, true, filterParameter));
     }
 
     @Test
@@ -170,6 +171,13 @@ public class IaisEGPHelperTest {
         PowerMockito.mockStatic(RestApiUtil.class);
         when(RestApiUtil.getByPathParam("test", "dsadasd", null)).thenReturn(null);
         IaisEGPHelper.getRecordByRowguid("test", "dsadasd", null);
+        Assert.assertTrue(true);
+    }
+
+    @Test
+    public void testGetDate(){
+        IaisEGPHelper.parseToDate(null);
+        IaisEGPHelper.parseToDate("2019-01-01");
         Assert.assertTrue(true);
     }
 }
