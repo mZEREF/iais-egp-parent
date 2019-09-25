@@ -68,7 +68,7 @@ sop.webflow.rt.api.BaseProcessClass process =
 
 
 <script type="text/javascript">
-msc
+
 
     function doEdit(mscId){
         if(confirm('Are sure you want to edit ? ')){
