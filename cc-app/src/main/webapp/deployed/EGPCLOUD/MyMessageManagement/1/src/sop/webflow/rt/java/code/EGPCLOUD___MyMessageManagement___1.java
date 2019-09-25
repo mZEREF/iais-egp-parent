@@ -13,47 +13,39 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import com.ecquaria.cloud.helper.EngineHelper;
-import com.ecquaria.cloud.moh.iais.exception.IaisRuntimeException;
 
 public class EGPCLOUD___MyMessageManagement___1 extends BaseProcessClass {
 
 	private static final long serialVersionUID = 4715976103220995887L;
-	private static final String MY_MESSAGE_DELEGATOR = "myMessageDelegator";
-	private static final String PREPARE_DATA = "prepareData";
-	private static final String START_PROCESS = "startProcess";
-	private static final String CHANGE_PAGE = "changePage";
-	private static final String SORTING = "sorting";
-	private static final String MAIN_SEARCH = "mainSearch";
 
-
-	public void prepareData_OnStepProcess_0() {
-		throw new IaisRuntimeException(PREPARE_DATA);
-		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, PREPARE_DATA, request);
+	public void prepareData_OnStepProcess_0() throws Exception {
+//		MessageController.prepareData(request);
+		EngineHelper.delegate("myMessageDelegator", "prepareData", request);
 	}
 
-	public void search_OnStepProcess_0()  {
-		throw new IaisRuntimeException(SEARCH);
-		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, SEARCH, request);
+	public void search_OnStepProcess_0() throws Exception {
+//		MessageController.search(request);
+		EngineHelper.delegate("myMessageDelegator", "search", request);
 	}
 
-	public void step1_OnStepProcess_0() {
-		throw new IaisRuntimeException(START_PROCESS);
-		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, START_PROCESS, request);
+	public void step1_OnStepProcess_0() throws Exception {
+//		MessageController.startProcess(request);
+		EngineHelper.delegate("myMessageDelegator", "startProcess", request);
 	}
 
-	public void paging_OnStepProcess_0()  {
-		throw new IaisRuntimeException(CHANGE_PAGE);
-		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, CHANGE_PAGE, request);
+	public void paging_OnStepProcess_0() throws Exception {
+//		MessageController.changePage(request);
+		EngineHelper.delegate("myMessageDelegator", "changePage", request);
 	}
 
-	public void sorting_OnStepProcess_0() {
-		throw new IaisRuntimeException(SORTING);
-		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, SORTING, request);
+	public void sorting_OnStepProcess_0() throws Exception {
+//		MessageController.sorting(request);
+		EngineHelper.delegate("myMessageDelegator", "sorting", request);
 	}
 
-	public void mainSearch_OnStepProcess_0() {
-		throw new IaisRuntimeException(MAIN_SEARCH);
-		EngineHelper.delegate(MY_MESSAGE_DELEGATOR, MAIN_SEARCH, request);
+	public void mainSearch_OnStepProcess_0() throws Exception {
+//		MessageController.mainSearch(request);
+		EngineHelper.delegate("myMessageDelegator", "mainSearch", request);
 	}
 	
 }
