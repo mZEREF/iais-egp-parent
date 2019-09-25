@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.dao.MasterCodeRepository;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.entity.MasterCode;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
@@ -21,8 +20,6 @@ import java.util.Map;
 @Slf4j
 public class MasterCodeServiceImpl implements MasterCodeService {
 
-    @Autowired
-    MasterCodeRepository masterCodeRepository;
 
     @Autowired
     MasterCode masterCode;

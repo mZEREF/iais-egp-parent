@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
-import com.ecquaria.cloud.moh.iais.dao.MasterCodeRepository;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeQuery;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -25,7 +24,6 @@ import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -48,17 +46,13 @@ public class MasterCodeDelegatorTest {
     private MockHttpServletRequest request = new MockHttpServletRequest();
 
 
-    @Mock
-    private MasterCodeRepository masterCodeRepository;
 
     @Before
     public void setup(){
         SearchParam searchParam = new SearchParam(MasterCodeQuery.class.getName());
 
 
-        bpc.request = request;
       //  Whitebox.setInternalState(masterCodeService,"mastercodeQueryDao",mastercodeQueryDao);
-        Whitebox.setInternalState(masterCodeService,"masterCodeRepository",masterCodeRepository);
 
         //PowerMockito.when(mastercodeQueryDao.doQuery(searchParam)).thenReturn(null);
         PowerMockito.mockStatic(ParamUtil.class);
