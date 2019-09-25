@@ -64,7 +64,6 @@ public class OrgUserAccountDelegator {
      * @throws
      */
     public void doStart(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction("demo", "manage org user");
         log.debug(StringUtil.changeForLog("The doStart start ..."));
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, null);

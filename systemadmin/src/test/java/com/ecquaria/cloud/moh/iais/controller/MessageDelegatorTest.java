@@ -14,8 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
-import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -58,16 +58,16 @@ public class MessageDelegatorTest {
     private MessageDto messageDto = new MessageDto();
 
     @Spy
-    private QueryCondition qc = new QueryCondition();
+    private FilterParameter filterParameter = new FilterParameter();
 
     @Before
     public void setup(){
         bpc.request = request;
 
-        qc.setClz(MessageDto.class);
-        qc.setSearchAttr("test");
-        qc.setPageNo(1);
-        qc.setPageSize(10);
+        filterParameter.setClz(MessageDto.class);
+        filterParameter.setSearchAttr("test");
+        filterParameter.setPageNo(1);
+        filterParameter.setPageSize(10);
 
         PowerMockito.mockStatic(ParamUtil.class);
         PowerMockito.mockStatic(MiscUtil.class);
@@ -121,8 +121,8 @@ public class MessageDelegatorTest {
 
     @Test
     public void testDoSearchToSucess(){
-        SearchParam param = new SearchParam(qc.getClz().getName());
-        PowerMockito.when(IaisEGPHelper.getSearchParam(request, true, qc)).thenReturn(param);
+        SearchParam param = new SearchParam(filterParameter.getClz().getName());
+        PowerMockito.when(IaisEGPHelper.getSearchParam(request, true, filterParameter)).thenReturn(param);
         PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE)).thenReturn("doSearch");
         PowerMockito.when(ParamUtil.getString(request, "domainType")).thenReturn("INTRA");
         PowerMockito.when(ParamUtil.getString(request, "msgType")).thenReturn("Error");
@@ -176,8 +176,8 @@ public class MessageDelegatorTest {
 
     @Test
     public void testDoSorting(){
-        SearchParam param = new SearchParam(qc.getClz().getName());
-        PowerMockito.when(IaisEGPHelper.getSearchParam(request, qc)).thenReturn(param);
+        SearchParam param = new SearchParam(filterParameter.getClz().getName());
+        PowerMockito.when(IaisEGPHelper.getSearchParam(request, filterParameter)).thenReturn(param);
         messageDelegator.doSorting(bpc);
         Assert.assertTrue(true);
     }

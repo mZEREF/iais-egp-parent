@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.SystemParameterConstant;
-import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.dto.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,12 +34,12 @@ import java.util.Map;
 @Slf4j
 public class SystemParameterDelegator {
 
-    private final QueryCondition queryCondition;
+    private final FilterParameter filterParameter;
     private final SystemParameterService parameterService;
 
     @Autowired
-    public SystemParameterDelegator(QueryCondition queryCondition, SystemParameterService parameterService){
-        this.queryCondition = queryCondition;
+    public SystemParameterDelegator(FilterParameter filterParameter, SystemParameterService parameterService){
+        this.filterParameter = filterParameter;
         this.parameterService = parameterService;
     }
 
@@ -98,12 +99,12 @@ public class SystemParameterDelegator {
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
 
-        queryCondition.setClz(SystemParameterQueryDto.class);
-        queryCondition.setSearchAttr(SystemParameterConstant.PARAM_SEARCH);
-        queryCondition.setResultAttr(SystemParameterConstant.PARAM_SEARCHRESULT);
-        queryCondition.setSortField("pid");
+        filterParameter.setClz(SystemParameterQueryDto.class);
+        filterParameter.setSearchAttr(SystemParameterConstant.PARAM_SEARCH);
+        filterParameter.setResultAttr(SystemParameterConstant.PARAM_SEARCHRESULT);
+        filterParameter.setSortField("pid");
 
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "querySystemParam", searchParam);
 
         SearchResult searchResult = parameterService.doQuery(searchParam);
@@ -134,7 +135,7 @@ public class SystemParameterDelegator {
         queryDto.setModule(module);
         queryDto.setStatus(status != null ? status.charAt(0) : null);
         queryDto.setDescription(description);
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, queryCondition);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
@@ -143,6 +144,9 @@ public class SystemParameterDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
             searchParam.addFilter(SystemParameterConstant.PARAM_DOMAIN_TYPE, domainType, true);
+            if(!StringUtil.isEmpty(description)){
+                searchParam.addFilter(SystemParameterConstant.PARAM_DESCRIPTION, description, true);
+            }
 
             if(!StringUtil.isEmpty(module)){
                 searchParam.addFilter(SystemParameterConstant.PARAM_MODULE, module, true);
@@ -229,7 +233,7 @@ public class SystemParameterDelegator {
      */
     public void changePage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
@@ -239,7 +243,7 @@ public class SystemParameterDelegator {
      */
     public void sortRecords(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,  request);
     }
 }
