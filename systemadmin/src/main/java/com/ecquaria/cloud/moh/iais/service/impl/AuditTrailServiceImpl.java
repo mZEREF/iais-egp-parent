@@ -6,6 +6,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  *description:
  */
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuditTrailServiceImpl implements AuditTrailService {
 
-    @Override
+    @SearchTrack(catalog = "AuditTrail", key = "search")
     public SearchResult<AuditTrailQueryDto> listAuditTrailDto(SearchParam searchParam) {
         return RestApiUtil.query("audit-trail-service:8887/iais-audit-trail/results", searchParam);
     }
