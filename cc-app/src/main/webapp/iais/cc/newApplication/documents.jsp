@@ -1,0 +1,67 @@
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%
+    //handle to the Engine APIs
+    sop.webflow.rt.api.BaseProcessClass process =
+            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+
+
+%>
+<webui:setLayout name="iais-cc"/>
+<%@ include file="./dashboard.jsp" %>
+<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <input type="hidden" name="crud_action_type" value="">
+    <input type="hidden" name="crud_action_value" value="">
+    <input type="hidden" name="crud_action_additional" value="">
+    <div class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="tab-gp steps-tab">
+                        <%@ include file="./navTabs.jsp" %>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="documentsTab" role="tabpanel">
+                                <div class="document-info-list">
+                                    <ul>
+                                        <li>
+                                            <p>The maximum file size for each upload is 4MB. </p>
+                                        </li>
+                                        <li>
+                                            <p>Acceptable file formats are PDF, JPG and PNG. </p>
+                                        </li>
+                                        <li>
+                                            <p>All files are mandatory.</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="document-upload-gp">
+                                    <h2>PRIMARY DOCUMENTS</h2>
+                                    <div class="document-upload-list">
+                                        <h3>Fire Safety Certificate (FSC) from SCDF</h3>
+                                        <p><a href="#" target="_blank">Preview</a></p>
+                                    </div>
+                                    <div class="document-upload-list">
+                                        <h3>Urban Redevelopmenet Authority (URA) grant of written permission</h3>
+                                        <div class="file-upload-gp">
+                                            <input id="selectedFile1" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="application-tab-footer">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6">
+                                            <p><a class="back" href="application-premises.html"><i class="fa fa-angle-left"></i> Back</a></p>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6">
+                                            <div class="button-group"><a class="btn btn-secondary" href="#">Save as Draft</a><a class="btn btn-primary next" href="application-service-related-clinical-lab-lab-discipline.html">Next</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
