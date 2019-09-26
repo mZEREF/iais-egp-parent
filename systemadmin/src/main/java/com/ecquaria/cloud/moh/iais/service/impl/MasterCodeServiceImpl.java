@@ -26,24 +26,24 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Override
     public SearchResult<MasterCodeDto> doQuery(SearchParam param) {
-        return  RestApiUtil.query("/iaia-mastercode/results", param);
+        return  RestApiUtil.query("system-admin-service:8886/iaia-mastercode/results", param);
     }
 
     @Override
     public void saveMasterCode(MasterCode masterCode) {
-        RestApiUtil.save("/iais-mastercode", masterCode);
+        RestApiUtil.save("system-admin-service:8886/iais-mastercode", masterCode);
     }
 
     @Override
     public void deleteMasterCodeById(Long id) {
-        RestApiUtil.delete("/iais-mastercode",id);
+        RestApiUtil.delete("system-admin-service:8886/iais-mastercode",id);
     }
 
     @Override
     public MasterCode findMasterCodeByRowguid(String rowguid) {
         Map<String,Object> map = new HashMap<>();
         map.put("rowguid",rowguid);
-        return RestApiUtil.getByReqParam("/iais-mastercode/{rowguid}",map, MasterCode.class);
+        return RestApiUtil.getByReqParam("system-admin-service:8886/iais-mastercode/{rowguid}",map, MasterCode.class);
     }
 
 }

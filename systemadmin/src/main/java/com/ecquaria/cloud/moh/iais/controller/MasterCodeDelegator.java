@@ -36,8 +36,8 @@ public class MasterCodeDelegator {
 
     public static final String SEARCH_PARAM                        = "MasterCodeSearchParam";
     public static final String SEARCH_RESULT                       = "MasterCodeSearchResult";
-    public static final String MASTERCODE_USER_ACCOUNT_TILE      = "MasterCodeEditTile";
-    public static final String MASTERCODE_USER_DTO_ATTR           = "MasterCodeDto";
+    public static final String MASTERCODE_USER_ACCOUNT_TILE        = "MasterCodeEditTile";
+    public static final String MASTERCODE_USER_DTO_ATTR            = "MasterCodeDto";
 
     public static final String MASTERCODE_ID                       = "master_code_id";
     public static final String MASTERCODE_KEY                      = "master_code_key";
@@ -261,7 +261,7 @@ public class MasterCodeDelegator {
                 ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.NO);
             }else{
                 Map<String,String> successMap = new HashMap<>();
-                successMap.put("test","suceess");
+                successMap.put("test","success");
                 MasterCode masterCode = MiscUtil.transferEntityDto(masterCodeDto,MasterCode.class);
                 masterCodeService.saveMasterCode(masterCode);
                 ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.YES);
