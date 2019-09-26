@@ -30,11 +30,6 @@
             <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.ecquaria.egp</groupId>
-            <artifactId>engine</artifactId>
-            <version>${engine-version}</version>
-        </dependency>
     </dependencies>
 
     <build>
