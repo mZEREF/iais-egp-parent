@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +58,9 @@ public class OrgUserAccountDelegator {
     @Autowired
     private OrgUserAccountService orgUserAccountService;
 
+    @Value("${iais.server.domain}")
+    private String domain;
+
     /**
      * StartStep: Start
      *
@@ -65,6 +69,7 @@ public class OrgUserAccountDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("The doStart start ..."));
+        AuditTrailHelper.auditFunction("iais-demo", "org user management", domain);
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(request, SEARCH_RESULT, null);

@@ -47,7 +47,7 @@ public final class IaisEGPHelper extends EGPHelper {
      * @param: [dto]
      * @return: void
      */
-    public static void setAuditLoginUserInfo(AuditTrailDto dto) {
+    public static void setAuditLoginUserInfo(AuditTrailDto dto, String serverDomain) {
         if (dto == null)
             return;
 
@@ -62,6 +62,7 @@ public final class IaisEGPHelper extends EGPHelper {
             dto.setMohUserId(user.getId());
             dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
         }
+        dto.setServerDomain(serverDomain);
         dto.setSessionId(session.getId());
         dto.setClientIp(MiscUtil.getClientIp(request));
         dto.setUserAgent(request.getHeader("User-Agent"));
