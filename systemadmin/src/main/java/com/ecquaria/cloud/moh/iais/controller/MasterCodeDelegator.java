@@ -2,14 +2,13 @@ package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.MasterCodeConstant;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
-import com.ecquaria.cloud.moh.iais.entity.MasterCode;
+import com.ecquaria.cloud.moh.iais.dto.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -83,7 +82,7 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, SEARCH_PARAM);
         if(param == null || isNew){
-            param = new SearchParam(MasterCode.class.getName());
+            param = new SearchParam(MasterCodeQueryDto.class.getName());
             param.setPageSize(10);
             param.setPageNo(1);
             param.setSort(MASTERCODE_ID, SearchParam.ASCENDING);
@@ -132,8 +131,7 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
         String rowguid = ParamUtil.getString(request,MasterCodeConstant.CRUD_ACTION_VALUE);
-        MasterCode masterCode = masterCodeService.findMasterCodeByRowguid(rowguid);
-        MasterCodeDto masterCodeDto = MiscUtil.transferEntityDto(masterCode, MasterCodeDto.class);
+        MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByRowguid(rowguid);
         ParamUtil.setSessionAttr(request, MASTERCODE_USER_DTO_ATTR, masterCodeDto);
         ParamUtil.setRequestAttr(request, MASTERCODE_USER_ACCOUNT_TILE,"MasterCode Edit");
         List statusSelect = new ArrayList<SelectOption>();
@@ -232,8 +230,7 @@ public class MasterCodeDelegator {
                 ParamUtil.setRequestAttr(request,MasterCodeConstant.ERRORMAP,errorMap);
                 ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.NO);
             }else{
-                MasterCode masterCode = MiscUtil.transferEntityDto(masterCodeDto,MasterCode.class);
-                masterCodeService.saveMasterCode(masterCode);
+                masterCodeService.saveMasterCode(masterCodeDto);
                 ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.YES);
             }
         }else{
@@ -262,8 +259,7 @@ public class MasterCodeDelegator {
             }else{
                 Map<String,String> successMap = new HashMap<>();
                 successMap.put("test","suceess");
-                MasterCode masterCode = MiscUtil.transferEntityDto(masterCodeDto,MasterCode.class);
-                masterCodeService.saveMasterCode(masterCode);
+                masterCodeService.saveMasterCode(masterCodeDto);
                 ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.YES);
                 ParamUtil.setRequestAttr(request,MasterCodeConstant.SUCCESSMAP,successMap);
             }
