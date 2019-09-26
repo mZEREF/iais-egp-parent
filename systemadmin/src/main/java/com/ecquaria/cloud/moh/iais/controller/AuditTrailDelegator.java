@@ -89,7 +89,7 @@ public class AuditTrailDelegator {
         filterParameter.setResultAttr(AuditTrailConstant.PARAM_SEARCHRESULT);
         filterParameter.setSortField("audit_id");
 
-        SearchParam trailDtoSearchParam = IaisEGPHelper.getSearchParam(request, filterParameter);;
+        SearchParam trailDtoSearchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         SearchResult<AuditTrailQueryDto> trailDtoSearchResult = null;
         boolean isAdmin = AccessUtil.isAdministrator();
         if(isAdmin){

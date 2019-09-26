@@ -26,7 +26,7 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Override
     public SearchResult<MasterCodeDto> doQuery(SearchParam param) {
-        return  RestApiUtil.query("system-admin-service:8886/iaia-mastercode/results", param);
+        return  RestApiUtil.query("system-admin-service:8886/iais-mastercode/results", param);
     }
 
     @Override

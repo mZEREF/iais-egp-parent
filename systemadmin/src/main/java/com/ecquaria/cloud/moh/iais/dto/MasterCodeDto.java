@@ -26,11 +26,6 @@ public class MasterCodeDto implements Serializable {
     @Getter @Setter private int  codeCategory;
     @Getter @Setter private String codeValue;
     @Getter @Setter private String codeDescription;
-    @Getter @Setter private String filterValue;
-    @Getter @Setter private float sequence;
-    @Getter @Setter private String remarks;
     @Getter @Setter private int status;
-    @Getter @Setter private Date effectiveFrom;
-    @Getter @Setter private Date effectiveTo;
-    @Getter @Setter private int version;
+
 }

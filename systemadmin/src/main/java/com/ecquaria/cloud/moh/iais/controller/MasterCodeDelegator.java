@@ -2,18 +2,18 @@ package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.MasterCodeConstant;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
+import com.ecquaria.cloud.moh.iais.dto.MasterCodeQuery;
 import com.ecquaria.cloud.moh.iais.entity.MasterCode;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ import java.util.Map;
  * @Author Hua_Chong
  * @Date 2019/8/5 15:36
  */
-@Delegator
+@Delegator(value = "masterCodeDelegator")
 @Slf4j
 public class MasterCodeDelegator {
 
@@ -43,8 +43,14 @@ public class MasterCodeDelegator {
     public static final String MASTERCODE_KEY                      = "master_code_key";
 
 
+    private final FilterParameter filterParameter;
+    private final MasterCodeService masterCodeService;
+
     @Autowired
-    private MasterCodeService masterCodeService;
+    private MasterCodeDelegator(FilterParameter filterParameter, MasterCodeService masterCodeService){
+        this.filterParameter = filterParameter;
+        this.masterCodeService = masterCodeService;
+    }
 
     /**
      * StartStep: Start
@@ -70,26 +76,17 @@ public class MasterCodeDelegator {
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
-        SearchParam param = getSearchParam(bpc);
-        ParamUtil.setRequestAttr(request,MASTERCODE_ID, 1);
-        QueryHelp.setMainSql("systemAdmin", "masterCodeQuery",param);
-    }
 
-    private SearchParam getSearchParam(BaseProcessClass bpc){
-        return getSearchParam(bpc, false);
-    }
+        filterParameter.setClz(MasterCodeDto.class);
+        filterParameter.setSearchAttr(SEARCH_PARAM);
+        filterParameter.setResultAttr(SEARCH_RESULT);
+        filterParameter.setSortField(MASTERCODE_ID);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        QueryHelp.setMainSql("systemAdmin", "masterCodeQuery",searchParam);
 
-    private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
-        HttpServletRequest request = bpc.request;
-        SearchParam param = (SearchParam) ParamUtil.getSessionAttr(request, SEARCH_PARAM);
-        if(param == null || isNew){
-            param = new SearchParam(MasterCode.class.getName());
-            param.setPageSize(10);
-            param.setPageNo(1);
-            param.setSort(MASTERCODE_ID, SearchParam.ASCENDING);
-            ParamUtil.setSessionAttr(request, SEARCH_PARAM, param);
-        }
-        return param;
+        SearchResult searchResult = masterCodeService.doQuery(searchParam);
+        ParamUtil.setSessionAttr(request,SEARCH_PARAM, searchParam);
+        ParamUtil.setRequestAttr(request,SEARCH_RESULT, searchResult);
     }
 
     /**
@@ -97,8 +94,9 @@ public class MasterCodeDelegator {
      *
      * @throws
      */
-    public void prepareSwitch(){
+    public void prepareSwitch(BaseProcessClass bpc){
         logAboutStart("prepareSwitch");
+        ParamUtil.getString(bpc.request, MasterCodeConstant.CRUD_ACTION_TYPE);
     }
 
     /**
@@ -153,7 +151,7 @@ public class MasterCodeDelegator {
     public void doSearch(BaseProcessClass bpc){
         logAboutStart("doSearch");
         HttpServletRequest request = bpc.request;
-        SearchParam param = getSearchParam(bpc,true);
+        SearchParam param = IaisEGPHelper.getSearchParam(request, true,filterParameter);
         String masterCodeKey = ParamUtil.getString(request, MASTERCODE_KEY);
         String codeValue = ParamUtil.getString(request,MasterCodeConstant.CRUD_VALUE);
         String[] status = ParamUtil.getStrings(request,MasterCodeConstant.STATUS);
@@ -180,7 +178,8 @@ public class MasterCodeDelegator {
      */
     public void doSorting(BaseProcessClass bpc){
         logAboutStart("doSorting");
-        SearchParam searchParam = getSearchParam(bpc);
+        HttpServletRequest request = bpc.request;
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,  bpc.request);
     }
 
@@ -192,7 +191,8 @@ public class MasterCodeDelegator {
      */
     public void doPaging(BaseProcessClass bpc){
         logAboutStart("doPaging");
-        SearchParam searchParam = getSearchParam(bpc);
+        HttpServletRequest request = bpc.request;
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
