@@ -26,6 +26,26 @@
             <scope>compile</scope>
             <classifier>api</classifier>
         </dependency>
+        <dependency>
+            <groupId>sg.gov.moh.iais-egp</groupId>
+            <artifactId>backbone</artifactId>
+            <version>${revision}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>sg.gov.moh.iais</groupId>
+            <artifactId>iais-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>sg.gov.moh.iais-egp</groupId>
+            <artifactId>web-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>cc</finalName>
