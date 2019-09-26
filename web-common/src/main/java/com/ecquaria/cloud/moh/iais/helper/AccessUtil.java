@@ -49,10 +49,20 @@ public class AccessUtil {
    * @author: yichen 
    */
     public static boolean isAdministrator(){
-        return true;
+        return false;
     }
 
     private AccessUtil() {
         throw new IllegalStateException("Utility class");
+    }
+
+    /**
+    * @description: use for judeg is intranet user
+    * @param: 
+    * @return: 
+    * @author: yichen 
+    */
+    public static boolean isIntranet(){
+        return true;
     }
 }

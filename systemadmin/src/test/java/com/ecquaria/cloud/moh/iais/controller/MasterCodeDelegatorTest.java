@@ -5,11 +5,16 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
-import com.ecquaria.cloud.moh.iais.dao.MasterCodeRepository;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeQuery;
+import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.service.impl.MasterCodeServiceImpl;
@@ -25,15 +30,15 @@ import org.mockito.Spy;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MasterCodeDelegator.class, CrudHelper.class,MasterCodeServiceImpl.class,
-        SpringContextHelper.class, MiscUtil.class, AuditTrailDto.class, ParamUtil.class, WebValidationHelper.class})
+@PrepareForTest({MasterCodeDelegator.class, CrudHelper.class,
+        SpringContextHelper.class, MiscUtil.class, AuditTrailDto.class,
+        ParamUtil.class, WebValidationHelper.class, ValidationResult.class, IaisEGPHelper.class, QueryHelp.class, RestApiUtil.class})
 public class MasterCodeDelegatorTest {
 
     @Mock
@@ -42,27 +47,31 @@ public class MasterCodeDelegatorTest {
     @Spy
     private MasterCodeService masterCodeService = new MasterCodeServiceImpl();
 
+
+    @Spy
+    private FilterParameter filterParameter = new FilterParameter();
+
     @InjectMocks
     private MasterCodeDelegator masterCodeDelegator;
 
     private MockHttpServletRequest request = new MockHttpServletRequest();
 
 
-    @Mock
-    private MasterCodeRepository masterCodeRepository;
 
     @Before
     public void setup(){
-        SearchParam searchParam = new SearchParam(MasterCodeQuery.class.getName());
-
-
         bpc.request = request;
-      //  Whitebox.setInternalState(masterCodeService,"mastercodeQueryDao",mastercodeQueryDao);
-        Whitebox.setInternalState(masterCodeService,"masterCodeRepository",masterCodeRepository);
 
-        //PowerMockito.when(mastercodeQueryDao.doQuery(searchParam)).thenReturn(null);
+        filterParameter.setClz(MessageDto.class);
+        filterParameter.setSearchAttr("test");
+        filterParameter.setPageNo(1);
+        filterParameter.setPageSize(10);
+
         PowerMockito.mockStatic(ParamUtil.class);
         PowerMockito.mockStatic(MiscUtil.class);
+        PowerMockito.mockStatic(IaisEGPHelper.class);
+        PowerMockito.mockStatic(QueryHelp.class);
+        PowerMockito.mockStatic(RestApiUtil.class);
         when(MiscUtil.getCurrentRequest()).thenReturn(request);
     }
     @Test
@@ -79,7 +88,7 @@ public class MasterCodeDelegatorTest {
 
     @Test
     public void testprepareSwitch(){
-        masterCodeDelegator.prepareSwitch();
+        masterCodeDelegator.prepareSwitch(bpc);
         Assert.assertTrue(true);
     }
 
@@ -109,12 +118,16 @@ public class MasterCodeDelegatorTest {
 
     @Test
     public void testdoSorting(){
+        SearchParam param = new SearchParam(filterParameter.getClz().getName());
+        PowerMockito.when(IaisEGPHelper.getSearchParam(request, filterParameter)).thenReturn(param);
         masterCodeDelegator.doSorting(bpc);
         Assert.assertTrue(true);
     }
 
     @Test
     public void testdoPaging(){
+        SearchParam param = new SearchParam(filterParameter.getClz().getName());
+        PowerMockito.when(IaisEGPHelper.getSearchParam(request, filterParameter)).thenReturn(param);
         masterCodeDelegator.doPaging(bpc);
         Assert.assertTrue(true);
     }

@@ -10,12 +10,13 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.dto.MessageQueryDto;
-import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,12 +35,15 @@ import java.util.Map;
 @Delegator
 @Slf4j
 public class MessageDelegator {
-    private  final QueryCondition queryCondition;
+    private  final FilterParameter filterParameter;
     private  final MessageService messageService;
 
+    @Value("${iais.server.domain}")
+    private String domain;
+
     @Autowired
-    public MessageDelegator(QueryCondition queryCondition, MessageService messageService){
-        this.queryCondition = queryCondition;
+    public MessageDelegator(FilterParameter filterParameter, MessageService messageService){
+        this.filterParameter = filterParameter;
         this.messageService = messageService;
     }
 
@@ -76,7 +80,9 @@ public class MessageDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction("Error and Acknowledgement Message", "Function is used by MOH system administrator (users given the administrator rights and have the rights to modify the information");
+        AuditTrailHelper.auditFunction("Error and Acknowledgement Message",
+                "Function is used by MOH system administrator (users given " +
+                        "the administrator rights and have the rights to modify the information", domain);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, MessageConstant.class);
     }
@@ -92,12 +98,12 @@ public class MessageDelegator {
         preSelectOption(request);
 
         //setting of query default value
-        queryCondition.setClz(MessageQueryDto.class);
-        queryCondition.setSortField("msg_id");
-        queryCondition.setSearchAttr(MessageConstant.PARAM_MESSAGE_SEARCH);
-        queryCondition.setResultAttr(MessageConstant.PARAM_MESSAGE_SEARCH_RESULT);
+        filterParameter.setClz(MessageQueryDto.class);
+        filterParameter.setSortField("msg_id");
+        filterParameter.setSearchAttr(MessageConstant.PARAM_MESSAGE_SEARCH);
+        filterParameter.setResultAttr(MessageConstant.PARAM_MESSAGE_SEARCH_RESULT);
 
-        SearchParam param = IaisEGPHelper.getSearchParam(request, queryCondition);
+        SearchParam param = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "queryMessage", param);
         SearchResult searchResult = messageService.doQuery(param);
         ParamUtil.setSessionAttr(request, MessageConstant.PARAM_MESSAGE_SEARCH, param);
@@ -183,7 +189,7 @@ public class MessageDelegator {
         queryDto.setMsgType(msgType);
         queryDto.setModule(module);
 
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, queryCondition);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
         ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
@@ -235,7 +241,7 @@ public class MessageDelegator {
      */
     public void doPaging(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
@@ -245,7 +251,7 @@ public class MessageDelegator {
      */
     public void doSorting(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, queryCondition);
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         CrudHelper.doSorting(searchParam,  bpc.request);
     }
 

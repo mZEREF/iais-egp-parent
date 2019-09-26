@@ -14,6 +14,7 @@ package com.ecquaria.cloud.moh.iais.aop;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.annotation.LogInfo;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -30,6 +31,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +47,9 @@ import java.util.Map;
 public class AuditFunctionAspect {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Value("${iais.server.domain}")
+    private String domain;
 
     @Pointcut("@annotation(com.ecquaria.cloud.moh.iais.common.annotation.LogInfo)")
     public void auditFunction() {
@@ -66,7 +71,7 @@ public class AuditFunctionAspect {
         if (dto == null)
             dto = new AuditTrailDto();
 
-        IaisEGPHelper.setAuditLoginUserInfo(dto);
+        IaisEGPHelper.setAuditLoginUserInfo(dto, domain);
         return auditFunction(point, dto);
     }
 
@@ -77,7 +82,7 @@ public class AuditFunctionAspect {
         if (dto == null)
             dto = new AuditTrailDto();
 
-        IaisEGPHelper.setAuditLoginUserInfo(dto);
+        IaisEGPHelper.setAuditLoginUserInfo(dto, domain);
         Class clazz = point.getSignature().getDeclaringType();
         if (clazz.isAnnotationPresent(LogInfo.class)) {
             LogInfo logInfo = (LogInfo) clazz.getAnnotation(LogInfo.class);
@@ -101,7 +106,11 @@ public class AuditFunctionAspect {
             json.put("sql_catalog", logInfo.catalog());
             json.put("sql_key", logInfo.key());
         }
-        dto.setOperation(AuditTrailConsts.OPERATION_INTERNET_VIEW_RECORD);
+        if (AppConsts.USER_DOMAIN_INTERNET.equals(dto.getUserDomain()))
+            dto.setOperation(AuditTrailConsts.OPERATION_INTERNET_VIEW_RECORD);
+        else
+            dto.setOperation(AuditTrailConsts.OPERATION_INTRANET_VIEW_RECORD);
+
         if (args != null && args.length > 0) {
             for (Object obj : args) {
                 if (obj instanceof SearchParam) {

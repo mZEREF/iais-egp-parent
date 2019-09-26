@@ -18,8 +18,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.PostCodeDto;
-import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +47,7 @@ public final class IaisEGPHelper extends EGPHelper {
      * @param: [dto]
      * @return: void
      */
-    public static void setAuditLoginUserInfo(AuditTrailDto dto) {
+    public static void setAuditLoginUserInfo(AuditTrailDto dto, String serverDomain) {
         if (dto == null)
             return;
 
@@ -58,6 +62,7 @@ public final class IaisEGPHelper extends EGPHelper {
             dto.setMohUserId(user.getId());
             dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
         }
+        dto.setServerDomain(serverDomain);
         dto.setSessionId(session.getId());
         dto.setClientIp(MiscUtil.getClientIp(request));
         dto.setUserAgent(request.getHeader("User-Agent"));
@@ -123,23 +128,23 @@ public final class IaisEGPHelper extends EGPHelper {
     /**
      * Get query conditions by parameters
      * @param request HttpServletRequest
-     * @param queryCondition
+     * @param filter filter parameter
      * @return
      */
-    public static SearchParam getSearchParam(HttpServletRequest request, QueryCondition queryCondition){
-        return getSearchParam(request, false, queryCondition);
+    public static SearchParam getSearchParam(HttpServletRequest request, FilterParameter filter){
+        return getSearchParam(request, false, filter);
     }
 
     public static SearchParam getSearchParam(HttpServletRequest request,
-                                             boolean isNew, QueryCondition queryCondition){
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, queryCondition.getSearchAttr());
+                                             boolean isNew, FilterParameter filter){
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, filter.getSearchAttr());
         try {
             if(searchParam == null || isNew){
-                searchParam = new SearchParam(queryCondition.getClz().getName());
-                searchParam.setPageSize(queryCondition.getPageSize());
-                searchParam.setPageNo(queryCondition.getPageNo());
-                searchParam.setSort(queryCondition.getSortField(), SearchParam.ASCENDING);
-                ParamUtil.setSessionAttr(request, queryCondition.getSearchAttr(), searchParam);
+                searchParam = new SearchParam(filter.getClz().getName());
+                searchParam.setPageSize(filter.getPageSize());
+                searchParam.setPageNo(filter.getPageNo());
+                searchParam.setSort(filter.getSortField(), SearchParam.ASCENDING);
+                ParamUtil.setSessionAttr(request, filter.getSearchAttr(), searchParam);
             }
         }catch (NullPointerException e){
             log.info("getSearchParam ===>>>> " + e.getMessage());
@@ -159,6 +164,34 @@ public final class IaisEGPHelper extends EGPHelper {
         Map<String, Object> paramMapper = new HashMap<>();
         paramMapper.put("rowguid", rowguid);
         return (T) RestApiUtil.getByReqParam(serviceName + "/{rowguid}", paramMapper, clz);
+    }
+
+    /**
+    * @description: Capital letter
+    * @param:
+    * @return:
+    * @author: yichen
+    */
+    public static String capitalized(String str) {
+        byte[] val = str.getBytes();
+        val[0] = (byte) ((char) val[0] - 'a' + 'A');
+        return new String(val);
+    }
+
+    /**
+    * @description: format date
+    * @param: 
+    * @return: 
+    * @author: yichen 
+    */
+    public static Date parseToDate(String val){
+        if(StringUtil.isEmpty(val)){
+            return null;
+        }
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        ParsePosition position = new ParsePosition(0);
+        return formatter.parse(val, position);
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}

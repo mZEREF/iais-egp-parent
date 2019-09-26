@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Component
-public class QueryCondition {
+public class FilterParameter {
 
     private int pageNo = 1;
     private int pageSize = 10;

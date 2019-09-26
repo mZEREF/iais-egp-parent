@@ -13,8 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
-import com.ecquaria.cloud.moh.iais.dto.QueryCondition;
 import com.ecquaria.cloud.moh.iais.dto.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -55,16 +55,16 @@ public class SystemParameterDelegatorTest {
     private SystemParameterDto dto = new SystemParameterDto();
 
     @Spy
-    private QueryCondition queryCondition = new QueryCondition();
+    private FilterParameter filterParameter = new FilterParameter();
 
     @Before
     public void setup(){
         bpc.request = request;
 
-        queryCondition.setClz(MessageDto.class);
-        queryCondition.setSearchAttr("test");
-        queryCondition.setPageNo(1);
-        queryCondition.setPageSize(10);
+        filterParameter.setClz(MessageDto.class);
+        filterParameter.setSearchAttr("test");
+        filterParameter.setPageNo(1);
+        filterParameter.setPageSize(10);
 
         PowerMockito.mockStatic(ParamUtil.class);
         PowerMockito.mockStatic(MiscUtil.class);
@@ -120,8 +120,8 @@ public class SystemParameterDelegatorTest {
 
     @Test
     public void testSortRecords(){
-        SearchParam param = new SearchParam(queryCondition.getClz().getName());
-        PowerMockito.when(IaisEGPHelper.getSearchParam(request, queryCondition)).thenReturn(param);
+        SearchParam param = new SearchParam(filterParameter.getClz().getName());
+        PowerMockito.when(IaisEGPHelper.getSearchParam(request, filterParameter)).thenReturn(param);
         delegator.sortRecords(bpc);
         Assert.assertTrue(true);
     }
@@ -134,8 +134,8 @@ public class SystemParameterDelegatorTest {
     @Test
     public void testDoQueryToSuccess(){
         PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE)).thenReturn("doQuery");
-        SearchParam param = new SearchParam(queryCondition.getClz().getName());
-        PowerMockito.when(IaisEGPHelper.getSearchParam(request, true, queryCondition)).thenReturn(param);
+        SearchParam param = new SearchParam(filterParameter.getClz().getName());
+        PowerMockito.when(IaisEGPHelper.getSearchParam(request, true, filterParameter)).thenReturn(param);
 
         PowerMockito.when(ParamUtil.getString(request, "module")).thenReturn("New");
         PowerMockito.when(ParamUtil.getString(request, "status")).thenReturn("Y");

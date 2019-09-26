@@ -18,16 +18,10 @@ public class MasterCodeDtoTest {
     public void testMasterCodeDto(){
         masterCodeDto.getMasterCodeId();
         masterCodeDto.getCodeValue();
-        masterCodeDto.getFilterValue();
         masterCodeDto.getCodeCategory();
-        masterCodeDto.getSequence();
         masterCodeDto.getCodeDescription();
         masterCodeDto.getStatus();
-        masterCodeDto.getVersion();
         masterCodeDto.getMasterCodeKey();
-        masterCodeDto.getEffectiveFrom();
-        masterCodeDto.getEffectiveTo();
-        masterCodeDto.getRemarks();
         masterCodeDto.getRowguid();
 
 
@@ -35,14 +29,8 @@ public class MasterCodeDtoTest {
         masterCodeDto.setCodeCategory(0);
         masterCodeDto.setCodeValue(null);
         masterCodeDto.setMasterCodeId(0);
-        masterCodeDto.setFilterValue(null);
         masterCodeDto.setStatus(0);
-        masterCodeDto.setSequence(0);
-        masterCodeDto.setVersion(0);
         masterCodeDto.setCodeDescription(null);
-        masterCodeDto.setEffectiveFrom(null);
-        masterCodeDto.setEffectiveTo(null);
-        masterCodeDto.setRemarks(null);
         masterCodeDto.setRowguid(null);
     }
 }
