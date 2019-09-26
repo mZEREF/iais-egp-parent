@@ -13,7 +13,7 @@ import java.util.Date;
  **/
 @Getter
 @Setter
-public class MasterCodeQuery implements Serializable {
+public class MasterCodeQueryDto implements Serializable {
 
 
     private static final long serialVersionUID = -1546053869121735254L;

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.service.MessageService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,9 @@ import java.util.Map;
 public class MessageDelegator {
     private  final FilterParameter filterParameter;
     private  final MessageService messageService;
+
+    @Value("${iais.server.domain}")
+    private String domain;
 
     @Autowired
     public MessageDelegator(FilterParameter filterParameter, MessageService messageService){
@@ -76,7 +80,9 @@ public class MessageDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction("Error and Acknowledgement Message", "Function is used by MOH system administrator (users given the administrator rights and have the rights to modify the information");
+        AuditTrailHelper.auditFunction("Error and Acknowledgement Message",
+                "Function is used by MOH system administrator (users given " +
+                        "the administrator rights and have the rights to modify the information", domain);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, MessageConstant.class);
     }
