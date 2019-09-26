@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +44,9 @@ public class AuditTrailDelegator {
 
     private FilterParameter filterParameter;
     private AuditTrailService auditTrailService;
+
+    @Value("${iais.server.domain}")
+    private String domain;
 
     @Autowired
     public AuditTrailDelegator(FilterParameter filterParameter, AuditTrailService auditTrailService){
@@ -58,7 +62,9 @@ public class AuditTrailDelegator {
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>PARAM_SEARCH");
-        AuditTrailHelper.auditFunction("AuditTrail", "Implement logging mechanisms to enable the timely detection and investigation of events that can lead to ICT security violations or incidents.");
+        AuditTrailHelper.auditFunction("AuditTrail",
+                "Implement logging mechanisms to enable the timely detection and investigation" +
+                        " of events that can lead to ICT security violations or incidents.", domain);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditTrailConstant.class);
     }

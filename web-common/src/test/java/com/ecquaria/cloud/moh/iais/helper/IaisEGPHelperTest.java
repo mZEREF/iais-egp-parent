@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import org.junit.Assert;
 import org.junit.Test;
@@ -67,11 +66,11 @@ public class IaisEGPHelperTest {
 
     @Test
     public void testSetAuditLoginInfo() {
-        IaisEGPHelper.setAuditLoginUserInfo(null);
+        IaisEGPHelper.setAuditLoginUserInfo(null, AppConsts.USER_DOMAIN_INTERNET);
         AuditTrailDto dto = new AuditTrailDto();
         PowerMockito.mockStatic(MiscUtil.class);
         when(MiscUtil.getCurrentRequest()).thenReturn(null);
-        IaisEGPHelper.setAuditLoginUserInfo(dto);
+        IaisEGPHelper.setAuditLoginUserInfo(dto, AppConsts.USER_DOMAIN_INTERNET);
         MockHttpServletRequest request = new MockHttpServletRequest();
         User user = new User();
         user.setId("Test User");
@@ -81,7 +80,7 @@ public class IaisEGPHelperTest {
         request.getSession().setAttribute(SessionManager.SOP_LOGIN_INFO, lif);
         request.addHeader("User-Agent", "firefox");
         when(MiscUtil.getCurrentRequest()).thenReturn(request);
-        IaisEGPHelper.setAuditLoginUserInfo(dto);
+        IaisEGPHelper.setAuditLoginUserInfo(dto, AppConsts.USER_DOMAIN_INTERNET);
         assertEquals("Test User", dto.getMohUserId());
     }
 
