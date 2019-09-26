@@ -7,7 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
-import com.ecquaria.cloud.moh.iais.dto.MasterCodeQuery;
+import com.ecquaria.cloud.moh.iais.dto.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
@@ -49,7 +49,7 @@ public class MasterCodeDelegatorTest {
 
     @Before
     public void setup(){
-        SearchParam searchParam = new SearchParam(MasterCodeQuery.class.getName());
+        SearchParam searchParam = new SearchParam(MasterCodeQueryDto.class.getName());
 
 
       //  Whitebox.setInternalState(masterCodeService,"mastercodeQueryDao",mastercodeQueryDao);
