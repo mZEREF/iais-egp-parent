@@ -31,7 +31,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -47,9 +46,6 @@ import java.util.Map;
 public class AuditFunctionAspect {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
-
-    @Value("${iais.server.domain}")
-    private String domain;
 
     @Pointcut("@annotation(com.ecquaria.cloud.moh.iais.common.annotation.LogInfo)")
     public void auditFunction() {
@@ -71,7 +67,7 @@ public class AuditFunctionAspect {
         if (dto == null)
             dto = new AuditTrailDto();
 
-        IaisEGPHelper.setAuditLoginUserInfo(dto, domain);
+        IaisEGPHelper.setAuditLoginUserInfo(dto);
         return auditFunction(point, dto);
     }
 
@@ -82,7 +78,7 @@ public class AuditFunctionAspect {
         if (dto == null)
             dto = new AuditTrailDto();
 
-        IaisEGPHelper.setAuditLoginUserInfo(dto, domain);
+        IaisEGPHelper.setAuditLoginUserInfo(dto);
         Class clazz = point.getSignature().getDeclaringType();
         if (clazz.isAnnotationPresent(LogInfo.class)) {
             LogInfo logInfo = (LogInfo) clazz.getAnnotation(LogInfo.class);

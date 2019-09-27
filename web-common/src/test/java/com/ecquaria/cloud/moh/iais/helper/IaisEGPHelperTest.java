@@ -66,11 +66,11 @@ public class IaisEGPHelperTest {
 
     @Test
     public void testSetAuditLoginInfo() {
-        IaisEGPHelper.setAuditLoginUserInfo(null, AppConsts.USER_DOMAIN_INTERNET);
+        IaisEGPHelper.setAuditLoginUserInfo(null);
         AuditTrailDto dto = new AuditTrailDto();
         PowerMockito.mockStatic(MiscUtil.class);
         when(MiscUtil.getCurrentRequest()).thenReturn(null);
-        IaisEGPHelper.setAuditLoginUserInfo(dto, AppConsts.USER_DOMAIN_INTERNET);
+        IaisEGPHelper.setAuditLoginUserInfo(dto);
         MockHttpServletRequest request = new MockHttpServletRequest();
         User user = new User();
         user.setId("Test User");
@@ -80,7 +80,7 @@ public class IaisEGPHelperTest {
         request.getSession().setAttribute(SessionManager.SOP_LOGIN_INFO, lif);
         request.addHeader("User-Agent", "firefox");
         when(MiscUtil.getCurrentRequest()).thenReturn(request);
-        IaisEGPHelper.setAuditLoginUserInfo(dto, AppConsts.USER_DOMAIN_INTERNET);
+        IaisEGPHelper.setAuditLoginUserInfo(dto);
         assertEquals("Test User", dto.getMohUserId());
     }
 

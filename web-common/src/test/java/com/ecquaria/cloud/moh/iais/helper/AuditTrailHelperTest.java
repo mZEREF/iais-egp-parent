@@ -42,7 +42,7 @@ public class AuditTrailHelperTest {
     public  void testAuditFunction(){
         PowerMockito.mockStatic(MiscUtil.class);
         PowerMockito.when(MiscUtil.getCurrentRequest()).thenReturn(request);
-        AuditTrailHelper.auditFunction("UnitTest","testAuditFunction", "internet");
+        AuditTrailHelper.auditFunction("UnitTest","testAuditFunction");
         Assert.assertTrue(true);
     }
 

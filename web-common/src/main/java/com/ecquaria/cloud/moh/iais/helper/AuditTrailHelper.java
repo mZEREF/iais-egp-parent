@@ -29,14 +29,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AuditTrailHelper {
 
-    public static void auditFunction(String moduleName, String functionName, String serverDomain) {
+    public static void auditFunction(String moduleName, String functionName) {
         HttpServletRequest request = MiscUtil.getCurrentRequest();
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request,
                 AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
         if (dto == null)
             dto = new AuditTrailDto();
 
-        IaisEGPHelper.setAuditLoginUserInfo(dto, serverDomain);
+        IaisEGPHelper.setAuditLoginUserInfo(dto);
         dto.setModule(moduleName);
         dto.setFunctionName(functionName);
         ParamUtil.setSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME, dto);
