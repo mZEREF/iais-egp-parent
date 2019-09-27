@@ -47,7 +47,7 @@ public final class ValueTag extends DivTagSupport {
         boolean isFrontend = !AccessUtil.isBackend();
         int width0 = this.width;
         if (width0 <= 0) {
-            width0 = isFrontend ? 8 : 9;
+            width0 = isFrontend ? 5 : 9;
         }
         if (width0 > 12) {
             width0 = 12;
@@ -57,7 +57,17 @@ public final class ValueTag extends DivTagSupport {
         if (label) {
             clazz.append("float-left control-label");
         } else {
-            clazz.append("float-left col-sm-12 col-md-").append(width0);
+            if(isFrontend){
+                if(width0>5){
+                    clazz.append("col-xs-10 col-sm-7 col-md-6 input-with-label");
+                }else{
+                    clazz.append("col-xs-5 col-sm-4 col-md-2 input-with-label");
+                }
+
+            }else{
+                clazz.append("float-left col-sm-12 col-md-").append(width0);
+            }
+
         }
         if (align) {
             clazz.append(" col-md-align");
