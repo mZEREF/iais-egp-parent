@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 
 <%
     //handle to the Engine APIs
@@ -74,6 +75,12 @@
                                         </div>
                                         <div class="new-premise-form-on-site hidden">
                                             <div class="form-horizontal">
+                                                <iais:row>
+                                                    <iais:field value="Name of premises" width="10"/>
+                                                    <iais:value width="10">
+                                                        <iais:input type="text" name="hciName" id="sitePremiseName"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
                                                 <div class="form-group">
                                                     <label class="col-xs-10 col-md-4 control-label" for="sitePremiseName">Name of premises</label>
                                                     <div class="col-xs-10 col-sm-7 col-md-6">
