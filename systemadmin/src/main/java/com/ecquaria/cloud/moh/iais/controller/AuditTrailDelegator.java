@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -221,12 +220,8 @@ public class AuditTrailDelegator {
 
         SearchResult<AuditTrailQueryDto> searchResult = auditTrailService.listAuditTrailDto(searchParam);
         List<AuditTrailQueryDto> auditTrailQueryDtoList = null;
-        try {
-            String jsonStr = JsonUtil.parseToJson(searchResult.getRows());
-            auditTrailQueryDtoList = JsonUtil.parseToList(jsonStr, AuditTrailQueryDto.class);
-        } catch (JsonProcessingException e) {
-            log.debug("parse to list has exception" + e.getMessage());
-        }
+        String jsonStr = JsonUtil.parseToJson(searchResult.getRows());
+        auditTrailQueryDtoList = JsonUtil.parseToList(jsonStr, AuditTrailQueryDto.class);
 
         ExcelWriter excelWriter = new ExcelWriter();
         excelWriter.exportXls(auditTrailQueryDtoList);

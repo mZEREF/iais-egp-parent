@@ -22,6 +22,8 @@
 <!--
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 -->
+<script src="/cc/jquery/jquery-3.4.1.min.js"></script>
+<%--<script src="<%=webroot%>js/jquery-3.4.1.min.js"></script>--%>
 <script src="<%=webroot%>js/bootstrap.min.js"></script>
 <script src="<%=webroot%>js/particles.js"></script>
 <script src="<%=webroot%>js/app.js"></script>
@@ -34,6 +36,8 @@
 <script src="<%=webroot%>js/jquery.nice-select.js"></script>
 <script src="<%=webroot%>js/swiper.js"></script>
 <script src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
+<%--<script src="/cc/jquery/cpl_app.js"></script>--%>
 <script src="<%=webroot%>js/cpl_app.js"></script>
 
-<%@ include file="/WEB-INF/jsp/inc/script.jsp" %>
+
+<%@ include file="/WEB-INF/jsp/inc/iaisscript.jsp" %>

@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 
 <%
     //handle to the Engine APIs
@@ -27,18 +28,18 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-12">
-                                        <form class="form-horizontal">
+                                        <div class="form-horizontal">
                                             <div class="form-group" id="premisesType">
                                                 <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your premises type?</label>
                                                 <div class="col-xs-6 col-md-2">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" id="premise_onsite" type="radio" name="premisesType" aria-invalid="false">
+                                                        <input class="form-check-input" id="premise_onsite" type="radio" name="premisesType" value = "On-site" aria-invalid="false">
                                                         <label class="form-check-label" for="premise_onsite"><span class="check-circle"></span>On-site</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-xs-6 col-md-2">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" id="premise_conveyance" type="radio" name="premisesType" aria-invalid="false">
+                                                        <input class="form-check-input" id="premise_conveyance" type="radio" name="premisesType" value="Conveyance" aria-invalid="false">
                                                         <label class="form-check-label" for="premise_conveyance"><span class="check-circle"></span>Conveyance</label>
                                                     </div>
                                                 </div>
@@ -66,24 +67,30 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </form>
+                                        </div>
                                         <div class="premises-summary hidden">
                                             <h3 class="without-header-line">Premises Summary</h3>
                                             <p class="premise-address-gp"> <span class="premise-type"><b>On-site: </b></span><span class="premise-address"></span></p>
                                             <p class="vehicle-txt hidden"><b>Vehicle No:</b> <span class="vehicle-info"></span></p>
                                         </div>
                                         <div class="new-premise-form-on-site hidden">
-                                            <form class="form-horizontal">
+                                            <div class="form-horizontal">
+                                                <iais:row>
+                                                    <iais:field value="Name of premises" width="10"/>
+                                                    <iais:value width="10">
+                                                        <iais:input type="text" name="hciName" id="sitePremiseName"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
                                                 <div class="form-group">
                                                     <label class="col-xs-10 col-md-4 control-label" for="sitePremiseName">Name of premises</label>
                                                     <div class="col-xs-10 col-sm-7 col-md-6">
-                                                        <input id="sitePremiseName" type="text">
+                                                        <input id="sitePremiseName" type="text" name ="hciName">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-4 control-label" for="sitePostalCode">Postal Code</label>
                                                     <div class="col-xs-5 col-sm-4 col-md-2">
-                                                        <input id="sitePostalCode" type="text">
+                                                        <input id="sitePostalCode" type="text" name = "postalCode">
                                                     </div>
                                                     <div class="col-xs-7 col-sm-6 col-md-4">
                                                         <p><a href="#">Retrieve your address</a></p>
@@ -92,40 +99,40 @@
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-4 control-label" for="siteBlockNo">Block / House No.</label>
                                                     <div class="col-xs-5 col-sm-4 col-md-2">
-                                                        <input id="siteBlockNo" type="text">
+                                                        <input id="siteBlockNo" type="text" name="blkNo">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-10 col-md-4 control-label" for="siteStreetName">Street Name</label>
                                                     <div class="col-xs-10 col-sm-7 col-md-5">
-                                                        <input id="siteStreetName" type="text">
+                                                        <input id="siteStreetName" type="text" name = "streetName">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-4 control-label" for="siteFloorNo">Floor No.</label>
                                                     <div class="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                                                        <input id="siteFloorNo" type="text">
+                                                        <input id="siteFloorNo" type="text" name = "floorNo">
                                                         <p class="small-txt">(Optional)</p>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-4 control-label" for="siteUnitNo">Unit No.</label>
                                                     <div class="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                                                        <input id="siteUnitNo" type="text">
+                                                        <input id="siteUnitNo" type="text" name = "unitNo">
                                                         <p class="small-txt">(Optional)</p>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-4 control-label" for="siteBuildingName">Building Name</label>
                                                     <div class="col-xs-11 col-sm-7 col-md-6 input-with-label">
-                                                        <input id="siteBuildingName" type="text">
+                                                        <input id="siteBuildingName" type="text" name ="buildingName">
                                                         <p class="small-txt">(Optional)</p>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-4 control-label" for="siteAddressType">Address Type</label>
                                                     <div class="col-xs-7 col-sm-4 col-md-3">
-                                                        <select id="siteAddressType">
+                                                        <select id="siteAddressType" name = "addrType">
                                                             <option>Select address type</option>
                                                             <option>Apt Blk</option>
                                                             <option>Without Apt Blk</option>
@@ -138,10 +145,10 @@
                                                         <input id="siteSafefyNo" type="text">
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div>
                                         </div>
                                         <div class="new-premise-form-conveyance hidden">
-                                            <form class="form-horizontal">
+                                            <div class="form-horizontal">
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-4 control-label" for="vehicleNo">Vehicle No.</label>
                                                     <div class="col-xs-9 col-sm-7 col-md-6">
@@ -227,7 +234,7 @@
                                                         <input id="conveyanceMobile" type="number">
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

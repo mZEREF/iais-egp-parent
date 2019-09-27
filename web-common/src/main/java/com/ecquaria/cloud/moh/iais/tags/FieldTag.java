@@ -29,6 +29,7 @@ public final class FieldTag extends DivTagSupport {
     private String checkboxVal;
     private boolean checked;
     private String onclick;
+    private int width;
 
     public FieldTag() {
         super();
@@ -49,6 +50,7 @@ public final class FieldTag extends DivTagSupport {
         checkboxVal = null;
         checked = false;
         onclick = null;
+        width = 0;
     }
 
     // Releases any resources we may have (or inherit)
@@ -63,7 +65,7 @@ public final class FieldTag extends DivTagSupport {
         StringBuilder html = new StringBuilder();
         StringBuilder script = new StringBuilder();
 
-        int width = isBackend ? 3 : 4;
+       // int width = isBackend ? 3 : 4;
         if (withCheckbox && !isBackend) {
             width = width - 1;
             generateNotBEHtml(html);
@@ -80,7 +82,7 @@ public final class FieldTag extends DivTagSupport {
         if (isBackend) {
             html.append("<label class=\"col-lg-").append(width).append(" col-sm-12 control-label float-left");
         } else {
-            html.append("<label class=\"col-lg-").append(width).append(" col-md-12 col-sm-12 control-label float-left");
+            html.append("<label class=\"col-xs-").append(width).append(" col-md-4 control-label");
         }
 
         generateHtml(html);
@@ -189,5 +191,8 @@ public final class FieldTag extends DivTagSupport {
 
     public void setOnclick(String onclick) {
         this.onclick = onclick;
+    }
+    public void setWidth(int width) {
+        this.width = width;
     }
 }
