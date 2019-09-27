@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,9 +35,6 @@ public class SystemParameterDelegator {
 
     private final FilterParameter filterParameter;
     private final SystemParameterService parameterService;
-
-    @Value("${iais.server.domain}")
-    private String domain;
 
     @Autowired
     public SystemParameterDelegator(FilterParameter filterParameter, SystemParameterService parameterService){
@@ -92,7 +88,7 @@ public class SystemParameterDelegator {
         AuditTrailHelper.auditFunction("System Parameter",
                 "This module provides a form of search and update " +
                         "functions for System Administrator to maintain the set " +
-                        "of system parameters use by entire system", domain);
+                        "of system parameters use by entire system");
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, SystemParameterConstant.class);
     }

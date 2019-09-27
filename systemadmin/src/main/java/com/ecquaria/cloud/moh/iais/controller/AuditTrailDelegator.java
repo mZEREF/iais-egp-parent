@@ -18,19 +18,12 @@ import com.ecquaria.cloud.moh.iais.constant.AuditTrailConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AuditTrailQueryDto;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.ExcelWriter;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +37,6 @@ public class AuditTrailDelegator {
 
     private FilterParameter filterParameter;
     private AuditTrailService auditTrailService;
-
-    @Value("${iais.server.domain}")
-    private String domain;
 
     @Autowired
     public AuditTrailDelegator(FilterParameter filterParameter, AuditTrailService auditTrailService){
@@ -64,7 +54,7 @@ public class AuditTrailDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>PARAM_SEARCH");
         AuditTrailHelper.auditFunction("AuditTrail",
                 "Implement logging mechanisms to enable the timely detection and investigation" +
-                        " of events that can lead to ICT security violations or incidents.", domain);
+                        " of events that can lead to ICT security violations or incidents.");
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditTrailConstant.class);
     }
