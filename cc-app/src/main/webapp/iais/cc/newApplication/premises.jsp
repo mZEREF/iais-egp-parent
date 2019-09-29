@@ -194,7 +194,7 @@
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row>
-                                                    <iais:field value="UBuilding Name " width="12"/>
+                                                    <iais:field value="Building Name " width="12"/>
                                                     <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
                                                         <iais:input type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
