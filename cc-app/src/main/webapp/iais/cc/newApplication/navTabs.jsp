@@ -34,25 +34,27 @@
         var controlLi = $('#controlLi').val();
         $('#'+controlLi+'li').addClass('active');
         $('#premises').click(function(){
-            submit('premises');
+            submit('premises',null,null);
         });
         $('#documents').click(function(){
-            submit('documents');
+            submit('documents',null,null);
         });
         $('#serviceForms').click(function(){
-            submit('serviceForms');
+            submit('serviceForms',null,null);
         });
         $('#preview').click(function(){
-            submit('preview');
+            submit('preview',null,null);
         });
         $('#payment').click(function(){
-            submit('payment');
+            submit('payment',null,null);
         });
     });
 
-    function submit(action){
+    function submit(action,value,additional){
         $("[name='crud_action_type']").val(action);
-        var mainForm = document.getElementById("mainForm");
+        $("[name='crud_action_value']").val(value);
+        $("[name='crud_action_additional']").val(additional);
+        var mainForm = document.getElementById('mainForm');
         mainForm.submit();
     }
 

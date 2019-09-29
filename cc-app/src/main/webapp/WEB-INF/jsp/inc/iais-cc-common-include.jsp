@@ -36,8 +36,8 @@
 <script src="<%=webroot%>js/jquery.nice-select.js"></script>
 <script src="<%=webroot%>js/swiper.js"></script>
 <script src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
-<%--<script src="/cc/jquery/cpl_app.js"></script>--%>
-<script src="<%=webroot%>js/cpl_app.js"></script>
+<script src="/cc/jquery/cpl_app.js"></script>
+<%--<script src="<%=webroot%>js/cpl_app.js"></script>--%>
 
 
 <%@ include file="/WEB-INF/jsp/inc/iaisscript.jsp" %>

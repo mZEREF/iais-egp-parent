@@ -23,6 +23,12 @@ public class AppGrpPremisesDto implements Serializable {
     private String rowguid;
     // do not user in the page
     private String hciCode;
+
+    private String premisesSelect;
+
+    //======================
+    //for the On-site
+    //======================
     //Name of premises
     private String hciName;
     //What is your premises type?
@@ -48,6 +54,25 @@ public class AppGrpPremisesDto implements Serializable {
     private String buildingName;
      //Address Type
     private String addrType;
+
+    //======================
+    //for the Conveyance
+    //======================
+
+    //Vehicle No.
+    private String conveyanceVehicleNo;
+    private String conveyanceSalutation;
+    private String conveyanceVehicleOwnerName;
+    private String conveyancePostalCode;
+    private String conveyanceBlockNo;
+    private String conveyanceStreetName;
+    private String conveyanceFloorNo;
+    private String conveyanceUnitNo;
+    private String conveyanceBuildingName;
+    private String conveyanceAddressType;
+    private String conveyanceEmail;
+    private String conveyanceMobile;
+
 
 
 }

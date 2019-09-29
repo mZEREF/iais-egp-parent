@@ -50,10 +50,10 @@
                                 <div class="application-tab-footer">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6">
-                                            <p><a class="back" href="application-premises.html"><i class="fa fa-angle-left"></i> Back</a></p>
+                                            <p><a id = "docBack" class="back" href="application-premises.html"><i class="fa fa-angle-left"></i> Back</a></p>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group"><a class="btn btn-secondary" href="#">Save as Draft</a><a class="btn btn-primary next" href="application-service-related-clinical-lab-lab-discipline.html">Next</a></div>
+                                            <div class="button-group"><a class="btn btn-secondary" id = "docSaveDraft">Save as Draft</a><a class="btn btn-primary next" id="docNext">Next</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -65,3 +65,19 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        //Binding method
+        $('#docBack').click(function(){
+            submit('premises',null,null);
+        });
+        $('#docSaveDraft').click(function(){
+            submit('documents','saveDraft',null);
+        });
+        $('#docNext').click(function(){
+            submit('serviceForms',null,null);
+        });
+    });
+
+</script>

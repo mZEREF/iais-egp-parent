@@ -13,6 +13,7 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" id = "premisesTypeValue" value="${appGrpPremisesDto.premisesType}">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -44,19 +45,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group premiseLocationSelect hidden">
-                                                <label class="col-xs-12 col-md-4 control-label" for="premisesSelect">Add or select a premises from the list</label>
-                                                <div class="col-xs-11 col-sm-7 col-md-5">
-                                                    <select id="premisesSelect">
-                                                        <option>Select One</option>
-                                                        <option value="newPremise">Add a new premises</option>
-                                                        <option>111 North Bridge Rd # 07-04, 179098</option>
-                                                        <option>514 Chai Chee Lane # 06-03, 65432</option>
-                                                        <option>8 Foch Rd, 209786</option>
-                                                        <option>400 Orchard Rd, 21-06 Orchard Tower, 23654</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                            <iais:row cssClass="premiseLocationSelect hidden">
+                                                <iais:field value="Add or select a premises from the list" width="12"/>
+                                                <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
+                                                   <iais:select name="premisesSelect" id="premisesSelect" options="premisesSelect" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                                </iais:value>
+                                            </iais:row>
+
                                             <div class="form-group vehicleSelectForm hidden">
                                                 <label class="col-xs-12 col-md-4 control-label" for="vehicleSelect">Select a vehicle</label>
                                                 <div class="col-xs-8 col-sm-5 col-md-3">
@@ -76,69 +71,63 @@
                                         <div class="new-premise-form-on-site hidden">
                                             <div class="form-horizontal">
                                                 <iais:row>
-                                                    <iais:field value="Name of premises" width="10"/>
-                                                    <iais:value width="10">
-                                                        <iais:input type="text" name="hciName" id="sitePremiseName"></iais:input>
+                                                    <iais:field value="Name of premises" width="11"/>
+                                                    <iais:value width="11">
+                                                        <iais:input type="text" name="hciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
                                                     </iais:value>
                                                 </iais:row>
-                                                <div class="form-group">
-                                                    <label class="col-xs-10 col-md-4 control-label" for="sitePremiseName">Name of premises</label>
-                                                    <div class="col-xs-10 col-sm-7 col-md-6">
-                                                        <input id="sitePremiseName" type="text" name ="hciName">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="sitePostalCode">Postal Code</label>
-                                                    <div class="col-xs-5 col-sm-4 col-md-2">
-                                                        <input id="sitePostalCode" type="text" name = "postalCode">
-                                                    </div>
-                                                    <div class="col-xs-7 col-sm-6 col-md-4">
-                                                        <p><a href="#">Retrieve your address</a></p>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="siteBlockNo">Block / House No.</label>
-                                                    <div class="col-xs-5 col-sm-4 col-md-2">
-                                                        <input id="siteBlockNo" type="text" name="blkNo">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-10 col-md-4 control-label" for="siteStreetName">Street Name</label>
-                                                    <div class="col-xs-10 col-sm-7 col-md-5">
-                                                        <input id="siteStreetName" type="text" name = "streetName">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="siteFloorNo">Floor No.</label>
-                                                    <div class="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                                                        <input id="siteFloorNo" type="text" name = "floorNo">
+                                                <iais:row>
+                                                    <iais:field value="Postal Code" width="12"/>
+                                                    <iais:value width="5">
+                                                        <iais:input type="text" name="postalCode" id="sitePostalCode" value="${appGrpPremisesDto.postalCode}"></iais:input>
+                                                    </iais:value>
+                                                        <div class="col-xs-7 col-sm-6 col-md-4">
+                                                            <p><a href="#">Retrieve your address</a></p>
+                                                        </div>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Block / House No." width="12"/>
+                                                    <iais:value width="5">
+                                                        <iais:input type="text" name="blkNo" id="siteBlockNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Street Name" width="10"/>
+                                                    <iais:value width="10">
+                                                        <iais:input type="text" name="streetName" id="siteStreetName" value="${appGrpPremisesDto.streetName}"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Floor No." width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
+                                                        <iais:input type="text" name="floorNo" id="siteFloorNo" value="${appGrpPremisesDto.floorNo}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="siteUnitNo">Unit No.</label>
-                                                    <div class="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                                                        <input id="siteUnitNo" type="text" name = "unitNo">
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Unit No." width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
+                                                        <iais:input type="text" name="unitNo" id="siteUnitNo" value="${appGrpPremisesDto.unitNo}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="siteBuildingName">Building Name</label>
-                                                    <div class="col-xs-11 col-sm-7 col-md-6 input-with-label">
-                                                        <input id="siteBuildingName" type="text" name ="buildingName">
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Building Name" width="12"/>
+                                                    <iais:value width="11" cssClass="input-with-label">
+                                                        <iais:input type="text" name="buildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="siteAddressType">Address Type</label>
-                                                    <div class="col-xs-7 col-sm-4 col-md-3">
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Address Type" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
                                                         <select id="siteAddressType" name = "addrType">
                                                             <option>Select address type</option>
                                                             <option>Apt Blk</option>
                                                             <option>Without Apt Blk</option>
                                                         </select>
-                                                    </div>
-                                                </div>
+                                                    </iais:value>
+                                                </iais:row>
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="&lt;p&gt;This is a xxx digit No. that you can access from the Life Saving Force Portral.&lt;/p&gt;">i</a></label>
                                                     <div class="col-xs-9 col-sm-5 col-md-4">
@@ -149,102 +138,102 @@
                                         </div>
                                         <div class="new-premise-form-conveyance hidden">
                                             <div class="form-horizontal">
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="vehicleNo">Vehicle No.</label>
-                                                    <div class="col-xs-9 col-sm-7 col-md-6">
-                                                        <input id="vehicleNo" type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="vehicleOwnerName">Vehicle Owner's Name</label>
-                                                    <div class="col-xs-4 col-sm-2 col-md-2">
-                                                        <select id="vehicleOwnerNameSalutation" aria-label="vehicleOwnerNameSalutation">
-                                                            <option>Mr</option>
-                                                            <option>Mrs</option>
-                                                            <option>Ms</option>
-                                                            <option>Mam</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-xs-7 col-sm-4 col-md-5">
-                                                        <input id="vehicleOwnerName" type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="conveyancePostalCode">Postal Code</label>
-                                                    <div class="col-xs-5 col-sm-4 col-md-2">
-                                                        <input id="conveyancePostalCode" type="text">
-                                                    </div>
+                                                <iais:row>
+                                                    <iais:field value="Vehicle No." width="12"/>
+                                                    <iais:value width="11">
+                                                        <iais:input type="text" name="conveyanceVehicleNo" id="vehicleNo" value="${appGrpPremisesDto.conveyanceVehicleNo}"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Vehicle Owner's Name" width="12"/>
+                                                    <iais:value cssClass="col-xs-4 col-sm-2 col-md-2">
+                                                    <select id="vehicleOwnerNameSalutation" name="conveyanceSalutation" aria-label="vehicleOwnerNameSalutation">
+                                                        <option>Mr</option>
+                                                        <option>Mrs</option>
+                                                        <option>Ms</option>
+                                                        <option>Mam</option>
+                                                    </select>
+                                                    </iais:value>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
+                                                        <iais:input type="text" name = "conveyanceVehicleOwnerName" id="vehicleOwnerName" value="${appGrpPremisesDto.conveyanceVehicleOwnerName}"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Postal Code" width="12"/>
+                                                    <iais:value width="5">
+                                                        <iais:input type="text" name="conveyancePostalCode" id="conveyancePostalCode" value="${appGrpPremisesDto.conveyancePostalCode}"></iais:input>
+                                                    </iais:value>
                                                     <div class="col-xs-7 col-sm-6 col-md-4">
                                                         <p><a href="#">Retrieve your address</a></p>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="conveyanceBlockNo">Block / House No.</label>
-                                                    <div class="col-xs-5 col-sm-4 col-md-2">
-                                                        <input id="conveyanceBlockNo" type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-10 col-md-4 control-label" for="conveyanceStreetName">Street Name</label>
-                                                    <div class="col-xs-10 col-sm-7 col-md-5">
-                                                        <input id="conveyanceStreetName" type="text">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="conveyanceFloorNo">Floor No.</label>
-                                                    <div class="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                                                        <input id="conveyanceFloorNo" type="text">
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Block / House No." width="12"/>
+                                                    <iais:value width="5">
+                                                        <iais:input type="text" name="conveyanceBlockNo" id="conveyanceBlockNo" value="${appGrpPremisesDto.conveyanceBlockNo}"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Street Name" width="10"/>
+                                                    <iais:value width="10">
+                                                        <iais:input type="text" name="conveyanceStreetName" id="conveyanceStreetName" value="${appGrpPremisesDto.conveyanceStreetName}"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Floor No." width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
+                                                        <iais:input type="text" name="conveyanceFloorNo" id="conveyanceFloorNo" value="${appGrpPremisesDto.conveyanceFloorNo}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="conveyanceUnitNo">Unit No.</label>
-                                                    <div class="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                                                        <input id="conveyanceUnitNo" type="text">
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Unit No." width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
+                                                        <iais:input type="text" name="conveyanceUnitNo" id="conveyanceUnitNo" value="${appGrpPremisesDto.conveyanceUnitNo}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="conveyanceBuildingName">Building Name </label>
-                                                    <div class="col-xs-11 col-sm-7 col-md-6 input-with-label">
-                                                        <input id="conveyanceBuildingName" type="text">
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="UBuilding Name " width="12"/>
+                                                    <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
+                                                        <iais:input type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="conveyanceAddressType">Address Type</label>
-                                                    <div class="col-xs-7 col-sm-4 col-md-3">
-                                                        <select id="conveyanceAddressType">
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Address Type" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                                        <select id="conveyanceAddressType" name="conveyanceAddressType">
                                                             <option>Select address type</option>
                                                             <option>Apt Blk</option>
                                                             <option>Without Apt Blk</option>
                                                             <option>Without Apt Blk</option>
                                                         </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="conveyanceEmail">Email Address </label>
-                                                    <div class="col-xs-9 col-sm-5 col-sm-4">
-                                                        <input id="conveyanceEmail" type="email">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-xs-12 col-md-4 control-label" for="conveyanceMobile">Mobile number </label>
-                                                    <div class="col-xs-7 col-sm-4 col-md-3">
-                                                        <input id="conveyanceMobile" type="number">
-                                                    </div>
-                                                </div>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Email Address " width="12"/>
+                                                    <iais:value cssClass="col-xs-9 col-sm-5 col-sm-4">
+                                                        <iais:input type="text" name="conveyanceEmail" id="conveyanceEmail" value="${appGrpPremisesDto.conveyanceEmail}"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Mobile number " width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                                        <iais:input type="text" name="conveyanceMobile" id="conveyanceMobile" value="${appGrpPremisesDto.conveyanceMobile}"></iais:input>
+                                                    </iais:value>
+                                                </iais:row>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-6">
-                                            <p><a class="back" href="#"><i class="fa fa-angle-left"></i> Back</a></p>
+                                        <div class="col-xs-12 col-sm-6 ">
+                                            <p><a class="back hidden" href="#"><i class="fa fa-angle-left"></i> Back</a></p>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group"><a class="btn btn-secondary" href="#">Save as Draft</a><a class="btn btn-primary next" href="application-document.html">Next</a></div>
+                                            <div class="button-group"><a id="premiseSaveDraft" class="btn btn-secondary" >Save as Draft</a><a id="premiseId" class="btn btn-primary next" >Next</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -256,3 +245,34 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var premisesTypeValue = $('#premisesTypeValue').val();
+        if('On-site'==premisesTypeValue){
+            $('#premise_onsite').attr("checked","checked");
+            $('#premise_conveyance').removeAttr("checked");
+            $('.premiseLocationSelect').removeClass('hidden');
+            $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
+        }else if('Conveyance'==premisesTypeValue){
+            $('#premise_conveyance').attr("checked","checked");
+            $('#premise_onsite').removeAttr("checked");
+            $('.premiseLocationSelect').removeClass('hidden');
+            $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
+        }
+        premisesSelectChange();
+
+        //Binding method
+        $('#premiseId').click(function(){
+            submit('documents',null,null);
+        });
+        $('#premiseSaveDraft').click(function(){
+            submit('premises','saveDraft',null);
+        });
+    });
+
+
+</script>
+
+
+

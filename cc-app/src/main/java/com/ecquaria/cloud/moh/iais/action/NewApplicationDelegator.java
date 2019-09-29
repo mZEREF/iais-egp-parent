@@ -1,11 +1,18 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * NewApplicationDelegator
@@ -24,7 +31,7 @@ public class NewApplicationDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug("the do Start start ....");
-
+        ParamUtil.setSessionAttr(bpc.request,"appGrpPremisesDto",null);
         log.debug("the do Start end ....");
     }
 
@@ -50,7 +57,20 @@ public class NewApplicationDelegator {
      */
     public void preparePremises(BaseProcessClass bpc){
         log.debug("the do preparePremises start ....");
-
+        List premisesSelect = new ArrayList<SelectOption>();
+        SelectOption sp0 = new SelectOption("-1","Select One");
+        premisesSelect.add(sp0);
+        SelectOption sp1 = new SelectOption("newPremise","Add a new premises");
+        premisesSelect.add(sp1);
+        SelectOption sp2 = new SelectOption("001","111 North Bridge Rd # 07-04, 179098");
+        premisesSelect.add(sp2);
+        SelectOption sp3 = new SelectOption("002","514 Chai Chee Lane # 06-03, 65432");
+        premisesSelect.add(sp3);
+        SelectOption sp4 = new SelectOption("003","8 Foch Rd, 209786");
+        premisesSelect.add(sp4);
+        SelectOption sp5 = new SelectOption("004","400 Orchard Rd, 21-06 Orchard Tower, 23654");
+        premisesSelect.add(sp5);
+        ParamUtil.setRequestAttr(bpc.request,"premisesSelect",premisesSelect);
         log.debug("the do preparePremises end ....");
     }
     /**
@@ -105,8 +125,10 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc){
         log.debug("the do doPremises start ....");
-        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
-        log.debug("the next action is -->:"+action);
+//        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+//        getValueFromPage(appGrpPremisesDto,bpc.request);
+        AppGrpPremisesDto appGrpPremisesDto = MiscUtil.generateDtoFromParam(bpc.request,AppGrpPremisesDto.class);
+        ParamUtil.setSessionAttr(bpc.request,"appGrpPremisesDto",appGrpPremisesDto);
         log.debug("the do doPremises end ....");
     }
     /**
@@ -177,4 +199,13 @@ public class NewApplicationDelegator {
         log.debug("the do prepareAckPage end ....");
     }
 
+    //=============================================================================
+    //private method
+    //=============================================================================
+    private void getValueFromPage(AppGrpPremisesDto appGrpPremisesDto, HttpServletRequest request) {
+        String premisesType = ParamUtil.getString(request,"premisesType");
+        String hciName = ParamUtil.getString(request,"hciName");
+        appGrpPremisesDto.setHciName(hciName);
+        MiscUtil.generateDtoFromParam(request,AppGrpPremisesDto.class);
+    }
 }
