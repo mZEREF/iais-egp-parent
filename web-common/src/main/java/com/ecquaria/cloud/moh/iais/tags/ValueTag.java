@@ -46,11 +46,11 @@ public final class ValueTag extends DivTagSupport {
     public int doStartTag() throws JspException {
         boolean isFrontend = !AccessUtil.isBackend();
         int width0 = this.width;
-        if (width0 <= 0) {
-            width0 = isFrontend ? 5 : 9;
-        }
-        if (width0 > 12) {
-            width0 = 12;
+//        if (width0 <= 0) {
+//            width0 = isFrontend ? 5 : 9;
+//        }
+        if (width0 > 10) {
+            width0 = 10;
         }
         int offsetWidth = isFrontend ? 5 : 2;
         StringBuilder clazz = new StringBuilder();
@@ -58,10 +58,12 @@ public final class ValueTag extends DivTagSupport {
             clazz.append("float-left control-label");
         } else {
             if(isFrontend){
-                if(width0>5){
-                    clazz.append("col-xs-10 col-sm-7 col-md-6 input-with-label");
-                }else{
-                    clazz.append("col-xs-5 col-sm-4 col-md-2 input-with-label");
+                if(width>10){
+                    clazz.append("col-sm-7 col-md-6 col-xs-").append(width0);
+                }else if(width>5 && width<=10){
+                    clazz.append("col-sm-7 col-md-5 col-xs-").append(width0);
+                }else if (width>0){
+                    clazz.append("col-sm-4 col-md-2 col-xs-").append(width0);
                 }
 
             }else{

@@ -44,7 +44,7 @@ public class LinkTag extends DivTagSupport {
     public int doStartTag() throws JspException {
         boolean isBackend = AccessUtil.isBackend();
         StringBuilder html = new StringBuilder();
-        html.append("<div class=\"spacebetweenicon\">");
+        html.append("<div class=\"col-xs-7 col-sm-6 col-md-4\">");
         html.append("<a href=\"javascript:void(0);\"");
         if (!StringUtil.isEmpty(id)) {
             html.append(" id=\"").append(id).append("\"");

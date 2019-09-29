@@ -45,11 +45,11 @@ public class AccessUtilTest {
         con.newInstance(null);
     }
 
-    @Test
-    public void testIsBackend() {
-        boolean isBe = AccessUtil.isBackend();
-        assertTrue(isBe);
-    }
+//    @Test
+//    public void testIsBackend() {
+//        boolean isBe = AccessUtil.isBackend();
+//        assertTrue(isBe);
+//    }
 
     @Test
     public void testIsFrontend() {
