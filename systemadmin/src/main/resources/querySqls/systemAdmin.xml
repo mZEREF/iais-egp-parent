@@ -48,7 +48,7 @@
 
     <sql key="querySystemParam" remarks="query system param sql">
         <![CDATA[
-            select pid, rowguid ,domain_type , module, description, value_type, value, status, updated_by ,updated_on
+            select pid, rowguid ,domain_type , module, description, value_type, value, status, updated_by ,updated_dt
             from cm_system_parameters
             where 1=1 and status != 'n'
             <#if domaintype??> and domain_type = :domaintype</#if>
