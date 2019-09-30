@@ -470,43 +470,53 @@ function mobileMenuBtn() {
    
 }
 
+function premisesTypeChange(){
+    $('.premiseLocationSelect').removeClass('hidden');
+    $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
+    $('#premisesSelect, #vehicleSelect').prop('selectedIndex', 0);
+    $('#premisesSelect, #vehicleSelect').niceSelect('update');
+}
+function premisesSelectChange(){
+    if ($('#premisesSelect').val() == "newPremise") {
 
+        $('.premises-summary, .vehicleSelectForm').addClass('hidden');
+        if ($('input[name="premisesType"]:checked').attr("id") == "premise_conveyance") {
+
+            $('.new-premise-form-conveyance').removeClass('hidden');
+            $('.new-premise-form-on-site').addClass('hidden');
+
+        } else {
+            $('.new-premise-form-on-site').removeClass('hidden');
+            $('.new-premise-form-conveyance').addClass('hidden');
+        }
+    } else if($('#premisesSelect').val() == "-1"){
+        $('.new-premise-form-conveyance').addClass('hidden');
+        $('.new-premise-form-on-site').addClass('hidden');
+        $('.premises-summary').addClass('hidden');
+        $('.vehicleSelectForm, .premises-summary .vehicle-txt').addClass('hidden');
+    }else{
+        $('.new-premise-form-conveyance,.new-premise-form-on-site').addClass('hidden');
+
+        if ($('input[name="premisesType"]:checked').attr("id") == "premise_conveyance") {
+            $('.vehicleSelectForm, .premises-summary .vehicle-txt').removeClass('hidden');
+            $('.premise-address-gp .premise-type b').text("Conveyance: ")
+        } else {
+            $('.premises-summary').removeClass('hidden');
+            $('.premises-summary .vehicle-info,.premises-summary .vehicle-txt').addClass('hidden');
+            $('.premise-address-gp .premise-type b').text("On-site: ")
+        }
+
+        $('.premises-summary .premise-address').text($('#premisesSelect option:selected').text());
+    }
+}
 
 function premisesFunc() {
     $('input[name="premisesType"]').on('change', function() {
-        $('.premiseLocationSelect').removeClass('hidden');
-        $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
-        $('#premisesSelect, #vehicleSelect').prop('selectedIndex', 0);
-        $('#premisesSelect, #vehicleSelect').niceSelect('update');
+        premisesTypeChange();
     });
 
     $('#premisesSelect').on('change', function() {
-        if ($(this).val() == "newPremise") {
-
-            $('.premises-summary, .vehicleSelectForm').addClass('hidden');
-            if ($('input[name="premisesType"]:checked').attr("id") == "premise_conveyance") {
-
-                $('.new-premise-form-conveyance').removeClass('hidden');
-                $('.new-premise-form-on-site').addClass('hidden');
-
-            } else {
-                $('.new-premise-form-on-site').removeClass('hidden');
-                $('.new-premise-form-conveyance').addClass('hidden');
-            }
-        } else {
-            $('.new-premise-form-conveyance,.new-premise-form-on-site').addClass('hidden');
-
-            if ($('input[name="premisesType"]:checked').attr("id") == "premise_conveyance") {
-                $('.vehicleSelectForm, .premises-summary .vehicle-txt').removeClass('hidden');
-                $('.premise-address-gp .premise-type b').text("Conveyance: ")
-            } else {
-                $('.premises-summary').removeClass('hidden');
-                $('.premises-summary .vehicle-info,.premises-summary .vehicle-txt').addClass('hidden');
-                $('.premise-address-gp .premise-type b').text("On-site: ")
-            }
-
-            $('.premises-summary .premise-address').text($('#premisesSelect option:selected').text());
-        }
+        premisesSelectChange();
     });
 
     $('#vehicleSelect').on('change', function() {

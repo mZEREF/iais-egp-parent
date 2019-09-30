@@ -125,9 +125,8 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc){
         log.debug("the do doPremises start ....");
-//        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-//        getValueFromPage(appGrpPremisesDto,bpc.request);
-        AppGrpPremisesDto appGrpPremisesDto = MiscUtil.generateDtoFromParam(bpc.request,AppGrpPremisesDto.class);
+        AppGrpPremisesDto appGrpPremisesDto1 = new AppGrpPremisesDto();
+        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,appGrpPremisesDto1);
         ParamUtil.setSessionAttr(bpc.request,"appGrpPremisesDto",appGrpPremisesDto);
         log.debug("the do doPremises end ....");
     }

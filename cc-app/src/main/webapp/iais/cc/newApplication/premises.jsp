@@ -131,7 +131,7 @@
                                                 <div class="form-group">
                                                     <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="&lt;p&gt;This is a xxx digit No. that you can access from the Life Saving Force Portral.&lt;/p&gt;">i</a></label>
                                                     <div class="col-xs-9 col-sm-5 col-md-4">
-                                                        <input id="siteSafefyNo" type="text">
+                                                        <input id="siteSafefyNo" name="siteSafefyNo" type="text">
                                                     </div>
                                                 </div>
                                             </div>
