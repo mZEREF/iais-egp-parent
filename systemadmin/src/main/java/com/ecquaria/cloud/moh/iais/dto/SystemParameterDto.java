@@ -7,7 +7,7 @@ package com.ecquaria.cloud.moh.iais.dto;
  */
 
 
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.oval.constraint.Length;
@@ -15,31 +15,14 @@ import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotNull;
 import net.sf.oval.constraint.ValidateWithMethod;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Properties;
 
 
 @Getter
 @Setter
 public class SystemParameterDto implements Serializable {
     private static final long serialVersionUID = 7811152537272121632L;
-    private static Properties properties =  new Properties();
-
-    static {
-        FileInputStream fileInputStream = null;
-        try {
-            fileInputStream = new FileInputStream(MiscUtil.getClassRootPath() + "property/paramter.properties");
-            properties.load(fileInputStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     //paramter id
     Integer id;
@@ -66,6 +49,7 @@ public class SystemParameterDto implements Serializable {
 
     private Date updatedOn;
 
+    private AuditTrailDto auditTrailDto;
 
     /**
      * pass is true , else false
