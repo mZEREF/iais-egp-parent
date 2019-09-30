@@ -38,7 +38,7 @@
     <sql key = "queryMessage" remarks = "query message sql">
         <![CDATA[
             SELECT msg_id, rowguid, code_key, domain_type, msg_type, module, description, message, status
-            FROM MOHIAIS.dbo.CM_MESSAGE
+            FROM CM_MESSAGE
             WHERE 1=1 AND status != 'N'
             <#if domainType??> AND domain_type = :domainType</#if>
             <#if msgType??> AND msg_type = :msgType</#if>
@@ -49,7 +49,7 @@
     <sql key="querySystemParam" remarks="query system param sql">
         <![CDATA[
             select pid, rowguid ,domain_type , module, description, value_type, value, status, updated_by ,updated_on
-            from mohiais.dbo.cm_system_parameters
+            from cm_system_parameters
             where 1=1 and status != 'n'
             <#if domaintype??> and domain_type = :domaintype</#if>
             <#if module??> and module = :module</#if>
@@ -63,7 +63,7 @@
         <![CDATA[
             select audit_id,action_time, operation, nric_number, uen_id, moh_user_id, login_type, session_id, client_ip
             ,user_agent, application_number, license_number, module, function_name, programme_name, before_action,
-            after_action, validation_fail_detail, view_params, failed_reason from mohiais.dbo.at_audit_trail
+            after_action, validation_fail_detail, view_params, failed_reason from at_audit_trail
             where 1 = 1
             <#if operation??> and operation = :operation</#if>
             <#if nric_number??> and nric_number = :nricnumber</#if>
@@ -76,7 +76,7 @@
         <![CDATA[
             select audit_id,action_time, operation, nric_number, uen_id, moh_user_id, login_type, session_id, client_ip
             ,user_agent, application_number, license_number, module, function_name, programme_name, before_action,
-            after_action, validation_fail_detail, view_params, failed_reason from mohiais.dbo.at_audit_trail
+            after_action, validation_fail_detail, view_params, failed_reason from at_audit_trail
             where 1 = 1 and operation not in(4, 9, 11, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24 )
             <#if operation??> and operation = :operation</#if>
             <#if nric_number??> and nric_number = :nricnumber</#if>
