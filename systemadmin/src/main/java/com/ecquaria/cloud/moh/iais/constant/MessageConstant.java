@@ -4,7 +4,6 @@ public final class MessageConstant {
 
     //use for web page param
     public static final String PARAM_MSG_ID = "msgId";
-    public static final String PARAM_ROW_ID = "rowguid";
     public static final String PARAM_CODE_KEY = "codeKey";
     public static final String PARAM_DOMAIN_TYPE = "domainType";
     public static final String PARAM_MSG_TYPE = "msgType";

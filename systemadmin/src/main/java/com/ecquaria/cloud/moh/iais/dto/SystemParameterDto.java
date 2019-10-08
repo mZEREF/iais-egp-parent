@@ -25,9 +25,7 @@ public class SystemParameterDto implements Serializable {
     private static final long serialVersionUID = 7811152537272121632L;
 
     //paramter id
-    Integer id;
-
-    private String rowguid;
+    private String id;
 
     @NotBlank(message = "can not is blank!", profiles = {"edit", "search"})
     @NotNull(message = "can not is null!", profiles = {"edit", "search"})

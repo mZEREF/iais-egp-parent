@@ -17,5 +17,5 @@ public interface MessageService {
 
     void saveMessage(MessageDto messageDto);
 
-    MessageDto getMessageByRowguid(String rowguid);
+    MessageDto getMessageById(String id);
 }

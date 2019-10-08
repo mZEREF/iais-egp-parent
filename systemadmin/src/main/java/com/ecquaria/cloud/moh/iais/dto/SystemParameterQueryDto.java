@@ -18,9 +18,7 @@ import java.util.Date;
 public class SystemParameterQueryDto implements Serializable {
     private static final long serialVersionUID = 7811152537272121632L;
 
-    Integer id;
-
-    private String rowguid;
+    private String id;
 
     @NotBlank(message = "can not is blank!", profiles = {"edit", "search"})
     @NotNull(message = "can not is null!", profiles = {"edit", "search"})

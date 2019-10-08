@@ -24,9 +24,7 @@ import java.util.regex.Pattern;
 public class MessageDto implements Serializable {
     private static final long serialVersionUID = -2542988198043832001L;
 
-    private Integer id;
-
-    private String rowguid;
+    private String id;
 
     @NotBlank(message = "can not is blank!", profiles = {"edit", "search"})
     @NotNull(message = "can not is null!", profiles = {"edit", "search"})
