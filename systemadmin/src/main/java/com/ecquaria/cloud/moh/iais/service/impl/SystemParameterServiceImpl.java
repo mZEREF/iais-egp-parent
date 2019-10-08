@@ -21,6 +21,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     @Override
     public void saveSystemParameter(SystemParameterDto dto) {
+        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         RestApiUtil.save("system-admin-service:8886/system-parameter", dto);
     }
 
