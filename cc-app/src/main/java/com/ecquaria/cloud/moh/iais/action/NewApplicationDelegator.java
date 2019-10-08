@@ -146,7 +146,7 @@ public class NewApplicationDelegator {
         log.debug("the do doPremises start ....");
         AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,new AppGrpPremisesDto());
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-        appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
+       // appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
         log.debug("the do doPremises end ....");
     }
     /**
