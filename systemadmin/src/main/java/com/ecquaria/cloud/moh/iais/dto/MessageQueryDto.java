@@ -17,9 +17,7 @@ public class MessageQueryDto implements Serializable {
 
     private static final long serialVersionUID = 4072618238107110105L;
 
-    private Integer id;
-
-    private String rowguid;
+    private String id;
 
     private String domainType;
 

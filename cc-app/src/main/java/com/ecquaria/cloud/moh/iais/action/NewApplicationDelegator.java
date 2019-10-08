@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -77,18 +79,30 @@ public class NewApplicationDelegator {
     public void preparePremises(BaseProcessClass bpc){
         log.debug("the do preparePremises start ....");
         List premisesSelect = new ArrayList<SelectOption>();
+        User user = SessionManager.getInstance(bpc.request).getCurrentUser();
+        String loginId = user.getIdentityNo();
+        List<AppGrpPremisesDto> list = appGrpPremisesService.getAppGrpPremisesDtoByLoginId(loginId);
         SelectOption sp0 = new SelectOption("-1","Select One");
         premisesSelect.add(sp0);
         SelectOption sp1 = new SelectOption("newPremise","Add a new premises");
         premisesSelect.add(sp1);
-        SelectOption sp2 = new SelectOption("001","111 North Bridge Rd # 07-04, 179098");
-        premisesSelect.add(sp2);
-        SelectOption sp3 = new SelectOption("002","514 Chai Chee Lane # 06-03, 65432");
-        premisesSelect.add(sp3);
-        SelectOption sp4 = new SelectOption("003","8 Foch Rd, 209786");
-        premisesSelect.add(sp4);
-        SelectOption sp5 = new SelectOption("004","400 Orchard Rd, 21-06 Orchard Tower, 23654");
-        premisesSelect.add(sp5);
+        if(list !=null){
+            for (AppGrpPremisesDto item : list){
+              if(IaisEGPConstant.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())){
+                  SelectOption sp2 = new SelectOption(item.getId().toString(),item.getAddress());
+                  premisesSelect.add(sp2);
+              }
+            }
+        }
+
+//        SelectOption sp2 = new SelectOption("001","111 North Bridge Rd # 07-04, 179098");
+//        premisesSelect.add(sp2);
+//        SelectOption sp3 = new SelectOption("002","514 Chai Chee Lane # 06-03, 65432");
+//        premisesSelect.add(sp3);
+//        SelectOption sp4 = new SelectOption("003","8 Foch Rd, 209786");
+//        premisesSelect.add(sp4);
+//        SelectOption sp5 = new SelectOption("004","400 Orchard Rd, 21-06 Orchard Tower, 23654");
+//        premisesSelect.add(sp5);
         ParamUtil.setRequestAttr(bpc.request,"premisesSelect",premisesSelect);
         log.debug("the do preparePremises end ....");
     }
@@ -146,7 +160,6 @@ public class NewApplicationDelegator {
         log.debug("the do doPremises start ....");
         AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,new AppGrpPremisesDto());
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-       // appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
         log.debug("the do doPremises end ....");
     }
     /**
@@ -208,6 +221,19 @@ public class NewApplicationDelegator {
 
         log.debug("the do doPayment end ....");
     }
+
+    /**
+     * StartStep: doSaveDraft
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doSaveDraft(BaseProcessClass bpc){
+        log.debug("the do doSaveDraft start ....");
+        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+        appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
+        log.debug("the do doSaveDraft end ....");
+    }
     /**
      * StartStep: ControlSwitch
      *
@@ -216,7 +242,7 @@ public class NewApplicationDelegator {
      */
     public void controlSwitch(BaseProcessClass bpc){
         log.debug("the do controlSwitch start ....");
-        ParamUtil.setRequestAttr(bpc.request,"isSubmitSuccess","N");
+        ParamUtil.setRequestAttr(bpc.request,"Switch2","loading");
         log.debug("the do controlSwitch end ....");
 
     }

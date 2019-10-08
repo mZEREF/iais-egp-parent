@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.dto.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
@@ -152,17 +153,17 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     /**
-     * Get the record by rowguid
+     * Get the record by primary key
      * @param serviceName
-     * @param rowguid
+     * @param primaryKey
      * @param clz
      * @param <T>
      * @return
      */
-    public static <T> T getRecordByRowguid(String serviceName, String rowguid, Class<? extends Serializable> clz){
+    public static <T> T getRecordByPrimaryKey(String serviceName, String primaryKey, Class<? extends Serializable> clz){
         Map<String, Object> paramMapper = new HashMap<>();
-        paramMapper.put("rowguid", rowguid);
-        return (T) RestApiUtil.getByReqParam(serviceName + "/{rowguid}", paramMapper, clz);
+        paramMapper.put("ID", primaryKey);
+        return (T) RestApiUtil.getByReqParam(serviceName + "/{id}", paramMapper, clz);
     }
 
     /**

@@ -33,8 +33,10 @@ public class MessageServiceImpl implements MessageService {
         RestApiUtil.save("system-admin-service:8886/iais-message", messageDto);
     }
 
-    public MessageDto getMessageByRowguid(String rowguid) {
-        return IaisEGPHelper.getRecordByRowguid("system-admin-service:8886/iais-message", rowguid, MessageDto.class);
+    public MessageDto getMessageById(String id) {
+        Map<String, Object> paramMapper = new HashMap<>();
+        paramMapper.put("id", id);
+        return RestApiUtil.getByReqParam("system-admin-service:8886/iais-message/{id}", paramMapper, MessageDto.class);
     }
 
 }
