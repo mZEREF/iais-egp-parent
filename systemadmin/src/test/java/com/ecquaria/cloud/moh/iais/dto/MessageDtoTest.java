@@ -23,7 +23,6 @@ public class MessageDtoTest {
     @Test
     public void testMessageDto(){
         dto.getId();
-        dto.getRowguid();
         dto.getDomainType();
         dto.getCodeKey();
         dto.getModule();
@@ -34,7 +33,6 @@ public class MessageDtoTest {
         dto.getMessage();
 
         dto.setId(null);
-        dto.setRowguid(null);
         dto.setDomainType(null);
         dto.setCodeKey(null);
         dto.setMsgType(null);

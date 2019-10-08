@@ -24,7 +24,6 @@ public class MessageQueryDtoTest {
     @Test
     public void testGetterSetter() {
         entity.getId();
-        entity.getRowguid();
         entity.getDomainType();
         entity.getCodeKey();
         entity.getModule();
@@ -34,7 +33,6 @@ public class MessageQueryDtoTest {
         entity.getMessage();
 
         entity.setId(null);
-        entity.setRowguid(null);
         entity.setDomainType(null);
         entity.setCodeKey(null);
         entity.setMsgType(null);

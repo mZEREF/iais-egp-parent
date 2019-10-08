@@ -93,7 +93,7 @@ public class SystemParameterDelegatorTest {
     public void testDisableStatus(){
         String rowguId = "837BC1CA-245A-4709-BF83-E437E5B0224E";
         PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE)).thenReturn(rowguId);
-        PowerMockito.when(service.getParameterByRowguid(rowguId)).thenReturn(dto);
+        PowerMockito.when(service.getParameterByPid(rowguId)).thenReturn(dto);
         delegator.disableStatus(bpc);
         Assert.assertTrue(true);
     }

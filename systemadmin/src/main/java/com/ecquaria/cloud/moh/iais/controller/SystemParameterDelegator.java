@@ -11,7 +11,11 @@ import com.ecquaria.cloud.moh.iais.constant.SystemParameterConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.dto.SystemParameterQueryDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
@@ -207,9 +211,9 @@ public class SystemParameterDelegator {
      */
     public void disableStatus(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String rowguid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(!StringUtil.isEmpty(rowguid)) {
-            SystemParameterDto dto = parameterService.getParameterByRowguid(rowguid);
+        String pid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(!StringUtil.isEmpty(pid)) {
+            SystemParameterDto dto = parameterService.getParameterByPid(pid);
             dto.setStatus(SystemParameterConstant.STATUS_DEACTIVATED);
             parameterService.saveSystemParameter(dto);
         }
@@ -221,10 +225,10 @@ public class SystemParameterDelegator {
      */
     public void prepareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String rowguid = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String pid = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         preSelectOption(request);
-        if(!StringUtil.isEmpty(rowguid)){
-            SystemParameterDto dto = parameterService.getParameterByRowguid(rowguid);
+        if(!StringUtil.isEmpty(pid)){
+            SystemParameterDto dto = parameterService.getParameterByPid(pid);
             ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, dto);
         }
     }

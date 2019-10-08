@@ -37,7 +37,7 @@
 
     <sql key = "queryMessage" remarks = "query message sql">
         <![CDATA[
-            SELECT msg_id, rowguid, code_key, domain_type, msg_type, module, description, message, status
+            SELECT msg_id, code_key, domain_type, msg_type, module, description, message, status
             FROM CM_MESSAGE
             WHERE 1=1 AND status != 'N'
             <#if domainType??> AND domain_type = :domainType</#if>
@@ -48,10 +48,10 @@
 
     <sql key="querySystemParam" remarks="query system param sql">
         <![CDATA[
-            select pid, rowguid ,domain_type , module, description, value_type, value, status, updated_by ,updated_dt
+            select pid, domain_type , module, description, value_type, value, status, updated_by ,updated_dt
             from cm_system_parameters
             where 1=1 and status != 'n'
-            <#if domaintype??> and domain_type = :domaintype</#if>
+            <#if domainType??> and domain_type = :domainType</#if>
             <#if module??> and module = :module</#if>
             <#if description??> and charindex(:description, description) >0</#if>
             <#if status??> and status = :status</#if>
@@ -84,5 +84,13 @@
             <#if endDate??> and action_time <= :endDate </#if>
         ]]>
     </sql>
+
+
+    <sql key = "queryHcsaService" remarks="query hcsa service parameter of checklist">
+        <![CDATA[
+            select stype.id as service_id, scategory.id as category_id, scategory.name as category_name, stype.name as service_name
+            from iais.dbo.hcsa_service_type stype, iais.dbo.hcsa_service_category scategory where stype.category_id = scategory.id
+        ]]>
+    </sql>w
 </sqls>
 

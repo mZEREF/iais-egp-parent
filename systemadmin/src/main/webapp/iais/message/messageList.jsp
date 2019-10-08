@@ -120,8 +120,8 @@
                             <td>${msgQuery.description}</td>
                             <td>${msgQuery.message}</td>
                             <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.rowguid}');"/>
-                                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.rowguid}');"/>
+                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.id}');"/>
+                                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.id}');"/>
                             </td>
                         </tr>
                     </c:forEach>
@@ -148,15 +148,15 @@
         SOP.Crud.cfxSubmit("mainForm","changePage");
     }
 
-    function prepareEdit(rowguid){
+    function prepareEdit(id){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "prepareEdit", rowguid);
+            SOP.Crud.cfxSubmit("messageForm", "prepareEdit", id);
         }
     }
 
-    function disable(rowguid){
+    function disable(id){
         if(confirm('are sure you want to disable ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "disableStatus", rowguid);
+            SOP.Crud.cfxSubmit("messageForm", "disableStatus", id);
         }
     }
 

@@ -25,7 +25,6 @@ public class SystemParameterQueryDtoTest {
         dto.getStatus();
         dto.getValue();
         dto.getValueType();
-        dto.getRowguid();
         dto.getUpdatedBy();
         dto.getUpdatedOn();
 
@@ -37,7 +36,6 @@ public class SystemParameterQueryDtoTest {
         dto.setStatus(null);
         dto.setValue(null);
         dto.setValueType(null);
-        dto.setRowguid(null);
         dto.setUpdatedBy(null);
         dto.setUpdatedOn(null);
     }

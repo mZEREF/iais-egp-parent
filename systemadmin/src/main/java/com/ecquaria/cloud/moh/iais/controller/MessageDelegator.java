@@ -11,7 +11,11 @@ import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.dto.MessageQueryDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
@@ -158,9 +162,9 @@ public class MessageDelegator {
      */
     public void disableStatus(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String rowguid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(!StringUtil.isEmpty(rowguid)) {
-            MessageDto messageDto = messageService.getMessageByRowguid(rowguid);
+        String msgId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(!StringUtil.isEmpty(msgId)) {
+            MessageDto messageDto = messageService.getMessageById(msgId);
             messageDto.setStatus(MessageConstant.STATUS_DEACTIVATED);
             messageService.saveMessage(messageDto);
         }
@@ -223,10 +227,10 @@ public class MessageDelegator {
      */
     public void prepareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String rowguid = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String msgId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         preSelectOption(request);
-        if(!StringUtil.isEmpty(rowguid)){
-            MessageDto messageDto = messageService.getMessageByRowguid(rowguid);
+        if(!StringUtil.isEmpty(msgId)){
+            MessageDto messageDto = messageService.getMessageById(msgId);
             ParamUtil.setSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO, messageDto);
         }
     }

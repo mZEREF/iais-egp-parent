@@ -107,7 +107,7 @@ public class MessageDelegatorTest {
     public void testDisableStatus(){
         String rowguId = "837BC1CA-245A-4709-BF83-E437E5B0224E";
         PowerMockito.when(ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE)).thenReturn(rowguId);
-        PowerMockito.when(messageService.getMessageByRowguid(rowguId)).thenReturn(messageDto);
+        PowerMockito.when(messageService.getMessageById(rowguId)).thenReturn(messageDto);
         messageDelegator.disableStatus(bpc);
         Assert.assertTrue(true);
     }

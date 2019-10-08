@@ -128,8 +128,8 @@
                             <td>${resultRow.value}</td>
                             <td>${resultRow.status}</td>
                             <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${resultRow.rowguid}');"/>
-                                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${resultRow.rowguid}');"/>
+                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${resultRow.id}');"/>
+                                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${resultRow.id}');"/>
                             </td>
                         </tr>
                     </c:forEach>
@@ -156,15 +156,15 @@
         SOP.Crud.cfxSubmit("mainForm","changePage");
     }
 
-    function prepareEdit(rowguid){
+    function prepareEdit(id){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "prepareEdit", rowguid);
+            SOP.Crud.cfxSubmit("messageForm", "prepareEdit", id);
         }
     }
 
-    function disable(rowguid){
+    function disable(id){
         if(confirm('are sure you want to disable ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "disableStatus", rowguid);
+            SOP.Crud.cfxSubmit("messageForm", "disableStatus", id);
         }
     }
 

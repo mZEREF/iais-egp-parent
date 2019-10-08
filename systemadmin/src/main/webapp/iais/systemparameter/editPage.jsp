@@ -88,7 +88,7 @@
 
     <tr>
         <iais:action>
-            <button type="button" class="btn" onclick="javascript:doEdit('${parameterRequestDto.rowguid}');">Update</button>
+            <button type="button" class="btn" onclick="javascript:doEdit('${parameterRequestDto.id}');">Update</button>
             <button type="button" class="btn" onclick="javascript:doCancel();">Cancel</button>
         </iais:action>
     </tr>
@@ -100,9 +100,9 @@
 <script type="text/javascript">
 
 
-    function doEdit(rowguid){
+    function doEdit(id){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("spform", "doEdit", rowguid);
+            SOP.Crud.cfxSubmit("spform", "doEdit", id);
         }
     }
 
