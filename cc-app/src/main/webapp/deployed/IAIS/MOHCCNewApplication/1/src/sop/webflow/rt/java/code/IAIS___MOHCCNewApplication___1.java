@@ -68,6 +68,10 @@ public class IAIS___MOHCCNewApplication___1 extends BaseProcessClass {
 	// 		PrepareAckPage->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareAckPage", this);
 	}
+	public void doSaveDraft_OnStepProcess_0() throws Exception {
+	// 		doSaveDraft->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doSaveDraft", this);
+	}
 	
 
 }
