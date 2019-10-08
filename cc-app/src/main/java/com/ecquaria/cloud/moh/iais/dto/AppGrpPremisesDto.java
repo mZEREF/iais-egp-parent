@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.oval.constraint.NotBlank;
@@ -55,6 +56,8 @@ public class AppGrpPremisesDto implements Serializable {
      //Address Type
     private String addrType;
 
+    private String siteSafefyNo;
+
     //======================
     //for the Conveyance
     //======================
@@ -73,6 +76,7 @@ public class AppGrpPremisesDto implements Serializable {
     private String conveyanceEmail;
     private String conveyanceMobile;
 
+    private AuditTrailDto auditTrailDto;
 
 
 }
