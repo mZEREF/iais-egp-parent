@@ -5,13 +5,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDocDto;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -23,6 +31,12 @@ import java.util.List;
 @Delegator("newApplicationDelegator")
 @Slf4j
 public class NewApplicationDelegator {
+    private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
+    private static final String APPGRPPREMISESDOCDTO = "appGrpPremisesDocDto";
+
+    @Autowired
+    private AppGrpPremisesService appGrpPremisesService;
+
     /**
      * StartStep: Start
      *
@@ -31,7 +45,9 @@ public class NewApplicationDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug("the do Start start ....");
-        ParamUtil.setSessionAttr(bpc.request,"appGrpPremisesDto",null);
+        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,null);
+        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDOCDTO,null);
+        AuditTrailHelper.auditFunction("iais-cc", "premises create");
         log.debug("the do Start end ....");
     }
 
@@ -45,7 +61,10 @@ public class NewApplicationDelegator {
         log.debug("the do prepare start ....");
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(StringUtil.isEmpty(action)){
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+            action = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+            if(StringUtil.isEmpty(action)){
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+            }
         }
         log.debug("the do prepare end ....");
     }
@@ -125,9 +144,9 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc){
         log.debug("the do doPremises start ....");
-        AppGrpPremisesDto appGrpPremisesDto1 = new AppGrpPremisesDto();
-        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,appGrpPremisesDto1);
-        ParamUtil.setSessionAttr(bpc.request,"appGrpPremisesDto",appGrpPremisesDto);
+        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,new AppGrpPremisesDto());
+        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+       // appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
         log.debug("the do doPremises end ....");
     }
     /**
@@ -136,9 +155,24 @@ public class NewApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void doDocument(BaseProcessClass bpc){
+    public void doDocument(BaseProcessClass bpc) throws IOException {
         log.debug("the do doDocument start ....");
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
 
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
+        AppGrpPremisesDocDto appGrpPremisesDocDto = new AppGrpPremisesDocDto();
+        MultipartFile file = null;
+        for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {
+            String name = en.next();
+            file = mulReq.getFile(name);
+        }
+
+        if(file != null && !StringUtil.isEmpty(file.getOriginalFilename())){
+            appGrpPremisesDocDto.setFileName(file.getOriginalFilename());
+            appGrpPremisesDocDto.setFile(file);
+        }
+        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDOCDTO,appGrpPremisesDocDto);
         log.debug("the do doDocument end ....");
     }
     /**
@@ -198,13 +232,13 @@ public class NewApplicationDelegator {
         log.debug("the do prepareAckPage end ....");
     }
 
-    //=============================================================================
-    //private method
-    //=============================================================================
-    private void getValueFromPage(AppGrpPremisesDto appGrpPremisesDto, HttpServletRequest request) {
-        String premisesType = ParamUtil.getString(request,"premisesType");
-        String hciName = ParamUtil.getString(request,"hciName");
-        appGrpPremisesDto.setHciName(hciName);
-        MiscUtil.generateDtoFromParam(request,AppGrpPremisesDto.class);
-    }
+//    //=============================================================================
+//    //private method
+//    //=============================================================================
+//    private void getValueFromPage(AppGrpPremisesDto appGrpPremisesDto, HttpServletRequest request) {
+//        String premisesType = ParamUtil.getString(request,"premisesType");
+//        String hciName = ParamUtil.getString(request,"hciName");
+//        appGrpPremisesDto.setHciName(hciName);
+//        MiscUtil.generateDtoFromParam(request,AppGrpPremisesDto.class);
+//    }
 }

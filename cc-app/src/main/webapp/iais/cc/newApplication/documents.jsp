@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-cc"/>
 <%@ include file="./dashboard.jsp" %>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -43,7 +43,8 @@
                                     <div class="document-upload-list">
                                         <h3>Urban Redevelopmenet Authority (URA) grant of written permission</h3>
                                         <div class="file-upload-gp">
-                                            <input id="selectedFile1" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                            <p id="showFile">${appGrpPremisesDocDto.fileName}</p>
+                                            <input id="selectedFile" name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
                                         </div>
                                     </div>
                                 </div>
@@ -78,6 +79,14 @@
         $('#docNext').click(function(){
             submit('serviceForms',null,null);
         });
+        $('#selectedFile').change(function(){
+            var file = $('#selectedFile').val();
+            $('#showFile').html(getFileName(file))
+        });
     });
+    function getFileName(o) {
+        var pos = o.lastIndexOf("\\");
+        return o.substring(pos + 1);
+    }
 
 </script>
