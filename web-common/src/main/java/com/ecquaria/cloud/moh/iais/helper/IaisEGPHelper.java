@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -59,7 +60,7 @@ public final class IaisEGPHelper extends EGPHelper {
         HttpSession session = request.getSession();
         if (user != null) {
             dto.setNricNumber(user.getId());
-            dto.setMohUserId("2E4F7555-B6E9-E911-BE76-000C29C8FBE4");
+            dto.setMohUserId(AppConsts.USER_ID_ANONYMOUS);
             dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
         }
         dto.setSessionId(session.getId());
