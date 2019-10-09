@@ -21,16 +21,16 @@ import java.util.List;
 @Slf4j
 public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     @Override
-    public void saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
+    public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
         appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        RestApiUtil.save("iais-application:8881",appGrpPremisesDto);
+       return RestApiUtil.save("iais-application:8881",appGrpPremisesDto,AppGrpPremisesDto.class);
     }
 
     @Override
     public List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId) {
         List<AppGrpPremisesDto> result = new ArrayList<>();
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-        appGrpPremisesDto.setId(123);
+        appGrpPremisesDto.setId("123");
         appGrpPremisesDto.setPostalCode("019191");
         appGrpPremisesDto.setBlkNo("123");
         appGrpPremisesDto.setBuildingName("building Name");

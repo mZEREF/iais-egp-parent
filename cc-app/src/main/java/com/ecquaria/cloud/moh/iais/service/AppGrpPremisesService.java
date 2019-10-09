@@ -11,6 +11,6 @@ import java.util.List;
  * @date 10/8/2019
  */
 public interface AppGrpPremisesService {
-    public void saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto);
+    public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto);
     public List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId);
 }

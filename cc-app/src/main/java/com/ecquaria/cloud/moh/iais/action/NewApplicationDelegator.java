@@ -46,11 +46,11 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doStart(BaseProcessClass bpc){
-        log.debug("the do Start start ....");
+        log.debug(StringUtil.changeForLog("the do Start start ...."));
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,null);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDOCDTO,null);
         AuditTrailHelper.auditFunction("iais-cc", "premises create");
-        log.debug("the do Start end ....");
+        log.debug(StringUtil.changeForLog("the do Start end ...."));
     }
 
     /**
@@ -60,7 +60,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepare(BaseProcessClass bpc){
-        log.debug("the do prepare start ....");
+        log.debug(StringUtil.changeForLog("the do prepare start ...."));
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(StringUtil.isEmpty(action)){
             action = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -68,7 +68,7 @@ public class NewApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
             }
         }
-        log.debug("the do prepare end ....");
+        log.debug(StringUtil.changeForLog("the do prepare end ...."));
     }
     /**
      * StartStep: PreparePremises
@@ -77,10 +77,11 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void preparePremises(BaseProcessClass bpc){
-        log.debug("the do preparePremises start ....");
+        log.debug(StringUtil.changeForLog("the do preparePremises start ...."));
         List premisesSelect = new ArrayList<SelectOption>();
         User user = SessionManager.getInstance(bpc.request).getCurrentUser();
-        String loginId = user.getIdentityNo();
+        //String loginId = user.getIdentityNo();
+        String loginId="internet";
         List<AppGrpPremisesDto> list = appGrpPremisesService.getAppGrpPremisesDtoByLoginId(loginId);
         SelectOption sp0 = new SelectOption("-1","Select One");
         premisesSelect.add(sp0);
@@ -104,7 +105,7 @@ public class NewApplicationDelegator {
 //        SelectOption sp5 = new SelectOption("004","400 Orchard Rd, 21-06 Orchard Tower, 23654");
 //        premisesSelect.add(sp5);
         ParamUtil.setRequestAttr(bpc.request,"premisesSelect",premisesSelect);
-        log.debug("the do preparePremises end ....");
+        log.debug(StringUtil.changeForLog("the do preparePremises end ...."));
     }
     /**
      * StartStep: PrepareDocuments
@@ -113,9 +114,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepareDocuments(BaseProcessClass bpc){
-        log.debug("the do prepareDocuments start ....");
+        log.debug(StringUtil.changeForLog("the do prepareDocuments start ...."));
 
-        log.debug("the do prepareDocuments end ....");
+        log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
     /**
      * StartStep: PrepareForms
@@ -124,9 +125,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepareForms(BaseProcessClass bpc){
-        log.debug("the do prepareForms start ....");
+        log.debug(StringUtil.changeForLog("the do prepareForms start ...."));
 
-        log.debug("the do prepareForms end ....");
+        log.debug(StringUtil.changeForLog("the do prepareForms end ...."));
     }
     /**
      * StartStep: PreparePreview
@@ -135,9 +136,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void preparePreview(BaseProcessClass bpc){
-        log.debug("the do preparePreview start ....");
+        log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
 
-        log.debug("the do preparePreview end ....");
+        log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
     /**
      * StartStep: PreparePayment
@@ -146,9 +147,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void preparePayment(BaseProcessClass bpc){
-        log.debug("the do preparePayment start ....");
+        log.debug(StringUtil.changeForLog("the do preparePayment start ...."));
 
-        log.debug("the do preparePayment end ....");
+        log.debug(StringUtil.changeForLog("the do preparePayment end ...."));
     }
     /**
      * StartStep: DoPremises
@@ -157,10 +158,13 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doPremises(BaseProcessClass bpc){
-        log.debug("the do doPremises start ....");
-        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,new AppGrpPremisesDto());
+        log.debug(StringUtil.changeForLog("the do doPremises start ...."));
+        AppGrpPremisesDto appGrpPremisesDto =
+                ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO) == null ? new AppGrpPremisesDto():
+                        (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+         appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,appGrpPremisesDto);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-        log.debug("the do doPremises end ....");
+        log.debug(StringUtil.changeForLog("the do doPremises end ...."));
     }
     /**
      * StartStep: DoDocument
@@ -169,7 +173,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doDocument(BaseProcessClass bpc) throws IOException {
-        log.debug("the do doDocument start ....");
+        log.debug(StringUtil.changeForLog("the do doDocument start ...."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
 
@@ -186,7 +190,7 @@ public class NewApplicationDelegator {
             appGrpPremisesDocDto.setFile(file);
         }
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDOCDTO,appGrpPremisesDocDto);
-        log.debug("the do doDocument end ....");
+        log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
     /**
      * StartStep: doFormsSubmit
@@ -195,9 +199,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doFormsSubmit(BaseProcessClass bpc){
-        log.debug("the do doFormsSubmit start ....");
+        log.debug(StringUtil.changeForLog("the do doFormsSubmit start ...."));
 
-        log.debug("the do doFormsSubmit end ....");
+        log.debug(StringUtil.changeForLog("the do doFormsSubmit end ...."));
     }
     /**
      * StartStep: doPreview
@@ -206,9 +210,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doPreview(BaseProcessClass bpc){
-        log.debug("the do doPreview start ....");
+        log.debug(StringUtil.changeForLog("the do doPreview start ...."));
 
-        log.debug("the do doPreview end ....");
+        log.debug(StringUtil.changeForLog("the do doPreview end ...."));
     }
     /**
      * StartStep: doPreview
@@ -217,9 +221,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doPayment(BaseProcessClass bpc){
-        log.debug("the do doPayment start ....");
+        log.debug(StringUtil.changeForLog("the do doPayment start ...."));
 
-        log.debug("the do doPayment end ....");
+        log.debug(StringUtil.changeForLog("the do doPayment end ...."));
     }
 
     /**
@@ -229,10 +233,11 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doSaveDraft(BaseProcessClass bpc){
-        log.debug("the do doSaveDraft start ....");
+        log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
         AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-        appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
-        log.debug("the do doSaveDraft end ....");
+        appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
+        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+        log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
     /**
      * StartStep: ControlSwitch
@@ -241,9 +246,14 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void controlSwitch(BaseProcessClass bpc){
-        log.debug("the do controlSwitch start ....");
-        ParamUtil.setRequestAttr(bpc.request,"Switch2","loading");
-        log.debug("the do controlSwitch end ....");
+        log.debug(StringUtil.changeForLog("the do controlSwitch start ...."));
+        String switch2 = "loading";
+        String crud_action_value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if("saveDraft".equals(crud_action_value) || "ack".equals(crud_action_value)){
+            switch2 = crud_action_value;
+        }
+        ParamUtil.setRequestAttr(bpc.request,"Switch2",switch2);
+        log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));
 
     }
     /**
@@ -253,9 +263,9 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void prepareAckPage(BaseProcessClass bpc){
-        log.debug("the do prepareAckPage start ....");
+        log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
 
-        log.debug("the do prepareAckPage end ....");
+        log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
 //    //=============================================================================
