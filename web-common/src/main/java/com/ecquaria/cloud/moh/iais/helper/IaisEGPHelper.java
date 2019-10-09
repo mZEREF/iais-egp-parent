@@ -60,7 +60,7 @@ public final class IaisEGPHelper extends EGPHelper {
         HttpSession session = request.getSession();
         if (user != null) {
             dto.setNricNumber(user.getId());
-            dto.setMohUserId(AppConsts.USER_ID_ANONYMOUS);
+            dto.setMohUserGuid(AppConsts.USER_ID_ANONYMOUS);
             dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
         }
         dto.setSessionId(session.getId());
