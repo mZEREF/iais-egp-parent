@@ -23,4 +23,13 @@ public class IaisEGPConstant {
 
     public static final String FE_CSS_ROOT                         = "/web/themes/fe/";
 
+    //premises type
+    public static final String PREMISES_TYPE_ON_SITE              = "On-site";
+    public static final String PREMISES_TYPE_CONVEYANCE           = "Conveyance";
+
+
+
+
+
+
 }
