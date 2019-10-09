@@ -1,11 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.dto.FormTestDto;
-import com.ecquaria.cloud.moh.iais.helper.IFormValidatorHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisFormHelper;
 import com.ecquaria.egov.core.common.constants.AppConstants;
 import com.ecquaria.egp.core.forms.util.FormRuntimeUtil;
 import ecq.commons.exception.BaseException;
@@ -37,16 +33,10 @@ public final class TestDelegator {
     }
 
     public  void validate(BaseProcessClass base) throws Exception {
-        ValidationResult result = IFormValidatorHelper.validateForm(base,FORM_NAME,FormTestDto.class,true);
-        if(result.isHasErrors()){
-            base.request.setAttribute("validate",false);
-        }else{
-            base.request.setAttribute("validate",true);
-        }
+
     }
 
     public void saveDraft(BaseProcessClass bpc) throws BaseException {
-        IaisFormHelper.doSaveDraft(bpc,PROJECT_NAME,PROCESS_NAME,STEP_NAME);
     }
     public void initSaveDraftData(BaseProcessClass bpc) {
         String caseid = bpc.request.getParameter("caseid");
@@ -56,7 +46,6 @@ public final class TestDelegator {
         bpc.getSession().setAttribute("continueId", continueId);
     }
     public void bATStep0_OnApplicationCreate(BaseProcessClass bpc) throws BaseException{
-        IaisFormHelper.deleteDraft(bpc);
 
     }
 
