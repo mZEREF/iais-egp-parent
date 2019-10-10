@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * AppGrpPremisesServiceImpl
@@ -23,7 +25,7 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
         appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-       return RestApiUtil.save("iais-application:8881",appGrpPremisesDto,AppGrpPremisesDto.class);
+       return RestApiUtil.save("iais-application:8881/iais-premises",appGrpPremisesDto,AppGrpPremisesDto.class);
     }
 
     @Override
@@ -37,7 +39,14 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
         appGrpPremisesDto.setStreetName("String Name");
         appGrpPremisesDto.setFloorNo("6");
         appGrpPremisesDto.setUnitNo("3");
-        appGrpPremisesDto.setPremisesType(IaisEGPConstant.PREMISES_TYPE_ON_SITE);
+        appGrpPremisesDto.setPremisesType(AppConsts.PREMISES_TYPE_ON_SITE);
         return result;
+    }
+
+    @Override
+    public List getAppGrpPremisesDtosByAppId(String appId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("appId", appId);
+        return RestApiUtil.getByReqParam("iais-application:8881/iais-premises", map, List.class);
     }
 }
