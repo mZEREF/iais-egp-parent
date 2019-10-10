@@ -175,7 +175,7 @@
             data:"name=66",
             type:"GET",
             dataType: 'json',
-            url:"/demo/orgUser/validate.do",
+            url:"/demo/orgUser/doSomething.do",
             error:function(data){
                 alert("wrong:"+data.aaa);
             },
