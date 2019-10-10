@@ -14,7 +14,7 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.oval.constraint.NotBlank;

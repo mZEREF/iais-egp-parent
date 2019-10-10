@@ -7,8 +7,10 @@ package com.ecquaria.cloud.moh.iais.dto;
  *Describe:
  */
 
-import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
-import lombok.*;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.sf.oval.constraint.Length;
 import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotNull;
