@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDocDto;
@@ -50,6 +52,14 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,null);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDOCDTO,null);
         AuditTrailHelper.auditFunction("iais-cc", "premises create");
+        //for loading the draft by appId
+        String appId = "C120481C-09C3-45A8-A8ED-F71B38BD1768";
+        List appGrpPremisesDtoList = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
+        if(appGrpPremisesDtoList != null && appGrpPremisesDtoList.size()>0){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = RestApiUtil.transferListContent(appGrpPremisesDtoList,AppGrpPremisesDto.class);
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList1.get(0);
+            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+        }
         log.debug(StringUtil.changeForLog("the do Start end ...."));
     }
 
@@ -82,6 +92,7 @@ public class NewApplicationDelegator {
         User user = SessionManager.getInstance(bpc.request).getCurrentUser();
         //String loginId = user.getIdentityNo();
         String loginId="internet";
+        //?
         List<AppGrpPremisesDto> list = appGrpPremisesService.getAppGrpPremisesDtoByLoginId(loginId);
         SelectOption sp0 = new SelectOption("-1","Select One");
         premisesSelect.add(sp0);
@@ -89,21 +100,12 @@ public class NewApplicationDelegator {
         premisesSelect.add(sp1);
         if(list !=null){
             for (AppGrpPremisesDto item : list){
-              if(IaisEGPConstant.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())){
+              if(AppConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())){
                   SelectOption sp2 = new SelectOption(item.getId().toString(),item.getAddress());
                   premisesSelect.add(sp2);
               }
             }
         }
-
-//        SelectOption sp2 = new SelectOption("001","111 North Bridge Rd # 07-04, 179098");
-//        premisesSelect.add(sp2);
-//        SelectOption sp3 = new SelectOption("002","514 Chai Chee Lane # 06-03, 65432");
-//        premisesSelect.add(sp3);
-//        SelectOption sp4 = new SelectOption("003","8 Foch Rd, 209786");
-//        premisesSelect.add(sp4);
-//        SelectOption sp5 = new SelectOption("004","400 Orchard Rd, 21-06 Orchard Tower, 23654");
-//        premisesSelect.add(sp5);
         ParamUtil.setRequestAttr(bpc.request,"premisesSelect",premisesSelect);
         log.debug(StringUtil.changeForLog("the do preparePremises end ...."));
     }
@@ -162,7 +164,9 @@ public class NewApplicationDelegator {
         AppGrpPremisesDto appGrpPremisesDto =
                 ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO) == null ? new AppGrpPremisesDto():
                         (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+         String appGrpId = appGrpPremisesDto.getAppGrpId();
          appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,appGrpPremisesDto);
+        appGrpPremisesDto.setAppGrpId(appGrpId);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
     }

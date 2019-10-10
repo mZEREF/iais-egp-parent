@@ -13,7 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.dto;
 
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -97,7 +97,7 @@ public class AppGrpPremisesDto implements Serializable {
 
     public String getAddress(){
         String result = "";
-        if(IaisEGPConstant.PREMISES_TYPE_ON_SITE.equals(premisesType)){
+        if(AppConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
             result = blkNo + " " +streetName + " " +buildingName +" # "+floorNo+"-"+unitNo+", " +postalCode;
         }else{
             result = conveyanceBlockNo + " " +conveyanceStreetName + " " +conveyanceBuildingName +" # "+conveyanceFloorNo+"-"+conveyanceUnitNo+", " +conveyancePostalCode;
