@@ -257,8 +257,8 @@ public class NewApplicationDelegator {
         if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
             log.debug(StringUtil.changeForLog("save the document"));
             appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
-            //String fileRepoGuid = appGrpPremisesDocService.SaveFileToRepo(appGrpPremisesDocDto);
-            String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
+            String fileRepoGuid = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
+            //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
             appGrpPrimaryDocDto.setFileRepoGuid(fileRepoGuid);
             appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
             ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
