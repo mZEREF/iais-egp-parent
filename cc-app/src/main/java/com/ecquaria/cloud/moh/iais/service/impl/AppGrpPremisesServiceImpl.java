@@ -22,10 +22,11 @@ import java.util.Map;
 @Service
 @Slf4j
 public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
+    private static final String URL="iais-application:8881/iais-premises";
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
         appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-       return RestApiUtil.save("iais-application:8881/iais-premises",appGrpPremisesDto,AppGrpPremisesDto.class);
+       return RestApiUtil.save(URL,appGrpPremisesDto,AppGrpPremisesDto.class);
     }
 
     @Override
@@ -47,6 +48,6 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     public List getAppGrpPremisesDtosByAppId(String appId) {
         Map<String, Object> map = new HashMap<>();
         map.put("appId", appId);
-        return RestApiUtil.getByReqParam("iais-application:8881/iais-premises", map, List.class);
+        return RestApiUtil.getByReqParam(URL, map, List.class);
     }
 }
