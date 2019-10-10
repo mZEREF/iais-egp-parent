@@ -142,6 +142,7 @@
 <script type="text/javascript">
     function doSearch() {
        // submitForm("doSearch");
+        ajaxTest();
         SOP.Crud.cfxSubmit("mainForm","doSearch");
     }
     function sortRecords(sortFieldName,sortType){
@@ -168,4 +169,21 @@
         $('input[name="nric_no"]').val("");
         $('input[name="uen_no"]').val("");
     }
+
+    function ajaxTest(){
+        $.ajax({
+            data:"name=66",
+            type:"GET",
+            dataType: 'json',
+            url:"/demo/orgUser/validate.do",
+            error:function(data){
+                alert("wrong:"+data.aaa);
+            },
+            success:function(data){
+                alert("success:"+data.aaa);
+            }
+        });
+    }
+
+
 </script>
