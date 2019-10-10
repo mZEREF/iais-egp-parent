@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
@@ -100,7 +100,7 @@ public class NewApplicationDelegator {
         premisesSelect.add(sp1);
         if(list !=null){
             for (AppGrpPremisesDto item : list){
-              if(AppConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())){
+              if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())){
                   SelectOption sp2 = new SelectOption(item.getId().toString(),item.getAddress());
                   premisesSelect.add(sp2);
               }

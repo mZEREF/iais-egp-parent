@@ -1,4 +1,4 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 
@@ -35,13 +35,13 @@
                                                 <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your premises type?</label>
                                                 <div class="col-xs-6 col-md-2">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" id="premise_onsite" type="radio" name="premisesType" value = "<%=AppConsts.PREMISES_TYPE_ON_SITE%>" aria-invalid="false">
+                                                        <input class="form-check-input" id="premise_onsite" type="radio" name="premisesType" value = "<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>" aria-invalid="false">
                                                         <label class="form-check-label" for="premise_onsite"><span class="check-circle"></span>On-site</label>
                                                     </div>
                                                 </div>
                                                 <div class="col-xs-6 col-md-2">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" id="premise_conveyance" type="radio" name="premisesType" value="<%=AppConsts.PREMISES_TYPE_CONVEYANCE%>" aria-invalid="false">
+                                                        <input class="form-check-input" id="premise_conveyance" type="radio" name="premisesType" value="<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>" aria-invalid="false">
                                                         <label class="form-check-label" for="premise_conveyance"><span class="check-circle"></span>Conveyance</label>
                                                     </div>
                                                 </div>
