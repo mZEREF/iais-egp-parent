@@ -16,7 +16,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
-import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountSampleDto;
 
 
 /**
@@ -25,11 +25,11 @@ import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
  * @author suocheng
  * @date 7/12/2019
  */
-public interface OrgUserAccountService {
+public interface OrgUserAccountSampleService {
 
  public void deleteOrgUserAccountsById(String id);
- public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccount);
- public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId);
- public OrgUserAccountDto getOrgUserAccountByNircNo(String nircNo);
+ public void saveOrgUserAccounts(OrgUserAccountSampleDto orgUserAccount);
+ public OrgUserAccountSampleDto getOrgUserAccountByRowguId(String rowguId);
+ public OrgUserAccountSampleDto getOrgUserAccountByNircNo(String nircNo);
  public SearchResult<DemoQueryDto> doQuery(SearchParam param);
 }

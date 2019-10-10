@@ -20,9 +20,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
-import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountSampleDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
@@ -43,7 +43,7 @@ import java.util.Map;
  */
 @Delegator("orgUserAccountDelegator")
 @Slf4j
-public class OrgUserAccountDelegator {
+public class OrgUserAccountSampleDelegator {
     public static final String SEARCH_PARAM                        = "demoSearchParam";
     public static final String SEARCH_RESULT                       = "demoSearchResult";
     public static final String ORG_USER_ACCOUNT_TILE               = "orgUserAccountEditTile";
@@ -55,7 +55,7 @@ public class OrgUserAccountDelegator {
     public static final String ERRORMAP                            = "errorMap";
 
     @Autowired
-    private OrgUserAccountService orgUserAccountService;
+    private OrgUserAccountSampleService orgUserAccountService;
 
     /**
      * StartStep: Start
@@ -206,7 +206,7 @@ public class OrgUserAccountDelegator {
         String type = ParamUtil.getString(request, CRUD_ACTION_TYPE);
         if("save".equals(type)){
             String orgId = ParamUtil.getString(request,CRUD_ACTION_VALUE);
-            OrgUserAccountDto accountDto = new OrgUserAccountDto();
+            OrgUserAccountSampleDto accountDto = new OrgUserAccountSampleDto();
             getValueFromPage(accountDto, request);
             accountDto.setOrgId(orgId);
             ParamUtil.setSessionAttr(request, ORG_USER_DTO_ATTR, accountDto);
@@ -235,9 +235,9 @@ public class OrgUserAccountDelegator {
         log.debug(StringUtil.changeForLog("The prepareEdit start ..."));
         HttpServletRequest request = bpc.request;
         String rowguid = ParamUtil.getString(request,CRUD_ACTION_VALUE);
-        OrgUserAccountDto dto;
+        OrgUserAccountSampleDto dto;
         if(StringUtil.isEmpty(rowguid)){
-            dto = (OrgUserAccountDto)ParamUtil.getSessionAttr(request,ORG_USER_DTO_ATTR);
+            dto = (OrgUserAccountSampleDto)ParamUtil.getSessionAttr(request,ORG_USER_DTO_ATTR);
         }else{
             dto = orgUserAccountService.getOrgUserAccountByRowguId(rowguid);
             dto.setEditFlag(true);
@@ -264,7 +264,8 @@ public class OrgUserAccountDelegator {
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request,CRUD_ACTION_TYPE);
         if("edit".equals(type)){
-            OrgUserAccountDto accountDto = (OrgUserAccountDto) ParamUtil.getSessionAttr(request, ORG_USER_DTO_ATTR);
+            OrgUserAccountSampleDto accountDto =
+                    (OrgUserAccountSampleDto) ParamUtil.getSessionAttr(request, ORG_USER_DTO_ATTR);
             getValueFromPage(accountDto, request);
             ValidationResult validationResult =WebValidationHelper.validateProperty(accountDto, "edit");
             if (validationResult.isHasErrors()){
@@ -305,7 +306,7 @@ public class OrgUserAccountDelegator {
         return param;
     }
 
-    private void getValueFromPage(OrgUserAccountDto accountDto, HttpServletRequest request) {
+    private void getValueFromPage(OrgUserAccountSampleDto accountDto, HttpServletRequest request) {
         String name = ParamUtil.getString(request,"name");
         String nircNo = ParamUtil.getString(request,"nircNo");
         String corpPassId = ParamUtil.getString(request,"corpPassId");

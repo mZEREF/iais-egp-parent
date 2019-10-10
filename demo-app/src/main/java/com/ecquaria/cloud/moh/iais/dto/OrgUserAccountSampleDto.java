@@ -15,7 +15,7 @@ package com.ecquaria.cloud.moh.iais.dto;
 
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.annotations.CustomValidate;
-import com.ecquaria.cloud.moh.iais.validate.OrgUserAccountValidate;
+import com.ecquaria.cloud.moh.iais.validate.OrgUserAccountSampleValidate;
 import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -33,8 +33,8 @@ import java.io.Serializable;
  * @author suocheng
  * @date 7/11/2019
  */
-@CustomValidate(impClass = OrgUserAccountValidate.class, properties = {"create", "edit"})
-public class OrgUserAccountDto implements Serializable {
+@CustomValidate(impClass = OrgUserAccountSampleValidate.class, properties = {"create", "edit"})
+public class OrgUserAccountSampleDto implements Serializable {
     private static final long serialVersionUID = 2178140403780660322L;
 
     @Getter @Setter

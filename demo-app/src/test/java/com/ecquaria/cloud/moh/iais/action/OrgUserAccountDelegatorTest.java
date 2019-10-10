@@ -18,12 +18,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountSampleDto;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
-import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountServiceImpl;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
+import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountSampleServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,14 +48,14 @@ import static org.powermock.api.mockito.PowerMockito.when;
  * @date 7/31/2019
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OrgUserAccountDelegator.class,CrudHelper.class,WebValidationHelper.class,
+@PrepareForTest({OrgUserAccountSampleDelegator.class,CrudHelper.class,WebValidationHelper.class,
          MiscUtil.class,ParamUtil.class,RestApiUtil.class,
         QueryHelp.class})
 public class OrgUserAccountDelegatorTest {
     @InjectMocks
-    private OrgUserAccountDelegator orgUserAccountDelegator;
+    private OrgUserAccountSampleDelegator orgUserAccountDelegator;
     @Spy
-    private OrgUserAccountService orgUserAccountService = new OrgUserAccountServiceImpl();
+    private OrgUserAccountSampleService orgUserAccountService = new OrgUserAccountSampleServiceImpl();
     @Mock
     private BaseProcessClass bpc;
     @Mock
@@ -63,7 +63,7 @@ public class OrgUserAccountDelegatorTest {
 
     private MockHttpServletRequest request = new MockHttpServletRequest();
     private SearchResult searchResult = new SearchResult();
-    private OrgUserAccountDto orgUserAccountDto = new OrgUserAccountDto();
+    private OrgUserAccountSampleDto orgUserAccountDto = new OrgUserAccountSampleDto();
     @Before
     public void setup(){
         bpc.request=request;
@@ -151,7 +151,7 @@ public class OrgUserAccountDelegatorTest {
     @Test
     public void testdoEditValidateHasError(){
         request.addParameter("crud_action_type","edit");
-        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, orgUserAccountDto);
+        request.getSession().setAttribute(OrgUserAccountSampleDelegator.ORG_USER_DTO_ATTR, orgUserAccountDto);
         when(validationResult.isHasErrors()).thenReturn(true);
         orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
@@ -160,7 +160,7 @@ public class OrgUserAccountDelegatorTest {
     public void testdoEdit(){
         request.addParameter("crud_action_type","edit");
         orgUserAccountDto.setOldNricNo("test0");
-        request.getSession().setAttribute(OrgUserAccountDelegator.ORG_USER_DTO_ATTR, orgUserAccountDto);
+        request.getSession().setAttribute(OrgUserAccountSampleDelegator.ORG_USER_DTO_ATTR, orgUserAccountDto);
         request.addParameter("nircNo","test0");
         orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);

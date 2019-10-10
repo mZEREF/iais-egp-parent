@@ -22,11 +22,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OrgUserAccountDto.class})
+@PrepareForTest({OrgUserAccountSampleDto.class})
 public class OrgUserAccountDtoTest {
 
     @Spy
-    OrgUserAccountDto entity = new OrgUserAccountDto();
+    OrgUserAccountSampleDto entity = new OrgUserAccountSampleDto();
 
     @Test
     public void testGetterSetter() {

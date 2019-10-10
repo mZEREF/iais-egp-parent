@@ -18,9 +18,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
-import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountSampleDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -36,35 +36,35 @@ import java.util.Map;
  */
 @Service
 @Slf4j
-public class OrgUserAccountServiceImpl implements OrgUserAccountService {
+public class OrgUserAccountSampleServiceImpl implements OrgUserAccountSampleService {
     @Override
     public void deleteOrgUserAccountsById(String id) {
-        OrgUserAccountDto orgUserAccountDto = new OrgUserAccountDto();
+        OrgUserAccountSampleDto orgUserAccountDto = new OrgUserAccountSampleDto();
         orgUserAccountDto.setId(Integer.parseInt(id));
         orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         RestApiUtil.delete("sample-service:8889",orgUserAccountDto);
     }
 
     @Override
-    public void saveOrgUserAccounts(OrgUserAccountDto orgUserAccountDto) {
+    public void saveOrgUserAccounts(OrgUserAccountSampleDto orgUserAccountDto) {
         orgUserAccountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         RestApiUtil.save("sample-service:8889",orgUserAccountDto);
     }
 
     @Override
-    public OrgUserAccountDto getOrgUserAccountByRowguId(String rowguId) {
+    public OrgUserAccountSampleDto getOrgUserAccountByRowguId(String rowguId) {
         Map<String, Object> map = new HashMap<>();
         map.put("searchField", "rowguId");
         map.put("filterValue", rowguId);
-        return RestApiUtil.getByReqParam("sample-service:8889", map, OrgUserAccountDto.class);
+        return RestApiUtil.getByReqParam("sample-service:8889", map, OrgUserAccountSampleDto.class);
     }
 
     @Override
-    public OrgUserAccountDto getOrgUserAccountByNircNo(String nircNo) {
+    public OrgUserAccountSampleDto getOrgUserAccountByNircNo(String nircNo) {
         Map<String, Object> map = new HashMap<>();
         map.put("searchField", "nircNo");
         map.put("filterValue", nircNo);
-        return RestApiUtil.getByReqParam("sample-service:8889", map, OrgUserAccountDto.class);
+        return RestApiUtil.getByReqParam("sample-service:8889", map, OrgUserAccountSampleDto.class);
     }
 
     @Override

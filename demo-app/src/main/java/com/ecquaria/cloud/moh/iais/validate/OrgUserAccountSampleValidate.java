@@ -14,13 +14,12 @@
 package com.ecquaria.cloud.moh.iais.validate;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.action.OrgUserAccountDelegator;
+import com.ecquaria.cloud.moh.iais.action.OrgUserAccountSampleDelegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
-import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountServiceImpl;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountSampleDto;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -32,17 +31,17 @@ import java.util.Map;
  * @author suocheng
  * @date 8/1/2019
  */
-public class OrgUserAccountValidate implements CustomizeValidator {
+public class OrgUserAccountSampleValidate implements CustomizeValidator {
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = new HashMap<>();
-        OrgUserAccountDto dto = (OrgUserAccountDto) ParamUtil.getSessionAttr(request,
-                OrgUserAccountDelegator.ORG_USER_DTO_ATTR);
+        OrgUserAccountSampleDto dto = (OrgUserAccountSampleDto) ParamUtil.getSessionAttr(request,
+                OrgUserAccountSampleDelegator.ORG_USER_DTO_ATTR);
         if (dto == null || StringUtil.isEmpty(dto.getNircNo()))
             return errMap;
 
-        OrgUserAccountDto oua = getOrgUserAccountService().getOrgUserAccountByNircNo(dto.getNircNo());
+        OrgUserAccountSampleDto oua = getOrgUserAccountService().getOrgUserAccountByNircNo(dto.getNircNo());
         if (oua != null && !oua.getId().equals(dto.getId())) {
             errMap.put("nircNo", "Duplicate NRIC No.");
         }
@@ -50,7 +49,7 @@ public class OrgUserAccountValidate implements CustomizeValidator {
         return errMap;
     }
 
-    private  OrgUserAccountService getOrgUserAccountService(){
-        return SpringContextHelper.getContext().getBean(OrgUserAccountServiceImpl.class);
+    private OrgUserAccountSampleService getOrgUserAccountService(){
+        return SpringContextHelper.getContext().getBean(OrgUserAccountSampleService.class);
     }
 }

@@ -14,12 +14,12 @@
 package com.ecquaria.cloud.moh.iais.validate;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.action.OrgUserAccountDelegator;
+import com.ecquaria.cloud.moh.iais.action.OrgUserAccountSampleDelegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountDto;
-import com.ecquaria.cloud.moh.iais.service.OrgUserAccountService;
-import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountServiceImpl;
+import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountSampleDto;
+import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
+import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountSampleServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +47,12 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({OrgUserAccountValidate.class,SpringContextHelper.class,RestApiUtil.class})
+@PrepareForTest({OrgUserAccountSampleValidate.class,SpringContextHelper.class,RestApiUtil.class})
 public class OrgUserAccountValidateTest {
     @InjectMocks
-    private OrgUserAccountValidate orgUserAccountValidate ;
+    private OrgUserAccountSampleValidate orgUserAccountValidate ;
     private MockHttpServletRequest request = new MockHttpServletRequest();
-    private OrgUserAccountService orgUserAccountService = new OrgUserAccountServiceImpl();
+    private OrgUserAccountSampleService orgUserAccountService = new OrgUserAccountSampleServiceImpl();
 
     @Before
     public void setup(){
@@ -60,24 +60,25 @@ public class OrgUserAccountValidateTest {
         PowerMockito.mockStatic(RestApiUtil.class);
         ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
         when(SpringContextHelper.getContext()).thenReturn(context);
-        doReturn(orgUserAccountService).when(context).getBean(OrgUserAccountServiceImpl.class);
+        doReturn(orgUserAccountService).when(context).getBean(OrgUserAccountSampleServiceImpl.class);
     }
 
     @Test
     public void testValidate(){
-        OrgUserAccountDto orgUserAccountDto = new OrgUserAccountDto();
+        OrgUserAccountSampleDto orgUserAccountDto = new OrgUserAccountSampleDto();
         // test if (dto == null || StringUtil.isEmpty(dto.getNircNo())) return errMap;
         orgUserAccountDto.setNircNo(null);
-        ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
+        ParamUtil.setSessionAttr(request, OrgUserAccountSampleDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
         Map<String,String> errorMap1 = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap1);
 
         orgUserAccountDto.setNircNo("NircNo");
         orgUserAccountDto.setId(0);
-        ParamUtil.setSessionAttr(request, OrgUserAccountDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
-        OrgUserAccountDto orgUserAccountDto1 = new OrgUserAccountDto();
+        ParamUtil.setSessionAttr(request, OrgUserAccountSampleDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
+        OrgUserAccountSampleDto orgUserAccountDto1 = new OrgUserAccountSampleDto();
         orgUserAccountDto1.setId(1);
-        PowerMockito.when(RestApiUtil.getByReqParam(Mockito.anyString(),Mockito.anyMap(),Mockito.any(Class.class))).thenReturn(orgUserAccountDto1);
+        PowerMockito.when(RestApiUtil.getByReqParam(Mockito.anyString(),
+                Mockito.anyMap(),Mockito.any(Class.class))).thenReturn(orgUserAccountDto1);
         Map<String,String> errorMap = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap);
 
