@@ -60,7 +60,7 @@ public class OrgUserAccountValidateTest {
         PowerMockito.mockStatic(RestApiUtil.class);
         ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
         when(SpringContextHelper.getContext()).thenReturn(context);
-        doReturn(orgUserAccountService).when(context).getBean(OrgUserAccountSampleServiceImpl.class);
+        doReturn(orgUserAccountService).when(context).getBean(OrgUserAccountSampleService.class);
     }
 
     @Test
