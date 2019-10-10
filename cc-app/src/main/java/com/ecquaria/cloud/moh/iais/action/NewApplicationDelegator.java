@@ -7,10 +7,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDocDto;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.dto.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
+import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +37,13 @@ import java.util.List;
 @Slf4j
 public class NewApplicationDelegator {
     private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
-    private static final String APPGRPPREMISESDOCDTO = "appGrpPremisesDocDto";
+    private static final String APPGRPPRIMARYDOCDTO = "AppGrpPrimaryDocDto";
 
     @Autowired
     private AppGrpPremisesService appGrpPremisesService;
 
+    @Autowired
+    private AppGrpPrimaryDocService appGrpPrimaryDocService;
     /**
      * StartStep: Start
      *
@@ -50,7 +53,7 @@ public class NewApplicationDelegator {
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,null);
-        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDOCDTO,null);
+        ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,null);
         AuditTrailHelper.auditFunction("iais-cc", "premises create");
         //for loading the draft by appId
         String appId = "C120481C-09C3-45A8-A8ED-F71B38BD1768";
@@ -180,10 +183,13 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doDocument start ...."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crud_action_value = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
-
-        AppGrpPremisesDocDto appGrpPremisesDocDto = new AppGrpPremisesDocDto();
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
+        AppGrpPrimaryDocDto appGrpPrimaryDocDto =
+        ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO)==null?
+                new AppGrpPrimaryDocDto():(AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
         MultipartFile file = null;
         for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {
             String name = en.next();
@@ -191,10 +197,10 @@ public class NewApplicationDelegator {
         }
 
         if(file != null && !StringUtil.isEmpty(file.getOriginalFilename())){
-            appGrpPremisesDocDto.setFileName(file.getOriginalFilename());
-            appGrpPremisesDocDto.setFile(file);
+            appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
+            appGrpPrimaryDocDto.setFile(file);
         }
-        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDOCDTO,appGrpPremisesDocDto);
+        ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
     /**
@@ -237,11 +243,27 @@ public class NewApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void doSaveDraft(BaseProcessClass bpc){
+    public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
+        //save the premisse
         AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-        appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
-        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+        if(appGrpPremisesDto!=null){
+            log.debug(StringUtil.changeForLog("save the premisse"));
+            appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
+            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+        }
+        //save the document
+        AppGrpPrimaryDocDto appGrpPrimaryDocDto = (AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
+        if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
+            log.debug(StringUtil.changeForLog("save the document"));
+            appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
+            //String fileRepoGuid = appGrpPremisesDocService.SaveFileToRepo(appGrpPremisesDocDto);
+            String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
+            appGrpPrimaryDocDto.setFileRepoGuid(fileRepoGuid);
+            appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
+            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+        }
+
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
     /**
@@ -254,6 +276,9 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do controlSwitch start ...."));
         String switch2 = "loading";
         String crud_action_value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(StringUtil.isEmpty(crud_action_value)){
+            crud_action_value = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        }
         if("saveDraft".equals(crud_action_value) || "ack".equals(crud_action_value)){
             switch2 = crud_action_value;
         }
