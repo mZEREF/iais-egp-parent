@@ -182,6 +182,7 @@ public class NewApplicationDelegator {
         String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
+
         AppGrpPremisesDocDto appGrpPremisesDocDto = new AppGrpPremisesDocDto();
         MultipartFile file = null;
         for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {

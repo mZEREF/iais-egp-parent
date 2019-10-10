@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -39,7 +39,7 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
         appGrpPremisesDto.setStreetName("String Name");
         appGrpPremisesDto.setFloorNo("6");
         appGrpPremisesDto.setUnitNo("3");
-        appGrpPremisesDto.setPremisesType(AppConsts.PREMISES_TYPE_ON_SITE);
+        appGrpPremisesDto.setPremisesType(ApplicationConsts.PREMISES_TYPE_ON_SITE);
         return result;
     }
 
