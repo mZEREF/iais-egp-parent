@@ -14,10 +14,8 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
 
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.annotations.CustomValidate;
 import com.ecquaria.cloud.moh.iais.validate.AuditTrailDtoValidate;
-import com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +27,6 @@ import java.util.Date;
 @CustomValidate(impClass = AuditTrailDtoValidate.class, properties = {"query"})
 public
 class AuditTrailQueryDto implements Serializable {
-    private static final ThreadLocal<AuditTrailDto> threadContext = new ThreadLocal<>();
     private static final long serialVersionUID = -6184748147127672799L;
 
     private Integer auditId;
@@ -53,41 +50,5 @@ class AuditTrailQueryDto implements Serializable {
     private String  validationFail;
     private String  viewParams;
     private String  failReason;
-/*
-    @ValidateWithMethod(methodName= "validTime", parameterType = Date.class, profiles = "query", message = "Search time to be 3 months or less.")
-    private Date startTime;
 
-    @ValidateWithMethod(methodName= "valiEndTime", parameterType = Date.class, profiles = "query", message = "Search time to be 3 months or less.")
-    private Date endTime;
-
-    public boolean valiStartTime(Date startTime){
-        System.out.println("startTime" + startTime);
-        System.out.println("endTime" + endTime);
-        return false;
-    }
-
-    public boolean valiEndTime(Date startTime){
-        System.out.println("startTime" + startTime);
-        System.out.println("endTime" + endTime);
-        return false;
-    }*/
-
-    public
-    static com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto getThreadDto() {
-    com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto dto = threadContext.get();
-        if (dto == null)
-        return null;
-
-        return MiscUtil.transferEntityDto(dto, com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto.class);
-    }
-
-    public
-    static void setThreadDto(com.ecquaria.cloud.moh.iais.web.logging.dto.AuditTrailDto dto) {
-        threadContext.set(dto);
-    }
-
-    public
-    static void removeThreadDto() {
-        threadContext.remove();
-    }
 }
