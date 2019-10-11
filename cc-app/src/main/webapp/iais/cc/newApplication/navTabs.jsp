@@ -7,6 +7,9 @@
         action = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE);
     }
 %>
+<input type="hidden" name="crud_action_type" value="">
+<input type="hidden" name="crud_action_value" value="">
+<input type="hidden" name="crud_action_additional" value="">
 <input type="hidden" id = "controlLi" value="<%=action%>">
 <ul id = "nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li id ="premisesli" class="" role="presentation"><a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Premises</a></li>

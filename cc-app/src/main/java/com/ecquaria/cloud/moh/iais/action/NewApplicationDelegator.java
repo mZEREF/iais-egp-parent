@@ -212,15 +212,15 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
     /**
-     * StartStep: doFormsSubmit
+     * StartStep: doForms
      *
      * @param bpc
      * @throws
      */
-    public void doFormsSubmit(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do doFormsSubmit start ...."));
+    public void doForms(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doForms start ...."));
 
-        log.debug(StringUtil.changeForLog("the do doFormsSubmit end ...."));
+        log.debug(StringUtil.changeForLog("the do doForms end ...."));
     }
     /**
      * StartStep: doPreview
