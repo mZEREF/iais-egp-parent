@@ -206,6 +206,7 @@ public class NewApplicationDelegator {
         if(file != null && !StringUtil.isEmpty(file.getOriginalFilename())){
             appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
             appGrpPrimaryDocDto.setFile(file);
+            appGrpPrimaryDocDto.setFileSize(Math.round(file.getSize()/1024));
         }
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));

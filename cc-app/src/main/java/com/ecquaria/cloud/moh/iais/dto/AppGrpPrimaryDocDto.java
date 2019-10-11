@@ -28,6 +28,8 @@ public class AppGrpPrimaryDocDto implements Serializable {
 
     private String appGrpId;
 
+    private Integer fileSize;
+
     private MultipartFile file;
 
     private AuditTrailDto auditTrailDto;

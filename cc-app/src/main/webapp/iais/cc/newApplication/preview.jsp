@@ -37,11 +37,11 @@
                                                     </div>
                                                     <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                                                         <div class="panel-body">
-                                                            <p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                                                            <p class="text-right"><a href="#" id="premisesEdit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
                                                             <div class="panel-main-content">
                                                                 <div class="preview-info">
                                                                     <p><b>Premises</b></p>
-                                                                    <p>On-site: 16 Raffles Quay #01-03 Hong Leong Building, 048581</p>
+                                                                    <p>${appGrpPremisesDto.premisesType}: ${appGrpPremisesDto.address}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -53,8 +53,29 @@
                                                     </div>
                                                     <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                                                         <div class="panel-body">
-                                                            <p class="text-right mb-0"><a href="application-document.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
-                                                            <iframe class="elemClass-1561088919456" src="" id="elemId-1561088919456" scrollbar="auto" style="height: 180px;" width="100%" height="100%" frameborder="0"></iframe>
+                                                            <p class="text-right mb-0"><a href="#" id="docEdit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                                                            <div class="elemClass-1561088919456">
+                                                                <div id="control--runtime--34" class="page section control  container-s-1" style="margin: 10px 0px">
+                                                                    <div class="control-set-font control-font-header section-header">
+                                                                        <h2 class="summary-header">Uploaded Documents
+                                                                        </h2>
+                                                                    </div>
+                                                                    <div class="pop-up">
+                                                                        <div class="pop-up-body">
+                                                                            <div class="content-body fileUploadContainer">
+                                                                                <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
+                                                                                <span class="fileType" style="display:none">Docment1</span><span class="fileFilter"
+                                                                                                                                                 style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
+
+                                                                                <div class="control col-sm-5">
+                                                                                    <div class="fileList"><span class="filename server-site" id="130"><a title="Download"
+                                                                                                                                                         href="#">${AppGrpPrimaryDocDto.docName}</a> (${AppGrpPrimaryDocDto.fileSize} KB)</span></div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -84,10 +105,10 @@
                                 <div class="application-tab-footer">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6">
-                                            <p><a class="back" href="application-service-related-clinical-lab-lab-discipline.html"><i class="fa fa-angle-left"></i> Back</a></p>
+                                            <p><a id = "docBack" class="back" ><i class="fa fa-angle-left"></i> Back</a></p>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group"><a class="btn btn-secondary" href="#">Save as Draft</a><a class="next btn btn-primary disabled" href="#">SUBMIT & PAY </a></div>
+                                            <div class="button-group"><a class="btn btn-secondary" id = "previewSaveDraft">Save as Draft</a><a class="next btn btn-primary disabled" id = "previewNext">SUBMIT & PAY </a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -99,3 +120,25 @@
         </div>
     </div>
 </form>
+<script type="text/javascript">
+    $(document).ready(function() {
+        //Binding method
+        $('#premisesEdit').click(function(){
+            submit('premises',null,null);
+        });
+        $('#docEdit').click(function(){
+            submit('documents',null,null);
+        });
+        $('#docBack').click(function(){
+            submit('serviceForms',null,null);
+        });
+        $('#previewSaveDraft').click(function(){
+            submit('preview','saveDraft',null);
+        });
+        $('#previewNext').click(function(){
+            submit('payment',null,null);
+        });
+    });
+
+
+</script>
