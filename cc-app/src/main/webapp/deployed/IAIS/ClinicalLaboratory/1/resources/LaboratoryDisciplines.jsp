@@ -1,0 +1,1 @@
+<%@include file="/iais/cc/newApplication/clinicalLaboratory/laboratoryDisciplines.jsp"%>

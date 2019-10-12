@@ -57,11 +57,18 @@ public class NewApplicationDelegator {
         AuditTrailHelper.auditFunction("iais-cc", "premises create");
         //for loading the draft by appId
         String appId = "C120481C-09C3-45A8-A8ED-F71B38BD1768";
-        List appGrpPremisesDtoList = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
-        if(appGrpPremisesDtoList != null && appGrpPremisesDtoList.size()>0){
-            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = RestApiUtil.transferListContent(appGrpPremisesDtoList,AppGrpPremisesDto.class);
-            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList1.get(0);
+        List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
+        if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
             ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+            String appGrpId = appGrpPremisesDto.getAppGrpId();
+            List appGrpPrimaryDocDtoMap=  appGrpPrimaryDocService.getAppGrpPrimaryDocDtosByAppGrpId(appGrpId);
+            if(appGrpPrimaryDocDtoMap!=null && appGrpPrimaryDocDtoMap.size()>0){
+              List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtolist = RestApiUtil.transferListContent(appGrpPrimaryDocDtoMap,AppGrpPrimaryDocDto.class);
+               AppGrpPrimaryDocDto appGrpPrimaryDocDto = appGrpPrimaryDocDtolist.get(0);
+               ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+            }
         }
         log.debug(StringUtil.changeForLog("the do Start end ...."));
     }
@@ -199,20 +206,21 @@ public class NewApplicationDelegator {
         if(file != null && !StringUtil.isEmpty(file.getOriginalFilename())){
             appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
             appGrpPrimaryDocDto.setFile(file);
+            appGrpPrimaryDocDto.setFileSize(Math.round(file.getSize()/1024));
         }
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
     /**
-     * StartStep: doFormsSubmit
+     * StartStep: doForms
      *
      * @param bpc
      * @throws
      */
-    public void doFormsSubmit(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do doFormsSubmit start ...."));
+    public void doForms(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doForms start ...."));
 
-        log.debug(StringUtil.changeForLog("the do doFormsSubmit end ...."));
+        log.debug(StringUtil.changeForLog("the do doForms end ...."));
     }
     /**
      * StartStep: doPreview
@@ -257,9 +265,15 @@ public class NewApplicationDelegator {
         if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
             log.debug(StringUtil.changeForLog("save the document"));
             appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
-            String fileRepoGuid = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
+            List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
+            String fileRepoGuid =fileRepoGuidList.get(0);
+            if(StringUtil.isEmpty(fileRepoGuid)){
+              log.error("the fileRepoGuid is null ...");
+            }
+            log.debug(StringUtil.changeForLog("the fileRepoGuid is -->:"+fileRepoGuid));
             //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
             appGrpPrimaryDocDto.setFileRepoGuid(fileRepoGuid);
+            appGrpPrimaryDocDto.setFile(null);
             appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
             ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
         }

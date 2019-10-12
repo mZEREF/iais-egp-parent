@@ -10,9 +10,6 @@
 <%@ include file="./dashboard.jsp" %>
 <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -43,7 +40,7 @@
                                     <div class="document-upload-list">
                                         <h3>Urban Redevelopmenet Authority (URA) grant of written permission</h3>
                                         <div class="file-upload-gp">
-                                            <p id="showFile">${appGrpPremisesDocDto.docName}</p>
+                                            <p id="showFile">${AppGrpPrimaryDocDto.docName}</p>
                                             <input id="selectedFile" name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
                                         </div>
                                     </div>

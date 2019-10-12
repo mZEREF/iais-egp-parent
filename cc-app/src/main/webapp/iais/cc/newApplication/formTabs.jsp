@@ -8,7 +8,7 @@
     }
 %>
 <input type="hidden" id = "controlFormLi" value="<%=actionForm%>">
-<input type="hidden" name="crud_action_type_form" value="">
+<input type="hidden" name="crud_action_type_tab" value="">
 <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
     <li id = "clinicalli"  class="complete" role="presentation"><a id = "clinical" aria-controls="lorem1" role="tab" data-toggle="tab">Clinical Laboratory</a></li>
     <li id = "bloodli" class="complete" role="presentation"><a id = "blood" aria-controls="lorem2" role="tab" data-toggle="tab">Blood Banking</a></li>
@@ -38,7 +38,7 @@
 
     function submitFormTabs(action){
         $("[name='crud_action_type']").val('serviceForms');
-        $("[name='crud_action_type_form']").val(action);
+        $("[name='crud_action_type_tab']").val(action);
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     }
