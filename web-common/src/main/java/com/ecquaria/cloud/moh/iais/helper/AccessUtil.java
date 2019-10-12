@@ -49,7 +49,7 @@ public class AccessUtil {
    * @author: yichen 
    */
     public static boolean isAdministrator(){
-        return false;
+        return true;
     }
 
     private AccessUtil() {

@@ -55,7 +55,7 @@ public class ExcelWriterTest {
 
     @Test
     public void testExportXlsToSuccess(){
-        ExcelWriter excelWriter = new ExcelWriter();
+        ExcelWriter excelWriter = new ExcelWriter("test", null);
         excelWriter.exportXls(list);
         Assert.assertTrue(true);
     }
@@ -63,14 +63,14 @@ public class ExcelWriterTest {
 
     @Test(expected = IaisRuntimeException.class)
     public void testExportXlsToError(){
-        ExcelWriter excelWriter = new ExcelWriter();
+        ExcelWriter excelWriter = new ExcelWriter("test", null);
         excelWriter.exportXls(null);
         Assert.assertTrue(true);
     }
 
     @Test
     public void testGetterSetter(){
-        ExcelWriter excelWriter = new ExcelWriter();
+        ExcelWriter excelWriter = new ExcelWriter("test", null);
         excelWriter.setFileName("aa");
         excelWriter.setExportPath("/dsa");
         excelWriter.setSheetName("test");

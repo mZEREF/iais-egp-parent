@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.constant;
  */
 
 public class AuditTrailConstant {
+    private AuditTrailConstant (){}
 
     public static final String AUDIT_TRAIL_DTO_ATTR = "auditTrailDto";
 
