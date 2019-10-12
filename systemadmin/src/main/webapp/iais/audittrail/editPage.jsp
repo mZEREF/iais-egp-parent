@@ -35,7 +35,7 @@
 <!-- START: CSS -->
 
 <!-- END: CSS -->
-<form id = "spform" method = "post" action=<%=process.runtime.continueURL()%>>
+<form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -102,7 +102,7 @@
 
     function doEdit(rowguid){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("spform", "doEdit", rowguid);
+            SOP.Crud.cfxSubmit("mainForm", "doEdit", rowguid);
         }
     }
 

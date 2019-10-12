@@ -102,7 +102,7 @@
 
     function doEdit(id){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("spform", "doEdit", id);
+            SOP.Crud.cfxSubmit("mainForm", "doEdit", id);
         }
     }
 

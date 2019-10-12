@@ -36,7 +36,7 @@
 
 <!-- END: CSS -->
 
-<form id = "spForm" method = "post" action=<%=process.runtime.continueURL()%>>
+<form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -73,7 +73,7 @@
         </iais:row>
 
         <iais:action>
-            <button type="button" class="search btn" onclick="javascript:doQuery();">Search</button>
+            <button type="button" class="search btn" onclick="javascript:searchRecords();">Search</button>
         </iais:action>
 
     </iais:section>
@@ -159,7 +159,7 @@
                         </tr>
                     </c:forEach>
                     <iais:action>
-                        <button type="button" class="export btn" onclick="javascript:doExport();"  >Export</button>
+                        <button type="button" class="export btn" onclick="javascript:exportRecords();"  >Export</button>
                     </iais:action>
                 </c:otherwise>
 
@@ -174,11 +174,11 @@
 
 <script type="text/javascript">
     function doExport() {
-        SOP.Crud.cfxSubmit("spForm", "doExport");
+        SOP.Crud.cfxSubmit("mainForm", "exportRecords");
     }
 
     function doQuery(){
-        SOP.Crud.cfxSubmit("spForm", "doQuery");
+        SOP.Crud.cfxSubmit("mainForm", "searchRecords");
     }
 
     function sortRecords(sortFieldName,sortType){
