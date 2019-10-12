@@ -1,3 +1,3 @@
-<%
-    response.sendRedirect("/cc/eservice/IAIS/ClinicalLaboratory?crud_action_type_tab=clinical&crud_action_type=serviceForms");
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %><%
+    response.sendRedirect((String)ParamUtil.getRequestAttr(request,"SericeformUrl"));
 %>
