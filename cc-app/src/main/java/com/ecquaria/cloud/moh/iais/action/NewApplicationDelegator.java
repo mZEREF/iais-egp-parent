@@ -206,7 +206,7 @@ public class NewApplicationDelegator {
         if(file != null && !StringUtil.isEmpty(file.getOriginalFilename())){
             appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
             appGrpPrimaryDocDto.setFile(file);
-            appGrpPrimaryDocDto.setFileSize(Math.round(file.getSize()/1024));
+            appGrpPrimaryDocDto.setDocSize(Math.round(file.getSize()/1024));
         }
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
@@ -272,7 +272,7 @@ public class NewApplicationDelegator {
             }
             log.debug(StringUtil.changeForLog("the fileRepoGuid is -->:"+fileRepoGuid));
             //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
-            appGrpPrimaryDocDto.setFileRepoGuid(fileRepoGuid);
+            appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
             appGrpPrimaryDocDto.setFile(null);
             appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
             ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);

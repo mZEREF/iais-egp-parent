@@ -2,9 +2,9 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
-    String actionForm = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
+    String actionForm = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
     if(StringUtil.isEmpty(actionForm)){
-        actionForm = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
+        actionForm = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
     }
 %>
 <input type="hidden" id = "controlFormLi" value="<%=actionForm%>">
@@ -39,6 +39,7 @@
     function submitFormTabs(action){
         $("[name='crud_action_type']").val('serviceForms');
         $("[name='crud_action_type_tab']").val(action);
+        $("[name='crud_action_type_form']").val('jump');
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     }

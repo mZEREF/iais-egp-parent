@@ -23,7 +23,7 @@
                                         <%@ include file="../formTabs.jsp" %>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="clinicalLab" role="tabpanel">
-                                                <h2 class="service-title">SERVICE 1 OF 2: <b>CLINICAL LABORATORY</b></h2>
+                                                <h2 class="service-title">SERVICE 1 OF 2: <b>Blood Banking</b></h2>
                                                 <div class="visible-xs visible-sm servive-subtitle">
                                                     <p>Step 2 of 5</p>
                                                     <h3>Clinical Governance Officers</h3>
@@ -65,13 +65,13 @@
     $(document).ready(function() {
         //Binding method
         $('#governanceOfficersBack').click(function(){
-            submitForms('laboratoryDisciplines',null,null,'clinical');
+            submitForms('laboratoryDisciplines',null,null,'blood');
         });
         $('#governanceOfficersSaveDraft').click(function(){
-            submitForms('governanceOfficers','saveDraft',null,'clinical');
+            submitForms('governanceOfficers','saveDraft',null,'blood');
         });
         $('#governanceOfficersNext').click(function(){
-            submitForms('isciplineAllocation',null,null,'clinical');
+            submitForms('isciplineAllocation',null,null,'blood');
         });
 
     });

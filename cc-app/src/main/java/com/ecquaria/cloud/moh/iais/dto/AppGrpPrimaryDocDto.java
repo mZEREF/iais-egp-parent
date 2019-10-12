@@ -20,15 +20,15 @@ public class AppGrpPrimaryDocDto implements Serializable {
 
     private String id;
 
-    private String docTitle;
+    private String svcComDocId;
 
     private String docName;
 
-    private String fileRepoGuid;
+    private String fileRepoId;
 
     private String appGrpId;
 
-    private Integer fileSize;
+    private Integer docSize;
 
     private MultipartFile file;
 

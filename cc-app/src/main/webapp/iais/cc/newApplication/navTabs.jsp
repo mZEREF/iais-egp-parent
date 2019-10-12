@@ -10,6 +10,7 @@
 <input type="hidden" name="crud_action_type" value="">
 <input type="hidden" name="crud_action_value" value="">
 <input type="hidden" name="crud_action_additional" value="">
+<input type="hidden" name="crud_action_type_form" value="">
 <input type="hidden" id = "controlLi" value="<%=action%>">
 <ul id = "nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li id ="premisesli" class="" role="presentation"><a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Premises</a></li>
@@ -55,6 +56,17 @@
 
     function submit(action,value,additional){
         $("[name='crud_action_type']").val(action);
+        $("[name='crud_action_type_form']").val('jump');
+        $("[name='crud_action_value']").val(value);
+        $("[name='crud_action_additional']").val(additional);
+        var mainForm = document.getElementById('mainForm');
+        mainForm.submit();
+    }
+
+    function submitForms(action,value,additional,tab){
+        $("[name='crud_action_type']").val('serviceForms');
+        $("[name='crud_action_type_tab']").val(tab);
+        $("[name='crud_action_type_form']").val(action);
         $("[name='crud_action_value']").val(value);
         $("[name='crud_action_additional']").val(additional);
         var mainForm = document.getElementById('mainForm');

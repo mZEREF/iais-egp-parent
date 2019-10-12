@@ -1,0 +1,1 @@
+<%@include file="/iais/cc/newApplication/bloodBanking/laboratoryDisciplines.jsp"%>

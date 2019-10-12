@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -16,6 +17,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("clinicalLaboratoryDelegator")
 @Slf4j
 public class ClinicalLaboratoryDelegator {
+
     /**
      * StartStep: doStart
      *
@@ -37,12 +39,10 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareJumpPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareJumpPage start ...."));
-        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
+        String action = (String)ParamUtil.getRequest(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
+        log.debug(StringUtil.changeForLog("The prepareJumpPage action is -->;"+action));
         if(StringUtil.isEmpty(action)){
-            action = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
-            if(StringUtil.isEmpty(action)){
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
-            }
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
         }
         log.debug(StringUtil.changeForLog("the do prepareJumpPage end ...."));
     }
@@ -114,7 +114,14 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareJump(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareJump start ...."));
-
+        String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crud_action_type_tab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
+        String jumpUrl = "/cc/eservice/IAIS/MOHCCServiceForms?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
+        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
+            jumpUrl = "/cc/eservice/IAIS/MOHCCNewApplication/1/Prepare?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
+        }
+        log.info(StringUtil.changeForLog("The JumpUrl is -->:"+jumpUrl));
+        ParamUtil.setRequestAttr(bpc.request,"jumpToServiceFormUrl",jumpUrl);
         log.debug(StringUtil.changeForLog("the do prepareJump end ...."));
     }
     /**
@@ -186,7 +193,12 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareResult(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareResult start ...."));
-
+//        String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+//        //String crud_action_type_tab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
+//        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
+//            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"jump");
+//        }
+        ParamUtil.setRequestAttr(bpc.request,"Switch2","jumPage");
         log.debug(StringUtil.changeForLog("the do prepareResult end ...."));
     }
 

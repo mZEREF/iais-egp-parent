@@ -66,7 +66,7 @@
 
                                                                                 <div class="control col-sm-5">
                                                                                     <div class="fileList"><span class="filename server-site" id="130"><a title="Download"
-                                                                                                                                                         href="#">${AppGrpPrimaryDocDto.docName}</a> (${AppGrpPrimaryDocDto.fileSize} KB)</span></div>
+                                                                                                                                                         href="#">${AppGrpPrimaryDocDto.docName}</a> (${AppGrpPrimaryDocDto.docSize} KB)</span></div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
