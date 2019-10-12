@@ -223,7 +223,7 @@ public class AuditTrailDelegator {
         String jsonStr = JsonUtil.parseToJson(searchResult.getRows());
         auditTrailQueryDtoList = JsonUtil.parseToList(jsonStr, AuditTrailQueryDto.class);
 
-        ExcelWriter excelWriter = new ExcelWriter();
+        ExcelWriter excelWriter = new ExcelWriter("AuditDto", null);
         excelWriter.exportXls(auditTrailQueryDtoList);
 
     }
