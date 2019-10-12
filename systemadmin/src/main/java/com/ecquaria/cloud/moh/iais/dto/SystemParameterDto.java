@@ -54,21 +54,20 @@ public class SystemParameterDto implements Serializable {
      * @param value
      * @return
      */
-    private boolean validValueSize(String value){
-        String valueType = this.valueType;
+    public boolean validValueSize(String value){
+        String action = this.valueType;
         int val = Integer.valueOf(value);
-        switch (valueType){
-            case "Page":
-                return verifyPageSize(val);
-            case "Size":
-                return verifyFileUploadSize(val);
-        }
 
+        if ("Page".equals(action)){
+            return verifyPageSize(val);
+        }else if("Size".equals(action)){
+            return verifyFileUploadSize(val);
+        }
         return false;
     }
 
-    private boolean verifyPageSize(int value){
-        return value < 10 || value > 50 ? false : true;
+    public boolean verifyPageSize(int value){
+        return value < 10 || (value > 50) ? false : true;
     }
 
     public boolean verifyFileUploadSize(int value){

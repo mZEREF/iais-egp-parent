@@ -23,7 +23,6 @@ import java.util.List;
 
 @Slf4j
 public class ExcelWriter {
-    public static final String EXCEL_XLS = "xls";
 
     @Getter @Setter
     public  String exportPath;
@@ -32,12 +31,24 @@ public class ExcelWriter {
     @Getter @Setter
     private String sheetName;
 
+    public ExcelWriter(String sheetName, String exportPath){
+        this.sheetName = sheetName;
+        this.exportPath = exportPath;
+    }
+
+    public String generationFileName(String clzName){
+        long currentTimeMillis = System.currentTimeMillis();
+        String jointText = " " + currentTimeMillis + ".xls";
+        return clzName + jointText;
+    }
+
     public <T> void exportXls(List<T> files)  {
-        if(files == null || files.size() == 0){
+        if(files == null || files.isEmpty()){
             throw new IaisRuntimeException("the excel mode for export can not be empty");
         }
 
-        String sheetName = files.get(0).getClass().getSimpleName();
+        String clzName = files.get(0).getClass().getSimpleName();
+        this.fileName = generationFileName(clzName);
         OutputStream fileOut = null;
         HSSFWorkbook wb = new HSSFWorkbook();
         Sheet sheet = wb.createSheet(sheetName);
@@ -45,7 +56,7 @@ public class ExcelWriter {
         boolean canWriteCell = false;
         Row sheetRow = sheet.createRow(row);
         try {
-            fileOut = new FileOutputStream(this.fileName != null ? this.fileName : "export record.xls");
+            fileOut = new FileOutputStream(this.fileName);
             for(T t : files){
                 Class clz = t.getClass();
                 Field[] fields = clz.getDeclaredFields();
@@ -101,8 +112,9 @@ public class ExcelWriter {
     private boolean isNeedWrite(String fieldName){
         if("threadContext".equals(fieldName) || "serialVersionUID".equals(fieldName)){
             return false;
+        }else{
+            return true;
         }
-        return true;
     }
 
     private String setValue(Object obj) {

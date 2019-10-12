@@ -111,7 +111,7 @@
                 <iais:sortableHeader needSort="true"   field="directoryID" value="Active directory ID"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="corpPassId" value="Corp-Pass ID"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="corpPassNric" value="Corp-Pass NRIC"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="uen" value="UEN"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="uenId" value="UEN"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="singPassId" value="SingPass ID"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="operationDate" value="Operation Date"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="operationTime" value="Operation Time"></iais:sortableHeader>
@@ -146,7 +146,7 @@
                             <td class="row_no">${(status.index + 1) + (auditTrailSearch.pageNo - 1) * auditTrailSearch.pageSize}</td>
                             <td>${resultRow.operationType}</td>
                             <td>${resultRow.operation}</td>
-                            <td>${resultRow.uen}</td>
+                            <td>${resultRow.uenId}</td>
                             <td>${resultRow.actionTime}</td>
                             <td>${resultRow.nricNumber}</td>
                             <td>${resultRow.mohUserId}</td>
