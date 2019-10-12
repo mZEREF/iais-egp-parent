@@ -100,9 +100,8 @@ public class ExcelWriter {
                 if (fileOut != null){
                     fileOut.close();
                 }
-                if(wb != null){
-                    wb.close();
-                }
+
+                wb.close();
             } catch (IOException e) {
                 log.info("exportXls close resource exception " + e.getMessage());
             }
