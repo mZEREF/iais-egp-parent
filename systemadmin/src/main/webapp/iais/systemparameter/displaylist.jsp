@@ -36,7 +36,7 @@
 
 <!-- END: CSS -->
 
-<form id = "spForm" method = "post" action=<%=process.runtime.continueURL()%>>
+<form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -145,7 +145,7 @@
 
 <script type="text/javascript">
     function doQuery(){
-        SOP.Crud.cfxSubmit("spForm", "doQuery");
+        SOP.Crud.cfxSubmit("mainForm", "doQuery");
     }
 
     function sortRecords(sortFieldName,sortType){
@@ -158,13 +158,13 @@
 
     function prepareEdit(id){
         if(confirm('are sure you want to edit ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "prepareEdit", id);
+            SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
         }
     }
 
     function disable(id){
         if(confirm('are sure you want to disable ? ')){
-            SOP.Crud.cfxSubmit("messageForm", "disableStatus", id);
+            SOP.Crud.cfxSubmit("mainForm", "disableStatus", id);
         }
     }
 
