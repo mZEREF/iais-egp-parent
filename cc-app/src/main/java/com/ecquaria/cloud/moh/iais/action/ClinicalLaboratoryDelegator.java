@@ -39,7 +39,7 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareJumpPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareJumpPage start ...."));
-        String action = (String)ParamUtil.getRequest(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
+        String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
         log.debug(StringUtil.changeForLog("The prepareJumpPage action is -->;"+action));
         if(StringUtil.isEmpty(action)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
