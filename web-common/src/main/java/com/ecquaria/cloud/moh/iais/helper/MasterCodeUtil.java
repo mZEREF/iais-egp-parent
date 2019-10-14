@@ -42,7 +42,8 @@ public final class MasterCodeUtil {
     private static final String RETRIEVE_MASTER_CODES              = "retrieveMasterCodes";
     private static final String MASTERCODE_CACHES                  = "system-admin-service:8886/iais-mastercode/caches";
     //Code Categorys
-    public static final String CATE_ID_NATIONALITY                 = "1";
+    public static final String CATE_ID_NATIONALITY                 = "8215D856-84AD-48F2-8590-1654DBAB1B40";
+    public static final String CATE_ID_RISK_LEVEL                  = "33C073B6-5F62-4BE7-951A-06DBB881C127";
 
     /**
      * @description: refresh the master codes into cache
