@@ -95,6 +95,8 @@ public class AppGrpPremisesDto implements Serializable {
 
     private AuditTrailDto auditTrailDto;
 
+    private String address;
+
     public String getAddress(){
         String result = "";
         if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){

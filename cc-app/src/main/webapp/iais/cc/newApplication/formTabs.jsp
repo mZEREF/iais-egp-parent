@@ -1,17 +1,25 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.dto.HcsaServiceDto" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%
     String actionForm = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
     if(StringUtil.isEmpty(actionForm)){
         actionForm = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
     }
+
 %>
 <input type="hidden" id = "controlFormLi" value="<%=actionForm%>">
 <input type="hidden" name="crud_action_type_tab" value="">
-<ul class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
-    <li id = "clinicalli"  class="complete" role="presentation"><a id = "clinical" aria-controls="lorem1" role="tab" data-toggle="tab">Clinical Laboratory</a></li>
-    <li id = "bloodli" class="complete" role="presentation"><a id = "blood" aria-controls="lorem2" role="tab" data-toggle="tab">Blood Banking</a></li>
+<ul id = "tabUl" class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
+<c:forEach items="${hcsaServiceDtoList}" var="list">
+    <li id = "${list.svcCode}li"  class="complete" role="presentation"><a id = "${list.svcCode}" aria-controls="lorem1" role="tab" data-toggle="tab">${list.svcName}</a></li>
+</c:forEach>
 </ul>
 <div class="mobile-side-nav-tab visible-xs visible-sm">
     <select id="serviceSelect">
@@ -27,12 +35,16 @@
         var controlFormLi = $('#controlFormLi').val();
         $('#'+controlFormLi+'li').addClass('active');
 
-        $('#clinical').click(function(){
-            submitFormTabs('clinical');
+        $('#tabUl > li >a').click(function () {
+            submitFormTabs(this.id,null,null);
         });
-        $('#blood').click(function(){
-            submitFormTabs('blood');
-        });
+
+        // $('#clinical').click(function(){
+        //     submitFormTabs('clinical');
+        // });
+        // $('#blood').click(function(){
+        //     submitFormTabs('blood');
+        // });
 
     });
 

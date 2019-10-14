@@ -14,4 +14,9 @@ public class AppServicesConsts {
     public static final String NAVTABS_PREVIEW              =  "preview";
     public static final String NAVTABS_PAYMENT              =  "payment";
 
+
+    //use in the Session key
+    public static final String SERVICEFORMURLMAPS  = "ServiceFormUrlMaps";
+    public static final String HCSASERVICEDTOLIST = "hcsaServiceDtoList";
+
 }

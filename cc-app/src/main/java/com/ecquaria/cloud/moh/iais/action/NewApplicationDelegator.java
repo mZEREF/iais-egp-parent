@@ -6,12 +6,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.dto.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.tags.SelectOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +26,8 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * NewApplicationDelegator
@@ -39,11 +41,16 @@ public class NewApplicationDelegator {
     private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
     private static final String APPGRPPRIMARYDOCDTO = "AppGrpPrimaryDocDto";
 
+
+
     @Autowired
     private AppGrpPremisesService appGrpPremisesService;
 
     @Autowired
     private AppGrpPrimaryDocService appGrpPrimaryDocService;
+
+    @Autowired
+    private ServiceConfigService serviceConfigService;
     /**
      * StartStep: Start
      *
@@ -56,22 +63,13 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,null);
         AuditTrailHelper.auditFunction("iais-cc", "premises create");
         //for loading the draft by appId
-        String appId = "C120481C-09C3-45A8-A8ED-F71B38BD1768";
-        List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
-        if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
-            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
-            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-            String appGrpId = appGrpPremisesDto.getAppGrpId();
-            List appGrpPrimaryDocDtoMap=  appGrpPrimaryDocService.getAppGrpPrimaryDocDtosByAppGrpId(appGrpId);
-            if(appGrpPrimaryDocDtoMap!=null && appGrpPrimaryDocDtoMap.size()>0){
-              List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtolist = RestApiUtil.transferListContent(appGrpPrimaryDocDtoMap,AppGrpPrimaryDocDto.class);
-               AppGrpPrimaryDocDto appGrpPrimaryDocDto = appGrpPrimaryDocDtolist.get(0);
-               ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
-            }
-        }
+        loadingDraft(bpc);
+        //for loading Service Config
+        loadingServiceConfig(bpc);
+
         log.debug(StringUtil.changeForLog("the do Start end ...."));
     }
+
 
     /**
      * StartStep: Prepare
@@ -81,7 +79,7 @@ public class NewApplicationDelegator {
      */
     public void prepare(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepare start ...."));
-        String action = ParamUtil.getRequest(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(StringUtil.isEmpty(action)){
             action = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
             if(StringUtil.isEmpty(action)){
@@ -312,13 +310,71 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
-//    //=============================================================================
-//    //private method
-//    //=============================================================================
-//    private void getValueFromPage(AppGrpPremisesDto appGrpPremisesDto, HttpServletRequest request) {
-//        String premisesType = ParamUtil.getString(request,"premisesType");
-//        String hciName = ParamUtil.getString(request,"hciName");
-//        appGrpPremisesDto.setHciName(hciName);
-//        MiscUtil.generateDtoFromParam(request,AppGrpPremisesDto.class);
-//    }
+    //=============================================================================
+    //private method
+    //=============================================================================
+private  void loadingDraft(BaseProcessClass bpc){
+    String appId = "C120481C-09C3-45A8-A8ED-F71B38BD1768";
+    List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
+    if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
+        AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
+        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+        String appGrpId = appGrpPremisesDto.getAppGrpId();
+        List appGrpPrimaryDocDtoMap=  appGrpPrimaryDocService.getAppGrpPrimaryDocDtosByAppGrpId(appGrpId);
+        if(appGrpPrimaryDocDtoMap!=null && appGrpPrimaryDocDtoMap.size()>0){
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtolist = RestApiUtil.transferListContent(appGrpPrimaryDocDtoMap,AppGrpPrimaryDocDto.class);
+            AppGrpPrimaryDocDto appGrpPrimaryDocDto = appGrpPrimaryDocDtolist.get(0);
+            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+        }
+    }
+}
+
+    private void loadingServiceConfig(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
+        //loading the service
+        List<String> serviceConfigIds = new ArrayList<>();
+        serviceConfigIds.add("BB");
+        serviceConfigIds.add("CL");
+        List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+        sortHcsaServiceDto(hcsaServiceDtoList);
+        ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+        //set the serviceform process to Session
+        Map<String,String> ServiceFormUrlMaps = new HashMap<>();
+        ServiceFormUrlMaps.put("CL","/cc/eservice/IAIS/ClinicalLaboratory");
+        ServiceFormUrlMaps.put("BB","/cc/eservice/IAIS/BloodBanking");
+        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.SERVICEFORMURLMAPS, (Serializable) ServiceFormUrlMaps);
+        log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
+    }
+    private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList){
+        // Map<String,List<HcsaServiceDto>> result = new HashMap();
+        List<HcsaServiceDto> baseList = new ArrayList();
+        List<HcsaServiceDto> specifiedList = new ArrayList();
+        List<HcsaServiceDto> subList = new ArrayList();
+        //class
+        for (HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
+            switch (hcsaServiceDto.getSvcCode()){
+                case ApplicationConsts.SERVICE_CONFIG_TYPE_BASE:baseList.add(hcsaServiceDto);
+                case ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED:specifiedList.add(hcsaServiceDto);
+                case ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED:subList.add(hcsaServiceDto);
+            }
+        }
+        //Sort
+        sortService(baseList);
+        sortService(specifiedList);
+        sortService(subList);
+        hcsaServiceDtoList = new ArrayList<>();
+        hcsaServiceDtoList.addAll(baseList);
+        hcsaServiceDtoList.addAll(specifiedList);
+        hcsaServiceDtoList.addAll(subList);
+    }
+
+    private void sortService(List<HcsaServiceDto> list){
+        Collections.sort(list, new Comparator<HcsaServiceDto>(){
+            @Override
+            public int compare(HcsaServiceDto o1, HcsaServiceDto o2) {
+                return o1.getSvcName().compareTo(o2.getSvcName());
+            }
+        });
+    }
 }

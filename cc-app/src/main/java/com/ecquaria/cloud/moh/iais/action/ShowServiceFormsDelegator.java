@@ -3,11 +3,13 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.HcsaServiceDto;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,10 +47,12 @@ public class ShowServiceFormsDelegator {
         }
         String actionTab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
         if(StringUtil.isEmpty(actionTab)){
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,"clinical");
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,getFirstTab(bpc));
         }
         log.debug("the do prepareSwitch end ....");
     }
+
+
 
     /**
      * StartStep: prepareServiceLoad
@@ -58,10 +62,8 @@ public class ShowServiceFormsDelegator {
      */
     public void prepareServiceLoad(BaseProcessClass bpc){
         log.debug("the do prepareServiceLoad start ....");
-        String crud_action_type_tab = (String)ParamUtil.getRequest(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-        Map<String,String> ServiceFormUrlMaps = new HashMap<>();
-        ServiceFormUrlMaps.put("clinical","/cc/eservice/IAIS/ClinicalLaboratory");
-        ServiceFormUrlMaps.put("blood","/cc/eservice/IAIS/BloodBanking");
+        String crud_action_type_tab = (String)ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
+        Map<String,String> ServiceFormUrlMaps = (Map<String,String>)ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.SERVICEFORMURLMAPS);
         String SericeformUrl = ServiceFormUrlMaps.get(crud_action_type_tab)+"?crud_action_type=serviceForms&crud_action_type_tab="+crud_action_type_tab;
         ParamUtil.setRequestAttr(bpc.request,"SericeformUrl",SericeformUrl);
         log.info(StringUtil.changeForLog("The SericeformUrl is -->;"+SericeformUrl));
@@ -90,7 +92,13 @@ public class ShowServiceFormsDelegator {
         log.debug("the do doServiceformSave end ....");
     }
 
-
-
+    //=============================================================================
+    //private method
+    //=============================================================================
+    private String getFirstTab(BaseProcessClass bpc){
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto> )ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
+        HcsaServiceDto hcsaServiceDto= hcsaServiceDtoList.get(0);
+        return hcsaServiceDto.getSvcCode();
+    }
 
 }
