@@ -58,7 +58,7 @@ public class ShowServiceFormsDelegator {
      */
     public void prepareServiceLoad(BaseProcessClass bpc){
         log.debug("the do prepareServiceLoad start ....");
-        String crud_action_type_tab = (String)ParamUtil.getRequest(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
+        String crud_action_type_tab = ParamUtil.getRequest(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
         Map<String,String> ServiceFormUrlMaps = new HashMap<>();
         ServiceFormUrlMaps.put("clinical","/cc/eservice/IAIS/ClinicalLaboratory");
         ServiceFormUrlMaps.put("blood","/cc/eservice/IAIS/BloodBanking");

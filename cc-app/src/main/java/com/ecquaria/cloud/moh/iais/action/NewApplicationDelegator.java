@@ -81,7 +81,7 @@ public class NewApplicationDelegator {
      */
     public void prepare(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepare start ...."));
-        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        String action = ParamUtil.getRequest(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(StringUtil.isEmpty(action)){
             action = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
             if(StringUtil.isEmpty(action)){
