@@ -245,12 +245,12 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var premisesTypeValue = $('#premisesTypeValue').val();
-        if('On-site'==premisesTypeValue){
+        if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==premisesTypeValue){
             $('#premise_onsite').attr("checked","checked");
             $('#premise_conveyance').removeAttr("checked");
             $('.premiseLocationSelect').removeClass('hidden');
             $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
-        }else if('Conveyance'==premisesTypeValue){
+        }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>'==premisesTypeValue){
             $('#premise_conveyance').attr("checked","checked");
             $('#premise_onsite').removeAttr("checked");
             $('.premiseLocationSelect').removeClass('hidden');
