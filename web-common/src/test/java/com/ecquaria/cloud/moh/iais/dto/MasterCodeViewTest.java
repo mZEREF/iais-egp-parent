@@ -24,7 +24,7 @@ public class MasterCodeViewTest {
         entity.getCodeValue();
         entity.setCodeValue(null);
         entity.getCategory();
-        entity.setCategory(1);
+        entity.setCategory("");
         entity.getDescription();
         entity.setDescription(null);
         entity.getFilterValue();

@@ -31,7 +31,7 @@ public class MasterCodeView implements Serializable {
     @Getter @Setter private int masterCodeId;
     @Getter @Setter private String code;
     @Getter @Setter private String codeValue;
-    @Getter @Setter private int category;
+    @Getter @Setter private String category;
     @Getter @Setter private String description;
     @Getter @Setter private String filterValue;
     @Getter @Setter private int sequence;

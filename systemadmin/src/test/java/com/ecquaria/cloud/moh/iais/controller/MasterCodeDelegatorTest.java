@@ -151,7 +151,7 @@ public class MasterCodeDelegatorTest {
         PowerMockito.when(ParamUtil.getSessionAttr(request, "MasterCodeDto")).thenReturn(masterCodeDto);
         masterCodeDto.setMasterCodeKey("AS");
         masterCodeDto.setRowguid("AS");
-        masterCodeDto.setCodeCategory(1);
+        masterCodeDto.setCodeCategory("1");
         masterCodeDto.setCodeValue("SAD");
         masterCodeDto.setStatus(0);
 
@@ -194,7 +194,7 @@ public class MasterCodeDelegatorTest {
         PowerMockito.when(ParamUtil.getSessionAttr(request, "MasterCodeDto")).thenReturn(masterCodeDto);
         masterCodeDto.setMasterCodeKey("AS");
         masterCodeDto.setRowguid("AS");
-        masterCodeDto.setCodeCategory(1);
+        masterCodeDto.setCodeCategory("1");
         masterCodeDto.setCodeValue("SAD");
         masterCodeDto.setStatus(0);
 

@@ -20,7 +20,7 @@ public class MasterCodeQueryDto implements Serializable {
     private Integer masterCodeId;
     private String rowguid;
     private String masterCodeKey;
-    private int  codeCategory;
+    private String codeCategory;
     private String codeValue;
     private String codeDescription;
     private String filterValue;
