@@ -23,7 +23,7 @@ public class MasterCodeDto implements Serializable {
     @Getter @Setter private int masterCodeId;
     @Getter @Setter private String rowguid;
     @Getter @Setter private String masterCodeKey;
-    @Getter @Setter private int  codeCategory;
+    @Getter @Setter private String  codeCategory;
     @Getter @Setter private String codeValue;
     @Getter @Setter private String codeDescription;
     @Getter @Setter private String filterValue;

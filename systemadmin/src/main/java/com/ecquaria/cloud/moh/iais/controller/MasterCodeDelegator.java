@@ -274,7 +274,7 @@ public class MasterCodeDelegator {
     private void getValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request){
         String masterCodeKey = ParamUtil.getString(request,MASTERCODE_KEY);
         String rowguid = ParamUtil.getString(request,"rowguid");
-        int codeCategory = ParamUtil.getInt(request,"code_category");
+        String codeCategory = ParamUtil.getString(request,"code_category");
         String codeValue = ParamUtil.getString(request,MasterCodeConstant.CRUD_VALUE);
         int status = ParamUtil.getInt(request,MasterCodeConstant.STATUS);
         masterCodeDto.setMasterCodeKey(masterCodeKey);

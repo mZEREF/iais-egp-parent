@@ -26,7 +26,7 @@ public class MasterCodeDtoTest {
 
 
         masterCodeDto.setMasterCodeKey(null);
-        masterCodeDto.setCodeCategory(0);
+        masterCodeDto.setCodeCategory("");
         masterCodeDto.setCodeValue(null);
         masterCodeDto.setMasterCodeId(0);
         masterCodeDto.setStatus(0);

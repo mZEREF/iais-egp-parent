@@ -42,7 +42,8 @@ public final class MasterCodeUtil {
     private static final String RETRIEVE_MASTER_CODES              = "retrieveMasterCodes";
     private static final String MASTERCODE_CACHES                  = "system-admin-service:8886/iais-mastercode/caches";
     //Code Categorys
-    public static final String CATE_ID_NATIONALITY                 = "1";
+    public static final String CATE_ID_NATIONALITY                 = "8215D856-84AD-48F2-8590-1654DBAB1B40";
+    public static final String CATE_ID_RISK_LEVEL                  = "33C073B6-5F62-4BE7-951A-06DBB881C127";
 
     /**
      * @description: refresh the master codes into cache
@@ -71,7 +72,7 @@ public final class MasterCodeUtil {
         Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
         Map<String, List<MasterCodeView>> filterMap = new HashMap<>();
         list.forEach(mc ->
-            RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue())
+            RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getDescription())
         );
         list.forEach(mc -> {
             String cateStr = String.valueOf(mc.getCategory());
@@ -144,7 +145,7 @@ public final class MasterCodeUtil {
         List<MasterCodeView> list = retrieveCateSource(cateId);
         List<SelectOption> opts = new ArrayList<>();
         list.forEach(m ->
-            opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
+            opts.add(new SelectOption(m.getCode(), m.getDescription()))
         );
 
         return opts;
@@ -166,7 +167,7 @@ public final class MasterCodeUtil {
             SearchResult<MasterCodeView> sr = RestApiUtil.query(MASTERCODE_CACHES, param);
             if (sr.getRowCount() > 0) {
                 MasterCodeView mc = sr.getRows().get(0);
-                desc = mc.getCodeValue();
+                desc = mc.getDescription();
                 addMcToCache(mc);
             } else {
                 return "";
@@ -187,7 +188,7 @@ public final class MasterCodeUtil {
         List<MasterCodeView> list = retrieveFilterSource(filter);
         List<SelectOption> opts = new ArrayList<>();
         list.forEach(m ->
-            opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
+            opts.add(new SelectOption(m.getCode(), m.getDescription()))
         );
 
         return opts;
@@ -243,7 +244,7 @@ public final class MasterCodeUtil {
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
-                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue())
+                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getDescription())
                 );
                 RedisCacheHelper.getInstance().set(CACHE_NAME_CATE_MAP, cateId, list);
             } else {
@@ -265,7 +266,7 @@ public final class MasterCodeUtil {
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
-                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue())
+                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getDescription())
                 );
                 RedisCacheHelper.getInstance().set(CACHE_NAME_FILTER, filter, list);
             } else {
@@ -286,7 +287,7 @@ public final class MasterCodeUtil {
 
     private static void addMcToCache(MasterCodeView mc) {
         RedisCacheHelper rch = RedisCacheHelper.getInstance();
-        rch.set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
+        rch.set(CACHE_NAME_CODE, mc.getCode(), mc.getDescription());
         String cate = String.valueOf(mc.getCategory());
         List<MasterCodeView> list = rch.get(CACHE_NAME_CATE_MAP, cate);
         if (list == null)
