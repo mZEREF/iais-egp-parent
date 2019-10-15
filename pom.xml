@@ -193,6 +193,17 @@
                     </releases>
                 </repository>
                 <repository>
+                    <id>nexus-iais</id>
+                    <name>Nexus IAIS Repository</name>
+                    <url>http://nexus:8081/repository/maven-mohiais/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+                <repository>
                     <id>nexus-repo-snapshots</id>
                     <name>Nexus Repository</name>
                     <url>http://nexus:8081/repository/maven-snapshots/</url>
