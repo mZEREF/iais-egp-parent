@@ -354,9 +354,15 @@ private  void loadingDraft(BaseProcessClass bpc){
         //class
         for (HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
             switch (hcsaServiceDto.getSvcCode()){
-                case ApplicationConsts.SERVICE_CONFIG_TYPE_BASE:baseList.add(hcsaServiceDto);
-                case ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED:specifiedList.add(hcsaServiceDto);
-                case ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED:subList.add(hcsaServiceDto);
+                case ApplicationConsts.SERVICE_CONFIG_TYPE_BASE:
+                    baseList.add(hcsaServiceDto);
+                    break;
+                case ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED:
+                    specifiedList.add(hcsaServiceDto);
+                    break;
+                case ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED:
+                    subList.add(hcsaServiceDto);
+                    break;
             }
         }
         //Sort
