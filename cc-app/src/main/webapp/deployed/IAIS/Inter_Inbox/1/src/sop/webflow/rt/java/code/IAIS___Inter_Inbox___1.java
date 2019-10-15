@@ -14,4 +14,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 public class IAIS___Inter_Inbox___1 extends BaseProcessClass {
 
+    private static final String INBOX ="inboxDelegator";
+
 }
