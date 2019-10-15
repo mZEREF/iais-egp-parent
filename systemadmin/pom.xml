@@ -37,6 +37,10 @@
             <artifactId>iais-log-audit</artifactId>
             <version>${revision}</version>
         </dependency>
+        <dependency>
+            <groupId>net.sf.oval</groupId>
+            <artifactId>oval</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <finalName>systemadmin</finalName>
