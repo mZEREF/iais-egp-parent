@@ -49,6 +49,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_PRE_OR_POST_INSPEC          = "7E21590E-05AF-47D7-9EF8-F8AACAFDE181";
     public static final String CATE_ID_RISK_RATING                 = "FAF512A7-79D9-4DCE-AEBC-00A720DB5FB7";
     public static final String CATE_ID_INS_OR_RRA_SOURCE           = "94E95C79-ED51-4B93-97BE-2496044A837D";
+    public static final String CATE_ID_LEAD_AND_GOVE_TAG           = "677C61D3-D4E5-4F91-80C7-1808147E6FFC";
 
     /**
      * @description: refresh the master codes into cache
