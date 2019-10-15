@@ -44,6 +44,11 @@ public final class MasterCodeUtil {
     //Code Categorys
     public static final String CATE_ID_NATIONALITY                 = "8215D856-84AD-48F2-8590-1654DBAB1B40";
     public static final String CATE_ID_RISK_LEVEL                  = "33C073B6-5F62-4BE7-951A-06DBB881C127";
+    public static final String CATE_ID_APP_TYPE                    = "09FF3DBF-8C6F-4509-9BAB-086F0F916F3A";
+    public static final String CATE_ID_INSPEC_REQUIRED_TYPE        = "42CCE0B3-1D7E-40D5-BC2B-F31F34AC7BDF";
+    public static final String CATE_ID_PRE_OR_POST_INSPEC          = "7E21590E-05AF-47D7-9EF8-F8AACAFDE181";
+    public static final String CATE_ID_RISK_RATING                 = "FAF512A7-79D9-4DCE-AEBC-00A720DB5FB7";
+    public static final String CATE_ID_INS_OR_RRA_SOURCE           = "94E95C79-ED51-4B93-97BE-2496044A837D";
 
     /**
      * @description: refresh the master codes into cache
