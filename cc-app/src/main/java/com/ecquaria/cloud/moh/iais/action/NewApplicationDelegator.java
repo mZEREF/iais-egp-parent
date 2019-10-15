@@ -334,8 +334,8 @@ private  void loadingDraft(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
         //loading the service
         List<String> serviceConfigIds = new ArrayList<>();
-        serviceConfigIds.add("BB");
-        serviceConfigIds.add("CL");
+        serviceConfigIds.add("C3E7715A-29EB-E911-BE76-000C29C8FBE4");
+        serviceConfigIds.add("AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
         sortHcsaServiceDto(hcsaServiceDtoList);
         ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
