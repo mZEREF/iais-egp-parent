@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
