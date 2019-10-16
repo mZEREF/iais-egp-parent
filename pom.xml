@@ -37,7 +37,6 @@
         <module>systemadmin</module>
         <module>web-common</module>
         <module>web</module>
-        <module>clinical</module>
     </modules>
     <dependencyManagement>
         <dependencies>

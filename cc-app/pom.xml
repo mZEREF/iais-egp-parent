@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>cc-app</artifactId>
+    <artifactId>hcsa-application</artifactId>
     <packaging>war</packaging>
     <dependencies>
         <dependency>
@@ -48,7 +48,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>cc</finalName>
+        <finalName>hcsaapplication</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
