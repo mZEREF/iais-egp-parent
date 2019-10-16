@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -27,6 +28,7 @@ public class SelectTag extends DivTagSupport {
     private String otherOptionValue = "00";
     private String hidden;
     private boolean needErrorSpan;
+    private boolean needMask;
 
     public SelectTag() {
         super();
@@ -48,6 +50,7 @@ public class SelectTag extends DivTagSupport {
         otherOption = null;
         hidden = "";
         needErrorSpan = true;
+        needMask = false;
     }
 
     public void setHidden(String hidden) {
@@ -113,6 +116,9 @@ public class SelectTag extends DivTagSupport {
             sos = MasterCodeUtil.retrieveOptionsByCate(codeCategory);
         } else if (!StringUtil.isEmpty(filterCode)) {
             sos = MasterCodeUtil.retrieveOptionsByFilter(filterCode);
+        }
+        if (needMask) {
+            MaskUtil.maskSelectOptions(name, sos);
         }
         if (!StringUtil.isEmpty(firstOption)) {
             html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append(ENDOPTION);
@@ -185,5 +191,7 @@ public class SelectTag extends DivTagSupport {
     public void setFilterCode(String filterCode) {
         this.filterCode = filterCode;
     }
-	
+	public void setNeedMask(boolean needMask) {
+        this.needMask = needMask;
+    }
 }
