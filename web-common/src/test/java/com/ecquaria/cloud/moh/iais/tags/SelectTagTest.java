@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

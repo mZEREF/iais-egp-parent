@@ -163,7 +163,7 @@ public final class IaisEGPHelper extends EGPHelper {
      */
     public static <T> T getRecordByPrimaryKey(String serviceName, String primaryKey, Class<? extends Serializable> clz){
         Map<String, Object> paramMapper = new HashMap<>();
-        paramMapper.put("ID", primaryKey);
+        paramMapper.put("id", primaryKey);
         return (T) RestApiUtil.getByReqParam(serviceName + "/{id}", paramMapper, clz);
     }
 
