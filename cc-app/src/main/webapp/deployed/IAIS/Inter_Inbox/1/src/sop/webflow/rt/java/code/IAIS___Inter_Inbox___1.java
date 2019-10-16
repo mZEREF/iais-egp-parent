@@ -10,10 +10,20 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
+import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class IAIS___Inter_Inbox___1 extends BaseProcessClass {
+	
+	
+	private static final String DELEGATOR ="inboxTabDelegator";
 
-    private static final String INBOX ="inboxDelegator";
+	public void prepareData_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doStart", this);
+	}
+
+	public void start_OnStepProcess_0() throws Exception {
+	// 		start->OnStepProcess
+	}
 
 }
