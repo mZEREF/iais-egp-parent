@@ -278,6 +278,22 @@ public class NewApplicationDelegator {
 
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
+
+    /**
+     * StartStep: doSubmit
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doSubmit(BaseProcessClass bpc) throws IOException {
+        log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
+        //save the premisse
+        //get wrokgroup
+
+
+
+        log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
+    }
     /**
      * StartStep: ControlSwitch
      *
@@ -341,8 +357,8 @@ private  void loadingDraft(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         //set the serviceform process to Session
         Map<String,String> ServiceFormUrlMaps = new HashMap<>();
-        ServiceFormUrlMaps.put("CL","/cc/eservice/IAIS/ClinicalLaboratory");
-        ServiceFormUrlMaps.put("BB","/cc/eservice/IAIS/BloodBanking");
+        ServiceFormUrlMaps.put("CL","/hcsaapplication/eservice/IAIS/ClinicalLaboratory");
+        ServiceFormUrlMaps.put("BB","/hcsaapplication/eservice/IAIS/BloodBanking");
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.SERVICEFORMURLMAPS, (Serializable) ServiceFormUrlMaps);
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
     }
