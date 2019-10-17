@@ -25,7 +25,7 @@ $(document).ready(function() {
     licenceBtn();
     mobileMenuBtn();
     premisesFunc();
-    serviceInfoFunc();
+    //serviceInfoFunc();
     checkboxLevelDisabledEnabledFunc();
     selfAssessmentFunc();
     if ($('.personal-detail-info').length > 0) {
