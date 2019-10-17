@@ -13,11 +13,6 @@
     <packaging>war</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.ecquaria.egp</groupId>
-            <artifactId>engine</artifactId>
-            <version>${engine-version}</version>
-        </dependency>
-        <dependency>
             <groupId>sg.gov.moh.iais-egp</groupId>
             <artifactId>backbone</artifactId>
             <version>${revision}</version>
