@@ -28,15 +28,15 @@ import java.util.Date;
 public class MasterCodeView implements Serializable {
     private static final long serialVersionUID = -7118511997100636148L;
 
-    @Getter @Setter private int masterCodeId;
+    @Getter @Setter private String masterCodeId;
     @Getter @Setter private String code;
     @Getter @Setter private String codeValue;
     @Getter @Setter private String category;
     @Getter @Setter private String description;
     @Getter @Setter private String filterValue;
-    @Getter @Setter private int sequence;
-    @Getter @Setter private int status;
-    @Getter @Setter private int version;
+    @Getter @Setter private Integer sequence;
+    @Getter @Setter private String status;
+    @Getter @Setter private Integer version;
     @Getter @Setter private Date effectFrom;
     @Getter @Setter private Date effectTo;
 }

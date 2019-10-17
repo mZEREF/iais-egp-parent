@@ -18,7 +18,7 @@ public class MasterCodeViewTest {
     @Test
     public void testGetterSetter() {
         entity.getMasterCodeId();
-        entity.setMasterCodeId(1);
+        entity.setMasterCodeId(null);
         entity.getCode();
         entity.setCode(null);
         entity.getCodeValue();
@@ -32,7 +32,7 @@ public class MasterCodeViewTest {
         entity.getSequence();
         entity.setSequence(1);
         entity.getStatus();
-        entity.setStatus(1);
+        entity.setStatus(null);
         entity.getVersion();
         entity.setVersion(1);
         entity.getEffectFrom();

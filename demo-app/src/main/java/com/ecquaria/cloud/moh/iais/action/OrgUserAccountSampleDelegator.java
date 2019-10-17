@@ -234,7 +234,7 @@ public class OrgUserAccountSampleDelegator {
     public void prepareEdit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("The prepareEdit start ..."));
         HttpServletRequest request = bpc.request;
-        String rowguid = ParamUtil.getString(request,CRUD_ACTION_VALUE);
+        String rowguid = ParamUtil.getMaskedString(request,CRUD_ACTION_VALUE);
         OrgUserAccountSampleDto dto;
         if(StringUtil.isEmpty(rowguid)){
             dto = (OrgUserAccountSampleDto)ParamUtil.getSessionAttr(request,ORG_USER_DTO_ATTR);

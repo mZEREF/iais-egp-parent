@@ -116,13 +116,13 @@
                      <c:otherwise>
                         <c:forEach var="demoQuery" items="${demoSearchResult.rows}" varStatus="status">
                             <tr>
-                                <td><input type="checkbox" onclick="sopCrud1.updateAllCheckBox()" value="${demoQuery.userId}" name="demo" id="entityUids_${demoQuery.userId}"></td>
+                                <td><input type="checkbox" onclick="sopCrud1.updateAllCheckBox()" value="<iais:mask name="demo" value="${demoQuery.userId}"/>" name="demo" id="entityUids_${demoQuery.userId}"></td>
                                 <td class="row_no">${(status.index + 1) + (demoSearchParam.pageNo - 1) * demoSearchParam.pageSize}</td>
                                 <td>${demoQuery.userId}</td>
                                 <td>${demoQuery.nuicNum}</td>
                                 <td>${demoQuery.uenNo}</td>
                                 <td>
-                                    <iais:link icon="form_edit" title="Edit" onclick="javascript:doEdit('${demoQuery.rowguid}');"/>
+                                    <a href="javascript:void(0);" onclick="javascript:doEdit('<iais:mask name="crud_action_value" value="${demoQuery.userId}"/>');">Edit</a>
                                     <iais:link icon="form_delete" title="Delete" onclick="javascript:doDelete('${demoQuery.userId}');"/>
                                 </td>
                             </tr>
