@@ -1,10 +1,10 @@
 <!-- START: javascript -->
-<%@page import="com.ecquaria.cloud.helper.EngineHelper"%>
-<%@ page import="com.ecquaria.cloud.mc.api.ConsistencyHelper" %>
-<%@ page import="sop.i18n.MultiLangUtil" %>
+<%@page import="com.ecquaria.cloud.helper.ConfigHelper"%>
+<%@ page import="com.ecquaria.cloud.helper.EngineHelper" %>
 <%@ page import="com.ecquaria.egp.core.common.constants.AppConstants" %>
-<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+<%@ page import="com.ecquaria.egp.core.helper.ConsistencyHelper" %>
 <%@page import="ecq.commons.util.EgpcloudPortFactory"%>
+<%@ page import="sop.i18n.MultiLangUtil" %>
 <%--<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/sop/reset.js"></script>--%>
 <%--<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-3.3.1.min.js"></script>--%>
 <%--<script type="text/javascript" src="<%=EngineHelper.getResourcePath()%>/javascripts/egov/jquery-migrate.1.4.1.js"></script>--%>

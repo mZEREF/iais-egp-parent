@@ -14,17 +14,8 @@
     <dependencies>
         <dependency>
             <groupId>com.ecquaria.egp</groupId>
-            <artifactId>cc-app</artifactId>
+            <artifactId>engine</artifactId>
             <version>${engine-version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>com.ecquaria.egp</groupId>
-            <artifactId>cc-app</artifactId>
-            <version>${engine-version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <classifier>api</classifier>
         </dependency>
         <dependency>
             <groupId>sg.gov.moh.iais-egp</groupId>
