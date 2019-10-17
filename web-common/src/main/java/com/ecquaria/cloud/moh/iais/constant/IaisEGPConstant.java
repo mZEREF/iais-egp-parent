@@ -22,7 +22,10 @@ public class IaisEGPConstant {
     public static final String YES                                 = "Y";
     public static final String NO                                  = "N";
 
-    public static final String FE_CSS_ROOT                         = "/web/themes/fe/";
+    public static final String CSS_ROOT                            = "/web/themes";
+    public static final String FE_CSS_ROOT                         = "/fe/";
+    public static final String BE_CSS_ROOT                         = "/be/";
+    public static final String COMMON_CSS_ROOT                     = "/common/";
 
 
 
