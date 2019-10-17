@@ -37,6 +37,7 @@
         <module>systemadmin</module>
         <module>web-common</module>
         <module>web</module>
+        <module>fe-admin</module>
     </modules>
     <dependencyManagement>
         <dependencies>
