@@ -116,13 +116,25 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do prepareJump start ...."));
         String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         String crud_action_type_tab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-        String jumpUrl = "/cc/eservice/IAIS/MOHCCServiceForms?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
+        String jumpUrl = "/hcsaapplication/eservice/IAIS/MOHCCServiceForms?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
         if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
-            jumpUrl = "/cc/eservice/IAIS/MOHCCNewApplication/1/Prepare?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
+            jumpUrl = "/hcsaapplication/eservice/IAIS/MOHCCNewApplication/1/Prepare?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
         }
         log.info(StringUtil.changeForLog("The JumpUrl is -->:"+jumpUrl));
         ParamUtil.setRequestAttr(bpc.request,"jumpToServiceFormUrl",jumpUrl);
         log.debug(StringUtil.changeForLog("the do prepareJump end ...."));
+    }
+
+    /**
+     * StartStep: prepareView
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prepareView(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do prepareView start ...."));
+
+        log.debug(StringUtil.changeForLog("the do prepareView end ...."));
     }
     /**
      * StartStep: doLaboratoryDisciplines
@@ -174,7 +186,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
     /**
-     * StartStep: doStart
+     * StartStep: doDocuments
      *
      * @param bpc
      * @throws
@@ -183,6 +195,18 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doDocuments start ...."));
 
         log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
+    }
+
+    /**
+     * StartStep: doSaveDraft
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doSaveDraft(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
+        log.info("The ClinicalLaboratoryDelegator doSaveDraft ... ");
+        log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
 
     /**

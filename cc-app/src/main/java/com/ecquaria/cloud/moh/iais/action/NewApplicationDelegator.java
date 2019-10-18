@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.EngineHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -41,8 +42,6 @@ public class NewApplicationDelegator {
     private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
     private static final String APPGRPPRIMARYDOCDTO = "AppGrpPrimaryDocDto";
 
-
-
     @Autowired
     private AppGrpPremisesService appGrpPremisesService;
 
@@ -59,6 +58,7 @@ public class NewApplicationDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do Start start ...."));
+        AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,null);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,null);
         AuditTrailHelper.auditFunction("iais-cc", "premises create");
@@ -275,6 +275,8 @@ public class NewApplicationDelegator {
             appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
             ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
         }
+        //to do this will use the config.
+        EngineHelper.delegate("clinicalLaboratoryDelegator", "doSaveDraft", bpc);
 
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }

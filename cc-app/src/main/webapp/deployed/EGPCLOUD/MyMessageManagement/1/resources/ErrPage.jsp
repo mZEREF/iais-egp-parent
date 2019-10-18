@@ -1,1 +1,0 @@
-<%@include file="/cc/message/errPage.jsp"%>

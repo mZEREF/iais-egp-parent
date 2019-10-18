@@ -83,7 +83,7 @@
                                                     <div class="panel-collapse collapse in" id="collapseServiceInfo" role="tabpanel" aria-labelledby="headingServiceInfo">
                                                         <div class="panel-body">
                                                             <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
-                                                            <iframe class="elemClass-1561088919456" src="" id="elemId-1561088919456" scrollbar="auto" style="height: 955px;" width="100%" height="100%" frameborder="0"></iframe>
+                                                            <iframe class="elemClass-1561088919456" src="/hcsaapplication/eservice/IAIS/ClinicalLaboratory?crud_action_type_form=prepareView" id="elemId-1561088919456" scrollbar="auto" style="height: 955px;" width="100%" height="100%" frameborder="0"></iframe>
                                                         </div>
                                                     </div>
                                                 </div>
