@@ -8,12 +8,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.dto.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -41,6 +43,7 @@ import java.util.*;
 public class NewApplicationDelegator {
     private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
     private static final String APPGRPPRIMARYDOCDTO = "AppGrpPrimaryDocDto";
+    public static final String ERRORMAP_PREMISES    = "errorMap_premises";
 
     @Autowired
     private AppGrpPremisesService appGrpPremisesService;
@@ -251,6 +254,7 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
+        //doValidate(bpc);
         //save the premisse
         AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
         if(appGrpPremisesDto!=null){
@@ -289,13 +293,15 @@ public class NewApplicationDelegator {
      */
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
+        //do validate
+        doValidate(bpc);
         //save the premisse
         //get wrokgroup
 
-
-
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }
+
+
     /**
      * StartStep: ControlSwitch
      *
@@ -403,5 +409,18 @@ private  void loadingDraft(BaseProcessClass bpc){
                 return o1.getSvcName().compareTo(o2.getSvcName());
             }
         });
+    }
+    private void doValidate(BaseProcessClass bpc){
+        //do validate premiss
+        doValidatePremiss(bpc);
+    }
+    private void doValidatePremiss(BaseProcessClass bpc){
+        //do validate premiss
+        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+        ValidationResult validationResult =WebValidationHelper.validateProperty(appGrpPremisesDto,"create");
+        if (validationResult.isHasErrors()){
+            Map<String,String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
+        }
     }
 }

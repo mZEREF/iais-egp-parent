@@ -38,6 +38,7 @@
         <module>web-common</module>
         <module>web</module>
         <module>fe-admin</module>
+        <module>hcsa-licence</module>
     </modules>
     <dependencyManagement>
         <dependencies>
