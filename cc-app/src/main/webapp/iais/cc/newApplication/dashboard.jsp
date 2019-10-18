@@ -1,6 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
-    String webroot1=IaisEGPConstant.FE_CSS_ROOT;
+    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
     <div class="container">

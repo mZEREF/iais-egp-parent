@@ -1,7 +1,7 @@
 
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
-    String webrooth=IaisEGPConstant.FE_CSS_ROOT;
+    String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
 <header>
     <div class="container">
