@@ -330,20 +330,23 @@ public class NewApplicationDelegator {
     //private method
     //=============================================================================
 private  void loadingDraft(BaseProcessClass bpc){
-    String appId = "C120481C-09C3-45A8-A8ED-F71B38BD1768";
-    List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
-    if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
-        AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
-        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-        String appGrpId = appGrpPremisesDto.getAppGrpId();
-        List appGrpPrimaryDocDtoMap=  appGrpPrimaryDocService.getAppGrpPrimaryDocDtosByAppGrpId(appGrpId);
-        if(appGrpPrimaryDocDtoMap!=null && appGrpPrimaryDocDtoMap.size()>0){
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtolist = RestApiUtil.transferListContent(appGrpPrimaryDocDtoMap,AppGrpPrimaryDocDto.class);
-            AppGrpPrimaryDocDto appGrpPrimaryDocDto = appGrpPrimaryDocDtolist.get(0);
-            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+    String appId = ParamUtil.getString(bpc.request,"appId");
+    if(!StringUtil.isEmpty(appId)){
+        List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
+        if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
+            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+            String appGrpId = appGrpPremisesDto.getAppGrpId();
+            List appGrpPrimaryDocDtoMap=  appGrpPrimaryDocService.getAppGrpPrimaryDocDtosByAppGrpId(appGrpId);
+            if(appGrpPrimaryDocDtoMap!=null && appGrpPrimaryDocDtoMap.size()>0){
+                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtolist = RestApiUtil.transferListContent(appGrpPrimaryDocDtoMap,AppGrpPrimaryDocDto.class);
+                AppGrpPrimaryDocDto appGrpPrimaryDocDto = appGrpPrimaryDocDtolist.get(0);
+                ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+            }
         }
     }
+
 }
 
     private void loadingServiceConfig(BaseProcessClass bpc){
