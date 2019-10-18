@@ -117,11 +117,8 @@
                                                 <iais:row>
                                                     <iais:field value="Address Type" width="12"/>
                                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                                                        <select id="siteAddressType" name = "addrType">
-                                                            <option>Select address type</option>
-                                                            <option>Apt Blk</option>
-                                                            <option>Without Apt Blk</option>
-                                                        </select>
+                                                        <iais:select name="addrType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type"></iais:select>
+
                                                     </iais:value>
                                                 </iais:row>
                                                 <div class="form-group">
