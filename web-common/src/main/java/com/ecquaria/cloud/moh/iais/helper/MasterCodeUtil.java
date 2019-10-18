@@ -52,6 +52,9 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_LEAD_AND_GOVE_TAG           = "677C61D3-D4E5-4F91-80C7-1808147E6FFC";
     public static final String CATE_ID_APP_STATUS                  = "E8E722B5-7761-4EC0-AD06-E05ECA94F7F8";
     public static final String CATE_ID_ADDRESS_TYPE                = "D6FAD1CB-DF43-4CDE-AF97-45F88566D7EF";
+    public static final String CATE_ID_ANSWER_TYPE                  = "14C0B134-1369-430B-B036-B1BF56A9DFBB";
+    public static final String CATE_ID_COMMON_STATUS                  = "95FF02D9-2C34-4662-8AC1-FFC8A5288C1F";
+
 
     /**
      * @description: refresh the master codes into cache
