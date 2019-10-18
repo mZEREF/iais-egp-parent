@@ -17,6 +17,13 @@ public class AppServicesConsts {
 
     //use in the Session key
     public static final String SERVICEFORMURLMAPS  = "ServiceFormUrlMaps";
-    public static final String HCSASERVICEDTOLIST = "hcsaServiceDtoList";
+    public static final String HCSASERVICEDTOLIST  = "hcsaServiceDtoList";
+
+    //validate profiles
+    public static final String VALIDATE_PROFILES_CREATE       = "create";
+    public static final String VALIDATE_PROFILES_EDIT         = "eidt";
+    public static final String VALIDATE_PROFILES_ON_SITE      = "On_site";
+    public static final String VALIDATE_PROFILES_CONVEYANCE   = "Conveyance";
+
 
 }

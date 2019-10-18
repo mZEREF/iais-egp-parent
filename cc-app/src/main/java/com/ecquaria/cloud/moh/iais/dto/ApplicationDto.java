@@ -12,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApplicationDto extends BaseEntity {
+    private static final long serialVersionUID = -7357543222838980801L;
     private String id;
 
     private String applicationNo;
