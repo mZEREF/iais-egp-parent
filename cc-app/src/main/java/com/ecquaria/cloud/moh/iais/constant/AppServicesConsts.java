@@ -16,7 +16,9 @@ public class AppServicesConsts {
 
 
     //use in the Session key
-    public static final String SERVICEFORMURLMAPS  = "ServiceFormUrlMaps";
-    public static final String HCSASERVICEDTOLIST = "hcsaServiceDtoList";
+    public static final String SERVICEFORMURLMAPS           = "ServiceFormUrlMaps";
+    public static final String HCSASERVICEDTOLIST           = "hcsaServiceDtoList";
+
+    public static final String APPLICATIONLIST              = "applicationlist";
 
 }

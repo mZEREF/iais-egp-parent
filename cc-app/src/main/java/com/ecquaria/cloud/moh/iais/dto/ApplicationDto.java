@@ -4,6 +4,8 @@ import com.ecquaria.cloud.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * @Author: Hc
  * @Program: iais-egp
@@ -11,7 +13,8 @@ import lombok.Setter;
  **/
 @Getter
 @Setter
-public class ApplicationDto extends BaseEntity {
+public class ApplicationDto extends BaseEntity implements Serializable  {
+    private static final long serialVersionUID = 500077525877734378L;
     private String id;
 
     private String applicationNo;
