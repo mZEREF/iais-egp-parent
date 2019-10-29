@@ -16,6 +16,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 public class IAIS___ClinicalLaboratory___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="clinicalLaboratoryDelegator";
+	private static final String NEWAPPLICATIONDELEGATOR ="newApplicationDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
@@ -56,7 +57,12 @@ public class IAIS___ClinicalLaboratory___1 extends BaseProcessClass {
 	// 		prepareJump->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareJump", this);
 	}
-
+	
+	public void prepareView_OnStepProcess_0() throws Exception {
+		// 		PrepareView->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareView", this);
+	}
+	
 	public void doLaboratoryDisciplines_OnStepProcess_0() throws Exception {
 	// 		doLaboratoryDisciplines->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doLaboratoryDisciplines", this);
@@ -86,5 +92,12 @@ public class IAIS___ClinicalLaboratory___1 extends BaseProcessClass {
 	// 		PrepareResult->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareResult", this);
 	}
+
+	public void doSaveDraft_OnStepProcess_0() throws Exception {
+	// 		doSaveDraft->OnStepProcess
+		EngineHelper.delegate(NEWAPPLICATIONDELEGATOR, "doSaveDraft", this);
+	}
+
+	
 
 }

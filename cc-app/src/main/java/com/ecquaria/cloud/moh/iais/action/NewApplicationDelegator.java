@@ -7,12 +7,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.dto.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.dto.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -40,8 +42,7 @@ import java.util.*;
 public class NewApplicationDelegator {
     private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
     private static final String APPGRPPRIMARYDOCDTO = "AppGrpPrimaryDocDto";
-
-
+    public static final String ERRORMAP_PREMISES    = "errorMap_premises";
 
     @Autowired
     private AppGrpPremisesService appGrpPremisesService;
@@ -59,6 +60,7 @@ public class NewApplicationDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do Start start ...."));
+        AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,null);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,null);
         AuditTrailHelper.auditFunction("iais-cc", "premises create");
@@ -251,30 +253,33 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
+        doValidate(bpc);
         //save the premisse
-        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-        if(appGrpPremisesDto!=null){
-            log.debug(StringUtil.changeForLog("save the premisse"));
-            appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
-            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-        }
-        //save the document
-        AppGrpPrimaryDocDto appGrpPrimaryDocDto = (AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
-        if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
-            log.debug(StringUtil.changeForLog("save the document"));
-            appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
-            List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
-            String fileRepoGuid =fileRepoGuidList.get(0);
-            if(StringUtil.isEmpty(fileRepoGuid)){
-              log.error("the fileRepoGuid is null ...");
-            }
-            log.debug(StringUtil.changeForLog("the fileRepoGuid is -->:"+fileRepoGuid));
-            //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
-            appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
-            appGrpPrimaryDocDto.setFile(null);
-            appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
-            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
-        }
+//        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+//        if(appGrpPremisesDto!=null){
+//            log.debug(StringUtil.changeForLog("save the premisse"));
+//            appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
+//            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+//        }
+//        //save the document
+//        AppGrpPrimaryDocDto appGrpPrimaryDocDto = (AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
+//        if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
+//            log.debug(StringUtil.changeForLog("save the document"));
+//            appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
+//            List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
+//            String fileRepoGuid =fileRepoGuidList.get(0);
+//            if(StringUtil.isEmpty(fileRepoGuid)){
+//              log.error("the fileRepoGuid is null ...");
+//            }
+//            log.debug(StringUtil.changeForLog("the fileRepoGuid is -->:"+fileRepoGuid));
+//            //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
+//            appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
+//            appGrpPrimaryDocDto.setFile(null);
+//            appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
+//            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+//        }
+//        //to do this will use the config.
+//        EngineHelper.delegate("clinicalLaboratoryDelegator", "doSaveDraft", bpc);
 
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
@@ -287,13 +292,15 @@ public class NewApplicationDelegator {
      */
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
+        //do validate
+        doValidate(bpc);
         //save the premisse
         //get wrokgroup
 
-
-
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }
+
+
     /**
      * StartStep: ControlSwitch
      *
@@ -401,5 +408,31 @@ private  void loadingDraft(BaseProcessClass bpc){
                 return o1.getSvcName().compareTo(o2.getSvcName());
             }
         });
+    }
+    private void doValidate(BaseProcessClass bpc){
+        //do validate premiss
+        doValidatePremiss(bpc);
+    }
+    private void doValidatePremiss(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        //do validate premiss
+        Map<String,String> errorMap = new HashMap<>();
+        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+        String premiseType = appGrpPremisesDto.getPremisesType();
+        if(StringUtil.isEmpty(premiseType)){
+            errorMap.put("premisesType","Please select the premises Type");
+        }else if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
+            if (validationResult.isHasErrors()){
+                errorMap = validationResult.retrieveAll();
+            }
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
+            if (validationResult.isHasErrors()){
+                errorMap = validationResult.retrieveAll();
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
     }
 }

@@ -57,6 +57,11 @@ public class InputTag extends DivTagSupport{
         if (!StringUtil.isEmpty(style)) {
             html.append(" style=\"").append(style).append("\"");
         }
+
+        if (!StringUtil.isEmpty(cssClass)) {
+            html.append(" class=\"").append(cssClass).append("\"");
+        }
+
         if (!StringUtil.isEmpty(value)) {
             html.append(" value=\"").append(value).append("\"");
         }

@@ -33,6 +33,7 @@
                                                         <input class="form-check-input" id="premise_onsite" type="radio" name="premisesType" value = "<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>" aria-invalid="false">
                                                         <label class="form-check-label" for="premise_onsite"><span class="check-circle"></span>On-site</label>
                                                     </div>
+                                                  <span class="error-msg"><c:out value="${errorMap_premises.premisesType}"></c:out></span>
                                                 </div>
                                                 <div class="col-xs-6 col-md-2">
                                                     <div class="form-check">
@@ -40,6 +41,7 @@
                                                         <label class="form-check-label" for="premise_conveyance"><span class="check-circle"></span>Conveyance</label>
                                                     </div>
                                                 </div>
+
                                             </div>
                                             <iais:row cssClass="premiseLocationSelect hidden">
                                                 <iais:field value="Add or select a premises from the list" width="12"/>
@@ -75,7 +77,8 @@
                                                 <iais:row>
                                                     <iais:field value="Postal Code" width="12"/>
                                                     <iais:value width="5">
-                                                        <iais:input type="text" name="postalCode" id="sitePostalCode" value="${appGrpPremisesDto.postalCode}"></iais:input>
+                                                        <iais:input type="text"  name="postalCode" id="sitePostalCode" value="${appGrpPremisesDto.postalCode}"></iais:input>
+                                                        <span class="error-msg"><c:out value="${errorMap_premises.postalCode}"></c:out></span>
                                                     </iais:value>
                                                         <div class="col-xs-7 col-sm-6 col-md-4">
                                                             <p><a href="#">Retrieve your address</a></p>
@@ -91,6 +94,7 @@
                                                     <iais:field value="Street Name" width="10"/>
                                                     <iais:value width="10">
                                                         <iais:input type="text" name="streetName" id="siteStreetName" value="${appGrpPremisesDto.streetName}"></iais:input>
+                                                      <span class="error-msg"><c:out value="${errorMap_premises.streetName}"></c:out></span>
                                                     </iais:value>
                                                 </iais:row>
                                                 <iais:row>
@@ -117,11 +121,8 @@
                                                 <iais:row>
                                                     <iais:field value="Address Type" width="12"/>
                                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                                                        <select id="siteAddressType" name = "addrType">
-                                                            <option>Select address type</option>
-                                                            <option>Apt Blk</option>
-                                                            <option>Without Apt Blk</option>
-                                                        </select>
+                                                        <iais:select name="addrType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type"></iais:select>
+
                                                     </iais:value>
                                                 </iais:row>
                                                 <div class="form-group">

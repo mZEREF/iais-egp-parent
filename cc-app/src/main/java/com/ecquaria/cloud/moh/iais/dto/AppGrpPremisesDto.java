@@ -43,8 +43,8 @@ public class AppGrpPremisesDto implements Serializable {
     private String appGrpId;
 
     //What is your premises type?
-    @NotNull(message = "can not is null!", profiles = {"create", "edit"})
-    @NotBlank(message = "can not is blank!", profiles = {"create", "edit"})
+    @NotNull(message = "can not is null!", profiles = {"create", "edit","On_site","Conveyance"})
+    @NotBlank(message = "can not is blank!", profiles = {"create", "edit","On_site","Conveyance"})
     private String premisesType;
 
     //======================
@@ -54,8 +54,8 @@ public class AppGrpPremisesDto implements Serializable {
     private String hciName;
 
      //Postal Code
-     @NotNull(message = "can not is null!", profiles = {"create", "edit"})
-     @NotBlank(message = "can not is blank!", profiles = {"create", "edit"})
+     @NotNull(message = "can not is null!", profiles = {"create", "edit","On_site"})
+     @NotBlank(message = "can not is blank!", profiles = {"create", "edit","On_site"})
     private String postalCode;
 
     //Block / House No.
