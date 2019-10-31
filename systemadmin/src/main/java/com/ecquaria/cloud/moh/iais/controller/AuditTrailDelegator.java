@@ -8,18 +8,24 @@ package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.AuditTrailConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.AuditTrailQueryDto;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.ExcelWriter;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +61,7 @@ public class AuditTrailDelegator {
                 "Implement logging mechanisms to enable the timely detection and investigation" +
                         " of events that can lead to ICT security violations or incidents.");
         HttpServletRequest request = bpc.request;
-        IaisEGPHelper.clearSessionAttr(request, AuditTrailConstant.class);
+        IaisEGPHelper.clearSessionAttr(request, AuditTrailConstants.class);
     }
 
     /**
@@ -80,8 +86,8 @@ public class AuditTrailDelegator {
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         filterParameter.setClz(AuditTrailQueryDto.class);
-        filterParameter.setSearchAttr(AuditTrailConstant.PARAM_SEARCH);
-        filterParameter.setResultAttr(AuditTrailConstant.PARAM_SEARCHRESULT);
+        filterParameter.setSearchAttr(AuditTrailConstants.PARAM_SEARCH);
+        filterParameter.setResultAttr(AuditTrailConstants.PARAM_SEARCHRESULT);
         filterParameter.setSortField("audit_id");
 
         SearchParam trailDtoSearchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
@@ -99,8 +105,8 @@ public class AuditTrailDelegator {
             trailDtoSearchResult = auditTrailService.listAuditTrailDto(trailDtoSearchParam);
         }
 
-        ParamUtil.setSessionAttr(request, AuditTrailConstant.PARAM_SEARCH, trailDtoSearchParam);
-        ParamUtil.setRequestAttr(request, AuditTrailConstant.PARAM_SEARCHRESULT, trailDtoSearchResult);
+        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, trailDtoSearchParam);
+        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
     }
 
     public void prepareFullMode(BaseProcessClass bpc){
@@ -242,12 +248,12 @@ public class AuditTrailDelegator {
             return;
         }
 
-        String operationType =  ParamUtil.getString(request, AuditTrailConstant.PARAM_OPERATIONTYPE);
-        String operation = ParamUtil.getString(request, AuditTrailConstant.PARAM_OPERATION);
-        String user = ParamUtil.getString(request, AuditTrailConstant.PARAM_USER);
+        String operationType =  ParamUtil.getString(request, AuditTrailConstants.PARAM_OPERATIONTYPE);
+        String operation = ParamUtil.getString(request, AuditTrailConstants.PARAM_OPERATION);
+        String user = ParamUtil.getString(request, AuditTrailConstants.PARAM_USER);
 
-        String startDate = ParamUtil.getDate(request, AuditTrailConstant.PARAM_STARTDATE);
-        String endDate = ParamUtil.getDate(request, AuditTrailConstant.PARAM_ENDDATE);
+        String startDate = ParamUtil.getDate(request, AuditTrailConstants.PARAM_STARTDATE);
+        String endDate = ParamUtil.getDate(request, AuditTrailConstants.PARAM_ENDDATE);
 
         AuditTrailQueryDto queryDto = new AuditTrailQueryDto();
         if(operation != null){
@@ -264,15 +270,15 @@ public class AuditTrailDelegator {
         }else{
             //Corresponding XML param
             if(!StringUtil.isEmpty(operation)){
-                searchParam.addFilter(AuditTrailConstant.PARAM_OPERATION, operation, true);
+                searchParam.addFilter(AuditTrailConstants.PARAM_OPERATION, operation, true);
             }
 
             if(!StringUtil.isEmpty(startDate)){
-                searchParam.addFilter(AuditTrailConstant.PARAM_STARTDATE, startDate, true);
+                searchParam.addFilter(AuditTrailConstants.PARAM_STARTDATE, startDate, true);
             }
 
             if(!StringUtil.isEmpty(endDate)){
-                searchParam.addFilter(AuditTrailConstant.PARAM_ENDDATE, endDate, true);
+                searchParam.addFilter(AuditTrailConstants.PARAM_ENDDATE, endDate, true);
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.dto.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPremisesDto;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @date 10/8/2019
  */
 public interface AppGrpPremisesService {
-    public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto);
-    public List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId);
-    public List getAppGrpPremisesDtosByAppId(String appId);
+     AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto);
+     List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId);
+     List getAppGrpPremisesDtosByAppId(String appId);
 }

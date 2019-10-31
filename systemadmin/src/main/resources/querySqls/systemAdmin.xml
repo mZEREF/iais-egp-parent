@@ -94,9 +94,17 @@
 
     <sql key="listChklItem"  remarks="query chechlist items">
         <![CDATA[
-                select item.id as ITEM_ID, regulation.clause as CLAUSE_NUM, regulation.[desc] as [DESC],
-                item.question AS CHECKLISTITEM, item.ANSWER_TYPE as ANSWER_TYPE, item.risk_level as RISK_LEVEL,
-                item.status as STATUS from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation
+                select item.id as ITEM_ID, regulation.CLAUSE_NO as CLAUSE_NUM, regulation.clause as CLAUSE,
+                item.question AS CHECKLISTITEM, item.answer_type as ANSWER_TYPE, item.risk_level as RISK_LEVEL,
+                item.status as STATUS from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id and item.status = 'CMSTAT001'
+                <#if itemId??> and item.id = :itemId</#if>
+                <#if regulationClauseNo??> and regulation.clause_no = :regulationClauseNo</#if>
+                <#if regulationClause??> and regulation.clause = :regulationClause</#if>
+                <#if checklistItem??> and item.question = :checklistItem</#if>
+                <#if answerType??> and item.answer_type = :answerType</#if>
+                <#if riskLevel??> and item.risk_level = :riskLevel</#if>
+                <#if status??> and item.status = :status</#if>
         ]]>
 
     </sql>

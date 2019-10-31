@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import com.ecquaria.cloud.moh.iais.common.dto.sample.DemoQueryDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;

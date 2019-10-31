@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.dto.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.service.InboxTabService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

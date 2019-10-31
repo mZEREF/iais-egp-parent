@@ -15,9 +15,11 @@ package com.ecquaria.cloud.moh.iais.validate;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.action.OrgUserAccountSampleDelegator;
+import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountSampleDto;
+import com.ecquaria.cloud.moh.iais.common.validation.sample.OrgUserAccountSampleValidate;
 import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountSampleServiceImpl;
 import org.junit.Before;
@@ -68,13 +70,13 @@ public class OrgUserAccountValidateTest {
         OrgUserAccountSampleDto orgUserAccountDto = new OrgUserAccountSampleDto();
         // test if (dto == null || StringUtil.isEmpty(dto.getNircNo())) return errMap;
         orgUserAccountDto.setNircNo(null);
-        ParamUtil.setSessionAttr(request, OrgUserAccountSampleDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
+        ParamUtil.setSessionAttr(request, DemoConstants.ORG_USER_DTO_ATTR,orgUserAccountDto);
         Map<String,String> errorMap1 = orgUserAccountValidate.validate(request);
         Assert.assertNotNull(errorMap1);
 
         orgUserAccountDto.setNircNo("NircNo");
         orgUserAccountDto.setId(0);
-        ParamUtil.setSessionAttr(request, OrgUserAccountSampleDelegator.ORG_USER_DTO_ATTR,orgUserAccountDto);
+        ParamUtil.setSessionAttr(request, DemoConstants.ORG_USER_DTO_ATTR,orgUserAccountDto);
         OrgUserAccountSampleDto orgUserAccountDto1 = new OrgUserAccountSampleDto();
         orgUserAccountDto1.setId(1);
         PowerMockito.when(RestApiUtil.getByReqParam(Mockito.anyString(),

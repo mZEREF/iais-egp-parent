@@ -1,18 +1,22 @@
 package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.mastercode.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.MasterCodeConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
-import com.ecquaria.cloud.moh.iais.dto.MasterCodeQueryDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +36,6 @@ import java.util.Map;
 @Slf4j
 public class MasterCodeDelegator {
 
-    public static final String SEARCH_PARAM                        = "MasterCodeSearchParam";
-    public static final String SEARCH_RESULT                       = "MasterCodeSearchResult";
-    public static final String MASTERCODE_USER_ACCOUNT_TILE        = "MasterCodeEditTile";
-    public static final String MASTERCODE_USER_DTO_ATTR            = "MasterCodeDto";
-
-    public static final String MASTERCODE_ID                       = "master_code_id";
-    public static final String MASTERCODE_KEY                      = "master_code_key";
-
-
     private final FilterParameter filterParameter;
     private final MasterCodeService masterCodeService;
 
@@ -59,9 +54,9 @@ public class MasterCodeDelegator {
     public void doStart(BaseProcessClass bpc){
         logAboutStart("doStart");
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, SEARCH_PARAM, null);
-        ParamUtil.setSessionAttr(request, SEARCH_RESULT, null);
-        ParamUtil.setSessionAttr(request, MASTERCODE_USER_DTO_ATTR, null);
+        ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_RESULT, null);
+        ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, null);
     }
 
     /**
@@ -76,15 +71,15 @@ public class MasterCodeDelegator {
         preSelectOption(request);
 
         filterParameter.setClz(MasterCodeQueryDto.class);
-        filterParameter.setSearchAttr(SEARCH_PARAM);
-        filterParameter.setResultAttr(SEARCH_RESULT);
-        filterParameter.setSortField(MASTERCODE_ID);
+        filterParameter.setSearchAttr(MasterCodeConstants.SEARCH_PARAM);
+        filterParameter.setResultAttr(MasterCodeConstants.SEARCH_RESULT);
+        filterParameter.setSortField(MasterCodeConstants.MASTERCODE_ID);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "masterCodeQuery",searchParam);
 
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
-        ParamUtil.setSessionAttr(request,SEARCH_PARAM, searchParam);
-        ParamUtil.setRequestAttr(request,SEARCH_RESULT, searchResult);
+        ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, searchParam);
+        ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, searchResult);
     }
 
     /**
@@ -94,7 +89,7 @@ public class MasterCodeDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc){
         logAboutStart("prepareSwitch");
-        ParamUtil.getString(bpc.request, MasterCodeConstant.CRUD_ACTION_TYPE);
+        ParamUtil.getString(bpc.request, MasterCodeConstants.CRUD_ACTION_TYPE);
     }
 
     /**
@@ -106,15 +101,15 @@ public class MasterCodeDelegator {
     public void prepareCreate(BaseProcessClass bpc){
         logAboutStart("prepareCreate");
         HttpServletRequest request = bpc.request;
-        String masterCodeId = ParamUtil.getString(request,MasterCodeConstant.CRUD_ACTION_VALUE);
+        String masterCodeId = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
         ParamUtil.setRequestAttr(request, "masterCodeId", masterCodeId);
         List statusSelect = new ArrayList<SelectOption>();
-        SelectOption sp1 = new SelectOption("pending",MasterCodeConstant.PENDING);
+        SelectOption sp1 = new SelectOption("pending",MasterCodeConstants.PENDING);
         statusSelect.add(sp1);
-        SelectOption sp2 = new SelectOption("procing",MasterCodeConstant.PROCING);
+        SelectOption sp2 = new SelectOption("procing",MasterCodeConstants.PROCING);
         statusSelect.add(sp2);
         ParamUtil.setRequestAttr(request,"statusSelect",statusSelect);
-        ParamUtil.setRequestAttr(request, MASTERCODE_USER_ACCOUNT_TILE,"Master Code Create");
+        ParamUtil.setRequestAttr(request, MasterCodeConstants.MASTERCODE_USER_ACCOUNT_TILE,"Master Code Create");
     }
 
     /**
@@ -127,14 +122,14 @@ public class MasterCodeDelegator {
         logAboutStart("prepareEdit");
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
-        String rowguid = ParamUtil.getString(request,MasterCodeConstant.CRUD_ACTION_VALUE);
+        String rowguid = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
         MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByRowguid(rowguid);
-        ParamUtil.setSessionAttr(request, MASTERCODE_USER_DTO_ATTR, masterCodeDto);
-        ParamUtil.setRequestAttr(request, MASTERCODE_USER_ACCOUNT_TILE,"MasterCode Edit");
+        ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
+        ParamUtil.setRequestAttr(request, MasterCodeConstants.MASTERCODE_USER_ACCOUNT_TILE,"MasterCode Edit");
         List statusSelect = new ArrayList<SelectOption>();
-        SelectOption sp1 = new SelectOption("pending",MasterCodeConstant.PENDING);
+        SelectOption sp1 = new SelectOption("pending",MasterCodeConstants.PENDING);
         statusSelect.add(sp1);
-        SelectOption sp2 = new SelectOption("procing",MasterCodeConstant.PROCING);
+        SelectOption sp2 = new SelectOption("procing",MasterCodeConstants.PROCING);
         statusSelect.add(sp2);
         ParamUtil.setRequestAttr(request, "statusSelect",statusSelect);
     }
@@ -149,18 +144,18 @@ public class MasterCodeDelegator {
         logAboutStart("doSearch");
         HttpServletRequest request = bpc.request;
         SearchParam param = IaisEGPHelper.getSearchParam(request, true,filterParameter);
-        String masterCodeKey = ParamUtil.getString(request, MASTERCODE_KEY);
-        String codeValue = ParamUtil.getString(request,MasterCodeConstant.CRUD_VALUE);
-        String[] status = ParamUtil.getStrings(request,MasterCodeConstant.STATUS);
+        String masterCodeKey = ParamUtil.getString(request, MasterCodeConstants.MASTERCODE_KEY);
+        String codeValue = ParamUtil.getString(request,MasterCodeConstants.CRUD_VALUE);
+        String[] status = ParamUtil.getStrings(request,MasterCodeConstants.STATUS);
         if(!StringUtil.isEmpty(masterCodeKey)){
-            param.addFilter(MASTERCODE_KEY,masterCodeKey,true);
+            param.addFilter(MasterCodeConstants.MASTERCODE_KEY,masterCodeKey,true);
         }
         if(!StringUtil.isEmpty(codeValue)){
-            param.addFilter(MasterCodeConstant.CRUD_VALUE,codeValue,true);
+            param.addFilter(MasterCodeConstants.CRUD_VALUE,codeValue,true);
         }
         if(status != null && status.length>0){
             String statusStr = SqlHelper.constructInCondition("mc.STATUS",status.length);
-            param.addParam(MasterCodeConstant.STATUS,statusStr);
+            param.addParam(MasterCodeConstants.STATUS,statusStr);
             for (int i = 0 ; i<status.length; i++ ) {
                 param.addFilter("mc.STATUS"+i,status[i]);
             }
@@ -201,7 +196,7 @@ public class MasterCodeDelegator {
      */
     public void doDelete(BaseProcessClass bpc){
         logAboutStart("doDelete");
-        String id = ParamUtil.getString(bpc.request,MasterCodeConstant.CRUD_ACTION_VALUE);
+        String id = ParamUtil.getString(bpc.request,MasterCodeConstants.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(id)){
             masterCodeService.deleteMasterCodeById(Long.valueOf(id));
         }
@@ -216,24 +211,24 @@ public class MasterCodeDelegator {
     public void doCreate(BaseProcessClass bpc){
         logAboutStart("doCreate");
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request, MasterCodeConstant.CRUD_ACTION_TYPE);
+        String type = ParamUtil.getString(request, MasterCodeConstants.CRUD_ACTION_TYPE);
         if("save".equals(type)){
-            int masterCodeId = ParamUtil.getInt(request,MasterCodeConstant.CRUD_ACTION_VALUE);
+            int masterCodeId = ParamUtil.getInt(request,MasterCodeConstants.CRUD_ACTION_VALUE);
             MasterCodeDto masterCodeDto = new MasterCodeDto();
             getValueFromPage(masterCodeDto, request);
             masterCodeDto.setMasterCodeId(masterCodeId);
-            ParamUtil.setSessionAttr(request, MASTERCODE_USER_DTO_ATTR, masterCodeDto);
+            ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
             ValidationResult validationResult = ValidationUtils.validateProperty(masterCodeDto,"create");
             if (validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(request,MasterCodeConstant.ERRORMAP,errorMap);
-                ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.NO);
+                ParamUtil.setRequestAttr(request,MasterCodeConstants.ERRORMAP,errorMap);
+                ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.NO);
             }else{
                 masterCodeService.saveMasterCode(masterCodeDto);
-                ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.YES);
+                ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.YES);
             }
         }else{
-            ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.YES);
+            ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.YES);
         }
     }
 
@@ -246,33 +241,33 @@ public class MasterCodeDelegator {
     public void doEdit(BaseProcessClass bpc){
         logAboutStart("doEdit");
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request,MasterCodeConstant.CRUD_ACTION_TYPE);
+        String type = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_TYPE);
         if("edit".equals(type)){
-            MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MASTERCODE_USER_DTO_ATTR);
+            MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR);
             getValueFromPage(masterCodeDto, request);
             ValidationResult validationResult =WebValidationHelper.validateProperty(masterCodeDto, "edit");
             if (validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(request,MasterCodeConstant.ERRORMAP,errorMap);
-                ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.NO);
+                ParamUtil.setRequestAttr(request,MasterCodeConstants.ERRORMAP,errorMap);
+                ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.NO);
             }else{
                 Map<String,String> successMap = new HashMap<>();
                 successMap.put("test","success");
                 masterCodeService.saveMasterCode(masterCodeDto);
-                ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.YES);
-                ParamUtil.setRequestAttr(request,MasterCodeConstant.SUCCESSMAP,successMap);
+                ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.YES);
+                ParamUtil.setRequestAttr(request,MasterCodeConstants.SUCCESSMAP,successMap);
             }
         }else{
-            ParamUtil.setRequestAttr(request,MasterCodeConstant.ISVALID,MasterCodeConstant.YES);
+            ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.YES);
         }
     }
 
     private void getValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request){
-        String masterCodeKey = ParamUtil.getString(request,MASTERCODE_KEY);
+        String masterCodeKey = ParamUtil.getString(request,MasterCodeConstants.MASTERCODE_KEY);
         String rowguid = ParamUtil.getString(request,"rowguid");
         String codeCategory = ParamUtil.getString(request,"code_category");
-        String codeValue = ParamUtil.getString(request,MasterCodeConstant.CRUD_VALUE);
-        int status = ParamUtil.getInt(request,MasterCodeConstant.STATUS);
+        String codeValue = ParamUtil.getString(request,MasterCodeConstants.CRUD_VALUE);
+        int status = ParamUtil.getInt(request,MasterCodeConstants.STATUS);
         masterCodeDto.setMasterCodeKey(masterCodeKey);
         masterCodeDto.setRowguid(rowguid);
         masterCodeDto.setCodeCategory(codeCategory);
@@ -282,8 +277,8 @@ public class MasterCodeDelegator {
 
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> statusOptionList = new ArrayList<>();
-        statusOptionList.add(new SelectOption("Procing", MasterCodeConstant.PROCING));
-        statusOptionList.add(new SelectOption("Pending", MasterCodeConstant.PENDING));
+        statusOptionList.add(new SelectOption("Procing", MasterCodeConstants.PROCING));
+        statusOptionList.add(new SelectOption("Pending", MasterCodeConstants.PENDING));
 
         List<SelectOption> codeDescriptionOptionList = new ArrayList<>();
         codeDescriptionOptionList.add(new SelectOption("import", "import"));

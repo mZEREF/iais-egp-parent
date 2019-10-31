@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.dto.PostCodeDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
