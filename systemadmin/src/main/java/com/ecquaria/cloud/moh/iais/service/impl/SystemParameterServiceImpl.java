@@ -2,9 +2,9 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.dto.SystemParameterDto;
-import com.ecquaria.cloud.moh.iais.dto.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import lombok.extern.slf4j.Slf4j;

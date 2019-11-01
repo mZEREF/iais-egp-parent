@@ -2,8 +2,8 @@ package com.ecquaria.cloud.moh.iais.controller;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

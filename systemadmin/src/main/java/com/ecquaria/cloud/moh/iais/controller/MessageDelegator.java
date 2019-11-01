@@ -1,18 +1,22 @@
 package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.dto.MessageDto;
-import com.ecquaria.cloud.moh.iais.dto.MessageQueryDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +84,7 @@ public class MessageDelegator {
                 "Function is used by MOH system administrator (users given " +
                         "the administrator rights and have the rights to modify the information");
         HttpServletRequest request = bpc.request;
-        IaisEGPHelper.clearSessionAttr(request, MessageConstant.class);
+        IaisEGPHelper.clearSessionAttr(request, MessageConstants.class);
     }
 
 
@@ -96,14 +100,14 @@ public class MessageDelegator {
         //setting of query default value
         filterParameter.setClz(MessageQueryDto.class);
         filterParameter.setSortField("msg_id");
-        filterParameter.setSearchAttr(MessageConstant.PARAM_MESSAGE_SEARCH);
-        filterParameter.setResultAttr(MessageConstant.PARAM_MESSAGE_SEARCH_RESULT);
+        filterParameter.setSearchAttr(MessageConstants.PARAM_MESSAGE_SEARCH);
+        filterParameter.setResultAttr(MessageConstants.PARAM_MESSAGE_SEARCH_RESULT);
 
         SearchParam param = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "queryMessage", param);
         SearchResult searchResult = messageService.doQuery(param);
-        ParamUtil.setSessionAttr(request, MessageConstant.PARAM_MESSAGE_SEARCH, param);
-        ParamUtil.setRequestAttr(request, MessageConstant.PARAM_MESSAGE_SEARCH_RESULT, searchResult);
+        ParamUtil.setSessionAttr(request, MessageConstants.PARAM_MESSAGE_SEARCH, param);
+        ParamUtil.setRequestAttr(request, MessageConstants.PARAM_MESSAGE_SEARCH_RESULT, searchResult);
 
     }
 
@@ -123,14 +127,14 @@ public class MessageDelegator {
             return;
         }
 
-        String domainType = ParamUtil.getString(request, MessageConstant.PARAM_DOMAIN_TYPE);
-        String msgType = ParamUtil.getString(request, MessageConstant.PARAM_MSG_TYPE);
-        String module = ParamUtil.getString(request, MessageConstant.PARAM_MODULE);
-        String description = ParamUtil.getString(request, MessageConstant.PARAM_DESCRIPTION);
-        String message = ParamUtil.getString(request, MessageConstant.PARAM_MESSAGE);
+        String domainType = ParamUtil.getString(request, MessageConstants.PARAM_DOMAIN_TYPE);
+        String msgType = ParamUtil.getString(request, MessageConstants.PARAM_MSG_TYPE);
+        String module = ParamUtil.getString(request, MessageConstants.PARAM_MODULE);
+        String description = ParamUtil.getString(request, MessageConstants.PARAM_DESCRIPTION);
+        String message = ParamUtil.getString(request, MessageConstants.PARAM_MESSAGE);
 
 
-        MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO);
+        MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
         editDto.setDomainType(domainType);
         editDto.setMsgType(msgType);
         editDto.setModule(module);
@@ -161,7 +165,7 @@ public class MessageDelegator {
         String msgId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(msgId)) {
             MessageDto messageDto = messageService.getMessageById(msgId);
-            messageDto.setStatus(MessageConstant.STATUS_DEACTIVATED);
+            messageDto.setStatus(MessageConstants.STATUS_DEACTIVATED);
             messageService.saveMessage(messageDto);
         }
     }
@@ -177,9 +181,9 @@ public class MessageDelegator {
             return;
         }
         MessageQueryDto queryDto = new MessageQueryDto();
-        String domainType = ParamUtil.getString(request, MessageConstant.PARAM_DOMAIN_TYPE);
-        String msgType = ParamUtil.getString(request, MessageConstant.PARAM_MSG_TYPE);
-        String module = ParamUtil.getString(request, MessageConstant.PARAM_MODULE);
+        String domainType = ParamUtil.getString(request, MessageConstants.PARAM_DOMAIN_TYPE);
+        String msgType = ParamUtil.getString(request, MessageConstants.PARAM_MSG_TYPE);
+        String module = ParamUtil.getString(request, MessageConstants.PARAM_MODULE);
 
         queryDto.setDomainType(domainType);
         queryDto.setMsgType(msgType);
@@ -192,14 +196,14 @@ public class MessageDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
-            searchParam.addFilter(MessageConstant.PARAM_DOMAIN_TYPE, domainType, true);
+            searchParam.addFilter(MessageConstants.PARAM_DOMAIN_TYPE, domainType, true);
 
             if(!StringUtil.isEmpty(msgType)){
-                searchParam.addFilter(MessageConstant.PARAM_MSG_TYPE, msgType, true);
+                searchParam.addFilter(MessageConstants.PARAM_MSG_TYPE, msgType, true);
             }
 
             if(!StringUtil.isEmpty(module)){
-                searchParam.addFilter(MessageConstant.PARAM_MODULE, module, true);
+                searchParam.addFilter(MessageConstants.PARAM_MODULE, module, true);
             }
         }
     }
@@ -227,7 +231,7 @@ public class MessageDelegator {
         preSelectOption(request);
         if(!StringUtil.isEmpty(msgId)){
             MessageDto messageDto = messageService.getMessageById(msgId);
-            ParamUtil.setSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO, messageDto);
+            ParamUtil.setSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO, messageDto);
         }
     }
 

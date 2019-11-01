@@ -9,8 +9,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.dto.AuditTrailQueryDto;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
 import org.springframework.stereotype.Service;
 

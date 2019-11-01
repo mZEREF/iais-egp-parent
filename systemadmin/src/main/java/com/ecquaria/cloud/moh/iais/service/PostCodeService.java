@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.dto.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 
 import java.util.List;
 

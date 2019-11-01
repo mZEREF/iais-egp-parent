@@ -13,12 +13,13 @@
 
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountSampleDto;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -151,7 +152,7 @@ public class OrgUserAccountDelegatorTest {
     @Test
     public void testdoEditValidateHasError(){
         request.addParameter("crud_action_type","edit");
-        request.getSession().setAttribute(OrgUserAccountSampleDelegator.ORG_USER_DTO_ATTR, orgUserAccountDto);
+        request.getSession().setAttribute(DemoConstants.ORG_USER_DTO_ATTR, orgUserAccountDto);
         when(validationResult.isHasErrors()).thenReturn(true);
         orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
@@ -160,7 +161,7 @@ public class OrgUserAccountDelegatorTest {
     public void testdoEdit(){
         request.addParameter("crud_action_type","edit");
         orgUserAccountDto.setOldNricNo("test0");
-        request.getSession().setAttribute(OrgUserAccountSampleDelegator.ORG_USER_DTO_ATTR, orgUserAccountDto);
+        request.getSession().setAttribute(DemoConstants.ORG_USER_DTO_ATTR, orgUserAccountDto);
         request.addParameter("nircNo","test0");
         orgUserAccountDelegator.doEdit(bpc);
         Assert.assertTrue(true);
