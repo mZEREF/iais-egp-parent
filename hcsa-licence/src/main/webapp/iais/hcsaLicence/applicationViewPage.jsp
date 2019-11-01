@@ -1,658 +1,637 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%
+    //handle to the Engine APIs
+    sop.webflow.rt.api.BaseProcessClass process =
+            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+%>
+<webui:setLayout name="iais-cc"/>
+<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <input type="hidden" id = "premisesTypeValue" value="${appGrpPremisesDto.premisesType}">
+    <div class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="tab-gp steps-tab">
+                        <%@ include file="./navTabs.jsp" %>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tabInbox" role="tabpanel">
 
-
-<div class="onecolumn">
-    <div id="rotate">
-        <div class="header">
-            <div class="tab-header">
-                <ul>
-                    <li><a href="#fragment-1"><span>Info</span></a></li>
-                    <li><a href="#fragment-2"><span>Documents</span></a></li>
-                    <li><a href="#fragment-3"><span>Payment</span></a></li>
-                    <li><a href="#fragment-4"><span>Processing</span></a></li>
-                </ul>
+                            </div>
+                            <div class="tab-pane" id="tabApplication" role="tabpanel">
+                                <div class="tab-search">
+                                    <form class="form-inline">
+                                        <div class="form-group">
+                                            <label class="control-label" for="applicationType">Type</label>
+                                            <div class="col-xs-12 col-md-8 col-lg-9">
+                                                <select id="applicationType">
+                                                    <option>Select an type</option>
+                                                    <option selected>All</option>
+                                                    <option>Renewal</option>
+                                                    <option>New Licence</option>
+                                                    <option>Group</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label" for="applicationStatus">Status</label>
+                                            <div class="col-xs-12 col-md-8 col-lg-9">
+                                                <select id="applicationStatus">
+                                                    <option>Select an status</option>
+                                                    <option selected>All</option>
+                                                    <option>Approved</option>
+                                                    <option>Pending</option>
+                                                    <option>Draft</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group large right-side">
+                                            <div class="search-wrap">
+                                                <div class="input-group">
+                                                    <input class="form-control" id="applicationAdvancedSearch" type="text" placeholder="Application no." name="applicationAdvancedSearch" aria-label="applicationAdvancedSearch"><span class="input-group-btn">
+                              <button class="btn btn-default buttonsearch" title="Search by keywords"><i class="fa fa-search"></i></button></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Application No.</th>
+                                                    <th>Type</th>
+                                                    <th>Status</th>
+                                                    <th>Service</th>
+                                                    <th>Date Submitted <span class="sort"></span></th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
+                                                        <p><a href="#">RW-2019-00004</a></p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Renewal</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
+                                                        <p>Tissue Banking</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Approved</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
+                                                        <p>14 Feb 2019, 11:28</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication1">Actions</p>
+                                                        <select class="table-select" id="selectApplication1" aria-label="selectApplication1">
+                                                            <option>Select</option>
+                                                            <option>Option one</option>
+                                                            <option>Option two</option>
+                                                            <option>Option three</option>
+                                                            <option>Option four</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
+                                                        <p><a href="#">RW-2019-00003</a></p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>New Licence Application</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
+                                                        <p>Blood Banking</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Pending</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
+                                                        <p>05 Feb 2019, 09:24</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication2">Actions</p>
+                                                        <select class="table-select" id="selectApplication2" aria-label="selectApplication2">
+                                                            <option>Select</option>
+                                                            <option>Option one</option>
+                                                            <option>Option two</option>
+                                                            <option>Option three</option>
+                                                            <option>Option four</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
+                                                        <p><a class="collapsed" data-toggle="collapse" data-target="tabelcollapseOne" href="javascript:;">RW-2019-00002</a></p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Group​​​​​​​ Application</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
+                                                        <p>Multiple</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Draft</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
+                                                        <p>02 Feb 2019, 07:24</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication3">Actions</p>
+                                                        <select class="table-select" id="selectApplication3" aria-label="selectApplication3">
+                                                            <option>Select</option>
+                                                            <option>Option one</option>
+                                                            <option>Option two</option>
+                                                            <option>Option three</option>
+                                                            <option>Option four</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr class="collapse" data-child-row="tabelcollapseOne">
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
+                                                        <p><a href="#">RW-2019-00002-01</a></p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>New Application</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
+                                                        <p>Radiological Service</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Draft</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
+                                                        <p>02 Feb 2019, 07:24</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication4">Actions</p>
+                                                        <select class="table-select" id="selectApplication4" aria-label="selectApplication4">
+                                                            <option>Select</option>
+                                                            <option>Option one</option>
+                                                            <option>Option two</option>
+                                                            <option>Option three</option>
+                                                            <option>Option four</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr class="collapse" data-child-row="tabelcollapseOne">
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
+                                                        <p><a href="#">RW-2019-00002-01</a></p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>New Application</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
+                                                        <p>Nuclear Medicine</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Draft</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
+                                                        <p>02 Feb 2019, 07:24</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication5">Actions</p>
+                                                        <select class="table-select" id="selectApplication5" aria-label="selectApplication5">
+                                                            <option>Select</option>
+                                                            <option>Option one</option>
+                                                            <option>Option two</option>
+                                                            <option>Option three</option>
+                                                            <option>Option four</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
+                                                        <p><a href="#">RW-2019-00001</a></p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>New Licence Application</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
+                                                        <pClinical>Laboratory</pClinical>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Approved</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
+                                                        <p>01 Feb 2019, 08:24</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication6">Actions</p>
+                                                        <select class="table-select" id="selectApplication6" aria-label="selectApplication6">
+                                                            <option>Select</option>
+                                                            <option>Option one</option>
+                                                            <option>Option two</option>
+                                                            <option>Option three</option>
+                                                            <option>Option four</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tabLicence" role="tabpanel">
+                                <div class="tab-search license-search clearfix">
+                                    <div class="licence-btns"><a class="btn btn-primary disabled" href="javascript:;">Renew</a><a class="btn btn-secondary disabled" href="javascript:;">Cease</a><a class="btn btn-secondary disabled" href="javascript:;">Amend</a></div>
+                                    <div class="search-wrap">
+                                        <div class="input-group">
+                                            <input class="form-control" id="licenseAdvancedSearcch" type="text" placeholder="Licence no." name="licenseAdvancedSearcch" aria-label="licenseAdvancedSearcch"><span class="input-group-btn">
+                          <button class="btn btn-default buttonsearch" title="Search by keywords"><i class="fa fa-search"></i></button></span>
+                                        </div>
+                                    </div><a class="advanced-search" href="#">Advanced Search</a>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Licence No.</th>
+                                                    <th>Type <span class="sort"></span></th>
+                                                    <th>Status <span class="sort"></span></th>
+                                                    <th>Premises <span class="sort"></span></th>
+                                                    <th>Start Date <span class="desc"></span></th>
+                                                    <th>Expiry Date <span class="sort"></span></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input licenceCheck" id="licence1" type="checkbox" name="licence1" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence1"><span class="check-square"></span><a href="#">RW-2019-00004</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Clinical Laboratory</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Active</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input licenceCheck" id="licence2" type="checkbox" name="licence2" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence2"><span class="check-square"></span><a href="#">RW-2019-00003</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Nuclear Medicine</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Active</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check disabled">
+                                                            <input class="form-check-input licenceCheck" id="licence3" type="checkbox" name="licence3" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence3"><span class="check-square"></span><a href="#">RW-2019-00002</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Tissue Banking</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Expired</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p><a class="collapsed" data-toggle="collapse" href="#serviceCollapse" aria-expanded="false" aria-controls="serviceCollapse">Multiple</a></p>
+                                                        <div class="collapse" id="serviceCollapse">
+                                                            <ul>
+                                                                <li>16 Raffles Quay <br> # 01-03, 048581</li>
+                                                                <li>111 North Bridge Rd. <br> # 07-04, 179098</li>
+                                                                <li>568 Raffles Place. <br> # 08-01, 589098</li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check disabled">
+                                                            <input class="form-check-input licenceCheck" id="licence4" type="checkbox" name="licence4" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence4"><span class="check-square"></span><a href="#">RW-2019-00001</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Blood Banking</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Expired</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input licenceCheck" id="licence5" type="checkbox" name="licence5" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence5"><span class="check-square"></span><a href="#">RW-2019-00004</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Clinical Laboratory</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Active</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input licenceCheck" id="licence6" type="checkbox" name="licence6" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence6"><span class="check-square"></span><a href="#">RW-2019-00003</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Nuclear Medicine</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Active</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input licenceCheck" id="licence7" type="checkbox" name="licence7" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence7"><span class="check-square"></span><a href="#">RW-2019-00004</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Clinical Laboratory</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Active</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input licenceCheck" id="licence8" type="checkbox" name="licence8" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence8"><span class="check-square"></span><a href="#">RW-2019-00003</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Nuclear Medicine</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Active</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021			</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check disabled">
+                                                            <input class="form-check-input licenceCheck" id="licence9" type="checkbox" name="licence9" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence9"><span class="check-square"></span><a href="#">RW-2019-00001</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Blood Banking</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Expired</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                        <div class="form-check disabled">
+                                                            <input class="form-check-input licenceCheck" id="licence10" type="checkbox" name="licence10" aria-invalid="false">
+                                                            <label class="form-check-label" for="licence10"><span class="check-square"></span><a href="#">RW-2019-00001</a></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p>Blood Banking</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                        <p>Expired</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                        <p>14 Feb 2019</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                        <p>14 Feb 2021</p>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-
-        <div>
-            <form id = "applicationForm" class = "form" name="applicationForm" method = "post"  enctype="multipart/form-data">
-
-                <div id="fragment-1" class="tabFrame">
-                    <div class="inner-accordion" id="innerAccordiion1">
-                        <div class="header">
-                            <span class="collapse" style="height: 20px;">Submission Details</span>
-                        </div>
-                        <div class="content">
-
-                            <table class="table2 view-table"
-                                   style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                <tbody>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; width: 50%; border-color: #d0d0d0;">
-                                        No.
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${entity.appNo}"></c:out>
-                                    </td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-                                        Digital Service
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${entity.svcName}"></c:out>
-                                    </td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-                                        Submission Date
-                                    </td>
-
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${date}"></c:out>
-                                    </td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-                                        Current Status
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${displayCurrentStatus}"></c:out>
-                                    </td>
-                                </tr>
-
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-                                        Days Lapsed
-                                    </td>
-
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${lapsedDays}"></c:out>
-                                    </td>
-                                </tr>
-
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-                                        SLA
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><div
-                                            style="width: 50%;" class="">
-                                       </div></td>
-                                </tr>
-
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-                                        SLA
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">N/A</td>
-                                </tr>
-
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-                                        SLA
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">N/A</td>
-                                </tr>
-
-                                </tbody>
-                            </table>
-
-                            <div class="action-buttons" align="center"
-                                 style="margin-left: 0;">
-                                <button style="width: 150px;" id="openViewContent">
-                                    View Form
-                                </button>
-                            </div>
-                            <br class="clear" />
-                        </div>
-                    </div>
-
-                    <div class="inner-accordion" id="innerAccordiion2">
-                        <div class="header">
-                            <span class="collapse" style="height: 20px;">Applicant Details</span>
-                        </div>
-
-                        <div class="content">
-                            <table class="table2 view-table"
-                                   style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                <tbody>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; width: 50%; border-color: #d0d0d0;">
-
-                                        Applicant ID
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><c:out
-                                            value="${entity.applicantId}"></c:out></td>
-                                </tr>
-                                <tr>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        Name
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><c:out
-                                            value="${entity.applicantName}"></c:out></td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        Address
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><c:out
-                                            value="${entity.applicantAddress}"></c:out></td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        Mailing Adress
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><c:out
-                                            value="${entity.applicantMailAddress }"></c:out></td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-                                        E-mail
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><c:out
-                                            value="${entity.applicantEmail}"></c:out></td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        Mobile No.
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><c:out
-                                            value="${entity.applicantMobile}"></c:out></td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-                                        Phone No.
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><c:out
-                                            value="${entity.applicantTel}"></c:out></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <br class="clear" />
-                        </div>
-
-                    </div>
-
-
-                    <div class="inner-accordion" id="innerAccordiion3">
-                        <div class="header">
-                            <span class="collapse" style="height: 20px;">Submitter Details</span>
-                        </div>
-
-
-                        <div class="content">
-                            <table class="table2 view-table"
-                                   style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                <tbody>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; width: 50%; border-color: #d0d0d0;">
-
-                                        Submitter ID
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${entity.submitterId}"></c:out>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        Name
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${entity.submitterName}"></c:out>
-                                    </td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        Address
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><c:out
-                                            value="${entity.submitterAddress }"></c:out></td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        Mailing Address
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;"><c:out
-                                            value="${entity.submitterMailAddress}"></c:out></td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        E-mail
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${entity.submitterEmail}"></c:out>
-                                    </td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        Mobile No.
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${entity.submitterMobile}"></c:out>
-                                    </td>
-                                </tr>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">
-
-                                        Phone No.
-                                    </td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${entity.submitterTel}"></c:out>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <br class="clear" />
-                        </div>
-
-                    </div>
-                    <br class="clear" />
-                </div>
-
-
-                <div id="fragment-2" class="tabFrame">
-
-
-                    <div class="inner-accordion" id="innerAccordiion4">
-                        <script type="text/javascript">
-                            function changeSort_resultForm1(sort, isAsc) {
-                                var sortBy = sort;
-                                var sortDir;
-                                if(isAsc)
-                                    sortDir='';
-                                else
-                                    sortDir='descending';
-                                SOP.Crud.cfxSubmit('applicationForm', 'sortSupport', sortBy, sortDir);
-                            }
-                        </script>
-                        <div class="header"><span class="collapse" style="height: 20px;">Supporting Documents</span></div>
-                        <div class="content">
-                           <p class="text">
-                                <egov-smc:message key="supportingDocumentsDefine">These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed documents are those defined for this digital service only.</egov-smc:message>
-                            </p>
-                            <table class="table2 view-table" style="border: 1px; border-style:solid;border-color:#d0d0d0;">
-                                <tbody>
-                                <tr style="border:0px;background-color: #A5A5A5;">
-                                    <td class="th" align="left" width="16%">
-                                        <div class="sort-label">Document</div></td>
-                                    <td class="th" align="left" width="20%">
-                                        <div class="sort-label">File</div></td>
-                                    <td class="th" align="left" width="16%">
-                                        <div class="sort-label">Size</div></td>
-                                    <td class="th" align="left" width="16%">
-                                        <div class="sort-label">Submitted By</div></td>
-                                    <td class="th" align="left" width="20%">
-                                        <div class="sort-label">Data Submitted</div></td>
-                                    <td class="th" align="left" width="12%">
-                                        <div class="sort-label">Action</div></td>
-                                </tr>
-
-
-                                <tr style="width:50%">
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"></td>
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;">/td>
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"></td>
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"></td>
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"></td>
-                                    <td style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;">
-                                        <c:if test="${isUserCanUploadDoc == true or isUserCanUpdateStatus == true}">
-                                            <c:if test="${isUserCanHandleSupport}">
-
-                                            </c:if>
-                                        </c:if>
-                                    </td>
-                                </tr>
-
-
-
-                                </tbody>
-                            </table>
-                            <br class="clear"/>
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="inner-accordion" id="innerAccordiion5">
-                        <div class="header"><span class="collapse" style="height: 20px;">Internal Documents</span></div>
-
-
-                        <div class="content">
-                            <p class="text">
-                                <egov-smc:message key="internalDocumentsDefine">These are documents uploaded by an agency officer to support back office processing.</egov-smc:message>
-                            </p>
-                            <script type="text/javascript">
-                                function changeSort_resultForm(sort, isAsc) {
-                                    var sortBy = sort;
-                                    var sortDir;
-                                    if(isAsc)
-                                        sortDir='';
-                                    else
-                                        sortDir='descending';
-                                    SOP.Crud.cfxSubmit('applicationForm', 'sortInternal', sortBy, sortDir);
-                                }
-                            </script>
-                            <table class="table2 view-table" style="border: 1px; border-style:solid;border-color:#d0d0d0;">
-                                <tbody>
-
-                                <tr style="border:0px;background-color: #A5A5A5;">
-                                    <td class="th" align="left" width="16%">
-                                        <span class="column-sort"> <a class="sort-up" title="Sort up" onclick="changeSort_resultForm('docName', true)" href="javascript:void(0);"></a> <a class="sort-down " title="Sort down" onclick="changeSort_resultForm('docName', false)" href="javascript:void(0);"></a></span>
-                                        <div class="sort-label" style="padding-left:20px;">Document</div></td>
-                                    <td class="th" align="left" width="16%">
-                                        <span class="column-sort"> <a class="sort-up " title="Sort up" onclick="changeSort_resultForm('docFilename', true)" href="javascript:void(0);"></a> <a class="sort-down " title="Sort down" onclick="changeSort_resultForm('docFilename', false)" href="javascript:void(0);"></a></span>
-                                        <div class="sort-label" style="padding-left:20px;">File</div></td>
-                                    <td class="th" align="left" width="16%"><span class="column-sort"> <a class="sort-up " title="Sort up" onclick="changeSort_resultForm('docFileSize', true)" href="javascript:void(0);"></a> <a class="sort-down " title="Sort down" onclick="changeSort_resultForm('docFileSize', false)" href="javascript:void(0);"></a></span>
-                                        <div class="sort-label" style="padding-left:20px;">Size</div></td>
-                                    <td class="th" align="left" width="16%"><span class="column-sort"> <a class="sort-up " title="Sort up" onclick="changeSort_resultForm('createdUserId', true)" href="javascript:void(0);"></a> <a class="sort-down  " title="Sort down" onclick="changeSort_resultForm('createdUserId', false)" href="javascript:void(0);"></a></span>
-                                        <div class="sort-label" style="padding-left:20px;">Uploaded By</div></td>
-                                    <td class="th" align="left" width="16%"><span class="column-sort"> <a class="sort-up " title="Sort up" onclick="changeSort_resultForm('createdDate', true)" href="javascript:void(0);"></a> <a class="sort-down  " title="Sort down" onclick="changeSort_resultForm('createdDate', false)" href="javascript:void(0);"></a></span>
-                                        <div class="sort-label" style="padding-left:20px;">Date Uploaded</div></td>
-                                    <c:if test="${isUserCanUploadDoc == true or isUserCanUpdateStatus == true}">
-                                        <c:if test="${isUserCanHandleInternal}">
-                                            <td class="th" align="left" width="16%"></td>
-                                        </c:if>
-                                    </c:if>
-
-                                </tr>
-
-                                <tr style="width:50%">
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"></td>
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"></td>
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"></td>
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"></td>
-                                    <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"></td>
-                                    <c:if test="${isUserCanUploadDoc == true or isUserCanUpdateStatus == true}">
-                                        <c:if test="${isUserCanHandleInternal}">
-                                            <td  style="border: 1px; border-style:solid; text-align: left;width: 16%;border-color:#d0d0d0;"><a href="javascript:void(0);" onclick="deleteInternalDoc('');" style="cursor: pointer;">Remove</a></td>
-                                        </c:if>
-                                    </c:if>
-                                </tr>
-
-
-                                </tbody>
-                            </table>
-
-                            <br class="clear"/>
-                        </div>
-
-                    </div>
-
-                    <br class="clear"/>
-
-                </div>
-
-                <div id="fragment-3" class="tabFrame">
-                    <div class="inner-accordion" id="innerAccordiion6">
-                        <div class="header">
-                            <span class="collapse" style="height: 20px;">Payment Details</span>
-                        </div>
-
-                        <div class="content">
-                            <table class="table2 view-table"
-                                   style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                <tbody>
-                                <tr style="border: 0px; background-color: #A5A5A5;">
-                                    <td align="left" width="16%">Payment</td>
-                                    <td align="left" width="16%">Amount</td>
-                                    <td align="left" width="16%">Date</td>
-                                    <td align="left" width="16%">Status</td>
-                                    <td align="left" width="16%">Reference No.</td>
-                                    <td align="left" width="16%">Payment Type</td>
-                                </tr>
-
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                </tr>
-
-
-                                </tbody>
-                            </table>
-                            <br class="clear" />
-                        </div>
-                    </div>
-                </div>
-                <div id="fragment-4" class="tabFrame">
-                    <div class="inner-accordion" id="innerAccordiion7">
-                        <div class="header">
-                            <span class="collapse" style="height: 25px;">Processing Status Update</span>
-                        </div>
-
-                        <div class="content">
-                            <table class="table2 view-table"
-                                   style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                <tbody>
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; width: 50%; border-color: #d0d0d0;">Current Status:</td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <c:out value="${displayCurrentStatus}"></c:out>
-                                    </td>
-                                </tr>
-
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">Internal Comments:</td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <textarea rows="" cols="25" name="internalComments"></textarea>
-                                        <br /> <small class="error"></small>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: right; border-color: #d0d0d0;">Status:</td>
-                                    <td align="left"
-                                        style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-
-
-                                    </td>
-                                </tr>
-
-                                </tbody>
-                            </table>
-
-                            <div class="inner-accordion" id="innerAccordiion9" style="margin-left: 0px;margin-right: 0px;padding-left: 0px;padding-right: 0px;width: 100%">
-                                <div class="header">
-                                    <span class="collapse" style="height: 20px;">Endorsement Routing</span>
-                                </div>
-
-                                <div class="content">
-                                    <table class="table2 view-table" style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                        <tbody>
-                                        <tr style="border: 0px; background-color: #A5A5A5;">
-                                            <td align="left" width="5%">
-                                                <input id="selectAllEndorsement" type="checkbox" onclick="selectAllEndorsements(this.checked)"/>
-                                            </td>
-                                            <td align="left" width="5%">No</td>
-                                            <td align="left" width="16%">Agency</td>
-                                            <td align="left" width="16%">Working Group</td>
-                                            <td align="left" width="16%">Assignment Type</td>
-                                            <td align="left" width="16%">Officer</td>
-                                        </tr>
-
-                                        <tr style="width: 50%">
-                                            <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;">
-                                                <input type="checkbox" name="endorsementConfigIds" value="" onclick="selectEndorsement(this.checked)">
-                                            </td>
-                                            <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                            <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                            <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                            <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                            <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                        </tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-
-                            <div class="action-buttons" align="center" style="margin-left: 0;">
-                                <button type="button" style= "width:100px;" onclick="updateStatusConfirm();">Update</button>
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <br class="clear" />
-
-                    <div class="inner-accordion" id="innerAccordiion10">
-                        <div class="header">
-                            <span class="collapse" style="height: 20px;">Endorsement History</span>
-                        </div>
-
-                        <div class="content">
-                            <table class="table2 view-table" style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                <tbody>
-                                <tr style="border: 0px; background-color: #A5A5A5;">
-                                    <td align="left" width="3%">No</td>
-                                    <td align="left" width="8%">Stage</td>
-                                    <td align="left" width="8%">Agency</td>
-                                    <td align="left" width="8%">Officer</td>
-                                    <td align="left" width="16%">Working Group</td>
-                                    <td align="left" width="12%">Status</td>
-                                    <td align="left" width="16%">Internal Comments</td>
-                                    <td align="left" width="16%">Last Updated</td>
-                                </tr>
-
-                                <tr style="width: 50%">
-                                    <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <br class="clear" />
-
-
-
-
-
-                    <div class="inner-accordion" id="innerAccordiion8">
-                        <div class="header">
-                            <span class="collapse" style="height: 20px;">Processing History</span>
-                        </div>
-
-                        <div class="content">
-                            <table class="table2 view-table"
-                                   style="border: 1px; border-style: solid; border-color: #d0d0d0;">
-                                <tbody>
-                                <tr style="border: 0px; background-color: #A5A5A5;">
-                                    <td align="left" width="16%">Officer
-                                    </td>
-                                    <td align="left" width="16%">Working Group</td>
-                                    <td align="left" width="16%">Status Update</td>
-                                    <td align="left" width="16%">Internal Comments</td>
-                                    <td align="left" width="17%">Last Updated</td>
-                                </tr>
-
-                                <tr style="width: 50%">
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                    <td
-                                            style="border: 1px; border-style: solid; text-align: left; border-color: #d0d0d0;"></td>
-                                </tr>
-
-
-
-
-                                </tbody>
-                            </table>
-                            <br class="clear" />
-                        </div>
-
-                    </div>
-
-
-
-
-                </div>
-            </form>
-        </div>
-
     </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var premisesTypeValue = $('#premisesTypeValue').val();
+        if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==premisesTypeValue){
+            $('#premise_onsite').attr("checked","checked");
+            $('#premise_conveyance').removeAttr("checked");
+            $('.premiseLocationSelect').removeClass('hidden');
+            $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
+        }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>'==premisesTypeValue){
+            $('#premise_conveyance').attr("checked","checked");
+            $('#premise_onsite').removeAttr("checked");
+            $('.premiseLocationSelect').removeClass('hidden');
+            $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
+        }
+        premisesSelectChange();
+
+        //Binding method
+        $('#premiseId').click(function(){
+            submit('documents',null,null);
+        });
+        $('#premiseSaveDraft').click(function(){
+            submit('premises','saveDraft',null);
+        });
+    });
 
 
-<iframe id="pdfFormIframe" height="0" width="1"></iframe>
+</script>
+
+
+
