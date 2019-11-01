@@ -14,7 +14,7 @@ import lombok.Setter;
 public class BaseItem {
     private Integer id;
     private String rowguid;
-    private Integer configId;
+    private Integer dsads;
     private String module;
     private String type;
     private String sectionId;
