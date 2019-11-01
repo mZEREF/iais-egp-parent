@@ -120,10 +120,10 @@ public class OrgUserAccountSampleDelegator {
             param.addFilter("uen_no",uenNo,true);
         }
         if(status != null && status.length>0){
-            String statusStr = SqlHelper.constructInCondition("account.DemoConstants.STATUS",status.length);
+            String statusStr = SqlHelper.constructInCondition("account.STATUS",status.length);
             param.addParam(DemoConstants.STATUS,statusStr);
             for (int i = 0 ; i<status.length; i++ ) {
-                param.addFilter("account.DemoConstants.STATUS"+i,status[i]);
+                param.addFilter("account.STATUS"+i,status[i]);
             }
         }
         log.debug(StringUtil.changeForLog("The doSearch end ..."));
