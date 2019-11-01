@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.EngineHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -255,31 +256,31 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
         doValidate(bpc);
         //save the premisse
-//        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-//        if(appGrpPremisesDto!=null){
-//            log.debug(StringUtil.changeForLog("save the premisse"));
-//            appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
-//            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-//        }
-//        //save the document
-//        AppGrpPrimaryDocDto appGrpPrimaryDocDto = (AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
-//        if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
-//            log.debug(StringUtil.changeForLog("save the document"));
-//            appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
-//            List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
-//            String fileRepoGuid =fileRepoGuidList.get(0);
-//            if(StringUtil.isEmpty(fileRepoGuid)){
-//              log.error("the fileRepoGuid is null ...");
-//            }
-//            log.debug(StringUtil.changeForLog("the fileRepoGuid is -->:"+fileRepoGuid));
-//            //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
-//            appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
-//            appGrpPrimaryDocDto.setFile(null);
-//            appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
-//            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
-//        }
-//        //to do this will use the config.
-//        EngineHelper.delegate("clinicalLaboratoryDelegator", "doSaveDraft", bpc);
+        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+        if(appGrpPremisesDto!=null){
+            log.debug(StringUtil.changeForLog("save the premisse"));
+            appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
+            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+        }
+        //save the document
+        AppGrpPrimaryDocDto appGrpPrimaryDocDto = (AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
+        if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
+            log.debug(StringUtil.changeForLog("save the document"));
+            appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
+            List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
+            String fileRepoGuid =fileRepoGuidList.get(0);
+            if(StringUtil.isEmpty(fileRepoGuid)){
+              log.error("the fileRepoGuid is null ...");
+            }
+            log.debug(StringUtil.changeForLog("the fileRepoGuid is -->:"+fileRepoGuid));
+            //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
+            appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
+            appGrpPrimaryDocDto.setFile(null);
+            appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
+            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+        }
+        //to do this will use the config.
+        EngineHelper.delegate("clinicalLaboratoryDelegator", "doSaveDraft", bpc);
 
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
