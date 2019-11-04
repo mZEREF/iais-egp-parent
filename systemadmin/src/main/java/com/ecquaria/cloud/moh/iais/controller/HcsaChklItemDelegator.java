@@ -44,7 +44,7 @@ public class HcsaChklItemDelegator {
     private FilterParameter filterParameter;
 
     @Autowired
-    public void HcsaChklItemDelegator(HcsaChklService hcsaChklService, FilterParameter filterParameter){
+    public HcsaChklItemDelegator(HcsaChklService hcsaChklService, FilterParameter filterParameter){
         this.hcsaChklService = hcsaChklService;
         this.filterParameter = filterParameter;
     }
