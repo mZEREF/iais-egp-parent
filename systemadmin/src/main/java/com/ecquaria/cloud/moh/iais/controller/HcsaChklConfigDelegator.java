@@ -26,7 +26,7 @@ public class HcsaChklConfigDelegator {
     private FilterParameter filterParameter;
 
     @Autowired
-    public void HcsaChklConfigDelegator(HcsaChklService hcsaChklService, FilterParameter filterParameter){
+    public HcsaChklConfigDelegator(HcsaChklService hcsaChklService, FilterParameter filterParameter){
         this.hcsaChklService = hcsaChklService;
         this.filterParameter = filterParameter;
     }
