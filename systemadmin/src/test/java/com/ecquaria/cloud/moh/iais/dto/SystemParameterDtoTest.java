@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

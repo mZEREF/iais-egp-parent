@@ -1,11 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.HcsaServiceDto;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -63,7 +63,7 @@ public class ShowServiceFormsDelegator {
     public void prepareServiceLoad(BaseProcessClass bpc){
         log.debug("the do prepareServiceLoad start ....");
         String crud_action_type_tab = (String)ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-        Map<String,String> ServiceFormUrlMaps = (Map<String,String>)ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.SERVICEFORMURLMAPS);
+        Map<String,String> ServiceFormUrlMaps = (Map<String,String>)ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.SERVICEFORMURLMAPS);
         String SericeformUrl = ServiceFormUrlMaps.get(crud_action_type_tab)+"?crud_action_type=serviceForms&crud_action_type_tab="+crud_action_type_tab;
         ParamUtil.setRequestAttr(bpc.request,"SericeformUrl",SericeformUrl);
         log.info(StringUtil.changeForLog("The SericeformUrl is -->;"+SericeformUrl));

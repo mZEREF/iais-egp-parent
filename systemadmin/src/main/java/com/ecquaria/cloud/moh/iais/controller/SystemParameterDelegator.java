@@ -1,18 +1,22 @@
 package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.SystemParameterConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.dto.SystemParameterDto;
-import com.ecquaria.cloud.moh.iais.dto.SystemParameterQueryDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.SystemParameterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +94,7 @@ public class SystemParameterDelegator {
                         "functions for System Administrator to maintain the set " +
                         "of system parameters use by entire system");
         HttpServletRequest request = bpc.request;
-        IaisEGPHelper.clearSessionAttr(request, SystemParameterConstant.class);
+        IaisEGPHelper.clearSessionAttr(request, SystemParameterConstants.class);
     }
 
     /**
@@ -102,16 +106,16 @@ public class SystemParameterDelegator {
         preSelectOption(request);
 
         filterParameter.setClz(SystemParameterQueryDto.class);
-        filterParameter.setSearchAttr(SystemParameterConstant.PARAM_SEARCH);
-        filterParameter.setResultAttr(SystemParameterConstant.PARAM_SEARCHRESULT);
+        filterParameter.setSearchAttr(SystemParameterConstants.PARAM_SEARCH);
+        filterParameter.setResultAttr(SystemParameterConstants.PARAM_SEARCHRESULT);
         filterParameter.setSortField("pid");
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "querySystemParam", searchParam);
 
         SearchResult searchResult = parameterService.doQuery(searchParam);
-        ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAM_SEARCH, searchParam);
-        ParamUtil.setRequestAttr(request, SystemParameterConstant.PARAM_SEARCHRESULT, searchResult);
+        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_SEARCH, searchParam);
+        ParamUtil.setRequestAttr(request, SystemParameterConstants.PARAM_SEARCHRESULT, searchResult);
     }
 
 
@@ -128,10 +132,10 @@ public class SystemParameterDelegator {
 
         SystemParameterQueryDto queryDto = new SystemParameterQueryDto();
 
-        String domainType = ParamUtil.getString(request, SystemParameterConstant.PARAM_DOMAIN_TYPE);
-        String module = ParamUtil.getString(request, SystemParameterConstant.PARAM_MODULE);
-        String status = ParamUtil.getString(request, SystemParameterConstant.PARAM_STATUS);
-        String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
+        String domainType = ParamUtil.getString(request, SystemParameterConstants.PARAM_DOMAIN_TYPE);
+        String module = ParamUtil.getString(request, SystemParameterConstants.PARAM_MODULE);
+        String status = ParamUtil.getString(request, SystemParameterConstants.PARAM_STATUS);
+        String description = ParamUtil.getString(request, SystemParameterConstants.PARAM_DESCRIPTION);
 
         queryDto.setDomainType(domainType);
         queryDto.setModule(module);
@@ -145,16 +149,16 @@ public class SystemParameterDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
         }else {
-            searchParam.addFilter(SystemParameterConstant.PARAM_DOMAIN_TYPE, domainType, true);
+            searchParam.addFilter(SystemParameterConstants.PARAM_DOMAIN_TYPE, domainType, true);
             if(!StringUtil.isEmpty(description)){
-                searchParam.addFilter(SystemParameterConstant.PARAM_DESCRIPTION, description, true);
+                searchParam.addFilter(SystemParameterConstants.PARAM_DESCRIPTION, description, true);
             }
 
             if(!StringUtil.isEmpty(module)){
-                searchParam.addFilter(SystemParameterConstant.PARAM_MODULE, module, true);
+                searchParam.addFilter(SystemParameterConstants.PARAM_MODULE, module, true);
             }
             if(!StringUtil.isEmpty(status)){
-                searchParam.addFilter(SystemParameterConstant.PARAM_STATUS, status, true);
+                searchParam.addFilter(SystemParameterConstants.PARAM_STATUS, status, true);
             }
         }
     }
@@ -174,12 +178,12 @@ public class SystemParameterDelegator {
             return;
         }
 
-        String domainType = ParamUtil.getString(request, SystemParameterConstant.PARAM_DOMAIN_TYPE);
-        String module = ParamUtil.getString(request, SystemParameterConstant.PARAM_MODULE);
-        String value = ParamUtil.getString(request, SystemParameterConstant.PARAM_VALUE);
-        String description = ParamUtil.getString(request, SystemParameterConstant.PARAM_DESCRIPTION);
+        String domainType = ParamUtil.getString(request, SystemParameterConstants.PARAM_DOMAIN_TYPE);
+        String module = ParamUtil.getString(request, SystemParameterConstants.PARAM_MODULE);
+        String value = ParamUtil.getString(request, SystemParameterConstants.PARAM_VALUE);
+        String description = ParamUtil.getString(request, SystemParameterConstants.PARAM_DESCRIPTION);
 
-        SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO);
+        SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO);
         editDto.setDomainType(domainType);
         editDto.setDomainType(domainType);
         editDto.setModule(module);
@@ -210,7 +214,7 @@ public class SystemParameterDelegator {
         String pid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(pid)) {
             SystemParameterDto dto = parameterService.getParameterByPid(pid);
-            dto.setStatus(SystemParameterConstant.STATUS_DEACTIVATED);
+            dto.setStatus(SystemParameterConstants.STATUS_DEACTIVATED);
             parameterService.saveSystemParameter(dto);
         }
     }
@@ -225,7 +229,7 @@ public class SystemParameterDelegator {
         preSelectOption(request);
         if(!StringUtil.isEmpty(pid)){
             SystemParameterDto dto = parameterService.getParameterByPid(pid);
-            ParamUtil.setSessionAttr(request, SystemParameterConstant.PARAMETER_REQUEST_DTO, dto);
+            ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, dto);
         }
     }
 

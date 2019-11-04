@@ -2,16 +2,16 @@ package com.ecquaria.cloud.moh.iais.controller;
 
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
-import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -177,7 +177,7 @@ public class MasterCodeDelegatorTest {
         PowerMockito.when(AuditTrailDto.getThreadDto()).thenReturn(auditTrailDto);
         PowerMockito.mockStatic(WebValidationHelper.class);
         PowerMockito.when(WebValidationHelper.validateProperty(Mockito.anyObject(), Mockito.anyString())).thenReturn(null);
-        request.getSession().setAttribute(MessageConstant.MESSAGE_REQUEST_DTO, masterCodeDto);
+        request.getSession().setAttribute(MessageConstants.MESSAGE_REQUEST_DTO, masterCodeDto);
         masterCodeDelegator.doEdit(bpc);
         Assert.assertTrue(true);
     }

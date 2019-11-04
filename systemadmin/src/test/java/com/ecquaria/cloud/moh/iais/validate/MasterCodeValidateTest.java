@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.validate;
 
 
+import com.ecquaria.cloud.moh.iais.common.constant.mastercode.MasterCodeConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.mastercode.MasterCodeValidate;
 import com.ecquaria.cloud.moh.iais.controller.MasterCodeDelegator;
-import com.ecquaria.cloud.moh.iais.dto.MasterCodeDto;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +36,7 @@ public class MasterCodeValidateTest {
     @Test
     public void testValidate(){
         MasterCodeDto masterCodeDto = new MasterCodeDto();
-        PowerMockito.when(ParamUtil.getSessionAttr(request, MasterCodeDelegator.MASTERCODE_USER_DTO_ATTR)).thenReturn(masterCodeDto);
+        PowerMockito.when(ParamUtil.getSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR)).thenReturn(masterCodeDto);
         masterCodeValidate.validate(request);
         Assert.assertTrue(true);
     }
@@ -43,7 +45,7 @@ public class MasterCodeValidateTest {
     public void testValidateNull(){
         MasterCodeDto masterCodeDto = new MasterCodeDto();
         masterCodeDto.setMasterCodeId(1);
-        PowerMockito.when((MasterCodeDto) ParamUtil.getRequestAttr(request, MasterCodeDelegator.MASTERCODE_USER_DTO_ATTR)).thenReturn(masterCodeDto);
+        PowerMockito.when((MasterCodeDto) ParamUtil.getRequestAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR)).thenReturn(masterCodeDto);
         masterCodeValidate.validate(request);
         Assert.assertTrue(true);
     }

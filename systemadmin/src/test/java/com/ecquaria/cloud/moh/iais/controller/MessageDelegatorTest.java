@@ -7,16 +7,16 @@ package com.ecquaria.cloud.moh.iais.controller;
  */
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.MessageConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.dto.MessageDto;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -194,11 +194,11 @@ public class MessageDelegatorTest {
         PowerMockito.when(ParamUtil.getString(request, "msgType")).thenReturn("Error");
         PowerMockito.when(ParamUtil.getString(request, "module")).thenReturn("New");
         MessageDto messageDto = new MessageDto();
-        PowerMockito.when(ParamUtil.getSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
+        PowerMockito.when(ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
         PowerMockito.mockStatic(AuditTrailDto.class);
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         PowerMockito.when(IaisEGPHelper.getCurrentAuditTrailDto()).thenReturn(auditTrailDto);
-        request.getSession().setAttribute(MessageConstant.MESSAGE_REQUEST_DTO, messageDto);
+        request.getSession().setAttribute(MessageConstants.MESSAGE_REQUEST_DTO, messageDto);
 
         messageDelegator.doEdit(bpc);
         Assert.assertTrue(true);
@@ -213,7 +213,7 @@ public class MessageDelegatorTest {
         request.addParameter("description","sadsadasdas");
 
         MessageDto messageDto = new MessageDto();
-        PowerMockito.when(ParamUtil.getSessionAttr(request, MessageConstant.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
+        PowerMockito.when(ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO)).thenReturn(messageDto);
         messageDto.setDomainType("INTRA");
         messageDto.setMsgType("Error");
         messageDto.setModule("New");

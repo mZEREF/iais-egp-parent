@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;

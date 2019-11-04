@@ -6,6 +6,7 @@ package com.ecquaria.cloud.moh.iais.dto;
  *description:
  */
 
+import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
@@ -15,7 +16,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MessageDto.class})
+@PrepareForTest({MessageQueryDto.class})
 public class MessageQueryDtoTest {
 
     @Spy

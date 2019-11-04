@@ -15,8 +15,8 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.dto.DemoQueryDto;
-import com.ecquaria.cloud.moh.iais.dto.OrgUserAccountSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.sample.DemoQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
 
 
 /**
