@@ -120,10 +120,10 @@ public class MessageDelegator {
     public void doEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if("cancel".equals(currentAction)){
+        if(MessageConstants.ACTION_CANCEL.equals(currentAction)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
-        }else if(!"doEdit".equals(currentAction)){
+        }else if(!MessageConstants.ACTION_EDIT.equals(currentAction)){
             return;
         }
 
@@ -177,7 +177,7 @@ public class MessageDelegator {
     public void doSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"doSearch".equals(currentAction)){
+        if(!MessageConstants.ACTION_SEARCH.equals(currentAction)){
             return;
         }
         MessageQueryDto queryDto = new MessageQueryDto();

@@ -216,7 +216,7 @@ public class AuditTrailDelegator {
     public void doExport(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"doExport".equals(currentAction)){
+        if(!AuditTrailConstants.ACTION_EXPORT_EXCL.equals(currentAction)){
             return;
         }
 
@@ -244,7 +244,7 @@ public class AuditTrailDelegator {
     public void doQuery(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"doQuery".equals(currentAction)){
+        if(!AuditTrailConstants.ACTION_QUERY.equals(currentAction)){
             return;
         }
 
