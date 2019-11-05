@@ -2,8 +2,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -76,7 +76,9 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines start ...."));
-        List checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines("Laboratory Disciplines");
+
+        //wait update api url
+        //List checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines("Laboratory Disciplines");
         Map<String,String> map = new HashMap<>();
         map.put("Histocompatibility", "Histocompatibility");
         map.put("Immunology", "Immunology");
@@ -293,7 +295,7 @@ public class ClinicalLaboratoryDelegator {
         if(cgoId == "new"){
             return;
         }
-        AppSvcCgoDto governanceOfficersDto = appGrpSvcRelatedInfoService.loadGovernanceOfficerByCGOId(cgoId);
+        AppSvcCgoDto governanceOfficersDto = appGrpSvcRelatedInfoService.loadGovernanceOfficerByCgoId(cgoId);
         ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
         log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId end ...."));
     }

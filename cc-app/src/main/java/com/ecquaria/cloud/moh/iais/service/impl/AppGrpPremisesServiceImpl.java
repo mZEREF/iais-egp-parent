@@ -27,8 +27,10 @@ import java.util.Map;
 @Slf4j
 public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     private static final String URL="iais-application:8881/iais-premises";
-    private static final String PREMISESURL="config-service:8888/application-type";
+    private static final String PREMISESURL="config-service:8878/application-type";
     private static final String POSTCODEURL = "system-admin:8886/api/postcodes";
+    //get svcId by svcCode
+    private static final String SERVICEID = "config-service:8878//service-by-code";
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
         appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -58,25 +60,29 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     }
 
     @Override
-    public List getAppGrpPremisesType() {
+    public List<HcsaSvcSpePremisesTypeDto> getAppGrpPremisesTypeBySvcId(String svcId) {
         /*Map<String,Object> map = new HashMap<>();
         List serviceId = new ArrayList();
         serviceId.add("4029F370-EDEE-E911-BE76-000C294908E1");
         map.put("ServiceId", serviceId);*/
         Map<String,Object> map1 = new HashMap<>();
-        map1.put("serviceId", "4029F370-EDEE-E911-BE76-000C294908E1");
+        map1.put("serviceId", svcId);
         List<HcsaSvcSpePremisesTypeDto> premisesType = RestApiUtil.getListByReqParam(PREMISESURL, map1, HcsaSvcSpePremisesTypeDto.class);
-        List<String> type = new ArrayList<>();
-        type.add("On-site");
-        type.add("Conveyance");
-        return type;
+        return premisesType;
     }
 
     @Override
-    public PostCodeDto getPremisesByPostalCode(String postalCode) {
+    public PostCodeDto getPremisesByPostalCode(String searchField, String filterValue) {
         Map<String,Object> map = new HashMap<>();
-        map.put("searchField", "postalCode");
-        map.put("filterValue", postalCode);
+        map.put("searchField", searchField);
+        map.put("filterValue", filterValue);
         return RestApiUtil.getByReqParam(POSTCODEURL, map, PostCodeDto.class);
+    }
+
+    @Override
+    public String getSvcIdBySvcCode(String svcCode) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("code", svcCode);
+        return RestApiUtil.getByReqParam(SERVICEID, map, String.class);
     }
 }

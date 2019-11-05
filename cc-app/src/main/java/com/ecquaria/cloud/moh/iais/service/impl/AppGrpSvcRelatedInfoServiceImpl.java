@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.TestDto;
 import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
@@ -22,6 +22,7 @@ import java.util.Map;
 @Service
 @Slf4j
 public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoService {
+    //load Laboratory Disciplines page
     private static final String GET_DISCIPLINE_URL = "";
     private static final String POST_DISCIPLINE_URL = "";
     private static final String GET_CGO_URL = "";
@@ -84,7 +85,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
     }
 
     @Override
-    public AppSvcCgoDto loadGovernanceOfficerByCGOId(String cgoId) {
+    public AppSvcCgoDto loadGovernanceOfficerByCgoId(String cgoId) {
 
 
         return null;

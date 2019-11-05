@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface AppGrpPremisesService {
     AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto);
     List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId);
     List getAppGrpPremisesDtosByAppId(String appId);
-    List getAppGrpPremisesType();
-    PostCodeDto getPremisesByPostalCode(String postalCode);
+    List<HcsaSvcSpePremisesTypeDto> getAppGrpPremisesTypeBySvcId(String svcId);
+    PostCodeDto getPremisesByPostalCode(String searchField, String filterValue);
+    String getSvcIdBySvcCode(String svcCode);
+
 }

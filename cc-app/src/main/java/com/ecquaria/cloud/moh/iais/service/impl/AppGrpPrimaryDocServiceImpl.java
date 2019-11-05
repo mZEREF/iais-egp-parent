@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
@@ -29,7 +30,8 @@ import java.util.Map;
 public class AppGrpPrimaryDocServiceImpl implements AppGrpPrimaryDocService {
     private static final String URL="iais-application:8881/iais-premisesdoc";
     private static final String URLREPO = "file-repository:8884";
-    private static final String URLADMIM ="system-admin-service:8886/get-common-doc";
+    //get hcsa svc doc(comm/premise)
+    private static final String URLADMIM ="system-admin-service:8886/hsca-svc-doc-config";
     private static final String URLSAVEMUL="iais-application:8881/iais-premisesdoc/appGrpPrimaryDocs";
 
     @Override
@@ -53,12 +55,12 @@ public class AppGrpPrimaryDocServiceImpl implements AppGrpPrimaryDocService {
     }
 
     @Override
-    public List getAllHcsaSvcCommonDocDtos() {
+    public List<HcsaSvcDocConfigDto> getAllHcsaSvcCommonDocDtos() {
         log.debug("getAllHcsaSvcCommonDocDtos start......");
         Map<String,Object> map = new HashMap<>();
-        map.put("status", AppConsts.COMMON_STATUS_ACTIVE);
-        List<AppGrpPremisesDto> hcsaSvcCommonDocDtoList = RestApiUtil.getListByReqParam(URLADMIM, map, AppGrpPremisesDto.class);
-        return hcsaSvcCommonDocDtoList;
+//        map.put("status", AppConsts.COMMON_STATUS_ACTIVE);
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = RestApiUtil.getListByReqParam(URLADMIM, map, HcsaSvcDocConfigDto.class);
+        return hcsaSvcDocConfigDtos;
     }
 
     @Override
