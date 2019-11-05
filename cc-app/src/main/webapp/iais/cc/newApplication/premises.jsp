@@ -28,20 +28,15 @@
                                         <div class="form-horizontal">
                                             <div class="form-group" id="premisesType">
                                                 <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your premises type?</label>
-                                                <div class="col-xs-6 col-md-2">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" id="premise_onsite" type="radio" name="premisesType" value = "<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>" aria-invalid="false">
-                                                        <label class="form-check-label" for="premise_onsite"><span class="check-circle"></span>On-site</label>
+                                                <c:forEach var="premisesType" items="${premisesType}">
+                                                    <div class="col-xs-6 col-md-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" value = ${premisesType.premisesType} aria-invalid="false">
+                                                            <label class="form-check-label" ><span class="check-circle"></span>${premisesType.premisesType}</label>
+                                                        </div>
+                                                        <span class="error-msg"><c:out value="${errorMap_premises.premisesType}"></c:out></span>
                                                     </div>
-                                                  <span class="error-msg"><c:out value="${errorMap_premises.premisesType}"></c:out></span>
-                                                </div>
-                                                <div class="col-xs-6 col-md-2">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" id="premise_conveyance" type="radio" name="premisesType" value="<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>" aria-invalid="false">
-                                                        <label class="form-check-label" for="premise_conveyance"><span class="check-circle"></span>Conveyance</label>
-                                                    </div>
-                                                </div>
-
+                                                </c:forEach>
                                             </div>
                                             <iais:row cssClass="premiseLocationSelect hidden">
                                                 <iais:field value="Add or select a premises from the list" width="12"/>
@@ -81,7 +76,7 @@
                                                         <span class="error-msg"><c:out value="${errorMap_premises.postalCode}"></c:out></span>
                                                     </iais:value>
                                                         <div class="col-xs-7 col-sm-6 col-md-4">
-                                                            <p><a href="#">Retrieve your address</a></p>
+                                                            <p><a id="retrieveAddr" href="#">Retrieve your address</a></p>
                                                         </div>
                                                 </iais:row>
                                                 <iais:row>
@@ -267,6 +262,34 @@
             submit('premises','saveDraft',null);
         });
     });
+
+    $('.premTypeRadio').click(function () {
+        var checkedType = $(this).val();
+        $('#premisesTypeValue').val(checkedType);
+    });
+
+    $('#retrieveAddr').click(function(){
+        var postCode = $('#sitePostalCode').val();
+        var data = {
+            'searchField':'postalCode',
+            'filterValue':postCode
+        };
+        $.ajax({
+            'url':'/hcsaapplication/eservice/INTERNET/loadPremisesByCode.do',
+            'dataType':'json',
+            'data':data,
+            'type':'Get',
+            'success':function (data) {
+                console.log("success");
+
+            },
+            'error':function () {
+                console.log("failed");
+            }
+        });
+
+    });
+
 
 
 </script>
