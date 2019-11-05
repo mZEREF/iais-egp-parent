@@ -44,7 +44,7 @@ public class HcsaChklItemDelegator {
     private FilterParameter filterParameter;
 
     @Autowired
-    public void HcsaChklItemDelegator(HcsaChklService hcsaChklService, FilterParameter filterParameter){
+    public HcsaChklItemDelegator(HcsaChklService hcsaChklService, FilterParameter filterParameter){
         this.hcsaChklService = hcsaChklService;
         this.filterParameter = filterParameter;
     }
@@ -83,7 +83,7 @@ public class HcsaChklItemDelegator {
     public void saveChecklistItem(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"saveChecklistItem".equals(currentAction)){
+        if(!HcsaChklConstants.ACTION_SAVE_ITEM.equals(currentAction)){
             return;
         }
 /*
@@ -156,7 +156,7 @@ public class HcsaChklItemDelegator {
     public void prepareItem(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if("doCancel".equals(currentAction)){
+        if(HcsaChklConstants.ACTION_CANCEL.equals(currentAction)){
             IaisEGPHelper.clearSessionAttr(request, HcsaChklItemQueryDto.class);
         }
 
@@ -182,7 +182,7 @@ public class HcsaChklItemDelegator {
     public void prepareAdd(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"prepareAdd".equals(currentAction)){
+        if(!HcsaChklConstants.ACTION_PREPARE_ADD.equals(currentAction)){
             return;
         }
         preSelectOption(request);
@@ -198,7 +198,7 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"prepareEdit".equals(currentAction)){
+        if(!HcsaChklConstants.ACTION_PREPARE_EDIT.equals(currentAction)){
             return;
         }
         preSelectOption(request);
@@ -220,7 +220,7 @@ public class HcsaChklItemDelegator {
     public void doSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"doSearch".equals(currentAction)){
+        if(!HcsaChklConstants.ACTION_SEARCH.equals(currentAction)){
             return;
         }
 

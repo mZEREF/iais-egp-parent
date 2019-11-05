@@ -73,7 +73,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,null);
         AuditTrailHelper.auditFunction("iais-cc", "premises create");
         //for loading the draft by appId
-        loadingDraft(bpc);
+        //loadingDraft(bpc);
         //for loading Service Config
         loadingServiceConfig(bpc);
 

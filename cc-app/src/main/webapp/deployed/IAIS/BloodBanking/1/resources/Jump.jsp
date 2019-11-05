@@ -1,1 +1,0 @@
-<%@include file="/iais/cc/newApplication/bloodBanking/jump.jsp"%>

@@ -5,7 +5,7 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<webui:setLayout name="iais-cc"/>
+<webui:setLayout name="iais-hcsa"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" id = "premisesTypeValue" value="${appGrpPremisesDto.premisesType}">
@@ -13,48 +13,108 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="tab-gp steps-tab">
-                        <%@ include file="./navTabs.jsp" %>
+                    <div class="tab-gp dashboard-tab">
+                        <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                            <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
+                            <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
+                                                                        data-toggle="tab">Documents</a></li>
+                            <li class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
+                                                                        data-toggle="tab">Payment</a></li>
+                            <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
+                                                                        data-toggle="tab">Inspection</a></li>
+                            <li class="incomplete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
+                                                                          data-toggle="tab">Processing</a></li>
+                        </ul>
+                        <div class="tab-nav-mobile visible-xs visible-sm">
+                            <div class="swiper-wrapper" role="tablist">
+                                <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></div>
+                                <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
+                                <div class="swiper-slide"><a href="#tabPayment" aria-controls="tabPayment" role="tab" data-toggle="tab">Payment</a></div>
+                                <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabInspection" role="tab" data-toggle="tab">Inspection</a></div>
+                                <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a></div>
+                            </div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
+
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabInbox" role="tabpanel">
+                            <div class="tab-pane active" id="tabInfo" role="tabpanel">
+
+                                <div class="panel panel-default">
+                                    <!-- Default panel contents -->
+                                    <div class="panel-heading"><b>Submission Details</b></div>
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                        <tr>
+                                            <td align="right">Application No. (Overall)</td>
+                                            <td>NW-20181224-00002-1</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Application No.</td>
+                                            <td>NW-20181224-00003</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Application Type</td>
+                                            <td>New</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Service Type</td>
+                                            <td>Radiological Service</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Submission Date</td>
+                                            <td>16-Oct-2018 01:20:13 PM</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Current Status</td>
+                                            <td>Pending Approval Officer 1</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div align="center">
+                                    <button type="button" class="btn btn-primary">
+                                        View Application
+                                    </button>
+                                </div>
+                                <div>&nbsp;</div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><b>Applicant Details</b></div>
+                                    <table class="table table-bordered">
+                                        <tbody>
+                                        <tr>
+                                            <td align="right">HCI Code</td>
+                                            <td>16C001</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">HCI Name</td>
+                                            <td>TPY Clinic</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">HCI ADDRESS</td>
+                                            <td>TPY Clinic/ 11 Toa Payoh Lorong 3, Blk C, #12-0102, Singapore 319579</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Telephone</td>
+                                            <td>6737 3867</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="right">Fax</td>
+                                            <td>6737 3527</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
 
                             </div>
-                            <div class="tab-pane" id="tabApplication" role="tabpanel">
-                                <div class="tab-search">
-                                    <form class="form-inline">
-                                        <div class="form-group">
-                                            <label class="control-label" for="applicationType">Type</label>
-                                            <div class="col-xs-12 col-md-8 col-lg-9">
-                                                <select id="applicationType">
-                                                    <option>Select an type</option>
-                                                    <option selected>All</option>
-                                                    <option>Renewal</option>
-                                                    <option>New Licence</option>
-                                                    <option>Group</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label" for="applicationStatus">Status</label>
-                                            <div class="col-xs-12 col-md-8 col-lg-9">
-                                                <select id="applicationStatus">
-                                                    <option>Select an status</option>
-                                                    <option selected>All</option>
-                                                    <option>Approved</option>
-                                                    <option>Pending</option>
-                                                    <option>Draft</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group large right-side">
-                                            <div class="search-wrap">
-                                                <div class="input-group">
-                                                    <input class="form-control" id="applicationAdvancedSearch" type="text" placeholder="Application no." name="applicationAdvancedSearch" aria-label="applicationAdvancedSearch"><span class="input-group-btn">
-                              <button class="btn btn-default buttonsearch" title="Search by keywords"><i class="fa fa-search"></i></button></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
+
+                            <div class="tab-pane" id="tabDocuments" role="tabpanel">
+                                <div class="alert alert-info" role="alert"><b>
+                                    <h4>Supporting Document</h4>
+                                </b></div>
+                                <div id="u8522_text" class="text ">
+                                    <p><span>These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed
+												documents are those defined for this digital service only.</span></p>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -62,222 +122,423 @@
                                             <table class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Application No.</th>
-                                                    <th>Type</th>
-                                                    <th>Status</th>
-                                                    <th>Service</th>
-                                                    <th>Date Submitted <span class="sort"></span></th>
-                                                    <th>Actions</th>
+                                                    <th>Document</th>
+                                                    <th>File</th>
+                                                    <th>Size</th>
+                                                    <th>Submitted By</th>
+                                                    <th>Date Submitted</th>
+                                                    <th>Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                        <p><a href="#">RW-2019-00004</a></p>
+                                                        <p>NEA Licence</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Renewal</p>
+                                                        <p><a href="#">NEA Licence.png</a></p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
-                                                        <p>Tissue Banking</p>
+                                                        <p>36.57K</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Approved</p>
+                                                        <p>internet</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
-                                                        <p>14 Feb 2019, 11:28</p>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication1">Actions</p>
-                                                        <select class="table-select" id="selectApplication1" aria-label="selectApplication1">
-                                                            <option>Select</option>
-                                                            <option>Option one</option>
-                                                            <option>Option two</option>
-                                                            <option>Option three</option>
-                                                            <option>Option four</option>
-                                                        </select>
+                                                        <span class="glyphicon glyphicon-floppy-remove"></span>
+                                                        <span>&nbsp;</span>
+                                                        <span class="glyphicon glyphicon-pencil"></span>
+                                                        <span>&nbsp;</span>
+                                                        <span class="glyphicon glyphicon-floppy-saved"></span>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                        <p><a href="#">RW-2019-00003</a></p>
+                                                        <p>ACRA Profile</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                                        <p><a href="#">ACRA Profile.pdf</a></p>
+                                                    </td>
+                                                    <td>
+                                                        <p>36.57K</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>internet</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
+                                                    </td>
+                                                    <td>
+                                                        <span class="glyphicon glyphicon-floppy-remove"></span>
+                                                        <span>&nbsp;</span>
+                                                        <span class="glyphicon glyphicon-pencil"></span>
+                                                        <span>&nbsp;</span>
+                                                        <span class="glyphicon glyphicon-floppy-saved"></span>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="alert alert-info" role="alert"><b>
+                                                <h4>Internal Document</h4>
+                                            </b></div>
+                                            <div id="u8522_text" class="text ">
+                                                <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
+                                            </div>
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Document</th>
+                                                    <th>File</th>
+                                                    <th>Size</th>
+                                                    <th>Submitted By</th>
+                                                    <th>Date Submitted</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td colspan="6" align="center">
+                                                        <p>No record found.</p>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="tab-pane" id="tabPayment" role="tabpanel">
+                                <div class="alert alert-info" role="alert"><b>
+                                    <h4>Payment Details</h4>
+                                </b></div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Payment</th>
+                                                    <th>Amount</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Reference No.</th>
+                                                    <th>Payment Type</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>
                                                         <p>New Licence Application</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
-                                                        <p>Blood Banking</p>
+                                                        <p>S$400.00</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Pending</p>
+                                                        <p>12-Dec-2018</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
-                                                        <p>05 Feb 2019, 09:24</p>
+                                                        <p>success</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication2">Actions</p>
-                                                        <select class="table-select" id="selectApplication2" aria-label="selectApplication2">
-                                                            <option>Select</option>
-                                                            <option>Option one</option>
-                                                            <option>Option two</option>
-                                                            <option>Option three</option>
-                                                            <option>Option four</option>
-                                                        </select>
+                                                        <p>TRANS-201812000013</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>Credit Card</p>
                                                     </td>
                                                 </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tabInspection" role="tabpanel">
+                                <div class="alert alert-info" role="alert">
+                                    <b>
+                                        <h4>Inspection Findings</h4>
+                                    </b>
+                                </div>
+                                <div class="text ">
+                                    <p><span><b>Part I: Inspection Checklist</b></span></p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th class="col-xs-2"><span>Checklist</span></th>
+                                                    <th class="col-xs-10"><span>Interviewed</span></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                        <p><a class="collapsed" data-toggle="collapse" data-target="tabelcollapseOne" href="javascript:;">RW-2019-00002</a></p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Group​​​​​​​ Application</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
-                                                        <p>Multiple</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Draft</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
-                                                        <p>02 Feb 2019, 07:24</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication3">Actions</p>
-                                                        <select class="table-select" id="selectApplication3" aria-label="selectApplication3">
-                                                            <option>Select</option>
-                                                            <option>Option one</option>
-                                                            <option>Option two</option>
-                                                            <option>Option three</option>
-                                                            <option>Option four</option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr class="collapse" data-child-row="tabelcollapseOne">
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                        <p><a href="#">RW-2019-00002-01</a></p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>New Application</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
                                                         <p>Radiological Service</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Draft</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
-                                                        <p>02 Feb 2019, 07:24</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication4">Actions</p>
-                                                        <select class="table-select" id="selectApplication4" aria-label="selectApplication4">
-                                                            <option>Select</option>
-                                                            <option>Option one</option>
-                                                            <option>Option two</option>
-                                                            <option>Option three</option>
-                                                            <option>Option four</option>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr class="collapse" data-child-row="tabelcollapseOne">
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                        <p><a href="#">RW-2019-00002-01</a></p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>New Application</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
-                                                        <p>Nuclear Medicine</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Draft</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
-                                                        <p>02 Feb 2019, 07:24</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication5">Actions</p>
-                                                        <select class="table-select" id="selectApplication5" aria-label="selectApplication5">
-                                                            <option>Select</option>
-                                                            <option>Option one</option>
-                                                            <option>Option two</option>
-                                                            <option>Option three</option>
-                                                            <option>Option four</option>
-                                                        </select>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                        <p><a href="#">RW-2019-00001</a></p>
+                                                        <p>Angiography</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>New Licence Application</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Mammography</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Service</p>
-                                                        <pClinical>Laboratory</pClinical>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Approved</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
-                                                        <p>01 Feb 2019, 08:24</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title" for="selectApplication6">Actions</p>
-                                                        <select class="table-select" id="selectApplication6" aria-label="selectApplication6">
-                                                            <option>Select</option>
-                                                            <option>Option one</option>
-                                                            <option>Option two</option>
-                                                            <option>Option three</option>
-                                                            <option>Option four</option>
-                                                        </select>
                                                     </td>
                                                 </tr>
                                                 </tbody>
+                                            </table>
+                                            <div class="text ">
+                                                <p><span><b>Part II: Findings</b></span></p>
+                                            </div>
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Licence Type</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>Radiological Service</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Findings/Remarks</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>The clinic offers in-house laboratory services</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Others</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>Refer to ack. no. 180911007711 for x-ray laboratory licence (ultrasound only). At the time of
+                                                            inspection, LIA Br was still awaiting clarification on the deputy manager's qualifications and was
+                                                            unable to complete the inspection of the ultrasound facility as the sonographer / radiographer and
+                                                            radiologist were not on-site. The ultrasound room, N2 licence (N2/06421/001) and preventive maintenance
+                                                            records for the ultrasound machine were in place. The ultrasound procedure is limited to abdominal area
+                                                            only</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Status</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>Full Compliance</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div class="text ">
+                                                <p><span><b>Part III: Inspectors</b></span></p>
+                                            </div>
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Inspected By</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>Jenny</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Other Inspection Officer</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div class="text ">
+                                                <p><span><b>Part IV: Report</b></span></p>
+                                            </div>
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Reported By</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>Jenny</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Report Noted By</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>Steven</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    <b>
+                                        <h4>Recommendations</h4>
+                                    </b>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Recommendation</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>2 Years</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Other Remarks</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    <b>
+                                        <h4>Follow up actions</h4>
+                                    </b>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Follow up actions</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Other</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Rectification</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Other</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    <b>
+                                        <h4>Rectification</h4>
+                                    </b>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Rectifications</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>N.A</p>
+                                                    </td>
+                                                </tr>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabLicence" role="tabpanel">
-                                <div class="tab-search license-search clearfix">
-                                    <div class="licence-btns"><a class="btn btn-primary disabled" href="javascript:;">Renew</a><a class="btn btn-secondary disabled" href="javascript:;">Cease</a><a class="btn btn-secondary disabled" href="javascript:;">Amend</a></div>
-                                    <div class="search-wrap">
-                                        <div class="input-group">
-                                            <input class="form-control" id="licenseAdvancedSearcch" type="text" placeholder="Licence no." name="licenseAdvancedSearcch" aria-label="licenseAdvancedSearcch"><span class="input-group-btn">
-                          <button class="btn btn-default buttonsearch" title="Search by keywords"><i class="fa fa-search"></i></button></span>
+                            <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                                <div class="alert alert-info" role="alert">
+                                    <b>
+                                        <h4>Processing Status Update</h4>
+                                    </b>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-4">
+                                                        <p>Current Status:</p>
+                                                    </td>
+                                                    <td class="col-xs-8">
+                                                        <p>Pending Approval Officer 1</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Internal Remarks:</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group">
+                                                            <div class="ax_default text_area">
+                                                                <textarea cols="70" rows="7"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Processing Decision:</p>
+                                                    </td>
+                                                    <td>
+                                                        <select>
+                                                            <option value="Support">Support</option>
+                                                            <option value="Support">Support</option>
+                                                            <option value="Internal Enquiry">Internal Enquiry</option>
+                                                            <option value="Route Back">Route Back</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div align="center">
+                                                <button type="button" class="btn btn-primary">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                            <div>&nbsp;</div>
                                         </div>
-                                    </div><a class="advanced-search" href="#">Advanced Search</a>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    <b>
+                                        <h4>Processing History</h4>
+                                    </b>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -285,310 +546,148 @@
                                             <table class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Licence No.</th>
-                                                    <th>Type <span class="sort"></span></th>
-                                                    <th>Status <span class="sort"></span></th>
-                                                    <th>Premises <span class="sort"></span></th>
-                                                    <th>Start Date <span class="desc"></span></th>
-                                                    <th>Expiry Date <span class="sort"></span></th>
+                                                    <th>Username</th>
+                                                    <th>Working Group</th>
+                                                    <th>Status Update</th>
+                                                    <th>Remarks</th>
+                                                    <th>Last Updated</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input licenceCheck" id="licence1" type="checkbox" name="licence1" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence1"><span class="check-square"></span><a href="#">RW-2019-00004</a></label>
-                                                        </div>
+                                                        <p>Tan Ah Ming (S1234567D)</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Clinical Laboratory</p>
+                                                        <p>Internet User</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Active</p>
+                                                        <p>Submission</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
+                                                        <p>-</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021</p>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input licenceCheck" id="licence2" type="checkbox" name="licence2" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence2"><span class="check-square"></span><a href="#">RW-2019-00003</a></label>
-                                                        </div>
+                                                        <p>Mr Tan</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Nuclear Medicine</p>
+                                                        <p>Internet User</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Active</p>
+                                                        <p>Pending Admin Screen</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                        <p>-</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021</p>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check disabled">
-                                                            <input class="form-check-input licenceCheck" id="licence3" type="checkbox" name="licence3" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence3"><span class="check-square"></span><a href="#">RW-2019-00002</a></label>
-                                                        </div>
+                                                        <p></p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Tissue Banking</p>
+                                                        <p></p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Expired</p>
+                                                        <p>Verified</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p><a class="collapsed" data-toggle="collapse" href="#serviceCollapse" aria-expanded="false" aria-controls="serviceCollapse">Multiple</a></p>
-                                                        <div class="collapse" id="serviceCollapse">
-                                                            <ul>
-                                                                <li>16 Raffles Quay <br> # 01-03, 048581</li>
-                                                                <li>111 North Bridge Rd. <br> # 07-04, 179098</li>
-                                                                <li>568 Raffles Place. <br> # 08-01, 589098</li>
-                                                            </ul>
-                                                        </div>
+                                                        <p>-</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021</p>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check disabled">
-                                                            <input class="form-check-input licenceCheck" id="licence4" type="checkbox" name="licence4" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence4"><span class="check-square"></span><a href="#">RW-2019-00001</a></label>
-                                                        </div>
+                                                        <p>Ms Lim</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Blood Banking</p>
+                                                        <p>Internet User</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Expired</p>
+                                                        <p>Pending Professional Screening</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                        <p>-</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021</p>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input licenceCheck" id="licence5" type="checkbox" name="licence5" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence5"><span class="check-square"></span><a href="#">RW-2019-00004</a></label>
-                                                        </div>
+                                                        <p></p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Clinical Laboratory</p>
+                                                        <p></p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Active</p>
+                                                        <p>Verified</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
+                                                        <p>-</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021</p>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input licenceCheck" id="licence6" type="checkbox" name="licence6" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence6"><span class="check-square"></span><a href="#">RW-2019-00003</a></label>
-                                                        </div>
+                                                        <p>Mrs Sim</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Nuclear Medicine</p>
+                                                        <p>Internet User</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Active</p>
+                                                        <p>Pending Inspection</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                        <p>-</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021</p>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input licenceCheck" id="licence7" type="checkbox" name="licence7" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence7"><span class="check-square"></span><a href="#">RW-2019-00004</a></label>
-                                                        </div>
+                                                        <p></p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Clinical Laboratory</p>
+                                                        <p></p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Active</p>
+                                                        <p>Inspection Conducted</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
+                                                        <p>Recommend for Approval</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021</p>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input licenceCheck" id="licence8" type="checkbox" name="licence8" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence8"><span class="check-square"></span><a href="#">RW-2019-00003</a></label>
-                                                        </div>
+                                                        <p>Mr Ong</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Nuclear Medicine</p>
+                                                        <p>Internet User</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Active</p>
+                                                        <p>Pending Approval Officer 1</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
+                                                        <p>-</p>
                                                     </td>
                                                     <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021			</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check disabled">
-                                                            <input class="form-check-input licenceCheck" id="licence9" type="checkbox" name="licence9" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence9"><span class="check-square"></span><a href="#">RW-2019-00001</a></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Blood Banking</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Expired</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                                        <div class="form-check disabled">
-                                                            <input class="form-check-input licenceCheck" id="licence10" type="checkbox" name="licence10" aria-invalid="false">
-                                                            <label class="form-check-label" for="licence10"><span class="check-square"></span><a href="#">RW-2019-00001</a></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Type</p>
-                                                        <p>Blood Banking</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                        <p>Expired</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                                        <p>16 Raffles Quay <br> # 01-03, 048581</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                                        <p>14 Feb 2019</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                                        <p>14 Feb 2021</p>
+                                                        <p>16-Oct-2018 01:20:13 PM</p>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -597,6 +696,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -606,29 +706,6 @@
 </form>
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        var premisesTypeValue = $('#premisesTypeValue').val();
-        if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==premisesTypeValue){
-            $('#premise_onsite').attr("checked","checked");
-            $('#premise_conveyance').removeAttr("checked");
-            $('.premiseLocationSelect').removeClass('hidden');
-            $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
-        }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>'==premisesTypeValue){
-            $('#premise_conveyance').attr("checked","checked");
-            $('#premise_onsite').removeAttr("checked");
-            $('.premiseLocationSelect').removeClass('hidden');
-            $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
-        }
-        premisesSelectChange();
-
-        //Binding method
-        $('#premiseId').click(function(){
-            submit('documents',null,null);
-        });
-        $('#premiseSaveDraft').click(function(){
-            submit('premises','saveDraft',null);
-        });
-    });
 
 
 </script>
