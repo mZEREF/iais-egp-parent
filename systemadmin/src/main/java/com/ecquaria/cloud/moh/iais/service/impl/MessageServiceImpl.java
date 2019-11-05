@@ -24,15 +24,18 @@ import java.util.Map;
 public class MessageServiceImpl implements MessageService {
 
     @SearchTrack(catalog = "message", key = "search")
+    @Override
     public SearchResult<MessageQueryDto> doQuery(SearchParam searchParam) {
         return  RestApiUtil.query("system-admin-service:8886/iais-message/results", searchParam);
     }
 
+    @Override
     public void saveMessage(MessageDto messageDto) {
         messageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         RestApiUtil.save("system-admin-service:8886/iais-message", messageDto);
     }
 
+    @Override
     public MessageDto getMessageById(String id) {
         Map<String, Object> paramMapper = new HashMap<>();
         paramMapper.put("id", id);
