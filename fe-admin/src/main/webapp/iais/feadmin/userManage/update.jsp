@@ -24,7 +24,37 @@
                         <iais:row>
                           <iais:field value="UEN:" width="11"/>
                           <iais:value width="11">
-                            <iais:input type="text" name="uenNo" id="uenNo" value=""/>
+                            <iais:input type="text" name="uenNo" id="uenNo" value="${orgUserDto.uenNo}"/>
+                          </iais:value>
+                        </iais:row>
+                        <iais:row>
+                          <iais:field value="UIN:" width="11"/>
+                          <iais:value width="11">
+                            <iais:input type="text" name="idNumber" id="idNumber" value="${orgUserDto.idNumber}"/>
+                          </iais:value>
+                        </iais:row>
+                        <iais:row>
+                          <iais:field value="Salutation:" width="11"/>
+                          <iais:value width="11">
+                            <iais:select name="salutation" id="salutation" value="${orgUserDto.salutation}" codeCategory="CATE_ID_SALUTATION" firstOption="Please Select"/>
+                          </iais:value>
+                        </iais:row>
+                        <iais:row>
+                          <iais:field value="First Name:" width="11"/>
+                          <iais:value width="11">
+                            <iais:input type="text" name="firstName" id="firstName" value="${orgUserDto.firstName}"/>
+                          </iais:value>
+                        </iais:row>
+                        <iais:row>
+                          <iais:field value="Last Name:" width="11"/>
+                          <iais:value width="11">
+                            <iais:input type="text" name="lastName" id="lastName" value="${orgUserDto.lastName}"/>
+                          </iais:value>
+                        </iais:row>
+                        <iais:row>
+                          <iais:field value="Email:" width="11"/>
+                          <iais:value width="11">
+                            <iais:input type="text" name="emailAddr" id="emailAddr" value="${orgUserDto.emailAddr}"/>
                           </iais:value>
                         </iais:row>
                       </div>

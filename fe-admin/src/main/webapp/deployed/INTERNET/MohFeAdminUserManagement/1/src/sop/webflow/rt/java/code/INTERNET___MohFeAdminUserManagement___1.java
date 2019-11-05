@@ -14,7 +14,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class IAIS___MohFeAdminUserManagement___1 extends BaseProcessClass {
+public class INTERNET___MohFeAdminUserManagement___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="orgUserManageDelegate";
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
