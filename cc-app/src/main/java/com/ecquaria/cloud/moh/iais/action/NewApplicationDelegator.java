@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
@@ -339,6 +340,20 @@ public class NewApplicationDelegator {
 
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
+
+    /**
+     *
+     *ajax
+     * @param bpc
+     */
+    public void loadPremisesByPostCode(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode start ...."));
+        String postalCode = ParamUtil.getDate(bpc.request, "postalCode");
+        PostCodeDto postCodeDto = appGrpPremisesService.getPremisesByPostalCode(postalCode);
+
+        log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
+    }
+
 
     //=============================================================================
     //private method
