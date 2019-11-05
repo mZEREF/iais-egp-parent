@@ -108,5 +108,18 @@
         ]]>
 
     </sql>
+
+    <sql key="listChecklistItemByItemId"  remarks="query chechlist items by item id">
+        <![CDATA[
+                select item.id as item_id, regulation.clause_no as clause_num, regulation.clause as clause,
+                item.question as checklistitem, item.answer_type as answer_type, item.risk_level as risk_level,
+                item.status as status from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id and item.status = 'cmstat001'
+                <#if itemid??> item.id in(:itemid)</#if>
+        ]]>
+
+    </sql>
+
+
 </sqls>
 

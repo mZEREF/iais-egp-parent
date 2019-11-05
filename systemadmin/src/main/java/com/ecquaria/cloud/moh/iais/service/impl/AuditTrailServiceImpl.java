@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class AuditTrailServiceImpl implements AuditTrailService {
 
     @SearchTrack(catalog = "AuditTrail", key = "search")
+    @Override
     public SearchResult<AuditTrailQueryDto> listAuditTrailDto(SearchParam searchParam) {
         return RestApiUtil.query("audit-trail-service:8887/iais-audit-trail/results", searchParam);
     }

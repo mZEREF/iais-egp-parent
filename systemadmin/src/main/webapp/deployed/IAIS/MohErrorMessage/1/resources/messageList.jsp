@@ -1,1 +1,0 @@
-<%@include file="/iais/message/messageList.jsp"%>
