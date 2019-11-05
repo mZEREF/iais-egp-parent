@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPremisesDto;
+
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 
 import java.util.List;
 

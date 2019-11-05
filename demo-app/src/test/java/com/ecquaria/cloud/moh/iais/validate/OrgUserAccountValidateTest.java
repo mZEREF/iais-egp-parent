@@ -14,14 +14,13 @@
 package com.ecquaria.cloud.moh.iais.validate;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.action.OrgUserAccountSampleDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.sample.OrgUserAccountSampleValidate;
 import com.ecquaria.cloud.moh.iais.service.OrgUserAccountSampleService;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserAccountSampleServiceImpl;
+import com.ecquaria.cloud.moh.iais.valiation.OrgUserAccountSampleValidate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

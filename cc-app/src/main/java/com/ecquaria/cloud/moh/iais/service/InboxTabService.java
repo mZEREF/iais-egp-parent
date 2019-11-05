@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationDto;
+
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 
 import java.util.List;
 

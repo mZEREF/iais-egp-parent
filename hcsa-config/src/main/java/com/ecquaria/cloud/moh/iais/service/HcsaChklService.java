@@ -8,9 +8,9 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.checklist.HcsaChklItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.checklist.HcsaChklItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaServiceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceQueryDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
