@@ -10,8 +10,9 @@
   </definition>
 
   <!-- provided layouts -->
-  <definition name="cc" template="/WEB-INF/layouts/cc/layout.jsp" extends="_parent" />
+  <definition name="cc" template="/WEB-INF/layouts/iais-cc/layout.jsp" extends="_parent" />
   <definition name="iais-cc" template="/WEB-INF/layouts/iais-cc/layout.jsp" extends="_parent" />
   <definition name="printerfriendly" template="/WEB-INF/layouts/egov-printerfriendly/layout.jsp" extends="_parent" />
   <definition name="egp-blank" template="/WEB-INF/layouts/egp-blank/layout.jsp" extends="_parent" />
+  <definition name="egov" template="/WEB-INF/layouts/egov/layout.jsp" extends="_parent" />
 </tiles-definitions>

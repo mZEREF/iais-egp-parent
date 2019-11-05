@@ -229,7 +229,7 @@ public class HcsaChklItemDelegator {
         filterParameter.setSortField("item_id");
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        QueryHelp.setMainSql("systemAdmin", "listChklItem", searchParam);
+        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
 
         SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
 
