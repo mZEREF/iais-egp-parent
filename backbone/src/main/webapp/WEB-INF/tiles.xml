@@ -15,8 +15,8 @@
   <definition name="egov" template="/WEB-INF/layouts/egov/layout.jsp" extends="_parent" />
   <definition name="egp-blank" template="/WEB-INF/layouts/egp-blank/layout.jsp" extends="_parent" />
   <definition name="saas" template="/WEB-INF/layouts/saas/layout.jsp" extends="_parent" />
-  <definition name="iais-hcsa" template="/WEB-INF/layouts/iais-hcsa/layout.jsp" extends="_parent" />
-  <definition name="iais-cc" template="/WEB-INF/layouts/iais-cc/layout.jsp" extends="_parent" />
+  <definition name="iais-intranet" template="/WEB-INF/layouts/iais-intranet/layout.jsp" extends="_parent" />
+  <definition name="iais-internet" template="/WEB-INF/layouts/iais-internet/layout.jsp" extends="_parent" />
   <definition name="egp-payment" template="/WEB-INF/layouts/egp-payment/layout.jsp"
 		extends="_parent" />
   <definition name="blank" template="/WEB-INF/layouts/blank/layout.jsp" extends="_parent" />
