@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class HcsaChklServiceImpl implements HcsaChklService {
 
+    @Override
     @SearchTrack(catalog = "HcasaService", key = "search")
     public SearchResult<HcsaServiceQueryDto> listHcasaService(SearchParam searchParam) {
         return RestApiUtil.query("system-admin-service:8886/iais-check-list/hcasa-service/results", searchParam);
@@ -37,6 +38,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
         return IaisEGPHelper.getRecordByPrimaryKey("system-admin-service:8886/iais-hcsa-chkl/item", id, HcsaChklItemDto.class);
     }
 
+    @Override
     public void saveChklItem(HcsaChklItemDto itemDto) {
         RestApiUtil.save("system-admin-service:8886/iais-hcsa-chkl/item", itemDto);
     }
