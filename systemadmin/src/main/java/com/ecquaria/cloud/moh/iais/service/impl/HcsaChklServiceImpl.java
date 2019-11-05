@@ -18,6 +18,8 @@ import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class HcsaChklServiceImpl implements HcsaChklService {
@@ -31,6 +33,11 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     @Override
     public SearchResult<HcsaChklItemQueryDto> listChklItem(SearchParam searchParam) {
         return RestApiUtil.query("system-admin-service:8886/iais-hcsa-chkl/item/results", searchParam);
+    }
+
+    @Override
+    public List<HcsaChklItemDto> listChklItemByItemId(List<String> itemIds) {
+        return (List<HcsaChklItemDto>) RestApiUtil.getByList("system-admin-service:8886/iais-hcsa-chkl/item/results", itemIds, HcsaChklItemDto.class);
     }
 
     @Override

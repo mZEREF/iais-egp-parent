@@ -42,17 +42,25 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
 
+
+    <input type="hidden" name="itemId" value="">
+    <input type="hidden" name="regulationClause" value="">
+    <input type="hidden" name="regulationDesc" value="">
+    <input type="hidden" name="checklistItem" value="">
+    <input type="hidden" name="riskLevel" value="">
+    <input type="hidden" name="status" value="">
+
     <iais:body>
-    <iais:section title="Checklist Config View" id="msgList">
+    <iais:section title="Checklist Item View" id="msgList">
         <iais:row>
-            <iais:field value="Order No" required="false"></iais:field>
+            <iais:field value="Regulation Clause Number" required="false"></iais:field>
             <iais:value width="7">
                 <iais:value width="7">
-                    <input type="text" name="orderNo" value="" />
+                    <input type="text" name="regulationClause" value="" />
                 </iais:value>
             </iais:value>
 
-            <iais:field value="Reg Clause" required="false"></iais:field>
+            <iais:field value="Regulation" required="false"></iais:field>
             <iais:value width="7">
                 <iais:value width="7">
                     <input type="text" name="regulationDesc" value="" />
@@ -66,72 +74,20 @@
                 </iais:value>
             </iais:value>
 
-            <iais:field value="Checklist Section" required="false"></iais:field>
-            <iais:value width="7">
-                <iais:value width="7">
-                    <input type="text" name="checklistSection" value="" />
-                </iais:value>
-            </iais:value>
-
-            <iais:field value="Module" required="false"></iais:field>
-            <iais:value width="7">
-                <iais:value width="7">
-                    <input type="text" name="module" value="" />
-                </iais:value>
-            </iais:value>
-
-            <iais:field value="Type" required="false"></iais:field>
-            <iais:value width="7">
-                <iais:value width="7">
-                    <input type="text" name="type" value="" />
-                </iais:value>
-            </iais:value>
-
-            <iais:field value="Common" required="false"></iais:field>
-            <iais:value width="7">
-                <iais:value width="7">
-                    <input type="text" name="common" value="" />
-                </iais:value>
-            </iais:value>
-
-            <iais:field value="Service" required="false"></iais:field>
-            <iais:value width="7">
-                <iais:value width="7">
-                    <input type="text" name="service" value="" />
-                </iais:value>
-            </iais:value>
-
-            <iais:field value="Service Sub-Type" required="false"></iais:field>
-            <iais:value width="7">
-                <iais:value width="7">
-                    <input type="text" name="serviceSubType" value="" />
-                </iais:value>
-            </iais:value>
-
-            <iais:field value="HCI Code" required="false"></iais:field>
-            <iais:value width="7">
-                <iais:value width="7">
-                    <input type="text" name="hciCode" value="" />
-                </iais:value>
-            </iais:value>
-
             <iais:field value="Risk Level" required="false"></iais:field>
             <iais:value width="7">
-                <iais:value width="7">
-                    <input type="text" name="riskLevel" value="" />
-                </iais:value>
+                <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Select Risk Level"></iais:select>
             </iais:value>
 
-            <iais:field value="Effective Start date" required="false"></iais:field>
+            <iais:field value="Status" required="false"></iais:field>
             <iais:value width="7">
-                <input type="date" name="startDate"  />
+                <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status"></iais:select>
             </iais:value>
 
-            <iais:field value="Effective End Date" required="false"></iais:field>
+            <iais:field value="Answer Type" required="false"></iais:field>
             <iais:value width="7">
-                <input type="date" name="endDate"  />
+                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Select Answer Type"></iais:select>
             </iais:value>
-
         </iais:row>
 
 
@@ -154,7 +110,7 @@
 
     </br>
 
-    <iais:pagination  param="checklistConfigSearch" result="checklistConfigResult"/>
+    <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
     <iais:searchSection title="" onclick="">
     <div class="table-responsive" id="no-more-tables">
         <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
@@ -194,9 +150,10 @@
                             <td>${item.regulationClause}</td>
                             <td>${item.regulationDesc}</td>
                             <td>${item.checklistItem}</td>
+                            <td>${item.riskLevel}</td>
                             <td>${item.status}</td>
                             <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${item.itemId}');"/>
+                                <iais:link icon="form_edit" title="Edit" onclick="javascript:doSubmitByAction('doEdit','${item.itemId}', '${item.regulationClause}', '${item.regulationDesc}', '${item.checklistItem}', '${item.riskLevel}','${item.status}');"/>
                                 <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${item.itemId}');"/>
                             </td>
                         </tr>
@@ -211,9 +168,8 @@
         </iais:searchSection>
 
         <iais:action>
-        <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:addChecklistItem();">Add</button>
+            <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doSubmitByAction('doCreate');">Add</button>
         </iais:action>
-
         </iais:body>
 </form>
 
@@ -222,12 +178,55 @@
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
     }
 
-    function addChecklistItem(){
-        SOP.Crud.cfxSubmit("mainForm", "addChecklistItem");
+    /*function prepareEdit(id){
+        SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
+    }*/
+
+    function doSubmitByAction(action, itemId, regulationClause, regulationDesc, checklistItem, riskLevel, status){
+        var $form = $( "mainForm");
+        if($form.length == 0){
+            return;
+        }
+
+        var inputs = $(form).find("input");
+        if(inputs.length > 0){
+            inputs.each(function(index, obj){
+                if('crud_action_type' == obj.name){
+                    obj.value = action;
+
+                }
+
+                if('regulationClause' == obj.name){
+                    obj.value = regulationClause;
+                }
+
+                if('regulationDesc' == obj.name){
+                    obj.value = regulationDesc;
+                }
+
+                if('checklistItem' == obj.name){
+                    obj.value = checklistItem;
+                }
+
+                if('riskLevel' == obj.name){
+                    obj.value = riskLevel;
+                }
+
+                if('status' == obj.name){
+                    obj.value = status;
+                }
+            });
+        }
+
+        $(form).submit();
     }
 
+    /*function prepareAdd(){
+        SOP.Crud.cfxSubmit("mainForm", "prepareAdd");
+    }*/
+
     function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","cancel");
+        SOP.Crud.cfxSubmit("mainForm","doCancel");
     }
 
     function sortRecords(sortFieldName,sortType){

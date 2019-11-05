@@ -27,14 +27,17 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -149,6 +152,66 @@ public class HcsaChklItemDelegator {
     }
 
     /**
+     * AutoStep: loadCloneChklItems
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void loadCloneChklItems(BaseProcessClass bpc) throws IllegalAccessException {
+        HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(HcsaChklConstants.ACTION_CANCEL.equals(currentAction)){
+            IaisEGPHelper.clearSessionAttr(request, HcsaChklItemQueryDto.class);
+        }
+
+        String[] values = ParamUtil.getStrings(request, "checkboxItemId");
+        if (values == null | values.length == 0){
+            return;
+        }
+
+        List<String> itemIds = Arrays.asList(values);
+        List<HcsaChklItemDto> chklItemDtos = hcsaChklService.listChklItemByItemId(itemIds);
+
+        ParamUtil.setRequestAttr(request, HcsaChklConstants.PARAM_CHECKLIST_ITEM_RESULT, chklItemDtos);
+    }
+
+    /**
+     * AutoStep: prepareEditCloneChklItem
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void prepareEditCloneChklItem(BaseProcessClass bpc) throws IllegalAccessException {
+        HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!HcsaChklConstants.ACTION_PREPARE_EDIT.equals(currentAction)){
+            return;
+        }
+        preSelectOption(request);
+
+        List<HcsaChklItemDto> chklItemDtos = (List<HcsaChklItemDto>) ParamUtil.getRequestAttr(request, HcsaChklConstants.PARAM_CHECKLIST_ITEM_RESULT);
+        String needEditId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        chklItemDtos.stream().forEach(i -> {
+            if(i.getItemId().equals(needEditId)){
+                ParamUtil.setRequestAttr(request, HcsaChklConstants.CHECKLIST_ITEM_REQUEST_DTO, i);
+            };
+        });
+    }
+
+    /**
+     * AutoStep: editCloneChklItem
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void editCloneChklItem(BaseProcessClass bpc) throws IllegalAccessException {
+        HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!HcsaChklConstants.ACTION_PREPARE_EDIT.equals(currentAction)){
+            return;
+        }
+        preSelectOption(request);
+
+    }
+
+    /**
      * AutoStep: prepareItem
      * @param bpc
      * @throws IllegalAccessException
@@ -188,6 +251,9 @@ public class HcsaChklItemDelegator {
         preSelectOption(request);
         ParamUtil.setRequestAttr(request,"btnTag","Y");
     }
+
+
+
 
     /**
      * AutoStep: prepareEdit

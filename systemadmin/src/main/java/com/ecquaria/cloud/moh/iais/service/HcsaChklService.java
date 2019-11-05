@@ -13,10 +13,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.checklist.HcsaChklItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaServiceQueryDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface HcsaChklService {
     SearchResult<HcsaServiceQueryDto> listHcasaService(SearchParam searchParam);
     SearchResult<HcsaChklItemQueryDto> listChklItem(SearchParam searchParam);
+
+    List<HcsaChklItemDto> listChklItemByItemId(List<String> itemIds);
 
     HcsaChklItemDto getChklItemById(String id);
     void saveChklItem(HcsaChklItemDto itemDto);
