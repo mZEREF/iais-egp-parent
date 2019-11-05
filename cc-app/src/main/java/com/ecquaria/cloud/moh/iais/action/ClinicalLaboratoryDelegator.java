@@ -2,11 +2,11 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.GovernanceOfficersDto;
 import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,7 +198,7 @@ public class ClinicalLaboratoryDelegator {
      * @param bpc
      * @throws
      */
-    public void doGovernanceOfficers(BaseProcessClass bpc, GovernanceOfficersDto dto){
+    public void doGovernanceOfficers(BaseProcessClass bpc, AppSvcCgoDto dto){
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         //get CGO count
         //String cgoCount = ParamUtil.getDate(bpc.request, "cgoCount");
@@ -293,7 +293,7 @@ public class ClinicalLaboratoryDelegator {
         if(cgoId == "new"){
             return;
         }
-        GovernanceOfficersDto governanceOfficersDto = appGrpSvcRelatedInfoService.loadGovernanceOfficerByCGOId(cgoId);
+        AppSvcCgoDto governanceOfficersDto = appGrpSvcRelatedInfoService.loadGovernanceOfficerByCGOId(cgoId);
         ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
         log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId end ...."));
     }

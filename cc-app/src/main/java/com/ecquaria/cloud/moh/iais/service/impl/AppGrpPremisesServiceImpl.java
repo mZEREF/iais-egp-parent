@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaSvcSpePremisesTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
@@ -13,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+
 /**
  * AppGrpPremisesServiceImpl
  *
@@ -23,6 +27,8 @@ import java.util.Map;
 @Slf4j
 public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     private static final String URL="iais-application:8881/iais-premises";
+    private static final String PREMISESURL="config-service:8888/application-type";
+    private static final String POSTCODEURL = "system-admin:8886/api/postcodes";
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
         appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -49,5 +55,28 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
         Map<String, Object> map = new HashMap<>();
         map.put("appId", appId);
         return RestApiUtil.getByReqParam(URL, map, List.class);
+    }
+
+    @Override
+    public List getAppGrpPremisesType() {
+        /*Map<String,Object> map = new HashMap<>();
+        List serviceId = new ArrayList();
+        serviceId.add("4029F370-EDEE-E911-BE76-000C294908E1");
+        map.put("ServiceId", serviceId);*/
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("serviceId", "4029F370-EDEE-E911-BE76-000C294908E1");
+        List<HcsaSvcSpePremisesTypeDto> premisesType = RestApiUtil.getListByReqParam(PREMISESURL, map1, HcsaSvcSpePremisesTypeDto.class);
+        List<String> type = new ArrayList<>();
+        type.add("On-site");
+        type.add("Conveyance");
+        return type;
+    }
+
+    @Override
+    public PostCodeDto getPremisesByPostalCode(String postalCode) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("searchField", "postalCode");
+        map.put("filterValue", postalCode);
+        return RestApiUtil.getByReqParam(POSTCODEURL, map, PostCodeDto.class);
     }
 }

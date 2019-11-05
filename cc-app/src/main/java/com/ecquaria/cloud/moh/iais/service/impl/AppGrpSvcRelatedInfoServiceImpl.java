@@ -1,9 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.dto.GovernanceOfficersDto;
 import com.ecquaria.cloud.moh.iais.dto.TestDto;
 import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +84,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
     }
 
     @Override
-    public GovernanceOfficersDto loadGovernanceOfficerByCGOId(String cgoId) {
+    public AppSvcCgoDto loadGovernanceOfficerByCGOId(String cgoId) {
 
 
         return null;

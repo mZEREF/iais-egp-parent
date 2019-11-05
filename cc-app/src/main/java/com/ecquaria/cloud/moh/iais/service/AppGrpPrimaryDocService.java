@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPrimaryDocDto;
 import java.io.IOException;
 import java.util.List;
 
+
 /**
  * AppGrpPrimaryDocService
  *
@@ -12,7 +13,9 @@ import java.util.List;
  * @date 10/10/2019
  */
 public interface AppGrpPrimaryDocService {
-    public List<String> SaveFileToRepo(AppGrpPrimaryDocDto appGrpPrimaryDocDto) throws IOException;
-    public AppGrpPrimaryDocDto saveAppGrpPremisesDoc(AppGrpPrimaryDocDto appGrpPrimaryDocDto);
-    public List getAppGrpPrimaryDocDtosByAppGrpId(String appGrpId);
+    List<String> SaveFileToRepo(AppGrpPrimaryDocDto appGrpPrimaryDocDto) throws IOException;
+    AppGrpPrimaryDocDto saveAppGrpPremisesDoc(AppGrpPrimaryDocDto appGrpPrimaryDocDto);
+    List getAppGrpPrimaryDocDtosByAppGrpId(String appGrpId);
+    List getAllHcsaSvcCommonDocDtos();
+    List<AppGrpPrimaryDocDto> saveAppGrpPremisesDocs(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList);
 }

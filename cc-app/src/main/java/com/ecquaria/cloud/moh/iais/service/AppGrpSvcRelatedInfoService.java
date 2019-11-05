@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.dto.GovernanceOfficersDto;
 import com.ecquaria.cloud.moh.iais.dto.TestDto;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface AppGrpSvcRelatedInfoService {
     List<HcsaSvcPersonnelDto> loadCGOBySvcIdAndPsnType(String serviceId, String psnType);
-    GovernanceOfficersDto loadGovernanceOfficerByCGOId(String cgoId);
+    AppSvcCgoDto loadGovernanceOfficerByCGOId(String cgoId);
     List<TestDto> loadLaboratoryDisciplines(String str);
     Map loadCGOByDisciplines(List disciplines);
     List loadPO();
