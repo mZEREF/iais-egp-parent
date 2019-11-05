@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPrimaryDocDto;
+
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 
 import java.io.IOException;
 import java.util.List;
