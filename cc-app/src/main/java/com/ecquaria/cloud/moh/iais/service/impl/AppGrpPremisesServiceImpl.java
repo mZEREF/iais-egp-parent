@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaSvcSpePremisesTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;

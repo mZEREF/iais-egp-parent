@@ -1,9 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
@@ -37,7 +35,8 @@ public class AppGrpPrimaryDocServiceImpl implements AppGrpPrimaryDocService {
     @Override
     public List<String> SaveFileToRepo(AppGrpPrimaryDocDto appGrpPrimaryDocDto) throws IOException {
         List<MultipartFile> fileList = new ArrayList();
-        fileList.add(appGrpPrimaryDocDto.getFile());
+        //???
+        //fileList.add(appGrpPrimaryDocDto.getFile());
         return  RestApiUtil.saveFile(URLREPO,fileList,IaisEGPHelper.getCurrentAuditTrailDto());
     }
 
