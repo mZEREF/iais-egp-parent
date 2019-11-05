@@ -27,27 +27,27 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     @Override
     @SearchTrack(catalog = "HcasaService", key = "search")
     public SearchResult<HcsaServiceQueryDto> listHcasaService(SearchParam searchParam) {
-        return RestApiUtil.query("system-admin-service:8886/iais-check-list/hcasa-service/results", searchParam);
+        return RestApiUtil.query("hcsa-config:8878/iais-check-list/hcasa-service/results", searchParam);
     }
 
     @Override
     public SearchResult<HcsaChklItemQueryDto> listChklItem(SearchParam searchParam) {
-        return RestApiUtil.query("system-admin-service:8886/iais-hcsa-chkl/item/results", searchParam);
+        return RestApiUtil.query("hcsa-config:8878/iais-hcsa-chkl/chklitem/results", searchParam);
     }
 
     @Override
     public List<HcsaChklItemDto> listChklItemByItemId(List<String> itemIds) {
-        return (List<HcsaChklItemDto>) RestApiUtil.getByList("system-admin-service:8886/iais-hcsa-chkl/item/results", itemIds, HcsaChklItemDto.class);
+        return (List<HcsaChklItemDto>) RestApiUtil.getByList("hcsa-config:8878/iais-hcsa-chkl/chklitem/items-by-ids", itemIds, HcsaChklItemDto.class);
     }
 
     @Override
     public HcsaChklItemDto getChklItemById(String id) {
-        return IaisEGPHelper.getRecordByPrimaryKey("system-admin-service:8886/iais-hcsa-chkl/item", id, HcsaChklItemDto.class);
+        return IaisEGPHelper.getRecordByPrimaryKey("hcsa-config:8878/iais-hcsa-chkl/item", id, HcsaChklItemDto.class);
     }
 
     @Override
     public void saveChklItem(HcsaChklItemDto itemDto) {
-        RestApiUtil.save("system-admin-service:8886/iais-hcsa-chkl/item", itemDto);
+        RestApiUtil.save("hcsa-config:8878/iais-hcsa-chkl/chklitem", itemDto);
     }
 
     @Override

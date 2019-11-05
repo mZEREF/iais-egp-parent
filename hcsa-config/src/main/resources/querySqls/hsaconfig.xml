@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="hcsaconfig">
+    <sql key = "queryHcsaService" remarks="query hcsa service parameter of checklist">
+        <![CDATA[
+            select stype.id as service_id, scategory.id as category_id, scategory.name as category_name, stype.name as service_name
+            from iais.dbo.hcsa_service_type stype, iais.dbo.hcsa_service_category scategory where stype.category_id = scategory.id
+        ]]>
+    </sql>
+
+    <sql key="listChklItem"  remarks="query chechlist items">
+        <![CDATA[
+                select item.id as item_id, regulation.clause_no as clause_num, regulation.clause as clause,
+                item.question as checklistitem, item.answer_type as answer_type, item.risk_level as risk_level,
+                item.status as status from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id and item.status = 'cmstat001'
+                <#if itemid??> and charindex(:itemid, item.id) >0</#if>
+                <#if regulationclauseno??> and charindex(:regulationclauseno, regulation.clause_no) >0 </#if>
+                <#if regulationclause??> and charindex(:regulationclause, regulation.clause) >0 </#if>
+                <#if checklistitem??> and charindex(:checklistitem, item.question) >0</#if>
+                <#if answertype??> and item.answer_type = :answertype</#if>
+                <#if risklevel??> and item.risk_level = :risklevel</#if>
+                <#if status??> and item.status = :status</#if>
+        ]]>
+
+    </sql>
+
+    <sql key="listChecklistItemByItemId"  remarks="query chechlist items by item id">
+        <![CDATA[
+                select item.id as item_id, regulation.clause_no as clause_num, regulation.clause as clause,
+                item.question as checklistitem, item.answer_type as answer_type, item.risk_level as risk_level,
+                item.status as status from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id and item.status = 'cmstat001'
+                <#if itemid??> item.id in(:itemid)</#if>
+        ]]>
+
+    </sql>
+
+
+</sqls>
+

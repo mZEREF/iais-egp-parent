@@ -5,7 +5,7 @@
     <parent>
         <artifactId>iais-egp-parent</artifactId>
         <groupId>sg.gov.moh.iais-egp</groupId>
-        <version>0.1</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -39,7 +39,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>hcsalicence</finalName>
+        <finalName>hcsaconfig</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
