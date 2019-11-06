@@ -58,7 +58,7 @@ public class NewApplicationDelegator {
     private static final String ERRORMAP_PREMISES    = "errorMap_premises";
     private static final String SERVICEID = "serviceId";
     private static final String PREMISESTYPE = "premisesType";
-    private static final String APPSUBMISSIONDTO = "AppSubmissionDto";
+    public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
 
     @Autowired
     private AppGrpPremisesService appGrpPremisesService;
@@ -236,7 +236,7 @@ public class NewApplicationDelegator {
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
-        AppGrpPrimaryDocDto appGrpPrimaryDocDto =
+      /*  AppGrpPrimaryDocDto appGrpPrimaryDocDto =
         ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO)==null?
                 new AppGrpPrimaryDocDto():(AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
         MultipartFile file = null;
@@ -250,7 +250,7 @@ public class NewApplicationDelegator {
             //appGrpPrimaryDocDto.setFile(file);
             appGrpPrimaryDocDto.setDocSize(Math.round(file.getSize()/1024));
         }
-        ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+        ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);*/
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
     /**
