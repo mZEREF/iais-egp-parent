@@ -56,7 +56,7 @@ public class NewApplicationDelegator {
     private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
     private static final String APPGRPPRIMARYDOCDTO = "AppGrpPrimaryDocDto";
     private static final String ERRORMAP_PREMISES    = "errorMap_premises";
-    private static final String SERVICEID = "serviceId";
+    public static final String SERVICEID = "serviceId";
     private static final String PREMISESTYPE = "premisesType";
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
 
