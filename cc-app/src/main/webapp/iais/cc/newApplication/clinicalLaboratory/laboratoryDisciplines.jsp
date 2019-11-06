@@ -7,7 +7,7 @@
 
 
 %>
-<webui:setLayout name="iais-cc"/>
+<webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -75,7 +75,8 @@
             submitForms('laboratoryDisciplines','saveDraft',null,'clinical');
         });
         $('#laboratoryDisciplinesNext').click(function(){
-            submitForms('governanceOfficers',null,null,'clinical');
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('governanceOfficers',null,null,controlFormLi);
         });
 
     });

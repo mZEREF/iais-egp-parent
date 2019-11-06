@@ -51,7 +51,7 @@
     function submitFormTabs(action){
         $("[name='crud_action_type']").val('serviceForms');
         $("[name='crud_action_type_tab']").val(action);
-        $("[name='crud_action_type_form']").val('jump');
+        $("[name='crud_action_type_form_page']").val('jump');
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     }

@@ -14,7 +14,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTERNET___ServiceRelatedInformation___1 extends BaseProcessClass {
+public class INTERNET___MohServiceRelatedInformation___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="clinicalLaboratoryDelegator";
 	private static final String NEWAPPLICATIONDELEGATOR ="newApplicationDelegator";
 
@@ -96,6 +96,11 @@ public class INTERNET___ServiceRelatedInformation___1 extends BaseProcessClass {
 	public void doSaveDraft_OnStepProcess_0() throws Exception {
 	// 		doSaveDraft->OnStepProcess
 		EngineHelper.delegate(NEWAPPLICATIONDELEGATOR, "doSaveDraft", this);
+	}
+
+	public void doSubmit_OnStepProcess_0() throws Exception {
+	// 		doSubmit->OnStepProcess
+		EngineHelper.delegate(NEWAPPLICATIONDELEGATOR, "doSubmit", this);
 	}
 
 	

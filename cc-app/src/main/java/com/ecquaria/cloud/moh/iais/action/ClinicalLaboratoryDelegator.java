@@ -39,12 +39,15 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareJumpPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareJumpPage start ...."));
-//        String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
-//        log.debug(StringUtil.changeForLog("The prepareJumpPage action is -->;"+action));
-//        if(StringUtil.isEmpty(action)){
-//            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
-//        }
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
+        String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
+        log.debug(StringUtil.changeForLog("The prepareJumpPage action is -->;"+action));
+        String form_tab = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB);
+        log.debug(StringUtil.changeForLog("The form_tab action is -->;"+form_tab));
+        if(StringUtil.isEmpty(action)||IaisEGPConstant.YES.equals(form_tab)){
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,action);
+        }
         log.debug(StringUtil.changeForLog("the do prepareJumpPage end ...."));
     }
 
@@ -208,6 +211,18 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
         log.info("The ClinicalLaboratoryDelegator doSaveDraft ... ");
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
+    }
+
+    /**
+     * StartStep: doSubmit
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doSubmit(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
+        log.info("The ClinicalLaboratoryDelegator doSubmit ... ");
+        log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }
 
     /**
