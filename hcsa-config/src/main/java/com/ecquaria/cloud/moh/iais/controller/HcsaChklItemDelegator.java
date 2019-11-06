@@ -13,8 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.checklist.HcsaChklItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.checklist.HcsaChklItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -27,17 +27,11 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -229,7 +223,7 @@ public class HcsaChklItemDelegator {
         filterParameter.setSortField("item_id");
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        QueryHelp.setMainSql("systemAdmin", "listChklItem", searchParam);
+        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
 
         SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
 

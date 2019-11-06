@@ -55,6 +55,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_ANSWER_TYPE                 = "14C0B134-1369-430B-B036-B1BF56A9DFBB";
     public static final String CATE_ID_COMMON_STATUS               = "95FF02D9-2C34-4662-8AC1-FFC8A5288C1F";
     public static final String CATE_ID_SALUTATION                  = "2302696A-5948-4734-9DA3-D52C9373840B";
+    public static final String CATE_ID_RISK_WEIGHTAGE_MATRIX       = "E3BF91DA-B8A6-4D4E-86EA-F6DEAE68EEA7";
 
 
     /**
