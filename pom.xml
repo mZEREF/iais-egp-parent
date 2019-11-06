@@ -39,7 +39,6 @@
         <module>web</module>
         <module>fe-admin</module>
         <module>hcsa-licence</module>
-        <module>hcsa-config</module>
     </modules>
     <dependencyManagement>
         <dependencies>

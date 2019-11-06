@@ -40,7 +40,7 @@
                                                     <div class="laboratory-disciplines">
                                                         <h2>Laboratory Disciplines</h2>
                                                         <p>Please select the service disciplines you would like to apply at your premises.</p>
-                                                        <iframe id="__egovform-iframe" name="__egovform-iframe" frameborder="no" width="100%" heihgt="100%" scrolling="no" src=""></iframe>
+                                                        <jsp:include page="/iais/cc/newApplication/clinicalLaboratory/CR_Discipline.jsp" />
                                                     </div>
                                                 </div>
                                             </div>

@@ -37,13 +37,15 @@
                                         <h3>Fire Safety Certificate (FSC) from SCDF</h3>
                                         <p><a href="#" target="_blank">Preview</a></p>
                                     </div>
-                                    <div class="document-upload-list">
-                                        <h3>Urban Redevelopmenet Authority (URA) grant of written permission</h3>
-                                        <div class="file-upload-gp">
-                                            <p id="showFile">${AppGrpPrimaryDocDto.docName}</p>
-                                            <input id="selectedFile" name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+                                    <c:forEach var="hcsaSvcCommonDocDtoList" items="${HcsaSvcCommonDocDtoList}">
+                                        <div class="document-upload-list">
+                                            <h3>${hcsaSvcCommonDocDtoList.docTitle}</h3>
+                                            <div class="file-upload-gp">
+                                                <p  id="showFile">${AppGrpPrimaryDocDto.docName}</p>
+                                                <input class="selectedFile" id="selectedFile" name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </c:forEach>
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">
@@ -64,6 +66,7 @@
     </div>
 </form>
 
+
 <script type="text/javascript">
     $(document).ready(function() {
         //Binding method
@@ -76,14 +79,22 @@
         $('#docNext').click(function(){
             submit('serviceForms',null,null);
         });
-        $('#selectedFile').change(function(){
+        /*$('#selectedFile').change(function(){
             var file = $('#selectedFile').val();
             $('#showFile').html(getFileName(file))
-        });
+        });*/
     });
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");
         return o.substring(pos + 1);
     }
+
+    $('.selectedFile').change(function () {
+            var file = $(this).val();
+            $(this).parent().children('p:eq(0)').html(getFileName(file));
+        }
+    );
+
+
 
 </script>

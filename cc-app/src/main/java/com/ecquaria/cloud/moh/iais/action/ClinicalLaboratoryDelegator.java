@@ -2,11 +2,24 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * ClinicalLaboratoryDelegator
@@ -17,6 +30,13 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("clinicalLaboratoryDelegator")
 @Slf4j
 public class ClinicalLaboratoryDelegator {
+
+    @Autowired
+    AppGrpSvcRelatedInfoService appGrpSvcRelatedInfoService;
+
+    public static final String  GOVERNANCEOFFICERS = "GovernanceOfficers";
+    public static final String  GOVERNANCEOFFICERSDTO = "GovernanceOfficersDto";
+
 
     /**
      * StartStep: doStart
@@ -60,6 +80,14 @@ public class ClinicalLaboratoryDelegator {
     public void prepareLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines start ...."));
 
+        //wait update api url
+        //List checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines("Laboratory Disciplines");
+        Map<String,String> map = new HashMap<>();
+        map.put("Histocompatibility", "Histocompatibility");
+        map.put("Immunology", "Immunology");
+        map.put("HIV Testing", "HIV Testing");
+        map.put("HIV Screening", "HIV Screening");
+        ParamUtil.setSessionAttr(bpc.request, "LaboratoryDisciplines", (Serializable) map);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
 
@@ -71,19 +99,29 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers start ...."));
+        String serviceId = "";
+        String psnType = "";
+        List<HcsaSvcPersonnelDto> cgoList =appGrpSvcRelatedInfoService.loadCGOBySvcIdAndPsnType(serviceId, psnType);
+        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERS, (Serializable) cgoList);
 
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
     }
 
     /**
-     * StartStep: prepareDisciplineAllocation
+     * StartStep: prepare
      *
      * @param bpc
      * @throws
      */
     public void prepareDisciplineAllocation(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation start ...."));
-
+        //load cgo select options
+        //List disciplines = (List) ParamUtil.getSessionAttr(bpc.request, "CheckedDisciplines");
+        List disciplines = new ArrayList();
+        disciplines.add("Cytology");
+        disciplines.add("HIV Testing");
+        Map map = appGrpSvcRelatedInfoService.loadCGOByDisciplines(disciplines);
+        ParamUtil.setSessionAttr(bpc.request, "CGOOptions", (Serializable) map);
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation end ...."));
     }
 
@@ -95,7 +133,8 @@ public class ClinicalLaboratoryDelegator {
      */
     public void preparePrincipalOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers start ...."));
-
+        List poList = appGrpSvcRelatedInfoService.loadPO();
+        ParamUtil.setSessionAttr(bpc.request, "POList", (Serializable) poList);
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
     }
 
@@ -148,7 +187,13 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines start ...."));
-
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String [] checkListId = mulReq.getParameterValues("laboratoryDisciplines");
+        //save
+        List list = new ArrayList();
+        list.add("ad7b441c-d3a4-4661-a6ed-06af9cca0104");
+        list.add("a5c4ccaa-f5cf-4806-81cb-a11c8d4bc4de");
+        appGrpSvcRelatedInfoService.saveLaboratoryDisciplines(list);
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
 
@@ -158,8 +203,22 @@ public class ClinicalLaboratoryDelegator {
      * @param bpc
      * @throws
      */
-    public void doGovernanceOfficers(BaseProcessClass bpc){
+    public void doGovernanceOfficers(BaseProcessClass bpc, AppSvcCgoDto dto){
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
+        //get CGO count
+        //String cgoCount = ParamUtil.getDate(bpc.request, "cgoCount");
+        String salutation = ParamUtil.getDate(bpc.request, "salutation");
+        String name = ParamUtil.getDate(bpc.request, "name");
+        String idType = ParamUtil.getDate(bpc.request, "idType");
+        String idNo = ParamUtil.getDate(bpc.request, "idNo");
+        String designation = ParamUtil.getDate(bpc.request, "designation");
+        String professionType = ParamUtil.getDate(bpc.request, "professionType");
+        String professionRegnNo = ParamUtil.getDate(bpc.request, "professionRegnNo");
+        String specialty = ParamUtil.getDate(bpc.request, "specialty");
+        String otherSpecialty = ParamUtil.getDate(bpc.request, "otherSpecialty");
+        String qualification = ParamUtil.getDate(bpc.request, "qualification");
+        String mobileNo = ParamUtil.getDate(bpc.request, "mobileNo");
+        String emailAddress = ParamUtil.getDate(bpc.request, "emailAddress");
 
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
     }
@@ -242,6 +301,19 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do prepareResult end ...."));
     }
 
+    /**
+     * ajax
+     */
+    public void loadGovernanceOfficerByCGOId(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId start ...."));
+        String cgoId = bpc.request.getParameter("");
+        if(cgoId == "new"){
+            return;
+        }
+        AppSvcCgoDto governanceOfficersDto = appGrpSvcRelatedInfoService.loadGovernanceOfficerByCgoId(cgoId);
+        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
+        log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId end ...."));
+    }
 
 
 }
