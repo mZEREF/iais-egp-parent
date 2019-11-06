@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.dto.TestDto;
 import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
     @Override
     public List loadLaboratoryDisciplines(String str) {
         Map<String,Object> map = new HashMap<>();
-        List list= RestApiUtil.getListByReqParam(GET_DISCIPLINE_URL, map, TestDto.class);
+        //List list= RestApiUtil.getListByReqParam(GET_DISCIPLINE_URL, map, TestDto.class);
 
         return null;
     }
@@ -40,7 +39,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
     @Override
     public Map loadCGOByDisciplines(List disciplines) {
         Map<String,Object> map = new HashMap<>();
-        List<TestDto> list= RestApiUtil.getListByReqParam(GET_CGO_URL, map, TestDto.class);
+        //List<TestDto> list= RestApiUtil.getListByReqParam(GET_CGO_URL, map, TestDto.class);
         Map<String,List<SelectOption>> map2 = new HashMap<>();
         List<SelectOption> list1 = new ArrayList<>();
         SelectOption sp1 = new SelectOption("1", "Option1");
