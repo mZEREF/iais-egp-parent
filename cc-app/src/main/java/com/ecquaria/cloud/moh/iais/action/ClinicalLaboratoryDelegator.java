@@ -10,8 +10,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
@@ -67,6 +65,10 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
         }else{
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,action);
+        }
+        String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"jump");
         }
         log.debug(StringUtil.changeForLog("the do prepareJumpPage end ...."));
     }
@@ -187,13 +189,13 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines start ...."));
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String [] checkListId = mulReq.getParameterValues("laboratoryDisciplines");
-        //save
-        List list = new ArrayList();
-        list.add("ad7b441c-d3a4-4661-a6ed-06af9cca0104");
-        list.add("a5c4ccaa-f5cf-4806-81cb-a11c8d4bc4de");
-        appGrpSvcRelatedInfoService.saveLaboratoryDisciplines(list);
+//        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+//        String [] checkListId = mulReq.getParameterValues("laboratoryDisciplines");
+//        //save
+//        List list = new ArrayList();
+//        list.add("ad7b441c-d3a4-4661-a6ed-06af9cca0104");
+//        list.add("a5c4ccaa-f5cf-4806-81cb-a11c8d4bc4de");
+//        appGrpSvcRelatedInfoService.saveLaboratoryDisciplines(list);
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
 
