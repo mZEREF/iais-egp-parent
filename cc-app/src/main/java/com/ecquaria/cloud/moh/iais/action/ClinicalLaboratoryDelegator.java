@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.APPSUBMISSIONDTO;
+import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.SERVICEID;
+
 
 /**
  * ClinicalLaboratoryDelegator
@@ -101,11 +104,14 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers start ...."));
-        String serviceId = "";
-        String psnType = "";
-        List<HcsaSvcPersonnelDto> cgoList =appGrpSvcRelatedInfoService.loadCGOBySvcIdAndPsnType(serviceId, psnType);
-        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERS, (Serializable) cgoList);
 
+        String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
+        String psnType = "CGO";
+        List<HcsaSvcPersonnelDto> cgoList = null;
+        if(!StringUtil.isEmpty(serviceId) && !StringUtil.isEmpty(psnType)){
+            cgoList =appGrpSvcRelatedInfoService.loadCGOBySvcIdAndPsnType(serviceId, psnType);
+            ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERS, (Serializable) cgoList);
+        }
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
     }
 
@@ -189,13 +195,9 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines start ...."));
-//        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-//        String [] checkListId = mulReq.getParameterValues("laboratoryDisciplines");
-//        //save
-//        List list = new ArrayList();
-//        list.add("ad7b441c-d3a4-4661-a6ed-06af9cca0104");
-//        list.add("a5c4ccaa-f5cf-4806-81cb-a11c8d4bc4de");
-//        appGrpSvcRelatedInfoService.saveLaboratoryDisciplines(list);
+        String [] checkListIds = bpc.request.getParameterValues("control--runtime--1");
+        //save
+
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
 
@@ -221,6 +223,14 @@ public class ClinicalLaboratoryDelegator {
         String qualification = ParamUtil.getDate(bpc.request, "qualification");
         String mobileNo = ParamUtil.getDate(bpc.request, "mobileNo");
         String emailAddress = ParamUtil.getDate(bpc.request, "emailAddress");
+
+
+        AppSvcCgoDto appSvcCgoDto = new AppSvcCgoDto();
+
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        if(appSubmissionDto == null){
+            appSubmissionDto = new AppSubmissionDto();
+        }
 
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
     }

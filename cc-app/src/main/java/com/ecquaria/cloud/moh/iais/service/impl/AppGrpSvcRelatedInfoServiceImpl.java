@@ -62,7 +62,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
     @Override
     public List loadPO() {
         Map<String,Object> map = new HashMap<>();
-        List poList =RestApiUtil.getListByReqParam(GET_PO_URL, map, String.class);
+        //List poList =RestApiUtil.getListByReqParam(GET_PO_URL, map, String.class);
         List list = new ArrayList();
         list.add("po1");
         list.add("po2");
@@ -79,7 +79,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
     public List<HcsaSvcPersonnelDto> loadCGOBySvcIdAndPsnType(String serviceId, String psnType) {
         Map<String,Object> map = new HashMap<>();
         map.put("serviceId", serviceId);
-        map.put("psnType", "CGO");
+        map.put("psnType", psnType);
         return RestApiUtil.getListByReqParam(GET_CGO,map, HcsaSvcPersonnelDto.class);
     }
 
