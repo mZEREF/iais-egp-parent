@@ -1,12 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaServiceDto" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%
     String actionForm = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
     if(StringUtil.isEmpty(actionForm)){

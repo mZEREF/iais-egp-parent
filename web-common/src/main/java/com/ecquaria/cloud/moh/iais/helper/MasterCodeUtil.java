@@ -56,7 +56,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_COMMON_STATUS               = "95FF02D9-2C34-4662-8AC1-FFC8A5288C1F";
     public static final String CATE_ID_SALUTATION                  = "2302696A-5948-4734-9DA3-D52C9373840B";
     public static final String CATE_ID_RISK_WEIGHTAGE_MATRIX       = "E3BF91DA-B8A6-4D4E-86EA-F6DEAE68EEA7";
-
+    public static final String CATE_ID_DATE_TYPE                   = "460089E8-F389-4649-B443-8DECB8182A17";
 
     /**
      * @description: refresh the master codes into cache
