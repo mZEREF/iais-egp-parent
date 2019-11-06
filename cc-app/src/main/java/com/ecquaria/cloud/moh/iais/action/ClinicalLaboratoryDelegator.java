@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.APPSUBMISSIONDTO;
+import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.SERVICEID;
 
 
 /**
@@ -100,11 +101,14 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers start ...."));
-        String serviceId = "";
-        String psnType = "";
-        List<HcsaSvcPersonnelDto> cgoList =appGrpSvcRelatedInfoService.loadCGOBySvcIdAndPsnType(serviceId, psnType);
-        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERS, (Serializable) cgoList);
 
+        String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
+        String psnType = "CGO";
+        List<HcsaSvcPersonnelDto> cgoList = null;
+        if(!StringUtil.isEmpty(serviceId) && !StringUtil.isEmpty(psnType)){
+            cgoList =appGrpSvcRelatedInfoService.loadCGOBySvcIdAndPsnType(serviceId, psnType);
+            ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERS, (Serializable) cgoList);
+        }
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
     }
 
