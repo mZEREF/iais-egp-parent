@@ -37,7 +37,7 @@
                                                 </ul>
                                                 <div class="application-service-steps">
                                                     <div class="clinical-governance-officer">
-                                                        <iframe id="__egovform-iframe" name="__egovform-iframe" frameborder="no" width="100%" heihgt="100%" scrolling="no" src="./CR_Form2.jsp"></iframe>
+                                                        <jsp:include page="/iais/cc/newApplication/clinicalLaboratory/CR_Form2.jsp" />
                                                     </div>
                                                 </div>
                                             </div>
