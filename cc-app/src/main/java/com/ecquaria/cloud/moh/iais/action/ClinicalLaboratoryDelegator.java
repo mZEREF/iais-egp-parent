@@ -70,6 +70,11 @@ public class ClinicalLaboratoryDelegator {
         }else{
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,action);
         }
+        String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        log.debug(StringUtil.changeForLog("The crud_action_type  is -->;"+crud_action_type));
+        if((!StringUtil.isEmpty(crud_action_type))&&(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type))){
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"jump");
+        }
         log.debug(StringUtil.changeForLog("the do prepareJumpPage end ...."));
     }
 
@@ -204,7 +209,7 @@ public class ClinicalLaboratoryDelegator {
      * @param bpc
      * @throws
      */
-    public void doGovernanceOfficers(BaseProcessClass bpc, AppSvcCgoDto dto){
+    public void doGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         //get CGO count
         //String cgoCount = ParamUtil.getDate(bpc.request, "cgoCount");

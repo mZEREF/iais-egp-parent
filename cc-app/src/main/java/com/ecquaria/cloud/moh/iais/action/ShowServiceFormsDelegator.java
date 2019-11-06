@@ -42,7 +42,7 @@ public class ShowServiceFormsDelegator {
         log.debug("the do prepareSwitch start ....");
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(StringUtil.isEmpty(action)){
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"serviceForms");
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,AppServicesConsts.NAVTABS_SERVICEFORMS);
         }
         String actionTab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
         if(StringUtil.isEmpty(actionTab)){
