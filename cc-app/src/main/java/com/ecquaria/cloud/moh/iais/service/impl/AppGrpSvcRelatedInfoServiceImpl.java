@@ -26,7 +26,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
     private static final String POST_DISCIPLINE_URL = "";
     private static final String GET_CGO_URL = "";
     private static final String GET_PO_URL = "";
-    private static final String GET_CGO = "hcsa-config/service-type";
+    private static final String GET_CGO = "hcsa-config:8878/service-type";
 
     @Override
     public List loadLaboratoryDisciplines(String str) {
