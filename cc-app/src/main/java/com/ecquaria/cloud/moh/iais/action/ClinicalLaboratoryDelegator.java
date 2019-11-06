@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -10,8 +11,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.APPSUBMISSIONDTO;
 
 
 /**
@@ -187,13 +188,9 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines start ...."));
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String [] checkListId = mulReq.getParameterValues("laboratoryDisciplines");
+        String [] checkListIds = bpc.request.getParameterValues("control--runtime--1");
         //save
-        List list = new ArrayList();
-        list.add("ad7b441c-d3a4-4661-a6ed-06af9cca0104");
-        list.add("a5c4ccaa-f5cf-4806-81cb-a11c8d4bc4de");
-        appGrpSvcRelatedInfoService.saveLaboratoryDisciplines(list);
+
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
 
@@ -219,6 +216,14 @@ public class ClinicalLaboratoryDelegator {
         String qualification = ParamUtil.getDate(bpc.request, "qualification");
         String mobileNo = ParamUtil.getDate(bpc.request, "mobileNo");
         String emailAddress = ParamUtil.getDate(bpc.request, "emailAddress");
+
+
+        AppSvcCgoDto appSvcCgoDto = new AppSvcCgoDto();
+
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        if(appSubmissionDto == null){
+            appSubmissionDto = new AppSubmissionDto();
+        }
 
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
     }
