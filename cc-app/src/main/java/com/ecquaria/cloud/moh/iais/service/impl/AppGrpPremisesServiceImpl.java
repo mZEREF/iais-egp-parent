@@ -27,10 +27,10 @@ import java.util.Map;
 @Slf4j
 public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     private static final String URL="iais-application:8881/iais-premises";
-    private static final String PREMISESURL="config-service:8878/application-type";
+    private static final String PREMISESURL="hcsa-config:8878/application-type";
     private static final String POSTCODEURL = "system-admin:8886/api/postcodes";
     //get svcId by svcCode
-    private static final String SERVICEID = "config-service:8878//service-by-code";
+    private static final String SERVICEID = "hcsa-config:8878/service-by-code";
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
         appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
