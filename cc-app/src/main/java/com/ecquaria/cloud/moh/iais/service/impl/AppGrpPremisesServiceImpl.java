@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
@@ -13,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+
 /**
  * AppGrpPremisesServiceImpl
  *
@@ -23,6 +27,10 @@ import java.util.Map;
 @Slf4j
 public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     private static final String URL="iais-application:8881/iais-premises";
+    private static final String PREMISESURL="hcsa-config:8878/application-type";
+    private static final String POSTCODEURL = "system-admin:8886/api/postcodes";
+    //get svcId by svcCode
+    private static final String SERVICEID = "hcsa-config:8878//service-by-code";
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
         appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -49,5 +57,32 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
         Map<String, Object> map = new HashMap<>();
         map.put("appId", appId);
         return RestApiUtil.getByReqParam(URL, map, List.class);
+    }
+
+    @Override
+    public List<HcsaSvcSpePremisesTypeDto> getAppGrpPremisesTypeBySvcId(String svcId) {
+        /*Map<String,Object> map = new HashMap<>();
+        List serviceId = new ArrayList();
+        serviceId.add("4029F370-EDEE-E911-BE76-000C294908E1");
+        map.put("ServiceId", serviceId);*/
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("serviceId", svcId);
+        List<HcsaSvcSpePremisesTypeDto> premisesType = RestApiUtil.getListByReqParam(PREMISESURL, map1, HcsaSvcSpePremisesTypeDto.class);
+        return premisesType;
+    }
+
+    @Override
+    public PostCodeDto getPremisesByPostalCode(String searchField, String filterValue) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("searchField", searchField);
+        map.put("filterValue", filterValue);
+        return RestApiUtil.getByReqParam(POSTCODEURL, map, PostCodeDto.class);
+    }
+
+    @Override
+    public String getSvcIdBySvcCode(String svcCode) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("code", svcCode);
+        return RestApiUtil.getByReqParam(SERVICEID, map, String.class);
     }
 }

@@ -7,7 +7,7 @@
 
 
 %>
-<webui:setLayout name="iais-cc"/>
+<webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -40,7 +40,7 @@
                                                     <div class="laboratory-disciplines">
                                                         <h2>Laboratory Disciplines</h2>
                                                         <p>Please select the service disciplines you would like to apply at your premises.</p>
-                                                        <iframe id="__egovform-iframe" name="__egovform-iframe" frameborder="no" width="100%" heihgt="100%" scrolling="no" src=""></iframe>
+                                                        <jsp:include page="/iais/cc/newApplication/clinicalLaboratory/CR_Discipline.jsp" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -75,7 +75,8 @@
             submitForms('laboratoryDisciplines','saveDraft',null,'clinical');
         });
         $('#laboratoryDisciplinesNext').click(function(){
-            submitForms('governanceOfficers',null,null,'clinical');
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('governanceOfficers',null,null,controlFormLi);
         });
 
     });
