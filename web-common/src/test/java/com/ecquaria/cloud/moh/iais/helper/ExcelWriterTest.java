@@ -1,3 +1,4 @@
+/*
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -14,11 +15,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+*/
 /*
  *author: yichen
  *date time:9/23/2019 9:58 AM
  *description:
- */
+ *//*
+
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
 @PrepareForTest({ExcelWriter.class})
@@ -83,3 +86,4 @@ public class ExcelWriterTest {
         Assert.assertTrue(true);
     }
 }
+*/
