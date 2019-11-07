@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
@@ -36,13 +35,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * NewApplicationDelegator
@@ -334,8 +327,9 @@ public class NewApplicationDelegator {
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         //do validate
-        doValidate(bpc);
+        //doValidate(bpc);
         //save the premisse
+
         //get wrokgroup
 
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));

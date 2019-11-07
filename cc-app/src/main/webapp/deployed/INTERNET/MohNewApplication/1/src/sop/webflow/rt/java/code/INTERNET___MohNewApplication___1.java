@@ -76,6 +76,10 @@ public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	// 		doForms->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doForms", this);
 	}
+	public void doSubmit_OnStepProcess_0() throws Exception {
+	// 		doSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doSubmit", this);
+	}
 	
 
 }
