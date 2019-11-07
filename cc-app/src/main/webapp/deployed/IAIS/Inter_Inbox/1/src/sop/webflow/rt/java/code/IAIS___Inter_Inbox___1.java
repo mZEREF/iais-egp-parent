@@ -14,8 +14,8 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class IAIS___Inter_Inbox___1 extends BaseProcessClass {
-
-
+	
+	
 	private static final String DELEGATOR ="inboxTabDelegator";
 
 	public void prepareData_OnStepProcess_0() throws Exception {
@@ -23,23 +23,7 @@ public class IAIS___Inter_Inbox___1 extends BaseProcessClass {
 	}
 
 	public void start_OnStepProcess_0() throws Exception {
-		// 		start->OnStepProcess
-	}
-
-	public void doSearch_OnStepProcess_0() throws Exception {
-		// 		doSearch->OnStepProcess
-	}
-
-	public void prepareSwitch_OnStepProcess_0() throws Exception {
-		// 		PrepareSwitch->OnStepProcess
-	}
-
-	public void licencesData_OnStepProcess_0() throws Exception {
-		// 		licencesData->OnStepProcess
-	}
-
-	public void applicationData_OnStepProcess_0() throws Exception {
-		// 		applicationData->OnStepProcess
+	// 		start->OnStepProcess
 	}
 
 }

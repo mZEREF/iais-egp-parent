@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import org.springframework.stereotype.Service;
 

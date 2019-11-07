@@ -94,19 +94,32 @@
 
     <sql key="listChklItem"  remarks="query chechlist items">
         <![CDATA[
-                select item.id as ITEM_ID, regulation.CLAUSE_NO as CLAUSE_NUM, regulation.clause as CLAUSE,
-                item.question AS CHECKLISTITEM, item.answer_type as ANSWER_TYPE, item.risk_level as RISK_LEVEL,
-                item.status as STATUS from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
-                and item.regulation_id = regulation.id and item.status = 'CMSTAT001'
-                <#if itemId??> and item.id = :itemId</#if>
-                <#if regulationClauseNo??> and regulation.clause_no = :regulationClauseNo</#if>
-                <#if regulationClause??> and regulation.clause = :regulationClause</#if>
-                <#if checklistItem??> and item.question = :checklistItem</#if>
-                <#if answerType??> and item.answer_type = :answerType</#if>
-                <#if riskLevel??> and item.risk_level = :riskLevel</#if>
+                select item.id as item_id, regulation.clause_no as clause_num, regulation.clause as clause,
+                item.question as checklistitem, item.answer_type as answer_type, item.risk_level as risk_level,
+                item.status as status from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id and item.status = 'cmstat001'
+                <#if itemid??> and charindex(:itemid, item.id) >0</#if>
+                <#if regulationclauseno??> and charindex(:regulationclauseno, regulation.clause_no) >0 </#if>
+                <#if regulationclause??> and charindex(:regulationclause, regulation.clause) >0 </#if>
+                <#if checklistitem??> and charindex(:checklistitem, item.question) >0</#if>
+                <#if answertype??> and item.answer_type = :answertype</#if>
+                <#if risklevel??> and item.risk_level = :risklevel</#if>
                 <#if status??> and item.status = :status</#if>
         ]]>
 
     </sql>
+
+    <sql key="listChecklistItemByItemId"  remarks="query chechlist items by item id">
+        <![CDATA[
+                select item.id as item_id, regulation.clause_no as clause_num, regulation.clause as clause,
+                item.question as checklistitem, item.answer_type as answer_type, item.risk_level as risk_level,
+                item.status as status from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
+                and item.regulation_id = regulation.id and item.status = 'cmstat001'
+                <#if itemid??> item.id in(:itemid)</#if>
+        ]]>
+
+    </sql>
+
+
 </sqls>
 

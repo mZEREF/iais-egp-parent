@@ -16,6 +16,8 @@ public class IaisEGPConstant {
     public static final String CRUD_ACTION_VALUE                   = "crud_action_value";
     public static final String CRUD_ACTION_TYPE_TAB                = "crud_action_type_tab";
     public static final String CRUD_ACTION_TYPE_FORM               = "crud_action_type_form";
+    public static final String CRUD_ACTION_TYPE_FORM_PAGE          = "crud_action_type_form_page";
+    public static final String FORM_TAB                            = "form_tab";
     public static final String ISVALID                             = "isValid";
     public static final String SUCCESSMAP                          = "successMap";
     public static final String ERRORMAP                            = "errorMap";

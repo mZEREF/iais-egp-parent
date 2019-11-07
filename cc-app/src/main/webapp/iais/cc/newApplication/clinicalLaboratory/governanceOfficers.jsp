@@ -6,7 +6,7 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 
 %>
-<webui:setLayout name="iais-cc"/>
+<webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -37,7 +37,7 @@
                                                 </ul>
                                                 <div class="application-service-steps">
                                                     <div class="clinical-governance-officer">
-                                                        <iframe id="__egovform-iframe" name="__egovform-iframe" frameborder="no" width="100%" heihgt="100%" scrolling="no" src="./CR_Form2.jsp"></iframe>
+                                                        <jsp:include page="/iais/cc/newApplication/clinicalLaboratory/CR_Form2.jsp" />
                                                     </div>
                                                 </div>
                                             </div>

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohServiceRelatedInformation" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="90" y="250">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareJumpPage" x="240" y="260">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareJumpPage_OnStepProcess_0" name="prepareJumpPage_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareLaboratoryDisciplines" x="530" y="60">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareLaboratoryDisciplines_OnStepProcess_0" name="prepareLaboratoryDisciplines_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doLaboratoryDisciplines" x="910" y="60">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doLaboratoryDisciplines_OnStepProcess_0" name="doLaboratoryDisciplines_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareGovernanceOfficers" x="530" y="170">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareGovernanceOfficers_OnStepProcess_0" name="prepareGovernanceOfficers_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doGovernanceOfficers" x="920" y="170">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doGovernanceOfficers_OnStepProcess_0" name="doGovernanceOfficers_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDisciplineAllocation" x="530" y="300">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDisciplineAllocation_OnStepProcess_0" name="prepareDisciplineAllocation_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doDisciplineAllocation" x="920" y="290">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doDisciplineAllocation_OnStepProcess_0" name="doDisciplineAllocation_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreparePrincipalOfficers" x="530" y="400">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePrincipalOfficers_OnStepProcess_0" name="preparePrincipalOfficers_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doPrincipalOfficers" x="940" y="380">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doPrincipalOfficers_OnStepProcess_0" name="doPrincipalOfficers_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDocuments" x="530" y="480">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDocuments_OnStepProcess_0" name="prepareDocuments_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doDocuments" x="960" y="490">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doDocuments_OnStepProcess_0" name="doDocuments_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareResult" x="1110" y="230">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareResult_OnStepProcess_0" name="prepareResult_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareJump" x="540" y="600">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareJump_OnStepProcess_0" name="prepareJump_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareView" x="540" y="720">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareView_OnStepProcess_0" name="prepareView_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSaveDraft" x="1400" y="350">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSaveDraft_OnStepProcess_0" name="doSaveDraft_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="return" x="750" y="600">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+  </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSubmit" x="560" y="810">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSubmit_OnStepProcess_0" name="doSubmit_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="LaboratoryDisciplines" stageIndicator="" x="750" y="60">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="GovernanceOfficers" stageIndicator="" x="750" y="170">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="DisciplineAllocation" stageIndicator="" x="740" y="300">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PrincipalOfficers" stageIndicator="" x="750" y="390">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Documents" stageIndicator="" x="750" y="490">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Ack" stageIndicator="" x="1390" y="200">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewForm" stageIndicator="" x="770" y="720">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareJumpPage" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(110,270)(260,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareJumpPage" style="oblique">
+   <position>{(260,280)(420,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareLaboratoryDisciplines" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(420,280)(550,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareGovernanceOfficers" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(420,280)(550,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDisciplineAllocation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(420,280)(550,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePrincipalOfficers" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(420,280)(550,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDocuments" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(420,280)(550,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/LaboratoryDisciplines" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareLaboratoryDisciplines" style="oblique">
+   <position>{(550,80)(770,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/GovernanceOfficers" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareGovernanceOfficers" style="oblique">
+   <position>{(550,190)(770,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/DisciplineAllocation" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDisciplineAllocation" style="oblique">
+   <position>{(550,320)(760,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PrincipalOfficers" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePrincipalOfficers" style="oblique">
+   <position>{(550,420)(770,410)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Documents" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDocuments" style="oblique">
+   <position>{(550,500)(770,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doLaboratoryDisciplines" linkstyle="Direct" name="" sourceName="/Pages/WebPage/LaboratoryDisciplines" style="oblique">
+   <position>{(770,80)(930,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doGovernanceOfficers" linkstyle="Direct" name="" sourceName="/Pages/WebPage/GovernanceOfficers" style="oblique">
+   <position>{(770,190)(940,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doDisciplineAllocation" linkstyle="Direct" name="" sourceName="/Pages/WebPage/DisciplineAllocation" style="oblique">
+   <position>{(760,320)(940,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPrincipalOfficers" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PrincipalOfficers" style="oblique">
+   <position>{(770,410)(960,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doDocuments" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Documents" style="oblique">
+   <position>{(770,510)(980,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doLaboratoryDisciplines" style="oblique">
+   <position>{(930,80)(1130,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doGovernanceOfficers" style="oblique">
+   <position>{(940,190)(1130,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDisciplineAllocation" style="oblique">
+   <position>{(940,310)(1130,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPrincipalOfficers" style="oblique">
+   <position>{(960,400)(1130,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDocuments" style="oblique">
+   <position>{(980,510)(1130,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareResult" style="oblique">
+   <position>{(1130,250)(1270,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Ack" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(1270,240)(1410,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareJump" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(420,280)(560,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(420,280)(560,740)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewForm" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareView" style="oblique">
+   <position>{(560,740)(790,740)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSaveDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(1270,240)(1420,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSaveDraft" style="oblique">
+   <position>{(1420,370)(1100,820)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareJumpPage" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(1100,820)(545,895)(260,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(1270,240)(1100,820)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/return" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareJump" style="oblique">
+   <position>{(560,620)(770,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(420,280)(580,830)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareResult" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
+   <position>{(580,830)(1023,770)(1130,250)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch1" x="400" y="260">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareLaboratoryDisciplines" value="&quot;laboratoryDisciplines&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareGovernanceOfficers" value="&quot;governanceOfficers&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDisciplineAllocation" value="&quot;disciplineAllocation&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreparePrincipalOfficers" value="&quot;principalOfficers&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDocuments" value="&quot;documents&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareJump" value="&quot;jump&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareView" value="&quot;prepareView&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="&quot;doSubmit&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="Switch2" name="Switch2" x="1250" y="220">
+   <Description />
+   <SwitchCase component="/Pages/WebPage/Ack" value="&quot;ack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/doSaveDraft" value="&quot;saveDraft&quot;" />
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;jumPage&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1080" y="800">
+   <Description />
+  </Merge>
+ </Merges>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+
