@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,7 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     private static final String SERVICEID = "hcsa-config:8878//service-by-code";
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
-        appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        //appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
        return RestApiUtil.save(URL,appGrpPremisesDto,AppGrpPremisesDto.class);
     }
 
