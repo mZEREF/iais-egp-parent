@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.helper.EngineHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -13,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -36,13 +34,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * NewApplicationDelegator
@@ -303,32 +295,32 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
-        doValidate(bpc);
-        //save the premisse
-        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-        if(appGrpPremisesDto!=null){
-            log.debug(StringUtil.changeForLog("save the premisse"));
-            appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
-            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-        }
-        //save the document
-        AppGrpPrimaryDocDto appGrpPrimaryDocDto = (AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
-        if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
-            log.debug(StringUtil.changeForLog("save the document"));
-            appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
-            List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
-            String fileRepoGuid =fileRepoGuidList.get(0);
-            if(StringUtil.isEmpty(fileRepoGuid)){
-              log.error("the fileRepoGuid is null ...");
-            }
-            log.debug(StringUtil.changeForLog("the fileRepoGuid is -->:"+fileRepoGuid));
-            //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
-            appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
-            appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
-            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
-        }
-        //to do this will use the config.
-        EngineHelper.delegate("clinicalLaboratoryDelegator", "doSaveDraft", bpc);
+//        doValidate(bpc);
+//        //save the premisse
+//        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+//        if(appGrpPremisesDto!=null){
+//            log.debug(StringUtil.changeForLog("save the premisse"));
+//            appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
+//            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+//        }
+//        //save the document
+//        AppGrpPrimaryDocDto appGrpPrimaryDocDto = (AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
+//        if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
+//            log.debug(StringUtil.changeForLog("save the document"));
+//            appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
+//            List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
+//            String fileRepoGuid =fileRepoGuidList.get(0);
+//            if(StringUtil.isEmpty(fileRepoGuid)){
+//              log.error("the fileRepoGuid is null ...");
+//            }
+//            log.debug(StringUtil.changeForLog("the fileRepoGuid is -->:"+fileRepoGuid));
+//            //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
+//            appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
+//            appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
+//            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+//        }
+//        //to do this will use the config.
+//        EngineHelper.delegate("clinicalLaboratoryDelegator", "doSaveDraft", bpc);
 
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
@@ -406,19 +398,19 @@ public class NewApplicationDelegator {
 private  void loadingDraft(BaseProcessClass bpc){
     String appId = ParamUtil.getString(bpc.request,"appId");
     if(!StringUtil.isEmpty(appId)){
-        List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
-        if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
-            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
-            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-            String appGrpId = appGrpPremisesDto.getAppGrpId();
-            List appGrpPrimaryDocDtoMap=  appGrpPrimaryDocService.getAppGrpPrimaryDocDtosByAppGrpId(appGrpId);
-            if(appGrpPrimaryDocDtoMap!=null && appGrpPrimaryDocDtoMap.size()>0){
-                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtolist = RestApiUtil.transferListContent(appGrpPrimaryDocDtoMap,AppGrpPrimaryDocDto.class);
-                AppGrpPrimaryDocDto appGrpPrimaryDocDto = appGrpPrimaryDocDtolist.get(0);
-                ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
-            }
-        }
+//        List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
+//        if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
+//            List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
+//            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
+//            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
+//            String appGrpId = appGrpPremisesDto.getAppGrpId();
+//            List appGrpPrimaryDocDtoMap=  appGrpPrimaryDocService.getAppGrpPrimaryDocDtosByAppGrpId(appGrpId);
+//            if(appGrpPrimaryDocDtoMap!=null && appGrpPrimaryDocDtoMap.size()>0){
+//                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtolist = RestApiUtil.transferListContent(appGrpPrimaryDocDtoMap,AppGrpPrimaryDocDto.class);
+//                AppGrpPrimaryDocDto appGrpPrimaryDocDto = appGrpPrimaryDocDtolist.get(0);
+//                ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
+//            }
+//        }
     }
 
 }
