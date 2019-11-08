@@ -20,9 +20,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.kafka.clientwrapper.KafkaSOPWrapper;
-import com.ecquaria.kafka.clientwrapper.model.ProcessDetails;
-import com.ecquaria.kafka.clientwrapper.model.SubmitResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -347,15 +344,15 @@ public class NewApplicationDelegator {
 
         AppSubmissionDto asd = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
 
-        ProcessDetails processDetails = new ProcessDetails();
-        processDetails.setProject(bpc.process.getCurrentProject());
-        processDetails.setProcess(bpc.process.getCurrentProcessName());
-        processDetails.setStep(bpc.process.getCurrentComponentName());
-
-        KafkaSOPWrapper wrapper = new KafkaSOPWrapper();
-        SubmitResult ms1Result = wrapper.submit(0, processDetails,"appSubmit",
-                "Create", asd, null, "SOP");
-        request.setAttribute("SubmitObj", asd);
+//        ProcessDetails processDetails = new ProcessDetails();
+//        processDetails.setProject(bpc.process.getCurrentProject());
+//        processDetails.setProcess(bpc.process.getCurrentProcessName());
+//        processDetails.setStep(bpc.process.getCurrentComponentName());
+//
+//        KafkaSOPWrapper wrapper = new KafkaSOPWrapper();
+//        SubmitResult ms1Result = wrapper.submit(0, processDetails,"appSubmit",
+//                "Create", asd, null, "SOP");
+//        request.setAttribute("SubmitObj", asd);
         //get wrokgroup
 
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));

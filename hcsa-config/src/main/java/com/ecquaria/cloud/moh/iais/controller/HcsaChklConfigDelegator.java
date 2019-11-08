@@ -7,7 +7,7 @@ package com.ecquaria.cloud.moh.iais.controller;
  */
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChklConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -40,8 +40,24 @@ public class HcsaChklConfigDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>HcsaChklConfigDelegator");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
-        IaisEGPHelper.clearSessionAttr(request, HcsaChklConstants.class);
+        IaisEGPHelper.clearSessionAttr(request, HcsaChecklistConstants.class);
     }
+
+    /**
+     * StartStep: prepare
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void prepare(BaseProcessClass bpc) throws IllegalAccessException {
+        log.info("=======>>>>>prepare>>>>>>>>>>>>>>>>HcsaChklConfigDelegator");
+        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
+        HttpServletRequest request = bpc.request;
+        IaisEGPHelper.clearSessionAttr(request, HcsaChecklistConstants.class);
+
+
+    }
+
+
 
     /**
      * @AutoStep: saveChecklistConfig
