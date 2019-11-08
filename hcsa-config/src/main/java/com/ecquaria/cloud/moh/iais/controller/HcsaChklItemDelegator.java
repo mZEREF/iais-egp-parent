@@ -8,13 +8,13 @@ package com.ecquaria.cloud.moh.iais.controller;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChklConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -30,8 +30,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
@@ -55,7 +59,7 @@ public class HcsaChklItemDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>ChecklistDelegator");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Management");
         HttpServletRequest request = bpc.request;
-        IaisEGPHelper.clearSessionAttr(request, HcsaChklConstants.class);
+        IaisEGPHelper.clearSessionAttr(request, HcsaChecklistConstants.class);
     }
 
     /**
@@ -80,42 +84,39 @@ public class HcsaChklItemDelegator {
     public void saveChecklistItem(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!HcsaChklConstants.ACTION_SAVE_ITEM.equals(currentAction)){
+        if(!HcsaChecklistConstants.ACTION_SAVE_ITEM.equals(currentAction)){
             return;
         }
-/*
-        String itemId = ParamUtil.getMaskedString(request, HcsaChklConstants.PARAM_CHKL_ITEM_ID);*/
-        String itemId = ParamUtil.getString(request, HcsaChklConstants.PARAM_CHKL_ITEM_ID);
-        String clause = ParamUtil.getString(request, HcsaChklConstants.PARAM_REGULATION_CLAUSE);
-        String desc = ParamUtil.getString(request, HcsaChklConstants.PARAM_REGULATION_DESC);
-        String regulationId = ParamUtil.getString(request, HcsaChklConstants.PARAM_CHKL_REGULATION_ID);
-        String chklItem = ParamUtil.getString(request, HcsaChklConstants.PARAM_CHECKLIST_ITEM);
-        String riskLevel = ParamUtil.getString(request, HcsaChklConstants.PARAM_RISK_LEVEL);
-        String answerType = ParamUtil.getString(request, HcsaChklConstants.PARAM_ANSWER_TYPE);
-        String status = ParamUtil.getString(request, HcsaChklConstants.PARAM_STATUS);
+
+        doSubmitOrUpdate(request);
+    }
+
+    /**
+     * @AutoStep: submitCloneItem
+     * @param:
+     * @return:
+     * @author: yichen
+     */
+    public void submitCloneItem(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) request.getSession().getAttribute("cloneItems");
+
+        hcsaChklService.submitCloneItem(chklItemDtos);
+    }
+
+
+    /**
+     * for new item , it don't have item id , else update action
+     * @param request
+     */
+    private void doSubmitOrUpdate(HttpServletRequest request){
+        ChecklistItemDto itemDto =  requestChklItemDto(request);
 
         /*AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();*/
-
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setMohUserId(AppConsts.USER_ID_ANONYMOUS);
-        HcsaChklItemDto itemDto = new HcsaChklItemDto();
 
-        if(itemId == null || itemId.isEmpty()){
-            itemDto.setUpdate(false);
-            log.info("Can not find item id, it will go to insert reocrd" + itemId);
-        }else{
-            log.info("item id, it will go to update reocrd" + itemId);
-            itemDto.setUpdate(true);
-        }
-
-        itemDto.setItemId(itemId);
-        itemDto.setRegulationId(regulationId);
-        itemDto.setRegulationClauseNo(clause);
-        itemDto.setRegulationClause(desc);
-        itemDto.setRiskLevel(riskLevel);
-        itemDto.setStatus(status);
-        itemDto.setChecklistItem(chklItem);
-        itemDto.setAnswerType(answerType);
         itemDto.setAuditTrailDto(auditTrailDto);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "save");
@@ -130,9 +131,8 @@ public class HcsaChklItemDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
         }
+
     }
-
-
 
     /**
      * setup option to web page
@@ -140,86 +140,130 @@ public class HcsaChklItemDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> clauseSelect = new ArrayList<>();
-        clauseSelect.add(new SelectOption("R10(2)G.19", "R10(2)G.19"));
+
+
+        List<String> strings = hcsaChklService.listRegulationClauseNo();
+        for(String s : strings){
+            clauseSelect.add(new SelectOption(s, s));
+        }
+
         ParamUtil.setRequestAttr(request, "clauseSelect", clauseSelect);
 
     }
 
     /**
-     * AutoStep: loadCloneChklItems
+     * AutoStep: viewCloneData
      * @param bpc
      * @throws IllegalAccessException
      */
-    public void loadCloneChklItems(BaseProcessClass bpc) throws IllegalAccessException {
+    public void viewCloneData(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(HcsaChklConstants.ACTION_CANCEL.equals(currentAction)){
-            IaisEGPHelper.clearSessionAttr(request, HcsaChklItemQueryDto.class);
+        if(!HcsaChecklistConstants.ACTION_VIEW_CLONE_ITEM.equals(currentAction)){
+            IaisEGPHelper.clearSessionAttr(request, HcsaChecklistConstants.class);
         }
 
-        String[] values = ParamUtil.getStrings(request, "checkboxItemId");
-        if (values == null | values.length == 0){
+        String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+        if(checkBoxItemId == null || checkBoxItemId.length <= 0){
             return;
         }
 
-        List<String> itemIds = Arrays.asList(values);
-        List<HcsaChklItemDto> chklItemDtos = hcsaChklService.listChklItemByItemId(itemIds);
-
-        ParamUtil.setRequestAttr(request, HcsaChklConstants.PARAM_CHECKLIST_ITEM_RESULT, chklItemDtos);
-    }
-
-    /**
-     * AutoStep: prepareEditCloneChklItem
-     * @param bpc
-     * @throws IllegalAccessException
-     */
-    public void prepareEditCloneChklItem(BaseProcessClass bpc) throws IllegalAccessException {
-        HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!HcsaChklConstants.ACTION_PREPARE_EDIT.equals(currentAction)){
-            return;
-        }
-        preSelectOption(request);
-
-        List<HcsaChklItemDto> chklItemDtos = (List<HcsaChklItemDto>) ParamUtil.getRequestAttr(request, HcsaChklConstants.PARAM_CHECKLIST_ITEM_RESULT);
-        String needEditId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        chklItemDtos.stream().forEach(i -> {
-            if(i.getItemId().equals(needEditId)){
-                ParamUtil.setRequestAttr(request, HcsaChklConstants.CHECKLIST_ITEM_REQUEST_DTO, i);
-            };
-        });
-    }
-
-    /**
-     * AutoStep: editCloneChklItem
-     * @param bpc
-     * @throws IllegalAccessException
-     */
-    public void editCloneChklItem(BaseProcessClass bpc) throws IllegalAccessException {
-        HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!HcsaChklConstants.ACTION_PREPARE_EDIT.equals(currentAction)){
-            return;
-        }
-        preSelectOption(request);
+        List<ChecklistItemDto> chklItemDtos = hcsaChklService.listChklItemByItemId(Arrays.asList(checkBoxItemId));
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CLONE_ITEMS, (Serializable) chklItemDtos);
 
     }
 
     /**
+    * @description: get request chkl item dto
+    * @param: 
+    * @return: 
+    * @author: yichen 
+    */
+    private ChecklistItemDto requestChklItemDto(HttpServletRequest request){
+        ChecklistItemDto itemDto = new ChecklistItemDto();
+        String itemId = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_ID);
+        String clause = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
+        String desc = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
+        String regulationId = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHKL_REGULATION_ID);
+        String chklItem = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM);
+        String riskLevel = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_RISK_LEVEL);
+        String answerType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE);
+        String status = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_STATUS);
+
+        itemDto.setItemId(itemId);
+        itemDto.setRegulationId(regulationId);
+        itemDto.setRegulationClauseNo(clause);
+        itemDto.setRegulationClause(desc);
+        itemDto.setRiskLevel(riskLevel);
+        itemDto.setStatus(status);
+        itemDto.setChecklistItem(chklItem);
+        itemDto.setAnswerType(answerType);
+
+        return itemDto;
+    }
+
+
+    /**
+     * AutoStep: editCloneItem
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void editCloneItem(BaseProcessClass bpc) throws IllegalAccessException {
+        HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!HcsaChecklistConstants.ACTION_EDIT_CLONE_ITEM.equals(currentAction)){
+            return;
+        }
+
+
+        ChecklistItemDto itemDto = requestChklItemDto(request);
+
+        ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "save");
+        if(validationResult != null && validationResult.isHasErrors()){
+            Map<String,String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+        }else {
+            Map<String,String> successMap = new HashMap<>();
+            successMap.put("edit item","suceess");
+            List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_CLONE_ITEMS);
+
+            for(ChecklistItemDto it : chklItemDtos){
+                if (it.getItemId().equals(itemDto.getItemId())){
+                    it.setAnswerType(itemDto.getAnswerType());
+                    it.setChecklistItem(itemDto.getChecklistItem());
+                    it.setRegulationClause(itemDto.getRegulationClause());
+                    it.setRegulationId(itemDto.getRegulationId());
+                    it.setRiskLevel(itemDto.getRiskLevel());
+                    it.setStatus(itemDto.getStatus());
+                    it.setRegulationClauseNo(itemDto.getRegulationClauseNo());
+                }
+                // Edit clone need clear item id for backend logic
+                it.setItemId(null);
+            }
+
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CLONE_ITEMS, (Serializable) chklItemDtos);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
+        }
+
+    }
+
+        /**
      * AutoStep: prepareItem
      * @param bpc
      * @throws IllegalAccessException
      */
-    public void prepareItem(BaseProcessClass bpc) throws IllegalAccessException {
+    public void prepareChecklistItem(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(HcsaChklConstants.ACTION_CANCEL.equals(currentAction)){
-            IaisEGPHelper.clearSessionAttr(request, HcsaChklItemQueryDto.class);
+        if(HcsaChecklistConstants.ACTION_CANCEL.equals(currentAction)){
+            IaisEGPHelper.clearSessionAttr(request, CheckItemQueryDto.class);
         }
 
-        filterParameter.setClz(HcsaChklItemQueryDto.class);
-        filterParameter.setSearchAttr(HcsaChklConstants.PARAM_CHECKLIST_ITEM_SEARCH);
-        filterParameter.setResultAttr(HcsaChklConstants.PARAM_CHECKLIST_ITEM_RESULT);
+        filterParameter.setClz(CheckItemQueryDto.class);
+        filterParameter.setSearchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH);
+        filterParameter.setResultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT);
         filterParameter.setSortField("item_id");
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
@@ -227,48 +271,70 @@ public class HcsaChklItemDelegator {
 
         SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
 
-        ParamUtil.setSessionAttr(request, HcsaChklConstants.PARAM_HCSA_SERVICE_SEARCH, searchParam);
-        ParamUtil.setRequestAttr(request, HcsaChklConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_HCSA_SERVICE_SEARCH, searchParam);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
     }
 
-    /**
-     * AutoStep: prepareAdd
-     * @param bpc
-     * @throws IllegalAccessException
-     */
-    public void prepareAdd(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!HcsaChklConstants.ACTION_PREPARE_ADD.equals(currentAction)){
-            return;
-        }
-        preSelectOption(request);
-        ParamUtil.setRequestAttr(request,"btnTag","Y");
-    }
-
-
-
-
-    /**
-     * AutoStep: prepareEdit
-     * @param bpc
-     * @throws IllegalAccessException
-     */
-    public void prepareEdit(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        HttpServletResponse response = bpc.response;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!HcsaChklConstants.ACTION_PREPARE_EDIT.equals(currentAction)){
-            return;
-        }
-        preSelectOption(request);
-        String itemId = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setRequestAttr(request,"btnTag","N");
+    private void loadSingleItemData(HttpServletRequest request){
+        String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(itemId)){
-            HcsaChklItemDto itemDto = hcsaChklService.getChklItemById(itemId);
-            ParamUtil.setRequestAttr(request, HcsaChklConstants.CHECKLIST_ITEM_REQUEST_DTO, itemDto);
+            ChecklistItemDto itemDto = hcsaChklService.getChklItemById(itemId);
+            ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_DTO, itemDto);
         }
+    }
 
+    /**
+     * AutoStep: prepareAddItem
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void prepareAddItem(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        preSelectOption(request);
+        ParamUtil.setRequestAttr(request,"btnTag","SubmitButton");
+    }
+
+    /**
+     * AutoStep: prepareEditItem
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void prepareEditItem(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,"btnTag","UpdataButton");
+
+        preSelectOption(request);
+        loadSingleItemData(request);
+    }
+
+    /**
+     * AutoStep: prepareCloneItem
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void prepareCloneItem(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,"btnTag","CloneButton");
+        preSelectOption(request);
+        loadSingleItemData(request);
+    }
+
+    /**
+     * AutoStep: switchClone
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void switchClone(BaseProcessClass bpc){
+        // do nothing.
+    }
+
+    /**
+     * AutoStep: cancelClone
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void cancelClone(BaseProcessClass bpc){
+        // do nothing.
     }
 
     /**
@@ -280,18 +346,18 @@ public class HcsaChklItemDelegator {
     public void doSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!HcsaChklConstants.ACTION_SEARCH.equals(currentAction)){
+        if(!HcsaChecklistConstants.ACTION_SEARCH.equals(currentAction)){
             return;
         }
 
-        HcsaChklItemQueryDto itemQueryDto = new HcsaChklItemQueryDto();
+        CheckItemQueryDto itemQueryDto = new CheckItemQueryDto();
 
-        String clause = ParamUtil.getString(request, HcsaChklConstants.PARAM_REGULATION_CLAUSE);
-        String desc = ParamUtil.getString(request, HcsaChklConstants.PARAM_REGULATION_DESC);
-        String chklItem = ParamUtil.getString(request, HcsaChklConstants.PARAM_CHECKLIST_ITEM);
-        String status = ParamUtil.getString(request, HcsaChklConstants.PARAM_STATUS);
-        String answerType = ParamUtil.getString(request, HcsaChklConstants.PARAM_ANSWER_TYPE);
-        String riskLevel = ParamUtil.getString(request, HcsaChklConstants.PARAM_RISK_LEVEL);
+        String clause = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
+        String desc = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
+        String chklItem = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM);
+        String status = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_STATUS);
+        String answerType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE);
+        String riskLevel = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_RISK_LEVEL);
 
         itemQueryDto.setRegulationClauseNo(clause);
         itemQueryDto.setRegulationClause(desc);
@@ -303,27 +369,27 @@ public class HcsaChklItemDelegator {
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
         if(!StringUtil.isEmpty(clause)){
-            searchParam.addFilter(HcsaChklConstants.PARAM_REGULATION_CLAUSE, clause, true);
+            searchParam.addFilter(HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause, true);
         }
 
         if(!StringUtil.isEmpty(desc)){
-            searchParam.addFilter(HcsaChklConstants.PARAM_REGULATION_DESC, desc, true);
+            searchParam.addFilter(HcsaChecklistConstants.PARAM_REGULATION_DESC, desc, true);
         }
 
         if(!StringUtil.isEmpty(chklItem)){
-            searchParam.addFilter(HcsaChklConstants.PARAM_CHECKLIST_ITEM, chklItem, true);
+            searchParam.addFilter(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, chklItem, true);
         }
 
         if(!StringUtil.isEmpty(riskLevel)){
-            searchParam.addFilter(HcsaChklConstants.PARAM_RISK_LEVEL, riskLevel, true);
+            searchParam.addFilter(HcsaChecklistConstants.PARAM_RISK_LEVEL, riskLevel, true);
         }
 
         if(!StringUtil.isEmpty(answerType)){
-            searchParam.addFilter(HcsaChklConstants.PARAM_ANSWER_TYPE, answerType, true);
+            searchParam.addFilter(HcsaChecklistConstants.PARAM_ANSWER_TYPE, answerType, true);
         }
 
         if(!StringUtil.isEmpty(status)){
-            searchParam.addFilter(HcsaChklConstants.PARAM_STATUS, status, true);
+            searchParam.addFilter(HcsaChecklistConstants.PARAM_STATUS, status, true);
         }
 
     }

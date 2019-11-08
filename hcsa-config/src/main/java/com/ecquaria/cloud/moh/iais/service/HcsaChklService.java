@@ -8,24 +8,26 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface HcsaChklService {
-    SearchResult<HcsaServiceQueryDto> listHcasaService(SearchParam searchParam);
-    SearchResult<HcsaChklItemQueryDto> listChklItem(SearchParam searchParam);
+    SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam);
+    SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam);
 
-    List<HcsaChklItemDto> listChklItemByItemId(List<String> itemIds);
+    List<ChecklistItemDto> listChklItemByItemId(List<String> itemIds);
 
-    HcsaChklItemDto getChklItemById(String id);
-    void saveChklItem(HcsaChklItemDto itemDto);
+    ChecklistItemDto getChklItemById(String id);
 
-    void saveConfigItemOfCommon();
+    void saveChklItem(ChecklistItemDto itemDto);
 
-    void addConfigItemOfService();
+    List<String> listRegulationClauseNo();
+
+    void submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);
+
 }
