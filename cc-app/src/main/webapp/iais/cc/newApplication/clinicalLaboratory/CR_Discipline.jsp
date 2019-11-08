@@ -116,4 +116,14 @@
   </div></td></tr></tbody></table>
   <div id="control--runtime--0--errorMsg_page_bottom" class="error_placements"></div>
 </div></div><div id="demo" style="display:none;" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide"></div>
-        
+
+<script>
+
+  function xxx() {
+
+
+
+  }
+
+
+</script>

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,19 +22,43 @@ import java.util.Map;
 @Service
 @Slf4j
 public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoService {
-    //load Laboratory Disciplines page
-    private static final String GET_DISCIPLINE_URL = "";
+    //load Laboratory Disciplines page checkList
+    private static final String GET_CHECKLIST_URL = "hcsa-config:8878/list-subtype-subsumed";
     private static final String POST_DISCIPLINE_URL = "";
     private static final String GET_CGO_URL = "";
     private static final String GET_PO_URL = "";
     private static final String GET_CGO = "hcsa-config:8878/service-type";
 
+    //load loadLaboratory Disciplines page checkList
     @Override
-    public List loadLaboratoryDisciplines(String str) {
+    public List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId) {
         Map<String,Object> map = new HashMap<>();
-        //List list= RestApiUtil.getListByReqParam(GET_DISCIPLINE_URL, map, TestDto.class);
+//        map.put("serviceId", serviceId);
+        //map.put("serviceId", "1B484571-2AEB-E911-BE76-000C29C8FBE4");
+        //map.put("serviceId", "AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
+        map.put("serviceId", "A7BAAA77-E9EE-E911-BE76-000C294908E1");
+        List<HcsaSvcSubtypeOrSubsumedDto> list= RestApiUtil.getListByReqParam(GET_CHECKLIST_URL, map, HcsaSvcSubtypeOrSubsumedDto.class);
+        StringBuffer sb = new StringBuffer();
+        for(HcsaSvcSubtypeOrSubsumedDto item:list){
+            if(item.getList().size() == 0){
+                continue;
+            }
+            /*HcsaSvcSubtypeOrSubsumedDto list2 = MiscUtil.transferDtoFromMap((Map<String, Object>) item.getList(), HcsaSvcSubtypeOrSubsumedDto.class);*/
 
-        return null;
+            //List<HcsaSvcSubtypeOrSubsumedDto> list3 = RestApiUtil.transferListContent(item.getList(), HcsaSvcSubtypeOrSubsumedDto.class);
+
+        }
+
+        return list;
+    }
+
+    private void turn(List<HcsaSvcSubtypeOrSubsumedDto> source){
+        for(HcsaSvcSubtypeOrSubsumedDto item:source){
+            if(item.getList().size() == 0){
+                return;
+            }
+            turn(item.getList());
+        }
     }
 
     @Override
@@ -76,7 +101,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
     }
 
     @Override
-    public List<HcsaSvcPersonnelDto> loadCGOBySvcIdAndPsnType(String serviceId, String psnType) {
+    public List<HcsaSvcPersonnelDto> getGOSelectInfo(String serviceId, String psnType) {
         Map<String,Object> map = new HashMap<>();
         map.put("serviceId", serviceId);
         map.put("psnType", psnType);
