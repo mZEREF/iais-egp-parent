@@ -2,12 +2,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -16,14 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.SERVICEID;
 
 
 /**
@@ -41,8 +35,9 @@ public class ClinicalLaboratoryDelegator {
 
     public static final String  GOVERNANCEOFFICERS = "GovernanceOfficers";
     public static final String  GOVERNANCEOFFICERSDTO = "GovernanceOfficersDto";
-    public static final String  APPSVCRELATEDINFODTO ="AppSvcRelatedInfoDto";
-
+    private static final String SERVICEID = "serviceId";
+    private static final String PREMISESTYPE = "premisesType";
+    private static final String APPSUBMISSIONDTO = "AppSubmissionDto";
     /**
      * StartStep: doStart
      *
@@ -90,15 +85,13 @@ public class ClinicalLaboratoryDelegator {
     public void prepareLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines start ...."));
 
-        String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
         //wait update api url
-        List<HcsaSvcSubtypeOrSubsumedDto> checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines(serviceId);
+        //List checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines("Laboratory Disciplines");
         Map<String,String> map = new HashMap<>();
         map.put("Histocompatibility", "Histocompatibility");
         map.put("Immunology", "Immunology");
         map.put("HIV Testing", "HIV Testing");
         map.put("HIV Screening", "HIV Screening");
-        ParamUtil.setSessionAttr(bpc.request, "checkList", (Serializable) checkList);
         ParamUtil.setSessionAttr(bpc.request, "LaboratoryDisciplines", (Serializable) map);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
@@ -116,14 +109,9 @@ public class ClinicalLaboratoryDelegator {
         String psnType = "CGO";
         List<HcsaSvcPersonnelDto> cgoList = null;
         if(!StringUtil.isEmpty(serviceId) && !StringUtil.isEmpty(psnType)){
-            //min and max count
-            cgoList =appGrpSvcRelatedInfoService.getGOSelectInfo(serviceId, psnType);
+            cgoList =appGrpSvcRelatedInfoService.loadCGOBySvcIdAndPsnType(serviceId, psnType);
             ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERS, (Serializable) cgoList);
         }
-        List<SelectOption> cgoSelectList = new ArrayList<>();
-        SelectOption sp1 = new SelectOption("new COG", "new CGO");
-        cgoSelectList.add(sp1);
-        ParamUtil.setSessionAttr(bpc.request, "CgoSelectList", (Serializable) cgoSelectList);
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
     }
 
@@ -208,11 +196,7 @@ public class ClinicalLaboratoryDelegator {
     public void doLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines start ...."));
         String [] checkListIds = bpc.request.getParameterValues("control--runtime--1");
-
-        //save into sub-svc dto
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
-        //appSvcRelatedInfoDto.setCheckListIds(checkListIds);
-        ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
+        //save
 
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
@@ -227,15 +211,26 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         //get CGO count
         //String cgoCount = ParamUtil.getDate(bpc.request, "cgoCount");
+        String salutation = ParamUtil.getDate(bpc.request, "salutation");
+        String name = ParamUtil.getDate(bpc.request, "name");
+        String idType = ParamUtil.getDate(bpc.request, "idType");
+        String idNo = ParamUtil.getDate(bpc.request, "idNo");
+        String designation = ParamUtil.getDate(bpc.request, "designation");
+        String professionType = ParamUtil.getDate(bpc.request, "professionType");
+        String professionRegnNo = ParamUtil.getDate(bpc.request, "professionRegnNo");
+        String specialty = ParamUtil.getDate(bpc.request, "specialty");
+        String otherSpecialty = ParamUtil.getDate(bpc.request, "otherSpecialty");
+        String qualification = ParamUtil.getDate(bpc.request, "qualification");
+        String mobileNo = ParamUtil.getDate(bpc.request, "mobileNo");
+        String emailAddress = ParamUtil.getDate(bpc.request, "emailAddress");
 
-        AppSvcCgoDto appSvcCgoDto = genAppSvcCgoDto(bpc.request);
-        List<AppSvcCgoDto> appSvcCgoDtoList = new ArrayList<>();
-        appSvcCgoDtoList.add(appSvcCgoDto);
-        //save into sub-svc dto
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
-        appSvcRelatedInfoDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
-        ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
 
+//        AppSvcCgoDto appSvcCgoDto = new AppSvcCgoDto();
+
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        if(appSubmissionDto == null){
+            appSubmissionDto = new AppSubmissionDto();
+        }
 
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
     }
@@ -249,24 +244,6 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doDisciplineAllocation(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation start ...."));
-        String premisesId = ParamUtil.getString(bpc.request, "premId");
-        List<AppSvcDisciplineAllocationDto> daList = new ArrayList<>();
-
-        AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
-         //Cytology,HIV Testing,.. load from xxxx
-        String 	nameStr = new StringBuffer().append(premisesId).append("-").append("Cytology").toString();
-        //get Laboratory Disciplines id and	Clinical Governance Officers id
-        String [] ids  = ParamUtil.getStrings(bpc.request, nameStr);
-        appSvcDisciplineAllocationDto.setAppGrpPremiseId(premisesId);
-        appSvcDisciplineAllocationDto.setChkLstConfId(ids[0]);
-        appSvcDisciplineAllocationDto.setAppSvcCgoId(ids[1]);
-        daList.add(appSvcDisciplineAllocationDto);
-
-
-        //save into sub-svc dto
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
-        appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(daList);
-        ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
 
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation end ...."));
     }
@@ -345,56 +322,10 @@ public class ClinicalLaboratoryDelegator {
         if(cgoId == "new"){
             return;
         }
-        AppSvcCgoDto governanceOfficersDto = appGrpSvcRelatedInfoService.loadGovernanceOfficerByCgoId(cgoId);
-        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
+//        AppSvcCgoDto governanceOfficersDto = appGrpSvcRelatedInfoService.loadGovernanceOfficerByCgoId(cgoId);
+//        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
         log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId end ...."));
     }
-
-
-
-    private AppSvcCgoDto genAppSvcCgoDto(HttpServletRequest request){
-        AppSvcCgoDto appSvcCgoDto = new AppSvcCgoDto();
-        String salutation = ParamUtil.getString(request, "salutation");
-        String name = ParamUtil.getString(request, "name");
-        String idType = ParamUtil.getString(request, "idType");
-        String idNo = ParamUtil.getString(request, "idNo");
-        String designation = ParamUtil.getString(request, "designation");
-        String professionType = ParamUtil.getString(request, "professionType");
-        String professionRegoType = ParamUtil.getString(request, "professionRegoType");
-        String professionRegoNo = ParamUtil.getString(request, "professionRegoNo");
-        String specialty = ParamUtil.getString(request, "specialty");
-        String specialtyOther = ParamUtil.getString(request, "specialtyOther");
-        String qualification = ParamUtil.getString(request, "qualification");
-        String mobileNo = ParamUtil.getString(request, "mobileNo");
-        String emailAddress = ParamUtil.getString(request, "emailAddress");
-        appSvcCgoDto.setSalutation(salutation);
-        appSvcCgoDto.setName(name);
-        appSvcCgoDto.setIdType(idType);
-        appSvcCgoDto.setIdNo(idNo);
-        appSvcCgoDto.setDesignation(designation);
-        appSvcCgoDto.setProfessionType(professionType);
-        appSvcCgoDto.setProfessionRegoType(professionRegoType);
-        appSvcCgoDto.setProfessionRegoNo(professionRegoNo);
-        appSvcCgoDto.setSpeciality(specialty);
-        if("other".equals(specialty)){
-            appSvcCgoDto.setSpecialityOther(specialtyOther);
-        }
-        //qualification
-        appSvcCgoDto.setQualification(qualification);
-        appSvcCgoDto.setMobileNo(mobileNo);
-        appSvcCgoDto.setEmailAddr(emailAddress);
-
-        return appSvcCgoDto;
-    }
-
-    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(HttpServletRequest request){
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(request, APPSVCRELATEDINFODTO);
-        if(appSvcRelatedInfoDto == null){
-            appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-        }
-        return appSvcRelatedInfoDto;
-    }
-
 
 
 }

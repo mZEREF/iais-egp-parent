@@ -43,69 +43,80 @@
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
                                     <div class="panel-heading"><b>Submission Details</b></div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
                                     <table class="table table-bordered">
                                         <tbody>
                                         <tr>
-                                            <td align="right">Application No. (Overall)</td>
-                                            <td>NW-20181224-00002-1</td>
+                                            <td class="col-xs-6" align="right">Application No. (Overall)</td>
+                                            <td class="col-xs-6">${applicationViewDto.applicationNo}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Application No.</td>
-                                            <td>NW-20181224-00003</td>
+                                            <td>${applicationViewDto.applicationNoOverAll}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Application Type</td>
-                                            <td>New</td>
+                                            <td>${applicationViewDto.applicationType}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Service Type</td>
-                                            <td>Radiological Service</td>
+                                            <td>${applicationViewDto.serviceType}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Submission Date</td>
-                                            <td>16-Oct-2018 01:20:13 PM</td>
+                                            <td>${applicationViewDto.submissionDate}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Current Status</td>
-                                            <td>Pending Approval Officer 1</td>
+                                            <td>${applicationViewDto.currentStatus}</td>
                                         </tr>
                                         </tbody>
                                     </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div align="center">
                                     <button type="button" class="btn btn-primary">
                                         View Application
                                     </button>
                                 </div>
-                                <div>&nbsp;</div>
+                                <div>&nbsp</div>
                                 <div class="panel panel-default">
                                     <div class="panel-heading"><b>Applicant Details</b></div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
                                     <table class="table table-bordered">
                                         <tbody>
                                         <tr>
-                                            <td align="right">HCI Code</td>
-                                            <td>16C001</td>
+                                            <td class="col-xs-6" align="right">HCI Code</td>
+                                            <td class="col-xs-6">-</td>
                                         </tr>
                                         <tr>
                                             <td align="right">HCI Name</td>
-                                            <td>TPY Clinic</td>
+                                            <td>${applicationViewDto.HCIName}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">HCI ADDRESS</td>
-                                            <td>TPY Clinic/ 11 Toa Payoh Lorong 3, Blk C, #12-0102, Singapore 319579</td>
+                                            <td>${applicationViewDto.HCIAddress}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Telephone</td>
-                                            <td>6737 3867</td>
+                                            <td>${applicationViewDto.Telephone}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Fax</td>
-                                            <td>6737 3527</td>
+                                            <td>-</td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
-
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
@@ -127,7 +138,6 @@
                                                     <th>Size</th>
                                                     <th>Submitted By</th>
                                                     <th>Date Submitted</th>
-                                                    <th>Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -146,13 +156,6 @@
                                                     </td>
                                                     <td>
                                                         <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                    <td>
-                                                        <span class="glyphicon glyphicon-floppy-remove"></span>
-                                                        <span>&nbsp;</span>
-                                                        <span class="glyphicon glyphicon-pencil"></span>
-                                                        <span>&nbsp;</span>
-                                                        <span class="glyphicon glyphicon-floppy-saved"></span>
                                                     </td>
                                                 </tr>
                                                 <tr>
