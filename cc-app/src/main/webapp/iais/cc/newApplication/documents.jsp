@@ -8,6 +8,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto" %>
 <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
@@ -37,9 +38,9 @@
                                         <h3>Fire Safety Certificate (FSC) from SCDF</h3>
                                         <p><a href="#" target="_blank">Preview</a></p>
                                     </div>
-                                    <c:forEach var="hcsaSvcCommonDocDtoList" items="${HcsaSvcCommonDocDtoList}">
+                                    <c:forEach var="hcsaSvcDocConfigDto" items="${HcsaSvcDocConfigDtoList}">
                                         <div class="document-upload-list">
-                                            <h3>${hcsaSvcCommonDocDtoList.docTitle}</h3>
+                                            <h3>${hcsaSvcDocConfigDto.docTitle}</h3>
                                             <div class="file-upload-gp">
                                                 <p  id="showFile">${AppGrpPrimaryDocDto.docName}</p>
                                                 <input class="selectedFile" id="selectedFile" name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
@@ -91,10 +92,16 @@
 
     $('.selectedFile').change(function () {
             var file = $(this).val();
-            $(this).parent().children('p:eq(0)').html(getFileName(file));
+            $(this).parent().children('span:eq(0)').html(getFileName(file));
+            $(this).parent().children('span:eq(0)').next().removeClass("hidden");
+
         }
     );
 
+    $('.delBtn').click(function () {
+        $(this).parent().children('span:eq(0)').html('');
+        $(this).parent().children('span:eq(0)').next().addClass("hidden");
+    });
 
 
 </script>
