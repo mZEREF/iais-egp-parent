@@ -17,6 +17,6 @@ public interface AppGrpPrimaryDocService {
     List<String> SaveFileToRepo(AppGrpPrimaryDocDto appGrpPrimaryDocDto) throws IOException;
     AppGrpPrimaryDocDto saveAppGrpPremisesDoc(AppGrpPrimaryDocDto appGrpPrimaryDocDto);
     List getAppGrpPrimaryDocDtosByAppGrpId(String appGrpId);
-    List<HcsaSvcDocConfigDto> getAllHcsaSvcCommonDocDtos();
+    List<HcsaSvcDocConfigDto> getAllHcsaSvcDocs(String serviceId);
     List<AppGrpPrimaryDocDto> saveAppGrpPremisesDocs(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList);
 }
