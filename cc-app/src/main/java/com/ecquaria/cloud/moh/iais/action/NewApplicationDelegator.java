@@ -20,6 +20,9 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.kafka.clientwrapper.KafkaSOPWrapper;
+import com.ecquaria.kafka.clientwrapper.model.ProcessDetails;
+import com.ecquaria.kafka.clientwrapper.model.SubmitResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -336,7 +339,23 @@ public class NewApplicationDelegator {
         //do validate
         //doValidate(bpc);
         //save the premisse
+        HttpServletRequest request = bpc.request;
+        log.info("In mS1 OnStepProcess");
 
+        int timeoutSec = 300;
+        request.setAttribute("timeoutMilis", new Long(timeoutSec*1000));
+
+        AppSubmissionDto asd = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+
+        ProcessDetails processDetails = new ProcessDetails();
+        processDetails.setProject(bpc.process.getCurrentProject());
+        processDetails.setProcess(bpc.process.getCurrentProcessName());
+        processDetails.setStep(bpc.process.getCurrentComponentName());
+
+        KafkaSOPWrapper wrapper = new KafkaSOPWrapper();
+        SubmitResult ms1Result = wrapper.submit(0, processDetails,"appSubmit",
+                "Create", asd, null, "SOP");
+        request.setAttribute("SubmitObj", asd);
         //get wrokgroup
 
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
@@ -356,7 +375,8 @@ public class NewApplicationDelegator {
         if(StringUtil.isEmpty(crud_action_value)){
             crud_action_value = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         }
-        if("saveDraft".equals(crud_action_value) || "ack".equals(crud_action_value)){
+        if("saveDraft".equals(crud_action_value) || "ack".equals(crud_action_value)
+                || "doSubmit".equals(crud_action_value)){
             switch2 = crud_action_value;
         }
         ParamUtil.setRequestAttr(bpc.request,"Switch2",switch2);
