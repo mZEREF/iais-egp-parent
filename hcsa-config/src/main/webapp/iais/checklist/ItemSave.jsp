@@ -35,13 +35,6 @@
 </webui:setAttribute>
 <!-- START: CSS -->
 
-<style>
-.btn
-{
-    display:inline;
-}
-</style>
-
 <!-- END: CSS -->
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
@@ -56,24 +49,19 @@
             <%--<iais:mask name="itemId" value="${itemRequestDto.itemId}"></iais:mask>--%>
             <iais:field value="Item Id" required="false"></iais:field>
             <iais:value width="7">
+
                 <input type="text" name="itemId" value="${itemRequestDto.itemId}" />
             </iais:value>
 
-            <iais:field value="regulationId" required="false"></iais:field>
-            <iais:value width="7">
-                <input type="text" name="regulationId" value="${itemRequestDto.regulationId}" />
-            </iais:value>
-
-
             <iais:field value="Regulation Clause Number" required="false"></iais:field>
             <iais:value width="7">
-                <iais:select name="regulationClause" id="regulationClause" options="clauseSelect" firstOption="Select Clause Number"  value="${itemRequestDto.regulationClause}"></iais:select>
+                <iais:select name="regulationClauseNo"  options="clauseSelect" firstOption="Select Clause Number"  value="${itemRequestDto.regulationClauseNo}"></iais:select>
             </iais:value>
 
             <iais:field value="Regulation" required="false"></iais:field>
             <iais:value width="7">
                 <iais:value width="7">
-                    <input type="text" name="regulationDesc"  value="${itemRequestDto.regulationDesc}" />
+                    <input type="text" name="regulationClause"  value="${itemRequestDto.regulationClause}" />
                 </iais:value>
             </iais:value>
 
@@ -102,17 +90,22 @@
         </iais:row>
 
 
+        <c:choose>
+            <c:when test="${btnTag eq 'SubmitButton'}">
+                <iais:action>
+                    <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doSubmit();">Submit</button>
+                </iais:action>
+            </c:when>
+            <c:when test="${btnTag eq 'UpdataButton'}">
+                <iais:action>
+                    <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doUpdate();">Update</button>
+                </iais:action>
+
+            </c:when>
+        </c:choose>
 
         <iais:action>
-            <button type="button" id="addBtn" class="btn btn-lg btn-login-submit" onclick="javascript:doSubmit();">Add</button>
-        </iais:action>
-
-        <iais:action>
-            <button type="button" id="updateBtn" class="btn btn-lg btn-login-submit" onclick="javascript:doUpdate();">Update</button>
-        </iais:action>
-
-        <iais:action>
-            <button type="button" id="cancelBtn" class="btn btn-lg btn-login-submit" onclick="javascript:doCancel();">Cancel</button>
+            <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doCancel();">Cancel</button>
         </iais:action>
     </iais:section>
 
@@ -122,58 +115,6 @@
 
 
 <script type="text/javascript">
-    window.onload = function(){
-        var url = location.href;
-        if(url.indexOf("?") == -1)
-        {
-            return;
-        }
-
-        var paramStr = url.substring(url.indexOf("?") + 1, url.length - 1);
-        var parameters = paramStr.split("&");
-
-        var action;
-        var pos;
-        for(var i = 0; i < parameters.length; i ++){
-            var param = parameters[i];
-            pos = param.indexOf("=");
-            if(pos == -1){
-                continue;
-            }
-
-            paramName = param.substring(0, pos);
-            if(param.substring(0, pos) == ""){
-                continue;
-            }
-
-            paramValue = param.substring(pos + 1);
-
-            if($("input[name='paramName']".length > 0)){
-                $("input[name='paramName']").val(paramValue);
-            }
-
-            if($("select[name='paramName']".length > 0)){
-                $("select[name='paramName']").val(paramValue)
-            }
-
-            $(paramName).change(function(){
-                this.value = paramValue;
-            })
-
-            if("crud_action_type" == paramName){
-                action = paramValue;
-                if(action == "doEdit"){
-                   $("addBtn").hide();
-                    $("updateBtn").show();
-                }else if(action = "doCreate"){
-                    $("addBtn").show();
-                    $("updateBtn").hide();
-                }
-            }
-        }
-    }
-
-
     function doSubmit(){
         SOP.Crud.cfxSubmit("mainForm", "saveChecklistItem");
     }
