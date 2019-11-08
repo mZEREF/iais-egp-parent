@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>com.ecquaria.kafka</groupId>
-            <artifactId>clientwrapper</artifactId>
+            <artifactId>servicewrapper</artifactId>
         </dependency>
         <dependency>
             <groupId>sg.gov.moh.iais-egp</groupId>
