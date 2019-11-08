@@ -6,12 +6,11 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  *description:
  */
 
-import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
@@ -25,42 +24,49 @@ import java.util.List;
 public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
-    @SearchTrack(catalog = "HcasaService", key = "search")
-    public SearchResult<HcsaServiceQueryDto> listHcasaService(SearchParam searchParam) {
-        return RestApiUtil.query("hcsa-config:8878/iais-check-list/hcasa-service/results", searchParam);
-    }
-
-    @Override
-    public SearchResult<HcsaChklItemQueryDto> listChklItem(SearchParam searchParam) {
+    public SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam) {
         return RestApiUtil.query("hcsa-config:8878/iais-hcsa-chkl/chklitem/results", searchParam);
     }
 
     @Override
-    public List<HcsaChklItemDto> listChklItemByItemId(List<String> itemIds) {
-        return (List<HcsaChklItemDto>) RestApiUtil.getByList("hcsa-config:8878/iais-hcsa-chkl/chklitem/items-by-ids", itemIds, HcsaChklItemDto.class);
+    public SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam) {
+        return null;
+    }
+
+    /**
+     * Gets the value on the page
+     * @param itemIds
+     * @return
+     */
+    @Override
+    public List<ChecklistItemDto> listChklItemByItemId(List<String> itemIds) {
+        return  RestApiUtil.postGetList("hcsa-config:8878/iais-hcsa-chkl/chklitem/items-by-ids", itemIds, ChecklistItemDto.class);
     }
 
     @Override
-    public HcsaChklItemDto getChklItemById(String id) {
-        return IaisEGPHelper.getRecordByPrimaryKey("hcsa-config:8878/iais-hcsa-chkl/item", id, HcsaChklItemDto.class);
+    public ChecklistItemDto getChklItemById(String id) {
+        return IaisEGPHelper.getRecordByPrimaryKey("hcsa-config:8878/iais-hcsa-chkl/chklitem", id, ChecklistItemDto.class);
     }
 
     @Override
-    public void saveChklItem(HcsaChklItemDto itemDto) {
+    public void saveChklItem(ChecklistItemDto itemDto) {
         RestApiUtil.save("hcsa-config:8878/iais-hcsa-chkl/chklitem", itemDto);
     }
 
     @Override
-    public void saveConfigItemOfCommon() {
 
-    }
-
-    public void addConfigItemOfCommon() {
-
+    /**
+    * @description:  Get the deduplicated clause
+    * @param: []
+    * @return: java.util.List<java.lang.String>
+    * @author: yichen
+    */
+    public List<String> listRegulationClauseNo() {
+        return RestApiUtil.getList("hcsa-config:8878/iais-hcsa-chkl/regulation/clauses-distinct", List.class);
     }
 
     @Override
-    public void addConfigItemOfService() {
-
+    public void submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
+        RestApiUtil.save("hcsa-config:8878/iais-hcsa-chkl/chklitem/items-clone", hcsaChklItemDtos);
     }
 }

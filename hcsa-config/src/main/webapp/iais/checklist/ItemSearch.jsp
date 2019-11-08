@@ -43,27 +43,27 @@
     <input type="hidden" name="crud_action_additional" value="">
 
 
-    <input type="hidden" name="itemId" value="">
+<%--    <input type="hidden" name="itemId" value="">
     <input type="hidden" name="regulationClause" value="">
     <input type="hidden" name="regulationDesc" value="">
     <input type="hidden" name="checklistItem" value="">
     <input type="hidden" name="riskLevel" value="">
-    <input type="hidden" name="status" value="">
+    <input type="hidden" name="status" value="">--%>
 
     <iais:body>
-    <iais:section title="Checklist Item View" id="msgList">
+    <iais:section title="Checklist Item View" id="checklistItemSection">
         <iais:row>
             <iais:field value="Regulation Clause Number" required="false"></iais:field>
             <iais:value width="7">
                 <iais:value width="7">
-                    <input type="text" name="regulationClause" value="" />
+                    <input type="text" name="regulationClauseNo" value="" />
                 </iais:value>
             </iais:value>
 
             <iais:field value="Regulation" required="false"></iais:field>
             <iais:value width="7">
                 <iais:value width="7">
-                    <input type="text" name="regulationDesc" value="" />
+                    <input type="text" name="regulationClause" value="" />
                 </iais:value>
             </iais:value>
 
@@ -125,11 +125,12 @@
             <thead>
             <tr>
                 <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="regulationClause" value="Regulation Clause Number"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="regulationDesc" value="Regulations"></iais:sortableHeader>
+                <td></td>
+                <iais:sortableHeader needSort="true"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="regulationClause" value="Regulations"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="checklistItem" value="Checklist Item"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="status" value="Status"></iais:sortableHeader>
-                <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="riskLevel" value="Rusk Level"></iais:sortableHeader>
+                <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
             </tr>
             </thead>
 
@@ -144,16 +145,18 @@
                 </c:when>
                 <c:otherwise>
                     <%-- message entity--%>
+
                     <c:forEach var = "item" items = "${checklistItemResult.rows}" varStatus="status">
                         <tr>
                             <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
+                            <td><input name="itemCheckbox" id="itemCheckbox" type="checkbox" value="${item.itemId}" /></td>
+                            <td>${item.regulationClauseNo}</td>
                             <td>${item.regulationClause}</td>
-                            <td>${item.regulationDesc}</td>
                             <td>${item.checklistItem}</td>
                             <td>${item.riskLevel}</td>
                             <td>${item.status}</td>
                             <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:doSubmitByAction('doEdit','${item.itemId}', '${item.regulationClause}', '${item.regulationDesc}', '${item.checklistItem}', '${item.riskLevel}','${item.status}');"/>
+                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEditItem('${item.itemId}');"/>
                                 <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${item.itemId}');"/>
                             </td>
                         </tr>
@@ -168,8 +171,13 @@
         </iais:searchSection>
 
         <iais:action>
-            <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:doSubmitByAction('doCreate');">Add</button>
+              <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:prepareAddItem();">Add</button>
         </iais:action>
+
+        <iais:action>
+        <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:prepareClone();">Clone</button>
+        </iais:action>
+
         </iais:body>
 </form>
 
@@ -178,59 +186,24 @@
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
     }
 
-    /*function prepareEdit(id){
-        SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
-    }*/
-
-    function doSubmitByAction(action, itemId, regulationClause, regulationDesc, checklistItem, riskLevel, status){
-        var $form = $( "mainForm");
-        if($form.length == 0){
-            return;
-        }
-
-        var inputs = $(form).find("input");
-        if(inputs.length > 0){
-            inputs.each(function(index, obj){
-                if('crud_action_type' == obj.name){
-                    obj.value = action;
-
-                }
-
-                if('regulationClause' == obj.name){
-                    obj.value = regulationClause;
-                }
-
-                if('regulationDesc' == obj.name){
-                    obj.value = regulationDesc;
-                }
-
-                if('checklistItem' == obj.name){
-                    obj.value = checklistItem;
-                }
-
-                if('riskLevel' == obj.name){
-                    obj.value = riskLevel;
-                }
-
-                if('status' == obj.name){
-                    obj.value = status;
-                }
-            });
-        }
-
-        $(form).submit();
+    function prepareAddItem(){
+        SOP.Crud.cfxSubmit("mainForm", "prepareAddItem");
     }
 
-    /*function prepareAdd(){
-        SOP.Crud.cfxSubmit("mainForm", "prepareAdd");
-    }*/
+    function prepareClone(){
+
+        console.log("==========1=>>>>>>>>>" + $("#itemCheckbox").val());
+        console.log("==========2=>>>>>>>>>" +document.getElementsByName("itemCheckbox").values());
+
+
+        SOP.Crud.cfxSubmit("mainForm", "viewCloneData");
+    }
+
+    function prepareEditItem(id){
+        SOP.Crud.cfxSubmit("mainForm", "prepareEditItem", id);
+    }
 
     function doCancel(){
         SOP.Crud.cfxSubmit("mainForm","doCancel");
     }
-
-    function sortRecords(sortFieldName,sortType){
-        SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
-    }
-
 </script>
