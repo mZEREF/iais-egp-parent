@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.eventbus.SubmitReq;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.feign.EventBusClient;
 import com.ecquaria.cloud.moh.iais.service.AppSubmisionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
  * @date 11/6/2019
  */
 @Service
-public class AppSubmisionServiceImpl implements AppSubmisionService {
+public class AppSubmisionServiceImpl implements AppSubmissionService {
     @Autowired
     private EventBusClient eventBusClient;
 
