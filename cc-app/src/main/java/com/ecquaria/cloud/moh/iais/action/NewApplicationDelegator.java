@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
+import com.ecquaria.cloud.moh.iais.service.AppSubmisionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,10 @@ public class NewApplicationDelegator {
 
     @Autowired
     private ServiceConfigService serviceConfigService;
+
+    @Autowired
+    private AppSubmisionService appSubmisionService;
+
     /**
      * StartStep: Start
      *
@@ -356,10 +361,9 @@ public class NewApplicationDelegator {
         HttpServletRequest request = bpc.request;
         log.info("In mS1 OnStepProcess");
 
-        int timeoutSec = 300;
-        request.setAttribute("timeoutMilis", new Long(timeoutSec*1000));
-
         AppSubmissionDto asd = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        appSubmisionService.submit(asd);
+
 
 //        ProcessDetails processDetails = new ProcessDetails();
 //        processDetails.setProject(bpc.process.getCurrentProject());
