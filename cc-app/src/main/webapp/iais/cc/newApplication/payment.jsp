@@ -33,7 +33,6 @@
                                     </thead>
                                     <tbody>
 <%--                                    <c:forEach items="${testDtoList}" var="list">--%>
-
 <%--                                    </c:forEach>--%>
                                     <tr>
                                         <td>
@@ -53,8 +52,6 @@
                                             <p name="fee" >8888.88</p>
                                         </td>
                                     </tr>
-
-
                                     </tbody>
                                 </table>
                                 <h2>Payment Method</h2>
