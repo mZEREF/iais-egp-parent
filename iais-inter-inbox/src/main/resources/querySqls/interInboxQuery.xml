@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="interInboxQuery">
+    <sql key = "inboxQuery" remarks = "Query Inter-Inbox Data by condition">
+        <![CDATA[
+            SELECT
+                inbox.id,
+                inbox.subject;
+                inbox.message_type;
+                inbox.ref_no;
+                inbox.service;
+                inbox.created_dt;
+            FROM INTER_INBOX AS inbox
+            WHERE 1=1
+            <#if message_type??> AND CHARINDEX(:message_type, inbox.message_type) >0</#if>
+            <#if STATUS??> AND inbox.STATUS = :STATUS</#if>
+        ]]>
+    </sql>
+
+</sqls>
+

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="applicationQuery">
+    <sql key = "appQuery" remarks = "Query Application Data by condition">
+        <![CDATA[
+            SELECT app.id,
+                   app.APPLICATION_NO,
+                   app.APP_TYPE,
+                   app.SERVICE_ID,
+                   app.LICENCE_ID,
+                   app.ORIGIN_LICENCE_ID,
+                   app.BASE_APP_ID,
+                   app.BASE_LICENCE_ID,
+                   app.NEED_INSPECTION,
+                   app.STATUS,
+                   app.APP_GRP_ID,
+                   app.CREATED_DT,
+                   app.CREATED_BY,
+                   app.UPDATED_DT,
+                   app.UPDATED_BY
+            FROM APPLICATION AS app
+            WHERE 1=1
+            <#if APPLICATION_NO??> AND CHARINDEX(:APPLICATION_NO, app.APPLICATION_NO) >0</#if>
+            <#if STATUS??> AND app.STATUS = :STATUS</#if>
+            <#if APP_TYPE??> AND app.APP_TYPE = :APP_TYPE</#if>
+        ]]>
+    </sql>
+
+</sqls>
+

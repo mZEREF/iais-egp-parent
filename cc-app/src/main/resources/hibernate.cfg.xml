@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE hibernate-configuration PUBLIC  
+        "-//Hibernate/Hibernate Configuration DTD 5.3//EN"  
+        "http://www.hibernate.org/dtd/hibernate-configuration-5.3.dtd">  
+<hibernate-configuration>  
+    <session-factory>  
+        <property name="dialect">org.hibernate.dialect.SQLServerDialect</property>
+
+<!-- 		<property name="connection.datasource">java:comp/env/jdbc/EDRDB</property> -->
+	    <property name="connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>        
+	    <property name="connection.url">jdbc:sqlserver://192.168.7.84:1433;databaseName=edrdb</property>
+	        
+		<!-- SQL Server - Database UserName & Password -->
+	    <property name="connection.username">edruser</property>
+	    <property name="connection.password">password$1</property>
+	    
+	    <property name="hbm2ddl.auto">update</property>
+	    
+	    <property name="hibernate.transaction.coordinator_class">jdbc</property>
+	    <property name="show_sql">true</property>
+       
+		<mapping class="com.ecquaria.kafka.model.Submission"/> 
+		<mapping class="com.ecquaria.kafka.model.MsgLog"/>
+    </session-factory>  
+</hibernate-configuration>  
