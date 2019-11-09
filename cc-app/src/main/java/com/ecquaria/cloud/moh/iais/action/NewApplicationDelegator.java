@@ -51,7 +51,7 @@ public class NewApplicationDelegator {
     public static final String SERVICEID = "serviceId";
     private static final String PREMISESTYPE = "premisesType";
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
-    private static final String HCSASVCDOCCONFIGDTOLIST = "HcsaSvcDocConfigDtoList";
+    private static final String HCSASVCDOCCONFIGDTOMAP = "HcsaSvcDocConfigDtoMap";
 
     @Autowired
     private AppGrpPremisesService appGrpPremisesService;
@@ -126,10 +126,10 @@ public class NewApplicationDelegator {
         premisesSelect.add(sp1);
         if(list !=null){
             for (AppGrpPremisesDto item : list){
-              if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())){
-                  SelectOption sp2 = new SelectOption(item.getId().toString(),item.getAddress());
-                  premisesSelect.add(sp2);
-              }
+                if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())){
+                    SelectOption sp2 = new SelectOption(item.getId().toString(),item.getAddress());
+                    premisesSelect.add(sp2);
+                }
             }
         }
         ParamUtil.setRequestAttr(bpc.request,"premisesSelect",premisesSelect);
@@ -148,11 +148,10 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareDocuments start ...."));
 
         String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
-        List<HcsaSvcDocConfigDto> hcsaSvcCommonDocDtoList = appGrpPrimaryDocService.getAllHcsaSvcDocs(serviceId);
-        if(hcsaSvcCommonDocDtoList!=null){
-            ParamUtil.setSessionAttr(bpc.request, "HcsaSvcCommonDocDtoList", (Serializable) hcsaSvcCommonDocDtoList);
+        Map<String,List<HcsaSvcDocConfigDto>> hcsaSvcCommonDocDtoMap = appGrpPrimaryDocService.getAllHcsaSvcDocs(serviceId);
+        if(hcsaSvcCommonDocDtoMap!=null){
+            ParamUtil.setSessionAttr(bpc.request, HCSASVCDOCCONFIGDTOMAP, (Serializable) hcsaSvcCommonDocDtoMap);
         }
-        ParamUtil.setSessionAttr(bpc.request, HCSASVCDOCCONFIGDTOLIST, (Serializable) hcsaSvcCommonDocDtoList);
         log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
     /**
@@ -204,15 +203,12 @@ public class NewApplicationDelegator {
         appGrpPremisesDto.setAppGrpId(appGrpId);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);*/
 
+        //gen dto
         AppGrpPremisesDto appGrpPremisesDto = genAppGrpPremisesDto(bpc.request);
-
         //set value into AppSubmissionDto
-         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        if(appSubmissionDto == null){
-            appSubmissionDto = new AppSubmissionDto();
-        }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         appSubmissionDto.setAppGrpPremisesDto(appGrpPremisesDto);
-
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
     }
@@ -224,33 +220,44 @@ public class NewApplicationDelegator {
      */
     public void doDocument(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doDocument start ...."));
-         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         /*String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crud_action_value = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);*/
-        AppGrpPrimaryDocDto appGrpPrimaryDocDto =
+        /*AppGrpPrimaryDocDto appGrpPrimaryDocDto =
         ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO)==null?
-                new AppGrpPrimaryDocDto():(AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
-        MultipartFile file = null;
+                new AppGrpPrimaryDocDto():(AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);*/
+        AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
+        List<MultipartFile> files = null;
+        List<MultipartFile> oneFile = null;
         for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {
             String name = en.next();
-            file = mulReq.getFile(name);
+            files = mulReq.getFiles(name);
         }
 
-        if(file != null && !StringUtil.isEmpty(file.getOriginalFilename())){
-            appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
-            appGrpPrimaryDocDto.setDocSize(Math.round(file.getSize()/1024));
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
+        if(files != null ){
+            for(MultipartFile file:files){
+                if(!StringUtil.isEmpty(file.getOriginalFilename())){
+                    appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
+                    appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
+                    appGrpPrimaryDocDto.setDocSize(Math.round(file.getSize()/1024));
+                    oneFile = new ArrayList<>();
+                    oneFile.add(file);
+                    //api side not get value
+                   /* List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(oneFile);
+                    appGrpPrimaryDocDto.setFileRepoId(fileRepoGuidList.get(0));*/
+                    appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
+                }
+            }
         }
 
         //set value into AppSubmissionDto
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        if(appSubmissionDto == null){
-            appSubmissionDto = new AppSubmissionDto();
-        }
-        //appGrpPrimaryDocDto
-        appSubmissionDto.setAppGrpPrimaryDocDtos(null);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtoList);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
     /**
@@ -412,9 +419,9 @@ public class NewApplicationDelegator {
     //=============================================================================
     //private method
     //=============================================================================
-private  void loadingDraft(BaseProcessClass bpc){
-    String appId = ParamUtil.getString(bpc.request,"appId");
-    if(!StringUtil.isEmpty(appId)){
+    private  void loadingDraft(BaseProcessClass bpc){
+        String appId = ParamUtil.getString(bpc.request,"appId");
+        if(!StringUtil.isEmpty(appId)){
 //        List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
 //        if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
 //            List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
@@ -428,9 +435,9 @@ private  void loadingDraft(BaseProcessClass bpc){
 //                ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
 //            }
 //        }
-    }
+        }
 
-}
+    }
 
     private void loadingServiceConfig(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
@@ -534,4 +541,13 @@ private  void loadingDraft(BaseProcessClass bpc){
 
         return  appGrpPremisesDto;
     }
+
+    private AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        if(appSubmissionDto == null){
+            appSubmissionDto = new AppSubmissionDto();
+        }
+        return appSubmissionDto;
+    }
+
 }
