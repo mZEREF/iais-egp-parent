@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.eventbus.SubmitReq;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.feign.EventBusClient;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
@@ -18,9 +17,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AppSubmisionServiceImpl implements AppSubmissionService {
-    @Autowired
-    private EventBusClient eventBusClient;
-
     @Autowired
     private LoadBalancerClient loadBalancerClient;
 
