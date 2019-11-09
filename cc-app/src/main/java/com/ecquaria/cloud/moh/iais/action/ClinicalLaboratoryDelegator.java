@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -14,12 +16,16 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -259,7 +265,7 @@ public class ClinicalLaboratoryDelegator {
         String [] ids  = ParamUtil.getStrings(bpc.request, nameStr);
         appSvcDisciplineAllocationDto.setAppGrpPremiseId(premisesId);
         appSvcDisciplineAllocationDto.setChkLstConfId(ids[0]);
-        appSvcDisciplineAllocationDto.setAppSvcCgoId(ids[1]);
+        //appSvcDisciplineAllocationDto.setAppSvcCgoId(ids[1]);
         daList.add(appSvcDisciplineAllocationDto);
 
 
@@ -279,6 +285,8 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doPrincipalOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers start ...."));
+        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = genAppSvcPrincipalOfficersDto(bpc.request) ;
+
 
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
     }
@@ -291,7 +299,32 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doDocuments(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doDocuments start ...."));
+        List<AppSvcDocDto> AppSvcDocDtoList = new ArrayList<>();
+        AppSvcDocDto appSvcDocDto = null;
+        MultipartHttpServletRequest mulReq =
+                (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        List<MultipartFile> files = null;
+        for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {
+            String name = en.next();
+            files = mulReq.getFiles(name);
+        }
+        if(files != null ){
+            for(MultipartFile file:files){
+                if(!StringUtil.isEmpty(file.getOriginalFilename())){
+                    appSvcDocDto = new AppSvcDocDto();
+                    appSvcDocDto.setSvcConfDocId("");
+                    appSvcDocDto.setFileName(file.getOriginalFilename());
+                    //appSvcDocDto.setFileSize(Math.round(file.getSize()/1024));
+                    //wait api change to get fileRepoId
+                    AppSvcDocDtoList.add(appSvcDocDto);
+                }
+            }
+        }
 
+
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
+        appSvcRelatedInfoDto.setAppSvcDocDtoLit(AppSvcDocDtoList);
+        ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
         log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
     }
 
@@ -385,6 +418,23 @@ public class ClinicalLaboratoryDelegator {
         appSvcCgoDto.setEmailAddr(emailAddress);
 
         return appSvcCgoDto;
+    }
+
+    private AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(HttpServletRequest request){
+        AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
+        String salutation = ParamUtil.getString(request, "salutation");
+        String name = ParamUtil.getString(request, "name");
+        String idType = ParamUtil.getString(request, "idType");
+        String idNo = ParamUtil.getString(request, "idNo");
+        String designation = ParamUtil.getString(request, "designation");
+        String mobileNo = ParamUtil.getString(request, "mobileNo");
+        String emailAddress = ParamUtil.getString(request, "emailAddress");
+        dto.setSalutation(salutation);
+        dto.setName(name);
+        dto.setDesignation(designation);
+        dto.setMobileNo(mobileNo);
+        dto.setEmailAddr(emailAddress);
+        return  dto;
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(HttpServletRequest request){
