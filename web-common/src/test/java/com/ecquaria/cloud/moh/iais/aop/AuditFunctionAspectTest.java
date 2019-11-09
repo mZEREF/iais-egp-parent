@@ -94,9 +94,6 @@ public class AuditFunctionAspectTest {
         request.addHeader("User-Agent", "firefox");
         PowerMockito.mockStatic(MiscUtil.class);
         PowerMockito.when(MiscUtil.getCurrentRequest()).thenReturn(request);
-        KafkaTemplate<String, String> kafkaTemplate = PowerMockito.mock(KafkaTemplate.class);
-        Whitebox.setInternalState(aspect, "kafkaTemplate", kafkaTemplate);
-        when(kafkaTemplate, "send", new Object[]{anyString(), anyObject()}).thenReturn(null);
     }
 
     @Test

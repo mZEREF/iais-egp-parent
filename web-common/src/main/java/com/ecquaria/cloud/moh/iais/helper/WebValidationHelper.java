@@ -13,7 +13,6 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -23,8 +22,6 @@ import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +37,6 @@ import java.util.Map;
 public class WebValidationHelper {
     private WebValidationHelper() {
         throw new IllegalStateException("Utility class");
-    }
-
-    public static KafkaTemplate<String, String> getInstance() {
-        return SpringContextHelper.getContext().getBean(KafkaTemplate.class);
     }
 
     /**
@@ -120,7 +113,7 @@ public class WebValidationHelper {
         dtoList.add(dto);
         dto.setOperation(AuditTrailConsts.OPERATION_INTERNET_VALIDATION_FAIL);
         try {
-            AuditLogUtil.callKafkaSendMessage(dtoList, WebValidationHelper.getInstance());
+            AuditLogUtil.callAuditRestApi(dtoList);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
