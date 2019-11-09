@@ -38,12 +38,25 @@
                                         <h3>Fire Safety Certificate (FSC) from SCDF</h3>
                                         <p><a href="#" target="_blank">Preview</a></p>
                                     </div>
-                                    <c:forEach var="hcsaSvcDocConfigDto" items="${HcsaSvcDocConfigDtoList}">
+                                    <!--common -->
+                                    <c:forEach var="commonDoc" items="${HcsaSvcDocConfigDtoMap.get('common')}">
                                         <div class="document-upload-list">
-                                            <h3>${hcsaSvcDocConfigDto.docTitle}</h3>
+                                            <h3>${commonDoc.docTitle}</h3>
                                             <div class="file-upload-gp">
-                                                <p  id="showFile">${AppGrpPrimaryDocDto.docName}</p>
-                                                <input class="selectedFile" id="selectedFile" name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+                                                <span  ></span>
+                                                <span class="hidden delBtn">&nbsp;&nbsp;<button type="button" class="delBtn">Delete</button></span><br/>
+                                                <input class="selectedFile"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                    <!--prem -->
+                                    <c:forEach var="premDoc" items="${HcsaSvcDocConfigDtoMap.get('premises')}">
+                                        <div class="document-upload-list">
+                                            <h3>${premDoc.docTitle}</h3>
+                                            <div class="file-upload-gp">
+                                                <span  ></span>
+                                                <span class="hidden delBtn">&nbsp;&nbsp;<button type="button" class="delBtn">Delete</button></span><br/>
+                                                <input class="selectedFile"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
                                             </div>
                                         </div>
                                     </c:forEach>
