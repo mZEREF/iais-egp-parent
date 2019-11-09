@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -336,7 +337,7 @@ public class NewApplicationDelegator {
         log.info("In mS1 OnStepProcess");
 
         AppSubmissionDto asd = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
-        appSubmisionService.submit(asd);
+        appSubmissionService.submit(asd);
 
 
 //        ProcessDetails processDetails = new ProcessDetails();
