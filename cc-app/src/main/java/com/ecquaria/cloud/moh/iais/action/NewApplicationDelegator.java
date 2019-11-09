@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -240,19 +239,30 @@ public class NewApplicationDelegator {
             String name = en.next();
             files = mulReq.getFiles(name);
         }
+        //AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        //List<AppGrpPremisesDto> appGrpPremisesList = (List<AppGrpPremisesDto>) appSubmissionDto.getAppGrpPremisesDto();
 
+        String [] docConfig = mulReq.getParameterValues("docConfig");
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
-        if(files != null ){
+        if(files != null && docConfig !=null){
             for(MultipartFile file:files){
                 if(!StringUtil.isEmpty(file.getOriginalFilename())){
+                    String docId = Arrays.toString(docConfig);
+                    String[] config = docId.split(";");
+
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
+                    appGrpPrimaryDocDto.setSvcComDocId(config[0]);
                     appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
                     appGrpPrimaryDocDto.setDocSize(Math.round(file.getSize()/1024));
                     oneFile = new ArrayList<>();
                     oneFile.add(file);
                     //api side not get value
-                   /* List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(oneFile);
-                    appGrpPrimaryDocDto.setFileRepoId(fileRepoGuidList.get(0));*/
+                    List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(oneFile);
+                    appGrpPrimaryDocDto.setFileRepoId(fileRepoGuidList.get(0));
+                    //if config[1] equals common ==> set null
+                    appGrpPrimaryDocDto.setPremisessName("");
+                    appGrpPrimaryDocDto.setPremisessType("");
+
                     appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
                 }
             }
@@ -325,10 +335,9 @@ public class NewApplicationDelegator {
         HttpServletRequest request = bpc.request;
         log.info("In mS1 OnStepProcess");
 
-        int timeoutSec = 300;
-        request.setAttribute("timeoutMilis", new Long(timeoutSec*1000));
-
         AppSubmissionDto asd = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        appSubmisionService.submit(asd);
+
 
 //        ProcessDetails processDetails = new ProcessDetails();
 //        processDetails.setProject(bpc.process.getCurrentProject());
@@ -379,8 +388,8 @@ public class NewApplicationDelegator {
     }
 
     /**
-     *
-     *ajax
+     * @description: ajax
+     * @author: zixia
      * @param
      */
     @RequestMapping("/loadPremisesByCode.do")
@@ -508,6 +517,7 @@ public class NewApplicationDelegator {
     private AppGrpPremisesDto genAppGrpPremisesDto(HttpServletRequest request){
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
         String premisesType = ParamUtil.getString(request, "premisesType");
+        String premisesSelect = ParamUtil.getString(request, "premisesSelect");
         String hciName = ParamUtil.getString(request, "hciName");
         String postalCode = ParamUtil.getString(request,  "postalCode");
         String blkNo = ParamUtil.getString(request, "blkNo");
@@ -517,7 +527,19 @@ public class NewApplicationDelegator {
         String buildingName = ParamUtil.getString(request, "buildingName");
         String siteAddressType = ParamUtil.getString(request, "siteAddressType");
         String siteSafefyNo = ParamUtil.getString(request, "siteSafefyNo");
+        appGrpPremisesDto.setPremisesType(premisesType);
+        appGrpPremisesDto.setPremisesSelect(premisesSelect);
+        appGrpPremisesDto.setHciName(hciName);
+        appGrpPremisesDto.setPostalCode(postalCode);
+        appGrpPremisesDto.setBlkNo(blkNo);
+        appGrpPremisesDto.setStreetName(streetName);
+        appGrpPremisesDto.setFloorNo(floorNo);
+        appGrpPremisesDto.setUnitNo(unitNo);
+        appGrpPremisesDto.setBuildingName(buildingName);
+        appGrpPremisesDto.setSiteSafefyNo(siteAddressType);
+        appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
 
+        ParamUtil.setRequestAttr(request, "PremisesHciName", hciName);
         return  appGrpPremisesDto;
     }
 

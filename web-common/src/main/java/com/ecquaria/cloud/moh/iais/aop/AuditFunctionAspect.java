@@ -30,8 +30,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -44,8 +42,6 @@ import java.util.Map;
 @Component
 @Slf4j
 public class AuditFunctionAspect {
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Pointcut("@annotation(com.ecquaria.cloud.moh.iais.common.annotation.LogInfo)")
     public void auditFunction() {
@@ -144,7 +140,7 @@ public class AuditFunctionAspect {
         List<AuditTrailDto> dtoList = new ArrayList<>();
         dtoList.add(dto);
         try {
-            AuditLogUtil.callKafkaSendMessage(dtoList, kafkaTemplate);
+            AuditLogUtil.callAuditRestApi(dtoList);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
