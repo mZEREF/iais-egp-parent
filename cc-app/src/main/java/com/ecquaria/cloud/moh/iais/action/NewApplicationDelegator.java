@@ -331,6 +331,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
 
@@ -562,6 +563,7 @@ public class NewApplicationDelegator {
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
         }
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
     }
 
