@@ -28,11 +28,6 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>com.ecquaria.kafka</groupId>
-            <artifactId>servicewrapper</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>sg.gov.moh.iais-egp</groupId>
             <artifactId>web-common</artifactId>
             <version>${revision}</version>

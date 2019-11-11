@@ -36,14 +36,7 @@ public class AppGrpPrimaryDocServiceImpl implements AppGrpPrimaryDocService {
     public List<String> SaveFileToRepo(List<MultipartFile> fileList) throws IOException {
         List<MultipartFile> multipartFileList = new ArrayList();
         multipartFileList.add(fileList.get(0));
-        RestApiUtil.saveFile(URLREPO,multipartFileList,IaisEGPHelper.getCurrentAuditTrailDto());
-
-        return null;
-
-       /* List<MultipartFile> fileList = new ArrayList();
-        //???
-        //fileList.add(appGrpPrimaryDocDto.getFile());
-        return  RestApiUtil.saveFile(URLREPO,fileList,IaisEGPHelper.getCurrent*/
+        return RestApiUtil.saveFile(URLREPO,multipartFileList,IaisEGPHelper.getCurrentAuditTrailDto());
     }
 
     @Override
@@ -78,7 +71,8 @@ public class AppGrpPrimaryDocServiceImpl implements AppGrpPrimaryDocService {
        // mergeDocDto(commonHcsaSvcDocConfigDtos, premHcsaSvcDocConfigDtos, 1);
         Map<String,List<HcsaSvcDocConfigDto>> map = new HashMap<>();
         map.put("common", commonHcsaSvcDocConfigDtos);
-        map.put("premises", premHcsaSvcDocConfigDtos);
+
+//        map.put("premises", premHcsaSvcDocConfigDtos);
         return map;
     }
 

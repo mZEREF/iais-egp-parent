@@ -28,11 +28,11 @@
                                         <div class="form-horizontal">
                                             <div class="form-group" id="premisesType">
                                                 <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your premises type?</label>
-                                                <input type="hidden" name="premisesType"/>
+                                                <%--                           <input type="hidden" name="premisesType"/>--%>
                                                 <c:forEach var="premisesType" items="${premisesType}">
                                                     <div class="col-xs-6 col-md-2">
                                                         <div class="form-check">
-                                                            <input class="form-check-input premTypeRadio"  type="radio" name="Name of premises" value = ${premisesType.premisesType} aria-invalid="false">
+                                                            <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" value = ${premisesType.premisesType} aria-invalid="false">
                                                             <label class="form-check-label" ><span class="check-circle"></span>${premisesType.premisesType}</label>
                                                         </div>
                                                         <span class="error-msg"><c:out value="${errorMap_premises.premisesType}"></c:out></span>

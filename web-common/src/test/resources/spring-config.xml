@@ -33,6 +33,5 @@
   <bean id="auditFunctionAspect" class="com.ecquaria.cloud.moh.iais.aop.AuditFunctionAspect"/>
   <bean id="testFunctionTrack" class="com.ecquaria.cloud.moh.iais.aop.TestFunctionTrack"/>
   <bean id="testNonFunctionTrack" class="com.ecquaria.cloud.moh.iais.aop.TestNonFunctionTrack"/>
-  <bean class="com.ecquaria.cloud.moh.iais.common.config.KafkaConfig"/>
   <aop:aspectj-autoproxy/>
 </beans>
