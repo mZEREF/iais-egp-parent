@@ -95,9 +95,9 @@
                 </div>
                 <div class="application-tab-footer">
                   <div class="row">
-                    <div class="col-xs-12 col-sm-6"><a class="back" id="governanceOfficersBack"><i class="fa fa-angle-left"></i> Back</a></div>
+                    <div class="col-xs-12 col-sm-6"><a class="back" id="disciplineAllocationBack"><i class="fa fa-angle-left"></i> Back</a></div>
                     <div class="col-xs-12 col-sm-6">
-                      <div class="button-group"><a class="btn btn-secondary" id = "governanceOfficersSaveDraft">Save as Draft</a><a class="next btn btn-primary" data-goto="clinical-governance-officer" id="governanceOfficersNext">Next</a></div>
+                      <div class="button-group"><a class="btn btn-secondary" id = "disciplineAllocationSaveDraft">Save as Draft</a><a class="next btn btn-primary" data-goto="clinical-governance-officer" id="disciplineAllocationNext">Next</a></div>
                     </div>
                   </div>
                 </div>
@@ -113,8 +113,19 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        $('#governanceOfficersNext').click(function(){
-            submitForms('principalOfficers',null,null,'clinical');
+
+
+
+        //Binding method
+        $('#disciplineAllocationBack').click(function(){
+            submitForms('laboratoryDisciplines',null,null,'clinical');
+        });
+        $('#disciplineAllocationSaveDraft').click(function(){
+            submitForms('governanceOfficers','saveDraft',null,'clinical');
+        });
+        $('#disciplineAllocationNext').click(function(){
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('principalOfficers',null,null,controlFormLi);
         });
 
     });
