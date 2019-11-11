@@ -417,6 +417,15 @@ public class NewApplicationDelegator {
         return postCodeDto;
     }
 
+    /**
+     * @description: for the page validate call.
+     * @param request
+     * @return
+     */
+    public AppSubmissionDto getValueFromPage(HttpServletRequest request){
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        return appSubmissionDto;
+    }
 
     //=============================================================================
     //private method
