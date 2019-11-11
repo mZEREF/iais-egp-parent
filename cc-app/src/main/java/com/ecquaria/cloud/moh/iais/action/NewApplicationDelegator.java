@@ -20,7 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
-import com.ecquaria.cloud.moh.iais.service.AppSubmisionService;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,8 +74,7 @@ public class NewApplicationDelegator {
     private ServiceConfigService serviceConfigService;
 
     @Autowired
-    private AppSubmisionService appSubmisionService;
-
+    private AppSubmissionService appSubmissionService;
     /**
      * StartStep: Start
      *
@@ -229,6 +228,7 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         appSubmissionDto.setAppGrpPremisesDto(appGrpPremisesDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
     }
     /**
@@ -333,33 +333,8 @@ public class NewApplicationDelegator {
      */
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
-//        doValidate(bpc);
-//        //save the premisse
-//        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-//        if(appGrpPremisesDto!=null){
-//            log.debug(StringUtil.changeForLog("save the premisse"));
-//            appGrpPremisesDto = appGrpPremisesService.saveAppGrpPremises(appGrpPremisesDto);
-//            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-//        }
-//        //save the document
-//        AppGrpPrimaryDocDto appGrpPrimaryDocDto = (AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);
-//        if(appGrpPrimaryDocDto!=null && !StringUtil.isEmpty(appGrpPrimaryDocDto.getDocName())){
-//            log.debug(StringUtil.changeForLog("save the document"));
-//            appGrpPrimaryDocDto.setAppGrpId(appGrpPremisesDto.getAppGrpId());
-//            List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(appGrpPrimaryDocDto);
-//            String fileRepoGuid =fileRepoGuidList.get(0);
-//            if(StringUtil.isEmpty(fileRepoGuid)){
-//              log.error("the fileRepoGuid is null ...");
-//            }
-//            log.debug(StringUtil.changeForLog("the fileRepoGuid is -->:"+fileRepoGuid));
-//            //String fileRepoGuid ="DB95187A-AB1B-4179-9D10-84255CE9D4A6";
-//            appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
-//            appGrpPrimaryDocDto = appGrpPrimaryDocService.saveAppGrpPremisesDoc(appGrpPrimaryDocDto);
-//            ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
-//        }
-//        //to do this will use the config.
-//        EngineHelper.delegate("clinicalLaboratoryDelegator", "doSaveDraft", bpc);
-
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
+        appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
 
@@ -378,7 +353,7 @@ public class NewApplicationDelegator {
         log.info("In mS1 OnStepProcess");
 
         AppSubmissionDto asd = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
-        appSubmisionService.submit(asd);
+        appSubmissionService.submit(asd);
 
 
 //        ProcessDetails processDetails = new ProcessDetails();

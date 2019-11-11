@@ -3,11 +3,14 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 
 /**
- * AppSubmisionService
+ * AppSubmissionService
  *
  * @author suocheng
- * @date 11/6/2019
+ * @date 11/9/2019
  */
-public interface AppSubmisionService {
+public interface AppSubmissionService {
     public void submit(AppSubmissionDto appSubmissionDto);
+
+    public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
+
 }
