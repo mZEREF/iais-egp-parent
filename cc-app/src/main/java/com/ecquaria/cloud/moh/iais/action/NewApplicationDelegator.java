@@ -350,6 +350,16 @@ public class NewApplicationDelegator {
         request.setAttribute("timeoutMilis", new Long(timeoutSec*1000));
 
         AppSubmissionDto asd = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+//
+//        ProcessDetails processDetails = new ProcessDetails();
+//        processDetails.setProject(bpc.process.getCurrentProject());
+//        processDetails.setProcess(bpc.process.getCurrentProcessName());
+//        processDetails.setStep(bpc.process.getCurrentComponentName());
+//
+//        KafkaSOPWrapper wrapper = new KafkaSOPWrapper();
+//        SubmitResult ms1Result = wrapper.submit(0, processDetails,"appSubmit",
+//                "Create", asd, null, "SOP");
+//        request.setAttribute("SubmitObj", asd);
 
 //        ProcessDetails processDetails = new ProcessDetails();
 //        processDetails.setProject(bpc.process.getCurrentProject());
