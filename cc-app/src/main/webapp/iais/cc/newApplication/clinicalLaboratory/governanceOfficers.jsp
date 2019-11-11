@@ -71,7 +71,8 @@
             submitForms('governanceOfficers','saveDraft',null,'clinical');
         });
         $('#governanceOfficersNext').click(function(){
-            submitForms('disciplineAllocation',null,null,'clinical');
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('disciplineAllocation',null,null,controlFormLi);
         });
 
     });

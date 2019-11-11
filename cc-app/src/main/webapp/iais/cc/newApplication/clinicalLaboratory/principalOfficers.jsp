@@ -46,9 +46,9 @@
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-6"><a class="back" id="governanceOfficersBack"><i class="fa fa-angle-left"></i> Back</a></div>
+                                        <div class="col-xs-12 col-sm-6"><a class="back" id="principalOfficersBack"><i class="fa fa-angle-left"></i> Back</a></div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group"><a class="btn btn-secondary" id = "governanceOfficersSaveDraft">Save as Draft</a><a class="next btn btn-primary" id="governanceOfficersNext" data-goto="clinical-governance-officer">Next</a></div>
+                                            <div class="button-group"><a class="btn btn-secondary" id = "principalOfficersSaveDraft">Save as Draft</a><a class="next btn btn-primary" id="principalOfficersNext" data-goto="clinical-governance-officer">Next</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -64,14 +64,15 @@
 <script type="text/javascript">
     $(document).ready(function() {
         //Binding method
-        $('#governanceOfficersBack').click(function(){
+        $('#principalOfficersBack').click(function(){
             //submitForms('laboratoryDisciplines',null,null,'clinical');
         });
-        $('#governanceOfficersSaveDraft').click(function(){
-           // submitForms('governanceOfficers','saveDraft',null,'clinical');
+        $('#principalOfficersSaveDraft').click(function(){
+            // submitForms('governanceOfficers','saveDraft',null,'clinical');
         });
-        $('#governanceOfficersNext').click(function(){
-            submitForms('documents',null,null,'clinical');
+        $('#principalOfficersNext').click(function(){
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('documents',null,null,controlFormLi);
         });
 
     });
