@@ -40,11 +40,11 @@ public class ShowServiceFormsDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc){
         log.debug("the do prepareSwitch start ....");
-        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(StringUtil.isEmpty(action)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,AppServicesConsts.NAVTABS_SERVICEFORMS);
         }
-        String actionTab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
+        String actionTab = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
         if(StringUtil.isEmpty(actionTab)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,getFirstTab(bpc));
         }
@@ -62,11 +62,6 @@ public class ShowServiceFormsDelegator {
      */
     public void prepareServiceLoad(BaseProcessClass bpc){
         log.debug("the do prepareServiceLoad start ....");
-//        String crud_action_type_tab = (String)ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-//        Map<String,String> ServiceFormUrlMaps = (Map<String,String>)ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.SERVICEFORMURLMAPS);
-//        String SericeformUrl = ServiceFormUrlMaps.get(crud_action_type_tab)+"?crud_action_type=serviceForms&crud_action_type_tab="+crud_action_type_tab;
-//        ParamUtil.setRequestAttr(bpc.request,"SericeformUrl",SericeformUrl);
-//        log.info(StringUtil.changeForLog("The SericeformUrl is -->;"+SericeformUrl));
         log.debug("the do prepareServiceLoad end ....");
     }
     /**

@@ -106,7 +106,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepare start ...."));
         String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(StringUtil.isEmpty(action)){
-            action = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+            action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
             if(StringUtil.isEmpty(action)){
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
             }
@@ -244,11 +244,9 @@ public class NewApplicationDelegator {
         String crud_action_value = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
-        ParamUtil.setSessionAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
+        //ParamUtil.setSessionAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
-        /*AppGrpPrimaryDocDto appGrpPrimaryDocDto =
-        ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO)==null?
-                new AppGrpPrimaryDocDto():(AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);*/
+
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
         List<MultipartFile> files = null;
         List<MultipartFile> oneFile = null;
@@ -256,8 +254,6 @@ public class NewApplicationDelegator {
             String name = en.next();
             files = mulReq.getFiles(name);
         }
-        //AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        //List<AppGrpPremisesDto> appGrpPremisesList = (List<AppGrpPremisesDto>) appSubmissionDto.getAppGrpPremisesDto();
 
         String [] docConfig = mulReq.getParameterValues("docConfig");
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
@@ -335,6 +331,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
     }
 
@@ -566,6 +563,7 @@ public class NewApplicationDelegator {
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
         }
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
     }
 
