@@ -128,7 +128,7 @@ public class NewApplicationDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
         appSvcRelatedInfoDto.setServiceCode(svcCode);
         appSvcRelatedInfoDto.setServiceId(svcId);
-
+        ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
         ParamUtil.setSessionAttr(bpc.request, SERVICEID, svcId);
         //get premisesSelectList
 
