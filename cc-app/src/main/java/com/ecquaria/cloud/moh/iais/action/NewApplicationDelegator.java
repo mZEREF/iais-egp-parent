@@ -536,6 +536,7 @@ public class NewApplicationDelegator {
         String buildingName = ParamUtil.getString(request, "buildingName");
         String siteAddressType = ParamUtil.getString(request, "siteAddressType");
         String siteSafefyNo = ParamUtil.getString(request, "siteSafefyNo");
+        String addrType = ParamUtil.getString(request, "addrType");
         appGrpPremisesDto.setPremisesType(premisesType);
         appGrpPremisesDto.setPremisesSelect(premisesSelect);
         appGrpPremisesDto.setHciName(hciName);
@@ -547,6 +548,7 @@ public class NewApplicationDelegator {
         appGrpPremisesDto.setBuildingName(buildingName);
         appGrpPremisesDto.setSiteSafefyNo(siteAddressType);
         appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
+        appGrpPremisesDto.setAddrType(addrType);
 
         ParamUtil.setRequestAttr(request, "PremisesHciName", hciName);
         return  appGrpPremisesDto;
