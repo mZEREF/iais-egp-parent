@@ -30,8 +30,8 @@
           <tr>
             <td width="100%">
               <div class="control-item-container">
-                <input type="checkbox" id="control--runtime--1--0" name="control--runtime--1" class="control-input" value="Histocompatibility">
-                <label id="control--runtime--1--label--0" for="control--runtime--1--0" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Histocompatibility</label>
+                <input type="checkbox" id="control--runtime--1--0" name="control--runtime--1" class="control-input" value="085E2ADD-8500-EA11-BE77-000C29D29DB0;0">
+                <label id="control--runtime--1--label--0" for="control--runtime--1--0" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Blood Banking</label>
               </div>
               <div class="control-item-aux-container">
               </div>
@@ -39,9 +39,9 @@
           </tr>
           <tr>
             <td>
-              <div class="control-item-container parent-form-check" data-parent="immunology">
-                <input type="checkbox" id="control--runtime--1--1" name="control--runtime--1" class="control-input" value="Immunology">
-                <label id="control--runtime--1--label--1" for="control--runtime--1--1" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Immunology</label>
+              <div class="control-item-container "  data-child="immunology" data-parent="hiv">
+                <input type="checkbox" id="control--runtime--1--2" name="control--runtime--1" class="control-input" value="2278150C-FB00-EA11-BE77-000C29D29DB0;0">
+                <label id="control--runtime--1--label--2" for="control--runtime--1--2" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Nuclear Medicine Service</label>
               </div>
               <div class="control-item-aux-container">
               </div>
@@ -49,9 +49,9 @@
           </tr>
           <tr>
             <td>
-              <div class="control-item-container sub-form-check parent-form-check disabled"  data-child="immunology" data-parent="hiv">
-                <input type="checkbox" id="control--runtime--1--2" name="control--runtime--1" class="control-input" value="HIV Testing">
-                <label id="control--runtime--1--label--2" for="control--runtime--1--2" class="control-label control-set-font control-font-normal"><span class="check-square"></span>HIV Testing</label>
+              <div class="control-item-container sub-form-check parent-form-check disabled" data-child="hiv" >
+                <input type="checkbox" id="control--runtime--1--3" name="control--runtime--1" class="control-input" value="9E17F121-FB00-EA11-BE77-000C29D29DB0;0">
+                <label id="control--runtime--1--label--3" for="control--runtime--1--3" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Telemedicine</label>
               </div>
               <div class="control-item-aux-container">
               </div>
@@ -59,57 +59,16 @@
           </tr>
           <tr>
             <td>
-              <div class="control-item-container sub-form-check double disabled" data-child="hiv" >
-                <input type="checkbox" id="control--runtime--1--3" name="control--runtime--1" class="control-input" value="HIV Screening">
-                <label id="control--runtime--1--label--3" for="control--runtime--1--3" class="control-label control-set-font control-font-normal"><span class="check-square"></span>HIV Screening</label>
+              <div class="control-item-container sub-form-check parent-form-check disabled" data-child="hiv" >
+                <input type="checkbox" id="control--runtime--1--4" name="control--runtime--1" class="control-input" value="DAE94378-2301-EA11-BE77-000C29D29DB0;0">
+                <label id="control--runtime--1--label--4" for="control--runtime--1--4" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Renal Dialysis Centre</label>
               </div>
               <div class="control-item-aux-container">
               </div>
             </td>
           </tr>
-          <tr>
-            <td>
-              <div class="control-item-container sub-form-check double disabled" data-child="hiv">
-                <input type="checkbox" id="control--runtime--1--4" name="control--runtime--1" class="control-input" value="HIV Confirmation">
-                <label id="control--runtime--1--label--4" for="control--runtime--1--4" class="control-label control-set-font control-font-normal"><span class="check-square"></span>HIV Confirmation</label>
-              </div>
-              <div class="control-item-aux-container">
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="control-item-container">
-                <input type="checkbox" id="control--runtime--1--5" name="control--runtime--1" class="control-input" value="Medical Microbiology">
-                <label id="control--runtime--1--label--5" for="control--runtime--1--5" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Medical Microbiology</label>
-              </div>
-              <div class="control-item-aux-container">
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="control-item-container">
-                <input type="checkbox" id="control--runtime--1--6" name="control--runtime--1" class="control-input" value="AFB Smear">
-                <label id="control--runtime--1--label--6" for="control--runtime--1--6" class="control-label control-set-font control-font-normal"><span class="check-square"></span>AFB Smear</label>
-              </div>
-              <div class="control-item-aux-container">
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="control-item-container">
-                <input type="checkbox" id="control--runtime--1--7" name="control--runtime--1" class="control-input" value="Pre-implantation Genetic Screening">
-                <label id="control--runtime--1--label--7" for="control--runtime--1--7" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Pre-implantation Genetic Screening</label>
-              </div>
-              <div class="control-item-aux-container">
-              </div>
-            </td>
-
-          </tr>
-          </tbody></table>
-
+          </tbody>
+        </table>
       </div>
       <div id="control--runtime--1--errorMsg_right" style="display: none;" class="error_placements"></div>
     </div>
@@ -119,11 +78,11 @@
 
 <script>
 
-  function xxx() {
+    function xxx() {
 
 
 
-  }
+    }
 
 
 </script>

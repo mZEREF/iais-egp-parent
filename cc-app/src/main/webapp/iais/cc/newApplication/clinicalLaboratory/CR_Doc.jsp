@@ -15,6 +15,7 @@
       <div class="document-upload-list">
         <div class="file-upload-gp">
           <div class="fileContent col-xs-12 hidden">
+            <input type="hidden" name="docConfig" value="ddfb8b26-f449-44e8-b847-657f341fa1d6;0"/>
             <span class="fileName">11</span>&nbsp;&nbsp;&nbsp;&nbsp;
             (<span class="fileSize">3.2</span>MB)
           </div>

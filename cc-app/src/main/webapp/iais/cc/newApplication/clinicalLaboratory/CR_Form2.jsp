@@ -72,11 +72,11 @@
                         </div>
                         <div class="col-sm-5">
                           <div class="">
-                            <select id="cgoSelect" class="form-control control-input control-set-font control-font-normal">
+                            <select id="cgoSelect" name="assignSelect" class="form-control control-input control-set-font control-font-normal">
                               <option>Select Personnel</option>
+                              <option value="newOfficer">I'd like to add a new personnel</option>
                               <option>Linda Tan, XXX442 (NRIC)</option>
                               <option>Deng Jin, XXX675 (NRIC)</option>
-                              <option value="newOfficer">I'd like to add a new personnel</option>
                             </select>
                             <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
                           </div>

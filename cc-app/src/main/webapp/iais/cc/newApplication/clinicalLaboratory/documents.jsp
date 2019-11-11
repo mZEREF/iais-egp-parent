@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
-<form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
+<form method="post" id="mainForm" enctype="multipart/form-data"  class="__egovform" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
         <div class="container">
