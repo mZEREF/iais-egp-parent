@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
@@ -35,7 +36,16 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator.APPSVCRELATEDINFODTO;
 
 /**
  * NewApplicationDelegator
@@ -115,6 +125,11 @@ public class NewApplicationDelegator {
         //get svcCode to get svcId
         String svcCode = "TEM";
         String svcId = appGrpPremisesService.getSvcIdBySvcCode(svcCode);
+        //
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
+        appSvcRelatedInfoDto.setServiceCode(svcCode);
+        appSvcRelatedInfoDto.setServiceId(svcId);
+
         ParamUtil.setSessionAttr(bpc.request, SERVICEID, svcId);
         //get premisesSelectList
 
@@ -178,7 +193,7 @@ public class NewApplicationDelegator {
      */
     public void preparePreview(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
-
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
     /**
@@ -225,11 +240,12 @@ public class NewApplicationDelegator {
     public void doDocument(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doDocument start ...."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        /*String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crud_action_value = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);*/
+        ParamUtil.setSessionAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
         /*AppGrpPrimaryDocDto appGrpPrimaryDocDto =
         ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO)==null?
                 new AppGrpPrimaryDocDto():(AppGrpPrimaryDocDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO);*/
@@ -410,6 +426,7 @@ public class NewApplicationDelegator {
     public void prepareAckPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
 
+
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
@@ -575,6 +592,14 @@ public class NewApplicationDelegator {
             appSubmissionDto = new AppSubmissionDto();
         }
         return appSubmissionDto;
+    }
+
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(HttpServletRequest request){
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(request, APPSVCRELATEDINFODTO);
+        if(appSvcRelatedInfoDto == null){
+            appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+        }
+        return appSvcRelatedInfoDto;
     }
 
 }
