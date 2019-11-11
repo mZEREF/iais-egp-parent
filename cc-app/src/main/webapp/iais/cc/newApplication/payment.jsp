@@ -17,7 +17,7 @@
                     <div class="tab-gp steps-tab">
                         <%@ include file="./navTabs.jsp" %>
                         <div class="tab-content">
-                            <div class="tab-pane" id="paymentTab" role="tabpanel">
+                            <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <h2>Payment Summary</h2>
                                 <p >
                                     Total amount due:<div name="totalAmount">$8888.88</div>
