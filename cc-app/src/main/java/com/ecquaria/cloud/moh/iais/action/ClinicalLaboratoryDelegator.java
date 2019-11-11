@@ -85,20 +85,12 @@ public class ClinicalLaboratoryDelegator {
         if(StringUtil.isEmpty(action)||IaisEGPConstant.YES.equals(form_tab)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
         }else{
-            if(!StringUtil.isEmpty(action)){
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,action);
-            }
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,action);
         }
-        String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(StringUtil.isEmpty(crud_action_type)){
-            ParamUtil.getSessionAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE );
-        }
+        String crud_action_type = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+
         log.debug(StringUtil.changeForLog("The crud_action_type  is -->;"+crud_action_type));
-        if(StringUtil.isEmpty(action) && StringUtil.isEmpty(form_tab) && StringUtil.isEmpty(crud_action_type)){
-            crud_action_type = "preview";
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-        }
-        if((!StringUtil.isEmpty(crud_action_type))&&(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type))){
+        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"jump");
         }
 
@@ -195,14 +187,14 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareJump(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareJump start ...."));
-        String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crud_action_type_tab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-        String jumpUrl = "/hcsaapplication/eservice/IAIS/MOHCCServiceForms?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
-        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
-            jumpUrl = "/hcsaapplication/eservice/IAIS/MOHCCNewApplication/1/Prepare?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
-        }
-        log.info(StringUtil.changeForLog("The JumpUrl is -->:"+jumpUrl));
-        ParamUtil.setRequestAttr(bpc.request,"jumpToServiceFormUrl",jumpUrl);
+//        String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+//        String crud_action_type_tab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
+//        String jumpUrl = "/hcsaapplication/eservice/IAIS/MOHCCServiceForms?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
+//        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
+//            jumpUrl = "/hcsaapplication/eservice/IAIS/MOHCCNewApplication/1/Prepare?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
+//        }
+//        log.info(StringUtil.changeForLog("The JumpUrl is -->:"+jumpUrl));
+//        ParamUtil.setRequestAttr(bpc.request,"jumpToServiceFormUrl",jumpUrl);
         log.debug(StringUtil.changeForLog("the do prepareJump end ...."));
     }
 
@@ -355,10 +347,17 @@ public class ClinicalLaboratoryDelegator {
 
         String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crud_action_value = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-//        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
-        ParamUtil.setRequestAttr(mulReq,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_type);
-        ParamUtil.setRequestAttr(mulReq,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
+        String crud_action_type_tab =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
+        String crud_action_type_form = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
+        String crud_action_type_form_page =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
+        String form_tab = mulReq.getParameter(IaisEGPConstant.FORM_TAB);
 
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,crud_action_type_tab);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,crud_action_type_form);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE,crud_action_type_form_page);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,form_tab);
 
         List<MultipartFile> files = null;
         for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {
@@ -429,12 +428,16 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareResult(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareResult start ...."));
-//        String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
-//        //String crud_action_type_tab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-//        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
-//            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"jump");
-//        }
-        ParamUtil.setRequestAttr(bpc.request,"Switch2","jumPage");
+        String crud_action_type = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crud_action_value = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(StringUtil.isEmpty(crud_action_value)){
+            crud_action_value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        }
+        if("saveDraft".equals(crud_action_value)){
+            ParamUtil.setRequestAttr(bpc.request,"Switch2","saveDraft");
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,"Switch2","jumPage");
+        }
         log.debug(StringUtil.changeForLog("the do prepareResult end ...."));
     }
 
