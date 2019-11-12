@@ -1,6 +1,5 @@
 <%@ page import="java.util.Date" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -54,14 +53,14 @@
                                     </tbody>
                                 </table>
                                 <h2>Payment Method</h2>
-                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" >
+                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" value="Credit/Debit Card">
                                 <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>&nbsp&nbsp&nbsp&nbsp
-                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" >
+                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" value="GIRO">
                                 <label class="form-check-label" ><span class="check-circle"></span>GIRO</label><br>
 
-                                &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.jpg" width="40" height="25">&nbsp
-                                <img src="<%=webroot1%>img/paymentVISA.jpg" width="66" height="25">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                                <img src="<%=webroot1%>img/payments.jpg" width="36" height="30">
+                                &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">&nbsp
+                                <img src="<%=webroot1%>img/paymentVISA.png" width="66" height="25" alt="VISA">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                <img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">
                                 <p class="visible-xs visible-sm table-row-title">Proceed</p>
                                 <p class="text-right text-center-mobile"><iais:input type="button" cssClass="btn btn-primary" value="Proceed"></iais:input></p>
 
@@ -73,7 +72,8 @@
         </div>
     </div>
 </form>
-<script>
+<script src=""></script>
+<script type="text/javascript">
     $(function () {
         // alert("ok")
         $(":button").click(function () {
@@ -86,11 +86,11 @@
             }
             //alert($("form[name=myform]").serialize())
             $.ajax({
-                type:"POST",
-                url:"${pageContext.request.contextPath}/payment/duringThePayment",
-                //data:"username=tom&age=22",
+                type:"GET",
+                url:"https://egp.sit.inter.iais.com/payment/eservice/INTERNET/PaymentRequest",
                 data:paymentRequestDto,
-                //data:$("form[name=myform]").serialize(),
+                processData: false,
+                contentType: false,
                 success:function (response) {
                     //alert(response)
                 }
