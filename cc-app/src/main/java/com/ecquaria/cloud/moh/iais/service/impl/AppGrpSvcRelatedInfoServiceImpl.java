@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
@@ -106,12 +105,5 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
         map.put("serviceId", serviceId);
         map.put("psnType", psnType);
         return RestApiUtil.getListByReqParam(GET_CGO,map, HcsaSvcPersonnelDto.class);
-    }
-
-    @Override
-    public AppSvcCgoDto loadGovernanceOfficerByCgoId(String cgoId) {
-
-
-        return null;
     }
 }
