@@ -29,6 +29,12 @@
                                             <div class="form-group" id="premisesType">
                                                 <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your premises type?</label>
                                                 <%--                           <input type="hidden" name="premisesType"/>--%>
+                                                <div class="col-xs-6 col-md-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" value = "ONSITE" aria-invalid="false">
+                                                        <label class="form-check-label" ><span class="check-circle"></span>ONSITE</label>
+                                                    </div>
+                                                </div>
                                                 <c:forEach var="premisesType" items="${premisesType}">
                                                     <div class="col-xs-6 col-md-2">
                                                         <div class="form-check">
