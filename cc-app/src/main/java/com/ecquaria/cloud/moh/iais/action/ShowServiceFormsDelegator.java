@@ -27,9 +27,9 @@ public class ShowServiceFormsDelegator {
      * @throws
      */
     public void subStart(BaseProcessClass bpc){
-        log.debug("the do subStart start ....");
+        log.debug(StringUtil.changeForLog("the do subStart start ...."));
 
-        log.debug("the do subStart end ....");
+        log.debug(StringUtil.changeForLog("the do subStart end ...."));
     }
 
     /**
@@ -39,7 +39,7 @@ public class ShowServiceFormsDelegator {
      * @throws
      */
     public void prepareSwitch(BaseProcessClass bpc){
-        log.debug("the do prepareSwitch start ....");
+        log.debug(StringUtil.changeForLog("the do prepareSwitch start ...."));
         String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(StringUtil.isEmpty(action)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,AppServicesConsts.NAVTABS_SERVICEFORMS);
@@ -49,7 +49,7 @@ public class ShowServiceFormsDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,getFirstTab(bpc));
         }
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,IaisEGPConstant.YES);
-        log.debug("the do prepareSwitch end ....");
+        log.debug(StringUtil.changeForLog("the do prepareSwitch end ...."));
     }
 
 
@@ -61,8 +61,8 @@ public class ShowServiceFormsDelegator {
      * @throws
      */
     public void prepareServiceLoad(BaseProcessClass bpc){
-        log.debug("the do prepareServiceLoad start ....");
-        log.debug("the do prepareServiceLoad end ....");
+        log.debug(StringUtil.changeForLog("the do prepareServiceLoad start ...."));
+        log.debug(StringUtil.changeForLog("the do prepareServiceLoad end ...."));
     }
     /**
      * StartStep: prepareJump
@@ -71,9 +71,9 @@ public class ShowServiceFormsDelegator {
      * @throws
      */
     public void prepareJump(BaseProcessClass bpc){
-        log.debug("the do prepareJump start ....");
+        log.debug(StringUtil.changeForLog("the do prepareJump start ...."));
 
-        log.debug("the do prepareJump end ....");
+        log.debug(StringUtil.changeForLog("the do prepareJump end ...."));
     }
     /**
      * StartStep: doServiceformSave
@@ -82,9 +82,9 @@ public class ShowServiceFormsDelegator {
      * @throws
      */
     public void doServiceformSave(BaseProcessClass bpc){
-        log.debug("the do doServiceformSave start ....");
+        log.debug(StringUtil.changeForLog("the do doServiceformSave start ...."));
 
-        log.debug("the do doServiceformSave end ....");
+        log.debug(StringUtil.changeForLog("the do doServiceformSave end ...."));
     }
 
     //=============================================================================

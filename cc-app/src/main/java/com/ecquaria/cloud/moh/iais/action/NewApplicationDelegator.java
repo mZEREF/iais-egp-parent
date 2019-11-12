@@ -397,7 +397,6 @@ public class NewApplicationDelegator {
     public void prepareAckPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
 
-
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
