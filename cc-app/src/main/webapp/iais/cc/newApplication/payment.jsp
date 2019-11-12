@@ -1,6 +1,5 @@
 <%@ page import="java.util.Date" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -54,9 +53,9 @@
                                     </tbody>
                                 </table>
                                 <h2>Payment Method</h2>
-                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" >
+                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" value="Credit/Debit Card">
                                 <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>&nbsp&nbsp&nbsp&nbsp
-                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" >
+                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" value="GIRO">
                                 <label class="form-check-label" ><span class="check-circle"></span>GIRO</label><br>
 
                                 &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">&nbsp
@@ -73,6 +72,7 @@
         </div>
     </div>
 </form>
+<script src=""></script>
 <script type="text/javascript">
     $(function () {
         // alert("ok")
@@ -86,9 +86,11 @@
             }
             //alert($("form[name=myform]").serialize())
             $.ajax({
-                type:"POST",
-                url:"${pageContext.request.contextPath}/payment/duringThePayment",
+                type:"GET",
+                url:"https://egp.sit.inter.iais.com/payment/eservice/INTERNET/PaymentRequest",
                 data:paymentRequestDto,
+                processData: false,
+                contentType: false,
                 success:function (response) {
                     //alert(response)
                 }
