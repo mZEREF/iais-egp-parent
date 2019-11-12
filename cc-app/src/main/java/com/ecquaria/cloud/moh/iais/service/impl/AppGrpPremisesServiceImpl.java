@@ -4,8 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 
 
 /**
@@ -26,6 +26,7 @@ import java.util.Map;
 @Service
 @Slf4j
 public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
+    //dont be used
     private static final String URL="iais-application:8881/iais-premises";
     private static final String PREMISESURL="hcsa-config:8878/application-type";
     private static final String POSTCODEURL = "system-admin:8886/api/postcodes";
@@ -33,7 +34,7 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     private static final String SERVICEID = "hcsa-config:8878//service-by-code";
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
-        appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
        return RestApiUtil.save(URL,appGrpPremisesDto,AppGrpPremisesDto.class);
     }
 
@@ -60,15 +61,16 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     }
 
     @Override
-    public List<HcsaSvcSpePremisesTypeDto> getAppGrpPremisesTypeBySvcId(String svcId) {
+    public List<HcsaSvcSpePremisesTypeDto> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
         /*Map<String,Object> map = new HashMap<>();
         List serviceId = new ArrayList();
         serviceId.add("4029F370-EDEE-E911-BE76-000C294908E1");
         map.put("ServiceId", serviceId);*/
         Map<String,Object> map1 = new HashMap<>();
-        map1.put("serviceId", svcId);
-        List<HcsaSvcSpePremisesTypeDto> premisesType = RestApiUtil.getListByReqParam(PREMISESURL, map1, HcsaSvcSpePremisesTypeDto.class);
-        return premisesType;
+        String json = JsonUtil.parseToJson(svcIds);
+        map1.put("serviceId", json);
+        Set<String> premisesTypes = RestApiUtil.save(PREMISESURL, map1, Set.class);
+        return null;
     }
 
     @Override

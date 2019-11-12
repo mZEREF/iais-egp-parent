@@ -39,6 +39,6 @@
 <script src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
 <%--<script src="/hcsaapplication/jquery/cpl_app.js"></script>--%>
 <script src="<%=webroot%>js/cpl_app.js"></script>
-
+<script src="<%=webroot%>js/cpl_custom_form_script.js"></script>
 
 <%@ include file="/WEB-INF/jsp/inc/iaishcsascript.jsp" %>

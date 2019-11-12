@@ -1,9 +1,9 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 
 <%
-    //handle to the Engine APIs
-    sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+  //handle to the Engine APIs
+  sop.webflow.rt.api.BaseProcessClass process =
+          (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 
 %>
 <webui:setLayout name="iais-internet"/>
@@ -53,73 +53,33 @@
                                 <tr>
                                   <td rowspan="4">
                                     <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                    <input type="hidden" name="premId" value="${PremisesHciName}" />
                                     <p>16 Raffles Quay # 01-03, 048581</p>
                                   </td>
                                   <td>
                                     <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
-                                    <input type="hidden" name="67bf3139-5222-4c02-9e38-7b1153b871f6-Cytology" value="Cytology"/>
-                                    <input type="hidden" name="Laboratory Disciplines" value="" />
-                                    <p>Cytology</p>
+                                    <input type="hidden" name="laboratoryDisciplines" value="085E2ADD-8500-EA11-BE77-000C29D29DB0"/>
+                                    <p>Blood Banking</p>
                                   </td>
                                   <td>
                                     <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
-                                    <select name="67bf3139-5222-4c02-9e38-7b1153b871f6-Cytology" class="table-select officer-allocation-select" id="officerAllocationSelect1" aria-labelledby="officerAllocationSelect1">
-                                      <option>Option 1</option>
-                                      <option>Option 2</option>
-                                      <option>Option 3</option>
-                                      <option>Option 4</option>
-                                      <option>Option 5</option>
+                                    <select name="cgoIdNo" class="table-select officer-allocation-select" id="officerAllocationSelect1" aria-labelledby="officerAllocationSelect1">
+                                      <option value="S1358436B">Option 1</option>
+                                      <option value="S9514254J">Option 2</option>
                                     </select>
                                   </td>
                                 </tr>
                                 <tr>
                                   <td>
                                     <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
-                                    <input type="hidden" name="67bf3139-5222-4c02-9e38-7b1153b871f6-HIV Testing" value="HIV Testing"/>
-                                    <p>HIV Testing</p>
+                                    <input type="hidden" name="laboratoryDisciplines" value="2278150C-FB00-EA11-BE77-000C29D29DB0"/>
+                                    <p>Nuclear Medicine Service</p>
                                   </td>
                                   <td>
                                     <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
-                                    <select name="67bf3139-5222-4c02-9e38-7b1153b871f6-HIV Testing" class="table-select officer-allocation-select" id="officerAllocationSelect2" aria-labelledby="officerAllocationSelect2">
-                                      <option>Option 1</option>
-                                      <option>Option 2</option>
-                                      <option>Option 3</option>
-                                      <option>Option 4</option>
-                                      <option>Option 5</option>
-                                    </select>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>
-                                    <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
-                                    <input type="hidden" name="67bf3139-5222-4c02-9e38-7b1153b871f6-Medical Microbiology" value="Medical Microbiology"/>
-                                    <p>Medical Microbiology</p>
-                                  </td>
-                                  <td>
-                                    <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
-                                    <select name="67bf3139-5222-4c02-9e38-7b1153b871f6-Medical Microbiology" class="table-select officer-allocation-select" id="officerAllocationSelect3" aria-labelledby="officerAllocationSelect3">
-                                      <option>Option 1</option>
-                                      <option>Option 2</option>
-                                      <option>Option 3</option>
-                                      <option>Option 4</option>
-                                      <option>Option 5</option>
-                                    </select>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>
-                                    <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
-                                    <input type="hidden" name="67bf3139-5222-4c02-9e38-7b1153b871f6-Immunology" value="Immunology"/>
-                                    <p>Immunology</p>
-                                  </td>
-                                  <td>
-                                    <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
-                                    <select name="67bf3139-5222-4c02-9e38-7b1153b871f6-Immunology" class="table-select officer-allocation-select" id="officerAllocationSelect4" aria-labelledby="officerAllocationSelect4">
-                                      <option>Option 1</option>
-                                      <option>Option 2</option>
-                                      <option>Option 3</option>
-                                      <option>Option 4</option>
-                                      <option>Option 5</option>
+                                    <select name="cgoIdNo" class="table-select officer-allocation-select" id="officerAllocationSelect2" aria-labelledby="officerAllocationSelect2">
+                                      <option value="S1358436B">Option 1</option>
+                                      <option value="S9514254J">Option 2</option>
                                     </select>
                                   </td>
                                 </tr>
@@ -135,9 +95,9 @@
                 </div>
                 <div class="application-tab-footer">
                   <div class="row">
-                    <div class="col-xs-12 col-sm-6"><a class="back" id="governanceOfficersBack"><i class="fa fa-angle-left"></i> Back</a></div>
+                    <div class="col-xs-12 col-sm-6"><a class="back" id="disciplineAllocationBack"><i class="fa fa-angle-left"></i> Back</a></div>
                     <div class="col-xs-12 col-sm-6">
-                      <div class="button-group"><a class="btn btn-secondary" id = "governanceOfficersSaveDraft">Save as Draft</a><a class="next btn btn-primary" data-goto="clinical-governance-officer" id="governanceOfficersNext">Next</a></div>
+                      <div class="button-group"><a class="btn btn-secondary" id = "disciplineAllocationSaveDraft">Save as Draft</a><a class="next btn btn-primary" data-goto="clinical-governance-officer" id="disciplineAllocationNext">Next</a></div>
                     </div>
                   </div>
                 </div>
@@ -153,8 +113,19 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        $('#governanceOfficersNext').click(function(){
-            submitForms('principalOfficers',null,null,'clinical');
+
+
+
+        //Binding method
+        $('#disciplineAllocationBack').click(function(){
+            submitForms('laboratoryDisciplines',null,null,'clinical');
+        });
+        $('#disciplineAllocationSaveDraft').click(function(){
+            submitForms('governanceOfficers','saveDraft',null,'clinical');
+        });
+        $('#disciplineAllocationNext').click(function(){
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('principalOfficers',null,null,controlFormLi);
         });
 
     });
