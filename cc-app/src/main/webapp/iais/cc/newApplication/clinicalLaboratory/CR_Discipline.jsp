@@ -18,22 +18,11 @@
                     <table align="left">
                       <tbody>
                       <tr>
-                        <td width="100%">
-                          <div class="control-item-container">
-                            <input type="checkbox" id="control--runtime--1--0" name="control--runtime--1" class="control-input" value="085E2ADD-8500-EA11-BE77-000C29D29DB0;0">
-                            <label id="control--runtime--1--label--0" for="control--runtime--1--0" class="control-label control-set-font control-font-normal">
-                              <span class="check-square"></span>Blood Banking</label>
-                          </div>
-                          <div class="control-item-aux-container">
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
                         <td>
                           <div class="control-item-container parent-form-check" data-parent="NuclearMedicineService">
-                            <input type="checkbox" id="control--runtime--1--1" name="control--runtime--1" class="control-input" value="2278150C-FB00-EA11-BE77-000C29D29DB0;0">
+                            <input type="checkbox" id="control--runtime--1--1" name="control--runtime--1" class="control-input" value="284B727F-DBFE-E911-BE7B-000C29F371DC;1">
                             <label id="control--runtime--1--label--1" for="control--runtime--1--1" class="control-label control-set-font control-font-normal">
-                              <span class="check-square"></span>Nuclear Medicine Service</label>
+                              <span class="check-square"></span>Haematopoietic Stem Cell Transplant</label>
                           </div>
                           <div class="control-item-aux-container">
                           </div>
@@ -42,9 +31,9 @@
                       <tr>
                         <td>
                           <div class="control-item-container sub-form-check parent-form-check disabled"  data-child="NuclearMedicineService" data-parent="Telemedicine">
-                            <input type="checkbox" id="control--runtime--1--2" name="control--runtime--1" class="control-input" value="9E17F121-FB00-EA11-BE77-000C29D29DB0;0">
+                            <input type="checkbox" id="control--runtime--1--2" name="control--runtime--1" class="control-input" value="4907B211-E0FE-E911-BE7B-000C29F371DC;1">
                             <label id="control--runtime--1--label--2" for="control--runtime--1--2" class="control-label control-set-font control-font-normal">
-                              <span class="check-square"></span>Telemedicine</label>
+                              <span class="check-square"></span>HIV</label>
                           </div>
                           <div class="control-item-aux-container">
                           </div>
@@ -53,8 +42,8 @@
                       <tr>
                         <td>
                           <div class="control-item-container sub-form-check  disabled"  data-child="NuclearMedicineService" data-parent="RenalDialysisCentre" >
-                            <input type="checkbox" id="control--runtime--1--3" name="control--runtime--1" class="control-input" value="DAE94378-2301-EA11-BE77-000C29D29DB0;0">
-                            <label id="control--runtime--1--label--3" for="control--runtime--1--3" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Renal Dialysis Centre</label>
+                            <input type="checkbox" id="control--runtime--1--3" name="control--runtime--1" class="control-input" value="B58B8154-E2FE-E911-BE7B-000C29F371DC;1">
+                            <label id="control--runtime--1--label--3" for="control--runtime--1--3" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Pre-Implantation Genetics Diagnosis</label>
                           </div>
                           <div class="control-item-aux-container">
                           </div>
