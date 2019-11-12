@@ -59,9 +59,9 @@
                                 <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" >
                                 <label class="form-check-label" ><span class="check-circle"></span>GIRO</label><br>
 
-                                &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.jpg" width="40" height="25">&nbsp
-                                <img src="<%=webroot1%>img/paymentVISA.jpg" width="66" height="25">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                                <img src="<%=webroot1%>img/payments.jpg" width="36" height="30">
+                                &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">&nbsp
+                                <img src="<%=webroot1%>img/paymentVISA.png" width="66" height="25" alt="VISA">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                <img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">
                                 <p class="visible-xs visible-sm table-row-title">Proceed</p>
                                 <p class="text-right text-center-mobile"><iais:input type="button" cssClass="btn btn-primary" value="Proceed"></iais:input></p>
 
@@ -73,7 +73,7 @@
         </div>
     </div>
 </form>
-<script>
+<script type="text/javascript">
     $(function () {
         // alert("ok")
         $(":button").click(function () {
@@ -88,9 +88,7 @@
             $.ajax({
                 type:"POST",
                 url:"${pageContext.request.contextPath}/payment/duringThePayment",
-                //data:"username=tom&age=22",
                 data:paymentRequestDto,
-                //data:$("form[name=myform]").serialize(),
                 success:function (response) {
                     //alert(response)
                 }
