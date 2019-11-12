@@ -9,7 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
  * @date 11/9/2019
  */
 public interface AppSubmissionService {
-    public void submit(AppSubmissionDto appSubmissionDto);
+    public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto);
 
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
 

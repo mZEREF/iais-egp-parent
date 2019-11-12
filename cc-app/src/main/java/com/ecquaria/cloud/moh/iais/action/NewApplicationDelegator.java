@@ -86,7 +86,6 @@ public class NewApplicationDelegator {
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,null);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,null);
-        AuditTrailHelper.auditFunction("iais-cc", "premises create");
         //for loading the draft by appId
         //loadingDraft(bpc);
         //for loading Service Config
@@ -349,9 +348,9 @@ public class NewApplicationDelegator {
         HttpServletRequest request = bpc.request;
         log.info("In mS1 OnStepProcess");
 
-        AppSubmissionDto asd = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
-        appSubmissionService.submit(asd);
-
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        appSubmissionDto = appSubmissionService.submit(appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
 //        ProcessDetails processDetails = new ProcessDetails();
 //        processDetails.setProject(bpc.process.getCurrentProject());
@@ -398,7 +397,6 @@ public class NewApplicationDelegator {
     public void prepareAckPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
 
-
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
@@ -418,6 +416,15 @@ public class NewApplicationDelegator {
         return postCodeDto;
     }
 
+    /**
+     * @description: for the page validate call.
+     * @param request
+     * @return
+     */
+    public AppSubmissionDto getValueFromPage(HttpServletRequest request){
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        return appSubmissionDto;
+    }
 
     //=============================================================================
     //private method
@@ -451,11 +458,6 @@ public class NewApplicationDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
         sortHcsaServiceDto(hcsaServiceDtoList);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-        //set the serviceform process to Session
-        Map<String,String> ServiceFormUrlMaps = new HashMap<>();
-        ServiceFormUrlMaps.put("CL","/hcsaapplication/eservice/IAIS/ClinicalLaboratory");
-        ServiceFormUrlMaps.put("BB","/hcsaapplication/eservice/IAIS/BloodBanking");
-        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.SERVICEFORMURLMAPS, (Serializable) ServiceFormUrlMaps);
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
     }
     private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList){

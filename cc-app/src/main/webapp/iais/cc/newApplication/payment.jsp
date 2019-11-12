@@ -17,7 +17,7 @@
                     <div class="tab-gp steps-tab">
                         <%@ include file="./navTabs.jsp" %>
                         <div class="tab-content">
-                            <div class="tab-pane" id="paymentTab" role="tabpanel">
+                            <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <h2>Payment Summary</h2>
                                 <p >
                                     Total amount due:<div name="totalAmount">$8888.88</div>
@@ -54,11 +54,15 @@
                                     </tbody>
                                 </table>
                                 <h2>Payment Method</h2>
-                                <iais:input name="payMethod" type="radio">Credit/Debit Card</iais:input>
-                                <iais:input name="payMethod" type="radio">GIRO</iais:input>
+                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" >
+                                <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>&nbsp&nbsp&nbsp&nbsp
+                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" >
+                                <label class="form-check-label" ><span class="check-circle"></span>GIRO</label><br>
+
                                 &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.jpg" width="40" height="25">&nbsp
-                                <img src="<%=webroot1%>img/paymentVISA.jpg" width="66" height="25">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                                <img src="<%=webroot1%>img/payments.jpg" width="36" height="30">                                <p class="visible-xs visible-sm table-row-title">Proceed</p>
+                                <img src="<%=webroot1%>img/paymentVISA.jpg" width="66" height="25">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                <img src="<%=webroot1%>img/payments.jpg" width="36" height="30">
+                                <p class="visible-xs visible-sm table-row-title">Proceed</p>
                                 <p class="text-right text-center-mobile"><iais:input type="button" cssClass="btn btn-primary" value="Proceed"></iais:input></p>
 
                             </div>
