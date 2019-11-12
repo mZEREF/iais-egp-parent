@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationLoadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -147,11 +148,11 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation start ...."));
         //load cgo select options
         //List disciplines = (List) ParamUtil.getSessionAttr(bpc.request, "CheckedDisciplines");
-        List disciplines = new ArrayList();
+       /* List disciplines = new ArrayList();
         disciplines.add("Cytology");
         disciplines.add("HIV Testing");
         Map map = appGrpSvcRelatedInfoService.loadCGOByDisciplines(disciplines);
-        ParamUtil.setSessionAttr(bpc.request, "CGOOptions", (Serializable) map);
+        ParamUtil.setSessionAttr(bpc.request, "CGOOptions", (Serializable) map);*/
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation end ...."));
     }
 
@@ -219,6 +220,8 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines start ...."));
         String [] checkListInfo = bpc.request.getParameterValues("control--runtime--1");
         if(StringUtil.isEmpty(checkListInfo)){
+            return;
+        }
             // one premises one AppSvcLaboratoryDisciplinesDto
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = new ArrayList<>();
             AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = new AppSvcLaboratoryDisciplinesDto();
@@ -238,15 +241,16 @@ public class ClinicalLaboratoryDelegator {
                     appSvcChckListDto.setChkLstType(Integer.valueOf(config[1]));
                     appSvcChckListDtoList.add(appSvcChckListDto);
                 }
-                String hciName = (String) ParamUtil.getRequestAttr(bpc.request, "PremisesHciName");
-               // appSvcLaboratoryDisciplinesDto.setPremisesHciCode(hciName);
+                //ParamUtil.setRequestAttr(bpc.request, "PremisesValue", "011022");
+                String premisesValue = (String) ParamUtil.getSessionAttr(bpc.request, "PremisesValue");
+                appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesValue);
                 appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
+                appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
                 //save into sub-svc dto
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
                 appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
                 //appSvcRelatedInfoDto.setCheckListIds(checkListIds);
                 ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
-            }
 
         }
 
@@ -287,10 +291,7 @@ public class ClinicalLaboratoryDelegator {
     public void doDisciplineAllocation(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation start ...."));
 
-        String premHciCode = ParamUtil.getString(bpc.request, "premId");
-        /*if(StringUtil.isEmpty(premHciCode)){
-            return;
-        }*/
+        String premisesValue = (String) ParamUtil.getSessionAttr(bpc.request, "PremisesValue");
         String [] laboratoryDisciplines = ParamUtil.getStrings(bpc.request, "laboratoryDisciplines");
         String [] cgoIdNo = ParamUtil.getStrings(bpc.request, "cgoIdNo");
         List<AppSvcDisciplineAllocationDto> daList = new ArrayList<>();
@@ -298,7 +299,7 @@ public class ClinicalLaboratoryDelegator {
         int count = 0;
         for(String itme:laboratoryDisciplines){
             appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
-       //     appSvcDisciplineAllocationDto.setPremisesHciCode("cc");
+            appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
             appSvcDisciplineAllocationDto.setChkLstConfId(itme);
             appSvcDisciplineAllocationDto.setIdNo(cgoIdNo[count]);
             daList.add(appSvcDisciplineAllocationDto);
@@ -510,6 +511,8 @@ public class ClinicalLaboratoryDelegator {
         dto.setDesignation(designation);
         dto.setMobileNo(mobileNo);
         dto.setEmailAddr(emailAddress);
+        dto.setIdType(idType);
+        dto.setIdNo(idNo);
         return  dto;
     }
 

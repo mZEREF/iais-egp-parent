@@ -114,14 +114,17 @@ public class NewApplicationDelegator {
     public void preparePremises(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePremises start ...."));
         //get svcCode to get svcId
-        String svcCode = "TEM";
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+        List<String> svcIds = new ArrayList<>();
+        hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
+        String svcCode = "BLB";
         String svcId = appGrpPremisesService.getSvcIdBySvcCode(svcCode);
         //
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
+        /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
         appSvcRelatedInfoDto.setServiceCode(svcCode);
-        appSvcRelatedInfoDto.setServiceId(svcId);
-        ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
-        ParamUtil.setSessionAttr(bpc.request, SERVICEID, svcId);
+        appSvcRelatedInfoDto.setServiceId(svcId);*/
+        /*ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
+        ParamUtil.setSessionAttr(bpc.request, SERVICEID, svcId);*/
         //get premisesSelectList
 
 
@@ -145,8 +148,8 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,"premisesSelect",premisesSelect);
         //get premises type
-        List<HcsaSvcSpePremisesTypeDto> premisesType= appGrpPremisesService.getAppGrpPremisesTypeBySvcId(svcId);
-        ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
+        /*List<HcsaSvcSpePremisesTypeDto> premisesType= appGrpPremisesService.getAppGrpPremisesTypeBySvcId(svcIds);
+        ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);*/
         log.debug(StringUtil.changeForLog("the do preparePremises end ...."));
     }
     /**
@@ -551,7 +554,7 @@ public class NewApplicationDelegator {
         appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
         appGrpPremisesDto.setAddrType(addrType);
 
-        ParamUtil.setRequestAttr(request, "PremisesHciName", hciName);
+        ParamUtil.setSessionAttr(request, "PremisesValue", hciName);
         return  appGrpPremisesDto;
     }
 
