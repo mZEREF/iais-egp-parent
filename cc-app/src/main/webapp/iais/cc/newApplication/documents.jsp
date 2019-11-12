@@ -43,9 +43,13 @@
                                         <div class="document-upload-list">
                                             <h3>${commonDoc.docTitle}</h3>
                                             <div class="file-upload-gp">
+                                                <input type="hidden" name="configId" value="${commonDoc.id}" />
+                                                <input type="hidden"  name="configType" value="common" />
+                                                <input type="hidden"  name="docConfig" value="" />
                                                 <span  ></span>
                                                 <span class="hidden delBtn">&nbsp;&nbsp;<button type="button" class="delBtn">Delete</button></span><br/>
-                                                <input class="selectedFile"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+                                                <input class="selectedFile commDoc"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
+                                                <a class="btn btn-file-upload btn-secondary" >Upload</a>
                                             </div>
                                         </div>
                                     </c:forEach>
@@ -54,9 +58,13 @@
                                         <div class="document-upload-list">
                                             <h3>${premDoc.docTitle}</h3>
                                             <div class="file-upload-gp">
+                                                <input type="hidden" name="configId" value="${premDoc.id}" />
+                                                <input type="hidden"  name="configType" value="prem" />
+                                                <input type="hidden"  name="docConfig" value="" />
                                                 <span  ></span>
                                                 <span class="hidden delBtn">&nbsp;&nbsp;<button type="button" class="delBtn">Delete</button></span><br/>
-                                                <input class="selectedFile"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+                                                <input class="selectedFile premDoc"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
+                                                <a class="btn btn-file-upload btn-secondary" >Upload</a>
                                             </div>
                                         </div>
                                     </c:forEach>
@@ -107,7 +115,9 @@
             var file = $(this).val();
             $(this).parent().children('span:eq(0)').html(getFileName(file));
             $(this).parent().children('span:eq(0)').next().removeClass("hidden");
-
+            var configId = $(this).parent().children('input:eq(0)').val();
+            var configType = $(this).parent().children('input:eq(1)').val();
+            $(this).parent().children('input:eq(2)').val(configId+";"+configType);
         }
     );
 
@@ -115,6 +125,9 @@
         $(this).parent().children('span:eq(0)').html('');
         $(this).parent().children('span:eq(0)').next().addClass("hidden");
     });
+
+
+
 
 
 </script>
