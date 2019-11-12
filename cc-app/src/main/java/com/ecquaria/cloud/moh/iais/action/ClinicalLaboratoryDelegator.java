@@ -239,7 +239,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcChckListDtoList.add(appSvcChckListDto);
                 }
                 String hciName = (String) ParamUtil.getRequestAttr(bpc.request, "PremisesHciName");
-                appSvcLaboratoryDisciplinesDto.setPremisesHciCode(hciName);
+               // appSvcLaboratoryDisciplinesDto.setPremisesHciCode(hciName);
                 appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
                 //save into sub-svc dto
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
@@ -298,7 +298,7 @@ public class ClinicalLaboratoryDelegator {
         int count = 0;
         for(String itme:laboratoryDisciplines){
             appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
-            appSvcDisciplineAllocationDto.setPremisesHciCode("cc");
+       //     appSvcDisciplineAllocationDto.setPremisesHciCode("cc");
             appSvcDisciplineAllocationDto.setChkLstConfId(itme);
             appSvcDisciplineAllocationDto.setIdNo(cgoIdNo[count]);
             daList.add(appSvcDisciplineAllocationDto);
