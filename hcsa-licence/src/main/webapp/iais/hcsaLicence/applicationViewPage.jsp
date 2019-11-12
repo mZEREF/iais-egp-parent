@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -140,49 +141,29 @@
                                                     <th>Date Submitted</th>
                                                 </tr>
                                                 </thead>
+
                                                 <tbody>
+                                                <c:forEach items="${applicationViewDto.appSupDocDtoList}" var="appSupDocDto">
                                                 <tr>
                                                     <td>
-                                                        <p>NEA Licence</p>
+                                                        <p><c:out value="${appSupDocDto.document}"></c:out></p>
                                                     </td>
                                                     <td>
-                                                        <p><a href="#">NEA Licence.png</a></p>
+                                                        <p><a href="#"><c:out value="${appSupDocDto.file}"></c:out></a></p>
                                                     </td>
                                                     <td>
-                                                        <p>36.57K</p>
+                                                        <p><c:out value="${appSupDocDto.size}"></c:out></p>
                                                     </td>
                                                     <td>
-                                                        <p>internet</p>
+                                                        <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
                                                     </td>
                                                     <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
+                                                        <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>ACRA Profile</p>
-                                                    </td>
-                                                    <td>
-                                                        <p><a href="#">ACRA Profile.pdf</a></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>36.57K</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>internet</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                    <td>
-                                                        <span class="glyphicon glyphicon-floppy-remove"></span>
-                                                        <span>&nbsp;</span>
-                                                        <span class="glyphicon glyphicon-pencil"></span>
-                                                        <span>&nbsp;</span>
-                                                        <span class="glyphicon glyphicon-floppy-saved"></span>
-                                                    </td>
-                                                </tr>
+                                                </c:forEach>
                                                 </tbody>
+
                                             </table>
                                             <div class="alert alert-info" role="alert"><b>
                                                 <h4>Internal Document</h4>

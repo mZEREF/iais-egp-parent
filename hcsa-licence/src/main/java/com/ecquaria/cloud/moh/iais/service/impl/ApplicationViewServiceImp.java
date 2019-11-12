@@ -13,5 +13,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         Map<String,Object> map = new HashMap<>();
         map.put("AppNo",AppNo);
         return RestApiUtil.getByReqParam("iais-application:8883/iais-application/application/{AppNo}",map, ApplicationViewDto.class);
+
     }
 }
