@@ -249,6 +249,9 @@ public class ClinicalLaboratoryDelegator {
                 //save into sub-svc dto
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
                 appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
+                //hard-code
+                appSvcRelatedInfoDto.setServiceCode("CL");
+                appSvcRelatedInfoDto.setServiceId("AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
                 //appSvcRelatedInfoDto.setCheckListIds(checkListIds);
                 ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
 
