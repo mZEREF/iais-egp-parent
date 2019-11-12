@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -449,14 +448,9 @@ public class NewApplicationDelegator {
         List<String> serviceConfigIds = new ArrayList<>();
         serviceConfigIds.add("AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
         serviceConfigIds.add("C3E7715A-29EB-E911-BE76-000C29C8FBE4");
-        List hcsaServiceDtoListMap = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
-        if(hcsaServiceDtoListMap!=null && hcsaServiceDtoListMap.size() > 0){
-            List<HcsaServiceDto> hcsaServiceDtoList = RestApiUtil.transferListContent(hcsaServiceDtoListMap,AppGrpPremisesDto.class);
-            sortHcsaServiceDto(hcsaServiceDtoList);
-            ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-        }else{
-            log.error(StringUtil.changeForLog("can not get out the Service Config"));
-        }
+        List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+        sortHcsaServiceDto(hcsaServiceDtoList);
+        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
     }
     private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList){
