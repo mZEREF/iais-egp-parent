@@ -16,7 +16,7 @@ public interface AppGrpPremisesService {
     AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto);
     List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId);
     List getAppGrpPremisesDtosByAppId(String appId);
-    List<HcsaSvcSpePremisesTypeDto> getAppGrpPremisesTypeBySvcId(String svcId);
+    List<HcsaSvcSpePremisesTypeDto> getAppGrpPremisesTypeBySvcId(List<String> svcIds);
     PostCodeDto getPremisesByPostalCode(String searchField, String filterValue);
     String getSvcIdBySvcCode(String svcCode);
 

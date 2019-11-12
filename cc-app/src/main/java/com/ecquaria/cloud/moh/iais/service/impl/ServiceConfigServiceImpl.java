@@ -19,11 +19,13 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
         List<HcsaServiceDto> result = new ArrayList<>();
         HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+        hcsaServiceDto.setId("AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
         hcsaServiceDto.setSvcName("Clinical Laboratory");
         hcsaServiceDto.setSvcCode("CL");
         hcsaServiceDto.setSvcType("Base");
         result.add(hcsaServiceDto);
         HcsaServiceDto hcsaServiceDto1 = new HcsaServiceDto();
+        hcsaServiceDto1.setId("C3E7715A-29EB-E911-BE76-000C29C8FBE4");
         hcsaServiceDto1.setSvcName("Blood Banking");
         hcsaServiceDto1.setSvcCode("BB");
         hcsaServiceDto1.setSvcType("Base");
