@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -36,14 +37,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator.APPSVCRELATEDINFODTO;
 
@@ -431,7 +425,7 @@ public class NewApplicationDelegator {
     //=============================================================================
     private  void loadingDraft(BaseProcessClass bpc){
         String appId = ParamUtil.getString(bpc.request,"appId");
-        if(!StringUtil.isEmpty(appId)){
+//        if(!StringUtil.isEmpty(appId)){
 //        List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
 //        if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
 //            List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
@@ -445,7 +439,7 @@ public class NewApplicationDelegator {
 //                ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
 //            }
 //        }
-        }
+//        }
 
     }
 
@@ -453,11 +447,16 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
         //loading the service
         List<String> serviceConfigIds = new ArrayList<>();
-        serviceConfigIds.add("C3E7715A-29EB-E911-BE76-000C29C8FBE4");
         serviceConfigIds.add("AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
-        List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
-        sortHcsaServiceDto(hcsaServiceDtoList);
-        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+        serviceConfigIds.add("C3E7715A-29EB-E911-BE76-000C29C8FBE4");
+        List hcsaServiceDtoListMap = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+        if(hcsaServiceDtoListMap!=null && hcsaServiceDtoListMap.size() > 0){
+            List<HcsaServiceDto> hcsaServiceDtoList = RestApiUtil.transferListContent(hcsaServiceDtoListMap,AppGrpPremisesDto.class);
+            sortHcsaServiceDto(hcsaServiceDtoList);
+            ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+        }else{
+            log.error(StringUtil.changeForLog("can not get out the Service Config"));
+        }
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
     }
     private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList){
