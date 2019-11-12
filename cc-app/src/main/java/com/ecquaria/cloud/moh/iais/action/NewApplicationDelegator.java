@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -44,6 +43,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator.APPSVCRELATEDINFODTO;
 
@@ -124,8 +124,6 @@ public class NewApplicationDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<String> svcIds = new ArrayList<>();
         hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
-        String svcCode = "BLB";
-        String svcId = appGrpPremisesService.getSvcIdBySvcCode(svcCode);
         //
         /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
         appSvcRelatedInfoDto.setServiceCode(svcCode);
@@ -155,8 +153,8 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,"premisesSelect",premisesSelect);
         //get premises type
-        /*List<HcsaSvcSpePremisesTypeDto> premisesType= appGrpPremisesService.getAppGrpPremisesTypeBySvcId(svcIds);
-        ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);*/
+        Set<String> premisesType= appGrpPremisesService.getAppGrpPremisesTypeBySvcId(svcIds);
+        ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         log.debug(StringUtil.changeForLog("the do preparePremises end ...."));
     }
     /**

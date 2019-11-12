@@ -2,9 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import lombok.extern.slf4j.Slf4j;
@@ -61,16 +59,13 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     }
 
     @Override
-    public List<HcsaSvcSpePremisesTypeDto> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
+    public Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
         /*Map<String,Object> map = new HashMap<>();
         List serviceId = new ArrayList();
         serviceId.add("4029F370-EDEE-E911-BE76-000C294908E1");
         map.put("ServiceId", serviceId);*/
-        Map<String,Object> map1 = new HashMap<>();
-        String json = JsonUtil.parseToJson(svcIds);
-        map1.put("serviceId", json);
-        Set<String> premisesTypes = RestApiUtil.save(PREMISESURL, map1, Set.class);
-        return null;
+        Set<String> premisesTypes = RestApiUtil.getByList(PREMISESURL, svcIds, Set.class);
+        return premisesTypes;
     }
 
     @Override
