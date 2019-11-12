@@ -19,7 +19,7 @@
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <h2>Payment Summary</h2>
                                 <p >
-                                    Total amount due:<div name="totalAmount">$8888.88</div>
+                                    Total amount due:$<div  id="totalAmount">8888.88</div>
                                 </p>
                                 <table class="table">
                                     <thead>
@@ -47,7 +47,7 @@
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title" >Amount</p>
-                                            <p name="fee" >8888.88</p>
+                                            <p id="fee">8888.88</p>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -77,9 +77,9 @@
     $(function () {
         // alert("ok")
         $(":button").click(function () {
-            //alert("ok")
+            alert("ok")
             var paymentRequestDto={
-                amount: $("div[name=totalAmount]"),
+                amount: $("#totalAmount"),
                 payMethod: $("input[name=payMethod]"),
                 reqDt: new Date(),
                 reqRefNo: "string12345"

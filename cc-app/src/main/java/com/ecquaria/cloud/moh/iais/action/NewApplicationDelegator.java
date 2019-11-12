@@ -116,8 +116,8 @@ public class NewApplicationDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<String> svcIds = new ArrayList<>();
         hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
-        String svcCode = "BLB";
-        String svcId = appGrpPremisesService.getSvcIdBySvcCode(svcCode);
+        /*String svcCode = "BLB";
+        String svcId = appGrpPremisesService.getSvcIdBySvcCode(svcCode);*/
         //
         /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
         appSvcRelatedInfoDto.setServiceCode(svcCode);
@@ -238,7 +238,6 @@ public class NewApplicationDelegator {
         String crud_action_value = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
-        //ParamUtil.setSessionAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
 
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
