@@ -1,48 +1,165 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="2" minorVersion="0" name="MohChecklistConfig" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="12" minorVersion="0" name="MohChecklistConfig" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
  <WebServices/>
  <RestServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+  <StartStep defClass="" executor="" icon="" name="Step1" x="70" y="20">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepare" x="260" y="104">
+  <AutomaticStep defClass="" executor="" icon="" name="prepare" x="240" y="30">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="770" y="260">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareAddConfig" x="1150" y="130">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareAddConfig_OnStepProcess_0" name="prepareAddConfig_OnStepProcess_0"/>
+   </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="switchAction" x="600" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="switchAction" x="650" y="20">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="switchAction_OnStepProcess_0" name="switchAction_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="submitConfig" x="1260" y="780">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submitConfig_OnStepProcess_0" name="submitConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="addConfigNextAction" x="320" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="addConfigNextAction_OnStepProcess_0" name="addConfigNextAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareConfigSectionInfo" x="560" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareConfigSectionInfo_OnStepProcess_0" name="prepareConfigSectionInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preViewConfig" x="1040" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preViewConfig_OnStepProcess_0" name="preViewConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="970" y="-90">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareChecklistItemInfo" x="840" y="440">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareChecklistItemInfo_OnStepProcess_0" name="prepareChecklistItemInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="addChecklistItemNextAction" x="550" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="addChecklistItemNextAction_OnStepProcess_0" name="addChecklistItemNextAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="addSectionItem" x="590" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="addSectionItem_OnStepProcess_0" name="addSectionItem_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="invokeChecklistItem" processname="MohChecklistItem" project="INTRANET" version="-1" x="850" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="configPage" stageIndicator="" x="430" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="ConfigDataPage" stageIndicator="" x="410" y="20">
    <Description/>
    <probepoint type="none"/>
    <OnPageLoad/>
    <OnPageSubmit/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AddConfigCommonPage" stageIndicator="" x="310" y="130">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AddConfigSectionPage" stageIndicator="" x="740" y="360">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AddConfigItemPage" stageIndicator="" x="660" y="640">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreViewConfigPage" stageIndicator="" x="1030" y="680">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SuccessPage" stageIndicator="" x="1040" y="780">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AddSectionItemPage" stageIndicator="" x="840" y="230">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="790" y="110">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="980" y="20">
    <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareAddConfig" value="&quot;prepareAddConfig&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="360" y="360">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;backLastPage&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareConfigSectionInfo" value="&quot;nextPage&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="1280" y="680">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/submitConfig" value="&quot;submitConfig&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="880" y="360">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/AddSectionItemPage" value="&quot;addSectionItem&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareChecklistItemInfo" value="&quot;configChecklistItem&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preViewConfig" value="&quot;preViewConfig&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
@@ -52,16 +169,82 @@
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
-   <position>{(120,120)(280,124)}</position>
+   <position>{(90,40)(260,50)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/configPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepare" style="rectanular">
-   <position>{(280,124)(450,120)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigDataPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepare" style="rectanular">
+   <position>{(260,50)(430,40)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/switchAction" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/configPage" style="rectanular">
-   <position>{(450,120)(620,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/switchAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ConfigDataPage" style="oblique">
+   <position>{(430,40)(670,40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/switchAction" style="oblique">
-   <position>{(620,120)(810,130)}</position>
+   <position>{(670,40)(1000,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAddConfig" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1000,40)(1198,38)(1170,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AddConfigCommonPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareAddConfig" style="oblique">
+   <position>{(1170,150)(330,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(380,380)(258,382)(260,50)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addConfigNextAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AddConfigCommonPage" style="oblique">
+   <position>{(330,150)(340,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/addConfigNextAction" style="oblique">
+   <position>{(340,260)(380,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfigSectionInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(380,380)(580,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AddConfigSectionPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareConfigSectionInfo" style="oblique">
+   <position>{(580,380)(760,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PreViewConfigPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preViewConfig" style="oblique">
+   <position>{(1060,380)(1050,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreViewConfigPage" style="oblique">
+   <position>{(1050,700)(1300,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/submitConfig" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(1300,700)(1280,800)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/submitConfig" style="oblique">
+   <position>{(1280,800)(1060,800)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
+   <position>{(990,-70)(266,-72)(260,50)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1000,40)(990,-70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch6" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AddConfigSectionPage" style="oblique">
+   <position>{(760,380)(900,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AddSectionItemPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
+   <position>{(900,380)(860,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addSectionItem" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AddSectionItemPage" style="oblique">
+   <position>{(860,250)(610,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfigSectionInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/addSectionItem" style="oblique">
+   <position>{(610,250)(580,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareChecklistItemInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(900,380)(860,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfigSectionInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/addChecklistItemNextAction" style="oblique">
+   <position>{(570,570)(580,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewConfig" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(900,380)(1060,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/invokeChecklistItem" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareChecklistItemInfo" style="oblique">
+   <position>{(860,460)(870,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addChecklistItemNextAction" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/invokeChecklistItem" style="oblique">
+   <position>{(870,570)(570,570)}</position>
   </SynchronousLink>
  </Links>
  <BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions=""/>
