@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
-<form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
+<form method="post" id="mainForm" enctype="multipart/form-data"  class="__egovform" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
         <div class="container">
@@ -49,7 +49,7 @@
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6"><a class="back" id="governanceOfficersBack"><i class="fa fa-angle-left"></i> Back</a></div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group"><a class="btn btn-secondary" id = "governanceOfficersSaveDraft">Save as Draft</a><%--<a class="next btn btn-primary" id="governanceOfficersNext" data-goto="clinical-governance-officer">Next</a>--%></div>
+                                            <div class="button-group"><a class="btn btn-secondary" id = "governanceOfficersSaveDraft">Save as Draft</a><a class="next btn btn-primary" id="svcDocumentNext" data-goto="clinical-governance-officer">Next</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -71,8 +71,8 @@
         $('#governanceOfficersSaveDraft').click(function(){
             //submitForms('governanceOfficers','saveDraft',null,'clinical');
         });
-        $('#governanceOfficersNext').click(function(){
-            //submitForms('documents',null,null,'clinical');
+        $('#svcDocumentNext').click(function(){
+            submit('preview',null,null);
         });
 
     });

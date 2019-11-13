@@ -18,82 +18,123 @@
           <div class="panel-body">
             <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
             <div class="panel-main-content">
-              <div class="principalOfficers">
+              <div class="">
                 <h2>Principal Officer</h2>
+                <div class="row">
+                  <div class="col-sm-4">
+                    Deputy Principal Officer(Optional):
+                  </div>
+                  <div class="col-sm-4">
+                    <select name="deputySelect" class="form-control control-input control-set-font control-font-normal">
+                      <option>Please Select</option>
+                      <option value="0">N</option>
+                      <option value="1">Y</option>
+                    </select>
+                  </div>
+                </div>
                 <p><h4>A Principal Officer is responsible for overseeing the day-to-day operations of medical service</h4></p>
                 <div class="row">
-                  <div class="col-sm-6 control-label formtext ">
-                    <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Clinical Governance Officer</label>
-                    <span class="upload_controls"></span>
+                  <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                      <div class="col-sm-6 control-label formtext ">
+                        <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Clinical Governance Officer</label>
+                        <span class="upload_controls"></span>
+                      </div>
+                      <div class="col-sm-5">
+                        <div class="">
+                          <select name="assign" id="cgoSelect" class="form-control control-input control-set-font control-font-normal">
+                            <option>Select Personnel</option>
+                            <option value="newOfficer">I'd like to add a new personnel</option>
+                            <option>Deng Jin, XXX675 (NRIC)</option>
+                          </select>
+                          <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-sm-5">
-                    <div class="">
-                      <select name="assign" id="cgoSelect" class="form-control control-input control-set-font control-font-normal">
-                        <option>Select Personnel</option>
-                        <option value="newOfficer">I'd like to add a new personnel</option>
-                        <option>Deng Jin, XXX675 (NRIC)</option>
-                      </select>
-                      <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
+                </div>
+              </div>
+              <div class="principalOfficers hidden">
+                <div class="row">
+                  <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                      <div class="col-sm-3 control-label formtext ">
+                        <label  class="control-label control-set-font control-font-label">Name</label>
+                      </div>
+                      <div class="col-sm-2">
+                        <select name="salutation" class="form-control control-input control-set-font control-font-normal">
+                          <option>Mr</option>
+                          <option>Mrs</option>
+                          <option>Miss</option>
+                          <option>Madam</option>
+                        </select>
+                      </div>
+                      <div class="col-sm-4">
+                        <input name="name" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-sm-3 control-label formtext ">
-                    <label  class="control-label control-set-font control-font-label">Name</label>
-                  </div>
-                  <div class="col-sm-2">
-                    <select name="salutation" class="form-control control-input control-set-font control-font-normal">
-                      <option>Mr</option>
-                      <option>Mrs</option>
-                      <option>Miss</option>
-                      <option>Madam</option>
-                    </select>
-                  </div>
-                  <div class="col-sm-4">
-                    <input name="name" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-3 control-label formtext ">
-                    <label  class="control-label control-set-font control-font-label">ID No.</label>
-                  </div>
-                  <div class="col-sm-2">
-                    <select name="idType" class="form-control control-input control-set-font control-font-normal">
-                      <option>NRIC</option>
-                      <option>FIN</option>
-                    </select>
-                  </div>
-                  <div class="col-sm-4">
-                    <input name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                  <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                      <div class="col-sm-3 control-label formtext ">
+                        <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">ID No.
+                        </label>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="">
+                          <select name="idType" class="form-control control-input control-set-font control-font-normal">
+                            <option>NRIC</option>
+                            <option>FIN</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-sm-4">
+                        <input name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-sm-3 control-label formtext ">
-                    <label  class="control-label control-set-font control-font-label">Designation</label>
-                  </div>
-                  <div class="col-sm-2">
-                    <select name="designation" class="form-control control-input control-set-font control-font-normal">
-                      <option>CEO</option>
-                      <option>CFO</option>
-                      <option>COO</option>
-                      <option>Others</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-3 control-label formtext ">
-                    <label  class="control-label control-set-font control-font-label">Mobile No.</label>
-                  </div>
-                  <div class="col-sm-4">
-                    <input name="mobileNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                  <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                      <div class="col-sm-3 control-label formtext ">
+                        <label  class="control-label control-set-font control-font-label">Designation</label>
+                      </div>
+                      <div class="col-sm-2">
+                        <select name="designation" class="form-control control-input control-set-font control-font-normal">
+                          <option>CEO</option>
+                          <option>CFO</option>
+                          <option>COO</option>
+                          <option>Others</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-sm-3 control-label formtext ">
-                    <label  class="control-label control-set-font control-font-label">Email Address</label>
+                  <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                      <div class="col-sm-3 control-label formtext ">
+                        <label  class="control-label control-set-font control-font-label">Mobile No.</label>
+                      </div>
+                      <div class="col-sm-4">
+                        <input name="mobileNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-sm-4">
-                    <input name="emailAddress" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                </div>
+                <div class="row">
+                  <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                      <div class="col-sm-3 control-label formtext ">
+                        <label  class="control-label control-set-font control-font-label">Email Address</label>
+                      </div>
+                      <div class="col-sm-4">
+                        <input name="emailAddress" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -126,3 +167,11 @@
     </div>
   </div>
 </div>
+
+<script>
+    $('#cgoSelect').change(function () {
+        var selectVal = $(this).val();
+        $('.principalOfficers').removeClass('hidden');
+    });
+
+</script>

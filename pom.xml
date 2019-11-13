@@ -42,6 +42,7 @@
         <module>hcsa-config</module>
         <module>payment</module>
         <module>iais-inter-inbox</module>
+        <module>hcsa-inspection</module>
     </modules>
     <dependencyManagement>
         <dependencies>
