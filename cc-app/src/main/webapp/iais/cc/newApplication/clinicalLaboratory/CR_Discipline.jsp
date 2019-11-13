@@ -20,7 +20,7 @@
                       <tr>
                         <td>
                           <div class="control-item-container parent-form-check" data-parent="NuclearMedicineService">
-                            <input type="checkbox" id="control--runtime--1--1" name="control--runtime--1" class="control-input" value="284B727F-DBFE-E911-BE7B-000C29F371DC;1">
+                            <input type="checkbox" id="control--runtime--1--1" name="control--runtime--1" class="control-input" value="284B727F-DBFE-E911-BE7B-000C29F371DC;1;HST">
                             <label id="control--runtime--1--label--1" for="control--runtime--1--1" class="control-label control-set-font control-font-normal">
                               <span class="check-square"></span>Haematopoietic Stem Cell Transplant</label>
                           </div>
@@ -31,7 +31,7 @@
                       <tr>
                         <td>
                           <div class="control-item-container sub-form-check parent-form-check disabled"  data-child="NuclearMedicineService" data-parent="Telemedicine">
-                            <input type="checkbox" id="control--runtime--1--2" name="control--runtime--1" class="control-input" value="4907B211-E0FE-E911-BE7B-000C29F371DC;1">
+                            <input type="checkbox" id="control--runtime--1--2" name="control--runtime--1" class="control-input" value="4907B211-E0FE-E911-BE7B-000C29F371DC;1;HIV">
                             <label id="control--runtime--1--label--2" for="control--runtime--1--2" class="control-label control-set-font control-font-normal">
                               <span class="check-square"></span>HIV</label>
                           </div>
@@ -42,7 +42,7 @@
                       <tr>
                         <td>
                           <div class="control-item-container sub-form-check  disabled"  data-child="NuclearMedicineService" data-parent="RenalDialysisCentre" >
-                            <input type="checkbox" id="control--runtime--1--3" name="control--runtime--1" class="control-input" value="B58B8154-E2FE-E911-BE7B-000C29F371DC;1">
+                            <input type="checkbox" id="control--runtime--1--3" name="control--runtime--1" class="control-input" value="B58B8154-E2FE-E911-BE7B-000C29F371DC;1;PGD">
                             <label id="control--runtime--1--label--3" for="control--runtime--1--3" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Pre-Implantation Genetics Diagnosis</label>
                           </div>
                           <div class="control-item-aux-container">
