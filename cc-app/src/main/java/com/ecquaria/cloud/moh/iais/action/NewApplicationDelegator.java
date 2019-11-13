@@ -35,7 +35,15 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator.APPSVCRELATEDINFODTO;
 
@@ -551,8 +559,8 @@ public class NewApplicationDelegator {
         appGrpPremisesDto.setSiteSafefyNo(siteAddressType);
         appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
         appGrpPremisesDto.setAddrType(addrType);
-
-        ParamUtil.setSessionAttr(request, "PremisesValue", hciName);
+        //add index for dto refer
+        appGrpPremisesDto.setPremisesIndexNo("prem01");
         return  appGrpPremisesDto;
     }
 
