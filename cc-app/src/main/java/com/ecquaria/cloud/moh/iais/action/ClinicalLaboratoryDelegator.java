@@ -263,7 +263,7 @@ public class ClinicalLaboratoryDelegator {
         String 	nameStr = new StringBuffer().append(premisesId).append("-").append("Cytology").toString();
         //get Laboratory Disciplines id and	Clinical Governance Officers id
         String [] ids  = ParamUtil.getStrings(bpc.request, nameStr);
-        appSvcDisciplineAllocationDto.setAppGrpPremiseId(premisesId);
+//        appSvcDisciplineAllocationDto.setAppGrpPremiseId(premisesId);
         appSvcDisciplineAllocationDto.setChkLstConfId(ids[0]);
         //appSvcDisciplineAllocationDto.setAppSvcCgoId(ids[1]);
         daList.add(appSvcDisciplineAllocationDto);
