@@ -35,7 +35,15 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator.APPSVCRELATEDINFODTO;
 
@@ -116,17 +124,6 @@ public class NewApplicationDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<String> svcIds = new ArrayList<>();
         hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
-        /*String svcCode = "BLB";
-        String svcId = appGrpPremisesService.getSvcIdBySvcCode(svcCode);*/
-        //
-        /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
-        appSvcRelatedInfoDto.setServiceCode(svcCode);
-        appSvcRelatedInfoDto.setServiceId(svcId);*/
-        /*ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
-        ParamUtil.setSessionAttr(bpc.request, SERVICEID, svcId);*/
-        //get premisesSelectList
-
-
         List premisesSelect = new ArrayList<SelectOption>();
         User user = SessionManager.getInstance(bpc.request).getCurrentUser();
         //String loginId = user.getIdentityNo();
@@ -253,8 +250,7 @@ public class NewApplicationDelegator {
         if(files != null && docConfig !=null){
             for(MultipartFile file:files){
                 if(!StringUtil.isEmpty(file.getOriginalFilename())){
-                    String docId = Arrays.toString(docConfig);
-                    String[] config = docId.split(";");
+                    String[] config = docConfig[0].split(";");
 
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setSvcComDocId(config[0]);
@@ -551,8 +547,8 @@ public class NewApplicationDelegator {
         appGrpPremisesDto.setSiteSafefyNo(siteAddressType);
         appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
         appGrpPremisesDto.setAddrType(addrType);
-
-        ParamUtil.setSessionAttr(request, "PremisesValue", hciName);
+        //add index for dto refer
+        appGrpPremisesDto.setPremisesIndexNo("prem01");
         return  appGrpPremisesDto;
     }
 

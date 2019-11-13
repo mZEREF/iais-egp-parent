@@ -49,41 +49,31 @@
                                   <th>Clinical Governance Officers</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                  <td rowspan="4">
-                                    <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                    <input type="hidden" name="premId" value="${PremisesHciName}" />
-                                    <p>16 Raffles Quay # 01-03, 048581</p>
-                                  </td>
-                                  <td>
-                                    <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
-                                    <input type="hidden" name="laboratoryDisciplines" value="085E2ADD-8500-EA11-BE77-000C29D29DB0"/>
-                                    <p>Blood Banking</p>
-                                  </td>
-                                  <td>
-                                    <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
-                                    <select name="cgoIdNo" class="table-select officer-allocation-select" id="officerAllocationSelect1" aria-labelledby="officerAllocationSelect1">
-                                      <option value="S1358436B">Option 1</option>
-                                      <option value="S9514254J">Option 2</option>
-                                    </select>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>
-                                    <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
-                                    <input type="hidden" name="laboratoryDisciplines" value="2278150C-FB00-EA11-BE77-000C29D29DB0"/>
-                                    <p>Nuclear Medicine Service</p>
-                                  </td>
-                                  <td>
-                                    <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
-                                    <select name="cgoIdNo" class="table-select officer-allocation-select" id="officerAllocationSelect2" aria-labelledby="officerAllocationSelect2">
-                                      <option value="S1358436B">Option 1</option>
-                                      <option value="S9514254J">Option 2</option>
-                                    </select>
-                                  </td>
-                                </tr>
-                                </tbody>
+                                <c:forEach var="premisesAndChkLst" items="${PremisesAndChkLst}" >
+                                  <tbody>
+                                  <c:forEach var="chkLst" items="${premisesAndChkLst.appSvcChckListDtoList}" varStatus="status"  >
+                                    <tr>
+                                      <c:if test="${status.first}">
+                                        <td rowspan="4">
+                                          <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                          <input type="hidden" name="${premisesAndChkLst.premisesIndexNo}" value="${premisesAndChkLst.premisesIndexNo}" />
+                                          <p>${premisesAndChkLst.premiseGetAddress} </p>
+                                        </td>
+                                      </c:if>
+                                      <td>
+                                        <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
+                                        <input type="hidden" name="${premisesAndChkLst.premisesIndexNo}${status.index}" value="${chkLst.chkLstConfId}"/>
+                                        <p>${chkLst.chkName}</p>
+                                      </td>
+                                      <td>
+                                        <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
+                                        <iais:select name="${premisesAndChkLst.premisesIndexNo}${status.index}" firstOption="select cgo"  options="CgoSelect"  value="${CgoSelect} "></iais:select>
+                                      </td>
+                                    </tr>
+                                  </c:forEach>
+                                  </tbody>
+                                </c:forEach>
+
                               </table>
                               <p>Click <a href="#">here</a> to assign a laboratory discipline to multiple clinical governance officers.</p>
                             </div>
