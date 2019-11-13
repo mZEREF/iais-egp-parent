@@ -124,17 +124,6 @@ public class NewApplicationDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<String> svcIds = new ArrayList<>();
         hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
-        /*String svcCode = "BLB";
-        String svcId = appGrpPremisesService.getSvcIdBySvcCode(svcCode);*/
-        //
-        /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
-        appSvcRelatedInfoDto.setServiceCode(svcCode);
-        appSvcRelatedInfoDto.setServiceId(svcId);*/
-        /*ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
-        ParamUtil.setSessionAttr(bpc.request, SERVICEID, svcId);*/
-        //get premisesSelectList
-
-
         List premisesSelect = new ArrayList<SelectOption>();
         User user = SessionManager.getInstance(bpc.request).getCurrentUser();
         //String loginId = user.getIdentityNo();
@@ -261,8 +250,7 @@ public class NewApplicationDelegator {
         if(files != null && docConfig !=null){
             for(MultipartFile file:files){
                 if(!StringUtil.isEmpty(file.getOriginalFilename())){
-                    String docId = Arrays.toString(docConfig);
-                    String[] config = docId.split(";");
+                    String[] config = docConfig[0].split(";");
 
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setSvcComDocId(config[0]);
