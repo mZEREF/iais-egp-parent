@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,13 @@ public class LicenceFileDownloadDelegator {
 
     public  void prepareData(BaseProcessClass bpc){
          logAbout("preparetionData");
+        licenceFileDownloadService.compress();
         licenceFileDownloadService.download();
 
 
     }
 /*******************************/
     private void logAbout(String name){
-        log.debug("************the ****"+name+"****start***********");
+        log.debug(StringUtil.changeForLog("****The***** " +name +" ******Start ****"));
     }
 }
