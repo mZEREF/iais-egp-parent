@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -38,8 +39,6 @@ import java.util.Map;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.APPSUBMISSIONDTO;
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.SERVICEID;
-
-//import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationLoadDto;
 
 
 /**
@@ -114,7 +113,6 @@ public class ClinicalLaboratoryDelegator {
         String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
         //wait update api url
         List<HcsaSvcSubtypeOrSubsumedDto> checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines(serviceId);
-
         ParamUtil.setSessionAttr(bpc.request, "checkList", (Serializable) checkList);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
