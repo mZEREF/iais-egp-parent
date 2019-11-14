@@ -21,7 +21,7 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="premises-txt">
-                                            <p>Premises are your service operation sites that can either be at a fixed address – <b>&#34;on-site&#34;</b>, or in a mobile clinic or ambulance – <b>&#34;conveyance&#34;</b>.</p>
+                                            <p>Premises are your service operation sites that can either be at a fixed address – <strong>&#34;on-site&#34;</strong>, or in a mobile clinic or ambulance – <strong>&#34;conveyance&#34;</strong>.</p>
                                         </div>
                                     </div>
                                     <div class="col-xs-12">
@@ -59,8 +59,8 @@
                                         </div>
                                         <div class="premises-summary hidden">
                                             <h3 class="without-header-line">Premises Summary</h3>
-                                            <p class="premise-address-gp"> <span class="premise-type"><b>On-site: </b></span><span class="premise-address"></span></p>
-                                            <p class="vehicle-txt hidden"><b>Vehicle No:</b> <span class="vehicle-info"></span></p>
+                                          <p class="premise-address-gp"> <span class="premise-type"><strong>On-site: </strong></span><span class="premise-address"></span></p>
+                                            <p class="vehicle-txt hidden"><strong>Vehicle No:</strong> <span class="vehicle-info"></span></p>
                                         </div>
                                         <div class="new-premise-form-on-site hidden">
                                             <div class="form-horizontal">
@@ -223,7 +223,7 @@
                                 <div class="application-tab-footer">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6 ">
-                                            <p><a class="back hidden" href="#"><i class="fa fa-angle-left"></i> Back</a></p>
+                                            <p><a class="back hidden" href="#"><em class="fa fa-angle-left"></em> Back</a></p>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group"><a id="premiseSaveDraft" class="btn btn-secondary" >Save as Draft</a><a id="premiseId" class="btn btn-primary next" >Next</a></div>

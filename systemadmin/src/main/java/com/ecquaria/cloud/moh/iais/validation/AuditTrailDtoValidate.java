@@ -1,10 +1,13 @@
+/*
 package com.ecquaria.cloud.moh.iais.validation;
 
+*/
 /*
  *author: yichen
  *date time:9/19/2019 1:54 PM
  *description:
- */
+ *//*
+
 
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +28,8 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
         int bit = 1000 * 60 * 60 * 24;
         long from = 0;
         long to = 0;
-       /* Date startDate = IaisEGPHelper.parseToDate(ParamUtil.getDate(request, AuditTrailConstant.PARAM_STARTDATE));
+       */
+/* Date startDate = IaisEGPHelper.parseToDate(ParamUtil.getDate(request, AuditTrailConstant.PARAM_STARTDATE));
         Date endDate = IaisEGPHelper.parseToDate(ParamUtil.getDate(request, AuditTrailConstant.PARAM_ENDDATE));
 
         if (endDate != null){
@@ -47,9 +51,11 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
             if (day > LIMITEDDATE){
                 errMap.put(AuditTrailConstant.PARAM_STARTDATE, "The Start time and end time cannot differ more than three months");
             }
-        }*/
+        }*//*
+
 
         return errMap;
     }
 
 }
+*/

@@ -1,6 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -9,7 +9,6 @@
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" id = "premisesTypeValue" value="${appGrpPremisesDto.premisesType}">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -98,15 +97,15 @@
                                         </tr>
                                         <tr>
                                             <td align="right">HCI Name</td>
-                                            <td>${applicationViewDto.HCIName}</td>
+                                            <td>${applicationViewDto.hciName}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">HCI ADDRESS</td>
-                                            <td>${applicationViewDto.HCIAddress}</td>
+                                            <td>${applicationViewDto.hciAddress}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Telephone</td>
-                                            <td>${applicationViewDto.Telephone}</td>
+                                            <td>${applicationViewDto.telephone}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Fax</td>
@@ -144,31 +143,31 @@
 
                                                 <tbody>
                                                 <c:forEach items="${applicationViewDto.appSupDocDtoList}" var="appSupDocDto">
-                                                <tr>
-                                                    <td>
-                                                        <p><c:out value="${appSupDocDto.document}"></c:out></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><a href="#"><c:out value="${appSupDocDto.file}"></c:out></a></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><c:out value="${appSupDocDto.size}"></c:out></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
-                                                    </td>
-                                                </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p><c:out value="${appSupDocDto.document}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><a href="#"><c:out value="${appSupDocDto.file}"></c:out></a></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appSupDocDto.size}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
+                                                        </td>
+                                                    </tr>
                                                 </c:forEach>
                                                 </tbody>
 
                                             </table>
-                                            <div class="alert alert-info" role="alert"><b>
+                                            <div class="alert alert-info" role="alert"><strong>
                                                 <h4>Internal Document</h4>
-                                            </b></div>
-                                            <div id="u8522_text" class="text ">
+                                            </strong></div>
+                                            <div  class="text ">
                                                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
                                             </div>
                                             <table class="table">
@@ -196,9 +195,9 @@
 
                             </div>
                             <div class="tab-pane" id="tabPayment" role="tabpanel">
-                                <div class="alert alert-info" role="alert"><b>
+                                <div class="alert alert-info" role="alert"><strong>
                                     <h4>Payment Details</h4>
-                                </b></div>
+                                </strong></div>
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="table-gp">
@@ -242,12 +241,12 @@
                             </div>
                             <div class="tab-pane" id="tabInspection" role="tabpanel">
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Inspection Findings</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="text ">
-                                    <p><span><b>Part I: Inspection Checklist</b></span></p>
+                                    <p><span><strong>Part I: Inspection Checklist</strong></span></p>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -284,7 +283,7 @@
                                                 </tbody>
                                             </table>
                                             <div class="text ">
-                                                <p><span><b>Part II: Findings</b></span></p>
+                                                <p><span><strong>Part II: Findings</strong></span></p>
                                             </div>
                                             <table class="table">
                                                 <tr>
@@ -326,7 +325,7 @@
                                                 </tr>
                                             </table>
                                             <div class="text ">
-                                                <p><span><b>Part III: Inspectors</b></span></p>
+                                                <p><span><strong>Part III: Inspectors</strong></span></p>
                                             </div>
                                             <table class="table">
                                                 <tr>
@@ -347,7 +346,7 @@
                                                 </tr>
                                             </table>
                                             <div class="text ">
-                                                <p><span><b>Part IV: Report</b></span></p>
+                                                <p><span><strong>Part IV: Report</strong></span></p>
                                             </div>
                                             <table class="table">
                                                 <tr>
@@ -371,9 +370,9 @@
                                     </div>
                                 </div>
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Recommendations</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -400,9 +399,9 @@
                                     </div>
                                 </div>
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Follow up actions</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -445,9 +444,9 @@
                                     </div>
                                 </div>
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Rectification</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -468,9 +467,9 @@
                             </div>
                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Processing Status Update</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -520,9 +519,9 @@
                                     </div>
                                 </div>
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Processing History</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">

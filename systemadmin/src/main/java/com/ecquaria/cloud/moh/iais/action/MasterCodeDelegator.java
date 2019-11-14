@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.controller;
+package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.mastercode.MasterCodeConstants;

@@ -1,40 +1,28 @@
 <%--
   Created by IntelliJ IDEA.
   User: yichen
-  Date: 11/7/2019
+  Date: 10/6/2019
   Time: 3:10 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
+<webui:setLayout name="iais-intranet"/>
 
 
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+<style>
+  .form-check-gp{
+    width: 50%;
+    float:left;
+  }
 
+</style>
 
-<webui:setAttribute name="header-ext">
-  <%
-    /* You can add additional content (SCRIPT, STYLE elements)
-     * which need to be placed inside HEAD element here.
-     */
-  %>
-</webui:setAttribute>
-
-<webui:setAttribute name="title">
-  <%
-    /* You can set your page title here. */
-  %>
-
-  <%=process.runtime.getCurrentComponentName()%>
-
-</webui:setAttribute>
-<!-- START: CSS -->
-
-<!-- END: CSS -->
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -42,87 +30,108 @@
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
 
+  <div class="main-content">
+    <div class="container">
+      <div class="tab-pane active" id="tabInbox" role="tabpanel">
 
-  <iais:body>
-    <iais:section title="Checklist Item Clone" id="chklItemClone"/>
-    ============>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  <iais:searchSection title="" onclick="">
-  <div class="table-responsive" id="no-more-tables">
-    <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
-      <colgroup>
-        <col style="width: 10%;"/>
-        <col style="width: 20%;"/>
-        <col style="width: 20%;"/>
-        <col style="width: 20%;"/>
-        <col style="width: 20%;"/>
-        <col style="width: 10%;"/>
-      </colgroup>
-      <thead>
-      <tr>
-        <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
-        <td></td>
-        <iais:sortableHeader needSort="true"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>
-        <iais:sortableHeader needSort="true"   field="regulationClause" value="Regulations"></iais:sortableHeader>
-        <iais:sortableHeader needSort="true"   field="checklistItem" value="Checklist Item"></iais:sortableHeader>
-        <iais:sortableHeader needSort="true"   field="riskLevel" value="Rusk Level"></iais:sortableHeader>
-        <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
-        <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
-      </tr>
-      </thead>
-
-      <tbody style="text-align: center">
-      <c:choose>
-        <c:when test="${empty cloneItems}">
-          <tr>
-            <td colspan="6">
-              No Record!!
-            </td>
-          </tr>
-        </c:when>
-        <c:otherwise>
-          <%-- message entity--%>
-
-          <c:forEach var = "cloneItem" items = "${cloneItems}" varStatus="status">
-            <tr>
-              <td></td>
-              <td></td>
-              <td>${cloneItem.regulationClauseNo}</td>
-              <td>${cloneItem.regulationClause}</td>
-              <td>${cloneItem.checklistItem}</td>
-              <td>${cloneItem.riskLevel}</td>
-              <td>${cloneItem.status}</td>
-              <td>
-                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareCloneItem('${cloneItem.itemId}');"/>
-              </td>
-            </tr>
-          </c:forEach>
-        </c:otherwise>
-      </c:choose>
-      </tbody>
+        <div class="tab-content">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="components">
+                <h2 class="component-title">Clone &amp; Result</h2>
+                <div class="table-gp">
+                  <table class="table">
+                    <thead>
+                    <tr>
+                      <iais:sortableHeader needSort="true"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="regulationClause" value="Regulations"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="checklistItem" value="Checklist Item"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="riskLevel" value="Rusk Level"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:choose>
+                      <c:when test="${empty cloneItems}">
+                        <tr>
+                          <td colspan="6">
+                            No Record!!
+                          </td>
+                        </tr>
+                      </c:when>
+                      <c:otherwise>
+                        <c:forEach var = "cloneItem" items = "${cloneItems}" varStatus="status">
+                          <tr>
+                            <td>${cloneItem.regulationClauseNo}</td>
+                            <td>${cloneItem.regulationClause}</td>
+                            <td>${cloneItem.checklistItem}</td>
+                            <td>${cloneItem.riskLevel}</td>
+                            <td>${cloneItem.status}</td>
+                            <td>
+                              <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareCloneItem('${cloneItem.itemId}');"/>
+                            </td>
+                          </tr>
+                        </c:forEach>
+                      </c:otherwise>
 
 
-    </table>
+                    </c:choose>
+                    </tbody>
+                  </table>
+                  <div class="table-footnote">
+                    <div class="row">
+                      <div class="col-xs-6 col-md-4">
+                        <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
+                      </div>
+                      <div class="col-xs-6 col-md-8 text-right">
+                        <div class="nav">
+                          <ul class="pagination">
+                            <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-chevron-left"></i></span></a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right"></i></span></a></li>
 
-    </iais:searchSection>
+                          </ul>
 
 
-    <iais:action>
-      <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:submitCloneItem();">Submit</button>
-    </iais:action>
-
-    <iais:action>
-      <button type="button" class="btn btn-lg btn-login-submit" onclick="javascript:cancelClone();">Cancel</button>
-    </iais:action>
+                        </div>
+                        <br><br>
 
 
-  </iais:body>
 
+                        <div class="text-right text-center-mobile">
+                          <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancelClone();">Cancel</a>
+                          <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: submitCloneItem();">Submit</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+
+
+  </div>
 
 
 </form>
 
 <script type="text/javascript">
-
     function prepareCloneItem(itemId){
         SOP.Crud.cfxSubmit("mainForm", "prepareCloneItem", itemId);
     }
@@ -134,5 +143,4 @@
     function cancelClone(){
         SOP.Crud.cfxSubmit("mainForm","cancelClone");
     }
-
 </script>

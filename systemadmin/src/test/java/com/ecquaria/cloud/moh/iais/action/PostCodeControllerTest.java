@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.controller;
+package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;

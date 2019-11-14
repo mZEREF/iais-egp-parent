@@ -9,9 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="keywords" content="">
-<!--
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet">
--->
+
 <link href="<%=webroot%>css/bootstrap.min.css" rel="stylesheet">
 <link href="<%=webroot%>css/custom.css" rel="stylesheet">
 <link href="<%=webroot%>css/responsiveindex.css" rel="stylesheet">
@@ -20,9 +18,7 @@
 <link href="<%=webroot%>css/swiper.css" rel="stylesheet">
 <link href="<%=webroot%>css/jquery.mCustomScrollbar.css" rel="stylesheet">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
-<!--
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
--->
+
 <%--<script src="/hcsaapplication/jquery/jquery-3.4.1.min.js"></script>--%>
 <script src="<%=webRootCommon%>js/jquery-3.4.1.min.js"></script>
 <script src="<%=webroot%>js/bootstrap.min.js"></script>

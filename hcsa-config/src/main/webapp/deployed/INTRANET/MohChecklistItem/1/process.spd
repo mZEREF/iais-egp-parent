@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="13" minorVersion="0" name="MohChecklistItem" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="4" minorVersion="0" name="MohChecklistItem" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
  <WebServices/>
  <RestServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+  <StartStep defClass="" executor="" icon="" name="Step1" x="70" y="40">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareSwitch" x="680" y="40">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareSwitch" x="880" y="50">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -31,7 +31,7 @@
     <JavaCode defClass="" executor="" methodName="addChecklistItem_OnStepProcess_0" name="addChecklistItem_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareItem" x="250" y="50">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareItem" x="200" y="40">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -115,9 +115,21 @@
     <JavaCode defClass="" executor="" methodName="cancelClone_OnStepProcess_0" name="cancelClone_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Step2" x="1000" y="-70">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="configToChecklist" x="1180" y="-70">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="configToChecklist_OnStepProcess_0" name="configToChecklist_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ItemSearch" stageIndicator="" x="480" y="50">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ItemSearch" stageIndicator="" x="430" y="40">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -159,6 +171,7 @@
    <SwitchCase component="/Steps/AutomaticStep/viewCloneData" value="&quot;viewCloneData&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareAddItem" value="&quot;prepareAddItem&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareEditItem" value="&quot;prepareEditItem&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/configToChecklist" value="&quot;configToChecklist&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1240" y="510">
    <Description/>
@@ -178,10 +191,10 @@
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ItemSearch" style="oblique">
-   <position>{(500,70)(700,60)}</position>
+   <position>{(450,60)(900,70)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareSwitch" style="oblique">
-   <position>{(700,60)(1230,60)}</position>
+   <position>{(900,70)(1230,60)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/deleteChecklistItem" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(1230,60)(660,440)}</position>
@@ -193,13 +206,10 @@
    <position>{(660,440)(740,790)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareItem" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
-   <position>{(120,120)(270,70)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ItemSearch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareItem" style="oblique">
-   <position>{(270,70)(500,70)}</position>
+   <position>{(90,60)(220,60)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareItem" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(740,790)(280,501)(270,70)}</position>
+   <position>{(740,790)(232,500)(220,60)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/updateChecklistItem" style="oblique">
    <position>{(1470,720)(740,790)}</position>
@@ -269,6 +279,15 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/cancelClone" style="oblique">
    <position>{(1110,620)(740,790)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/configToChecklist" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1230,60)(1200,-50)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/configToChecklist" style="rectanular">
+   <position>{(1200,-50)(1020,-50)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ItemSearch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareItem" style="oblique">
+   <position>{(220,60)(450,60)}</position>
   </SynchronousLink>
  </Links>
  <BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions=""/>

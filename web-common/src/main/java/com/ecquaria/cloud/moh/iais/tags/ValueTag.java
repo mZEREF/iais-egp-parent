@@ -42,13 +42,12 @@ public final class ValueTag extends DivTagSupport {
         init();
     }
 
+
     @Override
     public int doStartTag() throws JspException {
         boolean isFrontend = !AccessUtil.isBackend();
         int width0 = this.width;
-//        if (width0 <= 0) {
-//            width0 = isFrontend ? 5 : 9;
-//        }
+
         if (width0 > 10) {
             width0 = 10;
         }
@@ -58,18 +57,10 @@ public final class ValueTag extends DivTagSupport {
             clazz.append("float-left control-label");
         } else {
             if(isFrontend){
-                if(width>10){
-                    clazz.append("col-sm-7 col-md-6 col-xs-").append(width0);
-                }else if(width>5 && width<=10){
-                    clazz.append("col-sm-7 col-md-5 col-xs-").append(width0);
-                }else if (width>0){
-                    clazz.append("col-sm-4 col-md-2 col-xs-").append(width0);
-                }
-
+                frontendForWidth(clazz,width0);
             }else{
                 clazz.append("float-left col-sm-12 col-md-").append(width0);
             }
-
         }
         if (align) {
             clazz.append(" col-md-align");
@@ -99,7 +90,15 @@ public final class ValueTag extends DivTagSupport {
         }
         return EVAL_BODY_INCLUDE;
     }
-
+    private void frontendForWidth(StringBuilder clazz,int width0){
+        if(width>10){
+            clazz.append("col-sm-7 col-md-6 col-xs-").append(width0);
+        }else if(width>5 && width<=10){
+            clazz.append("col-sm-7 col-md-5 col-xs-").append(width0);
+        }else if (width>0){
+            clazz.append("col-sm-4 col-md-2 col-xs-").append(width0);
+        }
+    }
     @Override
     public int doEndTag() throws JspException {
         try {

@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.impl.ApplicationViewServiceImp;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -29,13 +28,11 @@ public class HcsaApplicationDelegator {
      */
     public void prepareData(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareData start ...."));
-        String  appNo = "app-1";
+        String  appNo = "AN1911136061-01";
         ApplicationViewServiceImp applicationViewService = new ApplicationViewServiceImp();
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
-        System.err.println("No ="+applicationViewDto.getApplicationNo());
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(request,"applicationViewDto", applicationViewDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
-
     }
 }
