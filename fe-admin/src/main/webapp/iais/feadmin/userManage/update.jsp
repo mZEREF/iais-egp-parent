@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%
     //handle to the Engine APIs
@@ -7,6 +8,17 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-cc"/>
+
+<iais:error>
+  <c:if test = "${not empty errorMap}">
+    <div class="error">
+      <c:forEach items="${errorMap}" var="map">
+        ${map.key}  ${map.value} <br/>
+      </c:forEach>
+    </div>
+  </c:if>
+</iais:error>
+
 <%@ include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -57,6 +69,9 @@
                             <iais:input type="text" name="emailAddr" id="emailAddr" value="${orgUserDto.emailAddr}"/>
                           </iais:value>
                         </iais:row>
+                        <iais:action>
+                          <button type="button" class="search btn" onclick="javascript:validation();">Submit</button>
+                        </iais:action>
                       </div>
                     </div>
                   </div>
@@ -69,3 +84,13 @@
     </div>
   </div>
 </form>
+
+<script type="text/javascript">
+  function validation(){
+    SOP.Crud.cfxSubmit("mainForm", "validation");
+  }
+
+  function subvalidation() {
+    return true;
+  }
+</script>
