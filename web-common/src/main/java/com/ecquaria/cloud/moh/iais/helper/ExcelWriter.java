@@ -65,7 +65,7 @@ public class ExcelWriter {
                     int cellIndex = 0;
                     for(Field field : fields){
                         String fieldName = field.getName();
-                        if(!isNeedWrite(fieldName)){
+                        if(breakWrite(fieldName)){
                             continue;
                         }
                         sheetRow.createCell(cellIndex).setCellValue(IaisEGPHelper.capitalized(field.getName()));
@@ -80,7 +80,7 @@ public class ExcelWriter {
                 int cellIndex2 = 0;
                 for(Field field : fields) {
                     String fieldName = field.getName();
-                    if(!isNeedWrite(fieldName)){
+                    if(breakWrite(fieldName)){
                         continue;
                     }
                     sheetRow.createCell(cellIndex2).setCellValue(
@@ -97,23 +97,25 @@ public class ExcelWriter {
             log.info("exportXls has exception " + e.getMessage());
         }finally {
             try {
+                wb.close();
+            } catch (IOException e) {
+                log.info("exportXls close HSSFWorkbook exception " + e.getMessage());
+            }
+
+            try {
                 if (fileOut != null){
                     fileOut.close();
                 }
 
                 wb.close();
             } catch (IOException e) {
-                log.info("exportXls close resource exception " + e.getMessage());
+                log.info("exportXls close IO exception " + e.getMessage());
             }
         }
     }
 
-    private boolean isNeedWrite(String fieldName){
-        if("threadContext".equals(fieldName) || "serialVersionUID".equals(fieldName)){
-            return false;
-        }else{
-            return true;
-        }
+    private boolean breakWrite(String fieldName){
+        return ("threadContext".equals(fieldName) || "serialVersionUID".equals(fieldName));
     }
 
     private String setValue(Object obj) {

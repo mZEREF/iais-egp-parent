@@ -67,7 +67,6 @@
                       <div class=" form-group form-horizontal formgap">
                         <div class="col-sm-4 control-label formtext ">
                           <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Clinical Governance Officer</label>
-                          <!-- <span class="mandatory">*</span> -->
                           <span class="upload_controls"></span>
                         </div>
                         <div class="col-sm-5">

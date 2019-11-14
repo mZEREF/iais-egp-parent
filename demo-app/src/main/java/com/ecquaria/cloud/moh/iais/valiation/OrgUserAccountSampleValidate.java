@@ -39,15 +39,9 @@ public class OrgUserAccountSampleValidate implements CustomizeValidator {
         if (dto == null || StringUtil.isEmpty(dto.getNircNo()))
             return errMap;
 
-        /*OrgUserAccountSampleDto oua = getOrgUserAccountService().getOrgUserAccountByNircNo(dto.getNircNo());
-        if (oua != null && !oua.getId().equals(dto.getId())) {
-            errMap.put("nircNo", "Duplicate NRIC No.");
-        }*/
+
 
         return errMap;
     }
-/*
-    private OrgUserAccountSampleService getOrgUserAccountService(){
-        return SpringContextHelper.getContext().getBean(OrgUserAccountSampleService.class);
-    }*/
+
 }

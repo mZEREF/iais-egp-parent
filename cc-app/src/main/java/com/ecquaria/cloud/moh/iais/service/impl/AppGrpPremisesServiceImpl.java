@@ -32,7 +32,6 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     private static final String SERVICEID = "hcsa-config:8878//service-by-code";
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
-//        appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
        return RestApiUtil.save(URL,appGrpPremisesDto,AppGrpPremisesDto.class);
     }
 
@@ -60,12 +59,7 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
 
     @Override
     public Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
-        /*Map<String,Object> map = new HashMap<>();
-        List serviceId = new ArrayList();
-        serviceId.add("4029F370-EDEE-E911-BE76-000C294908E1");
-        map.put("ServiceId", serviceId);*/
-        Set<String> premisesTypes = RestApiUtil.getByList(PREMISESURL, svcIds, Set.class);
-        return premisesTypes;
+        return RestApiUtil.getByList(PREMISESURL, svcIds, Set.class);
     }
 
     @Override

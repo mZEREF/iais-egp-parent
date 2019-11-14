@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="Bank" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="140" y="70">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="GetData" x="360" y="70">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="getData_OnStepProcess_0" name="getData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ToPayment" stageIndicator="" x="580" y="70">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/GetData" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(160,90)(380,90)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ToPayment" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/GetData" style="rectanular">
+   <position>{(380,90)(600,90)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches/>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
