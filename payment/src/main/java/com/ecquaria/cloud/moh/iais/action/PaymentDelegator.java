@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Delegator(value = "payment")
 @Slf4j
-public class Payment {
+public class PaymentDelegator {
 
     @Autowired
     private PaymentService paymentService;
