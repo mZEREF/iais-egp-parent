@@ -4,7 +4,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import java.io.*;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.Objects;
 import java.util.zip.*;
@@ -23,25 +30,43 @@ public class UploadFileServiceImpl implements UploadFileService {
     private static  final  String FILE_NAME="folder";
     private static  final  String FILE_FORMAT=".text";
     private static  final String BACKUPS="D:/backups";
-    private static  final String OUT_PATH="D:/backups/";
+
 
     @Override
     public Boolean saveFile(String  str) {
-        FileOutputStream fileOutputStream;
+        FileOutputStream fileOutputStream = null;
         Date date =new Date();
-        File file=new File(DOWNLOAD+"/"+date.getTime()+FILE_FORMAT);
-        FileOutputStream fileInputStream;
+
+        File file=new File(DOWNLOAD+ File.separator+date.getTime()+FILE_FORMAT);
+        FileOutputStream fileInputStream = null;
         try {
-            file.createNewFile();
+            if(!file.exists()){
+                file.createNewFile();
+            }
             fileInputStream =new FileOutputStream(BACKUPS+"/"+file.getName());
             fileOutputStream =new FileOutputStream(file);
             fileOutputStream.write(str.getBytes());
             fileInputStream.write(str.getBytes());
-            fileOutputStream.close();
-            fileInputStream.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return false;
+        }
+        finally {
+           if(fileInputStream!=null){
+               try {
+                   fileInputStream.close();
+               } catch (IOException e) {
+                   log.error(e.getMessage());
+
+               }
+           }
+           if(fileOutputStream!=null){
+               try {
+                   fileOutputStream.close();
+               } catch (IOException e) {
+                   log.error(e.getMessage());
+               }
+           }
         }
         return true;
     }
@@ -65,42 +90,82 @@ public class UploadFileServiceImpl implements UploadFileService {
 /*****************compress*********/
 
     private void compress(){
+        ZipOutputStream zos=null;
+        CheckedOutputStream cos=null;
+        OutputStream is=null;
         try {
-            OutputStream is=new FileOutputStream(OUT_PATH+new Date().getTime()+".zip");
-            CheckedOutputStream cos =new CheckedOutputStream(is,new CRC32());
-            ZipOutputStream zos =new ZipOutputStream(cos);
+             is=new FileOutputStream(BACKUPS+File.separator+new Date().getTime()+".zip");
+            cos =new CheckedOutputStream(is,new CRC32());
+             zos =new ZipOutputStream(cos);
             File file =new File(DOWNLOAD);
             zipFile(zos,file);
-            zos.close();
-            cos.close();
+
+
             is.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
-
+        finally {
+            if(zos!=null){
+                try {
+                    zos.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+            if(cos!=null){
+                try {
+                    cos.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+            if(is!=null){
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+        }
 
     }
-    private void zipFile(ZipOutputStream zos,File file) throws IOException {
-
-        if(file.isDirectory()){
-            zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(FILE_NAME))+File.separator));
-            for(File f: Objects.requireNonNull(file.listFiles())){
-                zipFile(zos,f);
+    private void zipFile(ZipOutputStream zos,File file)  {
+        BufferedInputStream bis=null;
+        try {
+            if(file.isDirectory()){
+                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(FILE_NAME))+File.separator));
+                for(File f: Objects.requireNonNull(file.listFiles())){
+                    zipFile(zos,f);
+                }
             }
-        }
-        else {
-            zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(FILE_NAME))));
-            InputStream is=new FileInputStream(file.getPath());
-            BufferedInputStream bis =new BufferedInputStream(is);
-            int count ;
-            byte [] b =new byte[1024];
-            count=bis.read(b);
-            while(count!=-1){
-                zos.write(b,0,count);
+            else {
+                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(FILE_NAME))));
+                InputStream is=new FileInputStream(file.getPath());
+                 bis =new BufferedInputStream(is);
+                int count ;
+                byte [] b =new byte[1024];
                 count=bis.read(b);
+                while(count!=-1){
+                    zos.write(b,0,count);
+                    count=bis.read(b);
+                }
+                bis.close();
+                is.close();
             }
-            bis.close();
-            is.close();
+        }catch (IOException e){
+            log.error(e.getMessage());
         }
+        finally {
+            if(bis!=null){
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+
+        }
+
     }
 }

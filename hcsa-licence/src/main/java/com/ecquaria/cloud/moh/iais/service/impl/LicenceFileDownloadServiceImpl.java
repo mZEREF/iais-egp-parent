@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -17,6 +18,7 @@ import java.util.zip.ZipFile;
  * @date 2019/11/9 16:09
  */
 @Service
+@Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
 
     private static  final  String URL="iais-application:8883/files";
@@ -31,8 +33,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             File[] files = new File(BACKUPS).listFiles();
             for(File fil:files){
                 if(fil.getName().endsWith(".zip")){
+                    ZipFile zipFile=null;
+                    CheckedInputStream cos=null;
+                    BufferedInputStream bis=null;
+                    BufferedOutputStream bos=null;
+                    OutputStream os=null;
                     try {
-                        ZipFile zipFile =new ZipFile(fil.getPath());
+                        zipFile =new ZipFile(fil.getPath());
 
                         for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
                             ZipEntry zipEntry = entries.nextElement();
@@ -41,11 +48,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 if(!file.exists()){
                                     file.mkdirs();
                                 }
-                                OutputStream os=new FileOutputStream(COMPRESS_PATH+zipEntry.getName());
-                                BufferedOutputStream bos=new BufferedOutputStream(os);
+                                 os=new FileOutputStream(COMPRESS_PATH+zipEntry.getName());
+                               bos=new BufferedOutputStream(os);
                                 InputStream is=zipFile.getInputStream(zipEntry);
-                                BufferedInputStream bis=new BufferedInputStream(is);
-                                CheckedInputStream cos=new CheckedInputStream(bis,new CRC32());
+                                 bis=new BufferedInputStream(is);
+                                cos=new CheckedInputStream(bis,new CRC32());
                                 byte []b=new byte[1024];
                                 int count =0;
                                 count=cos.read(b);
@@ -53,21 +60,57 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                     bos.write(b,0,count);
                                     count=cos.read(b);
                                 }
-                                cos.close();
-                                bis.close();
-                                bos.close();
-                                os.close();
+
                             }else {
 
                                 new File(COMPRESS_PATH+zipEntry.getName()).mkdirs();
                             }
                         }
-                        zipFile.close();
-                        fil.delete();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                        if(fil.exists()){
+                            fil.delete();
+                        }
 
+                    } catch (IOException e) {
+                        log.error(e.getMessage());
+                    }
+                    finally {
+                        if(cos!=null){
+                            try {
+                                cos.close();
+                            } catch (IOException e) {
+                                log.error(e.getMessage());
+                            }
+                        }
+
+                        if(bis!=null){
+                            try {
+                                bis.close();
+                            } catch (IOException e) {
+                                log.error(e.getMessage());
+                            }
+                        }
+                        if(bos!=null){
+                            try {
+                                bos.close();
+                            } catch (IOException e) {
+                                log.error(e.getMessage());
+                            }
+                        }
+                        if(os!=null) {
+                            try {
+                                os.close();
+                            } catch (IOException e) {
+                                log.error(e.getMessage());
+                            }
+                        }
+                        if(zipFile!=null){
+                             try {
+                              zipFile.close();
+                            } catch (IOException e) {
+                                 log.error(e.getMessage());
+                            }
+                      }
+                    }
                 }
             }
 
@@ -77,6 +120,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Override
     public String  download() {
+        FileInputStream fileInputStream=null;
+        InputStreamReader inputStreamReader=null;
+        BufferedReader bufferedReader=null;
         try {
             File file =new File(DOWNLOAD);
             if(file.isDirectory()){
@@ -84,9 +130,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 for(File  filzz:files){
                     if(filzz.isFile() &&filzz.getName().endsWith(FILE_FORMAT)){
                         StringBuilder stringBuilder=new StringBuilder();
-                        FileInputStream fileInputStream =new FileInputStream(filzz);
-                        InputStreamReader inputStreamReader =new InputStreamReader(fileInputStream);
-                        BufferedReader bufferedReader=new BufferedReader(inputStreamReader);
+                       fileInputStream =new FileInputStream(filzz);
+                      inputStreamReader =new InputStreamReader(fileInputStream);
+                      bufferedReader=new BufferedReader(inputStreamReader);
                         String count="";
                         while(count!=null){
                             count= bufferedReader.readLine();
@@ -100,7 +146,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         Boolean   aBoolean = RestApiUtil.save(URL, st, Boolean.class);
 
                         Boolean backups = backups(aBoolean, filzz);
-                        if(backups){
+                        if(backups&&filzz.exists()){
                             filzz.delete();
                         }
                     }
@@ -108,6 +154,31 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            if(bufferedReader!=null){
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+            if(inputStreamReader!=null){
+                try {
+                    inputStreamReader.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+
+            if(fileInputStream!=null){
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
+
         }
 
         return  "";
@@ -133,13 +204,28 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                    fileOutputStream.write(size,0,cout);
                    cout= fileInputStream.read(size);
                }
-                fileInputStream.close();
-                fileOutputStream.close();
+
+
                 return true;
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
-
+            finally {
+                if (fileInputStream!=null){
+                    try {
+                        fileInputStream.close();
+                    } catch (IOException e) {
+                        log.error(e.getMessage());
+                    }
+                }
+                if(fileOutputStream!=null){
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        log.error(e.getMessage());
+                    }
+                }
+            }
         }
         return false;
     }
