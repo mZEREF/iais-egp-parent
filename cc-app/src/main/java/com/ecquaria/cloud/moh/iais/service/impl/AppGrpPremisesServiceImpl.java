@@ -32,7 +32,6 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     private static final String SERVICEID = "hcsa-config:8878//service-by-code";
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
-//        appGrpPremisesDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
        return RestApiUtil.save(URL,appGrpPremisesDto,AppGrpPremisesDto.class);
     }
 

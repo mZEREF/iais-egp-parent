@@ -41,7 +41,6 @@ public class AppGrpPrimaryDocServiceImpl implements AppGrpPrimaryDocService {
 
     @Override
     public AppGrpPrimaryDocDto saveAppGrpPremisesDoc(AppGrpPrimaryDocDto appGrpPrimaryDocDto) {
-      //  appGrpPrimaryDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return RestApiUtil.save(URL,appGrpPrimaryDocDto,AppGrpPrimaryDocDto.class);
     }
 
