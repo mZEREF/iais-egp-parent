@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -84,17 +83,17 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do prepareJumpPage start ...."));
         String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
         log.debug(StringUtil.changeForLog("The prepareJumpPage action is -->;"+action));
-        String form_tab = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB);
-        log.debug(StringUtil.changeForLog("The form_tab action is -->;"+form_tab));
-        if(StringUtil.isEmpty(action)||IaisEGPConstant.YES.equals(form_tab)){
+        String formTab = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB);
+        log.debug(StringUtil.changeForLog("The form_tab action is -->;"+formTab));
+        if(StringUtil.isEmpty(action)||IaisEGPConstant.YES.equals(formTab)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
         }else{
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,action);
         }
-        String crud_action_type = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crudActionType = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
 
-        log.debug(StringUtil.changeForLog("The crud_action_type  is -->;"+crud_action_type));
-        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
+        log.debug(StringUtil.changeForLog("The crud_action_type  is -->;"+crudActionType));
+        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crudActionType)){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"jump");
         }
 
@@ -113,7 +112,7 @@ public class ClinicalLaboratoryDelegator {
         String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
         //wait update api url
         List<HcsaSvcSubtypeOrSubsumedDto> checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines(serviceId);
-        ParamUtil.setSessionAttr(bpc.request, "checkList", (Serializable) checkList);
+        ParamUtil.setSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto", (Serializable) checkList);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
 
@@ -204,14 +203,7 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareJump(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareJump start ...."));
-//        String crud_action_type = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
-//        String crud_action_type_tab = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-//        String jumpUrl = "/hcsaapplication/eservice/IAIS/MOHCCServiceForms?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
-//        if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crud_action_type)){
-//            jumpUrl = "/hcsaapplication/eservice/IAIS/MOHCCNewApplication/1/Prepare?crud_action_type="+crud_action_type+"&crud_action_type_tab="+crud_action_type_tab;
-//        }
-//        log.info(StringUtil.changeForLog("The JumpUrl is -->:"+jumpUrl));
-//        ParamUtil.setRequestAttr(bpc.request,"jumpToServiceFormUrl",jumpUrl);
+
         log.debug(StringUtil.changeForLog("the do prepareJump end ...."));
     }
 
@@ -247,11 +239,8 @@ public class ClinicalLaboratoryDelegator {
         AppSvcChckListDto appSvcChckListDto = null;
         if(!StringUtil.isEmpty(checkListInfo)){
             for(String item:checkListInfo){
-                if(StringUtil.isEmpty(item)){
-                    continue;
-                }
                 String[] config = item.split(";");
-                if(config.length!=3){
+                if(StringUtil.isEmpty(item) || config.length!=3){
                     continue;
                 }
                 appSvcChckListDto = new AppSvcChckListDto();
@@ -259,9 +248,6 @@ public class ClinicalLaboratoryDelegator {
                 appSvcChckListDto.setChkLstType(Integer.valueOf(config[1]));
                 appSvcChckListDto.setChkCode(config[2]);
                 appSvcChckListDto.setChkName(getSvcName(config[2]));
-                /*String premiseGetAddress = appSubmissionDto.getAppGrpPremisesDto().getAddress();
-                chkLstDto.setPremiseGetAddress(premiseGetAddress);*/
-
                 appSvcChckListDtoList.add(appSvcChckListDto);
             }
             String premisesType = premisesDto.getPremisesType();
@@ -286,7 +272,6 @@ public class ClinicalLaboratoryDelegator {
             //hard-code
             appSvcRelatedInfoDto.setServiceCode("CLB");
             appSvcRelatedInfoDto.setServiceId("AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
-            //appSvcRelatedInfoDto.setCheckListIds(checkListIds);
             ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
         }
 
@@ -302,9 +287,6 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
-        //get CGO count
-        //String cgoCount = ParamUtil.getDate(bpc.request, "cgoCount");
-
         AppSvcCgoDto appSvcCgoDto = genAppSvcCgoDto(bpc.request);
         List<AppSvcCgoDto> appSvcCgoDtoList = new ArrayList<>();
         appSvcCgoDtoList.add(appSvcCgoDto);
@@ -347,7 +329,7 @@ public class ClinicalLaboratoryDelegator {
             for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
                 int chkLstSize = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList().size();
                 for(int i =0 ;i<chkLstSize;i++){
-                    StringBuffer chkAndCgoName = new StringBuffer()
+                    StringBuilder chkAndCgoName = new StringBuilder()
                             .append(premisesIndexNo)
                             .append(i);
                     String [] chkAndCgoValue = ParamUtil.getStrings(bpc.request, chkAndCgoName.toString());
@@ -361,7 +343,6 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         //save into sub-svc dto
-//        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
         appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(daList);
         ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
 
@@ -396,23 +377,23 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doDocuments(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doDocuments start ...."));
-        List<AppSvcDocDto> AppSvcDocDtoList = new ArrayList<>();
+        List<AppSvcDocDto> appSvcDocDtoList = new ArrayList<>();
         AppSvcDocDto appSvcDocDto = null;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
-        String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crud_action_value = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-        String crud_action_type_tab =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-        String crud_action_type_form = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
-        String crud_action_type_form_page =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
-        String form_tab = mulReq.getParameter(IaisEGPConstant.FORM_TAB);
+        String crudActionType =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+        String crudActionTypeTab =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
+        String crudActionTypeForm = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
+        String crudActionTypeFormPage =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
+        String formTab = mulReq.getParameter(IaisEGPConstant.FORM_TAB);
 
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,crud_action_type_tab);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,crud_action_type_form);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE,crud_action_type_form_page);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,form_tab);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crudActionType);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crudActionValue);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,crudActionTypeTab);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,crudActionTypeForm);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE,crudActionTypeFormPage);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,formTab);
 
         List<MultipartFile> files = null;
         for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {
@@ -424,24 +405,24 @@ public class ClinicalLaboratoryDelegator {
         if(files != null && docConfig !=null){
             for(MultipartFile file:files){
                 if(!StringUtil.isEmpty(file.getOriginalFilename())){
-                    //id;
                     String[] config = docConfig[count].split(";");
                     appSvcDocDto = new AppSvcDocDto();
                     appSvcDocDto.setSvcConfDocId(config[0]);
                     appSvcDocDto.setFileName(file.getOriginalFilename());
-                    appSvcDocDto.setFileSize(Math.round(file.getSize()/1024));
+                    long size = file.getSize()/1024;
+                    appSvcDocDto.setFileSize(Integer.valueOf(String.valueOf(size)));
                     List<MultipartFile> oneFile = new ArrayList<>();
                     oneFile.add(file);
-                    List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(oneFile);
+                    List<String> fileRepoGuidList = appGrpPrimaryDocService.saveFileToRepo(oneFile);
                     appSvcDocDto.setFileRepoId(fileRepoGuidList.get(0));
                     //wait api change to get fileRepoId
-                    AppSvcDocDtoList.add(appSvcDocDto);
+                    appSvcDocDtoList.add(appSvcDocDto);
                 }
             }
         }
 
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
-        appSvcRelatedInfoDto.setAppSvcDocDtoLit(AppSvcDocDtoList);
+        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoList);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList =new ArrayList<>();
         appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
@@ -483,12 +464,11 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareResult(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareResult start ...."));
-        String crud_action_type = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crud_action_value = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(StringUtil.isEmpty(crud_action_value)){
-            crud_action_value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String crudActionValue = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(StringUtil.isEmpty(crudActionValue)){
+            crudActionValue = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         }
-        if("saveDraft".equals(crud_action_value)){
+        if("saveDraft".equals(crudActionValue)){
             ParamUtil.setRequestAttr(bpc.request,"Switch2","saveDraft");
         }else{
             ParamUtil.setRequestAttr(bpc.request,"Switch2","jumPage");
@@ -501,10 +481,8 @@ public class ClinicalLaboratoryDelegator {
      */
     public void loadGovernanceOfficerByCGOId(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId start ...."));
+        //
         String cgoId = bpc.request.getParameter("");
-        if(cgoId == "new"){
-            return;
-        }
         AppSvcCgoDto governanceOfficersDto = appGrpSvcRelatedInfoService.loadGovernanceOfficerByCgoId(cgoId);
         ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
         log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId end ...."));
@@ -595,7 +573,5 @@ public class ClinicalLaboratoryDelegator {
         map.put("PGD", "Pre-Implantation Genetics Diagnosis");
         return map.get(svcCode);
     }
-
-
 
 }

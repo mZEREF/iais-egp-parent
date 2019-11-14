@@ -22,7 +22,7 @@
                                             <p>Please note that you will not be able to pay for this application if you have not provided the mandatory information and documents.</p>
                                         </div>
                                         <div class="col-xs-12 col-md-2 text-right">
-                                            <p class="print"><a href="#"> <i class="fa fa-print"></i>Print</a></p>
+                                            <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -34,10 +34,10 @@
                                                     </div>
                                                     <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                                                         <div class="panel-body">
-                                                            <p class="text-right"><a href="#" id="premisesEdit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                                                            <p class="text-right"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                                                             <div class="panel-main-content">
                                                                 <div class="preview-info">
-                                                                    <p><b>Premises</b></p>
+                                                                    <p><strong>Premises</strong></p>
                                                                     <p>${appGrpPremisesDto.premisesType}: ${appGrpPremisesDto.address}</p>
                                                                 </div>
                                                             </div>
@@ -50,7 +50,7 @@
                                                     </div>
                                                     <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                                                         <div class="panel-body">
-                                                            <p class="text-right mb-0"><a href="#" id="docEdit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                                                            <p class="text-right mb-0"><a href="#" id="docEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                                                             <div class="elemClass-1561088919456">
                                                                 <div id="control--runtime--34" class="page section control  container-s-1" style="margin: 10px 0px">
                                                                     <div class="control-set-font control-font-header section-header">
@@ -82,8 +82,8 @@
                                                     </div>
                                                     <div class="panel-collapse collapse in" id="collapseServiceInfo" role="tabpanel" aria-labelledby="headingServiceInfo">
                                                         <div class="panel-body">
-                                                            <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
-                                                            <iframe class="elemClass-1561088919456" src="/hcsaapplication/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form=prepareView" id="elemId-1561088919456" scrollbar="auto" style="" width="100%" height="100%" frameborder="0"></iframe>
+                                                            <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                                            <iframe class="elemClass-1561088919456" title="" src="/hcsaapplication/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form=prepareView" id="elemId-1561088919456" scrollbar="auto" style="" width="100%" height="100%" frameborder="0"></iframe>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -102,7 +102,7 @@
                                 <div class="application-tab-footer">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6">
-                                            <p><a id = "docBack" class="back" ><i class="fa fa-angle-left"></i> Back</a></p>
+                                            <p><a id = "docBack" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group"><a class="btn btn-secondary" id = "previewSaveDraft">Save as Draft</a><a class="next btn btn-primary" id = "previewNext">SUBMIT & PAY </a></div>

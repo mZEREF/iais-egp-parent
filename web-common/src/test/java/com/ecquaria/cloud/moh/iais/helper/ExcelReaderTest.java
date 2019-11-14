@@ -6,5 +6,12 @@ package com.ecquaria.cloud.moh.iais.helper;
  *description:
  */
 
+import org.junit.Test;
+
 public class ExcelReaderTest {
+
+    @Test
+    public void test(){
+        
+    }
 }

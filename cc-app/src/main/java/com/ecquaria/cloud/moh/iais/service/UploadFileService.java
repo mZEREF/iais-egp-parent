@@ -7,8 +7,8 @@ package com.ecquaria.cloud.moh.iais.service;
  * @date 2019/11/6 20:55
  */
 public interface UploadFileService {
-    Boolean uploadFile(String  str);
+    Boolean saveFile(String  str);
     String getData();
     String  changeStatus();
-
+    void compressFile();
 }

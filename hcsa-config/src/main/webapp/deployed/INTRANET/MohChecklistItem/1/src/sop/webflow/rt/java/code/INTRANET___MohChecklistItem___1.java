@@ -70,6 +70,10 @@ public class INTRANET___MohChecklistItem___1 extends BaseProcessClass {
 	public void cancelClone_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "cancelClone", this);
 	}
+
+	public void configToChecklist_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "configToChecklist", this);
+	}
 	
 	
 }

@@ -30,10 +30,9 @@ public class AppGrpPrimaryDocServiceImpl implements AppGrpPrimaryDocService {
     private static final String URLREPO = "file-repository:8884/";
     //get hcsa svc doc(comm/premise)
     private static final String HCSASVCDOCURL ="hcsa-config:8878/hsca-svc-doc-config";
-    private static final String URLSAVEMUL="iais-application:8881/iais-premisesdoc/appGrpPrimaryDocs";
 
     @Override
-    public List<String> SaveFileToRepo(List<MultipartFile> fileList) throws IOException {
+    public List<String> saveFileToRepo(List<MultipartFile> fileList) throws IOException {
         List<MultipartFile> multipartFileList = new ArrayList();
         multipartFileList.add(fileList.get(0));
         return RestApiUtil.saveFile(URLREPO,multipartFileList,IaisEGPHelper.getCurrentAuditTrailDto());
@@ -54,38 +53,21 @@ public class AppGrpPrimaryDocServiceImpl implements AppGrpPrimaryDocService {
     @Override
     public Map<String,List<HcsaSvcDocConfigDto>> getAllHcsaSvcDocs(String serviceId) {
         log.debug("getAllHcsaSvcDocs start......");
-        //common
+        //common doc
         Map<String,Object> common = new HashMap<>();
         //common.put("serviceId", "");==>serviceId null
         common.put("flag", false);//==>false =0
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDtos = RestApiUtil.getListByReqParam(HCSASVCDOCURL, common, HcsaSvcDocConfigDto.class);
 
-        //premises
+        //premises doc
         Map<String,Object> premises = new HashMap<>();
         //premises.put("serviceId", "");==>serviceId null
         premises.put("flag", true);//==>true =1
         List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigDtos = RestApiUtil.getListByReqParam(HCSASVCDOCURL, premises, HcsaSvcDocConfigDto.class);
-        //=>premises count gen X doc upload form
-        //hypothesis premCount one
-       // mergeDocDto(commonHcsaSvcDocConfigDtos, premHcsaSvcDocConfigDtos, 1);
         Map<String,List<HcsaSvcDocConfigDto>> map = new HashMap<>();
         map.put("common", commonHcsaSvcDocConfigDtos);
-
 //        map.put("premises", premHcsaSvcDocConfigDtos);
         return map;
     }
 
-    @Override
-    public List<AppGrpPrimaryDocDto> saveAppGrpPremisesDocs(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList) {
-        List<AppGrpPrimaryDocDto> list= RestApiUtil.save(URLSAVEMUL, appGrpPrimaryDocDtoList, List.class);
-        return list;
-    }
-
-    private void mergeDocDto(List<HcsaSvcDocConfigDto> commDoc,List<HcsaSvcDocConfigDto> premiseDoc,int premCount){
-        for(HcsaSvcDocConfigDto itme:premiseDoc){
-            while(premCount-- > 0){
-                commDoc.add(itme);
-            }
-        }
-    }
 }

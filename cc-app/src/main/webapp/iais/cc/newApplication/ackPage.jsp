@@ -1,16 +1,35 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: tai13
-  Date: 9/23/2019
-  Time: 4:43 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%
+    //handle to the Engine APIs
+    sop.webflow.rt.api.BaseProcessClass process =
+            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+%>
+<webui:setLayout name="iais-internet"/>
+<%@ include file="./dashboard.jsp" %>
+<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <div class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="tab-gp steps-tab">
+                        <%@ include file="./navTabs.jsp" %>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="premisesTab" role="tabpanel">
 
-</body>
-</html>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+
+
+</script>
+
+
+
