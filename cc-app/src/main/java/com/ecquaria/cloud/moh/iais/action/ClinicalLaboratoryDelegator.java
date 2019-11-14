@@ -573,5 +573,9 @@ public class ClinicalLaboratoryDelegator {
         return map.get(svcCode);
     }
 
+    public static void main(String[] args) {
+        float fSize= 2047/1024;
+        System.out.println(fSize);
+    }
 
 }

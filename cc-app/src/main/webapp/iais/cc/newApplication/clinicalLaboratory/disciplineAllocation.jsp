@@ -23,7 +23,7 @@
                     <%@ include file="../formTabs.jsp" %>
                     <div class="tab-content">
                       <div class="tab-pane active" id="clinicalLab" role="tabpanel">
-                        <h2 class="service-title">SERVICE 1 OF 2: <b>CLINICAL LABORATORY</b></h2>
+                        <h2 class="service-title">SERVICE 1 OF 2: <strong>CLINICAL LABORATORY</strong></h2>
                         <div class="visible-xs visible-sm servive-subtitle">
                           <p>Step 2 of 5</p>
                           <h3>Clinical Governance Officers</h3>
@@ -85,7 +85,7 @@
                 </div>
                 <div class="application-tab-footer">
                   <div class="row">
-                    <div class="col-xs-12 col-sm-6"><a class="back" id="disciplineAllocationBack"><i class="fa fa-angle-left"></i> Back</a></div>
+                    <div class="col-xs-12 col-sm-6"><a class="back" id="disciplineAllocationBack"><em class="fa fa-angle-left"></em> Back</a></div>
                     <div class="col-xs-12 col-sm-6">
                       <div class="button-group"><a class="btn btn-secondary" id = "disciplineAllocationSaveDraft">Save as Draft</a><a class="next btn btn-primary" data-goto="clinical-governance-officer" id="disciplineAllocationNext">Next</a></div>
                     </div>
