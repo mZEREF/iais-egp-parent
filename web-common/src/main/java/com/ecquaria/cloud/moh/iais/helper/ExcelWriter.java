@@ -65,7 +65,7 @@ public class ExcelWriter {
                     int cellIndex = 0;
                     for(Field field : fields){
                         String fieldName = field.getName();
-                        if(canNeedWrite(fieldName)){
+                        if(breakWrite(fieldName)){
                             continue;
                         }
                         sheetRow.createCell(cellIndex).setCellValue(IaisEGPHelper.capitalized(field.getName()));
@@ -80,7 +80,7 @@ public class ExcelWriter {
                 int cellIndex2 = 0;
                 for(Field field : fields) {
                     String fieldName = field.getName();
-                    if(canNeedWrite(fieldName)){
+                    if(breakWrite(fieldName)){
                         continue;
                     }
                     sheetRow.createCell(cellIndex2).setCellValue(
@@ -114,7 +114,7 @@ public class ExcelWriter {
         }
     }
 
-    private boolean canNeedWrite(String fieldName){
+    private boolean breakWrite(String fieldName){
         return ("threadContext".equals(fieldName) || "serialVersionUID".equals(fieldName));
     }
 
