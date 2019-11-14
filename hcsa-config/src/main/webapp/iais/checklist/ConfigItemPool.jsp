@@ -29,31 +29,68 @@
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
+  <input type="hidden" name="currentValidateId" value="">
 
   <div class="main-content">
     <div class="container">
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
+        <div class="form-horizontal">
+          <div class="form-group">
+            <label class="col-xs-4 col-md-2 control-label" >Regulation Clause Number</label>
+            <div class="col-xs-5 col-md-3">
+              <input type="text" name="regulationClauseNo" value="" />
+            </div>
+          </div>
 
+          <div class="form-group">
+            <label class="col-xs-4 col-md-2 control-label" >Regulation</label>
+            <div class="col-xs-5 col-md-3">
+              <input type="text" name="regulationClause" value="" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-4 col-md-2 control-label" >Checklist Item</label>
+            <div class="col-xs-5 col-md-3">
+              <input type="text" name="checklistItem" value="" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-4 col-md-2 control-label" >Risk Level</label>
+            <div class="col-xs-12 col-md-8 col-lg-9">
+              <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Select Risk Level"></iais:select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-4 col-md-2 control-label" >Status</label>
+            <div class="col-xs-12 col-md-8 col-lg-9">
+              <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status"></iais:select>
+            </div>
+          </div>
+        </div>
         <div class="tab-content">
           <div class="row">
             <div class="col-xs-12">
               <div class="components">
-                <h2 class="component-title">Clone &amp; Result</h2>
+                <h2 class="component-title">Search &amp; Result</h2>
                 <div class="table-gp">
                   <table class="table">
                     <thead>
                     <tr>
+                      <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
+                      <td></td>
                       <iais:sortableHeader needSort="true"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="regulationClause" value="Regulations"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="checklistItem" value="Checklist Item"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="riskLevel" value="Rusk Level"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="riskLevel" value="Risk Level"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
                     <c:choose>
-                      <c:when test="${empty cloneItems}">
+                      <c:when test="${empty checklistItemResult.rows}">
                         <tr>
                           <td colspan="6">
                             No Record!!
@@ -61,16 +98,15 @@
                         </tr>
                       </c:when>
                       <c:otherwise>
-                        <c:forEach var = "cloneItem" items = "${cloneItems}" varStatus="status">
+                        <c:forEach var = "item" items = "${checklistItemResult.rows}" varStatus="status">
                           <tr>
-                            <td>${cloneItem.regulationClauseNo}</td>
-                            <td>${cloneItem.regulationClause}</td>
-                            <td>${cloneItem.checklistItem}</td>
-                            <td>${cloneItem.riskLevel}</td>
-                            <td>${cloneItem.status}</td>
-                            <td>
-                              <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareCloneItem('${cloneItem.itemId}');"/>
-                            </td>
+                            <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
+                            <td><input name="itemCheckbox" id="itemCheckbox" type="checkbox" value="${item.itemId}" /></td>
+                            <td>${item.regulationClauseNo}</td>
+                            <td>${item.regulationClause}</td>
+                            <td>${item.checklistItem}</td>
+                            <td>${item.riskLevel}</td>
+                            <td>${item.status}</td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>
@@ -92,21 +128,22 @@
                             <li><a href="#">2</a></li>
                             <li><a href="#">3</a></li>
                             <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right"></i></span></a></li>
-
                           </ul>
 
-
+                          <br><br><br>
+                          <div class="text-right text-center-mobile">
+                            <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: configToChecklist('${requestScope.currentValidateId}');">Add to Config</a>
+                            <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
+                          </div>
                         </div>
-                        <br><br>
 
 
 
-                        <div class="text-right text-center-mobile">
-                          <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: cancelClone();">Cancel</a>
-                          <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: submitCloneItem();">Submit</a>
-                        </div>
                       </div>
                     </div>
+
+
+
                   </div>
 
 
@@ -132,15 +169,25 @@
 </form>
 
 <script type="text/javascript">
-    function prepareCloneItem(itemId){
-        SOP.Crud.cfxSubmit("mainForm", "prepareCloneItem", itemId);
+    function doSearch(){
+        SOP.Crud.cfxSubmit("mainForm", "doSearch");
     }
 
-    function submitCloneItem(){
-        SOP.Crud.cfxSubmit("mainForm", "submitCloneItem");
+    function configToChecklist(id){
+        var form = $('#mainForm');
+        var inputs = $('form').find("input");
+        if(inputs.length != 0){
+            inputs.each(function(index, obj){
+                if('currentValidateId' == obj.name){
+                    obj.value = id;
+                }
+            });
+        }
+
+        SOP.Crud.cfxSubmit("mainForm", "configToChecklist");
     }
 
-    function cancelClone(){
-        SOP.Crud.cfxSubmit("mainForm","cancelClone");
+    function doCancel(){
+        SOP.Crud.cfxSubmit("mainForm","doCancel");
     }
 </script>
