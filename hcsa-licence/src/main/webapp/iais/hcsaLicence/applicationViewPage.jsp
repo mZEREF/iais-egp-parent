@@ -1,6 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -9,7 +9,6 @@
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" id = "premisesTypeValue" value="${appGrpPremisesDto.premisesType}">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -98,15 +97,15 @@
                                         </tr>
                                         <tr>
                                             <td align="right">HCI Name</td>
-                                            <td>${applicationViewDto.HCIName}</td>
+                                            <td>${applicationViewDto.hciName}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">HCI ADDRESS</td>
-                                            <td>${applicationViewDto.HCIAddress}</td>
+                                            <td>${applicationViewDto.hciAddress}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Telephone</td>
-                                            <td>${applicationViewDto.Telephone}</td>
+                                            <td>${applicationViewDto.telephone}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Fax</td>
@@ -144,23 +143,23 @@
 
                                                 <tbody>
                                                 <c:forEach items="${applicationViewDto.appSupDocDtoList}" var="appSupDocDto">
-                                                <tr>
-                                                    <td>
-                                                        <p><c:out value="${appSupDocDto.document}"></c:out></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><a href="#"><c:out value="${appSupDocDto.file}"></c:out></a></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><c:out value="${appSupDocDto.size}"></c:out></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
-                                                    </td>
-                                                </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p><c:out value="${appSupDocDto.document}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><a href="#"><c:out value="${appSupDocDto.file}"></c:out></a></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appSupDocDto.size}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
+                                                        </td>
+                                                    </tr>
                                                 </c:forEach>
                                                 </tbody>
 
@@ -168,7 +167,7 @@
                                             <div class="alert alert-info" role="alert"><b>
                                                 <h4>Internal Document</h4>
                                             </b></div>
-                                            <div id="u8522_text" class="text ">
+                                            <div  class="text ">
                                                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
                                             </div>
                                             <table class="table">
