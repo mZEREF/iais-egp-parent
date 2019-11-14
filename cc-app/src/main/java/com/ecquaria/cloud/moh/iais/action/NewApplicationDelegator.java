@@ -420,31 +420,14 @@ public class NewApplicationDelegator {
      * @return
      */
     public AppSubmissionDto getValueFromPage(HttpServletRequest request){
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
-        return appSubmissionDto;
+        return (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
     }
 
     //=============================================================================
     //private method
     //=============================================================================
     private  void loadingDraft(BaseProcessClass bpc){
-        String appId = ParamUtil.getString(bpc.request,"appId");
-//        if(!StringUtil.isEmpty(appId)){
-//        List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
-//        if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
-//            List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
-//            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
-//            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-//            String appGrpId = appGrpPremisesDto.getAppGrpId();
-//            List appGrpPrimaryDocDtoMap=  appGrpPrimaryDocService.getAppGrpPrimaryDocDtosByAppGrpId(appGrpId);
-//            if(appGrpPrimaryDocDtoMap!=null && appGrpPrimaryDocDtoMap.size()>0){
-//                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtolist = RestApiUtil.transferListContent(appGrpPrimaryDocDtoMap,AppGrpPrimaryDocDto.class);
-//                AppGrpPrimaryDocDto appGrpPrimaryDocDto = appGrpPrimaryDocDtolist.get(0);
-//                ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
-//            }
-//        }
-//        }
-
+       //todo
     }
 
     private void loadingServiceConfig(BaseProcessClass bpc){
@@ -459,10 +442,10 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
     }
     private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList){
-        // Map<String,List<HcsaServiceDto>> result = new HashMap();
         List<HcsaServiceDto> baseList = new ArrayList();
         List<HcsaServiceDto> specifiedList = new ArrayList();
         List<HcsaServiceDto> subList = new ArrayList();
+        List<HcsaServiceDto> otherList = new ArrayList();
         //class
         for (HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
             switch (hcsaServiceDto.getSvcCode()){
@@ -475,16 +458,21 @@ public class NewApplicationDelegator {
                 case ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED:
                     subList.add(hcsaServiceDto);
                     break;
+                default:
+                    otherList.add(hcsaServiceDto);
+                    break;
             }
         }
         //Sort
         sortService(baseList);
         sortService(specifiedList);
         sortService(subList);
+        sortService(otherList);
         hcsaServiceDtoList = new ArrayList<>();
         hcsaServiceDtoList.addAll(baseList);
         hcsaServiceDtoList.addAll(specifiedList);
         hcsaServiceDtoList.addAll(subList);
+        hcsaServiceDtoList.addAll(otherList);
     }
 
     private void sortService(List<HcsaServiceDto> list){
