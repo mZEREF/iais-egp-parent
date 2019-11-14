@@ -53,7 +53,7 @@ public class ExcelWriter {
         HSSFWorkbook wb = new HSSFWorkbook();
         Sheet sheet = wb.createSheet(sheetName);
         int row = 0;
-        boolean canWriteCell = false;
+        boolean writeCell = true;
         Row sheetRow = sheet.createRow(row);
         try {
             fileOut = new FileOutputStream(this.fileName);
@@ -61,34 +61,15 @@ public class ExcelWriter {
                 Class clz = t.getClass();
                 Field[] fields = clz.getDeclaredFields();
 
-                if(row == 0 && !canWriteCell){
-                    int cellIndex = 0;
-                    for(Field field : fields){
-                        String fieldName = field.getName();
-                        if(breakWrite(fieldName)){
-                            continue;
-                        }
-                        sheetRow.createCell(cellIndex).setCellValue(IaisEGPHelper.capitalized(field.getName()));
-                        cellIndex++;
-                    }
-                    canWriteCell = true;
+                if(row == 0 && writeCell){
+                    createCell(fields, sheetRow);
+                    writeCell = false;
                 }
 
                 row++;
                 sheetRow = sheet.createRow(row);
                 Object obj = t;
-                int cellIndex2 = 0;
-                for(Field field : fields) {
-                    String fieldName = field.getName();
-                    if(breakWrite(fieldName)){
-                        continue;
-                    }
-                    sheetRow.createCell(cellIndex2).setCellValue(
-                            setValue(clz.getDeclaredMethod("get" +
-                                    IaisEGPHelper.capitalized(field.getName())).invoke(obj)));
-                    cellIndex2++;
-                }
-
+                createCellValue(clz, fields, sheetRow, obj);
             }
 
             wb.write(fileOut);
@@ -98,21 +79,42 @@ public class ExcelWriter {
         }finally {
             try {
                 wb.close();
-            } catch (IOException e) {
-                log.info("exportXls close HSSFWorkbook exception " + e.getMessage());
-            }
 
-            try {
                 if (fileOut != null){
                     fileOut.close();
                 }
-
-                wb.close();
             } catch (IOException e) {
                 log.info("exportXls close IO exception " + e.getMessage());
             }
         }
     }
+
+    private void createCell(Field[] fields, Row sheetRow){
+        int cellIndex = 0;
+        for(Field field : fields){
+            String fieldName = field.getName();
+            if(breakWrite(fieldName)){
+                continue;
+            }
+            sheetRow.createCell(cellIndex).setCellValue(IaisEGPHelper.capitalized(field.getName()));
+            cellIndex++;
+        }
+    }
+
+    private void createCellValue(Class clz, Field[] fields, Row sheetRow, Object obj) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        int cellIndex = 0;
+        for(Field field : fields) {
+            String fieldName = field.getName();
+            if(breakWrite(fieldName)){
+                continue;
+            }
+            sheetRow.createCell(cellIndex).setCellValue(
+                    setValue(clz.getDeclaredMethod("get" +
+                            IaisEGPHelper.capitalized(field.getName())).invoke(obj)));
+            cellIndex++;
+        }
+    }
+
 
     private boolean breakWrite(String fieldName){
         return ("threadContext".equals(fieldName) || "serialVersionUID".equals(fieldName));
