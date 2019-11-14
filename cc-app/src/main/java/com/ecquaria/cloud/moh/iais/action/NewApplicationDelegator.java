@@ -27,6 +27,7 @@ import com.ecquaria.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -396,7 +397,7 @@ public class NewApplicationDelegator {
      * @author: zixia
      * @param
      */
-    @RequestMapping("/loadPremisesByCode.do")
+    @RequestMapping(value = "/loadPremisesByCode.do", method = RequestMethod.GET)
     public @ResponseBody PostCodeDto loadPremisesByPostCode(HttpServletRequest request){
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode start ...."));
         String searchField = ParamUtil.getDate(request, "searchField");
