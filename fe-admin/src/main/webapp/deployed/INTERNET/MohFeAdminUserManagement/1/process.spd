@@ -16,9 +16,29 @@
     <JavaCode defClass="" executor="" methodName="preCreate_OnStepProcess_0" name="preCreate_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Validation" x="520" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validation_OnStepProcess_0" name="validation_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InsertDatabase" x="370" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="insertDatabase_OnStepProcess_0" name="insertDatabase_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CreatePage" stageIndicator="" x="380" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SuccessPage" stageIndicator="" x="520" y="370">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -33,8 +53,27 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrePage" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
    <position>{(120,120)(240,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Validation" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/CreatePage" style="rectanular">
+   <position>{(400,120)(540,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InsertDatabase" style="rectanular">
+   <position>{(390,390)(540,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Validation" style="rectanular">
+   <position>{(540,120)(420,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CreatePage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(420,250)(400,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InsertDatabase" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(420,250)(390,390)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/CreatePage" componentIfTrue="/Steps/AutomaticStep/InsertDatabase" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="400" y="230">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches/>
  <Branches/>
  <Merges/>

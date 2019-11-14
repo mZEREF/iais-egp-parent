@@ -10,7 +10,7 @@
                 <div class="col-xs-12">
                     <div class="dashboard-page-title">
                         <h1>New Licence Application</h1>
-                        <h3>You are applying for <b>Clinical Laboratory</b> | <b>Blood Banking</b></h3>
+                        <h3>You are applying for <strong>Clinical Laboratory</strong> | <strong>Blood Banking</strong></h3>
                     </div>
                 </div>
             </div>

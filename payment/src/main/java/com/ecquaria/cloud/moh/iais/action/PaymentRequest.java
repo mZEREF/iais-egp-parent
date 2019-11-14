@@ -26,28 +26,29 @@ public class PaymentRequest {
     private PaymentRequestService paymentRequestService ;
 
 
-    public void start(BaseProcessClass bpc) throws Exception {
+    public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>paymentRequest");
     }
 
 
-    public void savePaymentRequest(BaseProcessClass bpc) throws Exception {
+    public void savePaymentRequest(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>saveData");
         HttpServletRequest request = bpc.request;
         PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
         String amo = request.getParameter("amount");
         String payMethod =request.getParameter("payMethod");
-        String reqDt = request.getParameter("reqDt");
-        String ReqNo = request.getParameter("ReqNo");
-        if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqDt)&&!StringUtil.isEmpty(ReqNo)) {
+        String reqNo = request.getParameter("reqNo");
+        if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
             log.info("------------------------------------->>>save****************");
             double amount = Double.parseDouble(amo);
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = format.parse(reqDt);
             paymentRequestDto.setAmount(amount);
             paymentRequestDto.setPayMethod(payMethod);
-            paymentRequestDto.setReqDt(date);
-            paymentRequestDto.setReqRefNo(ReqNo);
+            paymentRequestDto.setReqDt(new Date());
+            paymentRequestDto.setReqRefNo(reqNo);
+//        paymentRequestDto.setReqRefNo("222222");
+//        paymentRequestDto.setReqDt(new Date());
+//        paymentRequestDto.setPayMethod("post");
+//        paymentRequestDto.setAmount(200.0);
         }
         paymentRequestService.savePaymentRequestDto(paymentRequestDto);
     }

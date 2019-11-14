@@ -33,11 +33,12 @@
 
 </webui:setAttribute>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
 <head>
     <title>ToBank</title>
 </head>
 <body>
-<a href="https://egp.sit.inter.iais.com/payment/eservice/INTERNET/Bank?statue=qwer">toBank</a>
+<jsp:forward page="Bank.jsp"></jsp:forward>
 </body>
 </html>
