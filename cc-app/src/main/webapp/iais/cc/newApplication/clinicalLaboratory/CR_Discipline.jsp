@@ -15,7 +15,7 @@
                 </div>
                 <div class="control-input-span control-set-alignment">
                   <div class="normal-indicator">
-                    <table align="left">
+                    <table>
                       <tbody>
                       <tr>
                         <td>
@@ -57,11 +57,9 @@
               <div id="control--runtime--0--errorMsg_page_bottom" class="error_placements"></div>
             </div></div><div id="demo" style="display:none;" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide"></div>
         </div>
-      </div> <!-- closes div id="center" -->
+      </div>
       <input type="hidden" name="OWASP_CSRFTOKEN" value="8OG4-EKVV-5RSW-YM8P-C5DX-N6DE-WQSU-0K8N"></form>
   </div>
 
 </div>
 
-
-<!-- end of /WEB-INF/layouts/egp-blank/layout.jsp --><div id="ui-timepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all ui-helper-hidden-accessible" style="width: 100px; display: none; position: absolute;"><div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-all"><div class="ui-datepicker-title" style="margin:0"><span class="fragHours">08</span><span class="delim">:</span><span class="fragMinutes">45</span> <span class="fragAmpm"></span></div></div><table><tbody><tr><th>Hour</th><th>Minute</th></tr><tr><td align="center"><div id="hourSlider" class="slider ui-slider ui-slider-vertical ui-widget ui-widget-content ui-corner-all"><div class="ui-slider-range ui-widget-header ui-slider-range-min" style="height: 0%;"></div><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="bottom: 0%; padding: 0px;"></a></div></td><td align="center"><div id="minuteSlider" class="slider ui-slider ui-slider-vertical ui-widget ui-widget-content ui-corner-all"><div class="ui-slider-range ui-widget-header ui-slider-range-min" style="height: 0%;"></div><a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="bottom: 0%; padding: 0px;"></a></div></td></tr></tbody></table></div></body></html>

@@ -61,7 +61,7 @@
 	%>
 		 <c:if test="${!empty menuStyleDis}">
 		<span class="menu-icon">		
-			<img src="<c:out value="${menuStyleDis}" />" width="16px" height="16px" />
+			<img src="<c:out value="${menuStyleDis}" />" width="16px" height="16px" alt="menu"/>
 		</span>
 		</c:if>
 	<%

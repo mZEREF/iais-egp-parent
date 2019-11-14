@@ -28,6 +28,14 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
+            <groupId>com.ecquaria.sz</groupId>
+            <artifactId>ecq-sz-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ecquaria.submission.client</groupId>
+            <artifactId>submissionclient</artifactId>
+        </dependency>
+        <dependency>
             <groupId>sg.gov.moh.iais-egp</groupId>
             <artifactId>web-common</artifactId>
             <version>${revision}</version>

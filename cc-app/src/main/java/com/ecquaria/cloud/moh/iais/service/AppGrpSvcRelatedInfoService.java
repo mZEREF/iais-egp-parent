@@ -18,5 +18,5 @@ public interface AppGrpSvcRelatedInfoService {
     List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId);
     Map loadCGOByDisciplines(List disciplines);
     List loadPO();
-    List saveLaboratoryDisciplines(List checkLists);
+
 }

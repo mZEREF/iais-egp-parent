@@ -7,10 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -21,14 +21,15 @@ import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.submission.client.model.SubmitReq;
+import com.ecquaria.submission.client.model.SubmitResp;
+import com.ecquaria.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -36,7 +37,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,8 +44,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator.APPSVCRELATEDINFODTO;
 
 /**
  * NewApplicationDelegator
@@ -125,8 +123,6 @@ public class NewApplicationDelegator {
         List<String> svcIds = new ArrayList<>();
         hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
         List premisesSelect = new ArrayList<SelectOption>();
-        User user = SessionManager.getInstance(bpc.request).getCurrentUser();
-        //String loginId = user.getIdentityNo();
         String loginId="internet";
         //?
         List<AppGrpPremisesDto> list = appGrpPremisesService.getAppGrpPremisesDtoByLoginId(loginId);
@@ -137,7 +133,7 @@ public class NewApplicationDelegator {
         if(list !=null){
             for (AppGrpPremisesDto item : list){
                 if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())){
-                    SelectOption sp2 = new SelectOption(item.getId().toString(),item.getAddress());
+                    SelectOption sp2 = new SelectOption(item.getId(),item.getAddress());
                     premisesSelect.add(sp2);
                 }
             }
@@ -205,14 +201,6 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doPremises start ...."));
-        /*AppGrpPremisesDto appGrpPremisesDto =
-                ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO) == null ? new AppGrpPremisesDto():
-                        (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-         String appGrpId = appGrpPremisesDto.getAppGrpId();
-         appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,appGrpPremisesDto);
-        appGrpPremisesDto.setAppGrpId(appGrpId);
-        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);*/
-
         //gen dto
         AppGrpPremisesDto appGrpPremisesDto = genAppGrpPremisesDto(bpc.request);
         //set value into AppSubmissionDto
@@ -231,11 +219,11 @@ public class NewApplicationDelegator {
     public void doDocument(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doDocument start ...."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crud_action_value = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+        String crudActionType =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crudActionType);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crudActionValue);
 
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
         List<MultipartFile> files = null;
@@ -255,11 +243,12 @@ public class NewApplicationDelegator {
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setSvcComDocId(config[0]);
                     appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
-                    appGrpPrimaryDocDto.setDocSize(Math.round(file.getSize()/1024));
+                    float fileSize = file.getSize();
+                    appGrpPrimaryDocDto.setDocSize(Math.round(fileSize/1024));
                     oneFile = new ArrayList<>();
                     oneFile.add(file);
                     //api side not get value
-                    List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(oneFile);
+                    List<String> fileRepoGuidList = appGrpPrimaryDocService.saveFileToRepo(oneFile);
                     appGrpPrimaryDocDto.setFileRepoId(fileRepoGuidList.get(0));
                     //if config[1] equals common ==> set null
                     appGrpPrimaryDocDto.setPremisessName("");
@@ -333,7 +322,7 @@ public class NewApplicationDelegator {
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         //do validate
-        //doValidate(bpc);
+        Map<String,Map<String,String>> validateResult = doValidate(bpc);
         //save the premisse
         HttpServletRequest request = bpc.request;
         log.info("In mS1 OnStepProcess");
@@ -342,15 +331,27 @@ public class NewApplicationDelegator {
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
-//        ProcessDetails processDetails = new ProcessDetails();
-//        processDetails.setProject(bpc.process.getCurrentProject());
-//        processDetails.setProcess(bpc.process.getCurrentProcessName());
-//        processDetails.setStep(bpc.process.getCurrentComponentName());
-//
-//        KafkaSOPWrapper wrapper = new KafkaSOPWrapper();
-//        SubmitResult ms1Result = wrapper.submit(0, processDetails,"appSubmit",
-//                "Create", asd, null, "SOP");
-//        request.setAttribute("SubmitObj", asd);
+        SubmissionClient client = new SubmissionClient();
+
+        //prepare request parameters
+        appSubmissionDto.setEventRefNo("test event");
+        SubmitReq req = new SubmitReq();
+        req.setSubmissionId(null);
+        req.setProject(bpc.process.getCurrentProject());
+        req.setProcess(bpc.process.getCurrentProcessName());
+        req.setStep(bpc.process.getCurrentComponentName());
+        req.setService("appsubmit");
+        req.setOperation("Create");
+        req.setSopUrl("https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication");
+        req.setData(JsonUtil.parseToJson(appSubmissionDto));
+        req.setCallbackUrl(null);
+        req.setUserId("SOP");
+        req.setWait(true);
+        req.setTotalWait(30);
+
+        //
+        SubmitResp submitResp = client.submit("http://iais-event-bus:8890", req);
+
         //get wrokgroup
 
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
@@ -366,13 +367,13 @@ public class NewApplicationDelegator {
     public void controlSwitch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do controlSwitch start ...."));
         String switch2 = "loading";
-        String crud_action_value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(StringUtil.isEmpty(crud_action_value)){
-            crud_action_value = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String crudActionValue = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(StringUtil.isEmpty(crudActionValue)){
+            crudActionValue = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         }
-        if("saveDraft".equals(crud_action_value) || "ack".equals(crud_action_value)
-                || "doSubmit".equals(crud_action_value)){
-            switch2 = crud_action_value;
+        if("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue)
+                || "doSubmit".equals(crudActionValue)){
+            switch2 = crudActionValue;
         }
         ParamUtil.setRequestAttr(bpc.request,"Switch2",switch2);
         log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));
@@ -412,31 +413,14 @@ public class NewApplicationDelegator {
      * @return
      */
     public AppSubmissionDto getValueFromPage(HttpServletRequest request){
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
-        return appSubmissionDto;
+        return (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
     }
 
     //=============================================================================
     //private method
     //=============================================================================
     private  void loadingDraft(BaseProcessClass bpc){
-        String appId = ParamUtil.getString(bpc.request,"appId");
-//        if(!StringUtil.isEmpty(appId)){
-//        List appGrpPremisesDtoMap = appGrpPremisesService.getAppGrpPremisesDtosByAppId(appId);
-//        if(appGrpPremisesDtoMap != null && appGrpPremisesDtoMap.size()>0){
-//            List<AppGrpPremisesDto> appGrpPremisesDtoList = RestApiUtil.transferListContent(appGrpPremisesDtoMap,AppGrpPremisesDto.class);
-//            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
-//            ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);
-//            String appGrpId = appGrpPremisesDto.getAppGrpId();
-//            List appGrpPrimaryDocDtoMap=  appGrpPrimaryDocService.getAppGrpPrimaryDocDtosByAppGrpId(appGrpId);
-//            if(appGrpPrimaryDocDtoMap!=null && appGrpPrimaryDocDtoMap.size()>0){
-//                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtolist = RestApiUtil.transferListContent(appGrpPrimaryDocDtoMap,AppGrpPrimaryDocDto.class);
-//                AppGrpPrimaryDocDto appGrpPrimaryDocDto = appGrpPrimaryDocDtolist.get(0);
-//                ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,appGrpPrimaryDocDto);
-//            }
-//        }
-//        }
-
+       //todo
     }
 
     private void loadingServiceConfig(BaseProcessClass bpc){
@@ -451,10 +435,10 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
     }
     private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList){
-        // Map<String,List<HcsaServiceDto>> result = new HashMap();
         List<HcsaServiceDto> baseList = new ArrayList();
         List<HcsaServiceDto> specifiedList = new ArrayList();
         List<HcsaServiceDto> subList = new ArrayList();
+        List<HcsaServiceDto> otherList = new ArrayList();
         //class
         for (HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
             switch (hcsaServiceDto.getSvcCode()){
@@ -467,16 +451,21 @@ public class NewApplicationDelegator {
                 case ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED:
                     subList.add(hcsaServiceDto);
                     break;
+                default:
+                    otherList.add(hcsaServiceDto);
+                    break;
             }
         }
         //Sort
         sortService(baseList);
         sortService(specifiedList);
         sortService(subList);
+        sortService(otherList);
         hcsaServiceDtoList = new ArrayList<>();
         hcsaServiceDtoList.addAll(baseList);
         hcsaServiceDtoList.addAll(specifiedList);
         hcsaServiceDtoList.addAll(subList);
+        hcsaServiceDtoList.addAll(otherList);
     }
 
     private void sortService(List<HcsaServiceDto> list){
@@ -487,11 +476,14 @@ public class NewApplicationDelegator {
             }
         });
     }
-    private void doValidate(BaseProcessClass bpc){
+    private Map<String,Map<String,String>> doValidate(BaseProcessClass bpc){
+        Map<String,Map<String,String>> reuslt = new HashMap<>();
         //do validate premiss
-        doValidatePremiss(bpc);
+        Map<String,String> premises =  doValidatePremiss(bpc);
+        reuslt.put("premises",premises);
+        return reuslt;
     }
-    private void doValidatePremiss(BaseProcessClass bpc){
+    private Map<String,String> doValidatePremiss(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate premiss
         Map<String,String> errorMap = new HashMap<>();
@@ -512,6 +504,7 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+        return errorMap;
     }
 
     /**
@@ -559,14 +552,6 @@ public class NewApplicationDelegator {
         }
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
-    }
-
-    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(HttpServletRequest request){
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(request, APPSVCRELATEDINFODTO);
-        if(appSvcRelatedInfoDto == null){
-            appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-        }
-        return appSvcRelatedInfoDto;
     }
 
 }
