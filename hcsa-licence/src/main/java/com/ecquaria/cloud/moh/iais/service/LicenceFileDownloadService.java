@@ -7,5 +7,5 @@ package com.ecquaria.cloud.moh.iais.service;
 public interface LicenceFileDownloadService {
 
     String  download();
-
+    void compress();
 }
