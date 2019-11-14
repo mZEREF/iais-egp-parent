@@ -4,6 +4,8 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.eventbus.SubmitReq;
+import com.ecquaria.cloud.moh.iais.common.dto.eventbus.SubmitResp;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -11,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -21,6 +24,9 @@ import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.submission.client.model.SubmitReq;
+import com.ecquaria.submission.client.model.SubmitResp;
+import com.ecquaria.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -84,6 +90,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,null);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,null);
         //for loading the draft by appId
+        //loadingDraft(bpc);
         //for loading Service Config
         loadingServiceConfig(bpc);
 
@@ -177,7 +184,7 @@ public class NewApplicationDelegator {
      */
     public void preparePreview(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
-
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
     /**
@@ -328,15 +335,27 @@ public class NewApplicationDelegator {
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
-//        ProcessDetails processDetails = new ProcessDetails();
-//        processDetails.setProject(bpc.process.getCurrentProject());
-//        processDetails.setProcess(bpc.process.getCurrentProcessName());
-//        processDetails.setStep(bpc.process.getCurrentComponentName());
-//
-//        KafkaSOPWrapper wrapper = new KafkaSOPWrapper();
-//        SubmitResult ms1Result = wrapper.submit(0, processDetails,"appSubmit",
-//                "Create", asd, null, "SOP");
-//        request.setAttribute("SubmitObj", asd);
+        SubmissionClient client = new SubmissionClient();
+
+        //prepare request parameters
+        appSubmissionDto.setEventRefNo("test event");
+        SubmitReq req = new SubmitReq();
+        req.setSubmissionId(null);
+        req.setProject(bpc.process.getCurrentProject());
+        req.setProcess(bpc.process.getCurrentProcessName());
+        req.setStep(bpc.process.getCurrentComponentName());
+        req.setService("appsubmit");
+        req.setOperation("Create");
+        req.setSopUrl("https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication");
+        req.setData(JsonUtil.parseToJson(appSubmissionDto));
+        req.setCallbackUrl(null);
+        req.setUserId("SOP");
+        req.setWait(true);
+        req.setTotalWait(30);
+
+        //
+        SubmitResp submitResp = client.submit("http://iais-event-bus:8890", req);
+
         //get wrokgroup
 
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
