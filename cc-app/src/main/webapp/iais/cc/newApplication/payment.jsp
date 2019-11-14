@@ -77,24 +77,28 @@
     $(function () {
         // alert("ok")
         $(":button").click(function () {
-            alert("ok")
-            var paymentRequestDto={
-                amount: $("#totalAmount"),
-                payMethod: $("input[name=payMethod]"),
-                reqDt: new Date(),
-                reqRefNo: "string12345"
-            }
-            //alert($("form[name=myform]").serialize())
-            $.ajax({
-                type:"GET",
-                url:"https://egp.sit.inter.iais.com/payment/eservice/INTERNET/PaymentRequest",
-                data:paymentRequestDto,
-                processData: false,
-                contentType: false,
-                success:function (response) {
-                    //alert(response)
-                }
-            })
+
+            <%
+            response.sendRedirect("https://egp.sit.inter.iais.com/payment/eservice/INTERNET/PaymentRequest");
+            %>
+            // alert("ok")
+            // var paymentRequestDto={
+            //     amount: $("#totalAmount"),
+            //     payMethod: $("input[name=payMethod]"),
+            //     reqDt: new Date(),
+            //     reqRefNo: "string12345"
+            // }
+            // //alert($("form[name=myform]").serialize())
+            // $.ajax({
+            //     type:"GET",
+            //     url:"https://egp.sit.inter.iais.com/payment/eservice/INTERNET/PaymentRequest",
+            //     data:paymentRequestDto,
+            //     processData: false,
+            //     contentType: false,
+            //     success:function (response) {
+            //         //alert(response)
+            //     }
+            // })
         })
     })
 </script>
