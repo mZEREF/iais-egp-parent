@@ -110,10 +110,12 @@ public class AuditTrailDelegator {
     }
 
     public void prepareFullMode(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
         log.info("entry prepareFullMode");
     }
 
     public void prepareDataMode(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
         log.info("entry prepareDataMode");
     }
 
@@ -149,20 +151,20 @@ public class AuditTrailDelegator {
         ParamUtil.setRequestAttr(request, "operationValueTypeSelect", operationList);
 
         List<SelectOption> userList =  new ArrayList<>();
-        userList.add(new SelectOption("CorpPass ID", "CorpPass ID"));
+       /* userList.add(new SelectOption("CorpPass ID", "CorpPass ID"));
         userList.add(new SelectOption("CorpPass NRIC", "CorpPass NRIC"));
         userList.add(new SelectOption("SingPass ID", "SingPass ID"));
         userList.add(new SelectOption("MOH Active Directory ID", "MOH Active Directory ID"));
         userList.add(new SelectOption("MOH System Account ID", "MOH System Account ID"));
-        userList.add(new SelectOption("Batch Job ID", "Batch Job ID"));
+        userList.add(new SelectOption("Batch Job ID", "Batch Job ID"));*/
         ParamUtil.setRequestAttr(request, "userTypeSelect", userList);
     }
 
     private void preSelectOptionOfFull(HttpServletRequest request) {
         List<SelectOption> operationTypeList = new ArrayList<>();
-        operationTypeList.add(new SelectOption("INTER", "Internet"));
+       /* operationTypeList.add(new SelectOption("INTER", "Internet"));
         operationTypeList.add(new SelectOption("INTRA", "Intranet"));
-        operationTypeList.add(new SelectOption("System Batch Job", "System Batch Job"));
+        operationTypeList.add(new SelectOption("System Batch Job", "System Batch Job"));*/
         ParamUtil.setRequestAttr(request, "operationTypeSelect", operationTypeList);
 
         List<SelectOption> operationList =  new ArrayList<>();
@@ -197,12 +199,12 @@ public class AuditTrailDelegator {
         ParamUtil.setRequestAttr(request, "operationValueTypeSelect", operationList);
 
         List<SelectOption> userList =  new ArrayList<>();
-        userList.add(new SelectOption("CorpPass ID", "CorpPass ID"));
+      /*  userList.add(new SelectOption("CorpPass ID", "CorpPass ID"));
         userList.add(new SelectOption("CorpPass NRIC", "CorpPass NRIC"));
         userList.add(new SelectOption("SingPass ID", "SingPass ID"));
         userList.add(new SelectOption("MOH Active Directory ID", "MOH Active Directory ID"));
         userList.add(new SelectOption("MOH System Account ID", "MOH System Account ID"));
-        userList.add(new SelectOption("Batch Job ID", "Batch Job ID"));
+        userList.add(new SelectOption("Batch Job ID", "Batch Job ID"));*/
         ParamUtil.setRequestAttr(request, "userTypeSelect", userList);
     }
 
@@ -248,9 +250,9 @@ public class AuditTrailDelegator {
             return;
         }
 
-        String operationType =  ParamUtil.getString(request, AuditTrailConstants.PARAM_OPERATIONTYPE);
+        //String operationType =  ParamUtil.getString(request, AuditTrailConstants.PARAM_OPERATIONTYPE);
         String operation = ParamUtil.getString(request, AuditTrailConstants.PARAM_OPERATION);
-        String user = ParamUtil.getString(request, AuditTrailConstants.PARAM_USER);
+        //String user = ParamUtil.getString(request, AuditTrailConstants.PARAM_USER);
 
         String startDate = ParamUtil.getDate(request, AuditTrailConstants.PARAM_STARTDATE);
         String endDate = ParamUtil.getDate(request, AuditTrailConstants.PARAM_ENDDATE);
