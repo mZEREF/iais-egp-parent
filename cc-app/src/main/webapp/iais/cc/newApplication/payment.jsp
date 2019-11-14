@@ -19,7 +19,7 @@
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <h2>Payment Summary</h2>
                                 <p >
-                                    Total amount due:$<div  id="totalAmount">8888.88</div>
+                                    Total amount due:<div  id="totalAmount" aria-valuenow="8888.88">$8888.88</div>
                                 </p>
                                 <table class="table">
                                     <thead>
@@ -79,8 +79,8 @@
         $(":button").click(function () {
             alert("ok")
             var paymentRequestDto={
-                amount: $("#totalAmount"),
-                payMethod: $("input[name=payMethod]"),
+                amount: $("#totalAmount").val(),
+                payMethod: $("input[name=payMethod]").val(),
                 reqDt: new Date(),
                 reqRefNo: "string12345"
             }

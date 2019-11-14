@@ -114,7 +114,6 @@ public class HcsaChklItemDelegator {
     private void doSubmitOrUpdate(HttpServletRequest request){
         ChecklistItemDto itemDto =  requestChklItemDto(request);
 
-        /*AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();*/
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setMohUserId(AppConsts.USER_ID_ANONYMOUS);
 
