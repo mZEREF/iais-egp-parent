@@ -34,6 +34,5 @@ public class HcsaApplicationDelegator {
         HttpServletRequest request=bpc.request;
         ParamUtil.setRequestAttr(request,"applicationViewDto", applicationViewDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
-
     }
 }
