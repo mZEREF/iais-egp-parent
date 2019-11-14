@@ -27,6 +27,7 @@ import com.ecquaria.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -243,8 +244,8 @@ public class NewApplicationDelegator {
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setSvcComDocId(config[0]);
                     appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
-                    float fileSize = file.getSize();
-                    appGrpPrimaryDocDto.setDocSize(Math.round(fileSize/1024));
+                    long size = file.getSize()/1024;
+                    appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
                     oneFile = new ArrayList<>();
                     oneFile.add(file);
                     //api side not get value
@@ -396,7 +397,7 @@ public class NewApplicationDelegator {
      * @author: zixia
      * @param
      */
-    @RequestMapping("/loadPremisesByCode.do")
+    @RequestMapping(value = "/loadPremisesByCode.do", method = RequestMethod.GET)
     public @ResponseBody PostCodeDto loadPremisesByPostCode(HttpServletRequest request){
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode start ...."));
         String searchField = ParamUtil.getDate(request, "searchField");
@@ -469,12 +470,7 @@ public class NewApplicationDelegator {
     }
 
     private void sortService(List<HcsaServiceDto> list){
-        Collections.sort(list, new Comparator<HcsaServiceDto>(){
-            @Override
-            public int compare(HcsaServiceDto o1, HcsaServiceDto o2) {
-                return o1.getSvcName().compareTo(o2.getSvcName());
-            }
-        });
+        list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
     }
     private Map<String,Map<String,String>> doValidate(BaseProcessClass bpc){
         Map<String,Map<String,String>> reuslt = new HashMap<>();
