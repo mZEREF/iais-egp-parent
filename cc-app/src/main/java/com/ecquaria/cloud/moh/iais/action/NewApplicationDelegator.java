@@ -244,8 +244,8 @@ public class NewApplicationDelegator {
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setSvcComDocId(config[0]);
                     appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
-                    float fileSize = file.getSize();
-                    appGrpPrimaryDocDto.setDocSize(Math.round(fileSize/1024));
+                    long size = file.getSize()/1024;
+                    appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
                     oneFile = new ArrayList<>();
                     oneFile.add(file);
                     //api side not get value
