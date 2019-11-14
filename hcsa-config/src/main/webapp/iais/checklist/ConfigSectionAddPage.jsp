@@ -86,7 +86,7 @@
                   </div>
                   <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                     <div class="panel-body">
-                      <p class="text-right"><a  onclick="javascript:configChecklistItem('${chklsec.id}');"><i class="fa fa-pencil-square-o"></i>Config Checklist Item </a></p>
+                      <p class="text-right"><a  onclick="javascript:routeToItemProcess('${chklsec.id}');"><i class="fa fa-pencil-square-o"></i>Config Checklist Item </a></p>
 
 
                   <div class="panel-main-content">
@@ -136,7 +136,7 @@
             <div class="application-tab-footer">
               <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                  <p><a class="back" href="#"><i class="fa fa-angle-left"></i> Back</a></p>
+                  <p><a class="back" href="#" onclick="javascript:doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                   <div class="text-right text-center-mobile">
@@ -166,7 +166,7 @@
         SOP.Crud.cfxSubmit("mainForm","preViewConfig");
     }
 
-    function configChecklistItem(id) {
+    function routeToItemProcess(id) {
         var inputs = $('#mainForm').find("input");
         if(inputs.length != 0){
             inputs.each(function(index, obj){
@@ -176,11 +176,7 @@
             });
         }
 
-        SOP.Crud.cfxSubmit("mainForm","configChecklistItem");
-    }
-
-    function doNext() {
-        SOP.Crud.cfxSubmit("mainForm","nextPage");
+        SOP.Crud.cfxSubmit("mainForm","routeToItemProcess");
     }
 
     function doBack(){

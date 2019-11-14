@@ -119,7 +119,7 @@ public final class IaisEGPHelper extends EGPHelper {
         if(fields != null){
             for(Field field : fields){
                 String fieldName = field.getName();
-                if(fieldName.startsWith("_ATTR")){
+                if(fieldName.endsWith("_ATTR")){
                     ParamUtil.setSessionAttr(request, (String) field.get(fieldName), null);
                 }
             }

@@ -35,7 +35,7 @@
         <div class="form-group">
           <div class="col-xs-12">
             <label>
-              Common  &nbsp; <input class="form-check-input" id="commmon" type="radio" name="common" aria-invalid="false" value="General Regulation"> General Regulation
+              Common  &nbsp; <input class="form-check-input" checked="checked" id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
             </label>
 
           </div>
@@ -62,7 +62,7 @@
       <div class="application-tab-footer">
         <div class="row">
           <div class="col-xs-12 col-sm-6">
-            <p><a class="back" href="#"><i class="fa fa-angle-left" onclick="doBack()"></i> Back</a></p>
+            <p><a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Next</a></div>

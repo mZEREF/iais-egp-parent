@@ -139,14 +139,20 @@
 
                                                     <br><br><br>
                                                     <div class="text-right text-center-mobile">
-                                                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddItem();">Add ChecklistItem</a>
-                                                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareClone();">Clone ChecklistItem</a>
+
                                                         <c:choose>
-                                                            <c:when test="${!empty requestScope.currentValidateId}">
-                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: addToConfig('${requestScope.currentValidateId}');">Add to Config</a>
+                                                            <c:when test="${!empty sessionScope.currentValidateId}">
+                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: configToChecklist();">Add to Config</a>
+                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
                                                             </c:when>
+                                                            <c:otherwise>
+                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddItem();">Add ChecklistItem</a>
+                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareClone();">Clone ChecklistItem</a>
+                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
+                                                            </c:otherwise>
                                                         </c:choose>
-                                                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
+
+
                                                     </div>
                                                 </div>
 
@@ -186,6 +192,10 @@
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
     }
 
+    function configToChecklist(){
+        SOP.Crud.cfxSubmit("mainForm", "configToChecklist");
+    }
+    /*
     function addToConfig(id){
         var form = $('#mainForm');
         var inputs = $('form').find("input");
@@ -198,7 +208,7 @@
         }
 
         SOP.Crud.cfxSubmit("mainForm", "addToConfig");
-    }
+    }*/
 
     function prepareAddItem(){
         SOP.Crud.cfxSubmit("mainForm", "prepareAddItem");

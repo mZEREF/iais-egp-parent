@@ -26,7 +26,6 @@ public final class CheckBoxTag extends DivTagSupport {
     private String checkboxId;
 
     private String codeCategory;
-    private String value;
     private String ariaInvalid;
     private String labelClass;
     private String forName;
@@ -62,14 +61,6 @@ public final class CheckBoxTag extends DivTagSupport {
 
     public void setCodeCategory(String codeCategory) {
         this.codeCategory = codeCategory;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getAriaInvalid() {
@@ -111,7 +102,6 @@ public final class CheckBoxTag extends DivTagSupport {
         labelName = "";
         checkboxId = "";
         codeCategory = null;
-        value = null;
         ariaInvalid = "";
         labelClass = "";
         forName = "";
@@ -149,7 +139,7 @@ public final class CheckBoxTag extends DivTagSupport {
                         }
 
                         html.append(" type=\"checkbox\" ");
-
+                        html.append(" value=\"").append(MasterCodeUtil.getCodeDesc(codeCategory)).append("\"");
                         if (!StringUtils.isEmpty(ariaInvalid)){
                             html.append("aria-invalid=\"").append(ariaInvalid).append("\">");
                         }

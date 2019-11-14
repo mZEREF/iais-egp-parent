@@ -41,7 +41,7 @@
           <div class="col-xs-12">
             <td>
               <label>
-                Common  &nbsp; <input class="form-check-input" id="commmon" type="radio" name="common" aria-invalid="false" value="General Regulation"> General Regulation
+                Common  &nbsp; <input class="form-check-input " checked="checked" id="commmon" type="radio" name="common" aria-invalid="false" value="General Regulation"> General Regulation
               </label>
             </td>
           </div>
@@ -113,9 +113,9 @@
               <td class="row_no">${(status.index + 1) + (checklistConfigSearch.pageNo - 1) * checklistConfigSearch.pageSize}</td>
               <td></td>
               <td>${configItem.checklistItem}</td>
-              <td>${configItem.module}</td>
-              <td>${configItem.type}</td>
               <td>${configItem.common}</td>
+              <td>${configItem.type}</td>
+              <td>${configItem.module}</td>
               <td>${configItem.svcName}</td>
               <td>${configItem.svcSubType}</td>
               <td>${configItem.order}</td>
@@ -157,7 +157,7 @@
               <td>
                 <div class="text-right text-center-mobile">
                   <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
-                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddConfig();">Add Checklist</a>
+                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddConfig();">Add Configuration</a>
 
                 </div>
 

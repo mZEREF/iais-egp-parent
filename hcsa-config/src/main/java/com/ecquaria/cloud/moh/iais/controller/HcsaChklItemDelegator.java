@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -233,7 +232,7 @@ public class HcsaChklItemDelegator {
      * @param bpc
      * @throws IllegalAccessException
      */
-    public void editCloneItem(BaseProcessClass bpc) throws IllegalAccessException {
+    public void editCloneItem(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!HcsaChecklistConstants.ACTION_EDIT_CLONE_ITEM.equals(currentAction)){
@@ -273,7 +272,7 @@ public class HcsaChklItemDelegator {
 
     }
 
-        /**
+     /**
      * AutoStep: prepareItem
      * @param bpc
      * @throws IllegalAccessException
@@ -284,12 +283,6 @@ public class HcsaChklItemDelegator {
         if(HcsaChecklistConstants.ACTION_CANCEL.equals(currentAction)){
             IaisEGPHelper.clearSessionAttr(request, CheckItemQueryDto.class);
         }
-
-
-        ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-
-        String currentValidateId = ParamUtil.getString(request, "currentValidateId");
-        ParamUtil.setRequestAttr(request, "currentValidateId", currentValidateId);
 
         filterParameter.setClz(CheckItemQueryDto.class);
         filterParameter.setSearchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH);
@@ -303,6 +296,18 @@ public class HcsaChklItemDelegator {
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_HCSA_SERVICE_SEARCH, searchParam);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
+
+    }
+
+    /**
+     * AutoStep: configToChecklist
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void configToChecklist(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+
     }
 
     private void loadSingleItemData(HttpServletRequest request){
@@ -322,7 +327,7 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
 
         //for jsp action button
-        ParamUtil.setRequestAttr(request, "btnTag", "SubmitButton");
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.DISPLAY_BUTTON, "SubmitButton");
         preSelectOption(request);
     }
 
@@ -335,7 +340,7 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
 
         //for jsp action button
-        ParamUtil.setRequestAttr(request, "btnTag", "UpdateButton");
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.DISPLAY_BUTTON, "UpdateButton");
         preSelectOption(request);
         loadSingleItemData(request);
     }

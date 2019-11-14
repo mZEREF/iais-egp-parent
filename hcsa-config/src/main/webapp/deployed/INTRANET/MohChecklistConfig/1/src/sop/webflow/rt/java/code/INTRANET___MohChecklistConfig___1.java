@@ -1,6 +1,7 @@
 package sop.webflow.rt.java.code;
 
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohChecklistConfig___1 extends BaseProcessClass {
@@ -32,14 +33,14 @@ public class INTRANET___MohChecklistConfig___1 extends BaseProcessClass {
 	public void doSearch_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doSearch", this);
 	}
-	public void prepareChecklistItemInfo_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "prepareChecklistItemInfo", this);
-	}
 	public void addChecklistItemNextAction_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "addChecklistItemNextAction", this);
 	}
 	public void addSectionItem_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "addSectionItem", this);
+	}
+	public void routeToItemProcess_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "routeToItemProcess", this);
 	}
 	
 	
