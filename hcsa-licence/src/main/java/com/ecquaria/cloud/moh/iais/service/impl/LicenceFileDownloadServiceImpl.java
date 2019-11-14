@@ -25,7 +25,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private static  final String DOWNLOAD="D:/folder";
     private static  final String BACKUPS="D:/backups/";
     private static  final  String FILE_FORMAT=".text";
-    private static  final String COMPRESS_PATH="D:/compress/";
+    private static  final String COMPRESS_PATH="D:/compress";
 
     @Override
     public void compress(){
@@ -43,28 +43,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                         for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
                             ZipEntry zipEntry = entries.nextElement();
-                            if(!zipEntry.getName().endsWith(File.separator)){
-                                File file =new File(COMPRESS_PATH+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
-                                if(!file.exists()){
-                                    file.mkdirs();
-                                }
-                                 os=new FileOutputStream(COMPRESS_PATH+zipEntry.getName());
-                               bos=new BufferedOutputStream(os);
-                                InputStream is=zipFile.getInputStream(zipEntry);
-                                 bis=new BufferedInputStream(is);
-                                cos=new CheckedInputStream(bis,new CRC32());
-                                byte []b=new byte[1024];
-                                int count =0;
-                                count=cos.read(b);
-                                while(count!=-1){
-                                    bos.write(b,0,count);
-                                    count=cos.read(b);
-                                }
 
-                            }else {
+                            file(zipEntry,os,bos,zipFile,bis,cos);
 
-                                new File(COMPRESS_PATH+zipEntry.getName()).mkdirs();
-                            }
                         }
                         if(fil.exists()){
                             fil.delete();
@@ -129,21 +110,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 File[] files = file.listFiles();
                 for(File  filzz:files){
                     if(filzz.isFile() &&filzz.getName().endsWith(FILE_FORMAT)){
-                        StringBuilder stringBuilder=new StringBuilder();
+
                        fileInputStream =new FileInputStream(filzz);
                       inputStreamReader =new InputStreamReader(fileInputStream);
                       bufferedReader=new BufferedReader(inputStreamReader);
-                        String count="";
-                        while(count!=null){
-                            count= bufferedReader.readLine();
-                            if(count==null){
-                                break;
-                            }
-                            stringBuilder.append(count.trim());
-                        }
+
+                        String count=null;
+                        String reader = reader(bufferedReader, count);
                         bufferedReader.close();
-                        String st=stringBuilder.toString();
-                        Boolean   aBoolean = RestApiUtil.save(URL, st, Boolean.class);
+
+                        Boolean   aBoolean = RestApiUtil.save(URL, reader, Boolean.class);
 
                         Boolean backups = backups(aBoolean, filzz);
                         if(backups&&filzz.exists()){
@@ -185,13 +161,59 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     /*************************/
+        private void file( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos) throws IOException {
+            if(!zipEntry.getName().endsWith(File.separator)){
+                File file =new File(COMPRESS_PATH+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
+                if(!file.exists()){
+                    file.mkdirs();
+                }
+                os=new FileOutputStream(COMPRESS_PATH+File.separator+zipEntry.getName());
+                bos=new BufferedOutputStream(os);
+                InputStream is=zipFile.getInputStream(zipEntry);
+                bis=new BufferedInputStream(is);
+                cos=new CheckedInputStream(bis,new CRC32());
+                byte []b=new byte[1024];
+                int count =0;
+                count=cos.read(b);
+                while(count!=-1){
+                    bos.write(b,0,count);
+                    count=cos.read(b);
+                }
+
+            }else {
+
+                new File(COMPRESS_PATH+File.separator+zipEntry.getName()).mkdirs();
+            }
+        }
+
+
+
+
+    private String reader(BufferedReader bufferedReader,String count){
+        StringBuilder stringBuilder=new StringBuilder();
+
+        while(count!=null){
+            try {
+                count= bufferedReader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(count==null){
+                break;
+            }
+            stringBuilder.append(count.trim());
+        }
+
+        return stringBuilder.toString();
+    }
+
 
     private Boolean  backups(Boolean aBoolean ,File file){
         if(aBoolean){
             if(!new File(BACKUPS).exists()){
                 new File(BACKUPS).mkdirs();
             }
-            File newFile=new File(BACKUPS+"/"+file.getName());
+            File newFile=new File(BACKUPS+File.separator+file.getName());
             FileInputStream fileInputStream = null;
             FileOutputStream fileOutputStream = null;
             try {
