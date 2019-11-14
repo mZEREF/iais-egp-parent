@@ -8,6 +8,8 @@ import org.mockito.Spy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(MasterCodeDto.class)
 public class MasterCodeDtoTest {
@@ -33,5 +35,6 @@ public class MasterCodeDtoTest {
         masterCodeDto.setStatus(0);
         masterCodeDto.setCodeDescription(null);
         masterCodeDto.setRowguid(null);
+        assertNotNull(masterCodeDto);
     }
 }

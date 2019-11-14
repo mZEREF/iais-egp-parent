@@ -4,17 +4,36 @@
         <![CDATA[
             SELECT
                 inbox.id,
-                inbox.subject;
-                inbox.message_type;
-                inbox.ref_no;
-                inbox.service;
-                inbox.created_dt;
+                inbox.subject,
+                inbox.message_type,
+                inbox.ref_no,
+                inbox.service,
+                inbox.created_dt
             FROM INTER_INBOX AS inbox
             WHERE 1=1
             <#if message_type??> AND CHARINDEX(:message_type, inbox.message_type) >0</#if>
             <#if STATUS??> AND inbox.STATUS = :STATUS</#if>
         ]]>
     </sql>
+
+    <sql key = "AppQuery" remarks = "Query Application Data by condition">
+        <![CDATA[
+            SELECT
+                app.id,
+                app.application_no,
+                app.app_type,
+                app.status,
+                app.service_id,
+                app.created_dt
+            FROM APPLICATION AS app
+            WHERE 1=1
+            <#if app_type??> AND CHARINDEX(:app_type, app.app_type) >0</#if>
+            <#if STATUS??> AND app.STATUS = :STATUS</#if>
+            <#if application_no??> AND app.application_no = :application_no</#if>
+        ]]>
+    </sql>
+
+
 
 </sqls>
 

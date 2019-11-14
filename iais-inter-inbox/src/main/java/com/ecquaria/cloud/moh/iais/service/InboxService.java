@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxDto;
 
 import java.util.List;
@@ -15,5 +17,6 @@ import java.util.List;
 public interface InboxService {
 
     List<InterInboxDto> selectAllInbox();
-    SearchResult<InterInboxDto> inboxDoQuery(SearchParam searchParam);
+    SearchResult<InboxAppQueryDto> applicationDoQuery(SearchParam searchParam);
+    SearchResult<InboxQueryDto> inboxDoQuery(SearchParam searchParam);
 }
