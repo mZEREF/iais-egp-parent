@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -42,9 +41,6 @@ public class InputTag extends DivTagSupport{
 
     @Override
     public int doStartTag() throws JspException {
-        boolean isBackend = AccessUtil.isBackend();
-
-
         StringBuilder html = new StringBuilder();
         html.append("<input type=\"").append(type);
         html.append("\"");

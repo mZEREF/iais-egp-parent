@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Delegator(value = "bank")
 @Slf4j
-public class Bank {
+public class BankDelegator {
 
 
     public void start(BaseProcessClass bpc) {
