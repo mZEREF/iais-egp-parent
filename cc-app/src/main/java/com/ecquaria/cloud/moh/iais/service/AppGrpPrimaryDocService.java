@@ -16,9 +16,8 @@ import java.util.Map;
  * @date 10/10/2019
  */
 public interface AppGrpPrimaryDocService {
-    List<String> SaveFileToRepo(List<MultipartFile> fileList) throws IOException;
+    List<String> saveFileToRepo(List<MultipartFile> fileList) throws IOException;
     AppGrpPrimaryDocDto saveAppGrpPremisesDoc(AppGrpPrimaryDocDto appGrpPrimaryDocDto);
     List getAppGrpPrimaryDocDtosByAppGrpId(String appGrpId);
     Map<String,List<HcsaSvcDocConfigDto>> getAllHcsaSvcDocs(String serviceId);
-    List<AppGrpPrimaryDocDto> saveAppGrpPremisesDocs(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList);
 }

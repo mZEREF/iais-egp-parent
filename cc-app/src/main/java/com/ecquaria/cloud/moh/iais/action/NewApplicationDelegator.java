@@ -4,12 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.eventbus.SubmitReq;
-import com.ecquaria.cloud.moh.iais.common.dto.eventbus.SubmitResp;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -47,8 +44,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator.APPSVCRELATEDINFODTO;
 
 /**
  * NewApplicationDelegator
@@ -248,11 +243,12 @@ public class NewApplicationDelegator {
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setSvcComDocId(config[0]);
                     appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
-                    appGrpPrimaryDocDto.setDocSize(Math.round(file.getSize()/1024));
+                    float fileSize = file.getSize();
+                    appGrpPrimaryDocDto.setDocSize(Math.round(fileSize/1024));
                     oneFile = new ArrayList<>();
                     oneFile.add(file);
                     //api side not get value
-                    List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(oneFile);
+                    List<String> fileRepoGuidList = appGrpPrimaryDocService.saveFileToRepo(oneFile);
                     appGrpPrimaryDocDto.setFileRepoId(fileRepoGuidList.get(0));
                     //if config[1] equals common ==> set null
                     appGrpPrimaryDocDto.setPremisessName("");
@@ -556,14 +552,6 @@ public class NewApplicationDelegator {
         }
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
-    }
-
-    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(HttpServletRequest request){
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(request, APPSVCRELATEDINFODTO);
-        if(appSvcRelatedInfoDto == null){
-            appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-        }
-        return appSvcRelatedInfoDto;
     }
 
 }

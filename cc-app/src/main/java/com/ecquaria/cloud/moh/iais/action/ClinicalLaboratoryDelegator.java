@@ -409,10 +409,11 @@ public class ClinicalLaboratoryDelegator {
                     appSvcDocDto = new AppSvcDocDto();
                     appSvcDocDto.setSvcConfDocId(config[0]);
                     appSvcDocDto.setFileName(file.getOriginalFilename());
-                    appSvcDocDto.setFileSize(Math.round(file.getSize()/1024));
+                    float fileSize = file.getSize();
+                    appSvcDocDto.setFileSize(Math.round(fileSize/1024));
                     List<MultipartFile> oneFile = new ArrayList<>();
                     oneFile.add(file);
-                    List<String> fileRepoGuidList = appGrpPrimaryDocService.SaveFileToRepo(oneFile);
+                    List<String> fileRepoGuidList = appGrpPrimaryDocService.saveFileToRepo(oneFile);
                     appSvcDocDto.setFileRepoId(fileRepoGuidList.get(0));
                     //wait api change to get fileRepoId
                     appSvcDocDtoList.add(appSvcDocDto);
