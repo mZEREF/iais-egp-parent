@@ -97,13 +97,19 @@ public class ExcelWriter {
             log.info("exportXls has exception " + e.getMessage());
         }finally {
             try {
+                wb.close();
+            } catch (IOException e) {
+                log.info("exportXls close HSSFWorkbook exception " + e.getMessage());
+            }
+
+            try {
                 if (fileOut != null){
                     fileOut.close();
                 }
 
                 wb.close();
             } catch (IOException e) {
-                log.info("exportXls close resource exception " + e.getMessage());
+                log.info("exportXls close IO exception " + e.getMessage());
             }
         }
     }
