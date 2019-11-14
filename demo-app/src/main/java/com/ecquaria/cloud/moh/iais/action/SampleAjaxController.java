@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,8 +21,8 @@ import java.util.Map;
 public class SampleAjaxController {
     @RequestMapping(value="doSomething.do", method = RequestMethod.GET)
     public @ResponseBody Map<String,Object> doSomething(HttpServletRequest request,
-                                                  HttpServletResponse response) throws IOException {
-        Map<String,Object> map = new HashMap<String,Object>();
+                                                  HttpServletResponse response)  {
+        Map<String,Object> map = new HashMap();
 
         map.put("aaa", "ccc");
 
