@@ -164,9 +164,9 @@
                                                 </tbody>
 
                                             </table>
-                                            <div class="alert alert-info" role="alert"><b>
+                                            <div class="alert alert-info" role="alert"><strong>
                                                 <h4>Internal Document</h4>
-                                            </b></div>
+                                            </strong></div>
                                             <div  class="text ">
                                                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
                                             </div>
@@ -195,9 +195,9 @@
 
                             </div>
                             <div class="tab-pane" id="tabPayment" role="tabpanel">
-                                <div class="alert alert-info" role="alert"><b>
+                                <div class="alert alert-info" role="alert"><strong>
                                     <h4>Payment Details</h4>
-                                </b></div>
+                                </strong></div>
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="table-gp">
@@ -241,12 +241,12 @@
                             </div>
                             <div class="tab-pane" id="tabInspection" role="tabpanel">
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Inspection Findings</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="text ">
-                                    <p><span><b>Part I: Inspection Checklist</b></span></p>
+                                    <p><span><strong>Part I: Inspection Checklist</strong></span></p>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -283,7 +283,7 @@
                                                 </tbody>
                                             </table>
                                             <div class="text ">
-                                                <p><span><b>Part II: Findings</b></span></p>
+                                                <p><span><strong>Part II: Findings</strong></span></p>
                                             </div>
                                             <table class="table">
                                                 <tr>
@@ -325,7 +325,7 @@
                                                 </tr>
                                             </table>
                                             <div class="text ">
-                                                <p><span><b>Part III: Inspectors</b></span></p>
+                                                <p><span><strong>Part III: Inspectors</strong></span></p>
                                             </div>
                                             <table class="table">
                                                 <tr>
@@ -346,7 +346,7 @@
                                                 </tr>
                                             </table>
                                             <div class="text ">
-                                                <p><span><b>Part IV: Report</b></span></p>
+                                                <p><span><strong>Part IV: Report</strong></span></p>
                                             </div>
                                             <table class="table">
                                                 <tr>
@@ -370,9 +370,9 @@
                                     </div>
                                 </div>
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Recommendations</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -399,9 +399,9 @@
                                     </div>
                                 </div>
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Follow up actions</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -444,9 +444,9 @@
                                     </div>
                                 </div>
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Rectification</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -467,9 +467,9 @@
                             </div>
                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Processing Status Update</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
@@ -519,9 +519,9 @@
                                     </div>
                                 </div>
                                 <div class="alert alert-info" role="alert">
-                                    <b>
+                                    <strong>
                                         <h4>Processing History</h4>
-                                    </b>
+                                    </strong>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12">
