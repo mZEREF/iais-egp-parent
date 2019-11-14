@@ -244,8 +244,8 @@ public class NewApplicationDelegator {
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setSvcComDocId(config[0]);
                     appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
-                    float fileSize = file.getSize();
-                    appGrpPrimaryDocDto.setDocSize(Math.round(fileSize/1024));
+                    long size = file.getSize()/1024;
+                    appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
                     oneFile = new ArrayList<>();
                     oneFile.add(file);
                     //api side not get value
@@ -470,12 +470,7 @@ public class NewApplicationDelegator {
     }
 
     private void sortService(List<HcsaServiceDto> list){
-        Collections.sort(list, new Comparator<HcsaServiceDto>(){
-            @Override
-            public int compare(HcsaServiceDto o1, HcsaServiceDto o2) {
-                return o1.getSvcName().compareTo(o2.getSvcName());
-            }
-        });
+        list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
     }
     private Map<String,Map<String,String>> doValidate(BaseProcessClass bpc){
         Map<String,Map<String,String>> reuslt = new HashMap<>();

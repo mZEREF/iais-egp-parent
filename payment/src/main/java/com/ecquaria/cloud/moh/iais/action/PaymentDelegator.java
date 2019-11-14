@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -15,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Delegator(value = "payment")
 @Slf4j
-public class Payment {
+public class PaymentDelegator {
 
     @Autowired
     private PaymentService paymentService;

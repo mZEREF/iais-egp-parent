@@ -112,7 +112,7 @@ public class ClinicalLaboratoryDelegator {
         String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
         //wait update api url
         List<HcsaSvcSubtypeOrSubsumedDto> checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines(serviceId);
-        ParamUtil.setSessionAttr(bpc.request, "checkList", (Serializable) checkList);
+        ParamUtil.setSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto", (Serializable) checkList);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
 
@@ -409,8 +409,8 @@ public class ClinicalLaboratoryDelegator {
                     appSvcDocDto = new AppSvcDocDto();
                     appSvcDocDto.setSvcConfDocId(config[0]);
                     appSvcDocDto.setFileName(file.getOriginalFilename());
-                    float fileSize = file.getSize();
-                    appSvcDocDto.setFileSize(Math.round(fileSize/1024));
+                    long size = file.getSize()/1024;
+                    appSvcDocDto.setFileSize(Integer.valueOf(String.valueOf(size)));
                     List<MultipartFile> oneFile = new ArrayList<>();
                     oneFile.add(file);
                     List<String> fileRepoGuidList = appGrpPrimaryDocService.saveFileToRepo(oneFile);

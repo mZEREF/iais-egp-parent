@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="inspectionQuery">
+    <sql key = "allotInspector" remarks = "AO Allot Task For Inspector">
+        <![CDATA[
+            SELECT T2.APPLICATION_NO, T2.APP_TYPE, T2.STATUS, T2.SERVICE_ID, T1.SUBMIT_DT, T3.HCI_NAME, T3.HCI_CODE FROM APPLICATION_GROUP AS T1
+            JOIN APPLICATION T2 ON T2.APP_GRP_ID = T1.ID
+            JOIN APP_GRP_PREMISES T3 ON T3.APP_GRP_ID = T1.ID
+            WHERE 1=1
+            AND T2.APP_TYPE IN ('APTY001', 'APTY002', 'APTY003')
+        ]]>
+    </sql>
+
+</sqls>

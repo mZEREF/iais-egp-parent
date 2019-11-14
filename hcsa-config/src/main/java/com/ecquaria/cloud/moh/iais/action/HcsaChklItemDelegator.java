@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.controller;
+package com.ecquaria.cloud.moh.iais.action;
 
 /*
  *author: yichen
@@ -114,7 +114,6 @@ public class HcsaChklItemDelegator {
     private void doSubmitOrUpdate(HttpServletRequest request){
         ChecklistItemDto itemDto =  requestChklItemDto(request);
 
-        /*AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();*/
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setMohUserId(AppConsts.USER_ID_ANONYMOUS);
 

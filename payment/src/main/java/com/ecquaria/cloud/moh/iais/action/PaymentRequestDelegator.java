@@ -20,7 +20,7 @@ import java.util.Date;
 
 @Delegator(value = "paymentRequest")
 @Slf4j
-public class PaymentRequest {
+public class PaymentRequestDelegator {
 
     @Autowired
     private PaymentRequestService paymentRequestService ;
