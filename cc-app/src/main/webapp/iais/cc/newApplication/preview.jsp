@@ -83,7 +83,7 @@
                                                     <div class="panel-collapse collapse in" id="collapseServiceInfo" role="tabpanel" aria-labelledby="headingServiceInfo">
                                                         <div class="panel-body">
                                                             <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
-                                                            <iframe class="elemClass-1561088919456" title="" src="/hcsaapplication/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form=prepareView" id="elemId-1561088919456" scrollbar="auto" style="" width="100%" height="100%" frameborder="0"></iframe>
+                                                            <iframe class="elemClass-1561088919456" title="" src="/hcsaapplication/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form=prepareView" id="elemId-1561088919456" scrollbar="auto" style="" width="100%" height="100%"></iframe>
                                                         </div>
                                                     </div>
                                                 </div>
