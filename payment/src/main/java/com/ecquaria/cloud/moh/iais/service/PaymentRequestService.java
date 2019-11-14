@@ -7,7 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
  * date 2019/11/9 14:00
  */
 public interface PaymentRequestService {
-
+    /**
+     * save paymentRequestDto
+     * @param paymentRequestDto
+     */
     void savePaymentRequestDto (PaymentRequestDto paymentRequestDto);
 
 }

@@ -45,10 +45,6 @@ public class PaymentRequestDelegator {
             paymentRequestDto.setPayMethod(payMethod);
             paymentRequestDto.setReqDt(new Date());
             paymentRequestDto.setReqRefNo(reqNo);
-//        paymentRequestDto.setReqRefNo("222222");
-//        paymentRequestDto.setReqDt(new Date());
-//        paymentRequestDto.setPayMethod("post");
-//        paymentRequestDto.setAmount(200.0);
         }
         paymentRequestService.savePaymentRequestDto(paymentRequestDto);
     }
