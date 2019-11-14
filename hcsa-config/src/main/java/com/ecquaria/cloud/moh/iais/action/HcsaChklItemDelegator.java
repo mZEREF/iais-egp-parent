@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.controller;
+package com.ecquaria.cloud.moh.iais.action;
 
 /*
  *author: yichen

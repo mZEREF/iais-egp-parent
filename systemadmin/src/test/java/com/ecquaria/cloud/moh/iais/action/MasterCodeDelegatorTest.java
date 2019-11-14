@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.controller;
+package com.ecquaria.cloud.moh.iais.action;
 
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
