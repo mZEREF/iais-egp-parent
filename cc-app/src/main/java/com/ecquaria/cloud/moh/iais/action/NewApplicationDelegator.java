@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -36,7 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -87,7 +84,6 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,null);
         ParamUtil.setSessionAttr(bpc.request,APPGRPPRIMARYDOCDTO,null);
         //for loading the draft by appId
-        //loadingDraft(bpc);
         //for loading Service Config
         loadingServiceConfig(bpc);
 
@@ -125,8 +121,6 @@ public class NewApplicationDelegator {
         List<String> svcIds = new ArrayList<>();
         hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
         List premisesSelect = new ArrayList<SelectOption>();
-        User user = SessionManager.getInstance(bpc.request).getCurrentUser();
-        //String loginId = user.getIdentityNo();
         String loginId="internet";
         //?
         List<AppGrpPremisesDto> list = appGrpPremisesService.getAppGrpPremisesDtoByLoginId(loginId);
@@ -137,7 +131,7 @@ public class NewApplicationDelegator {
         if(list !=null){
             for (AppGrpPremisesDto item : list){
                 if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())){
-                    SelectOption sp2 = new SelectOption(item.getId().toString(),item.getAddress());
+                    SelectOption sp2 = new SelectOption(item.getId(),item.getAddress());
                     premisesSelect.add(sp2);
                 }
             }
@@ -183,7 +177,7 @@ public class NewApplicationDelegator {
      */
     public void preparePreview(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
     /**
@@ -205,14 +199,6 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doPremises start ...."));
-        /*AppGrpPremisesDto appGrpPremisesDto =
-                ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO) == null ? new AppGrpPremisesDto():
-                        (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-         String appGrpId = appGrpPremisesDto.getAppGrpId();
-         appGrpPremisesDto = (AppGrpPremisesDto)MiscUtil.generateDtoFromParam(bpc.request,appGrpPremisesDto);
-        appGrpPremisesDto.setAppGrpId(appGrpId);
-        ParamUtil.setSessionAttr(bpc.request,APPGRPPREMISESDTO,appGrpPremisesDto);*/
-
         //gen dto
         AppGrpPremisesDto appGrpPremisesDto = genAppGrpPremisesDto(bpc.request);
         //set value into AppSubmissionDto
@@ -231,11 +217,11 @@ public class NewApplicationDelegator {
     public void doDocument(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doDocument start ...."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String crud_action_type =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crud_action_value = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+        String crudActionType =  mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crud_action_type);
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crud_action_value);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,crudActionType);
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE,crudActionValue);
 
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
         List<MultipartFile> files = null;
@@ -366,13 +352,13 @@ public class NewApplicationDelegator {
     public void controlSwitch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do controlSwitch start ...."));
         String switch2 = "loading";
-        String crud_action_value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
-        if(StringUtil.isEmpty(crud_action_value)){
-            crud_action_value = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        String crudActionValue = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(StringUtil.isEmpty(crudActionValue)){
+            crudActionValue = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         }
-        if("saveDraft".equals(crud_action_value) || "ack".equals(crud_action_value)
-                || "doSubmit".equals(crud_action_value)){
-            switch2 = crud_action_value;
+        if("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue)
+                || "doSubmit".equals(crudActionValue)){
+            switch2 = crudActionValue;
         }
         ParamUtil.setRequestAttr(bpc.request,"Switch2",switch2);
         log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));
