@@ -329,7 +329,7 @@ public class NewApplicationDelegator {
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         //do validate
-        //doValidate(bpc);
+        Map<String,Map<String,String>> validateResult = doValidate(bpc);
         //save the premisse
         HttpServletRequest request = bpc.request;
         log.info("In mS1 OnStepProcess");
@@ -495,11 +495,14 @@ public class NewApplicationDelegator {
             }
         });
     }
-    private void doValidate(BaseProcessClass bpc){
+    private Map<String,Map<String,String>> doValidate(BaseProcessClass bpc){
+        Map<String,Map<String,String>> reuslt = new HashMap<>();
         //do validate premiss
-        doValidatePremiss(bpc);
+        Map<String,String> premises =  doValidatePremiss(bpc);
+        reuslt.put("premises",premises);
+        return reuslt;
     }
-    private void doValidatePremiss(BaseProcessClass bpc){
+    private Map<String,String> doValidatePremiss(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate premiss
         Map<String,String> errorMap = new HashMap<>();
@@ -520,6 +523,7 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+        return errorMap;
     }
 
     /**
