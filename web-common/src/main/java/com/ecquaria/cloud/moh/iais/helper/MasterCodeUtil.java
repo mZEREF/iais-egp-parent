@@ -81,7 +81,7 @@ public final class MasterCodeUtil {
             if (obj instanceof MasterCodeView) {
                 list.add((MasterCodeView) obj);
             } else if (obj instanceof Map) {
-                MasterCodeView mcv = MiscUtil.transferDtoFromMap((Map) obj, MasterCodeView.class);
+                MasterCodeView mcv = MiscUtil.tranMapToDto((Map) obj, MasterCodeView.class);
                 list.add(mcv);
             }
         });
