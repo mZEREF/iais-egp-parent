@@ -76,7 +76,7 @@ public class HcsaChklConfigDelegator {
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(HcsaChecklistConstants.ACTION_CANCEL.equals(currentAction) || "backLastPage".equals(currentAction)){
+        if(HcsaChecklistConstants.ACTION_CANCEL.equals(currentAction) || HcsaChecklistConstants.BACK_LAST_PAGE_BUTTON.equals(currentAction)){
             IaisEGPHelper.clearSessionAttr(request, ChecklistConfigQueryDto.class);
         }
 
@@ -93,7 +93,6 @@ public class HcsaChklConfigDelegator {
         SearchResult searchResult =  hcsaChklService.listChecklistConfig(searchParam);
 
 
-
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH, searchParam);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT, searchResult);
     }
@@ -106,7 +105,7 @@ public class HcsaChklConfigDelegator {
     public void addSectionItem(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if ("backLastPage".equals(currentAction)){
+        if (HcsaChecklistConstants.BACK_LAST_PAGE_BUTTON.equals(currentAction)){
             return;
         }
 
@@ -229,6 +228,7 @@ public class HcsaChklConfigDelegator {
     public void addConfigNextAction(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+
         String common = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
         String type = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
         String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
