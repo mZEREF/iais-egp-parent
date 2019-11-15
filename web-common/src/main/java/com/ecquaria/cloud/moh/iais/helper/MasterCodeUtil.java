@@ -73,15 +73,15 @@ public final class MasterCodeUtil {
         param.setSort(SEQUENCE, SearchParam.ASCENDING);
         QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
         SearchResult sr = RestApiUtil.query(MASTERCODE_CACHES, param);
-        if (sr == null || sr.getRowCount() <= 0)
+        if (sr == null || sr.getRowCount() <= 0){
             return;
-
+        }
         List<MasterCodeView> list = new ArrayList<>();
         sr.getRows().forEach(obj -> {
             if (obj instanceof MasterCodeView) {
                 list.add((MasterCodeView) obj);
             } else if (obj instanceof Map) {
-                MasterCodeView mcv = MiscUtil.transferDtoFromMap((Map) obj, MasterCodeView.class);
+                MasterCodeView mcv = MiscUtil.transferEntityDto((Map) obj, MasterCodeView.class);
                 list.add(mcv);
             }
         });

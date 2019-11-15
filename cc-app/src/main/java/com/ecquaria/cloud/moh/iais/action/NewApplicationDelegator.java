@@ -13,10 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -37,14 +35,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * NewApplicationDelegator
@@ -483,22 +474,22 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate premiss
         Map<String,String> errorMap = new HashMap<>();
-        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-        String premiseType = appGrpPremisesDto.getPremisesType();
-        if(StringUtil.isEmpty(premiseType)){
-            errorMap.put("premisesType","Please select the premises Type");
-        }else if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
-            if (validationResult.isHasErrors()){
-                errorMap = validationResult.retrieveAll();
-            }
-        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
-            if (validationResult.isHasErrors()){
-                errorMap = validationResult.retrieveAll();
-            }
-        }
-        ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
+//        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+//        String premiseType = appGrpPremisesDto.getPremisesType();
+//        if(StringUtil.isEmpty(premiseType)){
+//            errorMap.put("premisesType","Please select the premises Type");
+//        }else if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)){
+//            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
+//            if (validationResult.isHasErrors()){
+//                errorMap = validationResult.retrieveAll();
+//            }
+//        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
+//            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
+//            if (validationResult.isHasErrors()){
+//                errorMap = validationResult.retrieveAll();
+//            }
+//        }
+//        ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errorMap;
     }
