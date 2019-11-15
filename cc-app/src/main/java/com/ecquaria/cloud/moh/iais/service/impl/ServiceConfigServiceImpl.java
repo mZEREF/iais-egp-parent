@@ -18,6 +18,6 @@ import java.util.List;
 public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
-        return RestApiUtil.postGetList(RestApiUrlConsts.HCSA_CONFIG+RestApiUrlConsts.HCSA_CONFIG_SERVICE,ids,HcsaServiceDto.class);
+        return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_SERVICE_BY_IDS, ids,HcsaServiceDto.class);
     }
 }
