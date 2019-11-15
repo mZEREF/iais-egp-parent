@@ -33,7 +33,7 @@ public class UploadDelegator {
         String data = uploadFileService.getData();
         uploadFileService.saveFile(data);
         uploadFileService.compressFile();
-        uploadFileService.changeStatus();
+       /* uploadFileService.changeStatus();*/
 
     }
 
