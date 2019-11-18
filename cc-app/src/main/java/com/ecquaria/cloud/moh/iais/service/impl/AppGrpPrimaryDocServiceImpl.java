@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.HCSASVCDOCURL;
 import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.URLREPO;
 
 
@@ -28,8 +29,6 @@ import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.
 @Slf4j
 public class AppGrpPrimaryDocServiceImpl implements AppGrpPrimaryDocService {
     private static final String URL="iais-application:8881/iais-premisesdoc";
-    //get hcsa svc doc(comm/premise)
-    private static final String HCSASVCDOCURL ="hcsa-config:8878/hsca-svc-doc-config";
 
     @Override
     public List<String> saveFileToRepo(List<MultipartFile> fileList) throws IOException {
