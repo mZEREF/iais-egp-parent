@@ -10,13 +10,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -303,15 +301,9 @@ public class NewApplicationDelegator {
     public void doPayment(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
         String result = bpc.request.getParameter("result");
-        String switch2 = "ack";
+        String switch2 = "loading";
         if(!StringUtil.isEmpty(result)){
             log.debug(StringUtil.changeForLog("payment result:"+result));
-            PaymentDto paymentDto = new PaymentDto();
-            paymentDto.setAmount(200.0);
-            paymentDto.setInvoiceNo("asd");
-            paymentDto.setReqRefNo("AN1911136061");
-            paymentDto.setStatus(result);
-            RestApiUtil.save("iais-payment:8883/payment/tradingReply",paymentDto);
             if("success".equals(result)){
                 switch2 = "ack";
             }
