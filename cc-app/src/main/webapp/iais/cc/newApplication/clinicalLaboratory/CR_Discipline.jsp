@@ -1,9 +1,11 @@
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <div class="wrapper">
   <div class="form-inner-content editableMode">
     <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
     <form  name="formRender" method="post" target="_parent">
       <div class="canvasContent">
         <!-- Place holder for tabbed interface. -->
+        <input type="hidden" id="testCode" value="HST"/>
         <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
           <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
             <div id="control--runtime--0" class="page control control-area  container-p-1">
@@ -17,38 +19,57 @@
                   <div class="normal-indicator">
                     <table>
                       <tbody>
-                      <tr>
-                        <td>
-                          <div class="control-item-container parent-form-check" data-parent="NuclearMedicineService">
-                            <input type="checkbox" id="control--runtime--1--1" name="control--runtime--1" class="control-input" value="284B727F-DBFE-E911-BE7B-000C29F371DC;1;HST">
-                            <label id="control--runtime--1--label--1" for="control--runtime--1--1" class="control-label control-set-font control-font-normal">
-                              <span class="check-square"></span>Haematopoietic Stem Cell Transplant</label>
-                          </div>
-                          <div class="control-item-aux-container">
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="control-item-container sub-form-check parent-form-check disabled"  data-child="NuclearMedicineService" data-parent="Telemedicine">
-                            <input type="checkbox" id="control--runtime--1--2" name="control--runtime--1" class="control-input" value="4907B211-E0FE-E911-BE7B-000C29F371DC;1;HIV">
-                            <label id="control--runtime--1--label--2" for="control--runtime--1--2" class="control-label control-set-font control-font-normal">
-                              <span class="check-square"></span>HIV</label>
-                          </div>
-                          <div class="control-item-aux-container">
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="control-item-container sub-form-check  disabled"  data-child="NuclearMedicineService" data-parent="RenalDialysisCentre" >
-                            <input type="checkbox" id="control--runtime--1--3" name="control--runtime--1" class="control-input" value="B58B8154-E2FE-E911-BE7B-000C29F371DC;1;PGD">
-                            <label id="control--runtime--1--label--3" for="control--runtime--1--3" class="control-label control-set-font control-font-normal"><span class="check-square"></span>Pre-Implantation Genetics Diagnosis</label>
-                          </div>
-                          <div class="control-item-aux-container">
-                          </div>
-                        </td>
-                      </tr>
+                      <c:forEach var="levelOneList" items="${HcsaSvcSubtypeOrSubsumedDto}" varStatus="levelOne">
+                        <!--one -->
+                        <tr>
+                          <td>
+                            <div class="control-item-container parent-form-check" data-parent="${levelOneList.code}" >
+                              <input type="checkbox" id="control--${levelOne.index}--${levelOne.index}"
+                                     name="control--runtime--1" class="control-input"
+                                     value="<c:out value="${levelOneList.id};${levelOneList.type};${levelOneList.name }" />">
+                              <label  for="control--${levelOne.index}--${levelOne.index}" data-code="<c:out value="${levelOneList.code}" />" class="control-label control-set-font control-font-normal">
+                                <span class="check-square"></span>${levelOneList.name}
+                              </label>
+                            </div>
+                          </td>
+                        </tr>
+                        <c:if test="${not empty levelOneList.list}">
+                          <c:forEach var="levelTwoList" items="${levelOneList.list}" varStatus="levelTwo">
+                            <!--two -->
+                            <tr>
+                              <td>
+                                <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="${levelTwoList.code}" data-child="${levelOneList.code}" >
+                                  <input type="checkbox" id="control--${levelTwo.begin}--${levelTwo.index}"
+                                         name="control--runtime--1" class="control-input"
+                                         value="<c:out value="${levelTwoList.id};${levelTwoList.type};${levelTwoList.name }" />">
+                                  <label  for="control--${levelTwo.index}--${levelTwo.index}" class="control-label control-set-font control-font-normal">
+                                    <span class="check-square"></span>${levelTwoList.name}
+                                  </label>
+                                </div>
+                              </td>
+                            </tr>
+                            <c:if test="${not empty levelTwoList.list}">
+                              <!--three -->
+                              <c:forEach var="levelThreeList" items="${levelTwoList.list}" varStatus="levelThree">
+                                <tr>
+                                  <td>
+                                    <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="${levelThreeList.code}" data-child="${levelTwoList.code}" >
+                                      <input type="checkbox" id="control--${levelThree.index}--${levelThree.index}"
+                                             name="control--runtime--1" class="control-input"
+                                             value="<c:out value="${levelThreeList.id};${levelThreeList.type};${levelThreeList.name }" />">
+                                      <label  for="control--${levelThree.index}--${levelThree.index}" class="control-label control-set-font control-font-normal">
+                                        <span class="check-square"></span>${levelThreeList.name}
+                                      </label>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </c:forEach>
+                            </c:if>
+                          </c:forEach>
+                        </c:if>
+                      </c:forEach>
+
+
                       </tbody></table>
                   </div>
                   <div id="control--runtime--1--errorMsg_right" style="display: none;" class="error_placements"></div>
@@ -63,3 +84,19 @@
 
 </div>
 
+<script>
+    $(document).ready(function () {
+        var testCode = $('#testCode').val();
+        //console.log($(".control-font-normal").data('data-code'));
+        /*if("HST"==testCode){
+          $(".control-font-normal").data('data-code').each(function (k,v) {
+              console.log(k);
+              console.log(v);
+          });
+        }*/
+
+
+    });
+
+
+</script>
