@@ -6,6 +6,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  *description:
  */
 
+import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
@@ -26,56 +27,55 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam) {
-        return RestApiUtil.query("hcsa-config:8878/iais-hcsa-chkl/chklitem/results", searchParam);
+        return RestApiUtil.query(RestApiUrlConsts.CHECKLIST_ITEM_RESULTS, searchParam);
     }
 
     @Override
     public SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam) {
-        return RestApiUtil.query("hcsa-config:8878/iais-hcsa-chkl/config/results", searchParam);
+        return RestApiUtil.query(RestApiUrlConsts.CHECKLIST_CONFIG_RESULTS, searchParam);
     }
 
 
     @Override
     public List<ChecklistItemDto> listChklItemByItemId(List<String> itemIds) {
-        return  RestApiUtil.postGetList("hcsa-config:8878/iais-hcsa-chkl/chklitem/items-by-ids", itemIds, ChecklistItemDto.class);
+        return  RestApiUtil.postGetList(RestApiUrlConsts.CHECKLIST_ITEM_BY_IDS, itemIds, ChecklistItemDto.class);
     }
 
     @Override
     public ChecklistItemDto getChklItemById(String id) {
-        return IaisEGPHelper.getRecordByPrimaryKey("hcsa-config:8878/iais-hcsa-chkl/chklitem", id, ChecklistItemDto.class);
+        return IaisEGPHelper.getRecordByPrimaryKey(RestApiUrlConsts.CHECKLIST_ITEM_BY_ID, id, ChecklistItemDto.class);
     }
 
 
     @Override
     public void saveChklItem(ChecklistItemDto itemDto) {
-        RestApiUtil.save("hcsa-config:8878/iais-hcsa-chkl/chklitem", itemDto);
+        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_ITEM_SLD_URL, itemDto);
     }
 
     @Override
 
-
     public List<String> listRegulationClauseNo() {
-        return RestApiUtil.getList("hcsa-config:8878/iais-hcsa-chkl/regulation/clauses-distinct", List.class);
+        return RestApiUtil.getList(RestApiUrlConsts.DISTINCT_REGULATION_CLAUSES, List.class);
     }
 
 
     @Override
     public void submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
-        RestApiUtil.save("hcsa-config:8878/iais-hcsa-chkl/chklitem/items-clone", hcsaChklItemDtos);
+        RestApiUtil.save(RestApiUrlConsts.CHECKLIST_ITEM_CLONE, hcsaChklItemDtos);
     }
 
     @Override
     public void submitConfig(ChecklistConfigDto checklistConfigDto) {
-        RestApiUtil.save("hcsa-config:8878/iais-hcsa-chkl/config/", checklistConfigDto);
+        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_CONFIG_SLD_URL, checklistConfigDto);
     }
 
     @Override
     public List<String> listSubTypeName() {
-        return RestApiUtil.getList("hcsa-config:8878/iais-hcsa-service/subtype-name-results", List.class);
+        return RestApiUtil.getList(RestApiUrlConsts.GET_HCSA_SUBTYPE_NAME_RESULTS, List.class);
     }
 
     @Override
     public List<String> listServiceName() {
-        return RestApiUtil.getList("hcsa-config:8878/iais-hcsa-service/svc-name-results", List.class);
+        return RestApiUtil.getList(RestApiUrlConsts.GET_HCSA_SVC_NAME_RESULTS, List.class);
     }
 }

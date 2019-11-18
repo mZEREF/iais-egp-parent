@@ -26,10 +26,11 @@ import java.util.Set;
 public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     //dont be used
     private static final String URL="iais-application:8881/iais-premises";
-    private static final String PREMISESURL="hcsa-config:8878/application-type";
+    private static final String PREMISESURL="hcsa-config:8878/iais-hcsa-service/application-type-by-ids";
     private static final String POSTCODEURL = "system-admin:8886/api/postcodes";
     //get svcId by svcCode
-    private static final String SERVICEID = "hcsa-config:8878//service-by-code";
+    private static final String SERVICEID = "hcsa-config:8878/service{code}";
+
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
        return RestApiUtil.save(URL,appGrpPremisesDto,AppGrpPremisesDto.class);
@@ -72,7 +73,7 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
 
     @Override
     public String getSvcIdBySvcCode(String svcCode) {
-        Map<String,Object> map = new HashMap<>();
+        Map<String,Object> map = new HashMap<>(16);
         map.put("code", svcCode);
         return RestApiUtil.getByReqParam(SERVICEID, map, String.class);
     }

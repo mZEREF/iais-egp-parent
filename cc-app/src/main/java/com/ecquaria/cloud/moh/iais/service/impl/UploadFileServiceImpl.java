@@ -2,9 +2,9 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
+import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.Objects;
 import java.util.zip.*;
 
@@ -24,8 +23,8 @@ import java.util.zip.*;
 @Slf4j
 public class UploadFileServiceImpl implements UploadFileService {
 
-    private static final String URL_APP="iais-application:8883/all-file";
-    private static final  String URL_STATUS="iais-application:8883/status";
+    private static final String URL_APP="iais-application:8883/iais-application/all-file";
+    private static final  String URL_STATUS="iais-application:8883/iais-application/status";
     private static  final String DOWNLOAD="D:/folder";
     private static  final  String FILE_NAME="folder";
     private static  final  String FILE_FORMAT=".text";
@@ -35,18 +34,18 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public Boolean saveFile(String  str) {
         FileOutputStream fileOutputStream = null;
-        Date date =new Date();
-
-        File file=new File(DOWNLOAD+ File.separator+date.getTime()+FILE_FORMAT);
+        String s = FileUtil.genMd5FileChecksum(str.getBytes());
+        File file=new File(DOWNLOAD+ File.separator+s+FILE_FORMAT);
         FileOutputStream fileInputStream = null;
         try {
             if(!file.exists()){
                 file.createNewFile();
             }
-            fileInputStream =new FileOutputStream(BACKUPS+"/"+file.getName());
+            fileInputStream =new FileOutputStream(BACKUPS+File.separator+file.getName());
             fileOutputStream =new FileOutputStream(file);
             fileOutputStream.write(str.getBytes());
             fileInputStream.write(str.getBytes());
+
         } catch (Exception e) {
             log.error(e.getMessage());
             return false;
@@ -94,12 +93,11 @@ public class UploadFileServiceImpl implements UploadFileService {
         CheckedOutputStream cos=null;
         OutputStream is=null;
         try {
-             is=new FileOutputStream(BACKUPS+File.separator+new Date().getTime()+".zip");
+             is=new FileOutputStream(BACKUPS+File.separator+System.currentTimeMillis()+".zip");
             cos =new CheckedOutputStream(is,new CRC32());
              zos =new ZipOutputStream(cos);
             File file =new File(DOWNLOAD);
             zipFile(zos,file);
-
 
             is.close();
         } catch (IOException e) {
@@ -157,6 +155,13 @@ public class UploadFileServiceImpl implements UploadFileService {
             log.error(e.getMessage());
         }
         finally {
+            if(zos!=null){
+                try {
+                    zos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             if(bis!=null){
                 try {
                     bis.close();
@@ -168,4 +173,9 @@ public class UploadFileServiceImpl implements UploadFileService {
         }
 
     }
+
+    private void rename(){}
+    File file =new File(BACKUPS);
+
+
 }

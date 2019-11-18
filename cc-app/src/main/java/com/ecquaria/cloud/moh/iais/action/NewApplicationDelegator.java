@@ -14,10 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
 import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -343,39 +341,16 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         //do validate
         Map<String,Map<String,String>> validateResult = doValidate(bpc);
-        //save the premisse
-        HttpServletRequest request = bpc.request;
-        log.info("In mS1 OnStepProcess");
-
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        //save the app and appGroup
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
-
-        SubmissionClient client = new SubmissionClient();
-
-        //prepare request parameters
-        appSubmissionDto.setEventRefNo("test event");
-        SubmitReq req = new SubmitReq();
-        req.setSubmissionId(null);
-        req.setProject(bpc.process.getCurrentProject());
-        req.setProcess(bpc.process.getCurrentProcessName());
-        req.setStep(bpc.process.getCurrentComponentName());
-        req.setService("appsubmit");
-        req.setOperation("Create");
-        req.setSopUrl("https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication");
-        req.setData(JsonUtil.parseToJson(appSubmissionDto));
-        req.setCallbackUrl(null);
-        req.setUserId("SOP");
-        req.setWait(true);
-        req.setTotalWait(30);
-
-        //
-        SubmitResp submitResp = client.submit("http://iais-event-bus:8890", req);
-
+        //asynchronous save the other data.
+         eventBus(appSubmissionDto,bpc);
         //get wrokgroup
-
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }
+
 
 
     /**
@@ -452,10 +427,6 @@ public class NewApplicationDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
         sortHcsaServiceDto(hcsaServiceDtoList);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
-        //init session
-        AppSubmissionDto appSubmissionDto = new AppSubmissionDto();
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
     }
     private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList){
@@ -506,22 +477,22 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate premiss
         Map<String,String> errorMap = new HashMap<>();
-        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-        String premiseType = appGrpPremisesDto.getPremisesType();
-        if(StringUtil.isEmpty(premiseType)){
-            errorMap.put("premisesType","Please select the premises Type");
-        }else if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
-            if (validationResult.isHasErrors()){
-                errorMap = validationResult.retrieveAll();
-            }
-        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
-            if (validationResult.isHasErrors()){
-                errorMap = validationResult.retrieveAll();
-            }
-        }
-        ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
+//        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+//        String premiseType = appGrpPremisesDto.getPremisesType();
+//        if(StringUtil.isEmpty(premiseType)){
+//            errorMap.put("premisesType","Please select the premises Type");
+//        }else if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)){
+//            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
+//            if (validationResult.isHasErrors()){
+//                errorMap = validationResult.retrieveAll();
+//            }
+//        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
+//            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
+//            if (validationResult.isHasErrors()){
+//                errorMap = validationResult.retrieveAll();
+//            }
+//        }
+//        ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errorMap;
     }
@@ -572,5 +543,24 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
     }
-
+    private  void eventBus( AppSubmissionDto appSubmissionDto,BaseProcessClass bpc){
+        SubmissionClient client = new SubmissionClient();
+        //prepare request parameters
+        appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
+        SubmitReq req = new SubmitReq();
+        req.setSubmissionId(appSubmissionDto.getAppGrpId());
+        req.setProject(bpc.process.getCurrentProject());
+        req.setProcess(bpc.process.getCurrentProcessName());
+        req.setStep(bpc.process.getCurrentComponentName());
+        req.setService("appsubmit");
+        req.setOperation("Create");
+        req.setSopUrl("https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication");
+        req.setData(JsonUtil.parseToJson(appSubmissionDto));
+        req.setCallbackUrl(null);
+        req.setUserId("SOP");
+        //req.setWait(true);
+        req.setTotalWait(30);
+        //
+        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+    }
 }
