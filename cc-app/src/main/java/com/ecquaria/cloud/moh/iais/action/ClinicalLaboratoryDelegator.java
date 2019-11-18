@@ -108,7 +108,7 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines start ...."));
-
+        String crud_action_type = ParamUtil.getString(bpc.request, "crud_action_type_tab");
         String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
         //wait update api url
         List<HcsaSvcSubtypeOrSubsumedDto> checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines(serviceId);
@@ -245,9 +245,12 @@ public class ClinicalLaboratoryDelegator {
                 }
                 appSvcChckListDto = new AppSvcChckListDto();
                 appSvcChckListDto.setChkLstConfId(config[0]);
-                appSvcChckListDto.setChkLstType(Integer.valueOf(config[1]));
-                appSvcChckListDto.setChkCode(config[2]);
-                appSvcChckListDto.setChkName(getSvcName(config[2]));
+                if("true".equals(config[1])){
+                    appSvcChckListDto.setChkLstType(1);
+                }else if("false".equals(config[1])){
+                    appSvcChckListDto.setChkLstType(0);
+                }
+                appSvcChckListDto.setChkName(config[2]);
                 appSvcChckListDtoList.add(appSvcChckListDto);
             }
             String premisesType = premisesDto.getPremisesType();
@@ -270,6 +273,10 @@ public class ClinicalLaboratoryDelegator {
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
             appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
             //hard-code
+
+            //get current service info
+
+
             appSvcRelatedInfoDto.setServiceCode("CLB");
             appSvcRelatedInfoDto.setServiceId("AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
             ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);

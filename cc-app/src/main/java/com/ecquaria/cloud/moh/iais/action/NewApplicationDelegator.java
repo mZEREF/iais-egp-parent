@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -38,8 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -181,6 +180,7 @@ public class NewApplicationDelegator {
     public void preparePreview(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(bpc.request, "AppSvcRelatedInfoDto");
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
     /**
@@ -191,7 +191,11 @@ public class NewApplicationDelegator {
      */
     public void preparePayment(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePayment start ...."));
-
+        //test data, dont need commit
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        appSubmissionDto.setAmount(200.0);
+        appSubmissionDto.setAppGrpNo("DL_2019_test_CR");
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do preparePayment end ...."));
     }
     /**
@@ -296,6 +300,21 @@ public class NewApplicationDelegator {
      */
     public void doPayment(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
+        /*String result = bpc.request.getParameter("result");
+        String switch2 = "ack";
+        if(!StringUtil.isEmpty(result)){
+            log.debug(StringUtil.changeForLog("payment result:"+result));
+            //
+            if("success".equals(result)){
+                PaymentDto paymentDto = new PaymentDto();
+                paymentDto.setAmount(200.0);
+                paymentDto.setInvoiceNo("asd");
+                paymentDto.setReqRefNo("AN1911136061");
+                RestApiUtil.save("iais-payment:8883/payment/tradingReply",paymentDto);
+                switch2 = "ack";
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);*/
 
         log.debug(StringUtil.changeForLog("the do doPayment end ...."));
     }
@@ -433,6 +452,10 @@ public class NewApplicationDelegator {
         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
         sortHcsaServiceDto(hcsaServiceDtoList);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+        //init session
+        AppSubmissionDto appSubmissionDto = new AppSubmissionDto();
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
     }
     private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList){
