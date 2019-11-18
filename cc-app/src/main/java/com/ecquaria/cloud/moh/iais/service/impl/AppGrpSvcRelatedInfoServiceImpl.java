@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.SVC_CGO_URL;
+import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.SVC_CHECKLIST_URL;
+
 /****
  *
  *   @date 10/29/2019
@@ -30,8 +33,8 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
     @Override
     public List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId) {
         Map<String,Object> map = new HashMap<>();
-        map.put("serviceId", "A7BAAA77-E9EE-E911-BE76-000C294908E1");
-        return RestApiUtil.getListByReqParam(GET_CHECKLIST_URL, map, HcsaSvcSubtypeOrSubsumedDto.class);
+        map.put("serviceId", "AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
+        return RestApiUtil.getListByReqParam(SVC_CHECKLIST_URL, map, HcsaSvcSubtypeOrSubsumedDto.class);
     }
 
     @Override
@@ -70,7 +73,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
         Map<String,Object> map = new HashMap<>();
         map.put("serviceId", serviceId);
         map.put("psnType", psnType);
-        return RestApiUtil.getListByReqParam(GET_CGO,map, HcsaSvcPersonnelDto.class);
+        return RestApiUtil.getListByReqParam(SVC_CGO_URL,map, HcsaSvcPersonnelDto.class);
     }
 
     @Override

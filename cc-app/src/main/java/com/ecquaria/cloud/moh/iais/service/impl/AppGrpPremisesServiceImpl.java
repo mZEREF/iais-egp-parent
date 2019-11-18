@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.GET_PREMISES_TYPE_BY_ID;
+import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.POSTAL_CODE_INFO;
+import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.SERVICEID_BY_SVCCODE;
+
 
 /**
  * AppGrpPremisesServiceImpl
@@ -26,10 +30,7 @@ import java.util.Set;
 public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
     //dont be used
     private static final String URL="iais-application:8881/iais-premises";
-    private static final String PREMISESURL="hcsa-config:8878/iais-hcsa-service/application-type-by-ids";
-    private static final String POSTCODEURL = "system-admin:8886/api/postcodes";
-    //get svcId by svcCode
-    private static final String SERVICEID = "hcsa-config:8878/service{code}";
+
 
     @Override
     public AppGrpPremisesDto saveAppGrpPremises(AppGrpPremisesDto appGrpPremisesDto) {
@@ -60,7 +61,7 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
 
     @Override
     public Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
-        return RestApiUtil.getByList(PREMISESURL, svcIds, Set.class);
+        return RestApiUtil.getByList(GET_PREMISES_TYPE_BY_ID, svcIds, Set.class);
     }
 
     @Override
@@ -68,13 +69,13 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
         Map<String,Object> map = new HashMap<>();
         map.put("searchField", searchField);
         map.put("filterValue", filterValue);
-        return RestApiUtil.getByReqParam(POSTCODEURL, map, PostCodeDto.class);
+        return RestApiUtil.getByReqParam(POSTAL_CODE_INFO, map, PostCodeDto.class);
     }
 
     @Override
     public String getSvcIdBySvcCode(String svcCode) {
-        Map<String,Object> map = new HashMap<>(16);
+        Map<String,Object> map = new HashMap<>();
         map.put("code", svcCode);
-        return RestApiUtil.getByReqParam(SERVICEID, map, String.class);
+        return RestApiUtil.getByReqParam(SERVICEID_BY_SVCCODE, map, String.class);
     }
 }
