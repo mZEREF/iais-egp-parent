@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
@@ -14,9 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.SVC_CGO_URL;
-import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.SVC_CHECKLIST_URL;
-
 /****
  *
  *   @date 10/29/2019
@@ -25,16 +23,12 @@ import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.
 @Service
 @Slf4j
 public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoService {
-    //load Laboratory Disciplines page checkList
-    private static final String GET_CHECKLIST_URL = "hcsa-config:8878/list-subtype-subsumed";
-    private static final String GET_CGO = "hcsa-config:8878/service-type";
 
-    //load loadLaboratory Disciplines page checkList
     @Override
     public List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId) {
         Map<String,Object> map = new HashMap<>();
-        map.put("serviceId", "AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
-        return RestApiUtil.getListByReqParam(SVC_CHECKLIST_URL, map, HcsaSvcSubtypeOrSubsumedDto.class);
+        map.put("svcId", "AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
+        return RestApiUtil.getListByReqParam(RestApiUrlConsts.SVC_CHECKLIST_URL, map, HcsaSvcSubtypeOrSubsumedDto.class);
     }
 
     @Override
@@ -73,7 +67,7 @@ public class AppGrpSvcRelatedInfoServiceImpl implements AppGrpSvcRelatedInfoServ
         Map<String,Object> map = new HashMap<>();
         map.put("serviceId", serviceId);
         map.put("psnType", psnType);
-        return RestApiUtil.getListByReqParam(SVC_CGO_URL,map, HcsaSvcPersonnelDto.class);
+        return RestApiUtil.getListByReqParam(RestApiUrlConsts.SVC_CGO_URL,map, HcsaSvcPersonnelDto.class);
     }
 
     @Override

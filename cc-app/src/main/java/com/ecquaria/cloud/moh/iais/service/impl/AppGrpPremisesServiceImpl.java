@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
@@ -13,10 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.GET_PREMISES_TYPE_BY_ID;
-import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.POSTAL_CODE_INFO;
-import static com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts.SERVICEID_BY_SVCCODE;
 
 
 /**
@@ -61,7 +58,7 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
 
     @Override
     public Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
-        return RestApiUtil.getByList(GET_PREMISES_TYPE_BY_ID, svcIds, Set.class);
+        return RestApiUtil.getByList(RestApiUrlConsts.GET_PREMISES_TYPE_BY_ID, svcIds, Set.class);
     }
 
     @Override
@@ -69,13 +66,13 @@ public class AppGrpPremisesServiceImpl implements AppGrpPremisesService {
         Map<String,Object> map = new HashMap<>();
         map.put("searchField", searchField);
         map.put("filterValue", filterValue);
-        return RestApiUtil.getByReqParam(POSTAL_CODE_INFO, map, PostCodeDto.class);
+        return RestApiUtil.getByReqParam(RestApiUrlConsts.POSTAL_CODE_INFO, map, PostCodeDto.class);
     }
 
     @Override
     public String getSvcIdBySvcCode(String svcCode) {
         Map<String,Object> map = new HashMap<>();
         map.put("code", svcCode);
-        return RestApiUtil.getByReqParam(SERVICEID_BY_SVCCODE, map, String.class);
+        return RestApiUtil.getByReqParam(RestApiUrlConsts.SERVICEID_BY_SVCCODE, map, String.class);
     }
 }
