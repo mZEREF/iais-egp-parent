@@ -72,8 +72,7 @@
                                 <img src="<%=webroot1%>img/paymentVISA.png" width="66" height="25" alt="VISA">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                 <img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">
                                 <p class="visible-xs visible-sm table-row-title">Proceed</p>
-                                <p class="text-right text-center-mobile"><iais:input type="button" cssClass="btn btn-primary" value="Proceed"></iais:input></p>
-                                <a href="https://192.168.6.60/payment/eservice/INTERNET/PaymentRequest?amount=1760&payMethod=Credit&reqNo=AN1911136061"><button class="btn" type="button">Payment</button></a>
+                                <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="btn btn-primary" value="Proceed"></iais:input></p>
                             </div>
                         </div>
                     </div>
@@ -84,7 +83,7 @@
 </form>
 <script src=""></script>
 <script type="text/javascript">
-    $(function () {
+    /*$(function () {
         // alert("ok")
         $(":button").click(function () {
             alert("ok")
@@ -106,6 +105,10 @@
                 }
             })
         })
-    })
+    })*/
+
+    $('#proceed').click(function () {
+        location.href= 'https://192.168.6.60/payment/eservice/INTERNET/PaymentRequest?amount=1760&payMethod=Credit&reqNo=AN1911136061';
+    });
 </script>
 
