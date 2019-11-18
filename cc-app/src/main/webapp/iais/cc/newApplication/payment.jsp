@@ -19,7 +19,7 @@
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <h2>Payment Summary</h2>
                                 <p >
-                                    Total amount due:<div  id="totalAmount" aria-valuenow="8888.88">$8888.88</div>
+                                    Total amount due:<div  id="totalAmount" aria-valuenow="8888.88"> <c:out value="${AppSubmissionDto.amount}"></c:out></div>
                                 </p>
                                 <table class="table">
                                     <thead>
@@ -31,23 +31,33 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-
                                     <tr>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Service</p>
-                                            <p>Clinical Laboratory</p>
+                                            <c:forEach var="hcsaServiceDtoList" items="${hcsaServiceDtoList}">
+                                                <p>
+                                                    <c:out value="${hcsaServiceDtoList.svcName}"></c:out>
+                                                </p>
+
+                                            </c:forEach>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Type</p>
-                                            <p>LS-2017-00003</p>
+                                            <p>
+                                                <c:out value="${AppSubmissionDto.appType}"></c:out>
+                                            </p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                            <p>DL_2019_00000009_CR</p>
+                                            <p>
+                                                <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
+                                            </p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title" >Amount</p>
-                                            <p id="fee">8888.88</p>
+                                            <p id="fee">
+                                                <c:out value="${AppSubmissionDto.amount}"></c:out>
+                                            </p>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -63,7 +73,7 @@
                                 <img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">
                                 <p class="visible-xs visible-sm table-row-title">Proceed</p>
                                 <p class="text-right text-center-mobile"><iais:input type="button" cssClass="btn btn-primary" value="Proceed"></iais:input></p>
-
+                                <a href="https://192.168.6.60/payment/eservice/INTERNET/PaymentRequest?amount=1760&payMethod=Credit&reqNo=AN1911136061"><button class="btn" type="button">Payment</button></a>
                             </div>
                         </div>
                     </div>
@@ -87,7 +97,7 @@
             //alert($("form[name=myform]").serialize())
             $.ajax({
                 type:"GET",
-                url:"https://egp.sit.inter.iais.com/payment/eservice/INTERNET/PaymentRequest",
+                url:"https://192.168.6.60/payment/eservice/INTERNET/PaymentRequest",
                 data:paymentRequestDto,
                 processData: false,
                 contentType: false,

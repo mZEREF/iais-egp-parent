@@ -10,17 +10,8 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <div class="main-content">
         <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp steps-tab">
-                        <%@ include file="./navTabs.jsp" %>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="premisesTab" role="tabpanel">
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="row center">
+                <h3>payment success !!!</h3>
             </div>
         </div>
     </div>

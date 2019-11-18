@@ -1,12 +1,15 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -35,7 +38,12 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * NewApplicationDelegator
@@ -172,6 +180,7 @@ public class NewApplicationDelegator {
     public void preparePreview(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(bpc.request, "AppSvcRelatedInfoDto");
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
     /**
@@ -182,7 +191,11 @@ public class NewApplicationDelegator {
      */
     public void preparePayment(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePayment start ...."));
-
+        //test data, dont need commit
+        /*AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        appSubmissionDto.setAmount(200.0);
+        appSubmissionDto.setAppGrpNo("DL_2019_test_CR");
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);*/
         log.debug(StringUtil.changeForLog("the do preparePayment end ...."));
     }
     /**
@@ -287,6 +300,15 @@ public class NewApplicationDelegator {
      */
     public void doPayment(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
+        String result = bpc.request.getParameter("result");
+        String switch2 = "loading";
+        if(!StringUtil.isEmpty(result)){
+            log.debug(StringUtil.changeForLog("payment result:"+result));
+            if("success".equals(result)){
+                switch2 = "ack";
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
 
         log.debug(StringUtil.changeForLog("the do doPayment end ...."));
     }
@@ -315,39 +337,16 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         //do validate
         Map<String,Map<String,String>> validateResult = doValidate(bpc);
-        //save the premisse
-        HttpServletRequest request = bpc.request;
-        log.info("In mS1 OnStepProcess");
-
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        //save the app and appGroup
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
-
-        SubmissionClient client = new SubmissionClient();
-
-        //prepare request parameters
-        appSubmissionDto.setEventRefNo("test event");
-        SubmitReq req = new SubmitReq();
-        req.setSubmissionId(null);
-        req.setProject(bpc.process.getCurrentProject());
-        req.setProcess(bpc.process.getCurrentProcessName());
-        req.setStep(bpc.process.getCurrentComponentName());
-        req.setService("appsubmit");
-        req.setOperation("Create");
-        req.setSopUrl("https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication");
-        req.setData(JsonUtil.parseToJson(appSubmissionDto));
-        req.setCallbackUrl(null);
-        req.setUserId("SOP");
-        req.setWait(true);
-        req.setTotalWait(30);
-
-        //
-        SubmitResp submitResp = client.submit("http://iais-event-bus:8890", req);
-
+        //asynchronous save the other data.
+         eventBus(appSubmissionDto,bpc);
         //get wrokgroup
-
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }
+
 
 
     /**
@@ -540,5 +539,24 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
     }
-
+    private  void eventBus( AppSubmissionDto appSubmissionDto,BaseProcessClass bpc){
+        SubmissionClient client = new SubmissionClient();
+        //prepare request parameters
+        appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
+        SubmitReq req = new SubmitReq();
+        req.setSubmissionId(appSubmissionDto.getAppGrpId());
+        req.setProject(bpc.process.getCurrentProject());
+        req.setProcess(bpc.process.getCurrentProcessName());
+        req.setStep(bpc.process.getCurrentComponentName());
+        req.setService("appsubmit");
+        req.setOperation("Create");
+        req.setSopUrl("https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication");
+        req.setData(JsonUtil.parseToJson(appSubmissionDto));
+        req.setCallbackUrl(null);
+        req.setUserId("SOP");
+        //req.setWait(true);
+        req.setTotalWait(30);
+        //
+        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+    }
 }

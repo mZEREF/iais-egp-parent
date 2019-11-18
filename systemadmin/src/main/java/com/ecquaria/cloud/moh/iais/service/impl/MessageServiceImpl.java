@@ -8,6 +8,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  */
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
@@ -26,20 +27,20 @@ public class MessageServiceImpl implements MessageService {
     @SearchTrack(catalog = "message", key = "search")
     @Override
     public SearchResult<MessageQueryDto> doQuery(SearchParam searchParam) {
-        return  RestApiUtil.query("system-admin-service:8886/iais-message/results", searchParam);
+        return  RestApiUtil.query(RestApiUrlConsts.MESSAGE_RESULTS, searchParam);
     }
 
     @Override
     public void saveMessage(MessageDto messageDto) {
         messageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        RestApiUtil.save("system-admin-service:8886/iais-message", messageDto);
+        RestApiUtil.save(RestApiUrlConsts.SYSTEM_ADMIN_SERVICE + RestApiUrlConsts.IAIS_MESSAGE, messageDto);
     }
 
     @Override
     public MessageDto getMessageById(String id) {
         Map<String, Object> paramMapper = new HashMap<>();
         paramMapper.put("id", id);
-        return RestApiUtil.getByReqParam("system-admin-service:8886/iais-message/{id}", paramMapper, MessageDto.class);
+        return RestApiUtil.getByReqParam(RestApiUrlConsts.GET_MESSAGE_BY_ID, paramMapper, MessageDto.class);
     }
 
 }
