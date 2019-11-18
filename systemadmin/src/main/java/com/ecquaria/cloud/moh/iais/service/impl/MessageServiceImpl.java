@@ -33,7 +33,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void saveMessage(MessageDto messageDto) {
         messageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        RestApiUtil.save(RestApiUrlConsts.SYSTEAM_ADMIN_SERVICE + RestApiUrlConsts.IAIS_MESSAGE, messageDto);
+        RestApiUtil.save(RestApiUrlConsts.SYSTEM_ADMIN_SERVICE + RestApiUrlConsts.IAIS_MESSAGE, messageDto);
     }
 
     @Override
