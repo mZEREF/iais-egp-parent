@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * @author weilu
@@ -24,9 +25,10 @@ public class PaymentDelegator {
     }
 
 
-    public void savePayment(BaseProcessClass bpc)  {
+    public void savePayment(BaseProcessClass bpc) throws IOException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>payment");
         HttpServletRequest request = bpc.request;
+        bpc.response.sendRedirect("https://192.168.6.113/hcsaapplication/eservice/INTERNET/MohNewApplication/1/doPayment?result=success");
         String result = request.getParameter("result");
         PaymentDto paymentDto = new PaymentDto();
         String am = request.getParameter("amount");
@@ -38,5 +40,6 @@ public class PaymentDelegator {
         paymentDto.setInvoiceNo(invoiceNo);
         paymentDto.setStatus(result);
         paymentService.savePayment(paymentDto);
+
     }
 }
