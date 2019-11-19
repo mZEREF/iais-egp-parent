@@ -45,6 +45,10 @@ public class PaymentRequestDelegator {
             paymentRequestDto.setPayMethod(payMethod);
             paymentRequestDto.setReqDt(new Date());
             paymentRequestDto.setReqRefNo(reqNo);
+//        paymentRequestDto.setReqRefNo("88888");
+//        paymentRequestDto.setReqDt(new Date());
+//        paymentRequestDto.setReqRefNo("7777777");
+//        paymentRequestDto.setPayMethod("CASH");
         }
         paymentRequestService.savePaymentRequestDto(paymentRequestDto);
     }
