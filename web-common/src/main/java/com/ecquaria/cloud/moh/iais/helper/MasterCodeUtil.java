@@ -60,6 +60,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_CHECKLIST_TYPE              = "99BD7A86-B3FC-4775-A837-F8B9D879943E";
     public static final String CATE_ID_SVC_NAME                    = "99F057CF-F7A0-43DA-872B-9AB8E9CF1D65";  //service name
     public static final String CATE_ID_DATE_RANGE                  = "18023ACC-84B7-4673-A14A-BEFA28147F27";
+    public static final String CATE_ID_PAYMENT_STATUS              = "91631723-9541-41fe-b751-197e579ce8b5";
 
     /**
      * @description: refresh the master codes into cache
