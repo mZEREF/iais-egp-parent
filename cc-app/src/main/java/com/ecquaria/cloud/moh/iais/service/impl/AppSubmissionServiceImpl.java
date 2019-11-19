@@ -85,6 +85,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             riskAcceptiionDto.setBaseServiceCodeList(appSvcRelatedInfoDto.getBaseServiceCodeList());
             riskAcceptiionDtos.add(riskAcceptiionDto);
         }
-        return RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG_PREORPOSTINSPECTION,recommendInspectionDto,PreOrPostInspectionResultDto.class);
+        return RestApiUtil.getByDto(RestApiUrlConsts.HCSA_CONFIG_PREORPOSTINSPECTION,recommendInspectionDto,PreOrPostInspectionResultDto.class);
     }
 }
