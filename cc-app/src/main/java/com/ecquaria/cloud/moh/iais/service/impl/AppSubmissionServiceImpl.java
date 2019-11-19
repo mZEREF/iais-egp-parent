@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -85,6 +86,41 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             riskAcceptiionDto.setBaseServiceCodeList(appSvcRelatedInfoDto.getBaseServiceCodeList());
             riskAcceptiionDtos.add(riskAcceptiionDto);
         }
-        return RestApiUtil.getByDto(RestApiUrlConsts.HCSA_CONFIG_PREORPOSTINSPECTION,recommendInspectionDto,PreOrPostInspectionResultDto.class);
+        return RestApiUtil.getByList(RestApiUrlConsts.HCSA_CONFIG_PREORPOSTINSPECTION,recommendInspectionDto,PreOrPostInspectionResultDto.class);
     }
+
+    @Override
+    public void setRiskToDto(AppSubmissionDto appSubmissionDto) {
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList();
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+            RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
+            riskAcceptiionDto.setScvCode(riskAcceptiionDto.getScvCode());
+            riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
+            riskAcceptiionDtoList.add(riskAcceptiionDto);
+        }
+        List<RiskResultDto> riskResultDtoList = RestApiUtil.postGetList(RestApiUrlConsts.HCSA_CONFIG+RestApiUrlConsts.HCSA_CONFIG_RISKRESULT,
+                riskAcceptiionDtoList, RiskResultDto.class);
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+            String serviceCode = appSvcRelatedInfoDto.getServiceCode();
+            RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList,serviceCode);
+            if(riskResultDto!= null){
+                appSvcRelatedInfoDto.setScore(riskResultDto.getScore());
+                appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
+            }
+        }
+    }
+   private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
+       RiskResultDto result = null;
+       if(riskResultDtoList == null || StringUtil.isEmpty(serviceCode)){
+        return result;
+       }
+       for(RiskResultDto riskResultDto : riskResultDtoList){
+           if(serviceCode.equals(riskResultDto.getSvcCode())){
+               result = riskResultDto ;
+           }
+       }
+       return result;
+   }
+
 }

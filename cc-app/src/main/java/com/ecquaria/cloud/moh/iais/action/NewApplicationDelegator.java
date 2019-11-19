@@ -349,6 +349,8 @@ public class NewApplicationDelegator {
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
         appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
         appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        //set Risk Score
+        appSubmissionService.setRiskToDto(appSubmissionDto);
 
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
