@@ -226,7 +226,7 @@
                 <repository>
                     <id>nexus3-repo</id>
                     <name>Nexus Repository</name>
-                    <url>http://192.168.4.165/repository/public-maven/</url>
+                    <url>http://hub.ecquaria.com/repository/public-maven/</url>
                     <snapshots>
                         <enabled>true</enabled>
                         <updatePolicy>always</updatePolicy>

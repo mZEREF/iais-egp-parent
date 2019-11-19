@@ -22,6 +22,7 @@ public class BankDelegator {
 
 
     public void  deal (BaseProcessClass bpc) {
+
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>bank");
         HttpServletRequest request = bpc.request;
         String statue = request.getParameter("statue");

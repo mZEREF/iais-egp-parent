@@ -15,6 +15,6 @@ public class PaymentRequestServiceImpl implements PaymentRequestService {
 
     @Override
     public void savePaymentRequestDto(PaymentRequestDto paymentRequestDto) {
-        RestApiUtil.save("iais-payment:8883/payment/duringThePayment",paymentRequestDto);
+        RestApiUtil.save("iais-payment:8881/payment/duringThePayment",paymentRequestDto);
     }
 }

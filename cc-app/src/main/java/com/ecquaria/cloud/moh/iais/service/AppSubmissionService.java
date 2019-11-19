@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 
 /**
  * AppSubmissionService
@@ -13,4 +14,9 @@ public interface AppSubmissionService {
 
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
 
+    public String getDraftNo(String appType);
+    public String getGroupNo(String appType);
+    public  Double getGroupAmount(AppSubmissionDto appSubmissionDto);
+    public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
+    public void setRiskToDto(AppSubmissionDto appSubmissionDto);
 }

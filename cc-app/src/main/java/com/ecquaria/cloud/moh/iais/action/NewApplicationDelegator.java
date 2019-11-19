@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -38,12 +39,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * NewApplicationDelegator
@@ -322,6 +318,8 @@ public class NewApplicationDelegator {
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
+        String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+        log.debug(StringUtil.changeForLog("the draftNo -->:")+draftNo);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
@@ -339,6 +337,21 @@ public class NewApplicationDelegator {
         Map<String,Map<String,String>> validateResult = doValidate(bpc);
         //save the app and appGroup
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        //get appGroupNo
+        String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
+        log.debug(StringUtil.changeForLog("the appGroupNo is -->:")+appGroupNo);
+        appSubmissionDto.setAppGrpNo(appGroupNo);
+        //get Amount
+        Double amount = appSubmissionService.getGroupAmount(appSubmissionDto);
+        log.debug(StringUtil.changeForLog("the amount is -->:")+amount);
+        appSubmissionDto.setAmount(amount);
+        //judge is the preInspection
+        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+        appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+        appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        //set Risk Score
+        appSubmissionService.setRiskToDto(appSubmissionDto);
+
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         //asynchronous save the other data.
