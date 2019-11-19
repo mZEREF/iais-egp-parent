@@ -6,7 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.List;
@@ -20,6 +22,9 @@ import java.util.List;
 @Delegator("showServiceFormsDelegator")
 @Slf4j
 public class ShowServiceFormsDelegator {
+    @Autowired
+    ServiceConfigService serviceConfigService;
+
     /**
      * StartStep: SubStart
      *
@@ -46,8 +51,13 @@ public class ShowServiceFormsDelegator {
         }
         String actionTab = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
         if(StringUtil.isEmpty(actionTab)){
+            actionTab = getFirstTab(bpc);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,getFirstTab(bpc));
         }
+
+        String svcId = serviceConfigService.getSvcIdBySvcCode(actionTab);
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID, svcId);
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE, actionTab);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,IaisEGPConstant.YES);
         log.debug(StringUtil.changeForLog("the do prepareSwitch end ...."));
     }
@@ -62,6 +72,7 @@ public class ShowServiceFormsDelegator {
      */
     public void prepareServiceLoad(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareServiceLoad start ...."));
+
         log.debug(StringUtil.changeForLog("the do prepareServiceLoad end ...."));
     }
     /**
