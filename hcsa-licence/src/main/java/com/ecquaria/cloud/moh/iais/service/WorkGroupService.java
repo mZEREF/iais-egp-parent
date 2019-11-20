@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserConvertor;
 import com.ecquaria.cloud.helper.EngineHelper;
+import com.ecquaria.cloud.moh.iais.service.client.WorkGroupClient;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.cloudfeign.HystrixCommandExecutor;

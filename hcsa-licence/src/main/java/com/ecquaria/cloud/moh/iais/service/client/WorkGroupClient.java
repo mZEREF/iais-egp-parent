@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.service;
+package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloudfeign.FeignConfiguration;

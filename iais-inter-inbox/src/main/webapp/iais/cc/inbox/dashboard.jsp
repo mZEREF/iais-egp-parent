@@ -59,7 +59,7 @@
                     </div>
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile txt-only"><a href="#">
-                            <p class="dashboard-txt">Not sure what to do? Let us guide you <i class="fa fa-angle-right"></i></p></a></div>
+                            <p class="dashboard-txt">Not sure what to do? Let us guide you <em class="fa fa-angle-right"></em></p></a></div>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-footernote">
-                    <p class="dashboard-small-txt"><b>Last Login:</b> 07 February 2019, 14: 39 | <b>Last Activity:</b> Application For Renewal - Licence No. EP000-2019-2, On 01 Feb 2019</p>
+                    <p class="dashboard-small-txt"><strong>Last Login:</strong> 07 February 2019, 14: 39 | <strong>Last Activity:</strong> Application For Renewal - Licence No. EP000-2019-2, On 01 Feb 2019</p>
                 </div>
             </div>
         </div>
