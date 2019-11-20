@@ -42,8 +42,9 @@ public final class MasterCodeUtil {
     private static final String RETRIEVE_MASTER_CODES              = "retrieveMasterCodes";
     private static final String MASTERCODE_CACHES                  = "system-admin:8886/iais-mastercode/caches";
     //Code Categorys
-    public static final String CATE_ID_NATIONALITY                 = "8215D856-84AD-48F2-8590-1654DBAB1B40";
-    public static final String CATE_ID_RISK_LEVEL                  = "33C073B6-5F62-4BE7-951A-06DBB881C127";
+    public static final String CATE_ID_NATIONALITY                 = "6B201379-730B-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_RISK_LEVEL                  = "2CFD766C-730B-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_SERVICE_TYPE                = "0D675C87-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_APP_TYPE                    = "09FF3DBF-8C6F-4509-9BAB-086F0F916F3A";
     public static final String CATE_ID_INSPEC_REQUIRED_TYPE        = "42CCE0B3-1D7E-40D5-BC2B-F31F34AC7BDF";
     public static final String CATE_ID_PRE_OR_POST_INSPEC          = "7E21590E-05AF-47D7-9EF8-F8AACAFDE181";
@@ -53,15 +54,15 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_APP_STATUS                  = "E8E722B5-7761-4EC0-AD06-E05ECA94F7F8";
     public static final String CATE_ID_ADDRESS_TYPE                = "D6FAD1CB-DF43-4CDE-AF97-45F88566D7EF";
     public static final String CATE_ID_ANSWER_TYPE                 = "14C0B134-1369-430B-B036-B1BF56A9DFBB";
-    public static final String CATE_ID_COMMON_STATUS               = "95FF02D9-2C34-4662-8AC1-FFC8A5288C1F";
-    public static final String CATE_ID_SALUTATION                  = "2302696A-5948-4734-9DA3-D52C9373840B";
+    public static final String CATE_ID_COMMON_STATUS               = "8CEB1F80-730B-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_SALUTATION                  = "DFF3D597-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_RISK_WEIGHTAGE_MATRIX       = "E3BF91DA-B8A6-4D4E-86EA-F6DEAE68EEA7";
     public static final String CATE_ID_DATE_TYPE                   = "460089E8-F389-4649-B443-8DECB8182A17";
     public static final String CATE_ID_SVC_NAME                    = "99F057CF-F7A0-43DA-872B-9AB8E9CF1D65";  //service name
     public static final String CATE_ID_DATE_RANGE                  = "18023ACC-84B7-4673-A14A-BEFA28147F27";
     public static final String CATE_ID_PAYMENT_STATUS              = "91631723-9541-41fe-b751-197e579ce8b5";
-    public static final String CATE_ID_CHECKLIST_TYPE                  = "99BD7A86-B3FC-4775-A837-F8B9D879943E";
-    public static final String CATE_ID_CHECKLIST_MODULE                  = "e0641ce9-9cbb-443e-a4bc-0aab9d31e078";
+    public static final String CATE_ID_CHECKLIST_TYPE              = "99BD7A86-B3FC-4775-A837-F8B9D879943E";
+    public static final String CATE_ID_CHECKLIST_MODULE            = "e0641ce9-9cbb-443e-a4bc-0aab9d31e078";
 
     /**
      * @description: refresh the master codes into cache
