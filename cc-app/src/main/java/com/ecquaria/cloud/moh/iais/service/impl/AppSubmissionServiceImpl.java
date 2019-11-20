@@ -68,7 +68,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             linenceFeeQuaryDtos.add(licenceFeeQueryDto);
         }
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:"+linenceFeeQuaryDtos.size()));
-        Double amount = RestApiUtil.getByList(RestApiUrlConsts.NEW_FEE,linenceFeeQuaryDtos,Double.class);
+        Double amount = RestApiUtil.postGetObject(RestApiUrlConsts.NEW_FEE,linenceFeeQuaryDtos,Double.class);
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl amount is -->:"+amount));
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
         return  amount;
@@ -86,7 +86,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             riskAcceptiionDto.setBaseServiceCodeList(appSvcRelatedInfoDto.getBaseServiceCodeList());
             riskAcceptiionDtos.add(riskAcceptiionDto);
         }
-        return RestApiUtil.getByList(RestApiUrlConsts.HCSA_CONFIG_PREORPOSTINSPECTION,recommendInspectionDto,PreOrPostInspectionResultDto.class);
+        return RestApiUtil.postGetObject(RestApiUrlConsts.HCSA_CONFIG_PREORPOSTINSPECTION,recommendInspectionDto,PreOrPostInspectionResultDto.class);
     }
 
     @Override

@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
@@ -64,7 +65,8 @@ public class HcsaChklConfigDelegator {
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
-        IaisEGPHelper.clearSessionAttr(request, HcsaChecklistConstants.class);
+
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);
     }
 
     /**
@@ -85,7 +87,7 @@ public class HcsaChklConfigDelegator {
         filterParameter.setClz(ChecklistConfigQueryDto.class);
         filterParameter.setSearchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH);
         filterParameter.setResultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT);
-        filterParameter.setSortField("item_id");
+        filterParameter.setSortField("config_id");
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("hcsaconfig", "listChecklistConfig", searchParam);
@@ -112,8 +114,6 @@ public class HcsaChklConfigDelegator {
         String section = ParamUtil.getString(request, "section");
         String sectionDesc = ParamUtil.getString(request, "sectionDesc");
 
-        log.info("add section item");
-
         if(StringUtils.isEmpty(section) || StringUtils.isEmpty(sectionDesc)){
             return;
         }
@@ -127,7 +127,10 @@ public class HcsaChklConfigDelegator {
                 }
 
                 ChecklistSectionDto checklistSectionDto = new ChecklistSectionDto();
+
+                //going to clear it in submit method
                 checklistSectionDto.setId(UUID.randomUUID().toString());
+
                 checklistSectionDto.setSection(section);
                 checklistSectionDto.setDescription(sectionDesc);
                 checklistSectionDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -177,6 +180,9 @@ public class HcsaChklConfigDelegator {
     public void doSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!HcsaChecklistConstants.ACTION_SEARCH.equals(currentAction)){
+            return;
+        }
 
         String common = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
 
@@ -189,8 +195,9 @@ public class HcsaChklConfigDelegator {
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
         if(!StringUtil.isEmpty(common)){
-            searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_MODULE, 1, true);
+            searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_COMMON, 1, true);
         }
+
 
         if(!StringUtil.isEmpty(svcName)){
             searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_SERVICE, svcName, true);
@@ -198,6 +205,18 @@ public class HcsaChklConfigDelegator {
 
         if(!StringUtil.isEmpty(svcSubType)){
             searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType, true);
+        }
+
+        if (moduleCheckBox!= null && moduleCheckBox.length > 0){
+            for (String value : moduleCheckBox){
+                searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_MODULE, value, true);
+            }
+        }
+
+        if (typeCheckBox!= null && typeCheckBox.length > 0){
+            for (String value : typeCheckBox){
+                searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_TYPE, value, true);
+            }
         }
 
     }
@@ -229,7 +248,8 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
 
-        String common = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
+        String common = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON);
+        String module = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
         String type = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
         String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
@@ -240,6 +260,7 @@ public class HcsaChklConfigDelegator {
         configDto.setCommon(isCommon);
         configDto.setType(type);
         configDto.setSvcName(svcName);
+        configDto.setModule(type);
         configDto.setSvcSubType(svcSubType);
         ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, "addConfigInfo");
         if(validationResult != null && validationResult.isHasErrors()){
@@ -247,6 +268,8 @@ public class HcsaChklConfigDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
         }else {
+            configDto.setType(MasterCodeUtil.getCodeDesc(type));
+            configDto.setModule(MasterCodeUtil.getCodeDesc(module));
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
         }
@@ -293,43 +316,6 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setRequestAttr(request, "subtypeSelect", subtypeSelects);
     }
 
-
-    /**
-     * @AutoStep: addSectionNextAction
-     * @param:
-     * @return:
-     * @author: yichen
-     */
-    public void addSectionNextAction(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-
-        String section = ParamUtil.getString(request, "section");
-        String sectionDesc = ParamUtil.getString(request, "sectionDesc");
-        String sectionOrder = ParamUtil.getString(request, "sectionOrder");
-        ChecklistSectionDto checklistSectionDto = new ChecklistSectionDto();
-        checklistSectionDto.setSection(section);
-        checklistSectionDto.setDescription(sectionDesc);
-        checklistSectionDto.setOrder(Integer.valueOf(sectionOrder));
-        checklistSectionDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-
-        ValidationResult validationResult = WebValidationHelper.validateProperty(checklistSectionDto, "addConfigInfo");
-        if(validationResult != null && validationResult.isHasErrors()){
-            Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
-        }else {
-            try {
-                ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-
-                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
-            }catch (NullPointerException e){
-                log.error(e.getMessage(), e);
-                throw new IaisRuntimeException(e);
-            }
-        }
-
-    }
-
     /**
      * @AutoStep: addChecklistItemNextAction
      * @param:
@@ -365,6 +351,7 @@ public class HcsaChklConfigDelegator {
             }
 
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, disposition);
+
         }catch (NullPointerException e){
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);

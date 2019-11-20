@@ -37,7 +37,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
-        return RestApiUtil.getByList(RestApiUrlConsts.GET_PREMISES_TYPE_BY_ID, svcIds, Set.class);
+        return RestApiUtil.postGetObject(RestApiUrlConsts.GET_PREMISES_TYPE_BY_ID, svcIds, Set.class);
     }
 
     @Override

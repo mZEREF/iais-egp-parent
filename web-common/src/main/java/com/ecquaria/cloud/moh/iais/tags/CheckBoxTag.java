@@ -139,7 +139,7 @@ public final class CheckBoxTag extends DivTagSupport {
                         }
 
                         html.append(" type=\"checkbox\" ");
-                        html.append(" value=\"").append(MasterCodeUtil.getCodeDesc(codeCategory)).append("\"");
+                        html.append(" value=\"").append(text).append("\"");
                         if (!StringUtils.isEmpty(ariaInvalid)){
                             html.append("aria-invalid=\"").append(ariaInvalid).append("\">");
                         }

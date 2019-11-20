@@ -264,7 +264,6 @@ public class ClinicalLaboratoryDelegator {
 
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
             appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
-            //hard-code
 
             //get current service info
 
@@ -272,6 +271,8 @@ public class ClinicalLaboratoryDelegator {
             String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
             appSvcRelatedInfoDto.setServiceCode(currentSvcCode);
             appSvcRelatedInfoDto.setServiceId(currentSvcId);
+            //hard-code wait when dostart init set
+            appSvcRelatedInfoDto.setServiceType("BASE");
             ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
         }
 

@@ -56,11 +56,18 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>ChecklistDelegator");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Management");
         HttpServletRequest request = bpc.request;
 
-        IaisEGPHelper.clearSessionAttr(request, HcsaChecklistConstants.class);
+
+        String currentValidateId = ParamUtil.getString(request, "currentValidateId");
+        if (currentValidateId == null){
+            ParamUtil.setSessionAttr(request, "currentValidateId", null);
+        }
+
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
+
     }
 
     /**
@@ -260,8 +267,7 @@ public class HcsaChklItemDelegator {
                     it.setStatus(itemDto.getStatus());
                     it.setRegulationClauseNo(itemDto.getRegulationClauseNo());
                 }
-                // Edit clone need clear item id for backend logic
-                it.setItemId(null);
+
             }
 
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, (Serializable) chklItemDtos);
@@ -279,8 +285,11 @@ public class HcsaChklItemDelegator {
     public void prepareChecklistItem(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+
         if(HcsaChecklistConstants.ACTION_CANCEL.equals(currentAction)){
-            IaisEGPHelper.clearSessionAttr(request, CheckItemQueryDto.class);
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
+            ParamUtil.setSessionAttr(request, "currentValidateId", null);
         }
 
         filterParameter.setClz(CheckItemQueryDto.class);

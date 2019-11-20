@@ -175,6 +175,9 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(bpc.request, "AppSvcRelatedInfoDto");
+
+
+
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
     /**
@@ -410,6 +413,29 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
         return postCodeDto;
     }
+
+    /**
+     * @description: ajax
+     * @author: zixia
+     * @param
+     */
+    @RequestMapping(value = "/loadSvcBySvcId.do", method = RequestMethod.GET)
+    public AppSvcRelatedInfoDto loadSvcInfoBySvcId(HttpServletRequest request){
+        String svcId = ParamUtil.getRequestString(request, "svcId");
+        if(StringUtil.isEmpty(svcId)){
+            return null;
+        }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        for(AppSvcRelatedInfoDto appSvcDto:appSvcRelatedInfoDtoList){
+            if(svcId.equals(appSvcDto.getServiceId())){
+                //return this dto
+            }
+
+        }
+        return null;
+    }
+
 
     /**
      * @description: for the page validate call.
