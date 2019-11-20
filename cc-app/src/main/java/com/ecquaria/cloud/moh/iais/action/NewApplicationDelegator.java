@@ -19,8 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.service.AppGrpPremisesService;
-import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.submission.client.model.SubmitReq;
@@ -53,16 +51,12 @@ public class NewApplicationDelegator {
     private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
     private static final String APPGRPPRIMARYDOCDTO = "AppGrpPrimaryDocDto";
     private static final String ERRORMAP_PREMISES    = "errorMap_premises";
-    public static final String SERVICEID = "serviceId";
+    public static final String CURRENTSERVICEID = "currentServiceId";
+    public static final String CURRENTSVCCODE = "currentSvcCode";
     private static final String PREMISESTYPE = "premisesType";
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
     private static final String HCSASVCDOCCONFIGDTOMAP = "HcsaSvcDocConfigDtoMap";
 
-    @Autowired
-    private AppGrpPremisesService appGrpPremisesService;
-
-    @Autowired
-    private AppGrpPrimaryDocService appGrpPrimaryDocService;
 
     @Autowired
     private ServiceConfigService serviceConfigService;
@@ -117,11 +111,13 @@ public class NewApplicationDelegator {
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<String> svcIds = new ArrayList<>();
-        hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
+        if(hcsaServiceDtoList != null){
+            hcsaServiceDtoList.forEach(item -> svcIds.add(item.getId()));
+        }
         List premisesSelect = new ArrayList<SelectOption>();
         String loginId="internet";
         //?
-        List<AppGrpPremisesDto> list = appGrpPremisesService.getAppGrpPremisesDtoByLoginId(loginId);
+        List<AppGrpPremisesDto> list = serviceConfigService.getAppGrpPremisesDtoByLoginId(loginId);
         SelectOption sp0 = new SelectOption("-1","Select One");
         premisesSelect.add(sp0);
         SelectOption sp1 = new SelectOption("newPremise","Add a new premises");
@@ -136,8 +132,10 @@ public class NewApplicationDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,"premisesSelect",premisesSelect);
         //get premises type
-        Set<String> premisesType= appGrpPremisesService.getAppGrpPremisesTypeBySvcId(svcIds);
-        ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
+        if(svcIds.size()>0 ){
+            Set<String> premisesType= serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+            ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
+        }
         log.debug(StringUtil.changeForLog("the do preparePremises end ...."));
     }
     /**
@@ -149,8 +147,8 @@ public class NewApplicationDelegator {
     public void prepareDocuments(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareDocuments start ...."));
 
-        String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
-        Map<String,List<HcsaSvcDocConfigDto>> hcsaSvcCommonDocDtoMap = appGrpPrimaryDocService.getAllHcsaSvcDocs(serviceId);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        Map<String,List<HcsaSvcDocConfigDto>> hcsaSvcCommonDocDtoMap = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
         if(hcsaSvcCommonDocDtoMap!=null){
             ParamUtil.setSessionAttr(bpc.request, HCSASVCDOCCONFIGDTOMAP, (Serializable) hcsaSvcCommonDocDtoMap);
         }
@@ -177,6 +175,9 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(bpc.request, "AppSvcRelatedInfoDto");
+
+
+
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
     /**
@@ -249,7 +250,7 @@ public class NewApplicationDelegator {
                     oneFile = new ArrayList<>();
                     oneFile.add(file);
                     //api side not get value
-                    List<String> fileRepoGuidList = appGrpPrimaryDocService.saveFileToRepo(oneFile);
+                    List<String> fileRepoGuidList = serviceConfigService.saveFileToRepo(oneFile);
                     appGrpPrimaryDocDto.setFileRepoId(fileRepoGuidList.get(0));
                     //if config[1] equals common ==> set null
                     appGrpPrimaryDocDto.setPremisessName("");
@@ -302,6 +303,8 @@ public class NewApplicationDelegator {
             log.debug(StringUtil.changeForLog("payment result:"+result));
             if("success".equals(result)){
                 switch2 = "ack";
+                //update status
+                // wait to do
             }
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
@@ -349,6 +352,8 @@ public class NewApplicationDelegator {
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
         appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
         appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        //set Risk Score
+        appSubmissionService.setRiskToDto(appSubmissionDto);
 
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
@@ -403,11 +408,34 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode start ...."));
         String searchField = ParamUtil.getDate(request, "searchField");
         String filterValue = ParamUtil.getDate(request, "filterValue");
-        PostCodeDto postCodeDto = appGrpPremisesService.getPremisesByPostalCode(searchField, filterValue);
+        PostCodeDto postCodeDto = serviceConfigService.getPremisesByPostalCode(searchField, filterValue);
 
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
         return postCodeDto;
     }
+
+    /**
+     * @description: ajax
+     * @author: zixia
+     * @param
+     */
+    @RequestMapping(value = "/loadSvcBySvcId.do", method = RequestMethod.GET)
+    public AppSvcRelatedInfoDto loadSvcInfoBySvcId(HttpServletRequest request){
+        String svcId = ParamUtil.getRequestString(request, "svcId");
+        if(StringUtil.isEmpty(svcId)){
+            return null;
+        }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        for(AppSvcRelatedInfoDto appSvcDto:appSvcRelatedInfoDtoList){
+            if(svcId.equals(appSvcDto.getServiceId())){
+                //return this dto
+            }
+
+        }
+        return null;
+    }
+
 
     /**
      * @description: for the page validate call.

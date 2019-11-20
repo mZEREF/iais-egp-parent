@@ -18,8 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.service.AppGrpPrimaryDocService;
-import com.ecquaria.cloud.moh.iais.service.AppGrpSvcRelatedInfoService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,8 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.APPSUBMISSIONDTO;
-import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.SERVICEID;
 
 
 /**
@@ -51,10 +48,7 @@ import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.SERVICE
 public class ClinicalLaboratoryDelegator {
 
     @Autowired
-    AppGrpSvcRelatedInfoService appGrpSvcRelatedInfoService;
-
-    @Autowired
-    private AppGrpPrimaryDocService appGrpPrimaryDocService;
+    private ServiceConfigService serviceConfigService;
 
     public static final String  GOVERNANCEOFFICERS = "GovernanceOfficers";
     public static final String  GOVERNANCEOFFICERSDTO = "GovernanceOfficersDto";
@@ -108,10 +102,8 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines start ...."));
-        String crud_action_type = ParamUtil.getString(bpc.request, "crud_action_type_tab");
-        String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
-        //wait update api url
-        List<HcsaSvcSubtypeOrSubsumedDto> checkList= appGrpSvcRelatedInfoService.loadLaboratoryDisciplines(serviceId);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        List<HcsaSvcSubtypeOrSubsumedDto> checkList= serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
         ParamUtil.setSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto", (Serializable) checkList);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
@@ -125,12 +117,12 @@ public class ClinicalLaboratoryDelegator {
     public void prepareGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers start ...."));
 
-        String serviceId = (String) ParamUtil.getSessionAttr(bpc.request, SERVICEID);
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         String psnType = "CGO";
         List<HcsaSvcPersonnelDto> cgoList = null;
-        if(!StringUtil.isEmpty(serviceId) && !StringUtil.isEmpty(psnType)){
+        if(!StringUtil.isEmpty(currentSvcId) && !StringUtil.isEmpty(psnType)){
             //min and max count
-            cgoList =appGrpSvcRelatedInfoService.getGOSelectInfo(serviceId, psnType);
+            cgoList =serviceConfigService.getGOSelectInfo(currentSvcId, psnType);
             ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERS, (Serializable) cgoList);
         }
         List<SelectOption> cgoSelectList = new ArrayList<>();
@@ -179,8 +171,8 @@ public class ClinicalLaboratoryDelegator {
      */
     public void preparePrincipalOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers start ...."));
-        List poList = appGrpSvcRelatedInfoService.loadPO();
-        ParamUtil.setSessionAttr(bpc.request, "POList", (Serializable) poList);
+        /*List poList = appGrpSvcRelatedInfoService.loadPO();
+        ParamUtil.setSessionAttr(bpc.request, "POList", (Serializable) poList);*/
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
     }
 
@@ -272,13 +264,15 @@ public class ClinicalLaboratoryDelegator {
 
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
             appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
-            //hard-code
 
             //get current service info
 
-
-            appSvcRelatedInfoDto.setServiceCode("CLB");
-            appSvcRelatedInfoDto.setServiceId("AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
+            String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+            String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+            appSvcRelatedInfoDto.setServiceCode(currentSvcCode);
+            appSvcRelatedInfoDto.setServiceId(currentSvcId);
+            //hard-code wait when dostart init set
+            appSvcRelatedInfoDto.setServiceType("BASE");
             ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
         }
 
@@ -420,7 +414,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcDocDto.setFileSize(Integer.valueOf(String.valueOf(size)));
                     List<MultipartFile> oneFile = new ArrayList<>();
                     oneFile.add(file);
-                    List<String> fileRepoGuidList = appGrpPrimaryDocService.saveFileToRepo(oneFile);
+                    List<String> fileRepoGuidList = serviceConfigService.saveFileToRepo(oneFile);
                     appSvcDocDto.setFileRepoId(fileRepoGuidList.get(0));
                     //wait api change to get fileRepoId
                     appSvcDocDtoList.add(appSvcDocDto);
@@ -430,12 +424,12 @@ public class ClinicalLaboratoryDelegator {
 
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoList);
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList =new ArrayList<>();
         appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
     }
 
@@ -490,7 +484,7 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId start ...."));
         //
         String cgoId = bpc.request.getParameter("");
-        AppSvcCgoDto governanceOfficersDto = appGrpSvcRelatedInfoService.loadGovernanceOfficerByCgoId(cgoId);
+        AppSvcCgoDto governanceOfficersDto = serviceConfigService.loadGovernanceOfficerByCgoId(cgoId);
         ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTO, governanceOfficersDto);
         log.debug(StringUtil.changeForLog("the do loadGovernanceOfficerByCGOId end ...."));
     }
@@ -564,7 +558,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
         }

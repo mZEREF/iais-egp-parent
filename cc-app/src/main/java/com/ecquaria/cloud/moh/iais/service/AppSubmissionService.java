@@ -18,6 +18,5 @@ public interface AppSubmissionService {
     public String getGroupNo(String appType);
     public  Double getGroupAmount(AppSubmissionDto appSubmissionDto);
     public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
-
-
+    public void setRiskToDto(AppSubmissionDto appSubmissionDto);
 }
