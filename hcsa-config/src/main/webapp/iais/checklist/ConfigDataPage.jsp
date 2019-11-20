@@ -49,7 +49,7 @@
 
       <div>
           <td>
-            <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_APP_TYPE" name= "moduleCheckBox" labelName = "Module"></iais:checkbox>
+            <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_CHECKLIST_MODULE" name= "moduleCheckBox" labelName = "Module"></iais:checkbox>
           </td>
 
 
@@ -92,41 +92,33 @@
             <tr>
               <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
               <td></td>
-              <iais:sortableHeader needSort="true"   field="checklistItem" value="Checklist Item"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="isCommon" value="Common"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="type" value="Type"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="service" value="Service"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="svcSubType" value="Service Sub-type"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="order" value="Order No"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="checklistSection" value="Checklist Section"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="hciCode" value="HCI Code"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="eftStartDate" value="Effective Start Date"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="eftEndDate" value="Effective End Date"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="parentId" value="Parent ID"></iais:sortableHeader>
             </tr>
             </thead>
             <tbody>
             <tr>
-              <c:forEach var = "configItem" items = "${checklistConfigResult.rows}" varStatus="status">
+              <c:forEach var = "config" items = "${checklistConfigResult.rows}" varStatus="status">
             <tr>
               <td class="row_no">${(status.index + 1) + (checklistConfigSearch.pageNo - 1) * checklistConfigSearch.pageSize}</td>
               <td></td>
-              <td>${configItem.checklistItem}</td>
-              <td>${configItem.common}</td>
-              <td>${configItem.type}</td>
-              <td>${configItem.module}</td>
-              <td>${configItem.svcName}</td>
-              <td>${configItem.svcSubType}</td>
-              <td>${configItem.order}</td>
-              <td>${configItem.checklistSection}</td>
-              <td>${configItem.hciCode}</td>
-              <td>${configItem.eftStartDate}</td>
-              <td>${configItem.eftEndDate}</td>
-              <td>${configItem.parentId}</td>
+              <td>${config.common}</td>
+              <td>${config.type}</td>
+              <td>${config.module}</td>
+              <td>${config.svcName}</td>
+              <td>${config.svcSubType}</td>
+              <td>${config.hciCode}</td>
+              <td>${config.eftStartDate}</td>
+              <td>${config.eftEndDate}</td>
               <td>
-                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEditItem('${configItem.itemId}');"/>
-                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${configItem.itemId}');"/>
+                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEditConfig('${config.id}');"/>
+                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${config.id}');"/>
               </td>
             </tr>
             </c:forEach>

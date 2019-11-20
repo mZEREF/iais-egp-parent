@@ -41,7 +41,12 @@
           </div>
 
           <div class="col-xs-12">
-            Type <iais:select name="type" id="type" codeCategory="CATE_ID_APP_TYPE" firstOption="Select Type"></iais:select>
+            Module <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Select Module"></iais:select>
+          </div>
+
+
+          <div class="col-xs-12">
+            Type <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Select Type"></iais:select>
           </div>
 
           <div class="col-xs-12">

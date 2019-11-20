@@ -57,9 +57,10 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_SALUTATION                  = "2302696A-5948-4734-9DA3-D52C9373840B";
     public static final String CATE_ID_RISK_WEIGHTAGE_MATRIX       = "E3BF91DA-B8A6-4D4E-86EA-F6DEAE68EEA7";
     public static final String CATE_ID_DATE_TYPE                   = "460089E8-F389-4649-B443-8DECB8182A17";
-    public static final String CATE_ID_CHECKLIST_TYPE              = "99BD7A86-B3FC-4775-A837-F8B9D879943E";
     public static final String CATE_ID_SVC_NAME                    = "99F057CF-F7A0-43DA-872B-9AB8E9CF1D65";  //service name
     public static final String CATE_ID_DATE_RANGE                  = "18023ACC-84B7-4673-A14A-BEFA28147F27";
+    public static final String CATE_ID_CHECKLIST_TYPE                  = "99BD7A86-B3FC-4775-A837-F8B9D879943E";
+    public static final String CATE_ID_CHECKLIST_MODULE                  = "e0641ce9-9cbb-443e-a4bc-0aab9d31e078";
 
     /**
      * @description: refresh the master codes into cache

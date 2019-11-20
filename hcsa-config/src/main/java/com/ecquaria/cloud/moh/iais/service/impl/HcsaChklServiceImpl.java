@@ -27,46 +27,46 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam) {
-        return RestApiUtil.query(RestApiUrlConsts.CHECKLIST_ITEM_RESULTS, searchParam);
+        return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.CHECKLIST_ITEM_RESULTS, searchParam);
     }
 
     @Override
     public SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam) {
-        return RestApiUtil.query(RestApiUrlConsts.CHECKLIST_CONFIG_RESULTS, searchParam);
+        return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.CHECKLIST_CONFIG_RESULTS, searchParam);
     }
 
 
     @Override
     public List<ChecklistItemDto> listChklItemByItemId(List<String> itemIds) {
-        return  RestApiUtil.postGetList(RestApiUrlConsts.CHECKLIST_ITEM_BY_IDS, itemIds, ChecklistItemDto.class);
+        return  RestApiUtil.postGetList(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.CHECKLIST_ITEM_BY_IDS, itemIds, ChecklistItemDto.class);
     }
 
     @Override
     public ChecklistItemDto getChklItemById(String id) {
-        return IaisEGPHelper.getRecordByPrimaryKey(RestApiUrlConsts.CHECKLIST_ITEM_BY_ID, id, ChecklistItemDto.class);
+        return IaisEGPHelper.getRecordByPrimaryKey(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_ITEM_SLD_URL, id, ChecklistItemDto.class);
     }
 
 
     @Override
     public void saveChklItem(ChecklistItemDto itemDto) {
-        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_ITEM_SLD_URL, itemDto);
+        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_ITEM_SLD_URL, itemDto);
     }
 
     @Override
 
     public List<String> listRegulationClauseNo() {
-        return RestApiUtil.getList(RestApiUrlConsts.DISTINCT_REGULATION_CLAUSES, List.class);
+        return RestApiUtil.getList(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.DISTINCT_REGULATION_CLAUSES, List.class);
     }
 
 
     @Override
     public void submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
-        RestApiUtil.save(RestApiUrlConsts.CHECKLIST_ITEM_CLONE, hcsaChklItemDtos);
+        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.CHECKLIST_ITEM_CLONE, hcsaChklItemDtos);
     }
 
     @Override
     public void submitConfig(ChecklistConfigDto checklistConfigDto) {
-        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_CONFIG_SLD_URL, checklistConfigDto);
+        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_CONFIG_SLD_URL, checklistConfigDto);
     }
 
     @Override
