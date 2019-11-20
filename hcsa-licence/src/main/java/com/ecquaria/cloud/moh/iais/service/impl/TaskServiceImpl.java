@@ -19,5 +19,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
         return RestApiUtil.save(RestApiUrlConsts.SYSTEM_ADMIN_SERVICE + RestApiUrlConsts.IAIS_TASK,taskDtos,List.class);
+        //return RestApiUtil.postGetList(RestApiUrlConsts.SYSTEM_ADMIN_SERVICE + RestApiUrlConsts.IAIS_TASK,taskDtos,TaskDto.class);
     }
 }

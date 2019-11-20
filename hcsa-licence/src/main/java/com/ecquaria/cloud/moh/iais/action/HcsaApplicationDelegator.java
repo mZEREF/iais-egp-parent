@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.impl.ApplicationViewServiceImp;
 import com.ecquaria.cloudfeign.FeignException;
@@ -32,6 +34,7 @@ public class HcsaApplicationDelegator {
     private TaskService taskService;
     public void routingTask(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
+        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
         List<ApplicationDto> applicationDtos = new ArrayList();
         ApplicationDto applicationDto0 = new ApplicationDto();
         applicationDto0.setApplicationNo("test applicaitonNo");
@@ -54,6 +57,7 @@ public class HcsaApplicationDelegator {
                     taskDto.setGroupShortName(workGroupName);
                     taskDto.setSlaInDays(TaskConsts.TASK_SLA_IN_DAYS);
                     taskDto.setSlaAlertInDays(TaskConsts.TASK_SLA_ALERT_IN_DAYS);
+                    taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     taskDtos.add(taskDto);
                 }
             }
