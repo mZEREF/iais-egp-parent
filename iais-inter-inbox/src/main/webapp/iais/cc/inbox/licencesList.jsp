@@ -4,7 +4,7 @@
         <div class="search-wrap">
             <div class="input-group">
                 <input class="form-control" id="licenseAdvancedSearcch" type="text" placeholder="Licence no." name="licenseAdvancedSearcch" aria-label="licenseAdvancedSearcch"><span class="input-group-btn">
-                          <button class="btn btn-default buttonsearch" title="Search by keywords"><i class="fa fa-search"></i></button></span>
+                          <button class="btn btn-default buttonsearch" title="Search by keywords"><em class="fa fa-search"></em></button></span>
             </div>
         </div><a class="advanced-search" href="#">Advanced Search</a>
     </div>
