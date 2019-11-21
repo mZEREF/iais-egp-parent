@@ -77,7 +77,7 @@ public class TaskServiceImpl implements TaskService {
         if(userGroups!=null && userGroups.size()>0){
             List<User> users = WorkGroupService.getInstance().getUsersByGroupNo(userGroups.get(0).getGroupNo());
             result = new TaskScoreDto();
-            result.setId(users.get(0).getUserIdentifier().getId());
+            result.setUserId(users.get(0).getUserIdentifier().getId());
             result.setUserDomain(users.get(0).getUserIdentifier().getUserDomain());
             //List<TaskScoreDto> taskScoreDtos = taskScoreService.getTaskScores(workGroupName);
 
