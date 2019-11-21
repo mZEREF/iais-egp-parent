@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssQuer
  * @author Shicheng
  * @date 2019/11/14 18:04
  **/
+
 public interface InspectionServie {
     SearchResult<InspecTaskCreAndAssQueryDto> getInspectionPool(SearchParam searchParam);
 }
