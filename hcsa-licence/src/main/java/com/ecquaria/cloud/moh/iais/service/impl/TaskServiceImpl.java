@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -19,6 +20,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
         return RestApiUtil.save(RestApiUrlConsts.SYSTEM_ADMIN_SERVICE + RestApiUrlConsts.IAIS_TASK,taskDtos,List.class);
-        //return RestApiUtil.postGetList(RestApiUrlConsts.SYSTEM_ADMIN_SERVICE + RestApiUrlConsts.IAIS_TASK,taskDtos,TaskDto.class);
     }
+
+    @Override
+    public HcsaSvcStageWorkingGroupDto getTaskConfig(HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) {
+        return RestApiUtil.postGetObject(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDto,HcsaSvcStageWorkingGroupDto.class);
+    }
+
 }
