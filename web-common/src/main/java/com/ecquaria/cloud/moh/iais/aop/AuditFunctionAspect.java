@@ -14,7 +14,6 @@ package com.ecquaria.cloud.moh.iais.aop;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.annotation.LogInfo;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -24,6 +23,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -31,12 +35,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Aspect
 @Component
@@ -60,8 +58,9 @@ public class AuditFunctionAspect {
     public Object auditAroundFunction(ProceedingJoinPoint point) throws Throwable {
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(MiscUtil.getCurrentRequest(),
                 AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        if (dto == null)
+        if (dto == null) {
             dto = new AuditTrailDto();
+        }
 
         IaisEGPHelper.setAuditLoginUserInfo(dto);
         return auditFunction(point, dto);
@@ -71,8 +70,9 @@ public class AuditFunctionAspect {
     public Object auditAroundClass(ProceedingJoinPoint point) throws Throwable {
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(MiscUtil.getCurrentRequest(),
                 AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        if (dto == null)
+        if (dto == null) {
             dto = new AuditTrailDto();
+        }
 
         IaisEGPHelper.setAuditLoginUserInfo(dto);
         Class clazz = point.getSignature().getDeclaringType();
@@ -98,10 +98,7 @@ public class AuditFunctionAspect {
             json.put("sql_catalog", logInfo.catalog());
             json.put("sql_key", logInfo.key());
         }
-        if (AppConsts.USER_DOMAIN_INTERNET.equals(dto.getUserDomain()))
-            dto.setOperation(AuditTrailConsts.OPERATION_INTERNET_VIEW_RECORD);
-        else
-            dto.setOperation(AuditTrailConsts.OPERATION_INTRANET_VIEW_RECORD);
+        dto.setOperation(AuditTrailConsts.OPERATION_VIEW_RECORD);
 
         if (args != null && args.length > 0) {
             for (Object obj : args) {
