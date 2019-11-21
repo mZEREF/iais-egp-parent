@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/InspectionInboxSearchStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionInboxSearch" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="InspectionInboxSearchStart" x="40" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionInboxSearchInit" x="230" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionInboxSearchInit_OnStepProcess_0" name="inspectionInboxSearchInit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionInboxSearchPre" x="420" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionInboxSearchStep1" x="780" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionInboxSearchDoSearch" x="1180" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionInboxSearchSort" x="980" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionInboxSearchPageStep" x="770" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionInboxSearchQuery" x="980" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="InspectionInboxSearchPreInsp" processname="MohInspectionPreInspector" project="INTRANET" version="-1" x="970" y="-20">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionInboxSearchPage" stageIndicator="" x="590" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/InspectionInboxSearchStart" style="rectanular">
+   <position>{(60,120)(250,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionInboxSearchInit" style="rectanular">
+   <position>{(250,120)(440,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionInboxSearchPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionInboxSearchPre" style="rectanular">
+   <position>{(440,120)(610,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchStep1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectionInboxSearchPage" style="rectanular">
+   <position>{(610,120)(800,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/InspectionInboxSearchSwitch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionInboxSearchStep1" style="rectanular">
+   <position>{(800,120)(990,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchDoSearch" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/InspectionInboxSearchSwitch1" style="rectanular">
+   <position>{(990,120)(1200,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchSort" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/InspectionInboxSearchSwitch1" style="rectanular">
+   <position>{(990,120)(1000,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchPageStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionInboxSearchSwitch1" style="oblique">
+   <position>{(990,120)(790,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchQuery" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionInboxSearchSort" style="rectanular">
+   <position>{(1000,250)(1000,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionInboxSearchPageStep" style="oblique">
+   <position>{(790,250)(1000,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionInboxSearchDoSearch" style="oblique">
+   <position>{(1200,120)(1000,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionInboxSearchQuery" style="oblique">
+   <position>{(1000,420)(494,420)(440,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/InspectionInboxSearchPreInsp" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionInboxSearchSwitch1" style="oblique">
+   <position>{(990,120)(990,0)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionInboxSearchPre" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/InspectionInboxSearchPreInsp" style="oblique">
+   <position>{(990,0)(440,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="" name="InspectionInboxSearchSwitch1" x="970" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionInboxSearchDoSearch" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionInboxSearchSort" value="&quot;sort&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionInboxSearchPageStep" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/InspectionInboxSearchPreInsp" value="&quot;pre&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
