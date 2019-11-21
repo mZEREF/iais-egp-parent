@@ -15,13 +15,13 @@ import sop.webflow.rt.api.BaseProcessClass;
  **/
 @Delegator("inspectionDelegator")
 @Slf4j
-public class InspectionDelegtor {
+public class InspectionDelegator {
 
     @Autowired
     private InspectionServie inspectionServie;
 
     @Autowired
-    private InspectionDelegtor(InspectionServie inspectionServie){
+    private InspectionDelegator(InspectionServie inspectionServie){
         this.inspectionServie = inspectionServie;
     }
 
