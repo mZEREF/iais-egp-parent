@@ -79,7 +79,7 @@ public class TaskServiceImpl implements TaskService {
             result = new TaskScoreDto();
             result.setId(users.get(0).getUserIdentifier().getId());
             result.setUserDomain(users.get(0).getUserIdentifier().getUserDomain());
-            List<TaskScoreDto> taskScoreDtos = taskScoreService.getTaskScores(workGroupName);
+            //List<TaskScoreDto> taskScoreDtos = taskScoreService.getTaskScores(workGroupName);
 
         }
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup end ...."));
