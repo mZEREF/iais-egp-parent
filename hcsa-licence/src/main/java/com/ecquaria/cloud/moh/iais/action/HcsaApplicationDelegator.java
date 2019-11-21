@@ -54,7 +54,7 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         List<TaskDto> taskDtos = new ArrayList<>();
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setStageID(HcsaConsts.ROUTING_STAGE_ASO);
+        hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
         hcsaSvcStageWorkingGroupDto = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDto);
         UserIdentifier userIdentifier = getUserIdForWorkGroup(hcsaSvcStageWorkingGroupDto.getGroupShortName());
         if(applicationDtos != null && applicationDtos.size() > 0){
