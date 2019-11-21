@@ -45,24 +45,23 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_NATIONALITY                 = "6B201379-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_RISK_LEVEL                  = "2CFD766C-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SERVICE_TYPE                = "0D675C87-730B-EA11-BE7D-000C29F371DC";
-    public static final String CATE_ID_APP_TYPE                    = "09FF3DBF-8C6F-4509-9BAB-086F0F916F3A";
-    public static final String CATE_ID_INSPEC_REQUIRED_TYPE        = "42CCE0B3-1D7E-40D5-BC2B-F31F34AC7BDF";
-    public static final String CATE_ID_PRE_OR_POST_INSPEC          = "7E21590E-05AF-47D7-9EF8-F8AACAFDE181";
-    public static final String CATE_ID_RISK_RATING                 = "FAF512A7-79D9-4DCE-AEBC-00A720DB5FB7";
-    public static final String CATE_ID_INS_OR_RRA_SOURCE           = "94E95C79-ED51-4B93-97BE-2496044A837D";
-    public static final String CATE_ID_LEAD_AND_GOVE_TAG           = "677C61D3-D4E5-4F91-80C7-1808147E6FFC";
-    public static final String CATE_ID_APP_STATUS                  = "E8E722B5-7761-4EC0-AD06-E05ECA94F7F8";
-    public static final String CATE_ID_ADDRESS_TYPE                = "D6FAD1CB-DF43-4CDE-AF97-45F88566D7EF";
-    public static final String CATE_ID_ANSWER_TYPE                 = "14C0B134-1369-430B-B036-B1BF56A9DFBB";
+    public static final String CATE_ID_APP_TYPE                    = "623F4561-1D0C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_INSPEC_REQUIRED_TYPE        = "49E66DB0-1F0C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_PRE_OR_POST_INSPEC          = "695F9F2B-200C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_RISK_RATING                 = "E9BAC83C-210C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_INS_OR_RRA_SOURCE           = "121589F8-210C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_LEAD_AND_GOVE_TAG           = "C1DD8781-220C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_APP_STATUS                  = "BEE661EE-220C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_ADDRESS_TYPE                = "19DD1192-080C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_ANSWER_TYPE                 = "35AA431C-270C-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_COMMON_STATUS               = "8CEB1F80-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SALUTATION                  = "DFF3D597-730B-EA11-BE7D-000C29F371DC";
-    public static final String CATE_ID_RISK_WEIGHTAGE_MATRIX       = "E3BF91DA-B8A6-4D4E-86EA-F6DEAE68EEA7";
-    public static final String CATE_ID_DATE_TYPE                   = "460089E8-F389-4649-B443-8DECB8182A17";
-    public static final String CATE_ID_SVC_NAME                    = "99F057CF-F7A0-43DA-872B-9AB8E9CF1D65";  //service name
-    public static final String CATE_ID_DATE_RANGE                  = "18023ACC-84B7-4673-A14A-BEFA28147F27";
-    public static final String CATE_ID_PAYMENT_STATUS              = "91631723-9541-41fe-b751-197e579ce8b5";
-    public static final String CATE_ID_CHECKLIST_TYPE              = "99BD7A86-B3FC-4775-A837-F8B9D879943E";
-    public static final String CATE_ID_CHECKLIST_MODULE            = "e0641ce9-9cbb-443e-a4bc-0aab9d31e078";
+    public static final String CATE_ID_RISK_WEIGHTAGE_MATRIX       = "199B036A-230C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_DATE_TYPE                   = "1B1C8815-280C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_DATE_RANGE                  = "38E90928-240C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_PAYMENT_STATUS              = "E2194D1C-0A0C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_CHECKLIST_TYPE              = "47DD36ED-280C-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_CHECKLIST_MODULE            = "9276F7F8-290C-EA11-BE7D-000C29F371DC";
 
     /**
      * @description: refresh the master codes into cache
