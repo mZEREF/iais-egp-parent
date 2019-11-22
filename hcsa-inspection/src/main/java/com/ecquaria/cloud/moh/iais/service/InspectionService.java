@@ -13,29 +13,20 @@ import java.util.List;
 
 public interface InspectionService {
     /**
-      * @author: shicheng
-      * @Date 2019/11/21
-      * @Param: name
-      * @return: List<TaskDto>
-      * @Descripation: According to the group name, get the work pool
-      */
-    List<TaskDto> getCommPoolByGroupWordName(String name);
-
-    /**
-      * @author: shicheng
-      * @Date 2019/11/21
-      * @Param: taskDtoList
-      * @return: InspectionTaskPoolListDto
-      * @Descripation: Shows unallocated Common pools
-      */
+     * @author: shicheng
+     * @Date 2019/11/21
+     * @Param: taskDtoList
+     * @return: InspectionTaskPoolListDto
+     * @Descripation: Shows unallocated Common pools
+     */
     InspectionTaskPoolListDto getInspectionTaskPoolListDto(List<TaskDto> taskDtoList);
 
     /**
-      * @author: shicheng
-      * @Date 2019/11/21
-      * @Param: taskDto
-      * @return: InspecTaskCreAndAssQueryDto
-      * @Descripation: Gets a single Common pool
-      */
+     * @author: shicheng
+     * @Date 2019/11/21
+     * @Param: taskDto
+     * @return: InspecTaskCreAndAssQueryDto
+     * @Descripation: Gets a single Common pool
+     */
     InspecTaskCreAndAssQueryDto getInspecTaskCreAndAssQueryDtoByTask(TaskDto taskDto);
 }

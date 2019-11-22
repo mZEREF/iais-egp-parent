@@ -1,32 +1,27 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.List;
-
 /**
- * Process: MohInspectionAllotTaskInspector
+ * @Process: MohInspectionInboxSearch
  *
  * @author Shicheng
  * @date 2019/11/14 18:01
  **/
-@Delegator("inspectionDelegator")
+@Delegator("inspectionSearchDelegator")
 @Slf4j
-public class InspectionDelegator {
+public class InspectionSearchDelegator {
 
     @Autowired
     private InspectionService inspectionService;
 
     @Autowired
-    private InspectionDelegator(InspectionService inspectionService){
+    private InspectionSearchDelegator(InspectionService inspectionService){
         this.inspectionService = inspectionService;
     }
 
@@ -48,7 +43,6 @@ public class InspectionDelegator {
      */
     public void inspectionPreInspectorInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the InspectionPreInspectorInit start ...."));
-        ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", null);
     }
 
     /**
@@ -80,9 +74,6 @@ public class InspectionDelegator {
      */
     public void inspectionInboxSearchDoSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the InspectionInboxSearchDoSearch start ...."));
-        List<TaskDto> commPools = inspectionService.getCommPoolByGroupWordName("asows");
-        InspectionTaskPoolListDto inspectionTaskPoolListDto = inspectionService.getInspectionTaskPoolListDto(commPools);
-        ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", inspectionTaskPoolListDto);
     }
 
     /**
