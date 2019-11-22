@@ -44,11 +44,19 @@ public class TaskServiceImpl implements TaskService {
     public List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos) {
         return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDtos,HcsaSvcStageWorkingGroupDto.class);
     }
+    @Override
+    public void routingTask(ApplicationDto applicationDto, String stageId) {
+      if(applicationDto != null && !StringUtil.isEmpty(stageId) ){
+
+
+      }else{
+          log.error(StringUtil.changeForLog("The applicationDto or stageId is null ... "));
+      }
+    }
 
     @Override
     public void routingAdminScranTask(List<ApplicationDto> applicationDtos) throws FeignException {
-        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
-
+        log.debug(StringUtil.changeForLog("the do routingAdminScranTask start ...."));
         if(applicationDtos != null && applicationDtos.size() > 0){
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
             for(ApplicationDto applicationDto : applicationDtos){
@@ -83,8 +91,10 @@ public class TaskServiceImpl implements TaskService {
             log.error(StringUtil.changeForLog("The applicationDtos is null"));
         }
 
-        log.debug(StringUtil.changeForLog("the do routingTask end ...."));
+        log.debug(StringUtil.changeForLog("the do routingAdminScranTask end ...."));
     }
+
+
 
     private int getConfigScoreForService(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,String serviceId,
                                          String stageId,String appType){
