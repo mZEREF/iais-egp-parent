@@ -54,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
             for(ApplicationDto applicationDto : applicationDtos){
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
                 hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
-                hcsaSvcStageWorkingGroupDto.setStageId(applicationDto.getServiceId());
+                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
                 hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
                 hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
             }
