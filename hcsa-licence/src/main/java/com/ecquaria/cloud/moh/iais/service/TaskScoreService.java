@@ -14,5 +14,5 @@ import java.util.List;
 public interface TaskScoreService {
     List<TaskScoreDto> getTaskScores(String workGroupName);
     TaskScoreDto getLowestTaskScore(List<TaskScoreDto> taskScoreDtos,List<User> users);
-    TaskScoreDto updateTaskScore(TaskScoreDto taskScoreDto);
+    TaskScoreDto createTaskScore(TaskScoreDto taskScoreDto);
 }

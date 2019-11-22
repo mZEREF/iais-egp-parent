@@ -59,14 +59,15 @@ public class TaskScoreServiceImpl implements TaskScoreService {
         //there is not new , return the Lowest Score taskScoreDtos. because there is sort in the SQL side
         if(result == null){
             result = taskScoreDtos.get(0);
+            result.setScore(0);
         }
         return result;
     }
 
     @Override
-    public TaskScoreDto updateTaskScore(TaskScoreDto taskScoreDto) {
+    public TaskScoreDto createTaskScore(TaskScoreDto taskScoreDto) {
         taskScoreDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return RestApiUtil.update(RestApiUrlConsts.IAIS_TASK_SCORE,taskScoreDto,TaskScoreDto.class);
+        return RestApiUtil.save(RestApiUrlConsts.IAIS_TASK_SCORE,taskScoreDto,TaskScoreDto.class);
     }
 
     private boolean isExist(List<TaskScoreDto> taskScoreDtos,String userId,String domain){

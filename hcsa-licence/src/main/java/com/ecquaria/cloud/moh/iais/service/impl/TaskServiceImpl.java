@@ -46,7 +46,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-
     public void routingAdminScranTask(List<ApplicationDto> applicationDtos) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
 
@@ -67,15 +66,15 @@ public class TaskServiceImpl implements TaskService {
                 for(ApplicationDto applicationDto : applicationDtos){
                     TaskDto taskDto = TaskUtil.getAsoTaskDto(
                             applicationDto.getApplicationNo(),workGroupName,
-                            taskScoreDto.getId(),taskScoreDto.getUserDomain(),
-                            IaisEGPHelper.getCurrentAuditTrailDto() );
+                            taskScoreDto.getUserId(),taskScoreDto.getUserDomain(),
+                            IaisEGPHelper.getCurrentAuditTrailDto());
                     taskDtos.add(taskDto);
                     int score = taskScoreDto.getScore();
                     score = score + getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             HcsaConsts.ROUTING_STAGE_ASO,applicationDto.getApplicationType());
                     taskScoreDto.setScore(score);
                     this.createTasks(taskDtos);
-                    taskScoreService.updateTaskScore(taskScoreDto);
+                    taskScoreService.createTaskScore(taskScoreDto);
                 }
             }else{
                 log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
