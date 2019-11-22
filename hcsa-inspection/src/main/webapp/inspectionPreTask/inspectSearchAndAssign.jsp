@@ -1,3 +1,6 @@
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <div class="col-xs-12">
   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     <div class="panel panel-default">
@@ -72,7 +75,13 @@
               <div class="form">
                 <label class="col-xs-12 col-md-3 control-label" for="licencePeriod">Licence Period</label>
                 <div class="col-xs-12 col-md-3">
-                  <input id="licencePeriod" name="licencePeriod" type="text">
+                  <iais:body >
+                  <iais:row>
+                    <iais:value width="10">
+                      <iais:datePicker id = "licencePeriod" name = "licencePeriod" value="20/10/2019"></iais:datePicker>
+                    </iais:value>
+                  </iais:row>
+                  </iais:body>
                 </div>
               </div>
             </form>
@@ -109,25 +118,24 @@
     </div>
   </div>
   <div class="components">
-    <h2 class="component-title">Table &amp; Pagination</h2>
     <div class="table-gp">
       <table class="table">
         <thead>
         <tr>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
-          <th></th>
+          <th>S/N</th>
+          <th>Application No.</th>
+          <th>Application Type</th>
+          <th>HCI Code</th>
+          <th>HCI Name / Address</th>
+          <th>Service Name</th>
+          <th>Licence Expiry Date (dd/mm/yyyy)</th>
+          <th>Inspection Date (dd/mm/yyyy)</th>
+          <th>Inspection Type</th>
+          <th>Inspection Lead</th>
         </tr>
         </thead>
         <tbody>
+
         </tbody>
       </table>
       <div class="table-footnote">
