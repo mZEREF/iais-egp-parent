@@ -131,6 +131,7 @@
           <th>Licence Expiry Date (dd/mm/yyyy)</th>
           <th>Inspection Date (dd/mm/yyyy)</th>
           <th>Inspection Type</th>
+          <th>Inspector</th>
           <th>Inspection Lead</th>
         </tr>
         </thead>
