@@ -33,8 +33,9 @@ public class AuditTrailHelper {
         HttpServletRequest request = MiscUtil.getCurrentRequest();
         AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request,
                 AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        if (dto == null)
+        if (dto == null) {
             dto = new AuditTrailDto();
+        }
 
         IaisEGPHelper.setAuditLoginUserInfo(dto);
         dto.setModule(moduleName);
