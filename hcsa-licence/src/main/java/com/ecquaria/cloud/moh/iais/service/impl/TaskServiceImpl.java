@@ -37,36 +37,72 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
-        return RestApiUtil.save(RestApiUrlConsts.SYSTEM_ADMIN_SERVICE + RestApiUrlConsts.IAIS_TASK,taskDtos,List.class);
+        return RestApiUtil.save( RestApiUrlConsts.IAIS_TASK,taskDtos,List.class);
     }
 
     @Override
-    public HcsaSvcStageWorkingGroupDto getTaskConfig(HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) {
-        return RestApiUtil.postGetObject(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDto,HcsaSvcStageWorkingGroupDto.class);
+    public List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos) {
+        return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDtos,HcsaSvcStageWorkingGroupDto.class);
     }
 
     @Override
+
     public void routingAdminScranTask(List<ApplicationDto> applicationDtos) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
-        List<TaskDto> taskDtos = new ArrayList<>();
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
-        hcsaSvcStageWorkingGroupDto = this.getTaskConfig(hcsaSvcStageWorkingGroupDto);
-        TaskScoreDto userIdentifier = getUserIdForWorkGroup(hcsaSvcStageWorkingGroupDto.getGroupShortName());
+
         if(applicationDtos != null && applicationDtos.size() > 0){
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
             for(ApplicationDto applicationDto : applicationDtos){
-                TaskDto taskDto = TaskUtil.getAsoTaskDto(applicationDto.getServiceId(),
-                        applicationDto.getApplicationNo(),hcsaSvcStageWorkingGroupDto.getGroupShortName(),
-                        userIdentifier.getId(),userIdentifier.getUserDomain(),
-                        IaisEGPHelper.getCurrentAuditTrailDto() );
-                taskDtos.add(taskDto);
+                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+                hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
+                hcsaSvcStageWorkingGroupDto.setStageId(applicationDto.getServiceId());
+                hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+                hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+            }
+            hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+            if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
+                String workGroupName = hcsaSvcStageWorkingGroupDtos.get(0).getGroupShortName();
+                TaskScoreDto taskScoreDto = getUserIdForWorkGroup(workGroupName);
+                List<TaskDto> taskDtos = new ArrayList<>();
+                for(ApplicationDto applicationDto : applicationDtos){
+                    TaskDto taskDto = TaskUtil.getAsoTaskDto(applicationDto.getServiceId(),
+                            applicationDto.getApplicationNo(),workGroupName,
+                            taskScoreDto.getId(),taskScoreDto.getUserDomain(),
+                            IaisEGPHelper.getCurrentAuditTrailDto() );
+                    taskDtos.add(taskDto);
+                    int score = taskScoreDto.getScore();
+                    score = score + getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
+                            HcsaConsts.ROUTING_STAGE_ASO,applicationDto.getApplicationType());
+                    taskScoreDto.setScore(score);
+                    this.createTasks(taskDtos);
+                    taskScoreService.updateTaskScore(taskScoreDto);
+                }
+            }else{
+                log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
             }
         }else{
             log.error(StringUtil.changeForLog("The applicationDtos is null"));
         }
-        this.createTasks(taskDtos);
+
         log.debug(StringUtil.changeForLog("the do routingTask end ...."));
     }
+
+    private int getConfigScoreForService(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,String serviceId,
+                                         String stageId,String appType){
+        int result = 0;
+        if(StringUtil.isEmpty(serviceId) || StringUtil.isEmpty(stageId) || StringUtil.isEmpty(appType)){
+          return result;
+        }
+        for (HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto :hcsaSvcStageWorkingGroupDtos){
+            if(serviceId.equals(hcsaSvcStageWorkingGroupDto.getServiceId())
+                    && stageId.equals(hcsaSvcStageWorkingGroupDto.getStageId())
+                    && appType.equals(hcsaSvcStageWorkingGroupDto.getType())){
+                result = hcsaSvcStageWorkingGroupDto.getCount();
+            }
+        }
+        return result;
+    }
+
     private TaskScoreDto getUserIdForWorkGroup(String workGroupName) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup start ...."));
         TaskScoreDto result = null;
@@ -76,11 +112,11 @@ public class TaskServiceImpl implements TaskService {
         List<UserGroup> userGroups = WorkGroupService.getInstance().retrieveAgencyWorkingGroup(workGroupName);
         if(userGroups!=null && userGroups.size()>0){
             List<User> users = WorkGroupService.getInstance().getUsersByGroupNo(userGroups.get(0).getGroupNo());
-            result = new TaskScoreDto();
-            result.setUserId(users.get(0).getUserIdentifier().getId());
-            result.setUserDomain(users.get(0).getUserIdentifier().getUserDomain());
-            //List<TaskScoreDto> taskScoreDtos = taskScoreService.getTaskScores(workGroupName);
-
+            List<TaskScoreDto> taskScoreDtos = taskScoreService.getTaskScores(workGroupName);
+            result = taskScoreService.getLowestTaskScore(taskScoreDtos,users);
+        }
+        if(result != null && StringUtil.isEmpty(result.getGroupShortName())){
+            result.setGroupShortName(workGroupName);
         }
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup end ...."));
         return result;

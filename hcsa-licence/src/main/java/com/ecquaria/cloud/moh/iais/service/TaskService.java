@@ -15,6 +15,6 @@ import java.util.List;
  */
 public interface TaskService {
     List<TaskDto> createTasks(List<TaskDto> taskDtos);
-    HcsaSvcStageWorkingGroupDto getTaskConfig(HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto);
+    List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos);
     public void routingAdminScranTask(List<ApplicationDto> applicationDtos) throws FeignException;
 }
