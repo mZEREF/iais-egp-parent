@@ -24,12 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.egp.api.EGPHelper;
-import lombok.extern.slf4j.Slf4j;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.text.ParsePosition;
@@ -37,6 +31,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
 
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
@@ -49,12 +48,14 @@ public final class IaisEGPHelper extends EGPHelper {
      * @return: void
      */
     public static void setAuditLoginUserInfo(AuditTrailDto dto) {
-        if (dto == null)
+        if (dto == null) {
             return;
+        }
 
         HttpServletRequest request = MiscUtil.getCurrentRequest();
-        if (request == null)
+        if (request == null) {
             return;
+        }
 
         User user = SessionManager.getInstance(request).getCurrentUser();
         HttpSession session = request.getSession();
@@ -63,6 +64,8 @@ public final class IaisEGPHelper extends EGPHelper {
             dto.setMohUserId(user.getId());
             dto.setMohUserGuid(AppConsts.USER_ID_ANONYMOUS);
             dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
+            dto.setOperationType(AppConsts.USER_DOMAIN_INTRANET.equals(user.getUserDomain()) ?
+                    AuditTrailConsts.OPERATION_TYPE_INTRANET : AuditTrailConsts.OPERATION_TYPE_INTERNET);
         }
         dto.setSessionId(session.getId());
         dto.setClientIp(MiscUtil.getClientIp(request));
@@ -73,8 +76,9 @@ public final class IaisEGPHelper extends EGPHelper {
         String urlStr = IaisEGPHelper.class.getResource("").toString();
         String serverPath = urlStr.substring(urlStr.lastIndexOf("file:/") + 6).replaceAll("%20", " ");
         String path = "";
-        if (serverPath.lastIndexOf("WEB-INF") > 0)
-            path = serverPath.substring(0, serverPath.lastIndexOf("WEB-INF")) ;
+        if (serverPath.lastIndexOf("WEB-INF") > 0) {
+            path = serverPath.substring(0, serverPath.lastIndexOf("WEB-INF"));
+        }
 
         return path;
     }
@@ -82,11 +86,13 @@ public final class IaisEGPHelper extends EGPHelper {
     public static AuditTrailDto getCurrentAuditTrailDto() {
         AuditTrailDto dto = null;
         HttpServletRequest request = MiscUtil.getCurrentRequest();
-        if (request != null)
+        if (request != null) {
             dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        }
 
-        if (dto == null)
+        if (dto == null) {
             dto = AuditTrailDto.getThreadDto();
+        }
 
         return dto;
     }

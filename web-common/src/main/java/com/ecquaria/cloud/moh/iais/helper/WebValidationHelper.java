@@ -96,8 +96,9 @@ public class WebValidationHelper {
     }
 
     private static void saveAuditTrail(ValidationResult result) {
-        if (!result.isHasErrors())
+        if (!result.isHasErrors()) {
             return;
+        }
 
         AuditTrailDto dto = IaisEGPHelper.getCurrentAuditTrailDto();
 
@@ -111,7 +112,7 @@ public class WebValidationHelper {
         }
         List<AuditTrailDto> dtoList = new ArrayList<>();
         dtoList.add(dto);
-        dto.setOperation(AuditTrailConsts.OPERATION_INTERNET_VALIDATION_FAIL);
+        dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
         try {
             AuditLogUtil.callAuditRestApi(dtoList);
         } catch (Exception e) {

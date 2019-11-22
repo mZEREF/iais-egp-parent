@@ -1,17 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.InspectionServie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * Process: MohInspectionAllotTaskInspector
@@ -24,11 +18,11 @@ import java.util.List;
 public class InspectionDelegator {
 
     @Autowired
-    private InspectionService inspectionService;
+    private InspectionServie inspectionServie;
 
     @Autowired
-    private InspectionDelegator(InspectionService inspectionService){
-        this.inspectionService = inspectionService;
+    private InspectionDelegator(InspectionServie inspectionServie){
+        this.inspectionServie = inspectionServie;
     }
 
     /**
@@ -37,8 +31,8 @@ public class InspectionDelegator {
      * @param bpc
      * @throws
      */
-    public void inspectionPreInspectorStart(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the InspectionPreInspectorStart start ...."));
+    public void startStep(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the startStep start ...."));
     }
 
     /**
@@ -47,77 +41,17 @@ public class InspectionDelegator {
      * @param bpc
      * @throws
      */
-    public void inspectionPreInspectorInit(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the InspectionPreInspectorInit start ...."));
-        ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", null);
+    public void initStep(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the initStep start ...."));
     }
 
     /**
-     * StartStep: InspectionInboxSearchPre
+     * StartStep: InspectionPreInspectorInit
      *
      * @param bpc
      * @throws
      */
-    public void inspectionInboxSearchPre(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the InspectionInboxSearchPre start ...."));
-    }
-
-    /**
-     * StartStep: InspectionInboxSearchStep1
-     *
-     * @param bpc
-     * @throws
-     */
-    public void inspectionInboxSearchStep1(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the InspectionInboxSearchStep1 start ...."));
-
-    }
-
-    /**
-     * StartStep: InspectionInboxSearchDoSearch
-     *
-     * @param bpc
-     * @throws
-     */
-    public void inspectionInboxSearchDoSearch(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the InspectionInboxSearchDoSearch start ...."));
-        List<TaskDto> commPools = inspectionService.getCommPoolByGroupWordName("asows");
-        InspectionTaskPoolListDto inspectionTaskPoolListDto = inspectionService.getInspectionTaskPoolListDto(commPools);
-        ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", inspectionTaskPoolListDto);
-        ParamUtil.setSessionAttr(bpc.request,"commPools", (Serializable) commPools);
-
-    }
-
-    /**
-     * StartStep: InspectionInboxSearchPageStep
-     *
-     * @param bpc
-     * @throws
-     */
-    public void inspectionInboxSearchPageStep(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the InspectionInboxSearchPageStep start ...."));
-
-    }
-
-    /**
-     * StartStep: InspectionInboxSearchSort
-     *
-     * @param bpc
-     * @throws
-     */
-    public void inspectionInboxSearchSort(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the InspectionInboxSearchSort start ...."));
-
-    }
-
-    /**
-     * StartStep: InspectionInboxSearchQuery
-     *
-     * @param bpc
-     * @throws
-     */
-    public void inspectionInboxSearchQuery(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the InspectionInboxSearchQuery start ...."));
-
+    public void perpareStep(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the initStep start ...."));
     }
 }
