@@ -65,7 +65,7 @@ public class TaskServiceImpl implements TaskService {
                 TaskScoreDto taskScoreDto = getUserIdForWorkGroup(workGroupName);
                 List<TaskDto> taskDtos = new ArrayList<>();
                 for(ApplicationDto applicationDto : applicationDtos){
-                    TaskDto taskDto = TaskUtil.getAsoTaskDto(applicationDto.getServiceId(),
+                    TaskDto taskDto = TaskUtil.getAsoTaskDto(
                             applicationDto.getApplicationNo(),workGroupName,
                             taskScoreDto.getId(),taskScoreDto.getUserDomain(),
                             IaisEGPHelper.getCurrentAuditTrailDto() );
