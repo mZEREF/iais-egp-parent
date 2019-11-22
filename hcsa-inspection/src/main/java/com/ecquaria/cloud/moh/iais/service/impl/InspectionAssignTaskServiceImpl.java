@@ -51,11 +51,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspectionTaskPoolListDto.setWorkGroupName(taskDto.getGroupShortName());
         inspectionTaskPoolListDto.setInspectionLead(taskDto.getInboxUserId());
         Map<String,Object> map2 = new HashMap<>();
-        map2.put("serviceId", taskDto.getRefNo());
-        ApplicationDto applicationDto = RestApiUtil.getByReqParam("iais-hcsa-service:8878/iais-hcsa-service/one-of-hcsa-service/{serviceId}",map2,ApplicationDto.class); ;
+        map2.put("applicationNo", taskDto.getRefNo());
+        ApplicationDto applicationDto = RestApiUtil.getByReqParam("iais-application:8883/iais-inspection/one-of-inspection/{applicationNo}",map2,ApplicationDto.class); ;
         Map<String,Object> map = new HashMap<>();
         map.put("serviceId", applicationDto.getServiceId());
         HcsaServiceDto hcsaServiceDto =  RestApiUtil.getByReqParam("iais-hcsa-service:8878/iais-hcsa-service/one-of-hcsa-service/{serviceId}",map,HcsaServiceDto.class);
+        inspectionTaskPoolListDto.setServiceName(hcsaServiceDto.getSvcName());
         return inspectionTaskPoolListDto;
     }
 }
