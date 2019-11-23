@@ -45,15 +45,7 @@ public class TaskServiceImpl implements TaskService {
     public List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos) {
         return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDtos,HcsaSvcStageWorkingGroupDto.class);
     }
-    @Override
-    public void routingTask(ApplicationDto applicationDto, String stageId) {
-      if(applicationDto != null && !StringUtil.isEmpty(stageId) ){
 
-
-      }else{
-          log.error(StringUtil.changeForLog("The applicationDto or stageId is null ... "));
-      }
-    }
 
     @Override
     public List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status) {
@@ -71,17 +63,40 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public void routingTask(ApplicationDto applicationDto, String stageId) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
+        if(applicationDto == null  || StringUtil.isEmpty(stageId)){
+            log.error(StringUtil.changeForLog("The applicationDto or stageId is null"));
+            return;
+        }
+        List<ApplicationDto> applicationDtos = new ArrayList<>();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
+        hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
+            String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
+            TaskDto taskScoreDto = getUserIdForWorkGroup(workGroupId);
+            List<TaskDto> taskDtos = new ArrayList<>();
+            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
+                    stageId,applicationDto.getApplicationType());
+            TaskDto taskDto = TaskUtil.getAsoTaskDto(
+                    applicationDto.getApplicationNo(),workGroupId,
+                    taskScoreDto.getUserId(),score,
+                    IaisEGPHelper.getCurrentAuditTrailDto());
+            taskDtos.add(taskDto);
+            this.createTasks(taskDtos);
+        }else{
+            log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
+        }
+
+        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
+    }
+
+    @Override
     public void routingAdminScranTask(List<ApplicationDto> applicationDtos) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingAdminScranTask start ...."));
         if(applicationDtos != null && applicationDtos.size() > 0){
-            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
-            for(ApplicationDto applicationDto : applicationDtos){
-                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-                hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
-                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
-                hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-                hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
-            }
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_ASO);
             hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
             if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
                 String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
@@ -140,6 +155,32 @@ public class TaskServiceImpl implements TaskService {
         }
         return result;
     }
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
+        for(ApplicationDto applicationDto : applicationDtos){
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        return hcsaSvcStageWorkingGroupDtos;
+    }
+    private TaskDto getUserIdForWorkGroup(String workGroupId) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup start ...."));
+        TaskDto result = null;
+        if(StringUtil.isEmpty(workGroupId)){
+            return result;
+        }
+        List<OrgUserDto> orgUserDtos =getUsersByWorkGroupId(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
+        List<TaskDto> taskScoreDtos = this.getTaskDtoScoresByWorkGroupId(workGroupId);
+        result = this.getLowestTaskScore(taskScoreDtos,orgUserDtos);
+        if(result != null && StringUtil.isEmpty(result.getWkGrpId())){
+            result.setWkGrpId(workGroupId);
+        }
+        log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup end ...."));
+        return result;
+    }
     private boolean isExist(List<TaskDto> taskScoreDtos,String userId){
         boolean result = false;
         for (TaskDto taskScoreDto : taskScoreDtos){
@@ -163,22 +204,6 @@ public class TaskServiceImpl implements TaskService {
                 result = hcsaSvcStageWorkingGroupDto.getCount() == null ? 0 :hcsaSvcStageWorkingGroupDto.getCount();
             }
         }
-        return result;
-    }
-
-    private TaskDto getUserIdForWorkGroup(String workGroupId) throws FeignException {
-        log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup start ...."));
-        TaskDto result = null;
-        if(StringUtil.isEmpty(workGroupId)){
-            return result;
-        }
-        List<OrgUserDto> orgUserDtos =getUsersByWorkGroupId(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
-        List<TaskDto> taskScoreDtos = this.getTaskDtoScoresByWorkGroupId(workGroupId);
-        result = this.getLowestTaskScore(taskScoreDtos,orgUserDtos);
-        if(result != null && StringUtil.isEmpty(result.getWkGrpId())){
-            result.setWkGrpId(workGroupId);
-        }
-        log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup end ...."));
         return result;
     }
 

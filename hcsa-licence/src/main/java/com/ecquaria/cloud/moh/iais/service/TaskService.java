@@ -22,7 +22,7 @@ public interface TaskService {
     List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos);
     //rounting Task
      void routingAdminScranTask(List<ApplicationDto> applicationDtos) throws FeignException;
-     void routingTask(ApplicationDto applicationDto,String statgId);
+     void routingTask(ApplicationDto applicationDto,String statgId) throws FeignException;
      //get users
     List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status);
     //get Task Score
