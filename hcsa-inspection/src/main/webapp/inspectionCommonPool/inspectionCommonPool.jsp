@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -26,19 +26,16 @@
             <table class="table">
               <thead>
               <tr align="center">
-                <th>Work Group Name</th>
-                <th>Service Name</th>
                 <th>Application No.</th>
-                <th>Inspector Lead</th>
+                <th>Service Name</th>
                 <th>Action</th>
               </tr>
               </thead>
               <tbody>
                 <c:forEach items="${inspectionTaskPoolListDtoList}" var="pool">
                   <tr align="center">
-                    <td><c:out value="${pool.workGroupName}"/></td>
-                    <td><c:out value="${pool.serviceName}"/></td>
                     <td><c:out value="${pool.applicationNo}"/></td>
+                    <td><c:out value="${pool.serviceName}"/></td>
                     <td><c:out value="${pool.inspectionLead}"/></td>
                     <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="pool_action_value" value="${pool.applicationNo}"/>');">Assign</button></td>
                   </tr>

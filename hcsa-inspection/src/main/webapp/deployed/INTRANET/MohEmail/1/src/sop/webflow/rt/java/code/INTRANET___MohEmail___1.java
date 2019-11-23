@@ -11,19 +11,22 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class IAIS___Inter_Inbox___1 extends BaseProcessClass {
-	
-	
-	private static final String DELEGATOR ="inboxTabDelegator";
+public class INTRANET___MohEmail___1 extends BaseProcessClass {
 
-	public void prepareData_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doStart", this);
-	}
+    
+    private static final String DELEGATOR ="inspEmailDelegator";
+    
+    public void start_OnStepProcess_0() throws Exception {
+    // 		Start->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "start", this);
+    }
 
-	public void start_OnStepProcess_0() throws Exception {
-	// 		start->OnStepProcess
-	}
+    public void prepareData_OnStepProcess_0() throws Exception {
+    // 		PrepareData->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareData", this);
+    }
 
 }

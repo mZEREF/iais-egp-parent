@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
@@ -41,7 +43,24 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public InspecTaskCreAndAssQueryDto getInspecTaskCreAndAssQueryDto(String applicationNo) {
-        return null;
+        ApplicationDto applicationDto = getApplicationDtoByAppNo(applicationNo);
+        AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(applicationDto.getId());
+        HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
+        ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
+
+        InspecTaskCreAndAssQueryDto inspecTaskCreAndAssQueryDto = new InspecTaskCreAndAssQueryDto();
+        inspecTaskCreAndAssQueryDto.setApplicationNo(applicationNo);
+        inspecTaskCreAndAssQueryDto.setApplicationType(applicationDto.getApplicationType());
+        inspecTaskCreAndAssQueryDto.setApplicationStatus(applicationDto.getStatus());
+        inspecTaskCreAndAssQueryDto.setHciName(appGrpPremisesDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
+        inspecTaskCreAndAssQueryDto.setHciCode(appGrpPremisesDto.getHciCode());
+        inspecTaskCreAndAssQueryDto.setServiceName(hcsaServiceDto.getSvcName());
+        inspecTaskCreAndAssQueryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
+        inspecTaskCreAndAssQueryDto.setInspectionType(applicationGroupDto.getIsPreInspection());
+        inspecTaskCreAndAssQueryDto.setSubmitDt(applicationGroupDto.getSubmitDt());
+        //get inspector lead
+        //get inspector checkbox list
+        return inspecTaskCreAndAssQueryDto;
     }
 
     /**
@@ -54,7 +73,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     private InspectionTaskPoolListDto getInspectionTaskPoolListDtoByTaskDto(TaskDto taskDto){
         InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
         inspectionTaskPoolListDto.setApplicationNo(taskDto.getRefNo());
-        inspectionTaskPoolListDto.setInspectionLead(taskDto.getInboxUserId());
+        inspectionTaskPoolListDto.setInspectionLead(taskDto.getUserId());
         ApplicationDto applicationDto = getApplicationDtoByAppNo(taskDto.getRefNo());
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         inspectionTaskPoolListDto.setServiceName(hcsaServiceDto.getSvcName());
@@ -85,8 +104,32 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
         Map<String,Object> map = new HashMap<>();
         map.put("serviceId", serviceId);
-        HcsaServiceDto hcsaServiceDto =  RestApiUtil.getByReqParam("iais-hcsa-service:8878/iais-hcsa-service/one-of-hcsa-service/{serviceId}",map,HcsaServiceDto.class);
-        return hcsaServiceDto;
+        return RestApiUtil.getByReqParam("iais-hcsa-service:8878/iais-hcsa-service/one-of-hcsa-service/{serviceId}",map,HcsaServiceDto.class);
+    }
 
+    /**
+      * @author: shicheng
+      * @Date 2019/11/23
+      * @Param: appGroupId
+      * @return: AppGrpPremisesDto
+      * @Descripation: get Application Group Premises By Application Id
+      */
+    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String applicationId){
+        Map<String,Object> map = new HashMap<>();
+        map.put("applicationId", applicationId);
+        return RestApiUtil.getByReqParam("iais-application:8883/iais-application/application-premises-by-app-id/{applicationId}",map,AppGrpPremisesDto.class);
+    }
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/23
+      * @Param: appGroupId
+      * @return: ApplicationGroupDto
+      * @Descripation: get ApplicationGroup By Application Group Id
+      */
+    public ApplicationGroupDto getApplicationGroupDtoByAppGroId(String appGroupId){
+        Map<String,Object> map = new HashMap<>();
+        map.put("appGroId", appGroupId);
+        return RestApiUtil.getByReqParam("iais-application:8883/iais-inspection/appGroup-of-inspection/{appGroId}",map,ApplicationGroupDto.class);
     }
 }
