@@ -25,5 +25,25 @@
         ]]>
     </sql>
 
+    <sql key="listSelfDesc" remarks="query self desc config">
+        <![CDATA[
+            select chkl.id as config_id,  item_pool.id as item_id,  chkl.is_common as common, chkl.svc_code as svc_code, hs.svc_name as svc_name, chkl.svc_subtype_name as svc_subtype_name, chkl.module as module, chkl.[type] as svc_type,
+            chkl.hci_code as hci_code, sec.section_name as section_name, sec.section_desc as section_desc, sec.[order] as section_order,
+            item_pool.question as checklist_item, item_pool.answer_type, item_pool.risk_level as risk_level,
+            regulation.clause_no as clause_no, regulation.clause as clause
+            from  chkl_config_hcsa_service chkl
+            inner join chkl_config_hcsa_svc_section sec on chkl.id = sec.chkl_config_id
+            inner join chkl_config_hcsa_svc_section_item sec_item on sec_item.section_id = sec.id
+            inner join  chkl_config_hcsa_svc_item_pool item_pool  on sec_item.item_id = item_pool.id
+            inner join  chkl_config_hcsa_svc_regulation regulation on item_pool.regulation_id = regulation.id
+            left join hcsa_service hs on hs.svc_code = chkl.svc_code where 1=1
+            <#if svc_code??> and chkl.svc_code in (:svc_code)</#if>
+            <#if svc_type??> and chkl.[type] = :svc_type</#if>
+            <#if common??> and chkl.is_common = :common</#if>
+            <#if configId??> and chkl.id = :configId</#if>
+        ]]>
+    </sql>
+
+
 </sqls>
 
