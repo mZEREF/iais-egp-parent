@@ -84,8 +84,14 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-bus-kafka</artifactId>
+                <artifactId>spring-cloud-starter-bus-amqp</artifactId>
                 <version>2.1.4.RELEASE</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-stream-rabbit -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+                <version>2.2.1.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/net.sf.oval/oval -->
             <dependency>
@@ -97,12 +103,6 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>2.9.8</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-stream-kafka -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-stream-kafka</artifactId>
-                <version>2.2.1.RELEASE</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-bus -->
             <dependency>
