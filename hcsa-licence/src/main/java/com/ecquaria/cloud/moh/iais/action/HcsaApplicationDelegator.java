@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -36,7 +37,7 @@ public class HcsaApplicationDelegator {
         ApplicationDto applicationDto0 = new ApplicationDto();
         applicationDto0.setApplicationNo("test applicaitonNo");
         applicationDto0.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
-        applicationDto0.setApplicationType("NEW");
+        applicationDto0.setApplicationType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         applicationDtos.add(applicationDto0);
         taskService.routingAdminScranTask(applicationDtos);
 
