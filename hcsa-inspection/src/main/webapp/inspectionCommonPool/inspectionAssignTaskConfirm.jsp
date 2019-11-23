@@ -1,16 +1,17 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ShiCheng_Xu
-  Date: 2019/11/23
-  Time: 16:00
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-  <title>Title</title>
-</head>
-<body>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%
+  //handle to the Engine APIs
+  sop.webflow.rt.api.BaseProcessClass process =
+          (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+%>
+<webui:setLayout name="iais-internet"/>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%
+  String webroot=IaisEGPConstant.FE_CSS_ROOT;
+%>
 
-</body>
-</html>
+<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+
+</form>
+
