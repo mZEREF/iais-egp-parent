@@ -15,20 +15,29 @@
 
 <script type="text/javascript">
 
-    function getAppList(){
-        SOP.Crud.cfxSubmit("inboxForm","getAppList");
-    }
-
     $("#inboxType").change(function() {
         var type = $("#inboxType").val();
         console.log(type)
-        SOP.Crud.cfxSubmit("inboxForm","searchInbox");
+        SOP.Crud.cfxSubmit("inboxForm","doSearch");
     });
 
-    // $("#inboxService").change(function() {
-    //     var service = $("#inboxService").val();
-    //     SOP.Crud.cfxSubmit("inboxForm","searchInboxStep",service);
-    // });
+    $("#inboxService").change(function() {
+        var service = $("#inboxService").val();
+        SOP.Crud.cfxSubmit("inboxForm","doSearch");
+    });
 
+    $("#applicationType").change(function() {
+        var service = $("#applicationType").val();
+        SOP.Crud.cfxSubmit("inboxForm","doSearch");
+    });
+
+    $("#applicationStatus").change(function() {
+        var service = $("#applicationStatus").val();
+        SOP.Crud.cfxSubmit("inboxForm","doSearch");
+    });
+
+    function searchLicenceNo(){
+        SOP.Crud.cfxSubmit("inboxForm","doSearch");
+    }
 
 </script>
