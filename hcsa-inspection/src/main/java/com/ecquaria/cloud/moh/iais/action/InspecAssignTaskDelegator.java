@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -49,6 +50,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorInit start ...."));
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDtoList", null);
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssQueryDto", null);
     }
 
     /**
@@ -83,7 +85,8 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
         String applicationNo = ParamUtil.getMaskedString(bpc.request,"pool_action_value");
-
+        InspecTaskCreAndAssQueryDto inspecTaskCreAndAssQueryDto = inspectionAssignTaskService.getInspecTaskCreAndAssQueryDto(applicationNo);
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssQueryDto", inspecTaskCreAndAssQueryDto);
     }
 
     /**
@@ -125,5 +128,6 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorConfirm start ...."));
+
     }
 }

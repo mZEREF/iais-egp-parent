@@ -26,9 +26,8 @@
             <table class="table">
               <thead>
               <tr align="center">
-                <th>Work Group Name</th>
-                <th>Service Name</th>
                 <th>Application No.</th>
+                <th>Service Name</th>
                 <th>Inspector Lead</th>
                 <th>Action</th>
               </tr>
@@ -36,9 +35,8 @@
               <tbody>
                 <c:forEach items="${inspectionTaskPoolListDtoList}" var="pool">
                   <tr align="center">
-                    <td><c:out value="${pool.workGroupName}"/></td>
-                    <td><c:out value="${pool.serviceName}"/></td>
                     <td><c:out value="${pool.applicationNo}"/></td>
+                    <td><c:out value="${pool.serviceName}"/></td>
                     <td><c:out value="${pool.inspectionLead}"/></td>
                     <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="pool_action_value" value="${pool.applicationNo}"/>');">Assign</button></td>
                   </tr>
