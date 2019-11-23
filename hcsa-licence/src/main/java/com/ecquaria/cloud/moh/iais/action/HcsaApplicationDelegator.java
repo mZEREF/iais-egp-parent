@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -39,8 +40,8 @@ public class HcsaApplicationDelegator {
         applicationDto0.setServiceId("35F99D15-820B-EA11-BE7D-000C29F371DC");
         applicationDto0.setApplicationType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         applicationDtos.add(applicationDto0);
-        taskService.routingAdminScranTask(applicationDtos);
-
+       // taskService.routingAdminScranTask(applicationDtos);
+        taskService.routingTask(applicationDto0,HcsaConsts.ROUTING_STAGE_PSO);
         log.debug(StringUtil.changeForLog("the do routingTask end ...."));
     }
 

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -16,10 +17,7 @@ import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * TaskServiceImpl
@@ -76,12 +74,16 @@ public class TaskServiceImpl implements TaskService {
         if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
             String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
             TaskDto taskScoreDto = getUserIdForWorkGroup(workGroupId);
+            //todo: wait the commpool
+            if("".equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
+                taskScoreDto.setUserId(null);
+            }
             List<TaskDto> taskDtos = new ArrayList<>();
             int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                     stageId,applicationDto.getApplicationType());
-            TaskDto taskDto = TaskUtil.getAsoTaskDto(
+            TaskDto taskDto = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
                     applicationDto.getApplicationNo(),workGroupId,
-                    taskScoreDto.getUserId(),score,
+                    taskScoreDto.getUserId(),new Date(),score,
                     IaisEGPHelper.getCurrentAuditTrailDto());
             taskDtos.add(taskDto);
             this.createTasks(taskDtos);
@@ -105,7 +107,7 @@ public class TaskServiceImpl implements TaskService {
                 for(ApplicationDto applicationDto : applicationDtos){
                     int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             HcsaConsts.ROUTING_STAGE_ASO,applicationDto.getApplicationType());
-                    TaskDto taskDto = TaskUtil.getAsoTaskDto(
+                    TaskDto taskDto = TaskUtil.getUserTaskDto(HcsaConsts.ROUTING_STAGE_ASO,
                             applicationDto.getApplicationNo(),workGroupId,
                             taskScoreDto.getUserId(),score,
                             IaisEGPHelper.getCurrentAuditTrailDto());
