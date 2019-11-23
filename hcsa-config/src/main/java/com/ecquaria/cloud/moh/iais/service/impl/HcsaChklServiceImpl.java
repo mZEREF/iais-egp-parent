@@ -55,7 +55,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     @Override
 
     public List<String> listRegulationClauseNo() {
-        return RestApiUtil.getList(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.DISTINCT_REGULATION_CLAUSES, List.class);
+        return RestApiUtil.getList(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.DISTINCT_REGULATION_CLAUSES, String.class);
     }
 
 
@@ -71,11 +71,11 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public List<String> listSubTypeName() {
-        return RestApiUtil.getList(RestApiUrlConsts.GET_HCSA_SUBTYPE_NAME_RESULTS, List.class);
+        return RestApiUtil.getList(RestApiUrlConsts.GET_HCSA_SUBTYPE_NAME_RESULTS, String.class);
     }
 
     @Override
     public List<String> listServiceName() {
-        return RestApiUtil.getList(RestApiUrlConsts.GET_HCSA_SVC_NAME_RESULTS, List.class);
+        return RestApiUtil.getList(RestApiUrlConsts.GET_HCSA_SVC_NAME_RESULTS, String.class);
     }
 }
