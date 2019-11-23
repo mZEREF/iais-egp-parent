@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclRenderDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -18,7 +19,7 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.service.AppPremSelfDescService;
+import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -29,11 +30,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-@Delegator(value = "appPremSelfDescDelegator")
+@Delegator(value = "appPremSelfDeclDelegator")
 @Slf4j
-public class AppPremSelfDescDelegator {
+public class AppPremSelfDeclDelegator {
 
-    private final AppPremSelfDescService appPremSelfDesc;
+    private final AppPremSelfDeclService appPremSelfDesc;
     private final FilterParameter filterParameter;
 
     private SearchResult<SelfDeclRenderDto> tabResult = null;
@@ -42,7 +43,7 @@ public class AppPremSelfDescDelegator {
     private Boolean firstEntry = false;
 
     @Autowired
-    public AppPremSelfDescDelegator(AppPremSelfDescService appPremSelfDesc, FilterParameter filterParameter){
+    public AppPremSelfDeclDelegator(AppPremSelfDeclService appPremSelfDesc, FilterParameter filterParameter){
         this.appPremSelfDesc = appPremSelfDesc;
         this.filterParameter = filterParameter;
     }
@@ -75,6 +76,11 @@ public class AppPremSelfDescDelegator {
         }
 
         ParamUtil.setSessionAttr(request, "appGrpPremIdList", (Serializable) appGrpPremIdList);
+
+        for (String s : appGrpPremIdList){
+            AppGrpPremisesDto appGrpPremisesDto = appPremSelfDesc.getAppGrpPremisesDto(s);
+        }
+
 
         // add svc code to list
         for(HcsaServiceDto hcsa : hcsaServiceDtos){

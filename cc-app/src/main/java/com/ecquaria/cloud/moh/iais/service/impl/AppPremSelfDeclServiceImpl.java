@@ -11,16 +11,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclRenderDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremSelfDescService;
+import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class AppPremSelfDescServiceImpl implements AppPremSelfDescService {
+public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Override
     public List<ApplicationDto> listApplicationByGroupId(String groupId) {
@@ -41,4 +42,11 @@ public class AppPremSelfDescServiceImpl implements AppPremSelfDescService {
     public List<AppPremisesCorrelationDto> listAppPremisesCorrelationByAppId(String appid) {
         return RestApiUtil.getListByPathParam(RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.IAIS_APPLICATION + "/application/app-grp-correlation/{appid}", appid, AppPremisesCorrelationDto.class);
     }
+
+    @Override
+    public AppGrpPremisesDto getAppGrpPremisesDto(String appId) {
+        return RestApiUtil.getByPathParam(RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.IAIS_APPLICATION + "/application-premises-by-app-id/{applicationId}", appId, AppGrpPremisesDto.class);
+    }
+
+
 }
