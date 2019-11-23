@@ -17,6 +17,7 @@ import java.util.List;
 public interface TaskService {
     //create Tasks
     List<TaskDto> createTasks(List<TaskDto> taskDtos);
+    TaskDto updateTask(TaskDto taskDto);
     //get TaskConfig
     List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos);
     //rounting Task
