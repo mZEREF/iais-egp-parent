@@ -37,6 +37,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public TaskDto updateTask(TaskDto taskDto) {
+        return RestApiUtil.update(RestApiUrlConsts.IAIS_TASK,taskDto,TaskDto.class);
+    }
+
+    @Override
     public List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos) {
         return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDtos,HcsaSvcStageWorkingGroupDto.class);
     }
@@ -75,7 +80,6 @@ public class TaskServiceImpl implements TaskService {
                 hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
                 hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
                 hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-                hcsaSvcStageWorkingGroupDto.setCount(0);
                 hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
             }
             hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);

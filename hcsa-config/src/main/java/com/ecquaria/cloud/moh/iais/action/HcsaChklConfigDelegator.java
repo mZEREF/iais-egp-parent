@@ -67,6 +67,7 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);
+        ParamUtil.setSessionAttr(request, "addedItemIdList", null);
     }
 
     /**
@@ -333,6 +334,7 @@ public class HcsaChklConfigDelegator {
             List<ChecklistItemDto> necessary = hcsaChklService.listChklItemByItemId(Arrays.asList(checkBoxItemId));
             ChecklistConfigDto disposition = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
             String currentValidateId = (String) ParamUtil.getSessionAttr(request, "currentValidateId");
+
             if(disposition != null && currentValidateId != null){
                 List<ChecklistSectionDto> currentSection = disposition.getSectionDtos();
                 for(ChecklistSectionDto section : currentSection){
@@ -340,7 +342,7 @@ public class HcsaChklConfigDelegator {
                         List<ChecklistItemDto> collocate = section.getChecklistItemDtos();
                         if(collocate != null && !collocate.isEmpty()){
                             for (ChecklistItemDto addCrumb : necessary){
-                                collocate.add(addCrumb);
+                               collocate.add(addCrumb);
                             }
                         }else {
                             section.setChecklistItemDtos(necessary);
@@ -356,9 +358,6 @@ public class HcsaChklConfigDelegator {
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
         }
-
-
-
     }
 
     /**

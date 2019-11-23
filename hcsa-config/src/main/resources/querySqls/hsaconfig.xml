@@ -49,6 +49,8 @@
 
     </sql>
 
+
+
     <sql key="listRegulationClauseNo"  remarks="query regulation no">
         <![CDATA[
                  select DISTINCT CLAUSE_NO as CLAUSE_NO from chkl_config_hcsa_svc_regulation
