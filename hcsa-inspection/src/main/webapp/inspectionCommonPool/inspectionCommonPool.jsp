@@ -28,7 +28,6 @@
               <tr align="center">
                 <th>Application No.</th>
                 <th>Service Name</th>
-                <th>Inspector Lead</th>
                 <th>Action</th>
               </tr>
               </thead>

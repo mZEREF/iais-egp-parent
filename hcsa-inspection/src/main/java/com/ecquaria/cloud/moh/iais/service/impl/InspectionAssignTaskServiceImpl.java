@@ -55,7 +55,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssQueryDto.setHciName(appGrpPremisesDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
         inspecTaskCreAndAssQueryDto.setHciCode(appGrpPremisesDto.getHciCode());
         inspecTaskCreAndAssQueryDto.setServiceName(hcsaServiceDto.getSvcName());
-        //inspecTaskCreAndAssQueryDto.setInspectionType(applicationGroupDto.getIsPreInspection() == 0? "":"");
+        inspecTaskCreAndAssQueryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
+        inspecTaskCreAndAssQueryDto.setInspectionType(applicationGroupDto.getIsPreInspection());
+        inspecTaskCreAndAssQueryDto.setSubmitDt(applicationGroupDto.getSubmitDt());
+        //get inspector lead
+        //get inspector checkbox list
         return inspecTaskCreAndAssQueryDto;
     }
 
