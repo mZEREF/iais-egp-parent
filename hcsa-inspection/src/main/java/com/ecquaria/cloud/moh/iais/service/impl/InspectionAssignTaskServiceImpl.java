@@ -54,7 +54,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     private InspectionTaskPoolListDto getInspectionTaskPoolListDtoByTaskDto(TaskDto taskDto){
         InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
         inspectionTaskPoolListDto.setApplicationNo(taskDto.getRefNo());
-        inspectionTaskPoolListDto.setWorkGroupName(taskDto.getGroupShortName());
         inspectionTaskPoolListDto.setInspectionLead(taskDto.getInboxUserId());
         ApplicationDto applicationDto = getApplicationDtoByAppNo(taskDto.getRefNo());
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
