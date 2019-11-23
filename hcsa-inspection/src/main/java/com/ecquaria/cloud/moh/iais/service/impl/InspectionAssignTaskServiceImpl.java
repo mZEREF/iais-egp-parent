@@ -1,7 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
@@ -38,6 +39,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return inspectionTaskPoolListDtoList;
     }
 
+    @Override
+    public InspecTaskCreAndAssQueryDto getInspecTaskCreAndAssQueryDto(String applicationNo) {
+        return null;
+    }
+
     /**
       * @author: shicheng
       * @Date 2019/11/22
@@ -50,13 +56,38 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspectionTaskPoolListDto.setApplicationNo(taskDto.getRefNo());
         inspectionTaskPoolListDto.setWorkGroupName(taskDto.getGroupShortName());
         inspectionTaskPoolListDto.setInspectionLead(taskDto.getInboxUserId());
-        Map<String,Object> map2 = new HashMap<>();
-        map2.put("applicationNo", taskDto.getRefNo());
-        ApplicationDto applicationDto = RestApiUtil.getByReqParam("iais-application:8883/iais-inspection/one-of-inspection/{applicationNo}",map2,ApplicationDto.class); ;
-        Map<String,Object> map = new HashMap<>();
-        map.put("serviceId", applicationDto.getServiceId());
-        HcsaServiceDto hcsaServiceDto =  RestApiUtil.getByReqParam("iais-hcsa-service:8878/iais-hcsa-service/one-of-hcsa-service/{serviceId}",map,HcsaServiceDto.class);
+        ApplicationDto applicationDto = getApplicationDtoByAppNo(taskDto.getRefNo());
+        HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         inspectionTaskPoolListDto.setServiceName(hcsaServiceDto.getSvcName());
         return inspectionTaskPoolListDto;
+    }
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/22
+      * @Param: appNo
+      * @return: ApplicationDto
+      * @Descripation: get ApplicationDto By Application No.
+      */
+    public ApplicationDto getApplicationDtoByAppNo(String appNo){
+        Map<String,Object> map2 = new HashMap<>();
+        map2.put("applicationNo", appNo);
+        ApplicationDto applicationDto = RestApiUtil.getByReqParam("iais-application:8883/iais-inspection/one-of-inspection/{applicationNo}",map2,ApplicationDto.class); ;
+        return applicationDto;
+    }
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/22
+      * @Param: serviceId
+      * @return: HcsaServiceDto
+      * @Descripation: get HcsaServiceDto By Service Id
+      */
+    public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
+        Map<String,Object> map = new HashMap<>();
+        map.put("serviceId", serviceId);
+        HcsaServiceDto hcsaServiceDto =  RestApiUtil.getByReqParam("iais-hcsa-service:8878/iais-hcsa-service/one-of-hcsa-service/{serviceId}",map,HcsaServiceDto.class);
+        return hcsaServiceDto;
+
     }
 }

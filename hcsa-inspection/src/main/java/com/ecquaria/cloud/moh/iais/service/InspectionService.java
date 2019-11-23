@@ -29,4 +29,6 @@ public interface InspectionService {
      * @Descripation: Gets a single Common pool
      */
     InspecTaskCreAndAssQueryDto getInspecTaskCreAndAssQueryDtoByTask(TaskDto taskDto);
+
+
 }

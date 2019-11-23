@@ -82,6 +82,8 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
+        String applicationNo = ParamUtil.getMaskedString(bpc.request,"pool_action_value");
+
     }
 
     /**
@@ -92,6 +94,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAction(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAction start ...."));
+
     }
 
     /**
