@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 
+import java.util.List;
 
 /**
  * @author Wenkang
@@ -11,4 +12,5 @@ public interface UploadFileService {
     String getData();
     String  changeStatus();
     void compressFile();
+
 }

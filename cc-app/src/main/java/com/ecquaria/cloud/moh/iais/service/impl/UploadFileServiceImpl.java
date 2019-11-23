@@ -6,9 +6,11 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,15 +24,13 @@ import java.util.zip.*;
 @Service
 @Slf4j
 public class UploadFileServiceImpl implements UploadFileService {
-
+    private static final String URL_SAVE_FILE_NAME="application:8883/file-name";
     private static final String URL_APP="iais-application:8883/iais-application/all-file";
     private static final  String URL_STATUS="iais-application:8883/iais-application/status";
     private static  final String DOWNLOAD="D:/folder";
     private static  final  String FILE_NAME="folder";
     private static  final  String FILE_FORMAT=".text";
     private static  final String BACKUPS="D:/backups";
-
-
     @Override
     public Boolean saveFile(String  str) {
         FileOutputStream fileOutputStream = null;
@@ -47,7 +47,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             fileInputStream.write(str.getBytes());
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
             return false;
         }
         finally {
@@ -55,7 +55,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                try {
                    fileInputStream.close();
                } catch (IOException e) {
-                   log.error(e.getMessage());
+                   log.error(e.getMessage(),e);
 
                }
            }
@@ -63,7 +63,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                try {
                    fileOutputStream.close();
                } catch (IOException e) {
-                   log.error(e.getMessage());
+                   log.error(e.getMessage(),e);
                }
            }
         }
@@ -85,8 +85,10 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public void compressFile(){
         compress();
+        rename();
+        deleteFile();
     }
-/*****************compress*********/
+    /*****************compress*********/
 
     private void compress(){
         ZipOutputStream zos=null;
@@ -99,30 +101,29 @@ public class UploadFileServiceImpl implements UploadFileService {
             File file =new File(DOWNLOAD);
             zipFile(zos,file);
 
-            is.close();
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
         }
         finally {
             if(zos!=null){
                 try {
                     zos.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage());
+                    log.error(e.getMessage(),e);
                 }
             }
             if(cos!=null){
                 try {
                     cos.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage());
+                    log.error(e.getMessage(),e);
                 }
             }
             if(is!=null){
                 try {
                     is.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage());
+                    log.error(e.getMessage(),e);
                 }
             }
         }
@@ -130,6 +131,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
     private void zipFile(ZipOutputStream zos,File file)  {
         BufferedInputStream bis=null;
+        InputStream is=null;
         try {
             if(file.isDirectory()){
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(FILE_NAME))+File.separator));
@@ -139,7 +141,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             }
             else {
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(FILE_NAME))));
-                InputStream is=new FileInputStream(file.getPath());
+               is=new FileInputStream(file.getPath());
                  bis =new BufferedInputStream(is);
                 int count ;
                 byte [] b =new byte[1024];
@@ -148,34 +150,89 @@ public class UploadFileServiceImpl implements UploadFileService {
                     zos.write(b,0,count);
                     count=bis.read(b);
                 }
-                bis.close();
-                is.close();
             }
         }catch (IOException e){
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
         }
         finally {
+
             if(zos!=null){
                 try {
                     zos.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(),e);
                 }
             }
             if(bis!=null){
                 try {
                     bis.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage());
+                    log.error(e.getMessage(),e);
                 }
             }
-
+            if(is!=null){
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
         }
-
     }
 
-    private void rename(){}
-    File file =new File(BACKUPS);
+    private void rename()  {
+        File zipFile =new File(BACKUPS);
+       if(zipFile.isDirectory()){
+           File[] files = zipFile.listFiles((dir, name) -> {
+               if (name.endsWith(".zip")) {
+                   return true;
+               }
+               return false;
+           });
+           for(File file:files){
+               try {
+                   FileInputStream is=new FileInputStream(file);
+                   ByteArrayOutputStream by=new ByteArrayOutputStream();
+                   int count=0;
+                   byte [] size=new byte[1024];
+                   count=is.read(size);
+                   while(count!=-1){
+                       by.write(size,0,count);
+                       count= is.read(size);
+                   }
+                    by.close();
+                    is.close();
+                   byte[] bytes = by.toByteArray();
+                   String s = FileUtil.genMd5FileChecksum(bytes);
+                   file.renameTo(new File(BACKUPS+File.separator+s+".zip"));
+                 /*  saveFileName(file.getName());*/
+               } catch (IOException e) {
+                   log.error(e.getMessage(),e);
+               }
+           }
+       }
+    }
 
+    private void deleteFile(){
+        File file =new File(DOWNLOAD);
+        if(file.isDirectory()){
+            File[] files = file.listFiles((dir, name) -> {
+                if (name.endsWith(FILE_FORMAT)) {
+                    return true;
+                }
+                return false;
+            });
+            for(File f:files){
+                if(f.exists()){
+                    f.delete();
+                }
+            }
+        }
+    }
+
+
+    private void  saveFileName(String fileName){
+        RestApiUtil.save(URL_SAVE_FILE_NAME,fileName);
+    }
 
 }
