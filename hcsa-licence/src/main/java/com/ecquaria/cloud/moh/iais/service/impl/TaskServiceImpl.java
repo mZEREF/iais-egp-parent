@@ -44,6 +44,12 @@ public class TaskServiceImpl implements TaskService {
         return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDtos,HcsaSvcStageWorkingGroupDto.class);
     }
 
+    @Override
+    public TaskDto getTaskById(String taskId) {
+        //todo: call rest get the task  by  the taskId;
+        return null;
+    }
+
 
     @Override
     public List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status) {

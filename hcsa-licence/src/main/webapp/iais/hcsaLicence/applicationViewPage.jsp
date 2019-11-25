@@ -501,11 +501,10 @@
                                                     </td>
                                                     <td>
                                                         <select>
-                                                            <option value="Support">Support</option>
-                                                            <option value="Support">Support</option>
-                                                            <option value="Internal Enquiry">Internal Enquiry</option>
-                                                            <option value="Route Back">Route Back</option>
-                                                        </select>
+                                                            <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
+                                                           <!--     <option value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option> -->
+                                                          </c:forEach>
+                                                         </select>
                                                     </td>
                                                 </tr>
                                             </table>
