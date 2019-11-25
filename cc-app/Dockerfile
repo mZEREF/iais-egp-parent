@@ -1,6 +1,6 @@
 FROM 192.168.7.88/library/tomcat:8.5.34-jre8-alpine
 
-COPY target/cc.war /usr/local/tomcat/webapps/cc.war
+COPY target/hcsaapplication.war /usr/local/tomcat/webapps/hcsaapplication.war
 
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY docker/server.xml /usr/local/tomcat/conf/server.xml

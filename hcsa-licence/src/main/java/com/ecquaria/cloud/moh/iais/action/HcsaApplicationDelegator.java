@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -54,14 +55,102 @@ public class HcsaApplicationDelegator {
      */
     public void prepareData(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareData start ...."));
-        String  appNo = "AN1911136061-01";
+        //get the task
+        String  taskId = ParamUtil.getString(bpc.request,"taskId");
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        String appNo = taskDto.getRefNo();
+        //get routing stage dropdown send to page.
+
         ApplicationViewServiceImp applicationViewService = new ApplicationViewServiceImp();
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
-        HttpServletRequest request=bpc.request;
-        ParamUtil.setRequestAttr(request,"applicationViewDto", applicationViewDto);
+        applicationViewDto.setApplicationNo(appNo);
+
+        ParamUtil.setRequestAttr(bpc.request,"applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
 
 
+    /**
+     * StartStep: rontingTaskToPSO
+     *
+     * @param bpc
+     * @throws
+     */
+    public void rontingTaskToPSO(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do rontingTaskToPSO start ...."));
+        //update Task information
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        taskDto.setTaskStatus("");
+        //todo: otehr fields
+        taskDto =  taskService.updateTask(taskDto);
+       // application status
+        //create new task.
+        ApplicationDto applicationDto =  new ApplicationDto();
 
+        //taskService.routingTask(applicationDto,);
+
+        log.debug(StringUtil.changeForLog("the do rontingTaskToPSO end ...."));
+    }
+
+    /**
+     * StartStep: rontingTaskToINS
+     *
+     * @param bpc
+     * @throws
+     */
+    public void rontingTaskToINS(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do rontingTaskToINS start ...."));
+
+        log.debug(StringUtil.changeForLog("the do rontingTaskToINS end ...."));
+    }
+
+
+    /**
+     * StartStep: rontingTaskToASO
+     *
+     * @param bpc
+     * @throws
+     */
+    public void rontingTaskToASO(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do rontingTaskToASO start ...."));
+
+        log.debug(StringUtil.changeForLog("the do rontingTaskToASO end ...."));
+    }
+
+    /**
+     * StartStep: rontingTaskToAO1
+     *
+     * @param bpc
+     * @throws
+     */
+    public void rontingTaskToAO1(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 start ...."));
+
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 end ...."));
+    }
+
+    /**
+     * StartStep: rontingTaskToAO3
+     *
+     * @param bpc
+     * @throws
+     */
+    public void rontingTaskToAO3(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
+
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
+    }
+
+    /**
+     * StartStep: rontingTaskToAO2
+     *
+     * @param bpc
+     * @throws
+     */
+    public void rontingTaskToAO2(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
+
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
+    }
 }

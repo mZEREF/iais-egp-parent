@@ -20,6 +20,8 @@ public interface TaskService {
     TaskDto updateTask(TaskDto taskDto);
     //get TaskConfig
     List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos);
+    //get Task
+    TaskDto getTaskById(String taskId);
     //rounting Task
      void routingAdminScranTask(List<ApplicationDto> applicationDtos) throws FeignException;
      void routingTask(ApplicationDto applicationDto,String statgId) throws FeignException;

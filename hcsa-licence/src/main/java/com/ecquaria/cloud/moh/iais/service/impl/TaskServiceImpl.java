@@ -44,6 +44,12 @@ public class TaskServiceImpl implements TaskService {
         return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDtos,HcsaSvcStageWorkingGroupDto.class);
     }
 
+    @Override
+    public TaskDto getTaskById(String taskId) {
+        //todo: call rest get the task  by  the taskId;
+        return null;
+    }
+
 
     @Override
     public List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status) {
@@ -75,15 +81,17 @@ public class TaskServiceImpl implements TaskService {
             String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
             TaskDto taskScoreDto = getUserIdForWorkGroup(workGroupId);
             //todo: wait the commpool
+            Date assignDate = new Date();
             if("".equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
                 taskScoreDto.setUserId(null);
+                assignDate = null;
             }
             List<TaskDto> taskDtos = new ArrayList<>();
             int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                     stageId,applicationDto.getApplicationType());
             TaskDto taskDto = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
                     applicationDto.getApplicationNo(),workGroupId,
-                    taskScoreDto.getUserId(),new Date(),score,
+                    taskScoreDto.getUserId(),assignDate,score,
                     IaisEGPHelper.getCurrentAuditTrailDto());
             taskDtos.add(taskDto);
             this.createTasks(taskDtos);
