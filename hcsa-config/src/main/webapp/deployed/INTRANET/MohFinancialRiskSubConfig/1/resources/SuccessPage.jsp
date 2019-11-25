@@ -1,0 +1,1 @@
+<%@include file="/iais/riskconfig/RiskFinancialRiskSuccessPage.jsp"%>
