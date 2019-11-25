@@ -13,7 +13,7 @@
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 
-</div>
+
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="pool_action_value" value="">
@@ -33,10 +33,9 @@
               </thead>
               <tbody>
                 <c:forEach items="${inspectionTaskPoolListDtoList}" var="pool">
-                  <tr align="center">
+                  <tr>
                     <td><c:out value="${pool.applicationNo}"/></td>
                     <td><c:out value="${pool.serviceName}"/></td>
-                    <td><c:out value="${pool.inspectionLead}"/></td>
                     <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="pool_action_value" value="${pool.applicationNo}"/>');">Assign</button></td>
                   </tr>
                 </c:forEach>
@@ -66,6 +65,7 @@
     </div>
   </iais:body>
 </form>
+</div>
 <script type="text/javascript">
 
     function doAssign(rowguid){

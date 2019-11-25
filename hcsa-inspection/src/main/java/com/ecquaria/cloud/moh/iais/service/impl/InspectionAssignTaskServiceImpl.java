@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListD
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.hazelcast.aws.utility.StringUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public List<TaskDto> getCommPoolByGroupWordId(String workGroupId) {
         Map<String,Object> map = new HashMap<>();
         map.put("workGroupId", workGroupId);
-        return RestApiUtil.getListByReqParam("hcsa-task:8880/iais-task/commpool/{workGroupId}",map,TaskDto.class);
+        return RestApiUtil.getListByReqParam("iais-organization:8879/iais-task/commpool/{workGroupId}",map,TaskDto.class);
     }
 
     @Override
@@ -74,8 +75,14 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
         inspectionTaskPoolListDto.setApplicationNo(taskDto.getRefNo());
         inspectionTaskPoolListDto.setInspectionLead(taskDto.getUserId());
-        ApplicationDto applicationDto = getApplicationDtoByAppNo(taskDto.getRefNo());
-        HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
+        ApplicationDto applicationDto = null;
+        HcsaServiceDto hcsaServiceDto = null;
+        if(!StringUtil.isEmpty(taskDto.getRefNo())) {
+            applicationDto = getApplicationDtoByAppNo(taskDto.getRefNo());
+        }
+        if(!StringUtil.isEmpty(taskDto.getRefNo())) {
+            hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
+        }
         inspectionTaskPoolListDto.setServiceName(hcsaServiceDto.getSvcName());
         return inspectionTaskPoolListDto;
     }
