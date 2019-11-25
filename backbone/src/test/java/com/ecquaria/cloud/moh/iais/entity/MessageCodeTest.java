@@ -18,7 +18,7 @@ public class MessageCodeTest {
     @Test
     public void testGetterSetter() {
         entity.getMsgId();
-        entity.setMsgId(1);
+        entity.setMsgId("");
         entity.getCodeKey();
         entity.setCodeKey(null);
         entity.getDescription();
