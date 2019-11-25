@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -13,11 +14,12 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.impl.ApplicationViewServiceImp;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -138,6 +140,17 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToAO3(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
+        //update Task information
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setSlaRemainInDays(remainDays(taskDto));
+        taskDto =  taskService.updateTask(taskDto);
+        // application status
+        //create new task.
+        ApplicationDto applicationDto =  new ApplicationDto();
+
+        //taskService.routingTask(applicationDto,);
 
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
@@ -152,5 +165,13 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
 
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
+    }
+
+    private int remainDays(TaskDto taskDto){
+       int result = 0;
+       //todo:
+       String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
+      log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
+        return  result;
     }
 }

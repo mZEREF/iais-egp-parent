@@ -15,4 +15,10 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         return RestApiUtil.getByReqParam("iais-application:8883/iais-application/application/{AppNo}",map, ApplicationViewDto.class);
 
     }
+
+    @Override
+    public boolean isAllApplicationSubmit(String appNo) {
+
+        return false;
+    }
 }
