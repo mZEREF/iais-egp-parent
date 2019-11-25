@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public final class MasterCodeUtil {
     private static final String SEQUENCE                           = "sequence";
     private static final String WEBCOMMON                          = "webcommon";
     private static final String RETRIEVE_MASTER_CODES              = "retrieveMasterCodes";
-    private static final String MASTERCODE_CACHES                  = "system-admin:8886/iais-mastercode/caches";
+
     //Code Categorys
     public static final String CATE_ID_NATIONALITY                 = "6B201379-730B-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_RISK_LEVEL                  = "2CFD766C-730B-EA11-BE7D-000C29F371DC";
@@ -184,7 +183,8 @@ public final class MasterCodeUtil {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.addFilter("codeFilter", code, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
-            SearchResult<MasterCodeView> sr = RestApiUtil.query(MASTERCODE_CACHES, param);
+            MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
+            SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
             if (sr.getRowCount() > 0) {
                 MasterCodeView mc = sr.getRows().get(0);
                 desc = mc.getDescription();
@@ -260,7 +260,8 @@ public final class MasterCodeUtil {
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("cateFilter", cateId, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
-            SearchResult<MasterCodeView> sr = RestApiUtil.query(MASTERCODE_CACHES, param);
+            MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
+            SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
@@ -282,7 +283,8 @@ public final class MasterCodeUtil {
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
             param.addFilter("filterAttr", filter, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
-            SearchResult<MasterCodeView> sr = RestApiUtil.query(MASTERCODE_CACHES, param);
+            MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
+            SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
