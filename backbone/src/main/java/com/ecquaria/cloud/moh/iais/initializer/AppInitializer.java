@@ -13,21 +13,21 @@
 
 package com.ecquaria.cloud.moh.iais.initializer;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.client.ErrorMsgClient;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.entity.MessageCode;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
-import lombok.extern.slf4j.Slf4j;
-
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AppInitializer
@@ -61,7 +61,8 @@ public class AppInitializer implements ServletContextListener {
     private void initMessages() {
         SearchParam param = new SearchParam(MessageCode.class.getName());
         QueryHelp.setMainSql("initializer", "retrieveAllMsg", param);
-        SearchResult<MessageCode> sr = RestApiUtil.query("system-admin:8886/iais-message/allMsg", param);
+        ErrorMsgClient client = SpringContextHelper.getContext().getBean(ErrorMsgClient.class);
+        SearchResult<MessageCode> sr = client.retrieveErrorMsgs(param).getEntity();
 
         if (sr.getRowCount() > 0) {
             Map<String, String> map = new HashMap<>();
