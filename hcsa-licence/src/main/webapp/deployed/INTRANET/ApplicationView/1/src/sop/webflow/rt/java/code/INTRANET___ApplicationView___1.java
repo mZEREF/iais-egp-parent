@@ -68,8 +68,10 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "cleanSession", this);
+		EngineHelper.delegate(DELEGATOR, "doStar", this);
 	}
+
+
 
 
 
