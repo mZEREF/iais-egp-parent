@@ -61,7 +61,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPre start ...."));
-        List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordName("asows");
+        List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId("BF3B0634-F80C-EA11-BE7D-000C29F371DC");
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = inspectionAssignTaskService.getPoolListByTaskDto(commPools);
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDtoList", (Serializable) inspectionTaskPoolListDtoList);
     }

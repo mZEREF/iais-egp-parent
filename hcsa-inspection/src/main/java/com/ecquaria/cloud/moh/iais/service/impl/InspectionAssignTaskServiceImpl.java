@@ -23,10 +23,10 @@ import java.util.Map;
 @Service
 public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskService {
     @Override
-    public List<TaskDto> getCommPoolByGroupWordName(String name) {
+    public List<TaskDto> getCommPoolByGroupWordId(String workGroupId) {
         Map<String,Object> map = new HashMap<>();
-        map.put("workGroupName", name);
-        return RestApiUtil.getListByReqParam("hcsa-task:8886/iais-task/commpool/{workGroupName}",map,TaskDto.class);
+        map.put("workGroupId", workGroupId);
+        return RestApiUtil.getListByReqParam("hcsa-task:8880/iais-task/commpool/{workGroupId}",map,TaskDto.class);
     }
 
     @Override
