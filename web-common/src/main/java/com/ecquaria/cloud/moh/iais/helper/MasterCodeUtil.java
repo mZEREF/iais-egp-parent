@@ -13,6 +13,8 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.client.MasterCodeClient;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -20,10 +22,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * MasterCodeUtil
@@ -75,18 +80,14 @@ public final class MasterCodeUtil {
         SearchParam param = new SearchParam(MasterCodeView.class.getName());
         param.setSort(SEQUENCE, SearchParam.ASCENDING);
         QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
-        SearchResult sr = RestApiUtil.query(MASTERCODE_CACHES, param);
-        if (sr == null || sr.getRowCount() <= 0)
+        MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
+        SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
+        if (sr == null || sr.getRowCount() <= 0) {
             return;
-
+        }
         List<MasterCodeView> list = new ArrayList<>();
         sr.getRows().forEach(obj -> {
-            if (obj instanceof MasterCodeView) {
-                list.add((MasterCodeView) obj);
-            } else if (obj instanceof Map) {
-                MasterCodeView mcv = MiscUtil.tranMapToDto((Map) obj, MasterCodeView.class);
-                list.add(mcv);
-            }
+            list.add((MasterCodeView) obj);
         });
         Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
         Map<String, List<MasterCodeView>> filterMap = new HashMap<>();
@@ -239,9 +240,9 @@ public final class MasterCodeUtil {
      */
     public static List<SelectOption> retrieveOptionsByCodes(String[] codes) {
         List<SelectOption> opts = new ArrayList<>();
-        if (codes == null)
+        if (codes == null) {
             return opts;
-
+        }
         for (String c : codes) {
             opts.add(new SelectOption(c, getCodeDesc(c)));
         }
@@ -309,18 +310,18 @@ public final class MasterCodeUtil {
         rch.set(CACHE_NAME_CODE, mc.getCode(), mc.getDescription());
         String cate = String.valueOf(mc.getCategory());
         List<MasterCodeView> list = rch.get(CACHE_NAME_CATE_MAP, cate);
-        if (list == null)
+        if (list == null) {
             list = new ArrayList<>();
-
+        }
         list.add(mc);
         rch.set(CACHE_NAME_CATE_MAP, cate, list);
-        if (StringUtil.isEmpty(mc.getFilterValue()))
+        if (StringUtil.isEmpty(mc.getFilterValue())) {
             return;
-
+        }
         list = rch.get(CACHE_NAME_FILTER, mc.getFilterValue());
-        if (list == null)
+        if (list == null) {
             list = new ArrayList<>();
-
+        }
         list.add(mc);
         rch.set(CACHE_NAME_FILTER, mc.getFilterValue(), list);
     }
