@@ -52,6 +52,17 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do routingTask end ...."));
     }
 
+    /**
+     * StartStep: doStart
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doStart(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do cleanSession start ...."));
+
+        log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
+    }
 
     /**
      * StartStep: prepareData
