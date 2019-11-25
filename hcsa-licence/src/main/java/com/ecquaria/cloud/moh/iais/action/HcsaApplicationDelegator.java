@@ -34,6 +34,22 @@ public class HcsaApplicationDelegator {
     @Autowired
     private TaskService taskService;
 
+
+
+    /**
+     * StartStep: cleanSession
+     *
+     * @param bpc
+     * @throws
+     */
+    public void cleanSession(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do cleanSession start ...."));
+
+        log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
+    }
+
+
+
     public void routingTask(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
@@ -62,10 +78,17 @@ public class HcsaApplicationDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         //get routing stage dropdown send to page.
-
         ApplicationViewServiceImp applicationViewService = new ApplicationViewServiceImp();
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
         applicationViewDto.setApplicationNo(appNo);
+
+
+
+
+
+
+
+
 
         ParamUtil.setRequestAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
