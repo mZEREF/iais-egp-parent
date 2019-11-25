@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "system-admin", configuration = FeignConfiguration.class,
         fallback = MasterCodeClientFallback.class)
 public interface MasterCodeClient {
-    @RequestMapping(path = "/iais-mastercode/cache",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(path = "/iais-mastercode/caches",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<MasterCodeView>> retrieveMasterCodes(SearchParam param);
 }
