@@ -21,8 +21,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Override
     public ApplicationViewDto searchByAppNo(String appNo) {
         Map<String,Object> map = new HashMap<>();
-        map.put("AppNo",appNo);
-        return RestApiUtil.getByReqParam("iais-application:8883/iais-application/application/{AppNo}",map, ApplicationViewDto.class);
+        map.put("appNo",appNo);
+        return RestApiUtil.getByReqParam("iais-application:8883/iais-application-be/applicationview/{appNo}",map, ApplicationViewDto.class);
 
     }
 
