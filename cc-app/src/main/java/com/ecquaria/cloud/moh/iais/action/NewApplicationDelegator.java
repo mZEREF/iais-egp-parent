@@ -10,15 +10,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.submission.client.model.SubmitReq;
@@ -37,7 +42,12 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * NewApplicationDelegator
@@ -78,7 +88,7 @@ public class NewApplicationDelegator {
         //loadingDraft(bpc);
         //for loading Service Config
         loadingServiceConfig(bpc);
-
+        initSession(bpc);
         log.debug(StringUtil.changeForLog("the do Start end ...."));
     }
 
@@ -91,13 +101,16 @@ public class NewApplicationDelegator {
      */
     public void prepare(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepare start ...."));
-        String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        //String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        String action = (String) ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if(StringUtil.isEmpty(action)){
             action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
             if(StringUtil.isEmpty(action)){
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+                //first
+                action = "premises";
             }
         }
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,action);
         log.debug(StringUtil.changeForLog("the do prepare end ...."));
     }
     /**
@@ -174,10 +187,11 @@ public class NewApplicationDelegator {
     public void preparePreview(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = (AppSvcRelatedInfoDto) ParamUtil.getSessionAttr(bpc.request, "AppSvcRelatedInfoDto");
-
-
-
+        Map<String,AppSvcRelatedInfoDto> appSvcRelatedInfoMap = (Map<String, AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request, ClinicalLaboratoryDelegator.APPSVCRELATEDINFOMAP);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>();
+        appSvcRelatedInfoMap.keySet().forEach(key->appSvcRelatedInfoDtoList.add(appSvcRelatedInfoMap.get(key)));
+        appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
     /**
@@ -188,11 +202,6 @@ public class NewApplicationDelegator {
      */
     public void preparePayment(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePayment start ...."));
-        //test data, dont need commit
-        /*AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        appSubmissionDto.setAmount(200.0);
-        appSubmissionDto.setAppGrpNo("DL_2019_test_CR");
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);*/
         log.debug(StringUtil.changeForLog("the do preparePayment end ...."));
     }
     /**
@@ -208,6 +217,14 @@ public class NewApplicationDelegator {
         //set value into AppSubmissionDto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         appSubmissionDto.setAppGrpPremisesDto(appGrpPremisesDto);
+        ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, appGrpPremisesDto);
+
+        /*Map<String,String> errorMap = doValidatePremiss(bpc);
+        if(errorMap.size()>0){
+           ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+        }else {
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        }*/
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
@@ -304,7 +321,16 @@ public class NewApplicationDelegator {
             if("success".equals(result)){
                 switch2 = "ack";
                 //update status
-                // wait to do
+                AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+                String appGrpId = appSubmissionDto.getAppGrpId();
+                //String pmtRefNo = bpc.request.getParameter("pmtRefNo");
+                //default online payment
+                String pmtStatus = MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                appGrp.setId(appGrpId);
+                appGrp.setPmtRefNo("AN1911136061");
+                appGrp.setPmtStatus(pmtStatus);
+                RestApiUtil.update(RestApiUrlConsts.UPDATE_APPLICATION_GROUP, appGrp, String.class);
             }
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
@@ -457,8 +483,8 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
         //loading the service
         List<String> serviceConfigIds = new ArrayList<>();
-        serviceConfigIds.add("AA1A7D00-2AEB-E911-BE76-000C29C8FBE4");
-        serviceConfigIds.add("C3E7715A-29EB-E911-BE76-000C29C8FBE4");
+        serviceConfigIds.add("34F99D15-820B-EA11-BE7D-000C29F371DC");
+        serviceConfigIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");
         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
         sortHcsaServiceDto(hcsaServiceDtoList);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
@@ -510,24 +536,46 @@ public class NewApplicationDelegator {
     }
     private Map<String,String> doValidatePremiss(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
-        //do validate premiss
+        //do validate one premiss
         Map<String,String> errorMap = new HashMap<>();
-//        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
-//        String premiseType = appGrpPremisesDto.getPremisesType();
-//        if(StringUtil.isEmpty(premiseType)){
-//            errorMap.put("premisesType","Please select the premises Type");
-//        }else if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)){
-//            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
-//            if (validationResult.isHasErrors()){
-//                errorMap = validationResult.retrieveAll();
-//            }
-//        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
-//            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
-//            if (validationResult.isHasErrors()){
-//                errorMap = validationResult.retrieveAll();
-//            }
-//        }
-//        ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
+        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+        String premiseType = appGrpPremisesDto.getPremisesType();
+        if(StringUtil.isEmpty(premiseType)){
+            errorMap.put("premisesType","Please select the premises Type");
+        }
+        String premisesSelect = appGrpPremisesDto.getPremisesSelect();
+        if(StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)){
+            errorMap.put("premisesSelect", "Please select the premises from");
+        }else if ("newPremise".equals(premisesSelect)){
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)){
+                ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
+                if (validationResult.isHasErrors()){
+                    errorMap = validationResult.retrieveAll();
+                }
+                String hciName = appGrpPremisesDto.getHciName();
+                //from master code get Keyword Values
+                List keyWords = getKeyWords();
+                /*if(hciName.contentEquals(keyWord)){
+                    //err02
+                    //MessageUtil.getMessageDesc(MessageConstants.);
+                    errorMap.put("hicName", "Your HCI name contains blacklisted words");
+                }*/
+                try {
+                    Long postalCode = Long.parseLong(appGrpPremisesDto.getPostalCode());
+                }catch (Exception e){
+                    //errorMap.put("postalCode", "");
+                }
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
+                ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
+                if (validationResult.isHasErrors()){
+                    errorMap = validationResult.retrieveAll();
+                }
+            }
+        }else{
+            //premiseSelect = organization hci code
+
+        }
+        ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errorMap;
     }
@@ -575,7 +623,6 @@ public class NewApplicationDelegator {
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
         }
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
     }
     private  void eventBus( AppSubmissionDto appSubmissionDto,BaseProcessClass bpc){
@@ -598,4 +645,33 @@ public class NewApplicationDelegator {
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
     }
+
+    private void initSession(BaseProcessClass bpc){
+        AppSubmissionDto appSubmissionDto = new AppSubmissionDto();
+        //hard-code app type
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        List<HcsaServiceDto> HcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,  AppServicesConsts.HCSASERVICEDTOLIST);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>();
+        Map<String,AppSvcRelatedInfoDto>  svcRelatedMap = new HashMap<>();
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
+        for(HcsaServiceDto svc:HcsaServiceDtos){
+            appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+            appSvcRelatedInfoDto.setServiceId(svc.getId());
+            appSvcRelatedInfoDto.setServiceCode(svc.getSvcCode());
+            appSvcRelatedInfoDto.setServiceType(svc.getSvcType());
+            appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
+            svcRelatedMap.put(svc.getId(), appSvcRelatedInfoDto);
+        }
+        appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.APPSVCRELATEDINFOMAP, (Serializable) svcRelatedMap);
+    }
+
+    private List getKeyWords(){
+        List keyWords = new ArrayList();
+        keyWords.add("asd");
+        keyWords.add("mzx");
+        return keyWords;
+    }
 }
+
