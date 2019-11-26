@@ -110,8 +110,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     @Override
-    public String  download() {
+    public Boolean  download() {
         FileInputStream fileInputStream=null;
+        Boolean flag=false;
         try {
             File file =new File(DOWNLOAD);
             if(file.isDirectory()){
@@ -129,8 +130,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             by.write(size,0,count);
                             count= fileInputStream.read(size);
                         }
-                        Boolean   aBoolean = RestApiUtil.save(URL, by.toString(), Boolean.class);
-                        Boolean backups = backups(aBoolean, filzz);
+                        flag = RestApiUtil.save(URL, by.toString(), Boolean.class);
+                        Boolean backups = backups(flag, filzz);
                         if(backups&&filzz.exists()){
                             filzz.delete();
                         }
@@ -151,7 +152,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         }
 
-        return  "";
+        return flag;
     }
 
     /*************************/

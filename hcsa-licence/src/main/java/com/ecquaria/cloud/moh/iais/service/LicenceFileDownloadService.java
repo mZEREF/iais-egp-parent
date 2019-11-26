@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface LicenceFileDownloadService {
 
-    String  download();
+    Boolean  download();
     void compress();
     List<ApplicationDto> listApplication();
 }
