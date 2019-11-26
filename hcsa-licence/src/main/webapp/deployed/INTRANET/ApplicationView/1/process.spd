@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="4" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="310" y="20">
+  <StartStep defClass="" executor="" icon="" name="doStart" x="310" y="20">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -75,7 +75,7 @@
   </WebPage>
  </Pages>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/doStart" style="oblique">
    <position>{(330,40)(320,140)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ViewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareData" style="oblique">

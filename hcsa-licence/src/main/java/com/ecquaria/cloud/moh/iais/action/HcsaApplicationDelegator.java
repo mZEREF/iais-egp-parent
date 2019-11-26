@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.impl.ApplicationViewServiceImp;
 import com.ecquaria.cloudfeign.FeignException;
@@ -34,21 +35,8 @@ public class HcsaApplicationDelegator {
     @Autowired
     private TaskService taskService;
 
-
-
-    /**
-     * StartStep: cleanSession
-     *
-     * @param bpc
-     * @throws
-     */
-    public void cleanSession(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do cleanSession start ...."));
-
-        log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
-    }
-
-
+    @Autowired
+    private ApplicationViewService applicationViewService;
 
     public void routingTask(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
@@ -64,6 +52,17 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do routingTask end ...."));
     }
 
+    /**
+     * StartStep: doStart
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doStart(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do cleanSession start ...."));
+
+        log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
+    }
 
     /**
      * StartStep: prepareData
@@ -78,17 +77,10 @@ public class HcsaApplicationDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         //get routing stage dropdown send to page.
+
         ApplicationViewServiceImp applicationViewService = new ApplicationViewServiceImp();
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
         applicationViewDto.setApplicationNo(appNo);
-
-
-
-
-
-
-
-
 
         ParamUtil.setRequestAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
@@ -102,21 +94,15 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToPSO(BaseProcessClass bpc){
+    public void rontingTaskToPSO(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToPSO start ...."));
         //update Task information
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        taskDto.setTaskStatus("");
-        //todo: otehr fields
-        taskDto =  taskService.updateTask(taskDto);
-       // application status
-        //create new task.
-        ApplicationDto applicationDto =  new ApplicationDto();
-
-        //taskService.routingTask(applicationDto,);
+        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_PSO);
 
         log.debug(StringUtil.changeForLog("the do rontingTaskToPSO end ...."));
     }
+
 
     /**
      * StartStep: rontingTaskToINS
@@ -124,9 +110,10 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToINS(BaseProcessClass bpc){
+    public void rontingTaskToINS(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS start ...."));
-
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_INS);
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS end ...."));
     }
 
@@ -137,9 +124,10 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToASO(BaseProcessClass bpc){
+    public void rontingTaskToASO(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToASO start ...."));
-
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_ASO);
         log.debug(StringUtil.changeForLog("the do rontingTaskToASO end ...."));
     }
 
@@ -149,10 +137,26 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToAO1(BaseProcessClass bpc){
+    public void rontingTaskToAO1(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 start ...."));
-
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_AO1);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 end ...."));
+    }
+
+
+
+    /**
+     * StartStep: rontingTaskToAO2
+     *
+     * @param bpc
+     * @throws
+     */
+    public void rontingTaskToAO2(BaseProcessClass bpc) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_AO2);
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
     }
 
     /**
@@ -161,33 +165,34 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToAO3(BaseProcessClass bpc){
+    public void rontingTaskToAO3(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
-        //update Task information
+
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-        taskDto.setSlaDateCompleted(new Date());
-        taskDto.setSlaRemainInDays(remainDays(taskDto));
-        taskDto =  taskService.updateTask(taskDto);
-        // application status
-        //create new task.
-        ApplicationDto applicationDto =  new ApplicationDto();
+        routingTask(taskDto,null);
 
-        //taskService.routingTask(applicationDto,);
-
+        //todo: isAllApplicationSubmit
+        boolean isAllApplicationSubmit = applicationViewService.isAllApplicationSubmit(taskDto.getRefNo());
+        //create the licence
+        if(isAllApplicationSubmit){
+          //todo:create licence
+        }
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
+    //***************************************
+    //private methods
+    //**************************************
 
-    /**
-     * StartStep: rontingTaskToAO2
-     *
-     * @param bpc
-     * @throws
-     */
-    public void rontingTaskToAO2(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
-
-        log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
+    private void routingTask(TaskDto taskDto,String stageId ) throws FeignException {
+        //update Task information
+        taskDto =  completedTask(taskDto);
+        // update application status
+        String appNo = taskDto.getRefNo();
+        ApplicationDto applicationDto =  updateApplicaiton(appNo);
+        // send the task
+        if(!StringUtil.isEmpty(stageId)){
+            taskService.routingTask(applicationDto,stageId);
+        }
     }
 
     private int remainDays(TaskDto taskDto){
@@ -195,6 +200,19 @@ public class HcsaApplicationDelegator {
        //todo:
        String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
       log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
-        return  result;
+      return  result;
+    }
+
+
+    private TaskDto completedTask(TaskDto taskDto){
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setSlaRemainInDays(remainDays(taskDto));
+        return taskService.updateTask(taskDto);
+    }
+    private ApplicationDto updateApplicaiton(String appNo){
+        ApplicationDto applicationDto = applicationViewService.getApplicaitonByAppNo(appNo);
+        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        return applicationViewService.updateApplicaiton(applicationDto);
     }
 }

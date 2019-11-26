@@ -13,10 +13,16 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.client.MasterCodeClient;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,11 +35,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.context.ApplicationContext;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -50,18 +52,23 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({MasterCodeUtil.class, RedisCacheHelper.class, QueryHelp.class, RestApiUtil.class})
+@PrepareForTest({MasterCodeUtil.class, RedisCacheHelper.class, QueryHelp.class, SpringContextHelper.class})
 @SuppressStaticInitializationFor("com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil")
 @PowerMockIgnore("javax.management.*")
 public class MasterCodeUtilTest {
     @Mock
     private RedisCacheHelper rch;
+    @Mock
+    private MasterCodeClient client;
 
     @Before
     public void setup() {
         PowerMockito.mockStatic(RedisCacheHelper.class);
         PowerMockito.mockStatic(QueryHelp.class);
-        PowerMockito.mockStatic(RestApiUtil.class);
+        PowerMockito.mockStatic(SpringContextHelper.class);
+        ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
+        when(SpringContextHelper.getContext()).thenReturn(context);
+        when(context.getBean(MasterCodeClient.class)).thenReturn(client);
         when(RedisCacheHelper.getInstance()).thenReturn(rch);
         doNothing().when(rch).set(anyString(), anyString(), anyObject());
         SearchResult<MasterCodeView> sr = new SearchResult<>();
@@ -84,7 +91,9 @@ public class MasterCodeUtilTest {
         list.add(dto);
         sr.setRows(list);
         sr.setRowCount(list.size());
-        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        entity.setEntity(sr);
+        when(client.retrieveMasterCodes(anyObject())).thenReturn(entity);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -97,7 +106,8 @@ public class MasterCodeUtilTest {
     public void testRefreshCache() {
         MasterCodeUtil.refreshCache();
         assertNotNull(MasterCodeUtil.retrieveOptionsByCate("1"));
-        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(null);
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        when(client.retrieveMasterCodes(anyObject())).thenReturn(entity);
         MasterCodeUtil.refreshCache();
     }
 
@@ -113,7 +123,9 @@ public class MasterCodeUtilTest {
         List<MasterCodeView> list = MasterCodeUtil.retrieveByCategory("1");
         assertNotNull(list);
         SearchResult sr = new SearchResult();
-        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        entity.setEntity(sr);
+        when(client.retrieveMasterCodes(anyObject())).thenReturn(entity);
         MasterCodeUtil.retrieveByCategory("1");
     }
 
@@ -128,7 +140,9 @@ public class MasterCodeUtilTest {
         List<MasterCodeView> list = MasterCodeUtil.retrieveByFilter("E");
         assertNotNull(list);
         SearchResult sr = new SearchResult();
-        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        entity.setEntity(sr);
+        when(client.retrieveMasterCodes(anyObject())).thenReturn(entity);
         MasterCodeUtil.retrieveByFilter("E");
     }
 
@@ -143,7 +157,9 @@ public class MasterCodeUtilTest {
         String desc = MasterCodeUtil.getCodeDesc("E02");
         assertNotNull(desc);
         SearchResult sr = new SearchResult();
-        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        entity.setEntity(sr);
+        when(client.retrieveMasterCodes(anyObject())).thenReturn(entity);
         MasterCodeUtil.getCodeDesc("E02");
     }
 
@@ -153,7 +169,9 @@ public class MasterCodeUtilTest {
         List<SelectOption> list = MasterCodeUtil.retrieveOptionsByCodes(strs);
         assertNotNull(list);
         SearchResult sr = new SearchResult();
-        when(RestApiUtil.query(anyObject(),anyObject())).thenReturn(sr);
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        entity.setEntity(sr);
+        when(client.retrieveMasterCodes(anyObject())).thenReturn(entity);
         MasterCodeUtil.retrieveOptionsByCodes(strs);
         MasterCodeUtil.retrieveOptionsByCodes(null);
     }
