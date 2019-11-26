@@ -105,7 +105,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Override
     public List<ApplicationDto> listApplication() {
 
-        List<ApplicationDto> byPathParam = RestApiUtil.getByPathParam(URL_APPLICATION, "", List.class);
+        List<ApplicationDto> byPathParam = RestApiUtil.getList(URL_APPLICATION,  ApplicationDto.class);
         return byPathParam;
     }
 
