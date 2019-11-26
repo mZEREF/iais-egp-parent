@@ -11,7 +11,6 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
-
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
@@ -75,10 +74,6 @@ public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	public void doForms_OnStepProcess_0() throws Exception {
 	// 		doForms->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doForms", this);
-	}
-	public void doSubmit_OnStepProcess_0() throws Exception {
-	// 		doSubmit->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doSubmit", this);
 	}
 	
 
