@@ -64,9 +64,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Override
     public List<HcsaSvcRoutingStageDto> getStageName(String serviceId, String stageId) {
         Map<String,Object> map = new HashMap<>();
-        map.put("AppNo",serviceId);
-       // map.put()
-        return null;
+        map.put("serviceId",serviceId);
+        map.put("stageId",stageId);
+        return RestApiUtil.postGetList("hcsa-config:8878/hcsa-routing/stage-id",map,HcsaSvcRoutingStageDto.class);
+
+
     }
 
 
