@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="6" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="doStart" x="310" y="20">
@@ -14,13 +14,6 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="BindAction" x="300" y="340">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="bindAction_OnStepProcess_0" name="bindAction_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="ASO" x="160" y="540">
@@ -65,6 +58,13 @@
     <JavaCode defClass="" executor="" methodName="aO3_OnStepProcess_0" name="aO3_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="chooseStage" x="310" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="chooseStage_OnStepProcess_0" name="chooseStage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewPage" stageIndicator="" x="310" y="220">
@@ -81,14 +81,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/ViewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareData" style="oblique">
    <position>{(320,140)(330,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/BindAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ViewPage" style="oblique">
-   <position>{(330,240)(320,360)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(330,690)(17,582)(320,140)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BindAction" style="oblique">
-   <position>{(320,360)(330,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ASO" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(330,460)(180,560)}</position>
@@ -125,6 +119,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/AO2" style="oblique">
    <position>{(420,560)(330,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/chooseStage" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ViewPage" style="rectanular">
+   <position>{(330,240)(330,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/chooseStage" style="rectanular">
+   <position>{(330,360)(330,460)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
