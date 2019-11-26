@@ -34,7 +34,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
         if(applicationDto != null){
             String appGroupId = applicationDto.getAppGrpId();
-            //todo:judge the All Applicaitons Submit
+            //todo:judge  the All Applicaitons Submit
         }else{
             log.error(StringUtil.changeForLog("The applicationDto is null"));
         }
