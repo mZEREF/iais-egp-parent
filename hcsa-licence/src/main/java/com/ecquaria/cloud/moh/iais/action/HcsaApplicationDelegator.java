@@ -4,8 +4,12 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -77,14 +81,40 @@ public class HcsaApplicationDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         //get routing stage dropdown send to page.
-
-        ApplicationViewServiceImp applicationViewService = new ApplicationViewServiceImp();
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
-        applicationViewDto.setApplicationNo(appNo);
+        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
+        List<OrganizationDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
+        for (int i = 0; i <appSupDocDtos.size(); i++) {
+            for (int j = 0; j <docTitleList.size() ; j++) {
+                if (appSupDocDtos.get(i).getFile().equals(docTitleList.get(j).getId())){
+                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                }
+            }
+            for (int j = 0; j <userNameList.size() ; j++) {
+                if (appSupDocDtos.get(i).getSubmittedBy().equals(userNameList.get(j).getId())){
+                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getUserName());
+                }
+            }
+        }
+
 
         ParamUtil.setRequestAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
+    }
+
+    /**
+     * StartStep: chooseStage
+     *
+     * @param bpc
+     * @throws
+     */
+    public void chooseStage(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
+
+
+        log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
     }
 
 

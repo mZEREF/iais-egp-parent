@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -512,6 +514,20 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate premiss
         Map<String,String> errorMap = new HashMap<>();
+        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto= (AppSvcPrincipalOfficersDto)ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
+        String mobileNo = appSvcPrincipalOfficersDto.getMobileNo();
+        String officeTelNo = appSvcPrincipalOfficersDto.getOfficeTelNo();
+        String emailAddr = appSvcPrincipalOfficersDto.getEmailAddr();
+        if(!mobileNo.startsWith("8")||!mobileNo.startsWith("9")){
+            errorMap.put("mobileNo","Please key in a valid mobile number");
+        }
+        if(! emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
+            errorMap.put("emailAddr","Please key in a valid email address");
+        }
+        if(!officeTelNo.startsWith("6")){
+            errorMap.put("officeTelNo","Please key in a valid phone number");
+        }
+
 //        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
 //        String premiseType = appGrpPremisesDto.getPremisesType();
 //        if(StringUtil.isEmpty(premiseType)){
@@ -532,6 +548,53 @@ public class NewApplicationDelegator {
         return errorMap;
     }
 
+
+    private Map<String,String> doValidatePremissCgo(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        //do validate premiss
+        Map<String,String> errorMap = new HashMap<>();
+        AppSvcCgoDto appSvcCgoDto=  (AppSvcCgoDto) ParamUtil.getSessionAttr(bpc.request,"AppSvcCgoDto");
+        String mobileNo = appSvcCgoDto.getMobileNo();
+        String emailAddr = appSvcCgoDto.getEmailAddr();
+        if(!mobileNo.startsWith("8")||!mobileNo.startsWith("9")){
+            errorMap.put("mobileNo","Please key in a valid mobile number");
+        }
+        if(!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
+            errorMap.put("emailAddr","Please key in a valid email address");
+        }
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+        return errorMap;
+    }
+    private Map<String,String> doValidatePremissPresmises(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        //do validate premiss
+        Map<String,String> errorMap = new HashMap<>();
+        AppGrpPremisesDto appGrpPremisesDto=  (AppGrpPremisesDto) ParamUtil.getSessionAttr(bpc.request,"AppGrpPremisesDto");
+        String postalCode = appGrpPremisesDto.getPostalCode();
+        String addrType = appGrpPremisesDto.getAddrType();
+        String floorNo = appGrpPremisesDto.getFloorNo();
+        String blkNo = appGrpPremisesDto.getBlkNo();
+        String unitNo = appGrpPremisesDto.getUnitNo();
+        if("Apt Blk".equals(addrType)){
+            boolean empty = StringUtil.isEmpty(floorNo);
+            boolean empty1 = StringUtil.isEmpty(blkNo);
+            boolean empty2 = StringUtil.isEmpty(unitNo);
+            if(empty){
+                errorMap.put("floorNo","");
+            }
+            if(empty1){
+                errorMap.put("blkNo","");
+            }
+            if(empty2){
+                errorMap.put("unitNo","");
+            }
+        }
+        if(!postalCode.matches("^[0-9]*$")){
+            errorMap.put("postalCode","");
+        }
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+        return errorMap;
+    }
     /**
      * @description: get data from page
      * @author: zixian
