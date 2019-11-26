@@ -14,11 +14,11 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -42,6 +42,17 @@ public class AuditTrailHelper {
         dto.setFunctionName(functionName);
         ParamUtil.setSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME, dto);
     }
+
+    public static AuditTrailDto getBatchJobDto(String domain) {
+        AuditTrailDto dto = new AuditTrailDto();
+        dto.setNricNumber("System");
+        dto.setMohUserId("System");
+        dto.setMohUserGuid(AppConsts.USER_ID_SYSTEM);
+        dto.setUserDomain(domain);
+        dto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
+        return dto;
+    }
+
     private AuditTrailHelper() {
         throw new IllegalStateException("Utility class");
     }
