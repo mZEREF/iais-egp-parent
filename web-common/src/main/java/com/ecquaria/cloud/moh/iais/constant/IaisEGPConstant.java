@@ -13,6 +13,7 @@ public class IaisEGPConstant {
     }
 
     public static final String CRUD_ACTION_TYPE                    = "crud_action_type";
+    public static final String CRUD_ACTION_TYPE_VALUE              = "crud_action_type_value";
     public static final String CRUD_ACTION_VALUE                   = "crud_action_value";
     public static final String CRUD_ACTION_TYPE_TAB                = "crud_action_type_tab";
     public static final String CRUD_ACTION_TYPE_FORM               = "crud_action_type_form";
