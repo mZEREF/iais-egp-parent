@@ -471,26 +471,22 @@
                                         <h4>Processing Status Update</h4>
                                     </strong>
                                 </div>
+                                <form method="post" action=<%=process.runtime.continueURL()%>>
+                                    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="table-gp">
                                             <table class="table">
                                                 <tr>
-                                                    <td class="col-xs-4">
-                                                        <p>Current Status:</p>
-                                                    </td>
-                                                    <td class="col-xs-8">
-                                                        <p>Pending Approval Officer 1</p>
-                                                    </td>
+                                                    <td class="col-xs-4"><p>Current Status:</p></td>
+                                                    <td class="col-xs-8"><p>${applicationViewDto.applicationDto.status}</p></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>
-                                                        <p>Internal Remarks:</p>
-                                                    </td>
+                                                    <td><p>Internal Remarks:</p></td>
                                                     <td>
                                                         <div class="input-group">
                                                             <div class="ax_default text_area">
-                                                                <textarea cols="70" rows="7"></textarea>
+                                                                <textarea name="internalRemarks" cols="70" rows="7"></textarea>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -502,21 +498,20 @@
                                                     <td>
                                                         <select>
                                                             <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
-                                                                <option value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
+                                                                <option name="nextStage" value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
                                                           </c:forEach>
                                                          </select>
                                                     </td>
                                                 </tr>
                                             </table>
                                             <div align="center">
-                                                <button type="button" class="btn btn-primary">
-                                                    Submit
-                                                </button>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
                                             </div>
                                             <div>&nbsp;</div>
                                         </div>
                                     </div>
                                 </div>
+                                </form>
                                 <div class="alert alert-info" role="alert">
                                     <strong>
                                         <h4>Processing History</h4>

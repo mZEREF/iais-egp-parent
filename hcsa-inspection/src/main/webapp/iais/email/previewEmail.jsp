@@ -32,19 +32,11 @@
 <%
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
-
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-<input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-<input type="hidden" name="crud_action_type" value="">
-<input type="hidden" name="crud_action_value" value="">
-<input type="hidden" name="crud_action_additional" value="">
-
-
+<form method="post" action=<%=process.runtime.continueURL()%>>
     <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
         <div class="container">
-            <%@ include file="email.jsp" %>
+            <p>${context}</p>
         </div>
     </div>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 </form>
-
