@@ -28,6 +28,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                                <c:set var="appGrpPremisesDto" value="${AppSubmissionDto.appGrpPremisesDto}"></c:set>
                                                 <div class="panel panel-default">
                                                     <div class="panel-heading completed" id="headingPremise" role="tab">
                                                         <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Premises</a></h4>
@@ -48,7 +49,7 @@
                                                     <div class="panel-heading completed" id="headingOne" role="tab">
                                                         <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
                                                     </div>
-                                                    <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
+                                                    <div class="panel-collapse collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                                                         <div class="panel-body">
                                                             <p class="text-right mb-0"><a href="#" id="docEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                                                             <div class="elemClass-1561088919456">
@@ -58,35 +59,39 @@
                                                                         </h2>
                                                                     </div>
                                                                     <div class="pop-up">
-                                                                        <div class="pop-up-body">
-                                                                            <div class="content-body fileUploadContainer">
-                                                                                <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
-                                                                                <span class="fileType" style="display:none">Docment1</span><span class="fileFilter"
-                                                                                                                                                 style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
+                                                                        <div class="pop-up-body"><%--
+                                                                            <c:forEach var="appGrpPrimaryDocDto" items="${AppSubmissionDto.appGrpPrimaryDocDtos}">
+                                                                                <div class="content-body fileUploadContainer">
+                                                                                    <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
+                                                                                    <span class="fileType" style="display:none">Docment1</span><span class="fileFilter"
+                                                                                                                                                     style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
 
-                                                                                <div class="control col-sm-5">
-                                                                                    <div class="fileList"><span class="filename server-site" id="130"><a title="Download"
-                                                                                                                                                         href="#">${AppGrpPrimaryDocDto.docName}</a> (${AppGrpPrimaryDocDto.docSize} KB)</span></div>
+                                                                                    <div class="control col-sm-5">
+                                                                                        <div class="fileList"><span class="filename server-site" id="130"><a title="Download"
+                                                                                                                                                             href="#">${appGrpPrimaryDocDto.docName}</a> (${appGrpPrimaryDocDto.docSize} KB)</span></div>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                        </div>
+                                                                            </c:forEach>
+                                                                        --%></div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="panel panel-default">
-                                                    <div class="panel-heading incompleted" id="headingServiceInfo" role="tab">
-                                                        <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseServiceInfo" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information</a></h4>
-                                                    </div>
-                                                    <div class="panel-collapse collapse in" id="collapseServiceInfo" role="tabpanel" aria-labelledby="headingServiceInfo">
-                                                        <div class="panel-body">
-                                                            <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
-                                                            <iframe class="elemClass-1561088919456" title="" src="/hcsaapplication/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form=prepareView" id="elemId-1561088919456" scrollbar="auto" style="" width="100%" height="100%"></iframe>
+                                                <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading incompleted" id="headingServiceInfo" role="tab">
+                                                            <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information</a></h4>
+                                                        </div>
+                                                        <div class="panel-collapse collapse in" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">
+                                                            <div class="panel-body">
+                                                                <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                                                <iframe  class="elemClass-1561088919456" title="" src="/hcsaapplication/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form=prepareView&svcId=${hcsaServiceDto.id}" id="elemId-1561088919456" scrollbar="auto" width="100%" height="100%"></iframe>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </c:forEach>
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" aria-invalid="false">

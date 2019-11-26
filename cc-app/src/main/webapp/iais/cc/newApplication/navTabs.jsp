@@ -4,9 +4,9 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
-    String action = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE);
+    String action = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
     if(StringUtil.isEmpty(action)){
-        action = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        action = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
     }
 %>
 <input type="hidden" name="crud_action_type" value="">
