@@ -44,7 +44,7 @@ public class QueryHelpTest {
 
     @Test(expected = IaisRuntimeException.class)
     public void testsetMainSqlException() throws IOException, TemplateException {
-        SearchParam searchParam = new SearchParam();
+        SearchParam searchParam = new SearchParam("");
         Whitebox.setInternalState(SqlMap.class,"INSTANCE",sqlMap);
         PowerMockito.when(sqlMap.getSql(Mockito.anyString(),Mockito.anyString(),Mockito.anyMap())).thenThrow(new IOException());
         QueryHelp.setMainSql("catalog","key",searchParam);
@@ -52,7 +52,7 @@ public class QueryHelpTest {
 
     @Test
     public void testsetMainSql() throws IOException, TemplateException {
-        SearchParam searchParam = new SearchParam();
+        SearchParam searchParam = new SearchParam("");
         Whitebox.setInternalState(SqlMap.class,"INSTANCE",sqlMap);
         PowerMockito.when(sqlMap.getSql(Mockito.anyString(),Mockito.anyString(),Mockito.anyMap())).thenReturn("");
         QueryHelp.setMainSql("catalog","key",searchParam);

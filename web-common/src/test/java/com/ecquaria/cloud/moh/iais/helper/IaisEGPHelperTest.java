@@ -140,7 +140,7 @@ public class IaisEGPHelperTest {
         filterParameter.setSearchAttr("test");
         filterParameter.setClz(null);
         PowerMockito.mockStatic(ParamUtil.class);
-        SearchParam param = new SearchParam();
+        SearchParam param = new SearchParam("some");
         when(ParamUtil.getSessionAttr(mockHttpServletRequest, filterParameter.getSearchAttr())).thenReturn(param);
         IaisEGPHelper.getSearchParam(mockHttpServletRequest, filterParameter);
         assertNotNull(param);

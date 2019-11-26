@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
@@ -33,11 +34,11 @@ public class LicenceFileDownloadDelegator {
 
     public  void prepareData(BaseProcessClass bpc) throws FeignException {
          logAbout("preparetionData");
+        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
         licenceFileDownloadService.compress();
         licenceFileDownloadService.download();
         List<ApplicationDto> applicationDtos = licenceFileDownloadService.listApplication();
-
-      /*  taskService.routingAdminScranTask(applicationDtos);*/
+        taskService.routingAdminScranTask(applicationDtos);
     }
 /*******************************/
     private void logAbout(String name){

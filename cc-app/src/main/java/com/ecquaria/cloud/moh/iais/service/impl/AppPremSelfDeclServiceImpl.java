@@ -40,12 +40,12 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Override
     public List<AppPremisesCorrelationDto> listAppPremisesCorrelationByAppId(String appid) {
-        return RestApiUtil.getListByPathParam(RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.IAIS_APPLICATION + "/application/app-grp-correlation/{appid}", appid, AppPremisesCorrelationDto.class);
+        return RestApiUtil.getListByPathParam( RestApiUrlConsts.IAIS_APPLICATION + "/application/app-grp-correlation/{appid}", appid, AppPremisesCorrelationDto.class);
     }
 
     @Override
     public AppGrpPremisesDto getAppGrpPremisesDto(String appId) {
-        return RestApiUtil.getByPathParam(RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.IAIS_APPLICATION + "/application-premises-by-app-id/{applicationId}", appId, AppGrpPremisesDto.class);
+        return RestApiUtil.getByPathParam( RestApiUrlConsts.IAIS_APPLICATION + "/application-premises-by-app-id/{applicationId}", appId, AppGrpPremisesDto.class);
     }
 
 
