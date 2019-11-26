@@ -1,39 +1,9 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: hyr
-  Date: 2019/11/22
-  Time: 9:04
-  To change this template use File | Settings | File Templates.
---%>
 <jsp:useBean id="insEmailDto" scope="request" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
+
+
 
 <table class="control-grid columns1">
     <tbody>
-    <tr height="1">
-        <td class="first last" style="width: 100%;">
-            <div id="control--runtime--1" class="control control-caption-horizontal">
-                <div class=" form-group form-horizontal formgap">
-                    <div class="col-sm-4 control-label formtext ">
-                        <label id="control--runtime--1--label" class="control-label control-set-font control-font-label">
-                            Theme template
-                        </label>
-                    </div>
-                    <div class="col-sm-5">
-                        <p><select id="emailTemplateType">
-                            <option value=7>MOH IAIS - Required Clarification - Licence Number</option>
-                            <option value=0 selected>No theme</option>
-                            <option value=1>MOH IAIS - Review Outcome of Non-Compliance / Best Practices</option>
-                            <option value=2>MOH IAIS - Reminder of NC Rectification</option>
-                            <option value=3>MOH IAIS - Self-assessment Checklist Submission</option>
-                            <option value=4>MOH IAIS - Post Licensing Inspection Notification</option>
-                            <option value=5>MOH IAIS - Inspection Task Readiness</option>
-                            <option value=6>MOH IAIS - Inspection Task Readiness</option>
-                        </select></p>
-                    </div>
-                </div>
-            </div>
-        </td>
-    </tr>
     <tr height="1">
         <td class="first last" style="width: 100%;">
             <div id="control--runtime--2" class="control control-caption-horizontal">
@@ -44,23 +14,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="to" type="email" id="to" title="addressee" size="60"></p>
-                    </div>
-                </div>
-            </div>
-        </td>
-    </tr>
-    <tr height="1">
-        <td class="first last" style="width: 100%;">
-            <div id="control--runtime--3" class="control control-caption-horizontal">
-                <div class=" form-group form-horizontal formgap">
-                    <div class="col-sm-4 control-label formtext ">
-                        <label id="control--runtime--3--label" class="control-label control-set-font control-font-label">
-                            verifier:
-                        </label>
-                    </div>
-                    <div class="col-sm-5">
-                        <p><input name="form" type="email" id="form" title="verifier" size="60"></p>
+                        <p><input name="addressee" type="email" id="to" title="addressee" size="60"></p>
                     </div>
                 </div>
             </div>
@@ -76,8 +30,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-
-                        <p><input name="subject" type="text" id="subject" title="subject" size="60" value="${insEmailDto.templateName}"></p>
+                        <p><input name="subject" type="text" id="subject" title="subject" size="60" readonly value="${insEmailDto.subject}"></p>
                     </div>
                 </div>
             </div>
@@ -93,7 +46,87 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><textarea name="content" cols="80" rows="25" class="wenbenkuang" id="cotent" title="content" >${insEmailDto.messageContent}</textarea></p>
+                        <p><textarea name="messageContent" cols="80" rows="25" class="wenbenkuang" id="cotent" title="content" readonly >${insEmailDto.messageContent}</textarea></p>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr height="1" id="name-of-applicant">
+        <td class="first last" style="width: 100%;">
+            <div id="control--runtime--11" class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                    <div class="col-sm-4 control-label formtext ">
+                        <label id="control--runtime--11--label" class="control-label control-set-font control-font-label">
+                            Name of Applicant
+                        </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <p><input name="applicantName"  id="Name-Applicant"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr height="1" id="Application-Number">
+        <td class="first last" style="width: 100%;">
+            <div id="control--runtime--12" class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                    <div class="col-sm-4 control-label formtext ">
+                        <label id="control--runtime--12--label" class="control-label control-set-font control-font-label">
+                            Application Number
+                        </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <p><input name="applicationNumber"  id="Application-Num"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr height="1" id="HCI_Code">
+        <td class="first last" style="width: 100%;">
+            <div id="control--runtime--13" class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                    <div class="col-sm-4 control-label formtext ">
+                        <label id="control--runtime--13--label" class="control-label control-set-font control-font-label">
+                            HCI Code
+                        </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <p><input name="hciCode"  id="HCI-Code"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr height="1" id="HCI_Name/Address">
+        <td class="first last" style="width: 100%;">
+            <div id="control--runtime--14" class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                    <div class="col-sm-4 control-label formtext ">
+                        <label id="control--runtime--14--label" class="control-label control-set-font control-font-label">
+                            HCI Name / Address
+                        </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <p><input name="hciNameOrAddress"  id="HCI-Name/Address"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr height="1" id="Service_Name">
+        <td class="first last" style="width: 100%;">
+            <div id="control--runtime--15" class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                    <div class="col-sm-4 control-label formtext ">
+                        <label id="control--runtime--15--label" class="control-label control-set-font control-font-label">
+                            Service Name
+                        </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <p><input name="serviceName"  id="Service-Name"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
                     </div>
                 </div>
             </div>
@@ -109,7 +142,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="SN"  id="SN"  type="text" ></p>
+                        <p><input name="sn"  id="SN"  type="text" size="60"></p>
                     </div>
                 </div>
             </div>
@@ -125,7 +158,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="checklistItem"  id="checklistItem" type="text" value="Checklist item where NC is found" ></p>
+                        <p><input name="checklistItem"  id="checklistItem" type="text" value="Checklist item where NC is found" size="60"></p>
                     </div>
                 </div>
             </div>
@@ -141,7 +174,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="Regulation"  id="Regulation" type="text" value="Regulation clause that is related to the NC" ></p>
+                        <p><input name="regulationClause"  id="Regulation" type="text" value="Regulation clause that is related to the NC" size="60"></p>
                     </div>
                 </div>
             </div>
@@ -157,7 +190,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="Remarks"  id="Remarks"  type="text" value="Remarks indicated by inspector in the checklist" ></p>
+                        <p><input name="remarks"  id="Remarks"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
                     </div>
                 </div>
             </div>
@@ -167,33 +200,34 @@
     </tbody>
 </table>
 <p class="text-right text-center-mobile">
-    <iais:input type="button" id="validation" cssClass="btn btn-primary" value="validation"></iais:input>
-    <iais:input type="button" id="reset" cssClass="btn btn-primary" value="reset"></iais:input>
-    <iais:input type="button" id="send" cssClass="btn btn-primary" value="send"></iais:input></p>
+    <iais:input type="button" name="validation" cssClass="btn btn-primary" value="validation"></iais:input>
+    <iais:input type="button" name="reset" cssClass="btn btn-primary" value="reset"></iais:input>
+    <iais:input type="button" name="send" cssClass="btn btn-primary" value="send"></iais:input>
+    <iais:input type="button" name="preview" cssClass="btn btn-primary" value="preview"></iais:input>
+    </p>
 <script type="text/javascript">
-    $('#validation').click(function () {
-        location.href= '';
+    $('#validation').click(function(){
+        submitEmail('validation',null,null);
     });
+    $('#send').click(function(){
+        submitEmail('send',null,null);
+    });
+    $('#preview').click(function(){
+        submitEmail('preview',null,null);
+    });
+
+    function submitEmail(action,value,additional){
+        $("[name='submitEmail']").val(action);
+        $("[name='submit_form_page']").val('laboratoryDisciplines');
+        $("[name='submit_value']").val(value);
+        $("[name='submit_additional']").val(additional);
+        var mainForm = document.getElementById('mainForm');
+        mainForm.submit();
+    }
+
     $('#reset').click(function () {
-        location.href= '';
-    });
-    $('#send').click(function () {
-        location.href= '';
-    });
-    $('#emailTemplateType').change(function () {
-        if(this.value!=7){
-            $('#non-compliance-sn').hidden=true;
-            $('#non-compliance-ci').hidden=true;
-            $('#non-compliance-r').hidden=true;
-            $('#non-compliance-rc').hidden=true;
-        }
-        $.ajax({
-            type:"Post",
-            url:"http://localhost:8886/inspection/email-template",
-            data:"templateId="+this.serialize(),
-            success:function (response) {
-                ${insEmailDto}=response;
-            }
-        })
-    })
+
+    }
+
+    )
 </script>
