@@ -10,11 +10,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import java.util.List;
 
 public interface ApplicationViewService {
+
     ApplicationViewDto searchByAppNo(String appNo);
+
     boolean isAllApplicationSubmit(String appNo);
+
     ApplicationDto getApplicaitonByAppNo(String appNo);
+
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
+
     List<OrgUserDto> getUserNameById(List<String> userIdList);
+
     List<HcsaSvcDocConfigDto> getTitleById(List<String> titleIdList);
+
     List<HcsaSvcRoutingStageDto> getStageName(String serviceId,String stageId);
 }
