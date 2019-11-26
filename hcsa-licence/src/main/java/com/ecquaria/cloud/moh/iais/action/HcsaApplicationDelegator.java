@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -82,15 +83,16 @@ public class HcsaApplicationDelegator {
      * @throws
      */
     public void prepareData(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do prepareData start ...."));
+        log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
-        String  taskId = ParamUtil.getString(bpc.request,"taskId");
+        //String  taskId = ParamUtil.getString(bpc.request,"taskId");
+        String taskId="12848A70-820B-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         //get routing stage dropdown send to page.
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
-        List<OrganizationDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
         List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
@@ -119,7 +121,12 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
-
+        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","ASO");
+        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","PSO");
+        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","INS");
+        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","AO1");
+        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","AO2");
+        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","AO3");
 
 
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
