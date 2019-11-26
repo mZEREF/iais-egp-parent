@@ -66,7 +66,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         Map<String,Object> map = new HashMap<>();
         map.put("serviceId",serviceId);
         map.put("stageId",stageId);
-        return RestApiUtil.postGetList("hcsa-config:8878/hcsa-routing/stage-id",map,HcsaSvcRoutingStageDto.class);
+        return RestApiUtil.getListByReqParam("hcsa-config:8878/hcsa-routing/stage-id",map,HcsaSvcRoutingStageDto.class);
 
 
     }
