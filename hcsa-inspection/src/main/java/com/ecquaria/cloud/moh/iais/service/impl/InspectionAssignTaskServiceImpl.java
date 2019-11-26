@@ -4,7 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -51,13 +51,13 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public InspecTaskCreAndAssQueryDto getInspecTaskCreAndAssQueryDto(String applicationNo) {
+    public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo) {
         ApplicationDto applicationDto = getApplicationDtoByAppNo(applicationNo);
         AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(applicationDto.getId());
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
-        InspecTaskCreAndAssQueryDto inspecTaskCreAndAssQueryDto = new InspecTaskCreAndAssQueryDto();
+        InspecTaskCreAndAssDto inspecTaskCreAndAssQueryDto = new InspecTaskCreAndAssDto();
         inspecTaskCreAndAssQueryDto.setApplicationNo(applicationNo);
         inspecTaskCreAndAssQueryDto.setApplicationType(applicationDto.getApplicationType());
         inspecTaskCreAndAssQueryDto.setApplicationStatus(applicationDto.getStatus());

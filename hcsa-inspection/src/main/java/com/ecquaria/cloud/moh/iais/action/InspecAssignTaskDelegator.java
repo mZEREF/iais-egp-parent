@@ -1,9 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +52,10 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorInit start ...."));
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDtoList", null);
-        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssQueryDto", null);
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDtoList", null);
+        ParamUtil.setSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(bpc.request, DemoConstants.SEARCH_RESULT, null);
     }
 
     /**
@@ -61,9 +66,20 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPre start ...."));
+        List<InspecTaskCreAndAssDto> inspecTaskCreAndAssQueryDtoList = (List<InspecTaskCreAndAssDto>) ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssQueryDtoList");
+        if(inspecTaskCreAndAssQueryDtoList == null){
+            inspecTaskCreAndAssQueryDtoList = new ArrayList<>();
+        }
+        SearchParam param = (SearchParam) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM);
+        if(param == null){
+            param = new SearchParam(InspectionCommonPoolQueryDto.class.getName());
+        }
+        /*
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId("BF3B0634-F80C-EA11-BE7D-000C29F371DC");
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = inspectionAssignTaskService.getPoolListByTaskDto(commPools);
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDtoList", (Serializable) inspectionTaskPoolListDtoList);
+        */
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssQueryDtoList", (Serializable) inspecTaskCreAndAssQueryDtoList);
     }
 
     /**
@@ -85,8 +101,8 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
         String applicationNo = ParamUtil.getMaskedString(bpc.request,"crud_action_value");
-        InspecTaskCreAndAssQueryDto inspecTaskCreAndAssQueryDto = inspectionAssignTaskService.getInspecTaskCreAndAssQueryDto(applicationNo);
-        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssQueryDto", inspecTaskCreAndAssQueryDto);
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo);
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**
