@@ -19,6 +19,6 @@ import java.util.List;
         fallback = CommonPoolTaskClientFallback.class)
 public interface CommonPoolTaskClient {
     @RequestMapping(path = "/iais-task/commpool/{workGroupId}",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
-            consumes = {MediaType.APPLICATION_JSON_VALUE}, value = "{workGroupId}")
-    FeignResponseEntity<List<TaskDto>> getCommPoolByGroupWordId(@PathVariable String workGroupId);
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<TaskDto>> getCommPoolByGroupWordId(@PathVariable(value = "workGroupId") String workGroupId);
 }
