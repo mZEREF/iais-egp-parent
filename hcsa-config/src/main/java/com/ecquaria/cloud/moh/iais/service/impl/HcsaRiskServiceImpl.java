@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
@@ -33,7 +34,6 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         List<HcsaServiceDto> serviceDtoList =  RestApiUtil.getListByReqParam(url,map,HcsaServiceDto.class);
         Map<String,Object> mapTwo = new HashMap();
         RiskFinancialShowDto showDto = RestApiUtil.postGetObject("hcsa-config:8878/iais-hcsa-risk/FinancialShow",serviceDtoList,RiskFinancialShowDto.class);
-
         for(HcsaRiskFinanceMatrixDto temp:showDto.getFinanceList()){
             if(!StringUtil.isEmpty(temp.getId())){
                 temp.setInEffectiveEndDate(temp.getBaseInEffectiveEndDate());

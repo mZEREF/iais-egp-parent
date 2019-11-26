@@ -84,7 +84,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
-        String applicationNo = ParamUtil.getMaskedString(bpc.request,"pool_action_value");
+        String applicationNo = ParamUtil.getMaskedString(bpc.request,"crud_action_value");
         InspecTaskCreAndAssQueryDto inspecTaskCreAndAssQueryDto = inspectionAssignTaskService.getInspecTaskCreAndAssQueryDto(applicationNo);
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssQueryDto", inspecTaskCreAndAssQueryDto);
     }
@@ -128,6 +128,50 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorConfirm start ...."));
+
+    }
+
+    /**
+     * StartStep: inspectionAllotTaskInspectorSearch
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspectionAllotTaskInspectorSearch(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSearch start ...."));
+
+    }
+
+    /**
+     * StartStep: inspectionAllotTaskInspectorSort
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspectionAllotTaskInspectorSort(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSort start ...."));
+
+    }
+
+    /**
+     * StartStep: inspectionAllotTaskInspectorPage
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspectionAllotTaskInspectorPage(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPage start ...."));
+
+    }
+
+    /**
+     * StartStep: inspectionAllotTaskInspectorQuery2
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspectionAllotTaskInspectorQuery2(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorQuery2 start ...."));
 
     }
 }

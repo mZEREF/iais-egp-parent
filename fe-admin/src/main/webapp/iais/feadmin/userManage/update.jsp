@@ -90,7 +90,4 @@
     SOP.Crud.cfxSubmit("mainForm", "validation");
   }
 
-  function subvalidation() {
-    return true;
-  }
 </script>

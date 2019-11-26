@@ -23,9 +23,7 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 	}
 
 
-	public void bindAction_OnStepProcess_0() throws Exception {
-	// 		BindAction->OnStepProcess
-	}
+
 
 
 	public void aSO_OnStepProcess_0() throws Exception {
@@ -70,6 +68,24 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 	// 		Start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doStar", this);
 	}
+
+
+
+
+
+	public void chooseStage_OnStepProcess_0() throws Exception {
+	// 		chooseStage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "chooseStage", this);
+	}
+
+
+
+
+
+
+
+
+
 
 
 

@@ -55,7 +55,9 @@ public class ShowServiceFormsDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,getFirstTab(bpc));
         }
 
+        //why call api?  , can get from  AppServicesConsts.HCSASERVICEDTOLIST
         String svcId = serviceConfigService.getSvcIdBySvcCode(actionTab);
+
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID, svcId);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE, actionTab);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,IaisEGPConstant.YES);
