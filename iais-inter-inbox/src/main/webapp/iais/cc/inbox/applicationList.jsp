@@ -1,6 +1,8 @@
 <div class="tab-pane" id="tabApplication" role="tabpanel">
     <div class="tab-search">
-        <form class="form-inline">
+        <form class="form-inline" method="post" id="inboxForm" action=<%=process.runtime.continueURL()%>>
+            <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+            <input type="hidden" name="crud_action_type" value="">
             <div class="form-group">
                 <label class="control-label" for="applicationType">Type</label>
                 <div class="col-xs-12 col-md-8 col-lg-9">

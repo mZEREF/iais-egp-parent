@@ -22,68 +22,77 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
-	public void email_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.sendEmail(request);
+
+
+
+
+	public void aSO_OnStepProcess_0() throws Exception {
+	// 		ASO->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "rontingTaskToASO", this);
 	}
 
-	public void sMS_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.sendSMS(request);
+
+	public void iNS_OnStepProcess_0() throws Exception {
+	// 		INS->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "rontingTaskToINS", this);
 	}
 
-	public void updateMessageHistory_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.updateMessageHistory(request);
+
+
+	
+	public void aO2_OnStepProcess_0() throws Exception {
+	// 		AO2->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "rontingTaskToAO2", this);
 	}
 
-	public void uploadInternalDoc_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.uploadInternalDoc(request);
+
+	public void aO3_OnStepProcess_0() throws Exception {
+	// 		AO3->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "rontingTaskToAO3", this);
 	}
 
-	public void bindAction_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.bindAction(request);
+
+	public void aO1_OnStepProcess_0() throws Exception {
+	// 		AO1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "rontingTaskToAO1", this);
 	}
 
-	public void delete_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.deleteInternalDoc(request);
+
+	public void pSO_OnStepProcess_1() throws Exception {
+	// 		PSO->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "rontingTaskToPSO", this);
 	}
 
-	public void sortInternal_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.sortInternalDoc(request);
+
+	public void start_OnStepProcess_0() throws Exception {
+	// 		Start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doStar", this);
 	}
 
-	public void prepareDownload_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.downInternalDoc(request, response);
+
+
+
+
+	public void chooseStage_OnStepProcess_0() throws Exception {
+	// 		chooseStage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "chooseStage", this);
 	}
 
-	public void sortSupportDoc_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.sortSupportDoc(request);
-	}
 
-	public void prepareSupport_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.downSupportDoc(request, response);
-	}
 
-	public void prepareDownloadFormAsPDF_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.downFormAsPDF(request, response);
-	}
 
-	public void uploadSupportDoc_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.uploadSupportDoc(request);
-	}
 
-	public void deleteSupportDoc_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.deleteSupportDoc(request);
-	}
 
-	public void validateUpdateStatus_OnStepProcess_0() throws Exception {
-		//ApplicationViewController.validateUpdateStatus(request);
-	}
 
-	public void updateSupportDoc_OnStepProcess_0() throws Exception {
-	// 		UpdateSupportDoc->OnStepProcess
-	}
 
-	public void supportDocHistory_OnStepProcess_0() throws Exception {
-	// 		SupportDocHistory->OnStepProcess
-	}
+
+
+
+
+
+
+
+
+
 
 }

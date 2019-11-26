@@ -10,20 +10,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.submission.client.model.SubmitReq;
@@ -576,10 +571,87 @@ public class NewApplicationDelegator {
 
         }
         ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
+        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto= (AppSvcPrincipalOfficersDto)ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
+        String mobileNo = appSvcPrincipalOfficersDto.getMobileNo();
+        String officeTelNo = appSvcPrincipalOfficersDto.getOfficeTelNo();
+        String emailAddr = appSvcPrincipalOfficersDto.getEmailAddr();
+        if(!mobileNo.startsWith("8")||!mobileNo.startsWith("9")){
+            errorMap.put("mobileNo","Please key in a valid mobile number");
+        }
+        if(! emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
+            errorMap.put("emailAddr","Please key in a valid email address");
+        }
+        if(!officeTelNo.startsWith("6")){
+            errorMap.put("officeTelNo","Please key in a valid phone number");
+        }
+
+//        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto)ParamUtil.getSessionAttr(bpc.request,APPGRPPREMISESDTO);
+//        String premiseType = appGrpPremisesDto.getPremisesType();
+//        if(StringUtil.isEmpty(premiseType)){
+//            errorMap.put("premisesType","Please select the premises Type");
+//        }else if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)){
+//            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
+//            if (validationResult.isHasErrors()){
+//                errorMap = validationResult.retrieveAll();
+//            }
+//        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)){
+//            ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_CREATE+","+AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
+//            if (validationResult.isHasErrors()){
+//                errorMap = validationResult.retrieveAll();
+//            }
+//        }
+//        ParamUtil.setRequestAttr(bpc.request,ERRORMAP_PREMISES,errorMap);
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errorMap;
     }
 
+
+    private Map<String,String> doValidatePremissCgo(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        //do validate premiss
+        Map<String,String> errorMap = new HashMap<>();
+        AppSvcCgoDto appSvcCgoDto=  (AppSvcCgoDto) ParamUtil.getSessionAttr(bpc.request,"AppSvcCgoDto");
+        String mobileNo = appSvcCgoDto.getMobileNo();
+        String emailAddr = appSvcCgoDto.getEmailAddr();
+        if(!mobileNo.startsWith("8")||!mobileNo.startsWith("9")){
+            errorMap.put("mobileNo","Please key in a valid mobile number");
+        }
+        if(!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
+            errorMap.put("emailAddr","Please key in a valid email address");
+        }
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+        return errorMap;
+    }
+    private Map<String,String> doValidatePremissPresmises(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        //do validate premiss
+        Map<String,String> errorMap = new HashMap<>();
+        AppGrpPremisesDto appGrpPremisesDto=  (AppGrpPremisesDto) ParamUtil.getSessionAttr(bpc.request,"AppGrpPremisesDto");
+        String postalCode = appGrpPremisesDto.getPostalCode();
+        String addrType = appGrpPremisesDto.getAddrType();
+        String floorNo = appGrpPremisesDto.getFloorNo();
+        String blkNo = appGrpPremisesDto.getBlkNo();
+        String unitNo = appGrpPremisesDto.getUnitNo();
+        if("Apt Blk".equals(addrType)){
+            boolean empty = StringUtil.isEmpty(floorNo);
+            boolean empty1 = StringUtil.isEmpty(blkNo);
+            boolean empty2 = StringUtil.isEmpty(unitNo);
+            if(empty){
+                errorMap.put("floorNo","");
+            }
+            if(empty1){
+                errorMap.put("blkNo","");
+            }
+            if(empty2){
+                errorMap.put("unitNo","");
+            }
+        }
+        if(!postalCode.matches("^[0-9]*$")){
+            errorMap.put("postalCode","");
+        }
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
+        return errorMap;
+    }
     /**
      * @description: get data from page
      * @author: zixian
@@ -623,6 +695,7 @@ public class NewApplicationDelegator {
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
         }
+        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
     }
     private  void eventBus( AppSubmissionDto appSubmissionDto,BaseProcessClass bpc){

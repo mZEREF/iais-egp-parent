@@ -2,10 +2,7 @@
     <div class="tab-search">
         <form class="form-inline" method="post" id="inboxForm" action=<%=process.runtime.continueURL()%>>
             <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-            <input type="hidden" name="
-" value="">
-            <input type="hidden" name="crud_action_value" value="">
-            <input type="hidden" name="crud_action_additional" value="">
+            <input type="hidden" name="crud_action_type" value="">
             <div class="form-group">
                 <label class="control-label" for="inboxType">Type</label>
                 <div class="col-xs-12 col-md-8 col-lg-9">
@@ -22,10 +19,12 @@
             </div>
             <div class="form-group large right-side">
                 <div class="search-wrap">
-                    <div class="input-group">
-                        <input class="form-control" id="inboxAdvancedSearch" type="text" placeholder="Licence no." name="inboxAdvancedSearch" aria-label="inboxAdvancedSearch"><span class="input-group-btn">
-                              <button class="btn btn-default button search" title="Search by keywords"><em class="fa fa-search"></em></button></span>
-                    </div>
+                    <iais:value>
+                        <div class="input-group">
+                                <input class="form-control" id="inboxAdvancedSearch" type="text" placeholder="Licence no." name="inboxAdvancedSearch" aria-label="inboxAdvancedSearch"><span class="input-group-btn">
+                                <button class="btn btn-default buttonsearch" title="Search by keywords" onclick="javascript:searchLicenceNo();"><em class="fa fa-search"></em></button></span>
+                        </div>
+                    </iais:value>
                 </div>
             </div>
         </form>

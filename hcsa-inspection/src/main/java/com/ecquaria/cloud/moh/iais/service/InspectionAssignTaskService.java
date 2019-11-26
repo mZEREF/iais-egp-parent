@@ -16,9 +16,9 @@ public interface InspectionAssignTaskService {
      * @Date 2019/11/21
      * @Param: name
      * @return: List<TaskDto>
-     * @Descripation: According to the group name, get the work pool
+     * @Descripation: According to the group Id, get the work pool
      */
-    List<TaskDto> getCommPoolByGroupWordName(String name);
+    List<TaskDto> getCommPoolByGroupWordId(String workGroupId);
 
     /**
       * @author: shicheng

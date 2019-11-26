@@ -17,11 +17,14 @@ import java.util.List;
 public interface TaskService {
     //create Tasks
     List<TaskDto> createTasks(List<TaskDto> taskDtos);
+    TaskDto updateTask(TaskDto taskDto);
     //get TaskConfig
     List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos);
+    //get Task
+    TaskDto getTaskById(String taskId);
     //rounting Task
      void routingAdminScranTask(List<ApplicationDto> applicationDtos) throws FeignException;
-     void routingTask(ApplicationDto applicationDto,String statgId);
+     void routingTask(ApplicationDto applicationDto,String statgId) throws FeignException;
      //get users
     List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status);
     //get Task Score

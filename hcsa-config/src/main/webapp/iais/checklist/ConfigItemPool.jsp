@@ -24,6 +24,7 @@
 </style>
 
 
+
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="crud_action_type" value="">
@@ -70,6 +71,9 @@
             </div>
           </div>
         </div>
+
+
+
         <div class="tab-content">
           <div class="row">
             <div class="col-xs-12">
@@ -79,6 +83,17 @@
                   <table class="table">
                     <thead>
                     <tr>
+
+                      <iais:error>
+                        <c:if test = "${not empty errorMap}">
+                          <div class="error">
+                            <c:forEach items="${errorMap}" var="map">
+                              ${map.key}  ${map.value} <br/>
+                            </c:forEach>
+                          </div>
+                        </c:if>
+                      </iais:error>
+
                       <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
                       <td></td>
                       <iais:sortableHeader needSort="true"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>

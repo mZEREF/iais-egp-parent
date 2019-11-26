@@ -14,7 +14,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -311,11 +313,38 @@ public class HcsaChklItemDelegator {
      * AutoStep: configToChecklist
      * @param bpc
      * @throws IllegalAccessException
+     * description: Verify that the added id already exists for the same section
      */
     public void configToChecklist(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
+        ChecklistConfigDto currentConfig = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+        String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+        List<ChecklistSectionDto> sectionDtos = currentConfig.getSectionDtos();
+        String currentValidateId = (String) ParamUtil.getSessionAttr(request, "currentValidateId");
+        for (ChecklistSectionDto currentSection : sectionDtos){
+            if (currentValidateId.equals(currentSection.getId())){
+                List<ChecklistItemDto> checklistItemDtos = currentSection.getChecklistItemDtos();
+                if (checklistItemDtos == null){
+                    break;
+                }
 
+                for (ChecklistItemDto chkl : checklistItemDtos){
+                    for (String s : checkBoxItemId){
+                        if (chkl.getItemId().equals(s)){
+                            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,"N");
+                            Map<String,String> errorMap = new HashMap<>();
+                            errorMap.put("A", "The same section cannot configure the same item");
+                            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP, errorMap);
+                            return;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,"Y");
     }
 
     private void loadSingleItemData(HttpServletRequest request){

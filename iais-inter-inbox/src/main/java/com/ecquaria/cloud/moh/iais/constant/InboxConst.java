@@ -19,9 +19,9 @@ public class InboxConst {
     public static final String APP_RESULT           = "appResult";
     public static final String APP_PARAM            = "appParam";
 
-    public static final String SWITCH_ACTION        = "switch_action";
+    public static final String SWITCH_ACTION        = "crud_action_type";
 
-    public static final String SEARCH_INBOX         = "seinbox";
+    public static final String SEARCH_INBOX         = "doSearch";
 
 
 

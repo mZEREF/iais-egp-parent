@@ -4,7 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppInboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -19,7 +19,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -39,75 +41,129 @@ public class InboxDelegator {
     @Autowired
     private InboxDelegator(InboxService inboxService){
         this.inboxService = inboxService;
+
     }
 
+    FilterParameter inboxParameter = new FilterParameter();
+    FilterParameter appParameter = new FilterParameter();
+    FilterParameter LicenceParameter = new FilterParameter();
+
+    /**
+     *
+     * @param bpc
+     * @Decription Step ---> Start
+     */
     public void startStep(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the doStart start ...."));
+
+        log.debug(StringUtil.changeForLog("Step ---> Start"));
     }
 
+    /**
+     *
+     * @param bpc
+     * @Description Step ---> PrepareDate
+     */
     public void prepareStep(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the prepareStep start ...."));
+
+        log.debug(StringUtil.changeForLog("Step ---> PrepareDate"));
         HttpServletRequest request = bpc.request;
         prepareSelectOption(bpc);
-        FilterParameter inboxParameter = new FilterParameter();
         inboxParameter.setClz(InboxQueryDto.class);
         inboxParameter.setSearchAttr(InboxConst.INBOX_PARAM);
         inboxParameter.setResultAttr(InboxConst.INBOX_RESULT);
         inboxParameter.setSortField("id");
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, inboxParameter);
-        String inboxType = ParamUtil.getString(request,"inboxType");
-        System.err.println("inboxType ---> " + inboxType);
-        QueryHelp.setMainSql("interInboxQuery","inboxQuery",searchParam);
-        SearchResult searchResult = inboxService.inboxDoQuery(searchParam);
+        SearchParam inboxParam = IaisEGPHelper.getSearchParam(request, true,inboxParameter);
 
-        if(!StringUtil.isEmpty(searchResult)){
-            ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, searchParam);
-            ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, searchResult);
+        QueryHelp.setMainSql("interInboxQuery","inboxQuery",inboxParam);
+        SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
+
+        if(!StringUtil.isEmpty(inboxResult)){
+            ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
+            ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
         }
 
+        /**
+         * Application SearchResult
+         */
 
-        List<AppInboxQueryDto> appInboxQueryDtoList = inboxService.applicationDoQuery();
-        if(!StringUtil.isEmpty(appInboxQueryDtoList)){
-            ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appInboxQueryDtoList);
+        appParameter.setClz(InboxAppQueryDto.class);
+        appParameter.setSearchAttr(InboxConst.APP_PARAM);
+        appParameter.setResultAttr(InboxConst.APP_RESULT);
+        appParameter.setSortField("id");
+        SearchParam appParam = IaisEGPHelper.getSearchParam(request, true,appParameter);
+
+        QueryHelp.setMainSql("interInboxQuery","applicationQuery",appParam);
+        SearchResult appResult = inboxService.appDoQuery(appParam);
+
+        if(!StringUtil.isEmpty(inboxResult)){
+            ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
+            ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
         }
+
+//        List<AppInboxQueryDto> appInboxQueryDtoList = inboxService.applicationDoQuery();
+//        if(!StringUtil.isEmpty(appInboxQueryDtoList)){
+//            ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appInboxQueryDtoList);
+//        }
     }
 
-    public void searchInbox(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the searchInboxStep start ...."));
+    /**
+     *
+     * @param bpc
+     * @Description Step ---> DoSearch
+     */
+    public void doSearch(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("Step ---> DoSearch"));
         HttpServletRequest request = bpc.request;
         String switchAction = ParamUtil.getString(request, InboxConst.SWITCH_ACTION);
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request,InboxConst.INBOX_PARAM);
         if(switchAction.equals(InboxConst.SEARCH_INBOX)){
             String inboxType = ParamUtil.getString(request,"inboxType");
+            String licenceNo = ParamUtil.getString(request,"inboxAdvancedSearch");
             String inboxService = ParamUtil.getString(request,"inboxService");
+            log.debug(StringUtil.changeForLog("licenceNo ....") + licenceNo);
+            Map<String,Object> inboxMap = new HashMap<>();
             if(inboxType != null){
-                searchParam.addFilter("message_type",inboxType);
+                inboxMap.put("messageType",inboxType);
             }
             if(inboxService != null){
-                searchParam.addFilter("service",inboxType);
+                inboxMap.put("interService",inboxService);
             }
+//            inboxParameter.setFilters(inboxMap);
         }
-        QueryHelp.setMainSql("interInboxQuery","inboxQuery",searchParam);
-        SearchResult searchResult = inboxService.inboxDoQuery(searchParam);
-
-        if(!StringUtil.isEmpty(searchResult)){
-            ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, searchParam);
-            ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, searchResult);
-        }
-
     }
 
+    /**
+     *
+     * @param bpc
+     * @Description Step ---> DoSort
+     */
+    public void doSort(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("Step ---> DoSort"));
+        HttpServletRequest request = bpc.request;
+        String switchAction = ParamUtil.getString(request, InboxConst.SWITCH_ACTION);
+        log.debug(StringUtil.changeForLog("switchAction" + switchAction));
+    }
 
+    /**
+     *
+     * @param bpc
+     * @Description Step ---> Switch
+     */
     public void switchStep(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
         String switchAction = ParamUtil.getString(bpc.request, InboxConst.SWITCH_ACTION);
         log.debug("*******************crudAction-->:" + switchAction);
         log.debug("The prepareSwitch end ...");
     }
+
+    /**
+     *
+     * @param bpc
+     * @description Data to Form select part
+     */
     private void prepareSelectOption(BaseProcessClass bpc){
         List<SelectOption> inboxServiceSelectList = new ArrayList<>();
         inboxServiceSelectList.add(new SelectOption("1", "All"));
-        inboxServiceSelectList.add(new SelectOption("2", "First"));
+        inboxServiceSelectList.add(new SelectOption("Blood Banking", "Blood Banking"));
         inboxServiceSelectList.add(new SelectOption("3", "Second"));
         ParamUtil.setRequestAttr(bpc.request, "inboxServiceSelect", inboxServiceSelectList);
 

@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -13,10 +13,11 @@
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 
-</div>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+
+<form method="post" id="mainPoolForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-  <input type="hidden" name="pool_action_value" value="">
+  <input type="hidden" name="inspectionPoolType" value="">
+  <input type="hidden" id="applicationNo" name="applicationNo" value="">
 
   <iais:body >
     <div class="container">
@@ -26,21 +27,17 @@
             <table class="table">
               <thead>
               <tr align="center">
-                <th>Work Group Name</th>
-                <th>Service Name</th>
                 <th>Application No.</th>
-                <th>Inspector Lead</th>
+                <th>Service Name</th>
                 <th>Action</th>
               </tr>
               </thead>
               <tbody>
                 <c:forEach items="${inspectionTaskPoolListDtoList}" var="pool">
-                  <tr align="center">
-                    <td><c:out value="${pool.workGroupName}"/></td>
-                    <td><c:out value="${pool.serviceName}"/></td>
+                  <tr>
                     <td><c:out value="${pool.applicationNo}"/></td>
-                    <td><c:out value="${pool.inspectionLead}"/></td>
-                    <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="pool_action_value" value="${pool.applicationNo}"/>');">Assign</button></td>
+                    <td><c:out value="${pool.serviceName}"/></td>
+                    <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Assign</button></td>
                   </tr>
                 </c:forEach>
               </tbody>
@@ -69,10 +66,21 @@
     </div>
   </iais:body>
 </form>
+</div>
 <script type="text/javascript">
 
-    function doAssign(rowguid){
-        SOP.Crud.cfxSubmit("inspectionPoolType","assign",rowguid);
+    /*function doAssign(applicationNo){
+        SOP.Crud.cfxSubmit("mainPoolForm","inspectionPoolType","assign",applicationNo);
+    }*/
+    function doAssign(applicationNo) {
+        submit('assign');
+        $("#applicationNo").val(applicationNo);
+        console.log("applicationNo");
     }
 
+    function submit(action){
+        $("[name='inspectionPoolType']").val(action);
+        var mainPoolForm = document.getElementById('mainPoolForm');
+        mainPoolForm.submit();
+    }
 </script>
