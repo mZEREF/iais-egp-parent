@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -52,8 +53,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     }
 
     @Override
-    public List<OrganizationDto> getUserNameById(List<String> userIdList) {
-        return RestApiUtil.postGetList("iais-organization:8879/users-by-ids",userIdList,OrganizationDto.class);
+    public List<OrgUserDto> getUserNameById(List<String> userIdList) {
+        return RestApiUtil.postGetList("iais-organization:8879/users-by-ids",userIdList,OrgUserDto.class);
     }
 
     @Override
