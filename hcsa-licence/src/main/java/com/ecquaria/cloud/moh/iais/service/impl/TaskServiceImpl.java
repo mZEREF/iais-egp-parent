@@ -118,7 +118,7 @@ public class TaskServiceImpl implements TaskService {
                     TaskDto taskDto = TaskUtil.getUserTaskDto(HcsaConsts.ROUTING_STAGE_ASO,
                             applicationDto.getApplicationNo(),workGroupId,
                             taskScoreDto.getUserId(),score,
-                            IaisEGPHelper.getCurrentAuditTrailDto());
+                            applicationDto.getAuditTrailDto());
                     taskDtos.add(taskDto);
                     this.createTasks(taskDtos);
                 }
