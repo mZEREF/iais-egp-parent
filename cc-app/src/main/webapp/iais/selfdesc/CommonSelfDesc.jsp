@@ -38,7 +38,7 @@
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
-  <input type="hidden" name="pageIndex" value="">
+  <input type="hidden" name="tabIndex" value="">
 
 <c:choose>
   <c:when test="${empty tabResultAttr.rows}">
@@ -56,7 +56,7 @@
 
             <c:forEach var="item" items="${tabResultAttr.rows}"  varStatus="status">
               <c:choose>
-                <c:when test="${item.common == true && status.index == 0}">
+                <c:when test="${item.common == true}">
                   <div class="dashboard-tile-item">
                     <div class="dashboard-tile" id="myBody">
                       <a data-tab="#tabInbox" href="javascript:switchNextStep('${item.configId}');">
@@ -65,7 +65,7 @@
                     </div>
                   </div>
                 </c:when>
-                <c:when test="${item.common == false}">
+                <c:otherwise>
                   <div class="dashboard-tile-item">
                     <div class="dashboard-tile">
                       <a data-tab="#tabInbox" href="javascript:switchNextStep('${item.configId}');">
@@ -73,7 +73,7 @@
                       </a>
                     </div>
                   </div>
-                </c:when>
+                </c:otherwise>
               </c:choose>
 
 
@@ -101,14 +101,10 @@
                     <th>Na</th>
                   </tr>
                   </thead>
-
-                  <tbody id="general">
-                    <%@include file="/iais/selfdesc/Answer.jsp"%>
-                  </tbody>
-
+                    <tbody id="general">
+                      <%@include file="/iais/selfdesc/Answer.jsp"%>
+                    </tbody>
                 </table>
-
-
 
               </div>
             </div>
@@ -118,7 +114,7 @@
         <div class="application-tab-footer">
           <td>
             <div class="text-right text-center-mobile">
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Next</a>
+              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
             </div>
 
@@ -137,14 +133,14 @@
 
   <script type="text/javascript">
       function switchNextStep(index){
-          $("[name='pageIndex']").val(index);
+          $("[name='tabIndex']").val(index);
           $("[name='crud_action_type']").val("switchNextStep");
           var mainForm = document.getElementById('mainForm');
           mainForm.submit();;
       }
 
-      function doNext(){
-          SOP.Crud.cfxSubmit("mainForm", "doSave");
+      function doSubmit(){
+          SOP.Crud.cfxSubmit("mainForm", "submitSelfDesc");
       }
 
   </script>
