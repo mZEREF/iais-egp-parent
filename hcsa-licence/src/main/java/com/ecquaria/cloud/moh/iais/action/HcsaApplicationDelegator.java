@@ -8,8 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -17,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.impl.ApplicationViewServiceImp;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -43,6 +40,9 @@ public class HcsaApplicationDelegator {
     @Autowired
     private ApplicationViewService applicationViewService;
 
+    @Autowired
+    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
+
     public void routingTask(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
@@ -65,7 +65,9 @@ public class HcsaApplicationDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do cleanSession start ...."));
-
+        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
+        ParamUtil.setSessionAttr(bpc.request,"taskDto",null);
+        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto",null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
     }
 
@@ -115,6 +117,7 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
 
 
+
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
     }
 
@@ -127,10 +130,7 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToPSO(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToPSO start ...."));
-        //update Task information
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_PSO);
-
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING);
         log.debug(StringUtil.changeForLog("the do rontingTaskToPSO end ...."));
     }
 
@@ -143,8 +143,7 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToINS(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS start ...."));
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_INS);
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS end ...."));
     }
 
@@ -157,8 +156,7 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToASO(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToASO start ...."));
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_ASO);
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
         log.debug(StringUtil.changeForLog("the do rontingTaskToASO end ...."));
     }
 
@@ -170,8 +168,7 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToAO1(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 start ...."));
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_AO1);
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 end ...."));
     }
 
@@ -185,8 +182,7 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToAO2(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        routingTask(taskDto,HcsaConsts.ROUTING_STAGE_AO2);
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
     }
 
@@ -198,37 +194,57 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToAO3(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
-
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        routingTask(taskDto,null);
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
 
         //todo: isAllApplicationSubmit
-        boolean isAllApplicationSubmit = applicationViewService.isAllApplicationSubmit(taskDto.getRefNo());
+       // boolean isAllApplicationSubmit = applicationViewService.isAllApplicationSubmit(taskDto.getRefNo());
         //create the licence
-        if(isAllApplicationSubmit){
+        //if(isAllApplicationSubmit){
           //todo:create licence
-        }
+        //}
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
     //***************************************
     //private methods
     //**************************************
 
-    private void routingTask(TaskDto taskDto,String stageId ) throws FeignException {
-        //update Task information
+
+
+    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus ) throws FeignException {
+        //completedTask
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         taskDto =  completedTask(taskDto);
-        // update application status
-        String appNo = taskDto.getRefNo();
-        ApplicationDto applicationDto =  updateApplicaiton(appNo);
+        //add history for this stage complate
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+        //updateApplicaiton
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        updateApplicaiton(applicationDto,appStatus);
+        applicationViewDto.setApplicationDto(applicationDto);
         // send the task
         if(!StringUtil.isEmpty(stageId)){
             taskService.routingTask(applicationDto,stageId);
+            //add history for next stage start
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,null);
         }
     }
-
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                         String stageId,String internalRemarks){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        return appPremisesRoutingHistoryDto;
+    }
     private int remainDays(TaskDto taskDto){
        int result = 0;
-       //todo:
+       //todo: wait count kpi
        String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
       log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
       return  result;
@@ -241,9 +257,8 @@ public class HcsaApplicationDelegator {
         taskDto.setSlaRemainInDays(remainDays(taskDto));
         return taskService.updateTask(taskDto);
     }
-    private ApplicationDto updateApplicaiton(String appNo){
-        ApplicationDto applicationDto = applicationViewService.getApplicaitonByAppNo(appNo);
-        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+    private ApplicationDto updateApplicaiton(ApplicationDto applicationDto,String appStatus){
+        applicationDto.setStatus(appStatus);
         return applicationViewService.updateApplicaiton(applicationDto);
     }
 }
