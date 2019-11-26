@@ -50,7 +50,7 @@
                                         <tbody>
                                         <tr>
                                             <td class="col-xs-6" align="right">Application No. (Overall)</td>
-                                            <td class="col-xs-6">${applicationViewDto.applicationNo}</td>
+                                            <td class="col-xs-6">${applicationViewDto.applicationDto.applicationNo}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Application No.</td>
@@ -58,11 +58,11 @@
                                         </tr>
                                         <tr>
                                             <td align="right">Application Type</td>
-                                            <td>${applicationViewDto.applicationType}</td>
+                                            <td>${applicationViewDto.applicationDto.applicationType}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Service Type</td>
-                                            <td>${applicationViewDto.serviceType}</td>
+                                            <td>${applicationViewDto.applicationDto.serviceId}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Submission Date</td>
@@ -70,7 +70,7 @@
                                         </tr>
                                         <tr>
                                             <td align="right">Current Status</td>
-                                            <td>${applicationViewDto.currentStatus}</td>
+                                            <td>${applicationViewDto.applicationDto.status}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -502,7 +502,7 @@
                                                     <td>
                                                         <select>
                                                             <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
-                                                           <!--     <option value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option> -->
+                                                                <option value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
                                                           </c:forEach>
                                                          </select>
                                                     </td>
