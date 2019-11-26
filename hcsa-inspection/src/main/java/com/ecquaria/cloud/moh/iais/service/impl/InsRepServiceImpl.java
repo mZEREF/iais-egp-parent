@@ -1,9 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author weilu
@@ -15,10 +20,46 @@ public class InsRepServiceImpl implements InsRepService {
     public InspectionReportDto getInsRepDto(String appNo) {
         InspectionReportDto inspectionReportDto = RestApiUtil.postGetObject("iais-application:8883/iais-inspection/report", appNo, InspectionReportDto.class);
         String licenceId = "92B33E39-B7FA-428A-901A-3AC7F8886F8C";
-            InspectionReportDto insReportDto = RestApiUtil.postGetObject("iais-hcsa-licence:8882/hcsa-lic-licensee/detection-lic-licensee", licenceId, InspectionReportDto.class);
-            inspectionReportDto.setLicenceNo(insReportDto.getLicenceNo());
-            inspectionReportDto.setLicenseeName(insReportDto.getLicenseeName());
-        return inspectionReportDto;
+//        InspectionReportDto insReportDto = RestApiUtil.postGetObject("iais-hcsa-licence:8882/hcsa-lic-licensee/detection-lic-licensee", licenceId, InspectionReportDto.class);
+//        inspectionReportDto.setLicenceNo(insReportDto.getLicenceNo());
+//        inspectionReportDto.setLicenseeName(insReportDto.getLicenseeName());
 
+        inspectionReportDto.setInspectionDate(new Date());
+        inspectionReportDto.setInspectionTime(new Date());
+        inspectionReportDto.setStatus("Full Compliance");
+        inspectionReportDto.setBestPractice("best practice!!!!");
+        inspectionReportDto.setMarkedForAudit(true);
+        inspectionReportDto.setNcRegulation(ncRegulation());
+        inspectionReportDto.setInspectOffices("inspector officer");
+        inspectionReportDto.setInspectorRemark("inspection Remark");
+        inspectionReportDto.setTaskRemark("taskRemake");
+        inspectionReportDto.setReasonForVisit("pre inspection");
+        inspectionReportDto.setReportedBy("weilu");
+        inspectionReportDto.setReportNoteBy("jinhua");
+        inspectionReportDto.setInspectedBy(inspects());
+        return inspectionReportDto;
+    }
+    private List<ReportNcRegulationDto> ncRegulation (){
+        List<ReportNcRegulationDto> list = new ArrayList<>();
+        ReportNcRegulationDto reportNcRegulationDto1 = new ReportNcRegulationDto();
+        ReportNcRegulationDto reportNcRegulationDto2 = new ReportNcRegulationDto();
+        ReportNcRegulationDto reportNcRegulationDto3 = new ReportNcRegulationDto();
+        reportNcRegulationDto1.setNc("Nc1");
+        reportNcRegulationDto2.setNc("Nc2");
+        reportNcRegulationDto3.setNc("Nc3");
+        reportNcRegulationDto1.setRegulation("regulation1");
+        reportNcRegulationDto2.setRegulation("regulation2");
+        reportNcRegulationDto3.setRegulation("regulation3");
+        list.add(reportNcRegulationDto1);
+        list.add(reportNcRegulationDto2);
+        list.add(reportNcRegulationDto3);
+        return list;
+    }
+    private List<String> inspects(){
+        List<String> list = new ArrayList<>();
+        list.add("inspection1");
+        list.add("inspection2");
+        list.add("inspection3");
+        return list;
     }
 }
