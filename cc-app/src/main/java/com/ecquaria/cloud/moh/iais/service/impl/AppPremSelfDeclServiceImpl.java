@@ -9,8 +9,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclRenderDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclTabView;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -34,18 +34,23 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     }
 
     @Override
-    public SearchResult<SelfDeclRenderDto> listSelfDescConfig(SearchParam searchParam) {
+    public SearchResult<ChecklistQuestionDto> listSelfDescConfig(SearchParam searchParam) {
         return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.CHECKLIST_SELF_DESC_CONFIG, searchParam);
     }
 
     @Override
-    public List<AppPremisesCorrelationDto> listAppPremisesCorrelationByAppId(String appid) {
-        return RestApiUtil.getListByPathParam( RestApiUrlConsts.IAIS_APPLICATION + "/application/app-grp-correlation/{appid}", appid, AppPremisesCorrelationDto.class);
+    public List<AppGrpPremisesDto> listAppGrpPremisesDto(String appId) {
+        return RestApiUtil.getListByPathParam(RestApiUrlConsts.IAIS_APPLICATION + "/application/app-group-premises-results/{appid}", appId, AppGrpPremisesDto.class);
+    }
+
+    @Override
+    public SearchResult<SelfDeclTabView> getSelfDeclTab(SearchParam searchParam) {
+        return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.HCSA_CONFIG_SERVICE + "/self-decl/tab", searchParam);
     }
 
     @Override
     public AppGrpPremisesDto getAppGrpPremisesDto(String appId) {
-        return RestApiUtil.getByPathParam( RestApiUrlConsts.IAIS_APPLICATION + "/application-premises-by-app-id/{applicationId}", appId, AppGrpPremisesDto.class);
+        return RestApiUtil.getByPathParam(RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.IAIS_APPLICATION + "/application-premises-by-app-id/{applicationId}", appId, AppGrpPremisesDto.class);
     }
 
 

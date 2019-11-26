@@ -8,8 +8,8 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclRenderDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclTabView;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -23,10 +23,12 @@ public interface AppPremSelfDeclService {
 
     List<HcsaServiceDto> listHcsaService();
 
-    SearchResult<SelfDeclRenderDto> listSelfDescConfig(SearchParam searchParam);
+    SearchResult<ChecklistQuestionDto> listSelfDescConfig(SearchParam searchParam);
 
-    List<AppPremisesCorrelationDto> listAppPremisesCorrelationByAppId(String appid);
 
+    List<AppGrpPremisesDto> listAppGrpPremisesDto(String appId);
+
+    SearchResult<SelfDeclTabView> getSelfDeclTab(SearchParam searchParam);
 
     AppGrpPremisesDto getAppGrpPremisesDto(String appId);
 }
