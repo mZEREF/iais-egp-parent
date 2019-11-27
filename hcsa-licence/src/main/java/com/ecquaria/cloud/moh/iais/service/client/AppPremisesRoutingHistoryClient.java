@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author suocheng
  * @date 11/26/2019
  */
-@FeignClient(name = "hcsa-config", configuration = FeignConfiguration.class,
+@FeignClient(name = "iais-application", configuration = FeignConfiguration.class,
         fallback = AppPremisesRoutingHistoryClientFallback.class)
 public interface AppPremisesRoutingHistoryClient {
     @RequestMapping(path = "/iais-application-history",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
