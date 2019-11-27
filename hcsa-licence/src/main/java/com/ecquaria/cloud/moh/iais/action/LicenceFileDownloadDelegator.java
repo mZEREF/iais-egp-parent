@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -34,11 +35,17 @@ public class LicenceFileDownloadDelegator {
 
     public  void prepareData(BaseProcessClass bpc) throws FeignException {
          logAbout("preparetionData");
-        AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         licenceFileDownloadService.compress();
-        licenceFileDownloadService.download();
-        List<ApplicationDto> applicationDtos = licenceFileDownloadService.listApplication();
-        taskService.routingAdminScranTask(applicationDtos);
+        Boolean download = licenceFileDownloadService.download();
+        if(download){
+            List<ApplicationDto> applicationDtos = licenceFileDownloadService.listApplication();
+            for(ApplicationDto applicationDto:applicationDtos){
+                applicationDto.setAuditTrailDto(intranet);
+            }
+            taskService.routingAdminScranTask(applicationDtos);
+        }
+
     }
 /*******************************/
     private void logAbout(String name){

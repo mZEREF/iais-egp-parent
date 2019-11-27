@@ -42,6 +42,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -771,6 +772,31 @@ public class NewApplicationDelegator {
         keyWords.add("asd");
         keyWords.add("mzx");
         return keyWords;
+    }
+
+        private Map<String,String>  documentValid(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+
+        Map errorMap=new HashMap();
+        File file  =new File("");
+        if(file.exists()){
+            long length = file.length();
+            if(length>1024*1024){
+                errorMap.put("file","File size is too large!");
+            }
+        }
+        Boolean flag=false;
+            String name = file.getName();
+            String substring = name.substring(name.lastIndexOf("."));
+            for(String fileType: AppServicesConsts.FILE_TYPE){
+                if(fileType.equals(substring)){
+                    flag=true;
+                }
+            }
+            if(!flag){
+                errorMap.put("fileType","Wrong file type");
+            }
+            return errorMap;
     }
 }
 

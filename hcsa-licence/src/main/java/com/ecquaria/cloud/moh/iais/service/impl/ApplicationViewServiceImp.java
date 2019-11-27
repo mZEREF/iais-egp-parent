@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -21,8 +22,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Override
     public ApplicationViewDto searchByAppNo(String appNo) {
         Map<String,Object> map = new HashMap<>();
-        map.put("AppNo",appNo);
-        return RestApiUtil.getByReqParam("iais-application:8883/iais-application/application/{AppNo}",map, ApplicationViewDto.class);
+        map.put("appNo",appNo);
+        return RestApiUtil.getByReqParam("iais-application:8883/iais-application-be/applicationview/{appNo}",map, ApplicationViewDto.class);
 
     }
 
@@ -33,7 +34,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
         if(applicationDto != null){
             String appGroupId = applicationDto.getAppGrpId();
-            //todo:judge the All Applicaitons Submit
+            //todo:judge  the All Applicaitons Submit
         }else{
             log.error(StringUtil.changeForLog("The applicationDto is null"));
         }
@@ -52,8 +53,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     }
 
     @Override
-    public List<OrganizationDto> getUserNameById(List<String> userIdList) {
-        return RestApiUtil.postGetList("iais-organization:8879/users-by-ids",userIdList,OrganizationDto.class);
+    public List<OrgUserDto> getUserNameById(List<String> userIdList) {
+        return RestApiUtil.postGetList("iais-organization:8879/users-by-ids",userIdList,OrgUserDto.class);
     }
 
     @Override
@@ -64,9 +65,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Override
     public List<HcsaSvcRoutingStageDto> getStageName(String serviceId, String stageId) {
         Map<String,Object> map = new HashMap<>();
-        map.put("AppNo",serviceId);
-       // map.put()
-        return null;
+        map.put("serviceId",serviceId);
+        map.put("stageId",stageId);
+        return RestApiUtil.getListByReqParam("hcsa-config:8878/hcsa-routing/stage-id",map,HcsaSvcRoutingStageDto.class);
+
+
     }
 
 

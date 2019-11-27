@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="6" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="9" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="doStart" x="310" y="20">
@@ -73,6 +73,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="720" y="260">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/doStart" style="oblique">
@@ -131,12 +137,12 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="310" y="440">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/ASO" value="ASO"/>
-   <SwitchCase component="/Steps/AutomaticStep/PSO" value="PSO"/>
-   <SwitchCase component="/Steps/AutomaticStep/INS" value="INS"/>
-   <SwitchCase component="/Steps/AutomaticStep/AO1" value="AO1"/>
-   <SwitchCase component="/Steps/AutomaticStep/AO2" value="AO2"/>
-   <SwitchCase component="/Steps/AutomaticStep/AO3" value="AO3"/>
+   <SwitchCase component="/Steps/AutomaticStep/ASO" value="&quot;ASO&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PSO" value="&quot;PSO&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/INS" value="&quot;INS&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AO1" value="&quot;AO1&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AO2" value="&quot;AO2&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AO3" value="&quot;AO3&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

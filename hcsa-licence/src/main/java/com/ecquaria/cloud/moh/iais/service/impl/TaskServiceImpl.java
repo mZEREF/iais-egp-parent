@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
@@ -46,8 +47,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto getTaskById(String taskId) {
-        //todo: call rest get the task  by  the taskId;
-        return null;
+        return RestApiUtil.getByPathParam(RestApiUrlConsts.TASK_TASKID,taskId,TaskDto.class);
     }
 
 
@@ -79,12 +79,12 @@ public class TaskServiceImpl implements TaskService {
         hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
             String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
-            TaskDto taskScoreDto = getUserIdForWorkGroup(workGroupId);
-            //todo: wait the commpool
+            TaskDto taskScoreDto =new TaskDto();
             Date assignDate = new Date();
-            if("".equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
-                taskScoreDto.setUserId(null);
+            if(SystemParameterConstants.COMMON_POOL.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
                 assignDate = null;
+            }else{
+                taskScoreDto = getUserIdForWorkGroup(workGroupId);
             }
             List<TaskDto> taskDtos = new ArrayList<>();
             int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
@@ -118,7 +118,7 @@ public class TaskServiceImpl implements TaskService {
                     TaskDto taskDto = TaskUtil.getUserTaskDto(HcsaConsts.ROUTING_STAGE_ASO,
                             applicationDto.getApplicationNo(),workGroupId,
                             taskScoreDto.getUserId(),score,
-                            IaisEGPHelper.getCurrentAuditTrailDto());
+                            applicationDto.getAuditTrailDto());
                     taskDtos.add(taskDto);
                     this.createTasks(taskDtos);
                 }

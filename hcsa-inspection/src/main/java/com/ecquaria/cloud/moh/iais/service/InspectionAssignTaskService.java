@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
@@ -36,5 +39,14 @@ public interface InspectionAssignTaskService {
       * @return: InspecTaskCreAndAssQueryDto
       * @Descripation: Gets a single Common Pool of information for allocation
       */
-    InspecTaskCreAndAssQueryDto getInspecTaskCreAndAssQueryDto(String applicationNo);
+    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/27
+      * @Param: searchParam
+      * @return: SearchResult
+      * @Descripation: Search results based on search criteria
+      */
+    SearchResult<InspectionCommonPoolQueryDto> getSearchResultByParam(SearchParam searchParam);
 }
