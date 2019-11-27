@@ -45,9 +45,9 @@ public class ShowServiceFormsDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareSwitch start ...."));
-        String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         if(StringUtil.isEmpty(action)){
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,AppServicesConsts.NAVTABS_SERVICEFORMS);
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,AppServicesConsts.NAVTABS_SERVICEFORMS);
         }
         String actionTab = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
         if(StringUtil.isEmpty(actionTab)){
