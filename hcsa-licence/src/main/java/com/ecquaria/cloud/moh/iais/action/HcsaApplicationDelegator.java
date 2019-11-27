@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -105,6 +106,10 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+        String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
+        applicationViewDto.setServiceType(serviceType);
+        String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
+        applicationViewDto.getApplicationDto().setStatus(status);
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStageName(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         applicationViewDto.setHcsaSvcRoutingStageDtoList(hcsaSvcRoutingStageDtoList);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
