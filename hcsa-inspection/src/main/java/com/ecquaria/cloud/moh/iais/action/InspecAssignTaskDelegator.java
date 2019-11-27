@@ -52,8 +52,8 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorInit start ...."));
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDtoList", null);
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
-        ParamUtil.setSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM, null);
-        ParamUtil.setSessionAttr(bpc.request, DemoConstants.SEARCH_RESULT, null);
+        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", null);
+        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", null);
     }
 
     /**
@@ -64,7 +64,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPre start ...."));
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchParam");
         SearchResult<InspecTaskCreAndAssDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_RESULT);
         if(searchParam == null){
             searchParam = new SearchParam(InspectionCommonPoolQueryDto.class.getName());
@@ -73,8 +73,8 @@ public class InspecAssignTaskDelegator {
             searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
         }
 
-        ParamUtil.setSessionAttr(bpc.request, DemoConstants.SEARCH_RESULT, searchResult);
-        ParamUtil.setSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM, searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", searchResult);
+        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
     }
 
     /**
@@ -150,7 +150,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSearch start ...."));
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchParam");
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
         String application_status = ParamUtil.getRequestString(bpc.request, "application_status");
@@ -164,7 +164,7 @@ public class InspecAssignTaskDelegator {
         searchParam.addFilter("hci_name",hci_name,true);
         searchParam.addFilter("sub_date",sub_date,true);
 
-        ParamUtil.setSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM, searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
     }
 
     /**
@@ -175,7 +175,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorSort(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSort start ...."));
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchParam");
         CrudHelper.doSorting(searchParam,  bpc.request);
     }
 
@@ -187,7 +187,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPage start ...."));
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchParam");
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
@@ -199,10 +199,10 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorQuery2(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorQuery2 start ...."));
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchParam");
         QueryHelp.setMainSql("inspectionQuery", "assignInspector",searchParam);
         SearchResult searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
-        ParamUtil.setSessionAttr(bpc.request, DemoConstants.SEARCH_PARAM, searchParam);
-        ParamUtil.setRequestAttr(bpc.request, DemoConstants.SEARCH_RESULT, searchResult);
+        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
+        ParamUtil.setRequestAttr(bpc.request, "cPoolSearchResult", searchResult);
     }
 }
