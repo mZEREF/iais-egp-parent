@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sqls catalog="inspectionQuery">
-    <sql key = "allotInspector" remarks = "AO Allot Task For Inspector">
+    <sql key = "assignInspector" remarks = "AO Assign Task For Inspector">
         <![CDATA[
-            SELECT T2.APPLICATION_NO, T2.APP_TYPE, T2.STATUS, T2.SERVICE_ID, T1.SUBMIT_DT, T3.HCI_NAME, T3.HCI_CODE FROM APPLICATION_GROUP AS T1
-            JOIN APPLICATION T2 ON T2.APP_GRP_ID = T1.ID
-            JOIN APP_GRP_PREMISES T3 ON T3.APP_GRP_ID = T1.ID
-            WHERE 1=1
-            AND T2.APP_TYPE IN ('APTY001', 'APTY002', 'APTY003')
+            SELECT T1.APPLICATION_NO, T1.APP_TYPE, T1.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT FROM APPLICATION T1
+            JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
+            JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+            JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+            WHERE 1 = 1
+            <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
+            <#if application_type??> and T1.APP_TYPE = :application_type</#if>
+            <#if application_status??> and T1.STATUS = :application_status</#if>
+            <#if hci_code??> and charindex(:hci_code, T3.HCI_CODE) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T3.HCI_NAME) >0 </#if>
+            <#if sub_date??> and T4.SUBMIT_DT = :sub_date</#if>
         ]]>
     </sql>
 
