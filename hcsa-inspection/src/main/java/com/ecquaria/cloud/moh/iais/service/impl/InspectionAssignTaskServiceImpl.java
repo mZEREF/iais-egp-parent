@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -77,8 +78,17 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     @SearchTrack(catalog = "inspectionQuery",key = "assignInspector")
-    public SearchResult getSearchResultByParam(SearchParam searchParam) {
-        return null;
+    public SearchResult<InspectionCommonPoolQueryDto> getSearchResultByParam(SearchParam searchParam) {
+        return inspectionTaskClient.searchInspectionPool(searchParam).getEntity();
+    }
+
+    @Override
+    public List<String> getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList) {
+        List<String> appNoList = new ArrayList<>();
+        for(InspectionTaskPoolListDto inspectionTaskPoolListDto:inspectionTaskPoolListDtoList){
+            appNoList.add(inspectionTaskPoolListDto.getApplicationNo());
+        }
+        return appNoList;
     }
 
     /**

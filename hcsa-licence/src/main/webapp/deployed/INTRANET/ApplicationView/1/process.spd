@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="7" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="9" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="doStart" x="310" y="20">
@@ -137,12 +137,12 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="310" y="440">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/ASO" value="\u201cASO\u201d"/>
-   <SwitchCase component="/Steps/AutomaticStep/PSO" value="\u201cPSO\u201d"/>
-   <SwitchCase component="/Steps/AutomaticStep/INS" value="\u201cINS\u201d"/>
-   <SwitchCase component="/Steps/AutomaticStep/AO1" value="\u201cAO1\u201d"/>
-   <SwitchCase component="/Steps/AutomaticStep/AO2" value="\u201cAO2\u201d"/>
-   <SwitchCase component="/Steps/AutomaticStep/AO3" value="\u201cAO3\u201d"/>
+   <SwitchCase component="/Steps/AutomaticStep/ASO" value="&quot;ASO&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PSO" value="&quot;PSO&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/INS" value="&quot;INS&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AO1" value="&quot;AO1&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AO2" value="&quot;AO2&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AO3" value="&quot;AO3&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

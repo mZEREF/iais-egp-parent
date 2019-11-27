@@ -270,6 +270,10 @@ public class NewApplicationDelegator {
                 if (!StringUtil.isEmpty(file.getOriginalFilename())) {
                     String[] config = docConfig[0].split(";");
 
+                    //do by wenkang
+
+
+
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setSvcComDocId(config[0]);
                     appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
@@ -443,14 +447,20 @@ public class NewApplicationDelegator {
      * @description: ajax
      * @author: zixia
      */
-    @RequestMapping(value = "/loadPremisesByCode.do", method = RequestMethod.GET)
-    public @ResponseBody
-    PostCodeDto loadPremisesByPostCode(HttpServletRequest request) {
+    @RequestMapping(value = "/retrieve-address")
+    public @ResponseBody PostCodeDto retrieveYourAddress(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode start ...."));
         String searchField = ParamUtil.getDate(request, "searchField");
         String filterValue = ParamUtil.getDate(request, "filterValue");
-        PostCodeDto postCodeDto = serviceConfigService.getPremisesByPostalCode(searchField, filterValue);
-
+        log.debug(StringUtil.changeForLog("searchField :"+searchField));
+        log.debug(StringUtil.changeForLog("filterValue :"+filterValue));
+        PostCodeDto postCodeDto = null;
+        try {
+            postCodeDto = serviceConfigService.getPremisesByPostalCode(searchField, filterValue);
+        }catch (Exception e){
+            log.debug(StringUtil.changeForLog("call retrieve address api failed"));
+            postCodeDto = null;
+        }
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
         return postCodeDto;
     }
@@ -610,7 +620,7 @@ public class NewApplicationDelegator {
     }
 
 
-    private Map<String, Map<String, String>> doValidatePo(HttpServletRequest request) {
+    public static Map<String, Map<String, String>> doValidatePo(HttpServletRequest request) {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
         Map<String, Map<String, String>> errorMap = new HashMap<>();
         Map<String, String> oneErrorMap = null;
@@ -628,17 +638,26 @@ public class NewApplicationDelegator {
                 String mobileNo = poDto.getMobileNo();
                 String officeTelNo = poDto.getOfficeTelNo();
                 String emailAddr = poDto.getEmailAddr();
-                if (!mobileNo.startsWith("8") || !mobileNo.startsWith("9")) {
-                    oneErrorMap.put("mobileNo", "Please key in a valid mobile number");
+                if(!StringUtil.isEmpty(mobileNo)){
+                    if (!mobileNo.startsWith("8") && !mobileNo.startsWith("9")) {
+                        oneErrorMap.put("mobileNo", "Please key in a valid mobile number");
+                    }
                 }
-                if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                    oneErrorMap.put("emailAddr", "Please key in a valid email address");
+                if(!StringUtil.isEmpty(emailAddr)) {
+                    if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                        oneErrorMap.put("emailAddr", "Please key in a valid email address");
+                    }
                 }
-                if (!officeTelNo.startsWith("6")) {
-                    oneErrorMap.put("officeTelNo", "Please key in a valid phone number");
+                if(!StringUtil.isEmpty(officeTelNo)) {
+                    if (!officeTelNo.startsWith("6")) {
+                        oneErrorMap.put("officeTelNo", "Please key in a valid phone number");
+                    }
                 }
             }
-            errorMap.put("po1", oneErrorMap);
+            if(oneErrorMap.size()>0){
+                errorMap.put("po1", oneErrorMap);
+            }
+
         }
         return errorMap;
     }

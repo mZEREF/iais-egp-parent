@@ -80,20 +80,33 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareJumpPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareJumpPage start ...."));
-        String action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
+        String action = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
+        if(StringUtil.isEmpty(action)){
+            action = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
+            if(StringUtil.isEmpty(action)){
+                action = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
+            }
+        }
+
         log.debug(StringUtil.changeForLog("The prepareJumpPage action is -->;"+action));
         String formTab = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB);
         log.debug(StringUtil.changeForLog("The form_tab action is -->;"+formTab));
         if(StringUtil.isEmpty(action)||IaisEGPConstant.YES.equals(formTab)){
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"laboratoryDisciplines");
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"laboratoryDisciplines");
         }else{
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,action);
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,action);
         }
-        String crudActionType = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
 
+        String crudActionType = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+        if(StringUtil.isEmpty(crudActionType)){
+            crudActionType = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE , crudActionType);
+        }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, crudActionType);
         log.debug(StringUtil.changeForLog("The crud_action_type  is -->;"+crudActionType));
         if(!AppServicesConsts.NAVTABS_SERVICEFORMS.equals(crudActionType)){
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,"jump");
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"jump");
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"jump");
         }
 
         log.debug(StringUtil.changeForLog("the do prepareJumpPage end ...."));
@@ -221,10 +234,12 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareView(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareView start ...."));
-        String encryptSvcId = ParamUtil.getString(bpc.request, "previeSvcId");
-        String svcId = ParamUtil.getMaskedString(bpc.request, encryptSvcId);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, encryptSvcId);
+        String svcId = ParamUtil.getMaskedString(bpc.request, "svcId");
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, svcId);
         ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
+        //one premises
+        List<AppSvcDisciplineAllocationDto> allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+
         log.debug(StringUtil.changeForLog("the do prepareView end ...."));
     }
     /**
@@ -395,6 +410,13 @@ public class ClinicalLaboratoryDelegator {
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = genAppSvcPrincipalOfficersDto(bpc.request) ;
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = new ArrayList<>();
         appSvcPrincipalOfficersDtoList.add(appSvcPrincipalOfficersDto);
+        ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
+        Map<String,Map<String,String>> map = NewApplicationDelegator.doValidatePo(bpc.request);
+        if(map.size() >0 ){
+            //ParamUtil.setSessionAttr(bpc.request, "", );
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "principalOfficers");
+        }
+
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
@@ -431,6 +453,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,crudActionTypeForm);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE,crudActionTypeFormPage);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,formTab);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "jump");
 
         List<MultipartFile> files = null;
         for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {
@@ -570,6 +593,7 @@ public class ClinicalLaboratoryDelegator {
 
     private AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(HttpServletRequest request){
         AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
+        String assignSelect = ParamUtil.getString(request, "deputySelect");
         String deputySelect = ParamUtil.getString(request, "deputySelect");
         String salutation = ParamUtil.getString(request, "salutation");
         String name = ParamUtil.getString(request, "name");
@@ -578,6 +602,7 @@ public class ClinicalLaboratoryDelegator {
         String designation = ParamUtil.getString(request, "designation");
         String mobileNo = ParamUtil.getString(request, "mobileNo");
         String emailAddress = ParamUtil.getString(request, "emailAddress");
+        dto.setAssignSelect(assignSelect);
         dto.setDeputyPrincipalOfficer(deputySelect);
         dto.setSalutation(salutation);
         dto.setName(name);
