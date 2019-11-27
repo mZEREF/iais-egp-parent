@@ -496,9 +496,9 @@
                                                         <p>Processing Decision:</p>
                                                     </td>
                                                     <td>
-                                                        <select>
+                                                        <select name="nextStage">
                                                             <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
-                                                                <option name="nextStage" value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
+                                                                <option  value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
                                                           </c:forEach>
                                                          </select>
                                                     </td>
