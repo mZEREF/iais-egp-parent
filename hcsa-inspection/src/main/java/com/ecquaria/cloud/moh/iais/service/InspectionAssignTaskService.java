@@ -49,4 +49,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: Search results based on search criteria
       */
     SearchResult<InspectionCommonPoolQueryDto> getSearchResultByParam(SearchParam searchParam);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/27
+      * @Param: inspectionTaskPoolListDtoList
+      * @return: List<String>
+      * @Descripation: get Application No By InspectionTaskPoolListDto
+      */
+    List<String> getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList);
 }

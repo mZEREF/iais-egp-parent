@@ -82,6 +82,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return inspectionTaskClient.searchInspectionPool(searchParam).getEntity();
     }
 
+    @Override
+    public List<String> getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList) {
+        List<String> appNoList = new ArrayList<>();
+        for(InspectionTaskPoolListDto inspectionTaskPoolListDto:inspectionTaskPoolListDtoList){
+            appNoList.add(inspectionTaskPoolListDto.getApplicationNo());
+        }
+        return appNoList;
+    }
+
     /**
       * @author: shicheng
       * @Date 2019/11/22
