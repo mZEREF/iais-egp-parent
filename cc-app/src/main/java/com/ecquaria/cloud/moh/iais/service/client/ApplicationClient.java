@@ -20,7 +20,7 @@ import java.util.List;
  */
 @FeignClient(name = "iais-application", configuration = FeignConfiguration.class,
         fallback = UploadClientFallback.class)
-public interface UploadClient  {
+public interface ApplicationClient  {
     @RequestMapping(path = "/iais-application/all-file",method = RequestMethod.GET)
     FeignResponseEntity<String> fileAll();
     @RequestMapping(path = "/iais-application/status",method = RequestMethod.PUT)

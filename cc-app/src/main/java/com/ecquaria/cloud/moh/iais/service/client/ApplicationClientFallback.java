@@ -12,7 +12,7 @@ import java.util.List;
  * @author Wenkang
  * @date 2019/11/26 14:29
  */
-public class UploadClientFallback {
+public class ApplicationClientFallback {
     public FeignResponseEntity<String>  fileAll(){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
