@@ -1,5 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -70,6 +73,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         //get inspector lead
         //get inspector checkbox list
         return inspecTaskCreAndAssQueryDto;
+    }
+
+    @Override
+    @SearchTrack(catalog = "inspectionQuery",key = "assignInspector")
+    public SearchResult getSearchResultByParam(SearchParam searchParam) {
+        return null;
     }
 
     /**
