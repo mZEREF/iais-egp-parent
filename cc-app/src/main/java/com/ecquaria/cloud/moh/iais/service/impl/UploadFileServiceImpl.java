@@ -3,19 +3,21 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.sz.commons.util.FileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
-import java.util.zip.*;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -24,9 +26,9 @@ import java.util.zip.*;
 @Service
 @Slf4j
 public class UploadFileServiceImpl implements UploadFileService {
-    private static final String URL_SAVE_FILE_NAME="application:8883/file-name";
-    private static final String URL_APP="iais-application:8883/iais-application/all-file";
-    private static final  String URL_STATUS="iais-application:8883/iais-application/status";
+    private static final String URL_SAVE_FILE_NAME="application:/file-name";
+    private static final String URL_APP="iais-application:/iais-application/all-file";
+    private static final  String URL_STATUS="iais-application:/iais-application/status";
     private static  final String DOWNLOAD="D:/folder";
     private static  final  String FILE_NAME="folder";
     private static  final  String FILE_FORMAT=".text";
