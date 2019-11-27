@@ -16,26 +16,33 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
-import org.springframework.stereotype.Service;
-
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
+    @Autowired
+    private ApplicationClient applicationClient;
+
+    @Autowired
+    private AppConfigClient appConfigClient;
 
     @Override
     public List<ApplicationDto> listApplicationByGroupId(String groupId) {
-        return RestApiUtil.getListByPathParam("iais-application:8883/iais-application/application/results-by-groupid/{groupid}", "1C629C17-CB72-4892-8F31-87F6759C791A", ApplicationDto.class);
+        return applicationClient.listApplicationByGroupId(groupId).getEntity();
     }
 
     @Override
     public List<HcsaServiceDto> listHcsaService() {
-        return RestApiUtil.getList(RestApiUrlConsts.ALL_HCSA_SERVICE, HcsaServiceDto.class);
+        return appConfigClient.allHcsaService().getEntity();
     }
 
     @Override
     public SearchResult<ChecklistQuestionDto> listSelfDescConfig(SearchParam searchParam) {
-        return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.CHECKLIST_SELF_DESC_CONFIG, searchParam);
+        return appConfigClient.listSelfDescConfig(searchParam).getEntity();
     }
 
     @Override
