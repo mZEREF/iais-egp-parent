@@ -109,7 +109,7 @@ public class HcsaApplicationDelegator {
         String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(serviceType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
-        applicationViewDto.getApplicationDto().setStatus(status);
+        applicationViewDto.setCurrentStatus(status);
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStageName(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         applicationViewDto.setHcsaSvcRoutingStageDtoList(hcsaSvcRoutingStageDtoList);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
