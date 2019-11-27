@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -108,7 +107,7 @@ public class HcsaApplicationDelegator {
         }
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStageName(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         applicationViewDto.setHcsaSvcRoutingStageDtoList(hcsaSvcRoutingStageDtoList);
-        ParamUtil.setRequestAttr(bpc.request,"applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
@@ -121,20 +120,9 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
-        if("ASO".equals(bpc.request.getParameter("nextStage"))) {
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "ASO");
-        }else if("PSO".equals(bpc.request.getParameter("nextStage"))) {
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PSO");
-        }else if("INS".equals(bpc.request.getParameter("nextStage"))) {
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "INS");
-        }else if("AO1".equals(bpc.request.getParameter("nextStage"))) {
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "AO1");
-        }else if("AO2".equals(bpc.request.getParameter("nextStage"))) {
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "AO2");
-        }else if("AO3".equals(bpc.request.getParameter("nextStage"))) {
-            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "AO3");
-        }
-
+        String nextStage = ParamUtil.getString(bpc.request,"nextStage");
+        log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
+        ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
     }
 
@@ -272,6 +260,7 @@ public class HcsaApplicationDelegator {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setSlaDateCompleted(new Date());
         taskDto.setSlaRemainInDays(remainDays(taskDto));
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return taskService.updateTask(taskDto);
     }
     private ApplicationDto updateApplicaiton(ApplicationDto applicationDto,String appStatus){
