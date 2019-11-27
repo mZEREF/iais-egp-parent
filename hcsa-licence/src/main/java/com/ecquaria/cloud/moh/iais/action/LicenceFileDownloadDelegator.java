@@ -37,12 +37,15 @@ public class LicenceFileDownloadDelegator {
          logAbout("preparetionData");
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         licenceFileDownloadService.compress();
-        licenceFileDownloadService.download();
-        List<ApplicationDto> applicationDtos = licenceFileDownloadService.listApplication();
-        for(ApplicationDto applicationDto:applicationDtos){
-            applicationDto.setAuditTrailDto(intranet);
+        Boolean download = licenceFileDownloadService.download();
+        if(download){
+            List<ApplicationDto> applicationDtos = licenceFileDownloadService.listApplication();
+            for(ApplicationDto applicationDto:applicationDtos){
+                applicationDto.setAuditTrailDto(intranet);
+            }
+            taskService.routingAdminScranTask(applicationDtos);
         }
-        taskService.routingAdminScranTask(applicationDtos);
+
     }
 /*******************************/
     private void logAbout(String name){
