@@ -22,41 +22,56 @@
   <iais:body >
     <div class="container">
       <div class="col-xs-12">
-        <div class="components">
-          <div class="table-gp">
-            <table class="table">
-              <thead>
-              <tr align="center">
-                <th>Application No.</th>
-                <th>Service Name</th>
-                <th>Action</th>
-              </tr>
-              </thead>
-              <tbody>
-                <c:forEach items="${inspectionTaskPoolListDtoList}" var="pool">
-                  <tr>
-                    <td><c:out value="${pool.applicationNo}"/></td>
-                    <td><c:out value="${pool.serviceName}"/></td>
-                    <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Assign</button></td>
-                  </tr>
-                </c:forEach>
-              </tbody>
-            </table>
-            <div class="table-footnote">
-              <div class="row">
-                <div class="col-xs-6 col-md-4">
-                  <p class="count">5 out of 25</p>
-                </div>
-                <div class="col-xs-6 col-md-8 text-right">
-                  <div class="nav">
-                    <ul class="pagination">
-                      <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-chevron-left"></i></span></a></li>
-                      <li class="active"><a href="#">1</a></li>
-                      <li><a href="#">2</a></li>
-                      <li><a href="#">3</a></li>
-                      <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right"></i></span></a></li>
-                    </ul>
-                  </div>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <h3>
+            <span>Search Criteria</span>
+          </h3>
+          <div class="panel panel-default">
+            <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+              <div class="panel-body">
+                <div class="panel-main-content">
+                  <iais:section title="" id = "demoList">
+                    <iais:row>
+                      <iais:field value="Application No."/>
+                      <iais:value width="18">
+                        <input type="text" name="application_no" value="${cPoolSearchParam.filters['application_no']}" />
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="Application Type"/>
+                      <iais:value width="18">
+                        <iais:select name="application_type" options="appTypeOption" firstOption="Please select" value="${cPoolSearchParam.filters['application_type']}" ></iais:select>
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="Application Status"/>
+                      <iais:value width="18">
+                        <iais:select name="application_status" options="appStatusOption" firstOption="Please select" value="${cPoolSearchParam.filters['application_status']}" ></iais:select>
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="HCI Code"/>
+                      <iais:value width="18">
+                        <input type="text" name="hci_code" value="${cPoolSearchParam.filters['hci_code']}" />
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="HCI Name / Address"/>
+                      <iais:value width="18">
+                        <input type="text" name="hci_name" value="${cPoolSearchParam.filters['hci_name']}" />
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="Submission Date"/>
+                      <iais:value width="18">
+                        <iais:datePicker id = "sub_date" name = "sub_date" value="${cPoolSearchParam.filters['sub_date']}"></iais:datePicker>
+                      </iais:value>
+                    </iais:row>
+                    <iais:action style="text-align:center;">
+                      <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSearch()">Search</button>
+                      <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
+                    </iais:action>
+                  </iais:section>
                 </div>
               </div>
             </div>
@@ -64,6 +79,56 @@
         </div>
       </div>
     </div>
+    <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
+      <div class="container">
+        <div class="col-xs-12">
+          <div class="components">
+            <h3>
+              <span>Search Result</span>
+            </h3>
+            <div class="table-gp">
+              <table class="table">
+                <thead>
+                  <tr align="center">
+                    <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true"  field="STATUS" value="Application Status"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name / Address"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true"  field="SUBMIT_DT" value="Submission Date"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
+                  </tr>
+                </thead>
+                <tbody>
+                  <c:choose>
+                    <c:when test="${empty cPoolSearchResult.rows}">
+                      <tr>
+                        <td colspan="7">
+                          <iais:message key="ACK00001" escape="true"></iais:message>
+                          <!--No Record!!-->
+                        </td>
+                      </tr>
+                    </c:when>
+                    <c:otherwise>
+                      <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
+                        <tr>
+                          <td><c:out value="${pool.applicationNo}"/></td>
+                          <td><c:out value="${pool.applicationType}"/></td>
+                          <td><c:out value="${pool.applicationStatus}"/></td>
+                          <td><c:out value="${pool.hciCode}"/></td>
+                          <td><c:out value="${pool.hciName}"/></td>
+                          <td><c:out value="${pool.submitDt}"/></td>
+                          <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Assign</button></td>
+                        </tr>
+                      </c:forEach>
+                    </c:otherwise>
+                  </c:choose>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
   </iais:body>
 </form>
 </div>
@@ -75,12 +140,25 @@
     function doAssign(applicationNo) {
         submit('assign');
         $("#applicationNo").val(applicationNo);
-        console.log("applicationNo");
     }
 
     function submit(action){
         $("[name='inspectionPoolType']").val(action);
         var mainPoolForm = document.getElementById('mainPoolForm');
         mainPoolForm.submit();
+    }
+
+    function doSearch() {
+        submit('search');
+    }
+
+    function doClear() {
+        $('input[name="application_no"]').val("");
+        $('input[name="application_type"]').val("");
+        $('input[name="application_status"]').val("");
+        $('input[name="hci_code"]').val("");
+        $('input[name="hci_name"]').val("");
+        $('input[name="service_name"]').val("");
+        $('input[name="sub_date"]').val("");
     }
 </script>

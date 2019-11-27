@@ -2,8 +2,10 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -76,9 +79,13 @@ public class InspecAssignTaskDelegator {
             searchParam.setPageNo(1);
             searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
         }
+        List<SelectOption> appTypeOption = inspectionAssignTaskService.getAppTypeOption();
+        List<SelectOption> appStatusOption = inspectionAssignTaskService.getAppStatusOption();
 
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", searchResult);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
+        ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
     }
 
     /**
@@ -164,13 +171,29 @@ public class InspecAssignTaskDelegator {
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId("BF3B0634-F80C-EA11-BE7D-000C29F371DC");
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = inspectionAssignTaskService.getPoolListByTaskDto(commPools);
         List<String> applicationNo_list = inspectionAssignTaskService.getApplicationNoListByPool(inspectionTaskPoolListDtoList);
-        searchParam.addFilter("applicationNo_list",applicationNo_list, true);
-        searchParam.addFilter("application_no",application_no,true);
-        searchParam.addFilter("application_type",application_type,true);
-        searchParam.addFilter("application_status",application_status,true);
-        searchParam.addFilter("hci_code",hci_code,true);
-        searchParam.addFilter("hci_name",hci_name,true);
-        searchParam.addFilter("sub_date",sub_date,true);
+        if(applicationNo_list != null || applicationNo_list.size() > 0){
+            searchParam.addFilter("applicationNo_list",applicationNo_list, true);
+        } else {
+            searchParam.addFilter("applicationNo_list", SystemParameterConstants.PARAM_FALSE, true);
+        }
+        if(!StringUtil.isEmpty(application_no)){
+            searchParam.addFilter("application_no",application_no,true);
+        }
+        if(!StringUtil.isEmpty(application_type)){
+            searchParam.addFilter("application_type",application_type,true);
+        }
+        if(!StringUtil.isEmpty(application_status)){
+            searchParam.addFilter("application_status",application_status,true);
+        }
+        if(!StringUtil.isEmpty(hci_code)){
+            searchParam.addFilter("hci_code",hci_code,true);
+        }
+        if(!StringUtil.isEmpty(hci_name)){
+            searchParam.addFilter("hci_name",hci_name,true);
+        }
+        if(!StringUtil.isEmpty(sub_date)){
+            searchParam.addFilter("sub_date",sub_date,true);
+        }
 
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
     }

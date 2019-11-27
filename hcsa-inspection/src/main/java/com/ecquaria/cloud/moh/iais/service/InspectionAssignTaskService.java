@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
@@ -58,4 +59,22 @@ public interface InspectionAssignTaskService {
       * @Descripation: get Application No By InspectionTaskPoolListDto
       */
     List<String> getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/27
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: getAppTypeOption
+      */
+    List<SelectOption> getAppTypeOption();
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/27
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: getAppStatusOption
+      */
+    List<SelectOption> getAppStatusOption();
 }

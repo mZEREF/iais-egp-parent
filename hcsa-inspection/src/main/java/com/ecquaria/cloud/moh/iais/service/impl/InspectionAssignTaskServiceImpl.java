@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -11,8 +12,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.client.CommonPoolTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.hazelcast.aws.utility.StringUtil;
@@ -20,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -34,12 +38,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Autowired
     private HcsaServiceClient hcsaServiceClient;
 
-    @Autowired
-    private CommonPoolTaskClient commonPoolTaskClient;
+    /*@Autowired
+    private CommonPoolTaskClient commonPoolTaskClient;*/
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(String workGroupId) {
-        return commonPoolTaskClient.getCommPoolByGroupWordId(workGroupId).getEntity();
+        //return commonPoolTaskClient.getCommPoolByGroupWordId(workGroupId).getEntity();
+        Map<String,Object> map = new HashMap<>();
+        map.put("workGroupId", workGroupId);
+        return RestApiUtil.getListByReqParam("iais-organization:8879/iais-task/commpool/{workGroupId}",map,TaskDto.class);
     }
 
     @Override
@@ -89,6 +96,18 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             appNoList.add(inspectionTaskPoolListDto.getApplicationNo());
         }
         return appNoList;
+    }
+
+    @Override
+    public List<SelectOption> getAppTypeOption() {
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{"APTY002","APTY004","APTY005"});
+        return appTypeOption;
+    }
+
+    @Override
+    public List<SelectOption> getAppStatusOption() {
+        List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{"APST001"});
+        return appStatusOption;
     }
 
     /**
