@@ -85,8 +85,8 @@ public class HcsaApplicationDelegator {
     public void prepareData(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
-        //String  taskId = ParamUtil.getString(bpc.request,"taskId");
-        String taskId="12848A70-820B-EA11-BE7D-000C29F371DC";
+        String  taskId = ParamUtil.getString(bpc.request,"taskId");
+       // String taskId="12848A70-820B-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         //get routing stage dropdown send to page.
