@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -14,6 +16,8 @@ import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.List;
 
 /**
  * @Process: MohInspectionAllotTaskInspector
@@ -157,6 +161,10 @@ public class InspecAssignTaskDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String sub_date = ParamUtil.getRequestString(bpc.request, "sub_date");
+        List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId("BF3B0634-F80C-EA11-BE7D-000C29F371DC");
+        List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = inspectionAssignTaskService.getPoolListByTaskDto(commPools);
+        List<String> applicationNo_list = inspectionAssignTaskService.getApplicationNoListByPool(inspectionTaskPoolListDtoList);
+        searchParam.addFilter("applicationNo_list",applicationNo_list, true);
         searchParam.addFilter("application_no",application_no,true);
         searchParam.addFilter("application_type",application_type,true);
         searchParam.addFilter("application_status",application_status,true);
