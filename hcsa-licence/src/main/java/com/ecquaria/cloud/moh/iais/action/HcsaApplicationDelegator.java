@@ -121,13 +121,19 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","ASO");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","PSO");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","INS");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","AO1");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","AO2");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","AO3");
-
+        if("ASO".equals(bpc.request.getParameter("nextStage"))) {
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "ASO");
+        }else if("PSO".equals(bpc.request.getParameter("nextStage"))) {
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "PSO");
+        }else if("INS".equals(bpc.request.getParameter("nextStage"))) {
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "INS");
+        }else if("AO1".equals(bpc.request.getParameter("nextStage"))) {
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "AO1");
+        }else if("AO2".equals(bpc.request.getParameter("nextStage"))) {
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "AO2");
+        }else if("AO3".equals(bpc.request.getParameter("nextStage"))) {
+            ParamUtil.setRequestAttr(bpc.request, "crud_action_type", "AO3");
+        }
 
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
     }
