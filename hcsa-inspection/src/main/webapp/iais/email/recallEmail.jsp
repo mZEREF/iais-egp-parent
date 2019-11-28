@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
     /*
       You can customize this default file:
@@ -34,9 +35,5 @@
 %>
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-        <div class="container">
-            <a href="">recall</a>
-        </div>
-    </div>
+    <a href="https://egp.sit.inter.iais.com/hcsainspection/eservice/INTERNET/MohInspectEmail/1/doRecallEmail?id="+${id}>recall</a>
 </form>
