@@ -3,8 +3,12 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+
+import java.util.List;
 
 /**
  * @author Guyin
@@ -29,4 +33,5 @@ public interface FillupChklistService {
      */
     SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam);
 
+    InspectionFillCheckListDto getInspectionFillCheckListDto(String taskId,String svcCode,String svcType);
 }

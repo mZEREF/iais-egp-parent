@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
@@ -13,11 +14,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * AppSubmisionServiceImpl
@@ -31,26 +36,34 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     String draftUrl =  RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION_DRAFT;
     String submission = RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION;
 
+    @Autowired
+    private ApplicationClient applicationClient;
+    @Autowired
+    private AppConfigClient appConfigClient;
+    @Autowired
+    private SystemAdminClient systemAdminClient;
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return RestApiUtil.save(submission,appSubmissionDto,AppSubmissionDto.class);
+        return applicationClient.saveSubmision(appSubmissionDto).getEntity();
     }
 
     @Override
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return RestApiUtil.save(draftUrl,appSubmissionDto,AppSubmissionDto.class);
+
+        return  applicationClient.saveDraft(appSubmissionDto).getEntity();
     }
 
     @Override
     public String getDraftNo(String appType) {
-        return  RestApiUtil.getByPathParam(RestApiUrlConsts.SUBMISISON_DRAFT_NO, appType, String.class);
+        return   systemAdminClient.draftNumber(appType).getEntity();
     }
 
     @Override
     public String getGroupNo(String appType) {
-        return RestApiUtil.getByPathParam(RestApiUrlConsts.APPLICAITON_NUMBER, appType, String.class);
+
+        return   systemAdminClient.applicationNumber(appType).getEntity();
     }
 
     @Override
@@ -68,7 +81,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             linenceFeeQuaryDtos.add(licenceFeeQueryDto);
         }
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:"+linenceFeeQuaryDtos.size()));
-        Double amount = RestApiUtil.postGetObject(RestApiUrlConsts.NEW_FEE,linenceFeeQuaryDtos,Double.class);
+        FeeDto entity = appConfigClient.newFee(linenceFeeQuaryDtos).getEntity();
+        Double amount = entity.getTotal();
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl amount is -->:"+amount));
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
         return  amount;
@@ -86,7 +100,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             riskAcceptiionDto.setBaseServiceCodeList(appSvcRelatedInfoDto.getBaseServiceCodeList());
             riskAcceptiionDtos.add(riskAcceptiionDto);
         }
-        return RestApiUtil.postGetObject(RestApiUrlConsts.HCSA_CONFIG_PREORPOSTINSPECTION,recommendInspectionDto,PreOrPostInspectionResultDto.class);
+
+        return     appConfigClient.recommendIsPreInspection(recommendInspectionDto).getEntity();
     }
 
     @Override
@@ -99,8 +114,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
             riskAcceptiionDtoList.add(riskAcceptiionDto);
         }
-        List<RiskResultDto> riskResultDtoList = RestApiUtil.postGetList(RestApiUrlConsts.HCSA_CONFIG+RestApiUrlConsts.HCSA_CONFIG_RISKRESULT,
-                riskAcceptiionDtoList, RiskResultDto.class);
+
+        List<RiskResultDto> riskResultDtoList = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
+
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
             RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList,serviceCode);

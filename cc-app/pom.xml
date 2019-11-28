@@ -39,6 +39,14 @@
             <artifactId>spring-cloud-bus</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.github.openfeign.form</groupId>
+            <artifactId>feign-form</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign.form</groupId>
+            <artifactId>feign-form-spring</artifactId>
+        </dependency>
+        <dependency>
             <groupId>sg.gov.moh.iais</groupId>
             <artifactId>iais-common</artifactId>
             <version>${revision}</version>

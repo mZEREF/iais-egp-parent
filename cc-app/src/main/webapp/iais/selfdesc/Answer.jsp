@@ -5,62 +5,41 @@
   Time: 9:37 AM
   To change this template use File | Settings | File Templates.
 --%>
-<c:forEach var="item" items="${renderResultAttr.rows}" varStatus="status">
-  <tr>
-    <td>
-      <p class="visible-xs visible-sm table-row-title"></p>
-      <p><a href="#">${item.configId}</a></p>
-    </td>
+<c:forEach var="selfDesc" items="${selfDeclQueryAttr}" varStatus="status">
+    <c:if test="${tabIndex == null && selfDesc.common == true}">
+      <c:forEach var="answerMap" items="${selfDesc.premAnswerMap}">
+        <c:forEach items="${answerMap.value}" var="list"><br>
+          <input type="hidden" name="${list.checklistItemId}" value="<c:out value="${list.answer}"/>"/>　
+          <tr>
+            <td>
+              <p class="visible-xs visible-sm table-row-title"></p>
+              <p>1</p>
+            </td>
 
-    <td>
-      <p class="visible-xs visible-sm table-row-title"></p>
-      <p>${item.regClauseNo}</p>
-    </td>
+            <td>
+              <p class="visible-xs visible-sm table-row-title"></p>
+              <p>${list.regulation}</p>
+            </td>
 
-    <td>
-      <p class="visible-xs visible-sm table-row-title"></p>
-      <p>${item.checklistItem}</p>
-    </td>
+            <td>
+              <p class="visible-xs visible-sm table-row-title"></p>
+              <p>${list.checklistItem}</p>
+            </td>
 
+            <td>
+              <c:if test="${list.answer == 'YES'}">
+                <p><input name="${list.checklistItemId}" type="radio"  checked="checked" onclick="javascript:selectAnswer('YES', '${list.checklistItemId}')"/></p>
+              </c:if>
+              <c:if test="${list.answer == null}">
+                <p><input name="${list.checklistItemId}" type="radio" onclick="javascript:selectAnswer('YES', '${list.checklistItemId}')"/></p>
+              </c:if>
 
-    <td>
-      <p class="visible-xs visible-sm table-row-title"></p>
-      <c:choose>
-        <c:when test="${item.answer eq 'YES'}">
-          <p><input name="${item.itemId}" type="radio"  checked="checked" onclick="javascript:selectAnswer('YES', '${item.itemId}')"/></p>
-        </c:when>
-        <c:otherwise>
-          <p><input name="${item.itemId}" type="radio" onclick="javascript:selectAnswer('YES', '${item.itemId}')"/></p>
-        </c:otherwise>
-      </c:choose>
+            </td>
+          </tr>
 
-    </td>
-
-    <td>
-      <p class="visible-xs visible-sm table-row-title"></p>
-      <c:choose>
-        <c:when test="${item.answer eq 'NO'}">
-          <p><input name="${item.itemId}" type="radio" checked="checked" onclick="javascript:selectAnswer('NO', '${item.itemId}')"/></p>
-        </c:when>
-        <c:otherwise>
-          <p><input name="${item.itemId}" type="radio"  onclick="javascript:selectAnswer('NO', '${item.itemId}')"/></p>
-        </c:otherwise>
-      </c:choose>
-    </td>
-
-    <td>
-      <p class="visible-xs visible-sm table-row-title"></p>
-      <c:choose>
-        <c:when test="${item.answer eq 'NA'}">
-          <p><input name="${item.itemId}" type="radio" checked="checked" onclick="javascript:selectAnswer('NA', '${item.itemId}')"/></p>
-        </c:when>
-        <c:otherwise>
-          <p><input name="${item.itemId}" type="radio" onclick="javascript:selectAnswer('NA', '${item.itemId}')"/></p>
-        </c:otherwise>
-      </c:choose>
-    </td>
-    <input type="hidden" name="${item.itemId}" value="<c:out value="${item.answer}"/>"/>
-  </tr>
+        </c:forEach>
+      </c:forEach>
+    </c:if>
 
 
 </c:forEach>

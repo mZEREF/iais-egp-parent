@@ -28,9 +28,13 @@ public interface ApplicationClient  {
     @RequestMapping(path = "/iais-application/file-name",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String>  savedFileName(@RequestBody String fileName);
     @RequestMapping(path = "/application/results-by-groupid/{groupid}" ,method = RequestMethod.GET)
-    FeignResponseEntity<List<ApplicationDto>> listApplicationByGroupId(@PathVariable String groupId);
+    FeignResponseEntity<List<ApplicationDto>> listApplicationByGroupId(@PathVariable("groupid") String groupId);
     @RequestMapping(path = "/iais-submission/draft",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto>  draftNumberGet(@RequestParam("draftNumber") String draftNumber);
+    @RequestMapping(path = "/iais-submission/draft",method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSubmissionDto>  saveDraft(@RequestBody AppSubmissionDto appSubmissionDto );
     @RequestMapping(path = "/iais-submission",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto);
+
 }

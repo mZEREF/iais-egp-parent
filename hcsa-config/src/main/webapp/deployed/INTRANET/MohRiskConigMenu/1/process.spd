@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRiskConigMenu" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="20" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InitConfig" x="170" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="initConfig_OnStepProcess_0" name="initConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreConfig" x="340" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preConfig_OnStepProcess_0" name="preConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Next" x="680" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="next_OnStepProcess_0" name="next_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="LeadershipRiskSocreConfiguration" processname="" project="" version="" x="1150" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="RiskScoreGlobalRiskConfiguration" processname="" project="INTRANET" version="-1" x="1150" y="10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="IndividualRiskScoreConfiguration" processname="MohFinancialRiskSubConfig" project="" version="-1" x="1140" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="FinancialRiskScoreConfiguration" processname="MohFinancialRiskSubConfig" project="INTRANET" version="-1" x="1150" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="LegislativeRiskScoreConfiguration" processname="" project="" version="" x="1160" y="460">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="LicTenureRiskScoreConfiguration" processname="" project="" version="" x="1140" y="700">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="WeightageRiskScoreConfiguration" processname="" project="" version="" x="1150" y="580">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preGolbalRiskConig" x="970" y="10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preGolbalRiskConig_OnStepProcess_0" name="preGolbalRiskConig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreIndividualConfig" x="970" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preIndividualConfig_OnStepProcess_0" name="preIndividualConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreFinancialRiskConfig" x="970" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFinancialRiskConfig_OnStepProcess_0" name="preFinancialRiskConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreLeaderShipRiskConig" x="970" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preLeaderShipRiskConig_OnStepProcess_0" name="preLeaderShipRiskConig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreLegislativeRiskConifg" x="970" y="460">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preLegislativeRiskConifg_OnStepProcess_0" name="preLegislativeRiskConifg_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreWeightageRiskConifg" x="970" y="580">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preWeightageRiskConifg_OnStepProcess_0" name="preWeightageRiskConifg_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="LicTenureRiskConfig" x="970" y="700">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="licTenureRiskConfig_OnStepProcess_0" name="licTenureRiskConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigMenuPage" stageIndicator="" x="490" y="110">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InitConfig" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(40,130)(190,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreConfig" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InitConfig" style="rectanular">
+   <position>{(190,130)(360,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigMenuPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreConfig" style="rectanular">
+   <position>{(360,130)(510,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Next" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ConfigMenuPage" style="rectanular">
+   <position>{(510,130)(700,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Next" style="rectanular">
+   <position>{(700,130)(810,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preGolbalRiskConig" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(810,130)(990,30)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreIndividualConfig" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(810,130)(990,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreFinancialRiskConfig" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(810,130)(990,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreLeaderShipRiskConig" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(810,130)(990,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreLegislativeRiskConifg" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(810,130)(990,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreWeightageRiskConifg" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(810,130)(990,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/LicTenureRiskConfig" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(810,130)(990,720)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/RiskScoreGlobalRiskConfiguration" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preGolbalRiskConig" style="rectanular">
+   <position>{(990,30)(1170,30)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/IndividualRiskScoreConfiguration" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreIndividualConfig" style="rectanular">
+   <position>{(990,130)(1160,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/FinancialRiskScoreConfiguration" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreFinancialRiskConfig" style="rectanular">
+   <position>{(990,250)(1170,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/LeadershipRiskSocreConfiguration" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreLeaderShipRiskConig" style="rectanular">
+   <position>{(990,360)(1170,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/LegislativeRiskScoreConfiguration" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreLegislativeRiskConifg" style="rectanular">
+   <position>{(990,480)(1180,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/WeightageRiskScoreConfiguration" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreWeightageRiskConifg" style="rectanular">
+   <position>{(990,600)(1170,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/LicTenureRiskScoreConfiguration" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/LicTenureRiskConfig" style="rectanular">
+   <position>{(990,720)(1160,720)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="790" y="110">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/LicTenureRiskConfig" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/PreWeightageRiskConifg" value="&quot;licTenureConfig&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreLegislativeRiskConifg" value="&quot;legistlativeConfig&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreLeaderShipRiskConig" value="&quot;leadershipConfig&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreFinancialRiskConfig" value="&quot;financialConig&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreIndividualConfig" value="&quot;indivdualConfig&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preGolbalRiskConig" value="&quot;golbalRiskConfig&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

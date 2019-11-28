@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -105,6 +106,10 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+        String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
+        applicationViewDto.setServiceType(serviceType);
+        String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
+        applicationViewDto.setCurrentStatus(status);
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStageName(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         applicationViewDto.setHcsaSvcRoutingStageDtoList(hcsaSvcRoutingStageDtoList);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
@@ -209,6 +214,62 @@ public class HcsaApplicationDelegator {
         //}
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
+
+
+    /**
+     * StartStep: approve
+     *
+     * @param bpc
+     * @throws
+     */
+    public void approve(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do approve start ...."));
+
+        log.debug(StringUtil.changeForLog("the do approve end ...."));
+    }
+
+    /**
+     * StartStep: routeToDMS
+     *
+     * @param bpc
+     * @throws
+     */
+    public void routeToDMS(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
+
+        log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
+    }
+
+    /**
+     * StartStep: routeBack
+     *
+     * @param bpc
+     * @throws
+     */
+    public void routeBack(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do routeBack start ...."));
+
+        log.debug(StringUtil.changeForLog("the do routeBack end ...."));
+    }
+
+    /**
+     * StartStep: internalEnquiry
+     *
+     * @param bpc
+     * @throws
+     */
+    public void internalEnquiry(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do internalEnquiry start ...."));
+
+        log.debug(StringUtil.changeForLog("the do internalEnquiry end ...."));
+    }
+
+
+
+
+
+
+
     //***************************************
     //private methods
     //**************************************
@@ -242,7 +303,7 @@ public class HcsaApplicationDelegator {
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId());
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;

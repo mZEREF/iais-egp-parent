@@ -1,6 +1,4 @@
-<jsp:useBean id="insEmailDto" scope="request" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
-
-
+<jsp:useBean id="insEmailDto" scope="session" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
 
 <table class="control-grid columns1">
     <tbody>
@@ -62,7 +60,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="applicantName"  id="Name-Applicant"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                        <p><input name="applicantName"  id="Name-Applicant"  type="text"  size="60"></p>
                     </div>
                 </div>
             </div>
@@ -78,7 +76,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="applicationNumber"  id="Application-Num"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                        <p><input name="applicationNumber"  id="Application-Num"  type="text"  size="60"></p>
                     </div>
                 </div>
             </div>
@@ -94,7 +92,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="hciCode"  id="HCI-Code"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                        <p><input name="hciCode"  id="HCI-Code"  type="text"  size="60"></p>
                     </div>
                 </div>
             </div>
@@ -110,7 +108,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="hciNameOrAddress"  id="HCI-Name/Address"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                        <p><input name="hciNameOrAddress"  id="HCI-Name/Address"  type="text"  size="60"></p>
                     </div>
                 </div>
             </div>
@@ -126,7 +124,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="serviceName"  id="Service-Name"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                        <p><input name="serviceName"  id="Service-Name"  type="text"  size="60"></p>
                     </div>
                 </div>
             </div>
@@ -142,7 +140,12 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p><input name="sn"  id="SN"  type="text" size="60"></p>
+                        <p><select name="sn">
+                            <option value="Yse">Yse</option>
+                            <option value="No">No</option>
+                            <option value="NA">NA</option>
+                        </select>
+
                     </div>
                 </div>
             </div>
@@ -200,34 +203,41 @@
     </tbody>
 </table>
 <p class="text-right text-center-mobile">
-    <iais:input type="button" name="validation" cssClass="btn btn-primary" value="validation"></iais:input>
-    <iais:input type="button" name="reset" cssClass="btn btn-primary" value="reset"></iais:input>
-    <iais:input type="button" name="send" cssClass="btn btn-primary" value="send"></iais:input>
-    <iais:input type="button" name="preview" cssClass="btn btn-primary" value="preview"></iais:input>
-    </p>
+    <iais:action>
+        <button type="button" class="search btn" onclick="javascript:doValidation();">validation</button>
+    </iais:action>
+    <iais:action>
+        <button type="button" class="search btn" onclick="javascript:doReset();">reset</button>
+    </iais:action>
+    <iais:action>
+        <button type="button" class="search btn" onclick="javascript:doSend();">send</button>
+    </iais:action>
+    <iais:action>
+        <button type="button" class="search btn" onclick="javascript:doPreview();">preview</button>
+    </iais:action>
+</p>
 <script type="text/javascript">
-    $('#validation').click(function(){
-        submitEmail('validation',null,null);
-    });
-    $('#send').click(function(){
-        submitEmail('send',null,null);
-    });
-    $('#preview').click(function(){
-        submitEmail('preview',null,null);
-    });
-
-    function submitEmail(action,value,additional){
-        $("[name='submitEmail']").val(action);
-        $("[name='submit_form_page']").val('laboratoryDisciplines');
-        $("[name='submit_value']").val(value);
-        $("[name='submit_additional']").val(additional);
-        var mainForm = document.getElementById('mainForm');
-        mainForm.submit();
+    function doPreview(){
+        SOP.Crud.cfxSubmit("mainForm", "preview");
+    }
+    function doValidation(){
+        SOP.Crud.cfxSubmit("mainForm", "validation");
     }
 
-    $('#reset').click(function () {
-
+    function doSend(){
+        SOP.Crud.cfxSubmit("mainForm", "send");
     }
 
-    )
+    function doReset(){
+        document.getElementById("addressee").value="";
+        document.getElementById("Name-Applicant").value="";
+        document.getElementById("Application-Num").value="";
+        document.getElementById("HCI-Code").value="";
+        document.getElementById("HCI-Name/Address").value="";
+        document.getElementById("addressee").value="";
+        document.getElementById("addressee").value="";
+        document.getElementById("addressee").value="";
+        document.getElementById("addressee").value="";
+
+    }
 </script>
