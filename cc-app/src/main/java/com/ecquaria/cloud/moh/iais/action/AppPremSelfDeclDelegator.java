@@ -7,6 +7,8 @@ package com.ecquaria.cloud.moh.iais.action;
  */
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
@@ -15,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 @Delegator(value = "appPremSelfDeclDelegator")
 @Slf4j
@@ -37,6 +42,7 @@ public class AppPremSelfDeclDelegator {
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction("Hcsa Application", "Self desc");
 
+        ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", null);
     }
 
     private void loadTabOption(HttpServletRequest request){
@@ -58,7 +64,14 @@ public class AppPremSelfDeclDelegator {
     public void initData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
+        List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
+        if (selfDeclList == null){
+            List<SelfDecl> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId("1C629C17-CB72-4892-8F31-87F6759C791A");
+            ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
+        }
 
+        String tabIndex = ParamUtil.getString(request, "tabIndex");
+        ParamUtil.setRequestAttr(request, "tabIndex", tabIndex);
     }
 
     /**
@@ -100,8 +113,20 @@ public class AppPremSelfDeclDelegator {
     public void saveCommonData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
+        List<SelfDecl> selfDeclByGroupId = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
-
+        for (SelfDecl selfDecl : selfDeclByGroupId){
+            Map<String, List<PremCheckItem>> premAnswerMap = selfDecl.getPremAnswerMap();
+            for (Map.Entry<String,  List<PremCheckItem>> entry : premAnswerMap.entrySet()){
+                List<PremCheckItem> premCheckItemList = entry.getValue();
+                for (PremCheckItem item : premCheckItemList){
+                    String itemId = item.getChecklistItemId();
+                    String answer = ParamUtil.getString(request, itemId);
+                    item.setAnswer(answer);
+                    ParamUtil.setSessionAttr(request, itemId, answer);
+                }
+            }
+        }
     }
 
     /**
@@ -128,6 +153,9 @@ public class AppPremSelfDeclDelegator {
     public void submitSelfDesc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
+        List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
+
+        appPremSelfDesc.saveSelfDecl(selfDeclList);
 
     }
 

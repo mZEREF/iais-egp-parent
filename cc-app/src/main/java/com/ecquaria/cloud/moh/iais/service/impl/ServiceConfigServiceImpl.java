@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -9,18 +10,22 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * ServiceConfigServiceImpl
@@ -30,6 +35,9 @@ import java.util.Set;
  */
 @Service
 public class ServiceConfigServiceImpl implements ServiceConfigService {
+    @Autowired
+    private FileRepoClient fileRepoClient;
+
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
         return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_SERVICE_BY_IDS, ids,HcsaServiceDto.class);
@@ -72,9 +80,16 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<String> saveFileToRepo(List<MultipartFile> fileList) throws IOException {
-        List<MultipartFile> multipartFileList = new ArrayList();
-        multipartFileList.add(fileList.get(0));
-        return RestApiUtil.saveFile(RestApiUrlConsts.URLREPO,multipartFileList,IaisEGPHelper.getCurrentAuditTrailDto());
+        MultipartFile file = fileList.get(0);
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        String auditTrailStr = JsonUtil.parseToJson(auditTrailDto);
+        FeignResponseEntity<String> re = fileRepoClient.saveFiles(file, auditTrailStr);
+        List<String> idList = new ArrayList<>();
+        if (re.getStatusCode() == HttpStatus.SC_OK) {
+            String str = re.getEntity();
+            idList.add(str);
+        }
+        return idList;
     }
 
     @Override

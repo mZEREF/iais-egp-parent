@@ -143,7 +143,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
       * @Descripation: get ApplicationDto By Application No.
       */
     public ApplicationDto getApplicationDtoByAppNo(String appNo){
-        return inspectionTaskClient.getApplicationDtoByAppNo(appNo).getEntity();
+        return null;
     }
 
     /**
@@ -165,7 +165,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
       * @Descripation: get Application Group Premises By Application Id
       */
     public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String applicationId){
-        return inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(applicationId).getEntity();
+        return null;
     }
 
     /**
@@ -176,6 +176,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
       * @Descripation: get ApplicationGroup By Application Group Id
       */
     public ApplicationGroupDto getApplicationGroupDtoByAppGroId(String appGroupId){
-        return inspectionTaskClient.getApplicationGroupDtoByAppGroId(appGroupId).getEntity();
+        return null;
     }
 }
