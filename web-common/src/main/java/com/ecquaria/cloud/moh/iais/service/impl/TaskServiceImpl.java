@@ -14,8 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,11 +34,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TaskServiceImpl implements TaskService {
 
-    @Autowired
-    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
-
-    @Autowired
-    private ApplicationService applicationService;
 
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
@@ -125,7 +117,7 @@ public class TaskServiceImpl implements TaskService {
                 String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
                 TaskDto taskScoreDto = getUserIdForWorkGroup(workGroupId);
                 List<AppPremisesCorrelationDto> appPremisesCorrelationDtos =
-                        applicationService.getAppPremisesCorrelationByAppGroupId(applicationDtos.get(0).getAppGrpId());
+                        this.getAppPremisesCorrelationByAppGroupId(applicationDtos.get(0).getAppGrpId());
                 List<TaskDto> taskDtos = new ArrayList<>();
                 List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
                 for(ApplicationDto applicationDto : applicationDtos){
@@ -145,7 +137,7 @@ public class TaskServiceImpl implements TaskService {
                     appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                 }
                 this.createTasks(taskDtos);
-                appPremisesRoutingHistoryService.createHistorys(appPremisesRoutingHistoryDtos);
+                this.createHistorys(appPremisesRoutingHistoryDtos);
             }else{
                 log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
             }
@@ -191,6 +183,16 @@ public class TaskServiceImpl implements TaskService {
         }
         return result;
     }
+
+    @Override
+    public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId) {
+        return RestApiUtil.getListByPathParam(RestApiUrlConsts.APPLICATION_APPPREMISESCORRELATIONS_APPGROPID,appGroupId,AppPremisesCorrelationDto.class);
+    }
+    @Override
+    public List<AppPremisesRoutingHistoryDto> createHistorys(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList) {
+        return RestApiUtil.save(RestApiUrlConsts.APPLICATION_HISTORYS,appPremisesRoutingHistoryDtoList,List.class);
+    }
+
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
