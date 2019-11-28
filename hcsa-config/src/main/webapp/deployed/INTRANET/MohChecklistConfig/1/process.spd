@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohChecklistConfig" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="MohChecklistConfig" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
  <WebServices/>
  <RestServices/>
  <Steps>
@@ -98,6 +98,27 @@
    <probepoint type="none"/>
    <OnStepProcess/>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="loadEditData" x="1160" y="-100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="loadEditData_OnStepProcess_0" name="loadEditData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="submitEditData" x="1310" y="-30">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submitEditData_OnStepProcess_0" name="submitEditData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="deleteRecord" x="1060" y="-160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="deleteRecord_OnStepProcess_0" name="deleteRecord_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="ConfigDataPage" stageIndicator="" x="410" y="20">
@@ -142,14 +163,35 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigEditPage" stageIndicator="" x="1310" y="-180">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="EditSuccessPage" stageIndicator="" x="1270" y="180">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareAddConfig" componentIfTrue="/Switches/Switch/Switch3" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="480" y="240">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/loadEditData" componentIfTrue="/Pages/WebPage/EditSuccessPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="1330" y="80">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="980" y="20">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/prepareAddConfig" value="&quot;prepareAddConfig&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/loadEditData" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/deleteRecord" value=""/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="360" y="360">
    <Description/>
@@ -197,9 +239,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/addConfigNextAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AddConfigCommonPage" style="oblique">
    <position>{(330,150)(340,260)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/addConfigNextAction" style="oblique">
-   <position>{(340,260)(380,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfigSectionInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
    <position>{(380,380)(580,380)}</position>
@@ -257,6 +296,39 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAddConfig" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/backConfig" style="oblique">
    <position>{(1200,260)(1170,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAddConfig" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(500,260)(1170,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/addConfigNextAction" style="rectanular">
+   <position>{(340,260)(500,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(500,260)(380,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/loadEditData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1000,40)(1180,-80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigEditPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/loadEditData" style="oblique">
+   <position>{(1180,-80)(1330,-160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/submitEditData" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ConfigEditPage" style="oblique">
+   <position>{(1330,-160)(1330,-10)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/submitEditData" style="oblique">
+   <position>{(1330,-10)(1350,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/EditSuccessPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(1350,100)(1290,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/loadEditData" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(1350,100)(1180,-80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/deleteRecord" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1000,40)(1080,-140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/deleteRecord" style="oblique">
+   <position>{(1080,-140)(251,-169)(260,50)}</position>
   </SynchronousLink>
  </Links>
  <BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions=""/>

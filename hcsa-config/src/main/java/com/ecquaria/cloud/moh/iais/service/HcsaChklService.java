@@ -19,6 +19,7 @@ import java.util.List;
 @Service
 public interface HcsaChklService {
 
+    void deleteRecord(String configId);
 
     /**
      * list checklist item by SearchParam

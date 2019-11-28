@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -7,6 +9,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,18 +26,32 @@ import java.util.List;
 public interface ApplicationClient  {
     @RequestMapping(path = "/iais-application/all-file",method = RequestMethod.GET)
     FeignResponseEntity<String> fileAll();
+
     @RequestMapping(path = "/iais-application/status",method = RequestMethod.PUT)
     FeignResponseEntity<Boolean> updateStatus();
+
     @RequestMapping(path = "/iais-application/file-name",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String>  savedFileName(@RequestBody String fileName);
+
     @RequestMapping(path = "/application/results-by-groupid/{groupid}" ,method = RequestMethod.GET)
     FeignResponseEntity<List<ApplicationDto>> listApplicationByGroupId(@PathVariable("groupid") String groupId);
+
     @RequestMapping(path = "/iais-submission/draft",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto>  draftNumberGet(@RequestParam("draftNumber") String draftNumber);
+
     @RequestMapping(path = "/iais-submission/draft",method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSubmissionDto>  saveDraft(@RequestParam("draftNumber") String draftNumber);
+
     FeignResponseEntity<AppSubmissionDto>  saveDraft(@RequestBody AppSubmissionDto appSubmissionDto );
     @RequestMapping(path = "/iais-submission",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto);
+
+    @RequestMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
+
+    @PostMapping(path = "/iais-application/self-decl/tab", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> saveSelfDecl(@RequestBody  List<SelfDecl> selfDeclList);
 
 }

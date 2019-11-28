@@ -368,6 +368,16 @@ public class HcsaChklConfigDelegator {
      */
     public void preViewConfig(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+
+        ChecklistConfigDto preViewConfig = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+        List<ChecklistSectionDto> sectionDtos = preViewConfig.getSectionDtos();
+        for (ChecklistSectionDto sec : sectionDtos){
+            String section = sec.getSection();
+            String order = ParamUtil.getString(request, section);
+            sec.setOrder(Integer.valueOf(order));
+        }
+
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConfig);
     }
 
 
@@ -396,7 +406,6 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
         try {
             ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-
             if(configDto != null){
                 hcsaChklService.submitConfig(configDto);
             }

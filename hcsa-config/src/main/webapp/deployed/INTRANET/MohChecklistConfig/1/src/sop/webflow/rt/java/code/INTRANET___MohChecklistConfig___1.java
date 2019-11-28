@@ -42,6 +42,15 @@ public class INTRANET___MohChecklistConfig___1 extends BaseProcessClass {
 	public void routeToItemProcess_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "routeToItemProcess", this);
 	}
+	public void loadEditData_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "prepareEditConfig", this);
+	}
+	public void submitEditData_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "submitEditData", this);
+	}
+	public void deleteRecord_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "deleteRecord", this);
+	}
 	
 	
 	
