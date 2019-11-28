@@ -52,7 +52,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public List<InspectionTaskPoolListDto> getPoolListByTaskDto(List<TaskDto> taskDtoList) {
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = new ArrayList<>();
-        if(taskDtoList != null) {
+        if(taskDtoList != null || taskDtoList.size() > 0) {
             for(TaskDto td:taskDtoList){
                 InspectionTaskPoolListDto inspectionTaskPoolListDto = getInspectionTaskPoolListDtoByTaskDto(td);
                 inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
@@ -90,10 +90,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public List<String> getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList) {
-        List<String> appNoList = new ArrayList<>();
-        for(InspectionTaskPoolListDto inspectionTaskPoolListDto:inspectionTaskPoolListDtoList){
-            appNoList.add(inspectionTaskPoolListDto.getApplicationNo());
+    public String[] getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList) {
+        String[] appNoList = new String[inspectionTaskPoolListDtoList.size()];
+        if(inspectionTaskPoolListDtoList != null || inspectionTaskPoolListDtoList.size() > 0) {
+            for (int i = 0; i < inspectionTaskPoolListDtoList.size(); i++) {
+                appNoList[i] = inspectionTaskPoolListDtoList.get(i).getApplicationNo();
+            }
         }
         return appNoList;
     }
