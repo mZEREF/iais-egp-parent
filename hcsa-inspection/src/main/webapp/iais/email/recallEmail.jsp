@@ -34,6 +34,5 @@
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
 <form method="post" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <a href="https://egp.sit.inter.iais.com/hcsainspection/eservice/INTERNET/MohInspectEmail/1/doRecallEmail?id="+${id}>recall</a>
+<input type="submit" class="search btn" value="recall">
 </form>

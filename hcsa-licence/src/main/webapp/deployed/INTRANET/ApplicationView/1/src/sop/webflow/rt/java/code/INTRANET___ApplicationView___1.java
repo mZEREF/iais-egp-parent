@@ -82,6 +82,42 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 
 
 
+	public void approve_OnStepProcess_0() throws Exception {
+	// 		Approve->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "approve", this);
+	}
+
+
+
+
+
+	public void dMS_OnStepProcess_0() throws Exception {
+	// 		DMS->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "routeToDMS", this);
+	}
+
+
+
+
+
+	public void routeBack_OnStepProcess_0() throws Exception {
+	// 		RouteBack->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "routeBack", this);
+	}
+
+
+
+
+
+	public void internalEnquiry_OnStepProcess_0() throws Exception {
+	// 		InternalEnquiry->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "internalEnquiry", this);
+	}
+
+
+
+
+
 
 
 

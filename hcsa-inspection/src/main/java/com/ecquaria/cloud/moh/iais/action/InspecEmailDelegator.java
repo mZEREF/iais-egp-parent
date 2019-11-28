@@ -52,7 +52,7 @@ public class InspecEmailDelegator {
         String checklistItem= ParamUtil.getString(bpc.request, "checklistItem");
         String regulationClause= ParamUtil.getString(bpc.request, "regulationClause");
         String remarks= ParamUtil.getString(bpc.request, "remarks");
-
+        String BestPractices= ParamUtil.getString(bpc.request, "BestPractices");
 
 //        if (applicantName.isEmpty()){
 //            Map<String,String> errorMap = new HashMap<>();
@@ -62,17 +62,16 @@ public class InspecEmailDelegator {
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,"insEmailDto");
         inspectionEmailTemplateDto.setApplicantName(applicantName);
-        inspectionEmailTemplateDto.setApplicantName(addressee);
-        inspectionEmailTemplateDto.setApplicantName(applicationNumber);
-        inspectionEmailTemplateDto.setApplicantName(hciCode);
-        inspectionEmailTemplateDto.setApplicantName(hciNameOrAddress);
-        inspectionEmailTemplateDto.setApplicantName(serviceName);
-        inspectionEmailTemplateDto.setApplicantName(sn);
-        inspectionEmailTemplateDto.setApplicantName(checklistItem);
-        inspectionEmailTemplateDto.setApplicantName(regulationClause);
-        inspectionEmailTemplateDto.setApplicantName(remarks);
-        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
-
+        inspectionEmailTemplateDto.setAddressee(addressee);
+        inspectionEmailTemplateDto.setApplicationNumber(applicationNumber);
+        inspectionEmailTemplateDto.setHciCode(hciCode);
+        inspectionEmailTemplateDto.setHciNameOrAddress(hciNameOrAddress);
+        inspectionEmailTemplateDto.setServiceName(serviceName);
+        inspectionEmailTemplateDto.setSn(sn);
+        inspectionEmailTemplateDto.setChecklistItem(checklistItem);
+        inspectionEmailTemplateDto.setRegulationClause(regulationClause);
+        inspectionEmailTemplateDto.setRemarks(remarks);
+        inspectionEmailTemplateDto.setBestPractices(BestPractices);
 
         String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.debug("*******************crudAction-->:" + crudAction);
@@ -99,7 +98,7 @@ public class InspecEmailDelegator {
             return;
         }
 
-        String flag="true";
+        String flag="Y";
         ParamUtil.setRequestAttr(request,"flag", flag);
     }
     public void sendEmail(BaseProcessClass bpc){
@@ -113,6 +112,7 @@ public class InspecEmailDelegator {
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
         inspectionEmailTemplateDto.setId(id);
+
     }
     public void doRecallEmail(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");

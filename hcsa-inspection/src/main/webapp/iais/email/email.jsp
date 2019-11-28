@@ -199,6 +199,22 @@
             </div>
         </td>
     </tr>
+    <tr height="1" id="Best-Practices">
+        <td class="first last" style="width: 100%;">
+            <div id="control--runtime--16" class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                    <div class="col-sm-4 control-label formtext ">
+                        <label id="control--runtime--16--label" class="control-label control-set-font control-font-label">
+                            BestPractices
+                        </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <p><input name="BestPractices"  id="BestPractices"  type="text" value="Best practices recommended by inspector" size="60"></p>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
 
     </tbody>
 </table>

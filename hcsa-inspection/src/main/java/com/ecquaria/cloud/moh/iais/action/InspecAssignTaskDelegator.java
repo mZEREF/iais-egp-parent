@@ -1,10 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -51,6 +49,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorStart start ...."));
+        log.info("Step 1 ==============>" + bpc.request.getSession().getId());
         AuditTrailHelper.auditFunction("Inspection Assign", "Assign Task");
     }
 
@@ -62,7 +61,6 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorInit start ...."));
-        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(bpc.request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDtoList", null);
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", null);
@@ -111,6 +109,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorStep1(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorStep1 start ...."));
+        log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorStep1 end ...."));
     }
 
     /**
@@ -177,6 +176,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSearch start ...."));
         SearchParam searchParam = getSearchParam(bpc);
+        log.info("Step 2 ==============>" + bpc.request.getSession().getId());
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
         String application_status = ParamUtil.getRequestString(bpc.request, "application_status");

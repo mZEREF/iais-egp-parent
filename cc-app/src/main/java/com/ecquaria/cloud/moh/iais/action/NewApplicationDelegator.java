@@ -450,17 +450,18 @@ public class NewApplicationDelegator {
     @RequestMapping(value = "/retrieve-address")
     public @ResponseBody PostCodeDto retrieveYourAddress(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode start ...."));
-        String searchField = ParamUtil.getDate(request, "searchField");
-        String filterValue = ParamUtil.getDate(request, "filterValue");
-        log.debug(StringUtil.changeForLog("searchField :"+searchField));
-        log.debug(StringUtil.changeForLog("filterValue :"+filterValue));
+        String postalCode = ParamUtil.getDate(request, "postalCode");
+        if(StringUtil.isEmpty(postalCode)){
+            log.debug(StringUtil.changeForLog("postCode is null"));
+            return null;
+        }
         PostCodeDto postCodeDto = null;
-        try {
-            postCodeDto = serviceConfigService.getPremisesByPostalCode(searchField, filterValue);
-        }catch (Exception e){
+        /*try {*/
+            postCodeDto = serviceConfigService.getPremisesByPostalCode(postalCode);
+        /*}catch (Exception e){
             log.debug(StringUtil.changeForLog("call retrieve address api failed"));
             postCodeDto = null;
-        }
+        }*/
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
         return postCodeDto;
     }

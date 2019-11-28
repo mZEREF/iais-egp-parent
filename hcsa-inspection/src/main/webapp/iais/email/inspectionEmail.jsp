@@ -46,6 +46,5 @@
             <%@ include file="email.jsp" %>
         </div>
     </div>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 </form>
 
