@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -12,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -61,33 +62,33 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo) {
+        if(StringUtil.isEmpty(applicationNo)){
+            applicationNo = SystemParameterConstants.PARAM_FALSE;
+        }
         ApplicationDto applicationDto = getApplicationDtoByAppNo(applicationNo);
         AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(applicationDto.getId());
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
-        InspecTaskCreAndAssDto inspecTaskCreAndAssQueryDto = new InspecTaskCreAndAssDto();
-        inspecTaskCreAndAssQueryDto.setApplicationNo(applicationNo);
-        inspecTaskCreAndAssQueryDto.setApplicationType(applicationDto.getApplicationType());
-        inspecTaskCreAndAssQueryDto.setApplicationStatus(applicationDto.getStatus());
-        inspecTaskCreAndAssQueryDto.setHciName(appGrpPremisesDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
-        inspecTaskCreAndAssQueryDto.setHciCode(appGrpPremisesDto.getHciCode());
-        inspecTaskCreAndAssQueryDto.setServiceName(hcsaServiceDto.getSvcName());
-        inspecTaskCreAndAssQueryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
-        inspecTaskCreAndAssQueryDto.setInspectionType(applicationGroupDto.getIsPreInspection());
-        inspecTaskCreAndAssQueryDto.setSubmitDt(applicationGroupDto.getSubmitDt());
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
+        inspecTaskCreAndAssDto.setApplicationNo(applicationNo);
+        inspecTaskCreAndAssDto.setApplicationType(applicationDto.getApplicationType());
+        inspecTaskCreAndAssDto.setApplicationStatus(applicationDto.getStatus());
+        inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
+        inspecTaskCreAndAssDto.setHciCode(appGrpPremisesDto.getHciCode());
+        inspecTaskCreAndAssDto.setServiceName(hcsaServiceDto.getSvcName());
+        inspecTaskCreAndAssDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
+        inspecTaskCreAndAssDto.setInspectionType(applicationGroupDto.getIsPreInspection());
+        inspecTaskCreAndAssDto.setSubmitDt(applicationGroupDto.getSubmitDt());
         //get inspector lead
         //get inspector checkbox list
-        return inspecTaskCreAndAssQueryDto;
+        return inspecTaskCreAndAssDto;
     }
 
     @Override
     @SearchTrack(catalog = "inspectionQuery",key = "assignInspector")
     public SearchResult<InspectionCommonPoolQueryDto> getSearchResultByParam(SearchParam searchParam) {
-        String json = JsonUtil.parseToJson(searchParam);
-
         return RestApiUtil.query("iais-application:8883/iais-inspection/inspection-searchParam", searchParam);
-
         /*return inspectionTaskClient.searchInspectionPool(searchParam).getEntity();*/
     }
 
@@ -104,13 +105,13 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public List<SelectOption> getAppTypeOption() {
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{"APTY002","APTY004","APTY005"});
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, ApplicationConsts.APPLICATION_TYPE_RENEWAL, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE});
         return appTypeOption;
     }
 
     @Override
     public List<SelectOption> getAppStatusOption() {
-        List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{"APST001"});
+        List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION});
         return appStatusOption;
     }
 
@@ -147,7 +148,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public ApplicationDto getApplicationDtoByAppNo(String appNo){
         Map<String,Object> map2 = new HashMap<>();
         map2.put("applicationNo", appNo);
-        ApplicationDto applicationDto = RestApiUtil.getByReqParam("iais-application:8883/iais-inspection/one-of-inspection/{applicationNo}",map2,ApplicationDto.class); ;
+        ApplicationDto applicationDto = RestApiUtil.getByReqParam("iais-application:8883/iais-inspection/one-of-inspection/{applicationNo}",map2,ApplicationDto.class);
         return applicationDto;
         //return inspectionTaskClient.getApplicationDtoByAppNo(appNo).getEntity();
     }
