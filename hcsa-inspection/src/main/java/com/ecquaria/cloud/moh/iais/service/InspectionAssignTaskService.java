@@ -58,7 +58,7 @@ public interface InspectionAssignTaskService {
       * @return: List<String>
       * @Descripation: get Application No By InspectionTaskPoolListDto
       */
-    List<String> getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList);
+    String[] getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList);
 
     /**
       * @author: shicheng
