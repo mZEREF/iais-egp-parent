@@ -1,10 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -13,12 +14,18 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 /**
  * TaskServiceImpl
@@ -29,6 +36,12 @@ import java.util.*;
 @Service
 @Slf4j
 public class TaskServiceImpl implements TaskService {
+
+    @Autowired
+    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
@@ -103,25 +116,36 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void routingAdminScranTask(List<ApplicationDto> applicationDtos) throws FeignException {
-        log.debug(StringUtil.changeForLog("the do routingAdminScranTask start ...."));
+    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
         if(applicationDtos != null && applicationDtos.size() > 0){
-            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_ASO);
+            List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
             hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
             if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
                 String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
                 TaskDto taskScoreDto = getUserIdForWorkGroup(workGroupId);
+                List<AppPremisesCorrelationDto> appPremisesCorrelationDtos =
+                        applicationService.getAppPremisesCorrelationByAppGroupId(applicationDtos.get(0).getAppGrpId());
                 List<TaskDto> taskDtos = new ArrayList<>();
+                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
                 for(ApplicationDto applicationDto : applicationDtos){
                     int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
-                            HcsaConsts.ROUTING_STAGE_ASO,applicationDto.getApplicationType());
-                    TaskDto taskDto = TaskUtil.getUserTaskDto(HcsaConsts.ROUTING_STAGE_ASO,
+                            stageId,applicationDto.getApplicationType());
+                    TaskDto taskDto = TaskUtil.getUserTaskDto(stageId,
                             applicationDto.getApplicationNo(),workGroupId,
                             taskScoreDto.getUserId(),score,
                             applicationDto.getAuditTrailDto());
                     taskDtos.add(taskDto);
-                    this.createTasks(taskDtos);
+                    //create history
+                    String appPremisesCorrelationId = getAppPremisesCorrelationId(appPremisesCorrelationDtos,applicationDto.getId());
+                    log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationId));
+                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
+                            createAppPremisesRoutingHistory(appPremisesCorrelationId,applicationDto.getStatus(),
+                            stageId,null );
+                    appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                 }
+                this.createTasks(taskDtos);
+                appPremisesRoutingHistoryService.createHistorys(appPremisesRoutingHistoryDtos);
             }else{
                 log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
             }
@@ -129,8 +153,10 @@ public class TaskServiceImpl implements TaskService {
             log.error(StringUtil.changeForLog("The applicationDtos is null"));
         }
 
-        log.debug(StringUtil.changeForLog("the do routingAdminScranTask end ...."));
+        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison end ...."));
     }
+
+
 
     @Override
     public TaskDto getLowestTaskScore(List<TaskDto> taskScoreDtos, List<OrgUserDto> users) {
@@ -215,6 +241,27 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         return result;
+    }
+    private String getAppPremisesCorrelationId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,String appId){
+        String result = null;
+        for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
+            if(appId.equals(appPremisesCorrelationDto.getApplicationId())){
+                result = appPremisesCorrelationDto.getId();
+                break;
+            }
+        }
+        return  result;
+    }
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                         String stageId, String internalRemarks){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return appPremisesRoutingHistoryDto;
     }
 
 }

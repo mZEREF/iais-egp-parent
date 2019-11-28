@@ -460,10 +460,10 @@ public class ClinicalLaboratoryDelegator {
                 if(!StringUtil.isEmpty(file.getOriginalFilename())){
                     String[] config = docConfig[count].split(";");
                     appSvcDocDto = new AppSvcDocDto();
-                    appSvcDocDto.setSvcConfDocId(config[0]);
-                    appSvcDocDto.setFileName(file.getOriginalFilename());
+                    appSvcDocDto.setSvcDocId(config[0]);
+                    appSvcDocDto.setDocName(file.getOriginalFilename());
                     long size = file.getSize()/1024;
-                    appSvcDocDto.setFileSize(Integer.valueOf(String.valueOf(size)));
+                    appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
                     List<MultipartFile> oneFile = new ArrayList<>();
                     oneFile.add(file);
                     List<String> fileRepoGuidList = serviceConfigService.saveFileToRepo(oneFile);

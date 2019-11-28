@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -12,17 +14,21 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListD
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Process: MohInspectionAllotTaskInspector
@@ -120,8 +126,12 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
-        String applicationNo = ParamUtil.getMaskedString(bpc.request,"crud_action_value");
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
+        Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
+        String applicationNo = ParamUtil.getMaskedString(bpc.request,"applicationNo");
+        String taskId = map.get(applicationNo);
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo);
+        inspecTaskCreAndAssDto.setTaskId(taskId);
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
@@ -133,7 +143,18 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAction(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAction start ...."));
-
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto,"create");
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
+            if (validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, DemoConstants.ERRORMAP, errorMap);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            }
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+        }
     }
 
     /**
@@ -183,7 +204,8 @@ public class InspecAssignTaskDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String sub_date = ParamUtil.getRequestString(bpc.request, "sub_date");
-        List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId("7BCC5724-A469-47A6-A75B-07BE2AF88E3D");
+        List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId("A03EDD16-F90C-EA11-BE7D-000C29F371DC");
+        setMapTaskId(bpc, commPools);
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = inspectionAssignTaskService.getPoolListByTaskDto(commPools);
         String[] applicationNo_list = inspectionAssignTaskService.getApplicationNoListByPool(inspectionTaskPoolListDtoList);
         if(applicationNo_list == null || applicationNo_list.length == 0){
@@ -215,6 +237,16 @@ public class InspecAssignTaskDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
+    }
+
+    private void setMapTaskId(BaseProcessClass bpc, List<TaskDto> commPools) {
+        Map<String, String> appNoTaskIdMap = new HashMap<>();
+        if(commPools != null || commPools.size() > 0){
+            for(TaskDto td:commPools){
+                appNoTaskIdMap.put(td.getRefNo(), td.getId());
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request, "appNoTaskIdMap", (Serializable) appNoTaskIdMap);
     }
 
     /**

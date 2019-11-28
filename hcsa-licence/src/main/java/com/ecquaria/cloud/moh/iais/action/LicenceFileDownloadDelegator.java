@@ -1,19 +1,18 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.List;
 
 /**
  * @author Wenkang
@@ -44,7 +43,7 @@ public class LicenceFileDownloadDelegator {
             for(ApplicationDto applicationDto:applicationDtos){
                 applicationDto.setAuditTrailDto(intranet);
             }
-            taskService.routingAdminScranTask(applicationDtos);
+            taskService.routingTaskOneUserForSubmisison(applicationDtos,HcsaConsts.ROUTING_STAGE_ASO);
         }
 
     }
