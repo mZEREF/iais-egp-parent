@@ -41,14 +41,12 @@ public interface ApplicationClient  {
 
     @RequestMapping(path = "/iais-submission/draft",method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSubmissionDto>  saveDraft(@RequestParam("draftNumber") String draftNumber);
-
     FeignResponseEntity<AppSubmissionDto>  saveDraft(@RequestBody AppSubmissionDto appSubmissionDto );
+
     @RequestMapping(path = "/iais-submission",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto);
 
-    @RequestMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
-            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}",method = RequestMethod.GET)
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 
     @PostMapping(path = "/iais-application/self-decl/tab", consumes = MediaType.APPLICATION_JSON_VALUE)
