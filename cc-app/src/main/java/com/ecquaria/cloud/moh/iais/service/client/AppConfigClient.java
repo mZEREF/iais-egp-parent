@@ -49,7 +49,7 @@ public interface AppConfigClient {
     @RequestMapping(path = "/iais-hcsa-service/service/{code}",method = RequestMethod.GET)
     FeignResponseEntity<String>  getServiceIdByCode(@PathVariable(name = "code")String svcCode);
     @RequestMapping(path = "/iais-hcsa-service/svc-doc-config-results",method = RequestMethod.GET)
-    FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfig(String serviceId,@RequestParam(name="flag") Boolean flag);
+    FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfig(@RequestParam(name="serviceId", required=false) String serviceId,@RequestParam(name="flag") Boolean flag);
     @RequestMapping(path = "/iais-hcsa-risk/PreOrPostInspection",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PreOrPostInspectionResultDto> recommendIsPreInspection(@RequestBody RecommendInspectionDto dto);
     @RequestMapping(path = "/iais-hcsa-risk/RiskResult",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
