@@ -41,10 +41,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
-    public PostCodeDto getPremisesByPostalCode(String searchField, String filterValue) {
+    public PostCodeDto getPremisesByPostalCode(String postalCode) {
         Map<String,Object> map = new HashMap<>();
-        map.put("searchField", searchField);
-        map.put("filterValue", filterValue);
+        map.put("postalCode", postalCode);
         return RestApiUtil.getByReqParam(RestApiUrlConsts.POSTAL_CODE_INFO, map, PostCodeDto.class);
     }
 
