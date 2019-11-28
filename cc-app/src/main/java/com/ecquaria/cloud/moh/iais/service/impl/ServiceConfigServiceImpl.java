@@ -14,7 +14,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,15 +39,20 @@ import org.springframework.web.multipart.MultipartFile;
 public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Autowired
     private FileRepoClient fileRepoClient;
-
+    @Autowired
+    private AppConfigClient appConfigClient;
+    @Autowired
+    private SystemAdminClient systemAdminClient;
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
-        return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_SERVICE_BY_IDS, ids,HcsaServiceDto.class);
+
+        return   appConfigClient.getHcsaService(ids).getEntity();
     }
 
     @Override
     public Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds) {
-        return RestApiUtil.postGetObject(RestApiUrlConsts.GET_PREMISES_TYPE_BY_ID, svcIds, Set.class);
+
+        return   appConfigClient.getAppGrpPremisesTypeBySvcId(svcIds).getEntity();
     }
 
     @Override
@@ -53,14 +60,16 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         Map<String,Object> map = new HashMap<>();
         map.put("searchField", searchField);
         map.put("filterValue", filterValue);
-        return RestApiUtil.getByReqParam(RestApiUrlConsts.POSTAL_CODE_INFO, map, PostCodeDto.class);
+
+        return   systemAdminClient.getPostCodeByCode(searchField,filterValue).getEntity();
     }
 
     @Override
     public String getSvcIdBySvcCode(String svcCode) {
         Map<String,Object> map = new HashMap<>();
         map.put("code", svcCode);
-        return RestApiUtil.getByReqParam(RestApiUrlConsts.SERVICEID_BY_SVCCODE, map, String.class);
+
+        return   appConfigClient.getServiceIdByCode(svcCode).getEntity();
     }
 
     @Override
@@ -98,13 +107,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         Map<String,Object> common = new HashMap<>();
         //common.put("serviceId", "");==>serviceId null
         common.put("flag", false);//==>false =0
-        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDtos = RestApiUtil.getListByReqParam(RestApiUrlConsts.HCSASVCDOCURL, common, HcsaSvcDocConfigDto.class);
+
+        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDtos =  appConfigClient.getHcsaSvcDocConfig(serviceId,false).getEntity();
 
         //premises doc
         Map<String,Object> premises = new HashMap<>();
         //premises.put("serviceId", "");==>serviceId null
         premises.put("flag", true);//==>true =1
-        List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigDtos = RestApiUtil.getListByReqParam(RestApiUrlConsts.HCSASVCDOCURL, premises, HcsaSvcDocConfigDto.class);
+        List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigDtos = appConfigClient.getHcsaSvcDocConfig(serviceId,true).getEntity();
+
         Map<String,List<HcsaSvcDocConfigDto>> map = new HashMap<>();
         map.put("common", commonHcsaSvcDocConfigDtos);
         return map;
@@ -114,7 +125,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId) {
         Map<String,Object> map = new HashMap<>();
         map.put("svcId", serviceId);
-        return RestApiUtil.getListByReqParam(RestApiUrlConsts.SVC_CHECKLIST_URL, map, HcsaSvcSubtypeOrSubsumedDto.class);
+
+        return appConfigClient.listSubCorrelation(serviceId).getEntity();
     }
 
 
@@ -123,7 +135,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         Map<String,Object> map = new HashMap<>();
         map.put("serviceId", serviceId);
         map.put("psnType", psnType);
-        return RestApiUtil.getListByReqParam(RestApiUrlConsts.SVC_CGO_URL,map, HcsaSvcPersonnelDto.class);
+
+        return  appConfigClient.getServiceType(serviceId,psnType).getEntity();
     }
 
     @Override

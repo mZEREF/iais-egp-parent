@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -30,72 +32,81 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private static  final  String BACKUPS="D:/backups/";
     private static  final  String FILE_FORMAT=".text";
     private static  final  String COMPRESS_PATH="D:/compress";
+    private static final String FILE_NAME="system-admin:8886/file-existence";
     @Override
-    public void compress(){
+                public void compress(){
         if(new File(BACKUPS).isDirectory()){
             File[] files = new File(BACKUPS).listFiles();
             for(File fil:files){
                 if(fil.getName().endsWith(".zip")){
-                    ZipFile zipFile=null;
-                    CheckedInputStream cos=null;
-                    BufferedInputStream bis=null;
-                    BufferedOutputStream bos=null;
-                    OutputStream os=null;
-                    try {
-                        zipFile =new ZipFile(fil.getPath());
-
-                        for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
-                            ZipEntry zipEntry = entries.nextElement();
-
-                            zipFile(zipEntry,os,bos,zipFile,bis,cos);
-
-                        }
-                        if(fil.exists()){
+                    String name = fil.getName();
+                    String path = fil.getPath();
+                    HashMap<String,String> map=new HashMap<>();
+                    map.put("fileName",name);
+                    map.put("filePath",path);
+                    Boolean aBoolean = RestApiUtil.save(FILE_NAME, map, Boolean.class);
+                    if(aBoolean){
+                        ZipFile zipFile=null;
+                        CheckedInputStream cos=null;
+                        BufferedInputStream bis=null;
+                        BufferedOutputStream bos=null;
+                        OutputStream os=null;
+                        try {
+                            zipFile =new ZipFile(path);
+                            for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
+                                ZipEntry zipEntry = entries.nextElement();
+                                zipFile(zipEntry,os,bos,zipFile,bis,cos);
+                            }
+                            cos.close();
+                            bis.close();
+                            bos.close();
+                            os.close();
+                            zipFile.close();
                             fil.delete();
+                        } catch (IOException e) {
+                            log.error(e.getMessage(),e);
                         }
+                        finally {
+                            if(cos!=null){
+                                try {
+                                    cos.close();
+                                } catch (IOException e) {
+                                    log.error(e.getMessage());
+                                }
+                            }
 
-                    } catch (IOException e) {
-                        log.error(e.getMessage());
-                    }
-                    finally {
-                        if(cos!=null){
-                            try {
-                                cos.close();
-                            } catch (IOException e) {
-                                log.error(e.getMessage());
+                            if(bis!=null){
+                                try {
+                                    bis.close();
+                                } catch (IOException e) {
+                                    log.error(e.getMessage());
+                                }
+                            }
+                            if(bos!=null){
+                                try {
+                                    bos.close();
+                                } catch (IOException e) {
+                                    log.error(e.getMessage());
+                                }
+                            }
+                            if(os!=null) {
+                                try {
+                                    os.close();
+                                } catch (IOException e) {
+                                    log.error(e.getMessage());
+                                }
+                            }
+                            if(zipFile!=null){
+                                try {
+                                    zipFile.close();
+                                } catch (IOException e) {
+                                    log.error(e.getMessage());
+                                }
                             }
                         }
+                    }
 
-                        if(bis!=null){
-                            try {
-                                bis.close();
-                            } catch (IOException e) {
-                                log.error(e.getMessage());
-                            }
-                        }
-                        if(bos!=null){
-                            try {
-                                bos.close();
-                            } catch (IOException e) {
-                                log.error(e.getMessage());
-                            }
-                        }
-                        if(os!=null) {
-                            try {
-                                os.close();
-                            } catch (IOException e) {
-                                log.error(e.getMessage());
-                            }
-                        }
-                        if(zipFile!=null){
-                             try {
-                              zipFile.close();
-                            } catch (IOException e) {
-                                 log.error(e.getMessage());
-                            }
-                      }
-                    }
-                }
+}
             }
 
         }
@@ -110,6 +121,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     @Override
+    public void delete() {
+        File file =new File(DOWNLOAD);
+        deleteFile(file);
+    }
+
+    @Override
     public Boolean  download() {
         FileInputStream fileInputStream=null;
         Boolean flag=false;
@@ -119,9 +136,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 File[] files = file.listFiles();
                 for(File  filzz:files){
                     if(filzz.isFile() &&filzz.getName().endsWith(FILE_FORMAT)){
-
                        fileInputStream =new FileInputStream(filzz);
-
                         ByteArrayOutputStream by=new ByteArrayOutputStream();
                         int count=0;
                         byte [] size=new byte[1024];
@@ -265,7 +280,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
 
-
     private void deleteFile(File file){
          if(file.isDirectory()){
              File[] files = file.listFiles();
@@ -273,14 +287,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                  deleteFile(f);
              }
          }else{
-             if(file.exists()){
+             if(file.exists()&&file.getName().endsWith(FILE_FORMAT)){
                  file.delete();
              }
          }
     }
 
-    private boolean isFileExistence(){
-
-       return false;
-    }
 }
