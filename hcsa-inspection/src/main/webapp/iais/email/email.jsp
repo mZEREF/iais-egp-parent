@@ -1,4 +1,4 @@
-<jsp:useBean id="insEmailDto" scope="request" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
+<jsp:useBean id="insEmailDto" scope="session" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
 
 <table class="control-grid columns1">
     <tbody>

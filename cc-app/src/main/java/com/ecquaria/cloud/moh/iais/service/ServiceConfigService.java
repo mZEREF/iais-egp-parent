@@ -24,7 +24,7 @@ import java.util.Set;
 public interface ServiceConfigService {
     List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids);
     Set<String> getAppGrpPremisesTypeBySvcId(List<String> svcIds);
-    PostCodeDto getPremisesByPostalCode(String searchField, String filterValue);
+    PostCodeDto getPremisesByPostalCode(String postalCode);
     String getSvcIdBySvcCode(String svcCode);
     List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId);
     List<String> saveFileToRepo(List<MultipartFile> fileList) throws IOException;

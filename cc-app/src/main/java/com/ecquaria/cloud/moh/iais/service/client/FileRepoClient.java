@@ -4,6 +4,8 @@ import com.ecquaria.cloud.moh.iais.config.FeignMultipartConfig;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,4 +25,6 @@ public interface FileRepoClient {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     FeignResponseEntity<String> saveFiles(@RequestPart("selectedFile") MultipartFile file,
                                           @RequestParam("audittrail") String auditTrailStr);
+    @GetMapping(value = "/{guid}")
+    FeignResponseEntity<byte[]> getFileFormDataBase(@PathVariable(name = "guid") String guid);
 }
