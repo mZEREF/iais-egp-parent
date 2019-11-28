@@ -23,7 +23,7 @@
                                             <p>Premises are your service operation sites that can either be at a fixed address – <strong>&#34;on-site&#34;</strong>, or in a mobile clinic or ambulance – <strong>&#34;conveyance&#34;</strong>.</p>
                                         </div>
                                     </div>
-                                    <button id="addPremBtn" type="button">Add Premises</button>
+                                    <%--<button id="addPremBtn" type="button">Add Premises</button>--%>
                                 </div>
                                 <div class="row premContent" id="mainPrem">
                                     <c:set var="appGrpPremisesDto" value="${AppSubmissionDto.appGrpPremisesDto}"></c:set>
@@ -99,7 +99,7 @@
                                                 <iais:row>
                                                     <iais:field value="Block / House No." width="12"/>
                                                     <iais:value width="5">
-                                                        <iais:input type="text" name="blkNo" id="siteBlockNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
+                                                        <iais:input  type="text" name="blkNo" id="siteBlockNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
                                                     </iais:value>
                                                     <span class="error-msg"><c:out value="${errorMap_premises.blkNo}"></c:out></span>
                                                 </iais:row>
@@ -306,13 +306,13 @@
             'filterValue':postCode
         };
         $.ajax({
-            'url':'/hcsaapplication/eservice/INTERNET/loadPremisesByCode.do',
+            'url':'https://egp.sit.inter.iais.com/hcsaapplication/retrieve-address',
             'dataType':'json',
             'data':data,
-            'type':'Get',
+            'type':'GET',
             'success':function (data) {
                 console.log("success");
-
+                console.log(data);
             },
             'error':function () {
                 console.log("failed");

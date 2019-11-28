@@ -13,11 +13,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * AppSubmisionServiceImpl
@@ -31,10 +32,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     String draftUrl =  RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION_DRAFT;
     String submission = RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION;
 
+    @Autowired
+    private ApplicationClient applicationClient;
+
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return RestApiUtil.save(submission,appSubmissionDto,AppSubmissionDto.class);
+        return applicationClient.saveSubmision(appSubmissionDto).getEntity();
     }
 
     @Override

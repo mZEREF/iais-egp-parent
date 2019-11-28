@@ -11,12 +11,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -85,8 +85,8 @@ public class HcsaApplicationDelegator {
     public void prepareData(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
-        //String  taskId = ParamUtil.getString(bpc.request,"taskId");
-        String taskId="12848A70-820B-EA11-BE7D-000C29F371DC";
+        String  taskId = ParamUtil.getString(bpc.request,"taskId");
+       // String taskId="12848A70-820B-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         //get routing stage dropdown send to page.
@@ -106,9 +106,13 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+        String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
+        applicationViewDto.setServiceType(serviceType);
+        String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
+        applicationViewDto.setCurrentStatus(status);
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStageName(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         applicationViewDto.setHcsaSvcRoutingStageDtoList(hcsaSvcRoutingStageDtoList);
-        ParamUtil.setRequestAttr(bpc.request,"applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
     }
@@ -121,14 +125,9 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","ASO");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","PSO");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","INS");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","AO1");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","AO2");
-        ParamUtil.setRequestAttr(bpc.request,"crud_action_type","AO3");
-
-
+        String nextStage = ParamUtil.getString(bpc.request,"nextStage");
+        log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
+        ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
     }
 
@@ -248,7 +247,7 @@ public class HcsaApplicationDelegator {
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId());
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
@@ -266,6 +265,7 @@ public class HcsaApplicationDelegator {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setSlaDateCompleted(new Date());
         taskDto.setSlaRemainInDays(remainDays(taskDto));
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return taskService.updateTask(taskDto);
     }
     private ApplicationDto updateApplicaiton(ApplicationDto applicationDto,String appStatus){

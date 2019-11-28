@@ -70,7 +70,7 @@
                                         </tr>
                                         <tr>
                                             <td align="right">Current Status</td>
-                                            <td>${applicationViewDto.applicationDto.status}</td>
+                                            <td>${applicationViewDto.currentStatus}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -479,7 +479,7 @@
                                             <table class="table">
                                                 <tr>
                                                     <td class="col-xs-4"><p>Current Status:</p></td>
-                                                    <td class="col-xs-8"><p>${applicationViewDto.applicationDto.status}</p></td>
+                                                    <td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p></td>
                                                 </tr>
                                                 <tr>
                                                     <td><p>Internal Remarks:</p></td>
@@ -496,9 +496,9 @@
                                                         <p>Processing Decision:</p>
                                                     </td>
                                                     <td>
-                                                        <select>
+                                                        <select name="nextStage" >
                                                             <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
-                                                                <option name="nextStage" value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
+                                                                <option  value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
                                                           </c:forEach>
                                                          </select>
                                                     </td>

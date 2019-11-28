@@ -40,8 +40,9 @@
   <input type="hidden" name="crud_action_additional" value="">
   <input type="hidden" name="tabIndex" value="">
 
+
 <c:choose>
-  <c:when test="${empty tabResultAttr.rows}">
+  <c:when test="${empty selfDeclQueryAttr}">
     <tr>
       <td colspan="6">
         No Record!!
@@ -54,27 +55,27 @@
         <div class="col-xs-12">
           <div class="dashboard-gp">
 
-            <c:forEach var="item" items="${tabResultAttr.rows}"  varStatus="status">
-              <c:choose>
-                <c:when test="${item.common == true}">
-                  <div class="dashboard-tile-item">
-                    <div class="dashboard-tile" id="myBody">
-                      <a data-tab="#tabInbox" href="javascript:switchNextStep('${item.configId}');">
-                        <p class="dashboard-txt">General Regulation</p>
-                      </a>
-                    </div>
-                  </div>
-                </c:when>
-                <c:otherwise>
-                  <div class="dashboard-tile-item">
-                    <div class="dashboard-tile">
-                      <a data-tab="#tabInbox" href="javascript:switchNextStep('${item.configId}');">
-                        <p class="dashboard-txt">${item.svcName}</p>
-                      </a>
-                    </div>
-                  </div>
-                </c:otherwise>
-              </c:choose>
+            <c:forEach var="declItem" items="${selfDeclQueryAttr}"  varStatus="status">
+                  <c:choose>
+                    <c:when test="${declItem.common eq true}">
+                      <div class="dashboard-tile-item">
+                        <div class="dashboard-tile" id="myBody">
+                          <a data-tab="#tabInbox" href="javascript:switchNextStep('');">
+                            <p class="dashboard-txt">General Regulation</p>
+                          </a>
+                        </div>
+                      </div>
+                    </c:when>
+                    <c:otherwise>
+                      <div class="dashboard-tile-item">
+                        <div class="dashboard-tile">
+                          <a data-tab="#tabInbox" href="javascript:switchNextStep('${declItem.svcId}');">
+                            <p class="dashboard-txt">${declItem.svcName}</p>
+                          </a>
+                        </div>
+                      </div>
+                    </c:otherwise>
+                  </c:choose>
 
 
             </c:forEach>

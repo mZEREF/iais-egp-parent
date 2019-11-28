@@ -79,11 +79,12 @@ public class TaskServiceImpl implements TaskService {
         hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
             String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
-            TaskDto taskScoreDto = getUserIdForWorkGroup(workGroupId);
+            TaskDto taskScoreDto =new TaskDto();
             Date assignDate = new Date();
             if(SystemParameterConstants.COMMON_POOL.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
-                taskScoreDto.setUserId(null);
                 assignDate = null;
+            }else{
+                taskScoreDto = getUserIdForWorkGroup(workGroupId);
             }
             List<TaskDto> taskDtos = new ArrayList<>();
             int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
