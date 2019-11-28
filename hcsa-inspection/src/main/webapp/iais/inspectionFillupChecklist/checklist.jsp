@@ -43,7 +43,7 @@
                       <c:otherwise>
                         <c:forEach var = "item" items = "${checklistItemResult.rows}" varStatus="status">
                           <tr>
-                            <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
+                            <td class="row_no">${(status.index + 1) }</td>
 
                             <td>${item.regulationClauseNo}</td>
                             <td>${item.checklistItem}</td>
@@ -54,8 +54,6 @@
                           </tr>
                         </c:forEach>
                       </c:otherwise>
-
-
                     </c:choose>
                     </tbody>
                   </table>
@@ -63,13 +61,6 @@
                     <div class="row">
                       <div class="col-xs-6 col-md-8 text-right">
                         <div class="nav">
-                          <ul class="pagination">
-                            <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-chevron-left"></i></span></a></li>
-                            <li class="active"><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right"></i></span></a></li>
-                          </ul>
                           <br><br><br>
                           <div class="text-right text-center-mobile">
                             <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
