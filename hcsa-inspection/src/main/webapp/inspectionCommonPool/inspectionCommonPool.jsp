@@ -1,15 +1,16 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<webui:setLayout name="iais-internet"/>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<webui:setLayout name="iais-intranet"/>
+
 <%
-  String webroot=IaisEGPConstant.FE_CSS_ROOT;
+  String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 
@@ -134,31 +135,26 @@
 </div>
 <script type="text/javascript">
 
-    /*function doAssign(applicationNo){
-        SOP.Crud.cfxSubmit("mainPoolForm","inspectionPoolType","assign",applicationNo);
-    }*/
     function doAssign(applicationNo) {
         submit('assign');
         $("#applicationNo").val(applicationNo);
     }
 
+    function doClear() {
+        $('input[name="application_no"]').val("");
+        $("#application_type option:first").prop("selected", 'selected');
+        $("#application_status option:first").prop("selected", 'selected');
+        $('input[name="hci_code"]').val("");
+        $('input[name="hci_name"]').val("");
+        $('input[name="service_name"]').val("");
+        $('input[name="sub_date"]').val("");
+    }
     function submit(action){
         $("[name='inspectionPoolType']").val(action);
         var mainPoolForm = document.getElementById('mainPoolForm');
         mainPoolForm.submit();
     }
-
     function doSearch() {
         submit('search');
-    }
-
-    function doClear() {
-        $('input[name="application_no"]').val("");
-        $('input[name="application_type"]').val("");
-        $('input[name="application_status"]').val("");
-        $('input[name="hci_code"]').val("");
-        $('input[name="hci_name"]').val("");
-        $('input[name="service_name"]').val("");
-        $('input[name="sub_date"]').val("");
     }
 </script>
