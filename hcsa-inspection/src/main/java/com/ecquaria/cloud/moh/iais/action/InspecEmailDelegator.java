@@ -42,7 +42,6 @@ public class InspecEmailDelegator {
     }
     public void emailSubmitStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String applicantName = ParamUtil.getString(bpc.request, "applicantName");
         String addressee= ParamUtil.getString(bpc.request, "addressee");
         String applicationNumber= ParamUtil.getString(bpc.request, "applicationNumber");
@@ -55,11 +54,11 @@ public class InspecEmailDelegator {
         String remarks= ParamUtil.getString(bpc.request, "remarks");
 
 
-        if (applicantName.isEmpty()){
-            Map<String,String> errorMap = new HashMap<>();
-            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
-        }
+//        if (applicantName.isEmpty()){
+//            Map<String,String> errorMap = new HashMap<>();
+//            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
+//            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
+//        }
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,"insEmailDto");
         inspectionEmailTemplateDto.setApplicantName(applicantName);
@@ -74,15 +73,18 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setApplicantName(remarks);
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
 
-        //ValidationResult validationResult= WebValidationHelper.validateProperty(inspectionEmailTemplateDto, "submit");
 
-
+        String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.debug("*******************crudAction-->:" + crudAction);
     }
 
     public void previewEmail(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!"preview".equals(currentAction)){
+            return;
+        }
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         String context=inspEmailService.previewEmailTemplate(inspectionEmailTemplateDto);
         ParamUtil.setRequestAttr(request,"context", context);
@@ -92,6 +94,11 @@ public class InspecEmailDelegator {
     public void validationEmail(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!"validation".equals(currentAction)){
+            return;
+        }
+
         String flag="true";
         ParamUtil.setRequestAttr(request,"flag", flag);
     }
@@ -99,6 +106,10 @@ public class InspecEmailDelegator {
 
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!"send".equals(currentAction)){
+            return;
+        }
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
         inspectionEmailTemplateDto.setId(id);
