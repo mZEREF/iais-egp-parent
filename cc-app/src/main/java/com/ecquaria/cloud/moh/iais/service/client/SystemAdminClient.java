@@ -1,13 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +24,4 @@ public interface SystemAdminClient  {
     @RequestMapping(path = "/api/postcodes" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "searchField") String fieldName,
                                                        @RequestParam(value = "filterValue") String filterValue);
-
-    @RequestMapping(path = "/file-name",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> saveFile(@RequestBody ProcessFileTrackDto processFileTrackDto);
 }
