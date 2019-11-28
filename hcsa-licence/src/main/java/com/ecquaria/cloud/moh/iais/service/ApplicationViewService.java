@@ -5,15 +5,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-
 import java.util.List;
 
 public interface ApplicationViewService {
 
     ApplicationViewDto searchByAppNo(String appNo);
 
-    boolean isAllApplicationSubmit(String appNo);
 
     ApplicationDto getApplicaitonByAppNo(String appNo);
 

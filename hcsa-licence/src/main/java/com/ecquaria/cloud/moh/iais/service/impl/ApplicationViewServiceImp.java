@@ -7,16 +7,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ApplicationViewServiceImp implements ApplicationViewService {
@@ -32,20 +30,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     }
 
-    @Override
-    public boolean isAllApplicationSubmit(String appNo) {
-        boolean result = false;
-        ApplicationDto applicationDto = getApplicaitonByAppNo(appNo);
 
-        if(applicationDto != null){
-            String appGroupId = applicationDto.getAppGrpId();
-            //todo:judge  the All Applicaitons Submit
-        }else{
-            log.error(StringUtil.changeForLog("The applicationDto is null"));
-        }
-
-        return result;
-    }
 
     @Override
     public ApplicationDto getApplicaitonByAppNo(String appNo) {
