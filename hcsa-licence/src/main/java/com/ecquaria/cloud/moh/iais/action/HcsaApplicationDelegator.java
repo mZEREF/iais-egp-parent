@@ -214,6 +214,62 @@ public class HcsaApplicationDelegator {
         //}
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
+
+
+    /**
+     * StartStep: approve
+     *
+     * @param bpc
+     * @throws
+     */
+    public void approve(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do approve start ...."));
+
+        log.debug(StringUtil.changeForLog("the do approve end ...."));
+    }
+
+    /**
+     * StartStep: routeToDMS
+     *
+     * @param bpc
+     * @throws
+     */
+    public void routeToDMS(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
+
+        log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
+    }
+
+    /**
+     * StartStep: routeBack
+     *
+     * @param bpc
+     * @throws
+     */
+    public void routeBack(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do routeBack start ...."));
+
+        log.debug(StringUtil.changeForLog("the do routeBack end ...."));
+    }
+
+    /**
+     * StartStep: internalEnquiry
+     *
+     * @param bpc
+     * @throws
+     */
+    public void internalEnquiry(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do internalEnquiry start ...."));
+
+        log.debug(StringUtil.changeForLog("the do internalEnquiry end ...."));
+    }
+
+
+
+
+
+
+
     //***************************************
     //private methods
     //**************************************
