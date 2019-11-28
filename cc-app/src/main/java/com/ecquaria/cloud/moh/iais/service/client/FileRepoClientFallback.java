@@ -17,4 +17,10 @@ public class FileRepoClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+    public FeignResponseEntity<byte[]> getFileFormDataBase(String guid) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
