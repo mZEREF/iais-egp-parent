@@ -9,7 +9,7 @@ import java.util.List;
  * @date 2019/11/9 16:08
  */
 public interface LicenceFileDownloadService {
-
+    void delete();
     Boolean  download();
     void compress();
     List<ApplicationDto> listApplication();

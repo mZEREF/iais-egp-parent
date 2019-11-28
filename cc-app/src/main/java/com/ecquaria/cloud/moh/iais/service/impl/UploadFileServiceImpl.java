@@ -1,7 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,6 +23,7 @@ import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,13 +33,14 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class UploadFileServiceImpl implements UploadFileService {
-    private static final String URL_SAVE_FILE_NAME="application:8883/file-name";
-    private static final String URL_APP="iais-application:8883/iais-application/all-file";
-    private static final  String URL_STATUS="iais-application:8883/iais-application/status";
     private static  final String DOWNLOAD="D:/folder";
     private static  final  String FILE_NAME="folder";
     private static  final  String FILE_FORMAT=".text";
     private static  final String BACKUPS="D:/backups";
+    @Autowired
+    private SystemAdminClient systemAdminClient;
+    @Autowired
+    private ApplicationClient applicationClient;
     @Override
     public Boolean saveFile(String  str) {
         FileOutputStream fileOutputStream = null;
@@ -75,12 +83,13 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public String getData() {
 
-        return  RestApiUtil.getByPathParam(URL_APP,"",String.class);
+        return    applicationClient.fileAll().getEntity();
     }
 
     @Override
     public String  changeStatus() {
-        RestApiUtil.update(URL_STATUS,  Boolean.class);
+
+        applicationClient.updateStatus().getEntity();
 
         return "";
     }
@@ -207,7 +216,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
                    file.renameTo(new File(BACKUPS+File.separator+s+".zip"));
-                 /*  saveFileName(file.getName());*/
+                   saveFileName(file.getName(),file.getPath());
                } catch (IOException e) {
                    log.error(e.getMessage(),e);
                }
@@ -232,9 +241,13 @@ public class UploadFileServiceImpl implements UploadFileService {
         }
     }
 
-
-    private void  saveFileName(String fileName){
-        RestApiUtil.save(URL_SAVE_FILE_NAME,fileName);
+    private void saveFileName(String fileName ,String filePath){
+        ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
+        processFileTrackDto.setFileName(fileName);
+        processFileTrackDto.setFilePath(filePath);
+        processFileTrackDto.setStatus(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
+        processFileTrackDto.setAuditTrailDto(intenet);
+        systemAdminClient.saveFile(processFileTrackDto).getEntity();
     }
-
 }

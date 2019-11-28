@@ -35,6 +35,7 @@ public class LicenceFileDownloadDelegator {
 
     public  void prepareData(BaseProcessClass bpc) throws FeignException {
          logAbout("preparetionData");
+        licenceFileDownloadService.delete();
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         licenceFileDownloadService.compress();
         Boolean download = licenceFileDownloadService.download();
