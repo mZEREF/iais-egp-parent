@@ -75,13 +75,13 @@
           <div class="instruction-content center-content" id="instruction">
             <div class="sort section" id="sortSection">
               <c:forEach var = "chklsec" items = "${configSessionAttr.sectionDtos}" varStatus="status">
-                <div class="gray-content-box sectionClass son" data-id="${status.index}">
-                  <input type="hidden" name="${chklsec.section}" data-name="want" value="${status.index}">
+                <div class="gray-content-box sectionClass sectionSon" data-id="${status.index}">
+                  <input type="hidden" name="${chklsec.section}" data-name="sectionWant" value="${status.index}">
                   <div class="panel panel-default">
                     <div class="panel-heading"  role="tab">
                       <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">${chklsec.section}</a>
-                        <p class="text-right"><a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'UP')"><i class=""></i>UP</a></p>
-                        <p class="text-right"><a class="btnDown" data-id="${status.index}"  onclick="javascript:swapPosition(${status.index},'DOWN')"><i class=""></i>DOWN</a></p>
+                        <p class="text-right"><a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'UP', 'sectionSon')"><i class=""></i>UP</a></p>
+                        <p class="text-right"><a class="btnDown" data-id="${status.index}"  onclick="javascript:swapPosition(${status.index},'DOWN', 'sectionSon')"><i class=""></i>DOWN</a></p>
                       </h4>
 
                     </div>
@@ -91,9 +91,8 @@
 
 
                         <div class="panel-main-content">
-
                           <div class="table-gp">
-                            <table class="table">
+
                               <thead>
                               <tr>
                                 <th>Regulation Clause Number</th>
@@ -102,30 +101,48 @@
                                 <th>Service</th>
                                 <th>Risk Level</th>
                                 <th>Status</th>
+                                <th>Sort</th>
                               </tr>
                               </thead>
-                              <tbody>
-                              <c:forEach var = "chklitem" items = "${chklsec.checklistItemDtos}" varStatus="status">
-                                <tr>
-                                  <td>
-                                    <p>${chklitem.regulationClauseNo}</p>
-                                  </td>
-                                  <td>
-                                    <p>${chklitem.regulationClause}</p>
-                                  </td>
-                                  <td>
-                                    <p>${chklitem.checklistItem}</p>
-                                  </td>
-                                  <td>
-                                    <p>${chklitem.riskLevel}</p>
-                                  </td>
-                                  <td>
-                                    <p>${chklitem.status}</p>
-                                  </td>
-                                </tr>
-                              </c:forEach>
-                              </tbody>
-                            </table>
+
+                                <c:forEach var = "chklitem" items = "${chklsec.checklistItemDtos}" varStatus="status">
+
+                                  <div class="gray-content-box itemClass" data-id="${status.index}">
+                                    <table class="table"  >
+                                    <input type="hidden" name="${chklitem.itemId}" data-name="itemWant" value="${status.index}">
+                                        <tr>
+                                          <td>
+                                            <p>${chklitem.regulationClauseNo}</p>
+                                          </td>
+
+                                          <td>
+                                            <p>${chklitem.regulationClause}</p>
+                                          </td>
+
+                                          <td>
+                                            <p>${chklitem.checklistItem}</p>
+                                          </td>
+
+                                          <td>
+                                            <p>${chklitem.riskLevel}</p>
+                                          </td>
+
+                                          <td>
+                                            <p>${chklitem.status}</p>
+                                          </td>
+
+                                          <td>
+                                            <p>
+                                              <a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'UP', 'itemClass')"><i class=""> </i>UP</a>
+                                              <a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'DOWN', 'itemClass')"><i class=""></i>DOWN</a>
+                                            </p>
+                                          </td>
+                                        </tr>
+                                        </table>
+                                      </div>
+
+                                     </c:forEach>
+
                           </div>
                         </div>
 
@@ -169,8 +186,8 @@
         SOP.Crud.cfxSubmit("mainForm","preViewConfig");
     }
 
-    function swapPosition(ind, status){
-        var dom1 = document.querySelector(".son[data-id='"+ ind +"']")
+    function swapPosition(ind, status, clzName){
+        var dom1 = document.querySelector("." + clzName + "[data-id='"+ ind +"']")
 
         var dom2 = status == "UP" ? dom1.previousElementSibling : dom1.nextElementSibling
 
@@ -180,20 +197,28 @@
 
             dom1.parentNode.replaceChild(b,dom1)
             dom2.parentNode.replaceChild(a,dom2)
-
-            console.log(document.querySelectorAll("input[data-name='want']"))
+/*
+            console.log(document.querySelectorAll("input[data-name='want']"))*/
         }
     }
 
     function saveSortValue(){
-        var a = document.querySelectorAll("input[data-name='want']")
+        var secIndex = document.querySelectorAll("input[data-name='sectionWant']")
+        var itemIndex = document.querySelectorAll("input[data-name='itemWant']")
+        if (secIndex){
+            for(var i = 0,j = secIndex.length;i<j;i++){
+                secIndex[i].value = i
+                console.log(secIndex[i].value);
+            }
+        }
 
-        for(var i = 0,j = a.length;i<j;i++){
-            a[i].value = i
-            console.log(a[i].value);
+        if (itemIndex){
+            for(var i = 0,j = itemIndex.length;i<j;i++){
+                itemIndex[i].value = i
+                console.log(itemIndex[i].value);
+            }
         }
     }
-
 
     function routeToItemProcess(id) {
         var inputs = $('#mainForm').find("input");

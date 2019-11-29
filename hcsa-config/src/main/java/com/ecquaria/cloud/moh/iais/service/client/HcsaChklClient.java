@@ -26,7 +26,7 @@ import java.util.List;
 public interface HcsaChklClient {
 
     @DeleteMapping(path = "/iais-hcsa-checklist/config/{id}")
-    FeignResponseEntity<Void> deleteRecord(String confId);
+    FeignResponseEntity<String> deleteRecord(String confId);
 
     @PostMapping(path = "/iais-hcsa-checklist/config/results", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult> listChecklistConfig(SearchParam searchParam);
@@ -41,16 +41,16 @@ public interface HcsaChklClient {
     FeignResponseEntity<ChecklistItemDto> getChklItemById(String id);
 
     @PostMapping(path = "/iais-hcsa-checklist/item", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> saveChklItem(ChecklistItemDto itemDto);
+    FeignResponseEntity<String> saveChklItem(ChecklistItemDto itemDto);
 
     @GetMapping(path = "/iais-hcsa-checklist/regulation/regulation-clauses-distinct")
     FeignResponseEntity<List<String>> listRegulationClauseNo();
 
     @PostMapping(path = "/iais-hcsa-checklist/item/items-clone", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);
+    FeignResponseEntity<String> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);
 
     @PostMapping(path = "/iais-hcsa-checklist/config", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> submitConfig(ChecklistConfigDto checklistConfigDto);
+    FeignResponseEntity<String> submitConfig(ChecklistConfigDto checklistConfigDto);
 
     @GetMapping(path = "/iais-hcsa-service/subtype-name-results")
     FeignResponseEntity<List<String>> listSubTypeName();

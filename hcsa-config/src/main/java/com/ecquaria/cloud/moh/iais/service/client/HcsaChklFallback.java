@@ -18,7 +18,7 @@ import java.util.List;
 
 public class HcsaChklFallback {
 
-    public FeignResponseEntity<Void> deleteRecord(String confId){
+    public FeignResponseEntity<String> deleteRecord(String confId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -54,7 +54,7 @@ public class HcsaChklFallback {
         return entity;
     }
 
-    public FeignResponseEntity<Void> saveChklItem(ChecklistItemDto itemDto){
+    public FeignResponseEntity<String> saveChklItem(ChecklistItemDto itemDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -68,7 +68,7 @@ public class HcsaChklFallback {
         return entity;
     }
 
-    public FeignResponseEntity<Void> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos){
+    public FeignResponseEntity<String> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
