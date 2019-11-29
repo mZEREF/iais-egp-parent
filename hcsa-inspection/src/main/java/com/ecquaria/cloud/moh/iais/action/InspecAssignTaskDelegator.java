@@ -185,7 +185,11 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorConfirm start ...."));
-
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
+        List<String> nameList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
+        ParamUtil.setSessionAttr(bpc.request,"nameList", (Serializable) nameList);
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**

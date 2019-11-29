@@ -115,6 +115,24 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return appStatusOption;
     }
 
+    @Override
+    public List<String> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
+        List<String> nameList = new ArrayList<>();
+        for(int i = 0; i < nameValue.length; i++){
+            for(SelectOption so:inspecTaskCreAndAssDto.getInspectorName()){
+                getInNameBySelectOption(nameList, nameValue[i], so);
+            }
+        }
+        return nameList;
+    }
+
+    private List<String> getInNameBySelectOption(List<String> nameList, String s, SelectOption so) {
+        if(s.equals(so.getValue())){
+            nameList.add(so.getText());
+        }
+        return nameList;
+    }
+
     /**
       * @author: shicheng
       * @Date 2019/11/22
