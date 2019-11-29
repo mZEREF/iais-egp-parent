@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @date 2019/11/27 17:11
  */
 @FeignClient(name = "system-admin", configuration = FeignConfiguration.class,
-        fallback =SystemAdminClientFallback.class)
+        fallback = SystemAdminClientFallback.class)
 public interface SystemAdminClient  {
     @RequestMapping(path = "/draft-number/{type}",method = RequestMethod.GET)
     FeignResponseEntity<String> draftNumber(@PathVariable(name = "type")  String applicationType);
+
     @RequestMapping(path = "/application-number/{type}")
     FeignResponseEntity<String> applicationNumber(@PathVariable(name = "type") String applicationType);
+
     @RequestMapping(path = "/api/postcodes" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "searchField") String fieldName,
                                                        @RequestParam(value = "filterValue") String filterValue);
