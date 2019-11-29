@@ -77,9 +77,9 @@
               <div class="form-group">
                 <div class="col-xs-12">
                   <td>
-                    <label>
+                    <%--<label>
                       Common  &nbsp; <input class="form-check-input" id="commmon" type="radio" name="common" aria-invalid="false" value="General Regulation"> ${configSessionAttr.common}
-                    </label>
+                    </label>--%>
                   </td>
                 </div>
               </div>

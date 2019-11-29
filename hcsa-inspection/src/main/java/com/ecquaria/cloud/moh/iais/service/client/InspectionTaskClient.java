@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author Shicheng
  * @date 2019/11/26 10:33
  **/
-@FeignClient(name = "application", configuration = FeignConfiguration.class,
+@FeignClient(name = "IAIS-APPLICATION", configuration = FeignConfiguration.class,
         fallback = InspectionTaskClientFallback.class)
 public interface InspectionTaskClient {
     @RequestMapping(path = "/iais-inspection/one-of-inspection/{applicationNo}",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },

@@ -6,17 +6,16 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  *description:
  */
 
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,57 +24,65 @@ import java.util.List;
 @Slf4j
 public class HcsaChklServiceImpl implements HcsaChklService {
 
+    @Autowired
+    private HcsaChklClient chklClient;
+
+    @Override
+    public void deleteRecord(String configId) {
+        chklClient.deleteRecord(configId).getEntity();
+    }
+
     @Override
     public SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam) {
-        return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.CHECKLIST_ITEM_RESULTS, searchParam);
+        return chklClient.listChklItem(searchParam).getEntity();
     }
 
     @Override
     public SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam) {
-        return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.CHECKLIST_CONFIG_RESULTS, searchParam);
+        return chklClient.listChecklistConfig(searchParam).getEntity();
     }
 
 
     @Override
     public List<ChecklistItemDto> listChklItemByItemId(List<String> itemIds) {
-        return  RestApiUtil.postGetList(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.CHECKLIST_ITEM_BY_IDS, itemIds, ChecklistItemDto.class);
+        return  chklClient.listChklItemByItemId(itemIds).getEntity();
     }
 
     @Override
     public ChecklistItemDto getChklItemById(String id) {
-        return IaisEGPHelper.getRecordByPrimaryKey(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_ITEM_SLD_URL, id, ChecklistItemDto.class);
+        return chklClient.getChklItemById(id).getEntity();
     }
 
 
     @Override
     public void saveChklItem(ChecklistItemDto itemDto) {
-        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_ITEM_SLD_URL, itemDto);
+        chklClient.saveChklItem(itemDto).getEntity();
     }
 
     @Override
 
     public List<String> listRegulationClauseNo() {
-        return RestApiUtil.getList(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.DISTINCT_REGULATION_CLAUSES, String.class);
+        return chklClient.listRegulationClauseNo().getEntity();
     }
 
 
     @Override
     public void submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
-        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.CHECKLIST_ITEM_CLONE, hcsaChklItemDtos);
+        chklClient.submitCloneItem(hcsaChklItemDtos).getEntity();
     }
 
     @Override
     public void submitConfig(ChecklistConfigDto checklistConfigDto) {
-        RestApiUtil.save(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_CONFIG_SLD_URL, checklistConfigDto);
+        chklClient.submitConfig(checklistConfigDto).getEntity();
     }
 
     @Override
     public List<String> listSubTypeName() {
-        return RestApiUtil.getList(RestApiUrlConsts.GET_HCSA_SUBTYPE_NAME_RESULTS, String.class);
+        return chklClient.listSubTypeName().getEntity();
     }
 
     @Override
     public List<String> listServiceName() {
-        return RestApiUtil.getList(RestApiUrlConsts.GET_HCSA_SVC_NAME_RESULTS, String.class);
+        return chklClient.listServiceName().getEntity();
     }
 }

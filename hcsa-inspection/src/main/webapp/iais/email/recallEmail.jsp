@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
     /*
       You can customize this default file:
@@ -33,10 +34,5 @@
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
 <form method="post" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-        <div class="container">
-            <a href="">recall</a>
-        </div>
-    </div>
+<input type="submit" class="search btn" value="recall">
 </form>

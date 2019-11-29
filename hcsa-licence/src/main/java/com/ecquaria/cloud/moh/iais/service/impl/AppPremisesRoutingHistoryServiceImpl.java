@@ -28,4 +28,10 @@ public class AppPremisesRoutingHistoryServiceImpl implements AppPremisesRoutingH
 //        return response.getEntity();
         return RestApiUtil.postGetObject(RestApiUrlConsts.IAIS_APPLICATION_HISTORY,appPremisesRoutingHistoryDto,AppPremisesRoutingHistoryDto.class);
     }
+
+//    @Override
+//    public List<AppPremisesRoutingHistoryDto> createHistorys(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList) {
+//        return RestApiUtil.save(RestApiUrlConsts.APPLICATION_HISTORYS,appPremisesRoutingHistoryDtoList,List.class);
+//    }
+
 }

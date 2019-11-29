@@ -1,4 +1,4 @@
-<jsp:useBean id="insEmailDto" scope="request" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
+<jsp:useBean id="insEmailDto" scope="session" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
 
 <table class="control-grid columns1">
     <tbody>
@@ -194,6 +194,22 @@
                     </div>
                     <div class="col-sm-5">
                         <p><input name="remarks"  id="Remarks"  type="text" value="Remarks indicated by inspector in the checklist" size="60"></p>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr height="1" id="Best-Practices">
+        <td class="first last" style="width: 100%;">
+            <div id="control--runtime--16" class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                    <div class="col-sm-4 control-label formtext ">
+                        <label id="control--runtime--16--label" class="control-label control-set-font control-font-label">
+                            BestPractices
+                        </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <p><input name="BestPractices"  id="BestPractices"  type="text" value="Best practices recommended by inspector" size="60"></p>
                     </div>
                 </div>
             </div>

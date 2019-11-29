@@ -3,8 +3,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.RestBridgeHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
@@ -24,6 +24,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,6 +39,14 @@ public class UploadFileServiceImpl implements UploadFileService {
     private static  final  String FILE_NAME="folder";
     private static  final  String FILE_FORMAT=".text";
     private static  final String BACKUPS="D:/backups";
+
+    @Value("${iais.syncFileTracking.url}")
+    private String syncFileTrackUrl;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+
     @Autowired
     private SystemAdminClient systemAdminClient;
     @Autowired
@@ -248,6 +258,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setStatus(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
-        systemAdminClient.saveFile(processFileTrackDto).getEntity();
+        RestBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
+                String.class, HttpMethod.POST);
     }
 }

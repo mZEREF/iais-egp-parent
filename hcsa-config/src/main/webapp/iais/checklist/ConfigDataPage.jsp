@@ -181,6 +181,10 @@
     SOP.Crud.cfxSubmit("mainForm", "doSearch");
   }
 
+  function prepareEditConfig(id){
+    SOP.Crud.cfxSubmit("mainForm", "doSearch", id);
+  }
+
   function prepareAddConfig(){
     SOP.Crud.cfxSubmit("mainForm", "prepareAddConfig");
   }

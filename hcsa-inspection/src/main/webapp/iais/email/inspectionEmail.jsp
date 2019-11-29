@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
     /*
       You can customize this default file:
@@ -45,6 +46,5 @@
             <%@ include file="email.jsp" %>
         </div>
     </div>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 </form>
 

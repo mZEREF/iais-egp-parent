@@ -27,19 +27,58 @@
             </td>
 
             <td>
-              <c:if test="${list.answer == 'YES'}">
-                <p><input name="${list.checklistItemId}" type="radio"  checked="checked" onclick="javascript:selectAnswer('YES', '${list.checklistItemId}')"/></p>
-              </c:if>
-              <c:if test="${list.answer == null}">
-                <p><input name="${list.checklistItemId}" type="radio" onclick="javascript:selectAnswer('YES', '${list.checklistItemId}')"/></p>
-              </c:if>
+                <p><input name="${list.checklistItemId}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.checklistItemId}')"/></p>
+            </td>
 
+            <td>
+                <p><input name="${list.checklistItemId}" type="radio"  <c:if test="${list.answer == 'NO'}">checked="checked"</c:if> onclick="javascript:selectAnswer('NO', '${list.checklistItemId}')"/></p>
+            </td>
+
+            <td>
+              <p><input name="${list.checklistItemId}" type="radio"  <c:if test="${list.answer == 'NA'}">checked="checked"</c:if> onclick="javascript:selectAnswer('NA', '${list.checklistItemId}')"/></p>
             </td>
           </tr>
 
         </c:forEach>
       </c:forEach>
     </c:if>
+
+  <c:if test="${tabIndex != null && selfDesc.common == false && tabIndex eq selfDesc.svcId}">
+    <c:forEach var="answerMap" items="${selfDesc.premAnswerMap}">
+      <c:forEach items="${answerMap.value}" var="list"><br>
+        <input type="hidden" name="${list.checklistItemId}" value="<c:out value="${list.answer}"/>"/>　
+        <tr>
+          <td>
+            <p class="visible-xs visible-sm table-row-title"></p>
+            <p>1</p>
+          </td>
+
+          <td>
+            <p class="visible-xs visible-sm table-row-title"></p>
+            <p>${list.regulation}</p>
+          </td>
+
+          <td>
+            <p class="visible-xs visible-sm table-row-title"></p>
+            <p>${list.checklistItem}</p>
+          </td>
+
+          <td>
+            <p><input name="${list.checklistItemId}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.checklistItemId}')"/></p>
+          </td>
+
+          <td>
+            <p><input name="${list.checklistItemId}" type="radio"  <c:if test="${list.answer == 'NO'}">checked="checked"</c:if> onclick="javascript:selectAnswer('NO', '${list.checklistItemId}')"/></p>
+          </td>
+
+          <td>
+            <p><input name="${list.checklistItemId}" type="radio"  <c:if test="${list.answer == 'NA'}">checked="checked"</c:if> onclick="javascript:selectAnswer('NA', '${list.checklistItemId}')"/></p>
+          </td>
+        </tr>
+
+      </c:forEach>
+    </c:forEach>
+  </c:if>
 
 
 </c:forEach>

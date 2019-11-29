@@ -1,4 +1,4 @@
-FROM 192.168.7.88/library/tomcat:8.5.34-jre8-alpine
+FROM 192.168.7.88/ecq/tomcat:9.0.21-adoptopenjdk8-alpine3.10
 
 COPY target/hcsaapplication.war /usr/local/tomcat/webapps/hcsaapplication.war
 

@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -18,17 +19,18 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * HcsaApplicationDelegator
@@ -44,6 +46,12 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private ApplicationViewService applicationViewService;
+
+    @Autowired
+    private ApplicationService applicationService;
+
+    @Autowired
+    private ApplicationGroupService applicationGroupService;
 
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
@@ -196,6 +204,7 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
     }
 
+
     /**
      * StartStep: rontingTaskToAO3
      *
@@ -204,21 +213,101 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToAO3(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
-        routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-
-        //todo: isAllApplicationSubmit
-       // boolean isAllApplicationSubmit = applicationViewService.isAllApplicationSubmit(taskDto.getRefNo());
-        //create the licence
-        //if(isAllApplicationSubmit){
-          //todo:create licence
-        //}
+        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+        if(isAllSubmit){
+            // send the task to Ao3
+           taskService.routingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO3);
+        }
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
+
+    /**
+     * StartStep: rontingTaskToAO3
+     *
+     * @param bpc
+     * @throws
+     */
+    public void AO3Approved(BaseProcessClass bpc) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
+        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+                ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        if(isAllSubmit){
+           //update application Group status
+            ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+            applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            applicationGroupService.updateApplicationGroup(applicationGroupDto);
+        }
+        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
+    }
+
+
+    /**
+     * StartStep: approve
+     *
+     * @param bpc
+     * @throws
+     */
+    public void approve(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do approve start ...."));
+
+        log.debug(StringUtil.changeForLog("the do approve end ...."));
+    }
+
+    /**
+     * StartStep: routeToDMS
+     *
+     * @param bpc
+     * @throws
+     */
+    public void routeToDMS(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
+
+        log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
+    }
+
+    /**
+     * StartStep: routeBack
+     *
+     * @param bpc
+     * @throws
+     */
+    public void routeBack(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do routeBack start ...."));
+
+        log.debug(StringUtil.changeForLog("the do routeBack end ...."));
+    }
+
+    /**
+     * StartStep: internalEnquiry
+     *
+     * @param bpc
+     * @throws
+     */
+    public void internalEnquiry(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do internalEnquiry start ...."));
+
+        log.debug(StringUtil.changeForLog("the do internalEnquiry end ...."));
+    }
+
+
+
+
+
+
+
     //***************************************
     //private methods
-    //**************************************
-
-
+    //*************************************
 
     private void routingTask(BaseProcessClass bpc,String stageId,String appStatus ) throws FeignException {
         //completedTask

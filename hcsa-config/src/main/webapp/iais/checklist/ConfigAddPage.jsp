@@ -28,14 +28,22 @@
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
-
+  <iais:error>
+    <c:if test = "${not empty errorMap}">
+      <div class="error">
+        <c:forEach items="${errorMap}" var="map">
+          ${map.key}  ${map.value} <br/>
+        </c:forEach>
+      </div>
+    </c:if>
+  </iais:error>
   <div class="main-content">
     <div class="container">
       <div class="form-horizontal">
         <div class="form-group">
           <div class="col-xs-12">
             <label>
-              Common  &nbsp; <input class="form-check-input" checked="checked" id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
+              Common  &nbsp; <input class="form-check-input"  id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
             </label>
 
           </div>
@@ -82,6 +90,12 @@
 
 <script type="text/javascript">
     function doNext() {
+        var common = $("commmon").val();
+        console.log("sasdasda" + common);
+        if (common){
+            $("commmon").html("can not select service");
+        }
+
         SOP.Crud.cfxSubmit("mainForm","nextPage");
     }
 

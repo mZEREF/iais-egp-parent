@@ -47,21 +47,20 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             SelfDecl selfDecl = new SelfDecl();
             List<String> confList = new ArrayList<>();
 
-
             String appId = app.getId();
             String svcId = app.getServiceId();
-            HcsaServiceDto hcsa = RestApiUtil.getByPathParam(RestApiUrlConsts.HCSA_CONFIG + "/iais-hcsa-service/one-of-hcsa-service/{serviceId}", svcId, HcsaServiceDto.class);
+            HcsaServiceDto hcsa = appConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
             String svcCode = hcsa.getSvcCode();
             String svcName = hcsa.getSvcName();
 
             //may be has list
-            String configId = RestApiUtil.getByPathParam(RestApiUrlConsts.HCSA_CONFIG + "/iais-hcsa-checklist/config/id/{svcCode}", svcCode, String.class);
+            String configId = appConfigClient.getSelfDeclConfigIdBySvcCode(svcCode).getEntity();
             confList.add(configId);
 
             List<PremCheckItem> premCheckItems = loadPremChecklistItem(configId, false);
 
            // List<AppGrpPremisesDto> premisesDto = RestApiUtil.getListByPathParam(RestApiUrlConsts.IAIS_APPLICATION + "/application/app-group-premises-results/{appid}", appId, AppGrpPremisesDto.class);
-            AppGrpPremisesDto premisesDto = RestApiUtil.getByPathParam(RestApiUrlConsts.IAIS_APPLICATION + "/application-premises-by-app-id/{applicationId}", appId, AppGrpPremisesDto.class);
+            AppGrpPremisesDto premisesDto = applicationClient.getAppGrpPremisesDtoByAppGroId(appId).getEntity();
             String premId = premisesDto.getId();
             premIdList.add(premId);
 
@@ -93,7 +92,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Override
     public void saveSelfDecl(List<SelfDecl> selfDeclList) {
-        RestApiUtil.save(RestApiUrlConsts.IAIS_APPLICATION + "/self-decl", selfDeclList);
+        applicationClient.saveSelfDecl(selfDeclList);
     }
 
     private SelfDecl overlayCommon(List<String> premIdList){
@@ -112,7 +111,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
         selfDecl.setPremAnswerMap(premAnswerMap);
         selfDecl.setCommon(true);
 
-        String cfid = RestApiUtil.getByPathParam(RestApiUrlConsts.HCSA_CONFIG  + RestApiUrlConsts.HCSA_CONFIG_CHECKLIST_URL + "/config/common-self-desc/id", "", String.class);
+        String cfid = appConfigClient.getCommonConfigIdForSelfDecl().getEntity();
         List<String> configList = new ArrayList<>();
         configList.add(cfid);
 
@@ -134,7 +133,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
         QueryHelp.setMainSql("applicationQuery", "listSelfDesc", searchParam);
 
-        SearchResult searchResult = RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.CHECKLIST_SELF_DESC_CONFIG, searchParam);
+        SearchResult searchResult = appConfigClient.listSelfDescConfig(searchParam).getEntity();
         List<ChecklistQuestionDto> rows = searchResult.getRows();
         for (ChecklistQuestionDto question : rows){
             PremCheckItem premCheckItem = new PremCheckItem();

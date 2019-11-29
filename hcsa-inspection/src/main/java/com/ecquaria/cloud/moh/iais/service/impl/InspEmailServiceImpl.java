@@ -28,7 +28,7 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Override
     public void recallEmailTemplate(String id) {
-        RestApiUtil.delete("system-admin:8886/inspection/insert-template",id);
+        RestApiUtil.delete("system-admin:8886/inspection/recall-template",id);
     }
 
     @Override

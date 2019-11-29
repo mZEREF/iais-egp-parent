@@ -2,49 +2,56 @@
 <Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionFillupChecklist" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="40" y="100">
+  <StartStep defClass="" executor="" icon="" name="Start" x="0" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="AssignedInspectionTask" x="120" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="AssignedInspectionTask" x="130" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="assignedInspectionTask_OnStepProcess_0" name="assignedInspectionTask_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectionChecklist" x="470" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionChecklist" x="400" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="inspectionChecklist_OnStepProcess_0" name="inspectionChecklist_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="SubmitInspection" x="480" y="310">
+  <AutomaticStep defClass="" executor="" icon="" name="SubmitInspection" x="970" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="submitInspection_OnStepProcess_0" name="submitInspection_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="init" x="70" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AssignedInspectionTaskList" stageIndicator="" x="290" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="310" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Checklist" stageIndicator="" x="520" y="210">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="820" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Success" stageIndicator="" x="640" y="300">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page3" stageIndicator="" x="1120" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -53,27 +60,63 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/AssignedInspectionTask" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
-   <position>{(60,120)(140,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
+   <position>{(20,120)(90,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AssignedInspectionTaskList" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/AssignedInspectionTask" style="rectanular">
-   <position>{(140,120)(310,120)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/AssignedInspectionTask" style="rectanular">
+   <position>{(150,120)(330,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionChecklist" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/AssignedInspectionTaskList" style="rectanular">
-   <position>{(310,120)(490,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionChecklist" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page1" style="rectanular">
+   <position>{(330,120)(420,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Checklist" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionChecklist" style="rectanular">
-   <position>{(490,120)(540,230)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionChecklist" style="rectanular">
+   <position>{(420,120)(610,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/SubmitInspection" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Checklist" style="rectanular">
-   <position>{(540,230)(500,330)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page2" style="rectanular">
+   <position>{(840,120)(930,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Success" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SubmitInspection" style="rectanular">
-   <position>{(500,330)(660,320)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/Page3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SubmitInspection" style="rectanular">
+   <position>{(990,120)(1140,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AssignedInspectionTask" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/init" style="rectanular">
+   <position>{(90,120)(150,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(610,120)(750,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(750,120)(840,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AssignedInspectionTask" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(610,120)(208,22)(150,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AssignedInspectionTask" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(750,120)(201,358)(150,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SubmitInspection" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(930,120)(990,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AssignedInspectionTask" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(930,120)(202,1)(150,120)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
- <Switches/>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/Page2" componentIfTrue="/Steps/AutomaticStep/AssignedInspectionTask" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="730" y="100">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="590" y="100">
+   <Description/>
+   <SwitchCase component="/Conditions/Condition/Cond1" value="&quot;next&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AssignedInspectionTask" value="&quot;back&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="910" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/SubmitInspection" value="&quot;submit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AssignedInspectionTask" value="&quot;back&quot;"/>
+  </Switch>
+ </Switches>
  <Branches/>
  <Merges/>
  <StudioLabels/>
