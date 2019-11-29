@@ -66,7 +66,6 @@
                       <iais:row>
                         <iais:field value="Submission Date"/>
                         <iais:value width="7">
-                          <%--<iais:datePicker id = "submitDt" name = "submitDt" value="${inspecTaskCreAndAssDto.submitDt}"></iais:datePicker>--%>
                           <label><c:out value="${inspecTaskCreAndAssDto.submitDt}"/></label>
                         </iais:value>
                       </iais:row>
