@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,13 +16,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @Component
 public class RestBridgeHelper {
-
-    @Value("${iais.syncFileTracking.url}")
-    private String syncFileTrackUrl;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
 
     public static <T> T  callOtherSideApi(String url, String keyId, String secretKey,
                                                   Object entity, Class<T> retrunClass, HttpMethod requestType) {
