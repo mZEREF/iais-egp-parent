@@ -21,15 +21,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "IAIS-APPLICATION", configuration = FeignConfiguration.class,
         fallback = InspectionTaskClientFallback.class)
 public interface InspectionTaskClient {
-    @RequestMapping(path = "/iais-inspection/one-of-inspection/{applicationNo}",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(path = "/iais-inspection/one-of-inspection/{applicationNo}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@PathVariable("applicationNo") String applicationNo);
 
-    @RequestMapping(path = "/iais-inspection/appGroup-of-inspection/{appGroupId}",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(path = "/iais-inspection/appGroup-of-inspection/{appGroupId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<ApplicationGroupDto> getApplicationGroupDtoByAppGroId(@PathVariable("appGroupId") String appGroupId);
 
-    @RequestMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 
