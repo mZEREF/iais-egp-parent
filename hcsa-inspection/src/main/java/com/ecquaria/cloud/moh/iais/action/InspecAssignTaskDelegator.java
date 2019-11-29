@@ -126,13 +126,16 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
-        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
-        Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
         String applicationNo = ParamUtil.getMaskedString(bpc.request,"applicationNo");
-        String taskId = map.get(applicationNo);
-        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo);
-        inspecTaskCreAndAssDto.setTaskId(taskId);
-        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto;
+        if(!StringUtil.isEmpty(applicationNo) && !(AppConsts.NO.equals(applicationNo))){
+            Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
+            ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
+            String taskId = map.get(applicationNo);
+            inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo);
+            inspecTaskCreAndAssDto.setTaskId(taskId);
+            ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+        }
     }
 
     /**
@@ -175,6 +178,12 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorSuccess(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSuccess start ...."));
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
+        List<SelectOption> nameList = (List<SelectOption>)ParamUtil.getRequestAttr(bpc.request, "nameList");
+        inspectionAssignTaskService.assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, nameList);
+        ParamUtil.setRequestAttr(bpc.request,"nameList", nameList);
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**
@@ -187,8 +196,8 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorConfirm start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
-        List<String> nameList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
-        ParamUtil.setSessionAttr(bpc.request,"nameList", (Serializable) nameList);
+        List<SelectOption> nameList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
+        ParamUtil.setRequestAttr(bpc.request,"nameList", nameList);
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
@@ -241,6 +250,7 @@ public class InspecAssignTaskDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
     }
 
     private void setMapTaskId(BaseProcessClass bpc, List<TaskDto> commPools) {

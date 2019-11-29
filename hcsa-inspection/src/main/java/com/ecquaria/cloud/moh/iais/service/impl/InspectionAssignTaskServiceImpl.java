@@ -15,12 +15,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQue
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.hazelcast.aws.utility.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,7 @@ import java.util.Map;
  * @date 2019/11/22 10:19
  **/
 @Service
+@Slf4j
 public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskService {
    /* @Autowired
     private InspectionTaskClient inspectionTaskClient;
@@ -116,21 +120,43 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public List<String> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        List<String> nameList = new ArrayList<>();
+    public List<SelectOption> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
+        List<SelectOption> nameList = new ArrayList<>();
         for(int i = 0; i < nameValue.length; i++){
-            for(SelectOption so:inspecTaskCreAndAssDto.getInspectorName()){
+            for(SelectOption so:inspecTaskCreAndAssDto.getInspector()){
                 getInNameBySelectOption(nameList, nameValue[i], so);
             }
         }
         return nameList;
     }
 
-    private List<String> getInNameBySelectOption(List<String> nameList, String s, SelectOption so) {
-        if(s.equals(so.getValue())){
-            nameList.add(so.getText());
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<SelectOption> nameList) {
+        try {
+            for(TaskDto td:commPools) {
+                if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
+                    td.setUserId(nameList.get(0).getValue());
+                    td.setDateAssigned(new Date());
+                    updateTask(td);
+                    nameList.remove(0);
+                }
+            }
+
+        } catch (Exception e){
+            log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);
+            throw e;
         }
-        return nameList;
+    }
+
+    private void updateTask(TaskDto td) {
+
+    }
+
+    private void getInNameBySelectOption(List<SelectOption> nameList, String s, SelectOption so) {
+        if(s.equals(so.getValue())){
+            nameList.add(so);
+        }
     }
 
     /**

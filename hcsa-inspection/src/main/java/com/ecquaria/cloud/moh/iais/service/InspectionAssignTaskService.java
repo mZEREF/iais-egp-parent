@@ -85,5 +85,14 @@ public interface InspectionAssignTaskService {
       * @return: InspecTaskCreAndAssDto
       * @Descripation: get checked Inspector
       */
-    List<String> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+    List<SelectOption> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/29
+      * @Param: commPools inspecTaskCreAndAssDto nameList
+      * @return: void
+      * @Descripation: update Common Pool and create Inspector Task
+      */
+    void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<SelectOption> nameList);
 }

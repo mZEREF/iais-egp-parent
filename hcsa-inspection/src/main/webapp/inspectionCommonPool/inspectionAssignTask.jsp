@@ -76,7 +76,8 @@
                     <iais:row>
                       <iais:field value="Submission Date"/>
                       <iais:value width="7">
-                        <iais:datePicker id = "submitDt" name = "submitDt" value="${inspecTaskCreAndAssDto.submitDt}"></iais:datePicker>
+                        <%--<iais:datePicker id = "submitDt" name = "submitDt" value="${inspecTaskCreAndAssDto.submitDt}"></iais:datePicker>--%>
+                        <label><c:out value="${inspecTaskCreAndAssDto.submitDt}"/></label>
                       </iais:value>
                     </iais:row>
                     <iais:row>
@@ -88,7 +89,7 @@
                     <iais:row>
                       <iais:field value="Inspector"/>
                       <iais:value width="10">
-                        <%--<c:forEach items="${inspecTaskCreAndAssDto.inspectorName}" var="name">
+                        <%--<c:forEach items="${inspecTaskCreAndAssDto.inspector}" var="name">
                           <input type="checkbox" name="inspector" value="<c:out value="${name.value}"/>"/><c:out value="${name.text}"/>
                         </c:forEach>--%>
                         <input type="checkbox" name="inspector" value="yc">YiChen</input>
