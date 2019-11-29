@@ -18,9 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.client.CommonPoolTaskClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,14 +35,14 @@ import java.util.Map;
 @Service
 @Slf4j
 public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskService {
-   /* @Autowired
+    /*@Autowired
     private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
-    private HcsaServiceClient hcsaServiceClient;*/
+    private HcsaServiceClient hcsaServiceClient;
 
     @Autowired
-    private CommonPoolTaskClient commonPoolTaskClient;
+    private CommonPoolTaskClient commonPoolTaskClient;*/
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(String workGroupId) {
@@ -166,24 +164,28 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private void createTaskByInspectorList(List<SelectOption> inspectorCheckList, List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
+        List<TaskDto> taskDtoList = new ArrayList<>();
         for(SelectOption so : inspectorCheckList) {
             for (TaskDto td : commPools) {
                 if(td.getId().equals(inspecTaskCreAndAssDto.getTaskId())){
                     td.setId("");
                     td.setUserId(so.getValue());
                     td.setDateAssigned(new Date());
-                    createTask(td);
+                    taskDtoList.add(td);
                 }
             }
         }
+        createTask(taskDtoList);
     }
 
-    private void createTask(TaskDto td){
-        commonPoolTaskClient.createAndAssignTask(td);
+    private void createTask(List<TaskDto> taskDtoList){
+        //commonPoolTaskClient.createAndAssignTask(taskDtoList);
+        RestApiUtil.save("iais-organization:8879/iais-task", taskDtoList);
     }
 
     private void updateTask(TaskDto td) {
-        commonPoolTaskClient.updateAndAssignTask(td);
+        //commonPoolTaskClient.updateAndAssignTask(td);
+        RestApiUtil.update("iais-organization:8879/iais-task", td.getClass());
     }
 
     private void getInNameBySelectOption(List<SelectOption> nameList, String s, SelectOption so) {

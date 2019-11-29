@@ -6,6 +6,8 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -22,11 +24,11 @@ public interface CommonPoolTaskClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<TaskDto>> getCommPoolByGroupWordId(@PathVariable(value = "workGroupId") String workGroupId);
 
-    @RequestMapping(path = "/iais-task",method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @PutMapping(path = "/iais-task", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<TaskDto> updateAndAssignTask(@PathVariable TaskDto taskDto);
 
-    @RequestMapping(path = "/iais-task",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @PostMapping(path = "/iais-task",                                                                                          produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<TaskDto> createAndAssignTask(@PathVariable TaskDto taskDto);
 }
