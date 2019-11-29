@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -192,63 +193,70 @@
 
                             </div>
                             <div class="tab-pane" id="tabPayment" role="tabpanel">
-                                <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
-                                    <br/>
-                                    <c:out value="${section.sectionName}"></c:out>
-                                    <c:forEach var ="item" items ="${section.itemDtoList}">
-                                        <br/>
-                                        <c:out value="${item.itemId}"></c:out>
-                                    </c:forEach>
-                                </c:forEach>
                                 <div class="alert alert-info" role="alert"><strong>
-                                    <h4>Payment Details</h4>
                                 </strong></div>
                                 <div class="row">
                                     <div class="col-xs-12">
+
                                         <div class="table-gp">
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>No.</th>
-                                                    <th>Regulation Clause Number</th>
-                                                    <th>Item</th>
-                                                    <th>Yes</th>
-                                                    <th>No</th>
-                                                    <th>N/A</th>
-                                                    <th>Remark</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <c:forEach var = "item" items = "${fillCheckListDto.checkList}" varStatus="status">
+                                            <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
+                                                <br/>
+                                                <h4><c:out value="${section.sectionName}"></c:out></h4>
+                                                <table class="table">
+                                                    <thead>
                                                     <tr>
-                                                        <td class="row_no">${(status.index + 1) }</td>
-                                                        <td>${item.regClauseNo}</td>
-                                                        <td>${item.checklistItem}</td>
-                                                        <td><input name="<c:out value="item.id"/>itemCheckbox" id="<c:out value="item.id"/>itemCheckboxYes" type="radio" value="Yes" /></td>
-                                                        <td><input name="<c:out value="item.id"/>itemCheckbox" id="<c:out value="item.id"/>itemCheckboxNo" type="radio" value="No" /></td>
-                                                        <td><input name="<c:out value="item.id"/>itemCheckbox" id="<c:out value="item.id"/>itemCheckboxNa" type="radio" value="N/A" /></td>
-                                                        <td><input name="<c:out value="item.id"/>itemCheckboxRemark" id="<c:out value="item.id"/>itemCheckboxRemark" type="" value="" /></td>
+                                                        <th>No.</th>
+                                                        <th>Regulation Clause Number</th>
+                                                        <th>Item</th>
+                                                        <th>Yes</th>
+                                                        <th>No</th>
+                                                        <th>N/A</th>
+                                                        <th>Remark</th>
                                                     </tr>
-                                                </c:forEach>
-                                                </tbody>
-                                            </table>
-                                            <div class="input-group">
-                                                <div class="ax_default text_area">
-                                                    <textarea cols="70" rows="7"></textarea>
+                                                    </thead>
+                                                    <tbody>
+                                                    <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                                                        <tr>
+                                                            <td class="row_no">${(status.index + 1) }</td>
+                                                            <td>${item.incqDto.regClauseNo}</td>
+                                                            <td>${item.incqDto.checklistItem}</td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxYes" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNo" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </c:forEach>
+                                            <div class="col-xs-12">
+                                                <div class="input-group">
+                                                    <div class="ax_default text_area">
+                                                        <h4>Best Practice</h4>
+                                                        <textarea cols="70" rows="7" name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <br>
+                                                <div class="input-group">
+                                                    <b>Is TCU</b> &nbsp;<iais:select name="tuc" id="tuc" options = "isTcuOption" firstOption="Please Select" value="${fillCheckListDto.tuc}"></iais:select>
                                                 </div>
                                             </div>
-                                            <div class="input-group">
-                                                <select>
-                                                    <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
-                                                        <option value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
-                                            <div align="center">
+
+                                            <div align="right">
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
                                                     Next
                                                 </button>
                                             </div>
+                                            <iais:error>
+                                                <c:if test = "${not empty errorMap}">
+                                                    <div class="error">
+                                                        <c:forEach items="${errorMap}" var="map">
+                                                            ${map.key}  ${map.value} <br/>
+                                                        </c:forEach>
+                                                    </div>
+                                                </c:if>
+                                            </iais:error>
                                         </div>
                                     </div>
                                 </div>
