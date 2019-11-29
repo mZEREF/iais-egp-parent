@@ -147,6 +147,9 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorAction(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAction start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
+        List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
+        inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
         ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto,"create");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
@@ -180,9 +183,7 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSuccess start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
-        List<SelectOption> nameList = (List<SelectOption>)ParamUtil.getRequestAttr(bpc.request, "nameList");
-        inspectionAssignTaskService.assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, nameList);
-        ParamUtil.setRequestAttr(bpc.request,"nameList", nameList);
+        inspectionAssignTaskService.assignTaskForInspectors(commPools, inspecTaskCreAndAssDto);
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
@@ -195,9 +196,6 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorConfirm start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
-        String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
-        List<SelectOption> nameList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
-        ParamUtil.setRequestAttr(bpc.request,"nameList", nameList);
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 

@@ -90,9 +90,9 @@ public interface InspectionAssignTaskService {
     /**
       * @author: shicheng
       * @Date 2019/11/29
-      * @Param: commPools inspecTaskCreAndAssDto nameList
+      * @Param: commPools inspecTaskCreAndAssDto
       * @return: void
       * @Descripation: update Common Pool and create Inspector Task
       */
-    void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<SelectOption> nameList);
+    void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
 }

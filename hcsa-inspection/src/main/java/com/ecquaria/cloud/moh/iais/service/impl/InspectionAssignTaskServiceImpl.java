@@ -18,7 +18,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.client.CommonPoolTaskClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,10 +41,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
-    private HcsaServiceClient hcsaServiceClient;
+    private HcsaServiceClient hcsaServiceClient;*/
 
     @Autowired
-    private CommonPoolTaskClient commonPoolTaskClient;*/
+    private CommonPoolTaskClient commonPoolTaskClient;
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(String workGroupId) {
@@ -85,7 +87,14 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssDto.setInspectionType(applicationGroupDto.getIsPreInspection());
         inspecTaskCreAndAssDto.setSubmitDt(applicationGroupDto.getSubmitDt());
         //get inspector lead
+        inspecTaskCreAndAssDto.setInspectionLead("ao1staff01");
         //get inspector checkbox list
+        SelectOption inspector = new SelectOption("ins001staff01","ins001staff01");
+        SelectOption inspector2 = new SelectOption("ins001staff02","ins001staff02");
+        List<SelectOption> inspectorList = new ArrayList<>();
+        inspectorList.add(inspector);
+        inspectorList.add(inspector2);
+        inspecTaskCreAndAssDto.setInspector(inspectorList);
         return inspecTaskCreAndAssDto;
     }
 
@@ -121,26 +130,33 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public List<SelectOption> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        List<SelectOption> nameList = new ArrayList<>();
+        List<SelectOption> inspectorCheckList = new ArrayList<>();
         for(int i = 0; i < nameValue.length; i++){
             for(SelectOption so:inspecTaskCreAndAssDto.getInspector()){
-                getInNameBySelectOption(nameList, nameValue[i], so);
+                getInNameBySelectOption(inspectorCheckList, nameValue[i], so);
             }
         }
-        return nameList;
+        if(inspectorCheckList.size() <= 0){
+            inspectorCheckList = null;
+        }
+        return inspectorCheckList;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<SelectOption> nameList) {
+    public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
         try {
+            List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
             for(TaskDto td:commPools) {
                 if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
-                    td.setUserId(nameList.get(0).getValue());
+                    td.setUserId(inspectorCheckList.get(0).getValue());
                     td.setDateAssigned(new Date());
                     updateTask(td);
-                    nameList.remove(0);
+                    inspectorCheckList.remove(0);
                 }
+            }
+            if(inspectorCheckList != null && inspectorCheckList.size() > 0){
+                createTaskByInspectorList(inspectorCheckList, commPools, inspecTaskCreAndAssDto);
             }
 
         } catch (Exception e){
@@ -149,8 +165,25 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
     }
 
-    private void updateTask(TaskDto td) {
+    private void createTaskByInspectorList(List<SelectOption> inspectorCheckList, List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
+        for(SelectOption so : inspectorCheckList) {
+            for (TaskDto td : commPools) {
+                if(td.getId().equals(inspecTaskCreAndAssDto.getTaskId())){
+                    td.setId("");
+                    td.setUserId(so.getValue());
+                    td.setDateAssigned(new Date());
+                    createTask(td);
+                }
+            }
+        }
+    }
 
+    private void createTask(TaskDto td){
+        commonPoolTaskClient.createAndAssignTask(td);
+    }
+
+    private void updateTask(TaskDto td) {
+        commonPoolTaskClient.updateAndAssignTask(td);
     }
 
     private void getInNameBySelectOption(List<SelectOption> nameList, String s, SelectOption so) {

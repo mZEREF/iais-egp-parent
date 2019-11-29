@@ -79,7 +79,7 @@
                       <iais:row>
                         <iais:field value="Inspector"/>
                         <iais:value width="10">
-                          <c:forEach items="${nameList}" var="name">
+                          <c:forEach items="${inspecTaskCreAndAssDto.inspectorCheck}" var="name">
                             <label><c:out value="${name.text}"/></label>
                           </c:forEach>
                         </iais:value>
