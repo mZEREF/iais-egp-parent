@@ -18,13 +18,6 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class RestBridgeHelper {
 
-    @Value("${iais.syncFileTracking.url}")
-    private String syncFileTrackUrl;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-
     public static <T> T  callOtherSideApi(String url, String keyId, String secretKey,
                                                   Object entity, Class<T> retrunClass, HttpMethod requestType) {
         HttpHeaders headers = new HttpHeaders();
