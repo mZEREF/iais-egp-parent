@@ -161,6 +161,7 @@ public class InspecAssignTaskDelegator {
         }else{
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         }
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**
