@@ -27,7 +27,7 @@
 
     <sql key="listSelfDesc" remarks="query self desc config">
         <![CDATA[
-            select CONVERT(nvarchar(50), chkl.id) + CONVERT(nvarchar(50), item_pool.id) as id, chkl.id as config_id,  item_pool.id as item_id,  chkl.is_common as common, chkl.svc_code as svc_code, hs.svc_name as svc_name, chkl.svc_subtype_name as svc_subtype_name, chkl.module as module, chkl.[type] as svc_type,
+            select sec_item.id as id, chkl.id as config_id,  item_pool.id as item_id,  chkl.is_common as common, chkl.svc_code as svc_code, hs.svc_name as svc_name, chkl.svc_subtype_name as svc_subtype_name, chkl.module as module, chkl.[type] as svc_type,
             chkl.hci_code as hci_code, sec.section_name as section_name, sec.section_desc as section_desc, sec.[order] as section_order,
             item_pool.question as checklist_item, item_pool.answer_type, item_pool.risk_level as risk_level,
             regulation.clause_no as clause_no, regulation.clause as clause, hs.id as service_id

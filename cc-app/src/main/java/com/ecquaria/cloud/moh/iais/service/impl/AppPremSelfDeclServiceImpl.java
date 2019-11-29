@@ -40,7 +40,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Override
     public List<SelfDecl> getSelfDeclByGroupId(String groupId) {
-        List<ApplicationDto> appList = RestApiUtil.getListByPathParam(RestApiUrlConsts.APPLICATION_RESULTS_BY_GROUP_ID, groupId, ApplicationDto.class);
+        List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
         List<SelfDecl> selfDeclList = new ArrayList<>();
         List<String> premIdList = new ArrayList<>();
         for (ApplicationDto app : appList){
@@ -54,7 +54,8 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             String svcName = hcsa.getSvcName();
 
             //may be has list
-            String configId = appConfigClient.getSelfDeclConfigIdBySvcCode(svcCode).getEntity();
+            //String configId = appConfigClient.getSelfDeclConfigIdBySvcCode(svcCode).getEntity();
+            String configId = RestApiUtil.getByPathParam(RestApiUrlConsts.HCSA_CONFIG + "/iais-hcsa-checklist/config/id/{svcCode}", svcCode, String.class);
             confList.add(configId);
 
             List<PremCheckItem> premCheckItems = loadPremChecklistItem(configId, false);
@@ -92,7 +93,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Override
     public void saveSelfDecl(List<SelfDecl> selfDeclList) {
-        applicationClient.saveSelfDecl(selfDeclList);
+        RestApiUtil.save(RestApiUrlConsts.IAIS_APPLICATION + "/self-decl", selfDeclList);
     }
 
     private SelfDecl overlayCommon(List<String> premIdList){
@@ -133,7 +134,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
         QueryHelp.setMainSql("applicationQuery", "listSelfDesc", searchParam);
 
-        SearchResult searchResult = appConfigClient.listSelfDescConfig(searchParam).getEntity();
+        SearchResult<ChecklistQuestionDto> searchResult = appConfigClient.listSelfDescConfig(searchParam).getEntity();
         List<ChecklistQuestionDto> rows = searchResult.getRows();
         for (ChecklistQuestionDto question : rows){
             PremCheckItem premCheckItem = new PremCheckItem();
@@ -141,6 +142,10 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             premCheckItem.setRegulation(question.getRegClauseNo());
             premCheckItem.setChecklistItemId(question.getItemId());
             list.add(premCheckItem);
+
+            String pkId = question.getId().substring(0, 10);   //from db section item id
+            String itemId = question.getItemId().substring(0, 10);
+            premCheckItem.setAnswerKey(pkId + itemId);
         }
 
         return list;
