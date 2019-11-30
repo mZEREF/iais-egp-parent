@@ -68,6 +68,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_CHECKLIST_MODULE            = "9276F7F8-290C-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SUB_TYPE_TYPE               = "E214989D-CF0C-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_MSG_TEMPLATE_TYPE           = "427AA14F-4A13-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_DELIVERY_MODE               = "754889D0-5213-EA11-BE7D-000C29F371DC";
 
     /**
      * @description: refresh the master codes into cache
