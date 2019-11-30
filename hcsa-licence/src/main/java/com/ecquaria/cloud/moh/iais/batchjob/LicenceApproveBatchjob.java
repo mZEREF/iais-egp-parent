@@ -3,7 +3,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -142,13 +142,13 @@ public class LicenceApproveBatchjob {
                      break;
                  }
                 //create Premises
-                List<AppGrpPremisesDto> appGrpPremisesDtos = applicationListDto.getAppGrpPremisesDtos();
-                if(appGrpPremisesDtos == null || appGrpPremisesDtos.size() == 0){
+                List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = applicationListDto.getAppGrpPremisesEntityDtos();
+                if(appGrpPremisesEntityDtos == null || appGrpPremisesEntityDtos.size() == 0){
                     errorMessage = "The AppGrpPremises is null for ApplicationNo" + applicationDto.getApplicationNo();
                     break;
                 }
-                log.debug(StringUtil.changeForLog("The appGrpPremisesDtos.size() is -->;"+appGrpPremisesDtos.size()));
-                List<PremisesDto> premisesDtos  = getPremises(appGrpPremisesDtos,hcsaServiceDto);
+                log.debug(StringUtil.changeForLog("The appGrpPremisesDtos.size() is -->;"+appGrpPremisesEntityDtos.size()));
+                List<PremisesDto> premisesDtos  = getPremises(appGrpPremisesEntityDtos,hcsaServiceDto);
                 superLicDto.setPremisesDtos(premisesDtos);
                 //create licence
                  //todo:get the yearLenth.
@@ -215,18 +215,18 @@ public class LicenceApproveBatchjob {
         return  calendar.getTime();
     }
 
-    private List<PremisesDto> getPremises(List<AppGrpPremisesDto> appGrpPremisesDtos,HcsaServiceDto hcsaServiceDto){
+    private List<PremisesDto> getPremises(List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,HcsaServiceDto hcsaServiceDto){
         List<PremisesDto> premisesDtos = new ArrayList<>();
-        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos){
+        for (AppGrpPremisesEntityDto appGrpPremisesEntityDto : appGrpPremisesEntityDtos){
             PremisesDto premisesDto = new PremisesDto();
             //set the old Id when the create use find out the AppPremisesCorrelationDto
-            premisesDto.setId(appGrpPremisesDto.getId());
+            premisesDto.setId(appGrpPremisesEntityDto.getId());
 
-            String hciCode = appGrpPremisesDto.getHciCode();
+            String hciCode = appGrpPremisesEntityDto.getHciCode();
             if(StringUtil.isEmpty(hciCode)){
                 hciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
-                premisesDto.setHciName(appGrpPremisesDto.getHciName());
-               // premisesDto.setHciContactNo();
+                premisesDto.setHciName(appGrpPremisesEntityDto.getHciName());
+                //premisesDto.setHciContactNo();
             }else{
                //todo:get existPremiseId use the hcicode
                 String existPremiseId = "";
