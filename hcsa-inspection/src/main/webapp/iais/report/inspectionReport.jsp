@@ -11,12 +11,14 @@
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
-        <%@ include file="report.jsp" %>
+        <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+            <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+            <%@ include file="report.jsp" %>
+            <input type="submit">
+        </form>
     </div>
 </div>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-</form>
+
 
 
 

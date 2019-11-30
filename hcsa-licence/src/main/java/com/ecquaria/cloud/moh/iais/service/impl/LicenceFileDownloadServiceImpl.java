@@ -1,18 +1,26 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
+
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
-import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.io.*;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -26,13 +34,15 @@ import java.util.zip.ZipFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-    private static  final  String URL="iais-application:8883/iais-application/files";
-    private static  final  String URL_APPLICATION="iais-application:8883/iais-application/list-application-dto";
     private static  final  String DOWNLOAD="D:/compress/folder";
     private static  final  String BACKUPS="D:/backups/";
     private static  final  String FILE_FORMAT=".text";
     private static  final  String COMPRESS_PATH="D:/compress";
-    private static final String FILE_NAME="system-admin:8886/file-existence";
+
+    @Autowired
+    private ApplicationClient applicationClient;
+    @Autowired
+    private SystemClient systemClient;
     @Override
                 public void compress(){
         if(new File(BACKUPS).isDirectory()){
@@ -44,7 +54,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     HashMap<String,String> map=new HashMap<>();
                     map.put("fileName",name);
                     map.put("filePath",path);
-                    Boolean aBoolean = RestApiUtil.save(FILE_NAME, map, Boolean.class);
+
+                    Boolean aBoolean = systemClient.isFileExistence(map).getEntity();
                     if(aBoolean){
                         ZipFile zipFile=null;
                         CheckedInputStream cos=null;
@@ -116,7 +127,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Override
     public List<ApplicationDto> listApplication() {
 
-        List<ApplicationDto> byPathParam = RestApiUtil.getList(URL_APPLICATION,  ApplicationDto.class);
+        List<ApplicationDto> byPathParam =   applicationClient. getApplicationDto().getEntity();
         return byPathParam;
     }
 
@@ -145,7 +156,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             by.write(size,0,count);
                             count= fileInputStream.read(size);
                         }
-                        flag = RestApiUtil.save(URL, by.toString(), Boolean.class);
+
+                        flag = applicationClient.getDownloadFile(by.toString()).getEntity();
                         Boolean backups = backups(flag, filzz);
                         if(backups&&filzz.exists()){
                             filzz.delete();

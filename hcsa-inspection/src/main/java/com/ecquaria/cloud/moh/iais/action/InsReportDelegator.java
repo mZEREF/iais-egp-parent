@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -24,14 +23,14 @@ public class InsReportDelegator {
     private InsRepService insRepService;
 
     public void start(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>paymentRequest");
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
     }
 
     public void prepareData(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>paymentRequest");
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>prepareReportData");
         HttpServletRequest request = bpc.request;
-        String appNo = "AN1911136061-01" ;
+        String appNo = "AN1911153344-01";
         InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo);
-        ParamUtil.setRequestAttr(request,"insRepDto", insRepDto);
+        ParamUtil.setRequestAttr(request, "insRepDto", insRepDto);
     }
 }
