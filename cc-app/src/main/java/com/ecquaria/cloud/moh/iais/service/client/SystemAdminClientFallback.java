@@ -23,8 +23,7 @@ public class SystemAdminClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "searchField") String fieldName,
-                                                       @RequestParam(value = "filterValue") String filterValue){
+    FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "postalCode") String postalCode){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

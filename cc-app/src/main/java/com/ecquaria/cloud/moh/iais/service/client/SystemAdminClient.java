@@ -21,7 +21,10 @@ public interface SystemAdminClient  {
     FeignResponseEntity<String> draftNumber(@PathVariable(name = "type")  String applicationType);
     @RequestMapping(path = "/application-number/{type}")
     FeignResponseEntity<String> applicationNumber(@PathVariable(name = "type") String applicationType);
-    @RequestMapping(path = "/api/postcodes" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    /*@RequestMapping(path = "/api/postcodes" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "searchField") String fieldName,
-                                                       @RequestParam(value = "filterValue") String filterValue);
+                                                       @RequestParam(value = "filterValue") String filterValue);*/
+
+    @RequestMapping(path="//api-postcodes/postal-code", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "postalCode") String postalCode);
 }

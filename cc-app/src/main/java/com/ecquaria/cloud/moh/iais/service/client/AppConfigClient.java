@@ -77,7 +77,7 @@ public interface AppConfigClient {
     @RequestMapping(path = "/iais-hcsa-fee/new-fee",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeeDto> newFee(@RequestBody @Required List<LicenceFeeQueryDto> dto);
 
-    @RequestMapping(path = "/iais-hcsa-service/sub-correlation/{svcId}",method = RequestMethod.GET)
+    @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}",method = RequestMethod.GET)
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(@PathVariable(name = "svcId")String serviceId);
 
     @RequestMapping(path = "/iais-hcsa-service/service-type-results",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
