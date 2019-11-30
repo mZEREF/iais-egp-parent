@@ -25,7 +25,6 @@ public class LicenceFileDownloadDelegator {
     private TaskService taskService;
     @Autowired
     private LicenceFileDownloadService licenceFileDownloadService;
-    private static  final  String URL_APPLICATION="iais-application:8883/iais-application/list-application-dto";
     public  void start (BaseProcessClass bpc){
 
         logAbout("start");
