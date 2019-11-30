@@ -29,7 +29,7 @@ public class InsReportDelegator {
     public void prepareData(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>prepareReportData");
         HttpServletRequest request = bpc.request;
-        String appNo = "AN1911136061-01";
+        String appNo = "AN1911153344-01";
         InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo);
         ParamUtil.setRequestAttr(request, "insRepDto", insRepDto);
     }

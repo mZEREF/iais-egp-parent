@@ -4,6 +4,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,14 +19,16 @@ import java.util.List;
  */
 @Service
 public class InsRepServiceImpl implements InsRepService {
+
+    @Autowired
+    private InsRepClient insRepClient;
     @Override
     public InspectionReportDto getInsRepDto(String appNo) {
-        InspectionReportDto inspectionReportDto = RestApiUtil.postGetObject("iais-application:8883/iais-inspection/report", appNo, InspectionReportDto.class);
+        InspectionReportDto inspectionReportDto = insRepClient.getInspectionReportDtoByAppNo(appNo).getEntity();
         String licenceId = "92B33E39-B7FA-428A-901A-3AC7F8886F8C";
 //        InspectionReportDto insReportDto = RestApiUtil.postGetObject("iais-hcsa-licence:8882/hcsa-lic-licensee/detection-lic-licensee", licenceId, InspectionReportDto.class);
 //        inspectionReportDto.setLicenceNo(insReportDto.getLicenceNo());
 //        inspectionReportDto.setLicenseeName(insReportDto.getLicenseeName());
-
         inspectionReportDto.setInspectionDate(new Date());
         inspectionReportDto.setInspectionTime(new Date());
         inspectionReportDto.setStatus("Full Compliance");
