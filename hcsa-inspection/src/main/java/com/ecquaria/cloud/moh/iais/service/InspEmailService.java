@@ -13,4 +13,5 @@ public interface InspEmailService {
     String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto);
     void recallEmailTemplate(String id);
     String previewEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto);
+    String applyInspection(InspectionEmailTemplateDto inspectionEmailTemplateDto);
 }

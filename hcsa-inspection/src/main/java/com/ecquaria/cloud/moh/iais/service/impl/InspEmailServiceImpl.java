@@ -36,4 +36,9 @@ public class InspEmailServiceImpl implements InspEmailService {
         return RestApiUtil.postGetObject("system-admin:8886/inspection/preview-template",inspectionEmailTemplateDto, String.class);
     }
 
+    @Override
+    public String applyInspection(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
+        return RestApiUtil.postGetObject("system-admin:8886/inspection/save-validation-template",inspectionEmailTemplateDto, String.class);
+    }
+
 }

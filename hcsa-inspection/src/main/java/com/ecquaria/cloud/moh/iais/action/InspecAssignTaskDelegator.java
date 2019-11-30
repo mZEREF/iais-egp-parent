@@ -83,6 +83,8 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPre start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspecTaskCreAndAssDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_RESULT);
+        List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId("A03EDD16-F90C-EA11-BE7D-000C29F371DC");
+        setMapTaskId(bpc, commPools);
 
         List<SelectOption> appTypeOption = inspectionAssignTaskService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionAssignTaskService.getAppStatusOption();
@@ -148,15 +150,21 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAction start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
-        List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
-        inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto,"create");
+        if(nameValue == null || nameValue.length < 0) {
+            inspecTaskCreAndAssDto.setInspectorCheck(null);
+        } else {
+            List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
+            inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
+        }
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto,"create");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, DemoConstants.ERRORMAP, errorMap);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
         }else{
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
