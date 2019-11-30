@@ -35,4 +35,12 @@ public interface TaskService {
     //other method help task.
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId);
     public List<AppPremisesRoutingHistoryDto> createHistorys(List<AppPremisesRoutingHistoryDto>  appPremisesRoutingHistoryDtoList);
+    /**
+     * @author: shicheng
+     * @Date 2019/11/21
+     * @Param: name
+     * @return: List<TaskDto>
+     * @Descripation: According to the group Id, get the work pool
+     */
+    List<TaskDto> getCommPoolByGroupWordId(String workGroupId);
 }

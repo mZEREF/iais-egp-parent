@@ -23,28 +23,28 @@
     <JavaCode defClass="" executor="" methodName="emailSubmitStep_OnStepProcess_0" name="emailSubmitStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="ValidationEmail" x="850" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="ValidationEmail" x="650" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="validationEmail_OnStepProcess_0" name="validationEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreviewEmail" x="710" y="310">
+  <AutomaticStep defClass="" executor="" icon="" name="PreviewEmail" x="890" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="previewEmail_OnStepProcess_0" name="previewEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="SendEmail" x="820" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="SendEmail" x="820" y="220">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="sendEmail_OnStepProcess_0" name="sendEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doRecallEmail" x="1120" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="doRecallEmail" x="610" y="410">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -59,13 +59,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RecallEmailPage" stageIndicator="" x="970" y="200">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RecallEmailPage" stageIndicator="" x="900" y="290">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewEmailPage" stageIndicator="" x="860" y="310">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewEmailPage" stageIndicator="" x="1060" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -87,35 +87,38 @@
    <position>{(570,120)(720,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ValidationEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(870,120)}</position>
+   <position>{(720,120)(670,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreviewEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(730,330)}</position>
+   <position>{(720,120)(910,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SendEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(840,220)}</position>
+   <position>{(720,120)(840,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/RecallEmailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SendEmail" style="oblique">
-   <position>{(840,220)(990,220)}</position>
+   <position>{(840,240)(920,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/PreviewEmailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreviewEmail" style="oblique">
-   <position>{(730,330)(880,330)}</position>
+   <position>{(910,120)(1080,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ValidationEmail" style="oblique">
-   <position>{(870,120)(960,40)}</position>
+   <position>{(670,210)(660,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SendEmail" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(960,40)(840,220)}</position>
+   <position>{(660,310)(840,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/emailViewPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(960,40)(420,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(660,310)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doRecallEmail" linkstyle="Direct" name="" sourceName="/Pages/WebPage/RecallEmailPage" style="oblique">
-   <position>{(990,220)(1140,220)}</position>
+   <position>{(920,310)(655,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRecallEmail" style="oblique">
+   <position>{(655,460)(270,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/emailViewPage" componentIfTrue="/Steps/AutomaticStep/SendEmail" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="940" y="20">
+  <Condition componentIfFalse="/Pages/WebPage/emailViewPage" componentIfTrue="/Steps/AutomaticStep/SendEmail" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="640" y="290">
    <Description/>
   </Condition>
  </Conditions>

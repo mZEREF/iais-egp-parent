@@ -12,7 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
@@ -61,19 +61,19 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             List<PremCheckItem> premCheckItems = loadPremChecklistItem(configId, false);
 
            // List<AppGrpPremisesDto> premisesDto = RestApiUtil.getListByPathParam(RestApiUrlConsts.IAIS_APPLICATION + "/application/app-group-premises-results/{appid}", appId, AppGrpPremisesDto.class);
-            AppGrpPremisesDto premisesDto = applicationClient.getAppGrpPremisesDtoByAppGroId(appId).getEntity();
-            String premId = premisesDto.getId();
-            premIdList.add(premId);
-
             Map<String, List<PremCheckItem>> premAnswerMap = new HashMap<>(16);
-            premAnswerMap.put(premId, premCheckItems);
-
-            selfDecl.setPremAnswerMap(premAnswerMap);
-            selfDecl.setSvcCode(svcCode);
-            selfDecl.setSvcName(svcName);
-            selfDecl.setConfIdList(confList);
-            selfDecl.setSvcId(svcId);
-            selfDeclList.add(selfDecl);
+            List<AppPremisesCorrelationDto>  correlations = RestApiUtil.getListByPathParam("iais-application:8883/iais-application/application/correlations/{appid}", appId, AppPremisesCorrelationDto.class);
+            for (AppPremisesCorrelationDto correlation : correlations){
+                String correId = correlation.getId();
+                selfDecl.setPremAnswerMap(premAnswerMap);
+                selfDecl.setSvcCode(svcCode);
+                selfDecl.setSvcName(svcName);
+                selfDecl.setConfIdList(confList);
+                selfDecl.setSvcId(svcId);
+                selfDeclList.add(selfDecl);
+                premAnswerMap.put(correId, premCheckItems);
+                premIdList.add(correId);
+            }
         }
 
         SelfDecl common = overlayCommon(premIdList);

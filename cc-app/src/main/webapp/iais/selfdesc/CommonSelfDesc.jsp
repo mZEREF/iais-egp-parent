@@ -116,6 +116,7 @@
           <td>
             <div class="text-right text-center-mobile">
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
+              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSave('${requestScope.tabIndex}');">Draft</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
             </div>
 
@@ -142,6 +143,11 @@
 
       function doSubmit(){
           SOP.Crud.cfxSubmit("mainForm", "submitSelfDesc");
+      }
+
+      function doSave(id){
+          $("[name='tabIndex']").val(id);
+          SOP.Crud.cfxSubmit("mainForm", "doSave", id);
       }
 
   </script>

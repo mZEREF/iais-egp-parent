@@ -70,8 +70,6 @@ public class AppPremSelfDeclDelegator {
             ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
         }
 
-        String tabIndex = ParamUtil.getString(request, "tabIndex");
-        ParamUtil.setRequestAttr(request, "tabIndex", tabIndex);
     }
 
     /**
@@ -83,25 +81,43 @@ public class AppPremSelfDeclDelegator {
     public void initCommonData(BaseProcessClass bpc){
     }
 
+
+
     /**
-     * AutoStep: initServiceData
+     * AutoStep: doSave
      *
      * @param bpc
      * @throws
      */
-    public void initServiceData(BaseProcessClass bpc){
+    public void doSave(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+
+        String currentPage = (String) ParamUtil.getString(request, "crud_action_value");
+
+        List<SelfDecl> selfDeclByGroupId = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
+
+        for (SelfDecl selfDecl : selfDeclByGroupId){
+            if (currentPage == null && selfDecl.isCommon()){
+                Map<String, List<PremCheckItem>> premAnswerMap = selfDecl.getPremAnswerMap();
+                 setAnswer(request, premAnswerMap);
+            }else if (currentPage != null && currentPage.equals(selfDecl.getSvcId())){
+                Map<String, List<PremCheckItem>> premAnswerMap = selfDecl.getPremAnswerMap();
+                setAnswer(request, premAnswerMap);
+            }
+
+        }
+        ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
     }
 
-
-    /**
-     * AutoStep: saveServiceData
-     *
-     * @param bpc
-     * @throws
-     */
-    public void saveServiceData(BaseProcessClass bpc){
-
+    private void setAnswer(HttpServletRequest request, Map<String, List<PremCheckItem>> premAnswerMap){
+        for (Map.Entry<String,  List<PremCheckItem>> entry : premAnswerMap.entrySet()){
+            List<PremCheckItem> premCheckItemList = entry.getValue();
+            for (PremCheckItem item : premCheckItemList){
+                String answer = ParamUtil.getString(request, item.getAnswerKey());
+                item.setAnswer(answer);
+                ParamUtil.setSessionAttr(request, item.getAnswerKey(), answer);
+            }
+        }
     }
 
     /**
@@ -113,20 +129,8 @@ public class AppPremSelfDeclDelegator {
     public void saveCommonData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
-        List<SelfDecl> selfDeclByGroupId = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
-
-        for (SelfDecl selfDecl : selfDeclByGroupId){
-            Map<String, List<PremCheckItem>> premAnswerMap = selfDecl.getPremAnswerMap();
-            for (Map.Entry<String,  List<PremCheckItem>> entry : premAnswerMap.entrySet()){
-                List<PremCheckItem> premCheckItemList = entry.getValue();
-                for (PremCheckItem item : premCheckItemList){
-                    String answer = ParamUtil.getString(request, item.getAnswerKey());
-                    item.setAnswer(answer);
-                    ParamUtil.setSessionAttr(request, item.getAnswerKey(), answer);
-                }
-            }
-        }
-        ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
+        String tabIndex = ParamUtil.getString(request, "tabIndex");
+        ParamUtil.setRequestAttr(request, "tabIndex", tabIndex);
     }
 
     /**
