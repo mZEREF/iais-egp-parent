@@ -16,13 +16,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -193,6 +194,13 @@ public class TaskServiceImpl implements TaskService {
         return RestApiUtil.save(RestApiUrlConsts.APPLICATION_HISTORYS,appPremisesRoutingHistoryDtoList,List.class);
     }
 
+    @Override
+    public List<TaskDto> getCommPoolByGroupWordId(String workGroupId) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("workGroupId", workGroupId);
+        return RestApiUtil.getListByReqParam(RestApiUrlConsts.TASK_COMMON_POOL_BY_WORKGPID,map,TaskDto.class);
+    }
+
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
         for(ApplicationDto applicationDto : applicationDtos){
@@ -265,5 +273,6 @@ public class TaskServiceImpl implements TaskService {
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return appPremisesRoutingHistoryDto;
     }
+
 
 }
