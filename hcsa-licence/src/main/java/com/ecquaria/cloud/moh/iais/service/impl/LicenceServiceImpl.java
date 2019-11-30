@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -34,11 +36,21 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public String getLicenceNo(String hciCode, String serviceCode, int yearLength) {
+        Integer licenceSeq = RestApiUtil.getByPathParam(RestApiUrlConsts.HCI_CODE_LICENCE_NUMBER_HCICODE,hciCode,Integer.class);
         Map<String,Object> param = new HashMap();
         param.put("hciCode",hciCode);
         param.put("serviceCode",serviceCode);
         param.put("yearLength",yearLength);
+        param.put("licenceSeq",licenceSeq);
         return RestApiUtil.getByReqParam(RestApiUrlConsts.LICENCE_NUMBER,param,String.class);
+    }
+
+    @Override
+    public AppPremisesRecommendationDto getTcu(String appPremCorrecId) {
+        Map<String,Object> param = new HashMap<>();
+        param.put("appPremId",appPremCorrecId);
+        param.put("recomType",InspectionConstants.RECOM_TYPE_TCU);
+        return RestApiUtil.getByReqParam(RestApiUrlConsts.APPLICATION_BE,param,AppPremisesRecommendationDto.class);
     }
 
     @Override
