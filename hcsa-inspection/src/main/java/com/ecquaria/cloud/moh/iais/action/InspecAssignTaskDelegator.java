@@ -126,13 +126,16 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
-        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
-        Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
         String applicationNo = ParamUtil.getMaskedString(bpc.request,"applicationNo");
-        String taskId = map.get(applicationNo);
-        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo);
-        inspecTaskCreAndAssDto.setTaskId(taskId);
-        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto;
+        if(!StringUtil.isEmpty(applicationNo) && !(AppConsts.NO.equals(applicationNo))){
+            Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
+            ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
+            String taskId = map.get(applicationNo);
+            inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo);
+            inspecTaskCreAndAssDto.setTaskId(taskId);
+            ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+        }
     }
 
     /**
@@ -144,6 +147,9 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorAction(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAction start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
+        List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
+        inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
         ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto,"create");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
@@ -155,6 +161,7 @@ public class InspecAssignTaskDelegator {
         }else{
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         }
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**
@@ -175,6 +182,10 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorSuccess(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSuccess start ...."));
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
+        inspectionAssignTaskService.assignTaskForInspectors(commPools, inspecTaskCreAndAssDto);
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**
@@ -185,7 +196,8 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorConfirm start ...."));
-
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**
@@ -237,6 +249,7 @@ public class InspecAssignTaskDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
     }
 
     private void setMapTaskId(BaseProcessClass bpc, List<TaskDto> commPools) {

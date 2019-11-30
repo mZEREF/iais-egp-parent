@@ -120,13 +120,13 @@ public class AppPremSelfDeclDelegator {
             for (Map.Entry<String,  List<PremCheckItem>> entry : premAnswerMap.entrySet()){
                 List<PremCheckItem> premCheckItemList = entry.getValue();
                 for (PremCheckItem item : premCheckItemList){
-                    String itemId = item.getChecklistItemId();
-                    String answer = ParamUtil.getString(request, itemId);
+                    String answer = ParamUtil.getString(request, item.getAnswerKey());
                     item.setAnswer(answer);
-                    ParamUtil.setSessionAttr(request, itemId, answer);
+                    ParamUtil.setSessionAttr(request, item.getAnswerKey(), answer);
                 }
             }
         }
+        ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
     }
 
     /**

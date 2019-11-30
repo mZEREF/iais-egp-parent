@@ -375,6 +375,11 @@ public class HcsaChklConfigDelegator {
             String section = sec.getSection();
             String order = ParamUtil.getString(request, section);
             sec.setOrder(Integer.valueOf(order));
+            List<ChecklistItemDto> checklistItemDtos = sec.getChecklistItemDtos();
+            for (ChecklistItemDto item : checklistItemDtos){
+                String itemOrder = ParamUtil.getString(request, item.getItemId());
+                item.setSectionItemOrder(Integer.valueOf(itemOrder));
+            }
         }
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConfig);

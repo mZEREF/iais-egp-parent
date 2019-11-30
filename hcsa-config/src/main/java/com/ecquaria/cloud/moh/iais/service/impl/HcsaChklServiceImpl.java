@@ -29,7 +29,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public void deleteRecord(String configId) {
-        chklClient.deleteRecord(configId).getEntity();
+        chklClient.deleteRecord(configId);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public void saveChklItem(ChecklistItemDto itemDto) {
-        chklClient.saveChklItem(itemDto).getEntity();
+        chklClient.saveChklItem(itemDto);
     }
 
     @Override
@@ -68,12 +68,12 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public void submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
-        chklClient.submitCloneItem(hcsaChklItemDtos).getEntity();
+        chklClient.submitCloneItem(hcsaChklItemDtos);
     }
 
     @Override
     public void submitConfig(ChecklistConfigDto checklistConfigDto) {
-        chklClient.submitConfig(checklistConfigDto).getEntity();
+        chklClient.submitConfig(checklistConfigDto);
     }
 
     @Override

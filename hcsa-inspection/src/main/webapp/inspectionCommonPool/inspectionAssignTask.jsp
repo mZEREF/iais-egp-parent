@@ -27,6 +27,15 @@
             <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
               <div class="panel-body">
                 <div class="panel-main-content">
+                  <iais:error>
+                    <c:if test = "${not empty errorMap}">
+                      <div class="error">
+                        <c:forEach items="${errorMap}" var="map">
+                          ${map.key}  ${map.value} <br/>
+                        </c:forEach>
+                      </div>
+                    </c:if>
+                  </iais:error>
                   <iais:section title="" id = "assign_Task">
                     <iais:row>
                       <iais:field value="Application Number"/>
@@ -67,7 +76,8 @@
                     <iais:row>
                       <iais:field value="Submission Date"/>
                       <iais:value width="7">
-                        <iais:datePicker id = "submitDt" name = "submitDt" value="${inspecTaskCreAndAssDto.submitDt}"></iais:datePicker>
+                        <%--<iais:datePicker id = "submitDt" name = "submitDt" value="${inspecTaskCreAndAssDto.submitDt}"></iais:datePicker>--%>
+                        <label><c:out value="${inspecTaskCreAndAssDto.submitDt}"/></label>
                       </iais:value>
                     </iais:row>
                     <iais:row>
@@ -79,8 +89,9 @@
                     <iais:row>
                       <iais:field value="Inspector"/>
                       <iais:value width="10">
-                        <input type="checkbox" name="inspector" value="yc">YiChen</input>
-                        <input type="checkbox" name="inspector" value="hc">HuaChong</input>
+                        <c:forEach items="${inspecTaskCreAndAssDto.inspector}" var="name">
+                          <input type="checkbox" name="inspector" value="<c:out value="${name.value}"/>"/><c:out value="${name.text}"/>
+                        </c:forEach>
                       </iais:value>
                     </iais:row>
                     <iais:row>

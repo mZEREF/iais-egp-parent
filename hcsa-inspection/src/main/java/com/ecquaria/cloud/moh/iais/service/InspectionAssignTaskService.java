@@ -77,4 +77,22 @@ public interface InspectionAssignTaskService {
       * @Descripation: getAppStatusOption
       */
     List<SelectOption> getAppStatusOption();
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/28
+      * @Param: nameValue, inspecTaskCreAndAssDto
+      * @return: InspecTaskCreAndAssDto
+      * @Descripation: get checked Inspector
+      */
+    List<SelectOption> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/11/29
+      * @Param: commPools inspecTaskCreAndAssDto
+      * @return: void
+      * @Descripation: update Common Pool and create Inspector Task
+      */
+    void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
 }
