@@ -21,7 +21,6 @@ public class RestBridgeHelper {
                                                   Object entity, Class<T> retrunClass, HttpMethod requestType) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("", "");
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         headers.add("date", signature.date());
         headers.add("authorization", signature.authorization());
