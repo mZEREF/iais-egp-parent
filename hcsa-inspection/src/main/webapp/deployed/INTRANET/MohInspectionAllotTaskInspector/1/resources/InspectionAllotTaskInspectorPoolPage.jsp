@@ -1,0 +1,1 @@
+<%@include file = "/inspectionCommonPool/inspectionCommonPool.jsp"%>
