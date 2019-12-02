@@ -29,7 +29,7 @@ public interface InspectionTaskClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<ApplicationGroupDto> getApplicationGroupDtoByAppGroId(@PathVariable("appGroupId") String appGroupId);
 
-    @RequestMapping(path = "/iais-application/application-premises-by-app-id/{applicationId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(path = "/iais-inspection/application-premises-by-app-id/{applicationId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 

@@ -29,9 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Shicheng
@@ -165,6 +163,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
     }
 
+    @Override
+    public SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
+        for(InspectionCommonPoolQueryDto icpqDto: searchResult.getRows()){
+            AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(icpqDto.getId());
+            icpqDto.setHciName(icpqDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
+        }
+        return searchResult;
+    }
+
     private void createTaskByInspectorList(List<SelectOption> inspectorCheckList, List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
         List<TaskDto> taskDtoList = new ArrayList<>();
         for(SelectOption so : inspectorCheckList) {
@@ -225,11 +232,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
       * @Descripation: get ApplicationDto By Application No.
       */
     public ApplicationDto getApplicationDtoByAppNo(String appNo){
-        Map<String,Object> map2 = new HashMap<>();
-        map2.put("applicationNo", appNo);
-        ApplicationDto applicationDto = RestApiUtil.getByReqParam("iais-application:8883/iais-inspection/one-of-inspection/{applicationNo}",map2,ApplicationDto.class);
-        return applicationDto;
-        /*return inspectionTaskClient.getApplicationDtoByAppNo(appNo).getEntity();*/
+        return inspectionTaskClient.getApplicationDtoByAppNo(appNo).getEntity();
     }
 
     /**

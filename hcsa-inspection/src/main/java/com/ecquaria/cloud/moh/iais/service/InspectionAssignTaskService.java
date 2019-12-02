@@ -95,4 +95,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: update Common Pool and create Inspector Task
       */
     void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/2
+      * @Param: searchResult
+      * @return: SearchResult
+      * @Descripation: get Address By Result
+      */
+    SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult);
 }
