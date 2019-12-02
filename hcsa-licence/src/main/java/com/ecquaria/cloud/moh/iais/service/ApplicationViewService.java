@@ -20,5 +20,5 @@ public interface ApplicationViewService {
 
     List<HcsaSvcDocConfigDto> getTitleById(List<String> titleIdList);
 
-    List<HcsaSvcRoutingStageDto> getStageName(String serviceId,String stageId);
+    List<HcsaSvcRoutingStageDto> getStage(String serviceId,String stageId);
 }
