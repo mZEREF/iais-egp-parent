@@ -24,9 +24,9 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,33 +93,61 @@ public class HcsaApplicationDelegator {
     public void prepareData(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
-        String  taskId = ParamUtil.getString(bpc.request,"taskId");
-       // String taskId="12848A70-820B-EA11-BE7D-000C29F371DC";
+       String  taskId = ParamUtil.getString(bpc.request,"taskId");
+        //String taskId="12848A70-820B-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
-        //get routing stage dropdown send to page.
+//        get routing stage dropdown send to page.
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
-        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
-        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
-        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
-        for (int i = 0; i <appSupDocDtos.size(); i++) {
-            for (int j = 0; j <docTitleList.size() ; j++) {
-                if (appSupDocDtos.get(i).getFile().equals(docTitleList.get(j).getId())){
-                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
-                }
-            }
-            for (int j = 0; j <userNameList.size() ; j++) {
-                if (appSupDocDtos.get(i).getSubmittedBy().equals(userNameList.get(j).getId())){
-                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getUserName());
-                }
-            }
-        }
+//        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
+//        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+//        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
+//        for (int i = 0; i <appSupDocDtos.size(); i++) {
+//            for (int j = 0; j <docTitleList.size() ; j++) {
+//                if (appSupDocDtos.get(i).getFile().equals(docTitleList.get(j).getId())){
+//                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+//                }
+//            }
+//            for (int j = 0; j <userNameList.size() ; j++) {
+//                if (appSupDocDtos.get(i).getSubmittedBy().equals(userNameList.get(j).getId())){
+//                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getUserName());
+//                }
+//            }
+//        }
+        String applicationType=MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType());
+        applicationViewDto.getApplicationDto().setApplicationType(applicationType);
         String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(serviceType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
         applicationViewDto.setCurrentStatus(status);
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStageName(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
-        applicationViewDto.setHcsaSvcRoutingStageDtoList(hcsaSvcRoutingStageDtoList);
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
+        Map<String,String> routingStage=new HashMap<>();
+
+        for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList
+             ) {
+            routingStage.put(hcsaSvcRoutingStage.getStageName(),hcsaSvcRoutingStage.getStageCode());
+        }
+
+        if("AO3".equals(applicationViewDto.getCurrentStatus())){
+            routingStage.put("RollBack","APST000");
+            routingStage.put("Pending Approval","APST002");
+            routingStage.put("Reject","APST006");
+            routingStage.put("Internal Enquiry","APST0013");
+            routingStage.put("Route To DMS","APST0014");
+        }else if("AO2".equals(applicationViewDto.getCurrentStatus())
+                ||"AO1".equals(applicationViewDto.getCurrentStatus())){
+            routingStage.put("Reject","APST006");
+            routingStage.put("RollBack","APST000");
+            routingStage.put("Support","APST0015");
+        }else if("PSO".equals(applicationViewDto.getCurrentStatus())){
+            routingStage.put("Verified","APST0016");
+            routingStage.put("Request For Information","APST0017");
+        }else if("ASO".equals(applicationViewDto.getCurrentStatus())) {
+            routingStage.put("Verified", "APST0016");
+            routingStage.put("Request For Information", "APST0017");
+            routingStage.put("Licence Start Date", "APST0018");
+        }
+        applicationViewDto.setRoutingStage(routingStage);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));

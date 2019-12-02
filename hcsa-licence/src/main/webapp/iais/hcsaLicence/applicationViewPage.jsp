@@ -497,8 +497,8 @@
                                                     </td>
                                                     <td>
                                                         <select name="nextStage" >
-                                                            <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
-                                                                <option  value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
+                                                            <c:forEach items="${applicationViewDto.routingStage}" var="routingStageMap">
+                                                                <option  value="${routingStageMap.value}">${routingStageMap.key}</option>
                                                           </c:forEach>
                                                          </select>
                                                     </td>
