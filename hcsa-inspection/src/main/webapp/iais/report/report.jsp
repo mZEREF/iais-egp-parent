@@ -319,8 +319,8 @@
                             <p>Remarks</p>
                         </label>
                     </div>
-                    <div class="col-sm-5 col-md-5">
-                        <label for="control--runtime--23--text"></label><input type="text" id="control--runtime--23--text" class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                    <div class="col-sm-5">
+                        <p>${insRepDto.taskRemarks}</p>
                     </div>
                 </div>
             </div>
@@ -453,7 +453,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5 col-md-5">
-                        <label for="control--runtime--30--text"></label><input type="text" id="control--runtime--30--text" class="form-control control-input control-set-font control-font-normal"
+                        <label for="control--runtime--30--text"></label><input type="text" id="control--runtime--30--text" name="remarks" class="form-control control-input control-set-font control-font-normal"
                                                                                 value="" size="30">
                     </div>
                 </div>
@@ -473,7 +473,7 @@
             </div>
         </td>
     </tr>
-    <tr height="1">
+    <tr height="5">
         <td class="first last" style="width: 100%;">
             <div id="control--runtime--32" class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
@@ -482,25 +482,13 @@
                             Recommendations
                         </label>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-md-2">
-                            <div class="form-check">
-                                <input class="form-check-input" id="icon_1_sample_1" type="radio" name="sample1" aria-invalid="false">
-                                <label class="form-check-label" for="icon_1_sample_1"><span class="check-circle"></span>1111</label>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-2">
-                            <div class="form-check hover">
-                                <input class="form-check-input" id="icon_2_sample_1" type="radio" name="sample1" aria-invalid="false">
-                                <label class="form-check-label" for="icon_2_sample_1"><span class="check-circle"></span>222</label>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-2">
-                            <div class="form-check hover">
-                                <input class="form-check-input" id="icon_3_sample_1" type="radio" name="sample1" aria-invalid="false">
-                                <label class="form-check-label" for="icon_3_sample_1"><span class="check-circle"></span>3333r</label>
-                            </div>
-                        </div>
+                    <div class="col-sm-5 col-md-5">
+                        <select>
+                            <option value="Rject" name="recommendation">Rject</option>
+                            <option value="1year" name="recommendation">1year</option>
+                            <option value="1year" name="recommendation">12year</option>
+                            <option value="1year" name="recommendation">13year</option>
+                        </select>
                     </div>
                 </div>
             </div>

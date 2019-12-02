@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
@@ -22,13 +23,11 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Autowired
     private InsRepClient insRepClient;
+
     @Override
     public InspectionReportDto getInsRepDto(String appNo) {
         InspectionReportDto inspectionReportDto = insRepClient.getInspectionReportDtoByAppNo(appNo).getEntity();
-        String licenceId = "92B33E39-B7FA-428A-901A-3AC7F8886F8C";
-//        InspectionReportDto insReportDto = RestApiUtil.postGetObject("iais-hcsa-licence:8882/hcsa-lic-licensee/detection-lic-licensee", licenceId, InspectionReportDto.class);
-//        inspectionReportDto.setLicenceNo(insReportDto.getLicenceNo());
-//        inspectionReportDto.setLicenseeName(insReportDto.getLicenseeName());
+        //String licenceId = "92B33E39-B7FA-428A-901A-3AC7F8886F8C";
         inspectionReportDto.setInspectionDate(new Date());
         inspectionReportDto.setInspectionTime(new Date());
         inspectionReportDto.setStatus("Full Compliance");
@@ -37,14 +36,22 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setNcRegulation(ncRegulation());
         inspectionReportDto.setInspectOffices("inspector officer");
         inspectionReportDto.setInspectorRemark("inspection Remark");
-        inspectionReportDto.setTaskRemark("taskRemake");
+        inspectionReportDto.setTaskRemarks("taskRemake");
         inspectionReportDto.setReasonForVisit("pre inspection");
         inspectionReportDto.setReportedBy("weilu");
         inspectionReportDto.setReportNoteBy("jinhua");
         inspectionReportDto.setInspectedBy(inspects());
+
         return inspectionReportDto;
     }
-    private List<ReportNcRegulationDto> ncRegulation (){
+
+    @Override
+    public String saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
+        String isValid = insRepClient.saveData(appPremisesRecommendationDto).getEntity();
+        return isValid;
+    }
+
+    private List<ReportNcRegulationDto> ncRegulation() {
         List<ReportNcRegulationDto> list = new ArrayList<>();
         ReportNcRegulationDto reportNcRegulationDto1 = new ReportNcRegulationDto();
         ReportNcRegulationDto reportNcRegulationDto2 = new ReportNcRegulationDto();
@@ -60,7 +67,8 @@ public class InsRepServiceImpl implements InsRepService {
         list.add(reportNcRegulationDto3);
         return list;
     }
-    private List<String> inspects(){
+
+    private List<String> inspects() {
         List<String> list = new ArrayList<>();
         list.add("inspection1");
         list.add("inspection2");
