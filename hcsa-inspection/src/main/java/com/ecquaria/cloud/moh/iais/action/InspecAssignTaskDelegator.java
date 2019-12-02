@@ -93,6 +93,7 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
+        ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){
@@ -128,8 +129,8 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         String applicationNo = ParamUtil.getMaskedString(bpc.request,"applicationNo");
-        InspecTaskCreAndAssDto inspecTaskCreAndAssDto;
         if(!StringUtil.isEmpty(applicationNo) && !(AppConsts.NO.equals(applicationNo))){
             Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
@@ -138,6 +139,7 @@ public class InspecAssignTaskDelegator {
             inspecTaskCreAndAssDto.setTaskId(taskId);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
         }
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**
@@ -255,7 +257,6 @@ public class InspecAssignTaskDelegator {
         if(!StringUtil.isEmpty(sub_date)){
             searchParam.addFilter("sub_date",sub_date,true);
         }
-
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
     }

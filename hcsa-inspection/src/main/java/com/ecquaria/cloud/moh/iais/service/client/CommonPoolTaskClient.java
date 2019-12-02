@@ -17,7 +17,7 @@ import java.util.List;
  * @author Shicheng
  * @date 2019/11/26 13:50
  **/
-@FeignClient(name = "organization", configuration = FeignConfiguration.class,
+@FeignClient(name = "IAIS-ORGANIZATION", configuration = FeignConfiguration.class,
         fallback = CommonPoolTaskClientFallback.class)
 public interface CommonPoolTaskClient {
     @RequestMapping(path = "/iais-task/commpool/{workGroupId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
@@ -26,9 +26,9 @@ public interface CommonPoolTaskClient {
 
     @PutMapping(path = "/iais-task", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    FeignResponseEntity<TaskDto> updateAndAssignTask(@PathVariable TaskDto taskDto);
+    FeignResponseEntity<TaskDto> updateAndAssignTask(TaskDto taskDto);
 
     @PostMapping(path = "/iais-task",                                                                                          produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    FeignResponseEntity<TaskDto> createAndAssignTask(@PathVariable TaskDto taskDto);
+    FeignResponseEntity<List<TaskDto>> createAndAssignTask(List<TaskDto> taskDtoList);
 }
