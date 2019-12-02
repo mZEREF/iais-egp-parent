@@ -9,9 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
  * @date 2019/11/23
  */
 public interface InspEmailService {
-    InspectionEmailTemplateDto getInsEmailTemplateDto(String templateId);
     String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto);
     void recallEmailTemplate(String id);
-    String previewEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto);
-    String applyInspection(InspectionEmailTemplateDto inspectionEmailTemplateDto);
 }

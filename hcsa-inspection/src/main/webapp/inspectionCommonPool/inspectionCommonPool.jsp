@@ -104,10 +104,9 @@
                   <c:choose>
                     <c:when test="${empty cPoolSearchResult.rows}">
                       <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                           <iais:message key="ACK00001" escape="true"></iais:message>
                           <!--No Record!!-->
-                      <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="applicationNo" value="AN1911153344-01"/>');">Assign</button></td>
                         </td>
                       </tr>
                     </c:when>

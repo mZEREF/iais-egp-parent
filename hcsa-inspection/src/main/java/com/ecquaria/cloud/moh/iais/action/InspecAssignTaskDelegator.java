@@ -82,9 +82,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPre start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        SearchResult<InspecTaskCreAndAssDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_RESULT);
-        List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId("A03EDD16-F90C-EA11-BE7D-000C29F371DC");
-        setMapTaskId(bpc, commPools);
+        SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
 
         List<SelectOption> appTypeOption = inspectionAssignTaskService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionAssignTaskService.getAppStatusOption();
@@ -93,7 +91,6 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
-        ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){
