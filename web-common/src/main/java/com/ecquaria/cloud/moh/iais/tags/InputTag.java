@@ -17,6 +17,8 @@ public class InputTag extends DivTagSupport{
     private String type;
     private String name;
     private String value;
+    private String autocomplete;
+    private String maxLength;
 
 
     public InputTag() {
@@ -31,6 +33,8 @@ public class InputTag extends DivTagSupport{
         type = null;
         name = null;
         value = null;
+        autocomplete = "off";
+        maxLength = null;
     }
 
     @Override
@@ -61,6 +65,12 @@ public class InputTag extends DivTagSupport{
         if (!StringUtil.isEmpty(value)) {
             html.append(" value=\"").append(value).append("\"");
         }
+        if(!StringUtil.isEmpty(autocomplete)){
+            html.append(" maxlength=\"").append(maxLength).append("\"");
+        }
+        if(!StringUtil.isEmpty(autocomplete)){
+            html.append(" autocomplete=\"").append(autocomplete).append("\"");
+        }
         html.append(">");
 
         try {
@@ -88,5 +98,14 @@ public class InputTag extends DivTagSupport{
     }
     public void setValue(String value) {
         this.value = value;
+    }
+    public void setAutocomplete(String autocomplete) {
+        if(!StringUtil.isEmpty(autocomplete)){
+            this.autocomplete = autocomplete;
+        }
+    }
+
+    public void setMaxLength(String maxLength) {
+        this.maxLength = maxLength;
     }
 }

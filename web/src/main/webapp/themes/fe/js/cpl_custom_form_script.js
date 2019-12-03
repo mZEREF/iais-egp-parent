@@ -61,7 +61,7 @@ $('document').ready(function() {
     $('table.control-grid tbody tr td select').niceSelect();
     $('.nice-select ul').mCustomScrollbar();
 
-    $('select.officer-select').on('change', function() {
+    /*$('select.officer-select').on('change', function() {
         $parentEle = $(this).closest('td.first');
         if ($(this).val() == "newOfficer") {
             $parentEle.find('> .new-officer-form').removeClass('hidden');
@@ -78,9 +78,9 @@ $('document').ready(function() {
         var scroll_top = $(this).closest('td').offset().top + iframe_top - offset_top;
 
         sessionStorage.setItem('scrollHeight', scroll_top);
-    });
-    var officer_count = 2;
+    });*/
 
+    var officer_count = 2;
     $('.officer-select-btn').on('change', function() {
         $('.more-officer-btn').removeClass('hidden');
         $parentEle = $(this).closest('.officer-items');
@@ -117,3 +117,22 @@ $('document').ready(function() {
 
     
 });
+
+
+function doClear() {
+    $('.more-officer-btn').removeClass('hidden');
+    $parentEle = $(this).closest('.officer-items');
+    if ($(this).val() == "newOfficer") {
+        $parentEle.find('.new-officer-form').removeClass('hidden');
+        $parentEle.find('.profile-info-gp').addClass('hidden');
+    } else {
+        $parentEle.find('.profile-info-gp').removeClass('hidden');
+        $parentEle.find('.new-officer-form').addClass('hidden');
+    }
+
+    var iframe_top = parseInt(sessionStorage.getItem('iframe_top'));
+    var offset_top = 50;
+    var scroll_top = $(this).closest('td').offset().top + iframe_top - offset_top;
+
+    sessionStorage.setItem('scrollHeight', scroll_top);
+}
