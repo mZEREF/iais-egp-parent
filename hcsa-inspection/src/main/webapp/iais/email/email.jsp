@@ -1,5 +1,6 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/jquery-3.4.1.min.js"></script>
 <jsp:useBean id="insEmailDto" scope="session" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
-
 <table class="table">
     <tbody>
     <tr height="1">
@@ -27,19 +28,20 @@
             </div>
         </td>
     </tr>
-
-    <tr height="1" id="Best-Practices">
+    <tr height="1">
         <td class="col-xs-2" >
             <p >
-                BestPractices:
+                remarks:
             </p>
         </td>
         <td>
             <div class="col-sm-9">
-                <p><input name="BestPractices"  id="BestPractices"  type="text" title="Best practices recommended by inspector" ></p>
+                <p><textarea name="remarks" cols="80" rows="8" class="wenbenkuang" id="remarks" title="content"  >${insEmailDto.remarks}</textarea></p>
             </div>
         </td>
     </tr>
+
+
 
     </tbody>
 </table>

@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Service;
 
 /**
  * LicenceServiceImpl
@@ -18,6 +19,7 @@ import java.util.Map;
  * @author suocheng
  * @date 11/29/2019
  */
+@Service
 public class LicenceServiceImpl implements LicenceService {
     @Override
     public List<ApplicationLicenceDto> getCanGenerateApplications(int day) {

@@ -26,7 +26,7 @@
                             <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
                                                                         data-toggle="tab">Inspection</a></li>
                             <li class="incomplete" role="presentation"><a href="#tabQiceList" aria-controls="QiceList" role="tab"
-                                                                          data-toggle="tab">QiceList</a></li>
+                                                                          data-toggle="tab">checkList</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
                                                                           data-toggle="tab">Processing</a></li>
                         </ul>
@@ -704,18 +704,10 @@
         SOP.Crud.cfxSubmit("mainForm", "send");
     }
 
-    function doReset(){
-        document.getElementById("addressee").value="";
-        document.getElementById("Name-Applicant").value="";
-        document.getElementById("Application-Num").value="";
-        document.getElementById("HCI-Code").value="";
-        document.getElementById("HCI-Name/Address").value="";
-        document.getElementById("Service-Name").value="";
-        document.getElementById("checklistItem").value="";
-        document.getElementById("Regulation").value="";
-        document.getElementById("Remarks").value="";
-        document.getElementById("BestPractices").value="";
-    }
+    <%--function doReset(){--%>
+    <%--    var Edit= document.getElementById("htmlEditroArea");--%>
+    <%--    Edit.value=${insEmailDto.messageContent};--%>
+    <%--}--%>
 </script>
 
 
