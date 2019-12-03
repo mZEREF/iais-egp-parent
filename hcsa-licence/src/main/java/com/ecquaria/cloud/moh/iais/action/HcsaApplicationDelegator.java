@@ -128,25 +128,25 @@ public class HcsaApplicationDelegator {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
 
-        if("AO3".equals(applicationViewDto.getCurrentStatus())){
-            routingStage.put("APST000","RollBack");
-            routingStage.put("APST002","Pending Approval");
-            routingStage.put("APST006","Reject");
-            routingStage.put("APST0013","Internal Enquiry");
-            routingStage.put("APST0014","Route To DMS");
-        }else if("AO2".equals(applicationViewDto.getCurrentStatus())
-                ||"AO1".equals(applicationViewDto.getCurrentStatus())){
-            routingStage.put("APST006","Reject");
-            routingStage.put("APST000","RollBack");
-            routingStage.put("APST0015","Support");
-        }else if("PSO".equals(applicationViewDto.getCurrentStatus())){
-            routingStage.put("APST0016","Verified");
-            routingStage.put("APST0017","Request For Information");
-        }else if("ASO".equals(applicationViewDto.getCurrentStatus())) {
-            routingStage.put("APST0016", "Verified");
-            routingStage.put( "APST0017","Request For Information");
-            routingStage.put("APST0018", "Licence Start Date");
-        }
+//        if("AO3".equals(applicationViewDto.getCurrentStatus())){
+//            routingStage.put("APST000","RollBack");
+//            routingStage.put("APST002","Pending Approval");
+//            routingStage.put("APST006","Reject");
+//            routingStage.put("APST0013","Internal Enquiry");
+//            routingStage.put("APST0014","Route To DMS");
+//        }else if("AO2".equals(applicationViewDto.getCurrentStatus())
+//                ||"AO1".equals(applicationViewDto.getCurrentStatus())){
+//            routingStage.put("APST006","Reject");
+//            routingStage.put("APST000","RollBack");
+//            routingStage.put("APST0015","Support");
+//        }else if("PSO".equals(applicationViewDto.getCurrentStatus())){
+//            routingStage.put("APST0016","Verified");
+//            routingStage.put("APST0017","Request For Information");
+//        }else if("ASO".equals(applicationViewDto.getCurrentStatus())) {
+//            routingStage.put("APST0016", "Verified");
+//            routingStage.put( "APST0017","Request For Information");
+//            routingStage.put("APST0018", "Licence Start Date");
+//        }
         applicationViewDto.setRoutingStage(routingStage);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);

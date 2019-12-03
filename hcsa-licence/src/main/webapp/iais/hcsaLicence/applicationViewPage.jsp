@@ -434,7 +434,7 @@
                                                     <td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p></td>
                                                 </tr>
                                                 <tr>
-                                                    <td><p>Internal Remarks:</p></td>
+                                                    <td><p>Internal Remarks(*):</p></td>
                                                     <td>
                                                         <div class="input-group">
                                                             <div class="ax_default text_area">
