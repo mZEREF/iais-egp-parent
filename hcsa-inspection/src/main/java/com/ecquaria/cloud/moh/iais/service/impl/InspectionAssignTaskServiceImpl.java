@@ -124,12 +124,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public List<SelectOption> getAppStatusOption() {
-        List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION});
-        return appStatusOption;
-    }
-
-    @Override
     public List<SelectOption> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
         List<SelectOption> inspectorCheckList = new ArrayList<>();
         for (int i = 0; i < nameValue.length; i++) {

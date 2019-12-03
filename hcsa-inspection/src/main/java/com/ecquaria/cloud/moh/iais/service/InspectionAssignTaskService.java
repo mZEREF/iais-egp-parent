@@ -71,15 +71,6 @@ public interface InspectionAssignTaskService {
 
     /**
       * @author: shicheng
-      * @Date 2019/11/27
-      * @Param: null
-      * @return: List<SelectOption>
-      * @Descripation: getAppStatusOption
-      */
-    List<SelectOption> getAppStatusOption();
-
-    /**
-      * @author: shicheng
       * @Date 2019/11/28
       * @Param: nameValue, inspecTaskCreAndAssDto
       * @return: InspecTaskCreAndAssDto
