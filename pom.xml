@@ -261,9 +261,14 @@
             </activation>
             <repositories>
                 <repository>
+                    <id>pd-nexus</id>
+                    <url>http://192.168.4.165/repository/hosted-egpcloud-maven-releases/</url>
+                </repository>
+                <repository>
                     <id>moh-iais-nexus</id>
                     <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais-grp/</url>
                 </repository>
+
             </repositories>
             <distributionManagement>
                 <repository>

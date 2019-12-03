@@ -9,7 +9,7 @@
     <c:if test="${tabIndex == null && selfDesc.common == true}">
       <c:forEach var="answerMap" items="${selfDesc.premAnswerMap}">
         <c:forEach items="${answerMap.value}" var="list"><br>
-          <input type="hidden" name="${list.checklistItemId}" value="<c:out value="${list.answer}"/>"/>　
+          <input type="hidden" name="${list.answerKey}" value="<c:out value="${list.answer}"/>"/>　
           <tr>
             <td>
               <p class="visible-xs visible-sm table-row-title"></p>
@@ -27,11 +27,11 @@
             </td>
 
             <td>
-                <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.answerKey}')"/></p>
+              <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.answerKey}')"/></p>
             </td>
 
             <td>
-                <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'NO'}">checked="checked"</c:if> onclick="javascript:selectAnswer('NO', '${list.answerKey}')"/></p>
+              <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'NO'}">checked="checked"</c:if> onclick="javascript:selectAnswer('NO', '${list.answerKey}')"/></p>
             </td>
 
             <td>
@@ -48,6 +48,8 @@
       <c:forEach items="${answerMap.value}" var="list"><br>
         <input type="hidden" name="${list.answerKey}" value="<c:out value="${list.answer}"/>"/>　
         <tr>
+          <td><iais:datePicker name = "inpDate" value=""></iais:datePicker></td>
+
           <td>
             <p class="visible-xs visible-sm table-row-title"></p>
             <p>1</p>
@@ -63,9 +65,9 @@
             <p>${list.checklistItem}</p>
           </td>
 
-          <td>
-            <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.answerKey}')"/></p>
-          </td>
+          <<td>
+          <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.answerKey}')"/></p>
+        </td>
 
           <td>
             <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'NO'}">checked="checked"</c:if> onclick="javascript:selectAnswer('NO', '${list.answerKey}')"/></p>
@@ -83,9 +85,8 @@
 
 </c:forEach>
 
-<script>
+<script type="text/javascript">
     function selectAnswer(answer, val){
         $("[name ="+val+ "]").val(answer);
     }
-
 </script>

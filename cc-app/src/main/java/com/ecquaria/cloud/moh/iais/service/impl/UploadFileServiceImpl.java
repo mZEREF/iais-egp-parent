@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.RestBridgeHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,7 +38,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     private static  final  String FILE_NAME="folder";
     private static  final  String FILE_FORMAT=".text";
     private static  final String BACKUPS="D:/backups";
-
+    private Boolean flag=true;
     @Value("${iais.syncFileTracking.url}")
     private String syncFileTrackUrl;
     @Value("${iais.hmac.keyId}")
@@ -48,7 +47,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     private String secretKey;
 
     @Autowired
-    private SystemAdminClient systemAdminClient;
+    private RestBridgeHelper restBridgeHelper;
     @Autowired
     private ApplicationClient applicationClient;
     @Override
@@ -98,8 +97,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public String  changeStatus() {
-
-        applicationClient.updateStatus().getEntity();
+        if(flag){
+            applicationClient.updateStatus().getEntity();
+        }
 
         return "";
     }
@@ -202,6 +202,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     private void rename()  {
+        flag=true;
         File zipFile =new File(BACKUPS);
        if(zipFile.isDirectory()){
            File[] files = zipFile.listFiles((dir, name) -> {
@@ -226,7 +227,12 @@ public class UploadFileServiceImpl implements UploadFileService {
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
                    file.renameTo(new File(BACKUPS+File.separator+s+".zip"));
-                   saveFileName(file.getName(),file.getPath());
+                   String s1 = saveFileName(s+".zip",BACKUPS+File.separator+s+".zip");
+                   if(!s1.equals("SUCCESS")){
+                       new File(BACKUPS+File.separator+s+".zip").delete();
+                       flag=false;
+                       break;
+                   }
                } catch (IOException e) {
                    log.error(e.getMessage(),e);
                }
@@ -251,14 +257,26 @@ public class UploadFileServiceImpl implements UploadFileService {
         }
     }
 
-    private void saveFileName(String fileName ,String filePath){
+    private String saveFileName(String fileName ,String filePath){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
+        processFileTrackDto.setProcessType("NEW");
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
         processFileTrackDto.setStatus(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
-        RestBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
-                String.class, HttpMethod.POST);
+        String s="FAIL";
+        try {
+            s = restBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
+                    String.class, HttpMethod.POST);
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            return s;
+        }
+
+            return s;
+
+
     }
 }

@@ -4,7 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -77,7 +77,7 @@ public interface AppConfigClient {
     FeignResponseEntity<List<RiskResultDto>> getRiskResult(@RequestBody List<RiskAcceptiionDto> riskAcceptiionDtoList);
 
     @RequestMapping(path = "/iais-hcsa-fee/new-fee",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FeeDto> newFee(@RequestBody @Required List<LicenceFeeQueryDto> dto);
+    FeignResponseEntity<FeeDto> newFee(@RequestBody @Required List<LicenceFeeDto> dto);
 
     @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}",method = RequestMethod.GET)
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(@PathVariable(name = "svcId")String serviceId);

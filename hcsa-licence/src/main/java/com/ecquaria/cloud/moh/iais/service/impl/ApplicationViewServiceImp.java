@@ -22,19 +22,15 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     private ApplicationClient applicationClient;
     @Override
     public ApplicationViewDto searchByAppNo(String appNo) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("appNo",appNo);
-
         //return applicationClient.getAppViewByNo(appNo).getEntity();
-        return RestApiUtil.getByReqParam("iais-application:8883/iais-application-be/applicationview/{appNo}",map, ApplicationViewDto.class);
-
+        return applicationClient.getAppViewByNo(appNo).getEntity();
     }
 
 
 
     @Override
     public ApplicationDto getApplicaitonByAppNo(String appNo) {
-        return   RestApiUtil.getByPathParam(RestApiUrlConsts.APPLICATION_APPLICATION_APPNO,appNo,ApplicationDto.class);
+        return applicationClient.getAppByNo(appNo).getEntity();
     }
 
     @Override
@@ -53,7 +49,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     }
 
     @Override
-    public List<HcsaSvcRoutingStageDto> getStageName(String serviceId, String stageId) {
+    public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId) {
         Map<String,Object> map = new HashMap<>();
         map.put("serviceId",serviceId);
         map.put("stageId",stageId);

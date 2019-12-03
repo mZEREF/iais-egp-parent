@@ -23,7 +23,7 @@
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
                             <li class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
-                                                                        data-toggle="tab">Payment</a></li>
+                                                                        data-toggle="tab">Comfirm page</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -212,6 +212,7 @@
                                                         <th>No</th>
                                                         <th>N/A</th>
                                                         <th>Remark</th>
+                                                        <th>Rectified</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -220,10 +221,12 @@
                                                             <td class="row_no">${(status.index + 1) }</td>
                                                             <td>${item.incqDto.regClauseNo}</td>
                                                             <td>${item.incqDto.checklistItem}</td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxYes" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNo" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" /></td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxYes" type="radio"  disabled <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNo" type="radio" disabled  <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" type="radio" disabled <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" disabled type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
+                                                            <td> <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> <c:if test="${item.incqDto.rectified == false}">hidden </c:if> value="rec" disabled/></td>
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>
@@ -233,25 +236,34 @@
                                                 <div class="input-group">
                                                     <div class="ax_default text_area">
                                                         <h4>Best Practice</h4>
-                                                        <textarea cols="70" rows="7" name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                        <textarea cols="70" rows="7" name="bestpractice" id="bestpractice" disabled><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
                                                     </div>
                                                 </div>
                                                 <br>
                                                 <br>
                                                 <div class="input-group">
-                                                    <b>Is TCU</b> &nbsp;<iais:select name="tuc" id="tuc" options = "isTcuOption" firstOption="Please Select" value="${fillCheckListDto.tuc}"></iais:select>
+                                                    <b>TCU Date</b> <c:out value="${fillCheckListDto.tuc}"/>&nbsp;
                                                 </div>
                                             </div>
                                             <div align="left">
-                                                <button type="button" class="btn btn-primary" onclick="javascript: doBack();">
-                                                    back
+                                                <button type="button" class="btn btn-primary" onclick="javascript: doback();">
+                                                    Back
                                                 </button>
                                             </div>
                                             <div align="right">
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
-                                                    submit
+                                                    Submit
                                                 </button>
                                             </div>
+                                            <iais:error>
+                                                <c:if test = "${not empty errorMap}">
+                                                    <div class="error">
+                                                        <c:forEach items="${errorMap}" var="map">
+                                                            ${map.key}  ${map.value} <br/>
+                                                        </c:forEach>
+                                                    </div>
+                                                </c:if>
+                                            </iais:error>
                                         </div>
                                     </div>
                                 </div>
@@ -269,6 +281,6 @@
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doSubmit(){
-        SOP.Crud.cfxSubmit("mainForm", "next");
+        SOP.Crud.cfxSubmit("mainForm", "submit");
     }
 </script>

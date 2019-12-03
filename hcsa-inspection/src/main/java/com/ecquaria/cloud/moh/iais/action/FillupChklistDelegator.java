@@ -4,23 +4,24 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.task.TaskService;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -36,6 +37,7 @@ public class FillupChklistDelegator {
     private TaskService taskService;
     private FillupChklistService fillupChklistService;
     private FilterParameter filterParameter;
+
 
     @Autowired
     public FillupChklistDelegator(FillupChklistService fillupChklistService, FilterParameter filterParameter){
@@ -60,6 +62,11 @@ public class FillupChklistDelegator {
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getString(request,"TaskId");
+        String serviceCode ="BLB";
+        String serviceType = "Inspection";
+        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceCode,serviceType);
+        ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
+
     }
     /**
      * AutoStep: AssignedInspectionTask
@@ -70,30 +77,12 @@ public class FillupChklistDelegator {
     public void assignedInspectionTask(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
-
-        filterParameter.setClz(CheckItemQueryDto.class);
-        filterParameter.setSearchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH);
-        filterParameter.setResultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT);
-        filterParameter.setSortField("item_id");
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        QueryHelp.setMainSql("inspectionQuery", "listChklItem", searchParam);
-        SearchResult searchResult =  fillupChklistService.listChklItem(searchParam);
-        String taskId = "";
-        String serviceCode ="";
-        String serviceType = "";
-/*        List<CheckItemQueryDto> testdtoList = searchResult.getRows();
-        InspectionFillCheckListDto cDto = fillupChklistService.gettestInspectionFillCheckListDto(taskId,serviceCode,serviceType);*/
-        List<ChecklistQuestionDto> dtoList = searchResult.getRows();
-        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,"BLB","Inspection");
-
-
-
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, searchParam);
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
-        ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
-        //
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);
-
+        List<SelectOption> isTcuOption = new ArrayList<>();
+        SelectOption op = new SelectOption("Yes","Yes");
+        SelectOption op2 = new SelectOption("No","No");
+        isTcuOption.add(op);
+        isTcuOption.add(op2);
+        ParamUtil.setRequestAttr(request,"isTcuOption",isTcuOption);
     }
 
 
@@ -106,7 +95,22 @@ public class FillupChklistDelegator {
      */
     public void inspectionChecklist(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request, "isValid", "Y");
+        InspectionFillCheckListDto cDto = getDataFromPage(request);
+        InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
+        ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
+        Map<String, String> errMap = InspectionCheckListValidation.validate(request);
+        List<SelectOption> isTcuOption = new ArrayList<>();
+        SelectOption op = new SelectOption("Yes","Yes");
+        SelectOption op2 = new SelectOption("No","No");
+        isTcuOption.add(op);
+        isTcuOption.add(op2);
+        ParamUtil.setRequestAttr(request,"isTcuOption",isTcuOption);
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, "isValid", "N");
+            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errMap);
+        }else{
+            ParamUtil.setRequestAttr(request, "isValid", "Y");
+        }
     }
 
     /**
@@ -116,6 +120,32 @@ public class FillupChklistDelegator {
      * @throws
      */
     public void submitInspection(BaseProcessClass bpc) {
-
+        HttpServletRequest request = bpc.request;
+        InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
+        fillupChklistService.saveDto(icDto);
     }
+
+    public InspectionFillCheckListDto getDataFromPage(HttpServletRequest request){
+        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
+        List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
+        for(InspectionCheckQuestionDto temp:checkListDtoList){
+            String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rad");
+            String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"remark");
+            String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rec");
+            if(!StringUtil.isEmpty(rectified)){
+                temp.setRectified(true);
+            }else{
+                temp.setRectified(false);
+            }
+            temp.setChkanswer(answer);
+            temp.setRemark(remark);
+        }
+        String tcu = ParamUtil.getString(request,"tuc");
+        String bestpractice = ParamUtil.getString(request,"bestpractice");
+        cDto.setTuc(tcu);
+        cDto.setBestPractice(bestpractice);
+        fillupChklistService.fillInspectionFillCheckListDto(cDto);
+        return cDto;
+    }
+
 }

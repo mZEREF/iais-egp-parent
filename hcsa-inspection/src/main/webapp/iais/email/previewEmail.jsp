@@ -33,19 +33,10 @@
 <%
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
+<div class="col-sm-5">
+    <p><textarea name="messageContent" cols="80" rows="25" class="wenbenkuang" id="htmlEditroArea" title="content" readonly >${context}</textarea></p>
+</div>
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <tr height="1">
-        <td class="first last" style="width: 100%;">
-            <div id="control--runtime--5" class="control control-caption-horizontal">
-                <div class=" form-group form-horizontal formgap">
-                    <div class="col-sm-5">
-                        <p><textarea name="messageContent" cols="80" rows="25" class="wenbenkuang" id="cotent" title="content" readonly >${context}</textarea></p>
-                    </div>
-                </div>
-            </div>
-        </td>
-    </tr>
-
 
 </form>

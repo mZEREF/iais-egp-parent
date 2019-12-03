@@ -1,18 +1,44 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
+
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppliGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
-import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.io.*;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -26,13 +52,15 @@ import java.util.zip.ZipFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-    private static  final  String URL="iais-application:8883/iais-application/files";
-    private static  final  String URL_APPLICATION="iais-application:8883/iais-application/list-application-dto";
     private static  final  String DOWNLOAD="D:/compress/folder";
     private static  final  String BACKUPS="D:/backups/";
     private static  final  String FILE_FORMAT=".text";
     private static  final  String COMPRESS_PATH="D:/compress";
-    private static final String FILE_NAME="system-admin:8886/file-existence";
+
+    @Autowired
+    private ApplicationClient applicationClient;
+    @Autowired
+    private SystemClient systemClient;
     @Override
                 public void compress(){
         if(new File(BACKUPS).isDirectory()){
@@ -44,7 +72,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     HashMap<String,String> map=new HashMap<>();
                     map.put("fileName",name);
                     map.put("filePath",path);
-                    Boolean aBoolean = RestApiUtil.save(FILE_NAME, map, Boolean.class);
+
+                    Boolean aBoolean = systemClient.isFileExistence(map).getEntity();
                     if(aBoolean){
                         ZipFile zipFile=null;
                         CheckedInputStream cos=null;
@@ -57,12 +86,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 ZipEntry zipEntry = entries.nextElement();
                                 zipFile(zipEntry,os,bos,zipFile,bis,cos);
                             }
-                            cos.close();
-                            bis.close();
-                            bos.close();
-                            os.close();
-                            zipFile.close();
-                            fil.delete();
+
                         } catch (IOException e) {
                             log.error(e.getMessage(),e);
                         }
@@ -105,8 +129,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             }
                         }
                     }
+                 /*   if(fil.exists()&&aBoolean){
+                        fil.delete();
+                    }*/
 
-}
+                }
             }
 
         }
@@ -116,7 +143,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Override
     public List<ApplicationDto> listApplication() {
 
-        List<ApplicationDto> byPathParam = RestApiUtil.getList(URL_APPLICATION,  ApplicationDto.class);
+        List<ApplicationDto> byPathParam =   applicationClient. getApplicationDto().getEntity();
         return byPathParam;
     }
 
@@ -145,7 +172,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             by.write(size,0,count);
                             count= fileInputStream.read(size);
                         }
-                        flag = RestApiUtil.save(URL, by.toString(), Boolean.class);
+
+                        Boolean aBoolean = fileToDto(by.toString());
+                        flag=aBoolean;
                         Boolean backups = backups(flag, filzz);
                         if(backups&&filzz.exists()){
                             filzz.delete();
@@ -154,14 +183,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
         }
         finally {
             if(fileInputStream!=null){
                 try {
                     fileInputStream.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage());
+                    log.error(e.getMessage(),e);
                 }
             }
 
@@ -293,4 +322,65 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
          }
     }
 
+    private Boolean fileToDto(String str){
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
+        ApplicationListDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListDto.class);
+        List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
+        for(AppGrpPersonnelDto every:appGrpPersonnel){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppGrpPersonnelExtDto> appGrpPersonnelExt = applicationListDto.getAppGrpPersonnelExt();
+        for(AppGrpPersonnelExtDto every:appGrpPersonnelExt){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppliGrpPremisesDto> appGrpPremises = applicationListDto.getAppGrpPremises();
+        for(AppliGrpPremisesDto every:appGrpPremises){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListDto.getAppGrpPrimaryDoc();
+        for(AppGrpPrimaryDocDto every:appGrpPrimaryDoc){
+            every.setAuditTrailDto(intranet);
+        }
+        List<ApplicationDto> application = applicationListDto.getApplication();
+        for(ApplicationDto every:application){
+            every.setAuditTrailDto(intranet);
+        }
+        List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
+        for(ApplicationGroupDto every:applicationGroup){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
+        for(AppPremisesCorrelationDto every:appPremisesCorrelation){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklEntity = applicationListDto.getAppPremisesSelfDeclChklEntity();
+        for(AppPremisesSelfDeclChklDto every:appPremisesSelfDeclChklEntity){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppSvcDocDto> appSvcDoc = applicationListDto.getAppSvcDoc();
+        for(AppSvcDocDto every:appSvcDoc){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppSvcKeyPersonnelDto> appSvcKeyPersonnel = applicationListDto.getAppSvcKeyPersonnel();
+        for(AppSvcKeyPersonnelDto every:appSvcKeyPersonnel){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppSvcPersonnelDto> appSvcPersonnel = applicationListDto.getAppSvcPersonnel();
+        for(AppSvcPersonnelDto every:appSvcPersonnel){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppSvcPremisesScopeDto> appSvcPremisesScope = applicationListDto.getAppSvcPremisesScope();
+        for(AppSvcPremisesScopeDto every:appSvcPremisesScope){
+            every.setAuditTrailDto(intranet);
+        }
+        List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocation = applicationListDto.getAppSvcPremisesScopeAllocation();
+        for(AppSvcPremisesScopeAllocationDto every:appSvcPremisesScopeAllocation){
+            every.setAuditTrailDto(intranet);
+        }
+        applicationListDto.setAuditTrailDto(intranet);
+        Boolean aBoolean = RestApiUtil.postGetObject("iais-application:8883/iais-application/files", applicationListDto, Boolean.class);
+      /*  Boolean entity = applicationClient.getDownloadFile(str).getEntity();*/
+
+        return aBoolean;
+    }
 }

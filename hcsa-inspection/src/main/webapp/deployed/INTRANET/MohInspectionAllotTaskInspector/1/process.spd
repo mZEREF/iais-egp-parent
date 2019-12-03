@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/InspectionAllotTaskInspectorStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionAllotTaskInspector" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorStart" x="10" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorStart_OnStepProcess_0" name="inspectionAllotTaskInspectorStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorInit" x="230" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorInit_OnStepProcess_0" name="inspectionAllotTaskInspectorInit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorPre" x="440" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorPre_OnStepProcess_0" name="inspectionAllotTaskInspectorPre_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorStep1" x="910" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorStep1_OnStepProcess_0" name="inspectionAllotTaskInspectorStep1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorAssign" x="1160" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorAssign_OnStepProcess_0" name="inspectionAllotTaskInspectorAssign_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorAction" x="1160" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorAction_OnStepProcess_0" name="inspectionAllotTaskInspectorAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorQuery" x="660" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorQuery_OnStepProcess_0" name="inspectionAllotTaskInspectorQuery_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorSuccess" x="1430" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorSuccess_OnStepProcess_0" name="inspectionAllotTaskInspectorSuccess_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorConfirm" x="900" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorConfirm_OnStepProcess_0" name="inspectionAllotTaskInspectorConfirm_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorSearch" x="1440" y="530">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorSearch_OnStepProcess_0" name="inspectionAllotTaskInspectorSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorSort" x="1670" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorSort_OnStepProcess_0" name="inspectionAllotTaskInspectorSort_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorPage" x="1500" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorPage_OnStepProcess_0" name="inspectionAllotTaskInspectorPage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorQuery2" x="1660" y="530">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorQuery2_OnStepProcess_0" name="inspectionAllotTaskInspectorQuery2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionAllotTaskInspectorPoolPage" stageIndicator="" x="660" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionAllotTaskInspectorAssignPage" stageIndicator="" x="1150" y="380">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionAllotTaskInspectorSuccessPage" stageIndicator="" x="1420" y="380">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionAllotTaskInspectorConfirmPage" stageIndicator="" x="890" y="380">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/InspectionAllotTaskInspectorStart" style="rectanular">
+   <position>{(30,120)(250,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorInit" style="rectanular">
+   <position>{(250,120)(460,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionAllotTaskInspectorPoolPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorPre" style="rectanular">
+   <position>{(460,120)(680,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorStep1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectionAllotTaskInspectorPoolPage" style="rectanular">
+   <position>{(680,120)(930,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionAllotTaskInspectorPoolPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
+   <position>{(1170,120)(1254,30)(770,30)(680,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorStep1" style="rectanular">
+   <position>{(930,120)(1170,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorAssign" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="rectanular">
+   <position>{(1170,120)(1180,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionAllotTaskInspectorAssignPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorAssign" style="rectanular">
+   <position>{(1180,260)(1170,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorAction" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectionAllotTaskInspectorAssignPage" style="rectanular">
+   <position>{(1170,400)(1180,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/InspectionAllotTaskInspectorCond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorAction" style="rectanular">
+   <position>{(1180,560)(920,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionAllotTaskInspectorAssignPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspectionAllotTaskInspectorCond1" style="oblique">
+   <position>{(920,560)(1170,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/InspectionAllotTaskInspectorCond1" style="rectanular">
+   <position>{(920,560)(680,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorStep1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery" style="oblique">
+   <position>{(680,560)(761,183)(930,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorSuccess" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
+   <position>{(1170,120)(1450,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionAllotTaskInspectorSuccessPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorSuccess" style="rectanular">
+   <position>{(1450,260)(1440,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorConfirm" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
+   <position>{(1170,120)(920,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionAllotTaskInspectorConfirmPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorConfirm" style="rectanular">
+   <position>{(920,260)(910,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InspectionAllotTaskInspectorConfirmPage" style="oblique">
+   <position>{(910,400)(680,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="rectanular">
+   <position>{(1170,120)(1520,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
+   <position>{(1170,120)(1690,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
+   <position>{(1170,120)(1460,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorPage" style="oblique">
+   <position>{(1520,120)(1889,119)(1680,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorSort" style="rectanular">
+   <position>{(1690,260)(1680,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorSearch" style="rectanular">
+   <position>{(1460,550)(1680,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery2" style="oblique">
+   <position>{(1680,550)(1764,628)(532,628)(460,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/InspectionAllotTaskInspectorAssignPage" componentIfTrue="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery" defClass="" executor="" icon="" leftOperand="flag" name="InspectionAllotTaskInspectorCond1" operator="=" rightOperand="&quot;true&quot;" x="900" y="540">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="inspectionPoolType" name="InspectionAllotTaskInspectorSwitch1" x="1150" y="100">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/InspectionAllotTaskInspectorPoolPage" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorAssign" value="&quot;assign&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSuccess" value="&quot;success&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorConfirm" value="&quot;confirm&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorPage" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSort" value="&quot;sort&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSearch" value="&quot;search&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

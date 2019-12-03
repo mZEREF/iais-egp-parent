@@ -15,6 +15,8 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainConfirmForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <input type="hidden" name="inspectionPoolType" value="">
+
     <iais:body >
       <div class="container">
         <div class="col-xs-12">
@@ -37,12 +39,6 @@
                         <iais:field value="Application Type"/>
                         <iais:value width="7">
                           <label><c:out value="${inspecTaskCreAndAssDto.applicationType}"/></label>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Application Status"/>
-                        <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.applicationStatus}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
@@ -86,7 +82,7 @@
                       <iais:row>
                         <iais:field value="Inspection Type"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.InspectionTypeName}"/></label>
+                          <label><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:action >

@@ -15,6 +15,7 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainAssignForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <input type="hidden" name="inspectionPoolType" value="">
     <input type="hidden" name="actionValue" value="">
     <iais:body >
     <div class="container">
@@ -27,15 +28,15 @@
             <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
               <div class="panel-body">
                 <div class="panel-main-content">
-                  <iais:error>
-                    <c:if test = "${not empty errorMap}">
+                  <c:if test = "${not empty errorMap}">
+                    <iais:error>
                       <div class="error">
                         <c:forEach items="${errorMap}" var="map">
                           ${map.key}  ${map.value} <br/>
                         </c:forEach>
                       </div>
-                    </c:if>
-                  </iais:error>
+                    </iais:error>
+                  </c:if>
                   <iais:section title="" id = "assign_Task">
                     <iais:row>
                       <iais:field value="Application Number"/>
@@ -47,12 +48,6 @@
                       <iais:field value="Application Type"/>
                       <iais:value width="7">
                         <label><c:out value="${inspecTaskCreAndAssDto.applicationType}"/></label>
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="Application Status"/>
-                      <iais:value width="7">
-                        <label><c:out value="${inspecTaskCreAndAssDto.applicationStatus}"/></label>
                       </iais:value>
                     </iais:row>
                     <iais:row>
@@ -89,15 +84,26 @@
                     <iais:row>
                       <iais:field value="Inspector"/>
                       <iais:value width="10">
-                        <c:forEach items="${inspecTaskCreAndAssDto.inspector}" var="name">
-                          <input type="checkbox" name="inspector" value="<c:out value="${name.value}"/>"/><c:out value="${name.text}"/>
-                        </c:forEach>
+                        <c:if test="${inspecTaskCreAndAssDto.inspectorCheck == null}">
+                          <c:forEach items="${inspecTaskCreAndAssDto.inspector}" var="name">
+                              <input type="checkbox" name="inspector" value="<c:out value="${name.value}"/>"/><label><c:out value="${name.text}"/></label>
+                          </c:forEach>
+                        </c:if>
+                        <c:if test="${inspecTaskCreAndAssDto.inspectorCheck != null}">
+                          <c:forEach items="${inspecTaskCreAndAssDto.inspector}" var="name">
+                            <input type="checkbox" name="inspector" value="<c:out value="${name.value}"/>"
+                              <c:forEach items="${inspecTaskCreAndAssDto.inspectorCheck}" var="checkName">
+                                 <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
+                              </c:forEach>
+                            /><label><c:out value="${name.text}"/></label>
+                          </c:forEach>
+                        </c:if>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Inspection Type"/>
                       <iais:value width="7">
-                        <label><c:out value="${inspecTaskCreAndAssDto.setInspectionTypeName}"/></label>
+                        <label><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></label>
                       </iais:value>
                     </iais:row>
                     <iais:action >
@@ -122,6 +128,7 @@
     }
 
     function doNext() {
+        $("[name='actionValue']").val('confirm');
         submit('confirm');
     }
     function submit(action){

@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="insRepDto" scope="request" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto"/>
 
 <table class="control-grid columns1">
@@ -28,7 +29,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>Service Name</p>
+                        <p>${insRepDto.serviceName}</p>
                     </div>
                 </div>
             </div>
@@ -124,7 +125,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>Subsumed Services</p>
+                        <p>${insRepDto.subsumedService}</p>
                     </div>
                 </div>
             </div>
@@ -153,7 +154,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
+                        <p>${insRepDto.inspectionDate}</p>
                     </div>
                 </div>
             </div>
@@ -169,7 +170,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
+                        <p>${insRepDto.inspectionTime}</p>
                     </div>
                 </div>
             </div>
@@ -185,7 +186,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
+                        <p>${insRepDto.reasonForVisit}</p>
                     </div>
                 </div>
             </div>
@@ -201,7 +202,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
+                        <p>${insRepDto.inspectedBy}</p>
                     </div>
                 </div>
             </div>
@@ -217,7 +218,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
+                        <p>${insRepDto.inspectOffices}</p>
                     </div>
                 </div>
             </div>
@@ -233,7 +234,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
+                        <p>${insRepDto.reportedBy}</p>
                     </div>
                 </div>
             </div>
@@ -249,7 +250,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
+                        <p>${insRepDto.reportNoteBy}</p>
                     </div>
                 </div>
             </div>
@@ -319,8 +320,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <label for="control--runtime--23--text"></label><input type="text" id="control--runtime--23--text" class="form-control control-input control-set-font control-font-normal"
-                                                                               value="" size="30">
+                        <p>${insRepDto.taskRemarks}</p>
                     </div>
                 </div>
             </div>
@@ -336,7 +336,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
+                        <p>${insRepDto.markedForAudit}</p>
                     </div>
                 </div>
             </div>
@@ -352,7 +352,7 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
+                        <p>${insRepDto.bestPractice}</p>
                     </div>
                 </div>
             </div>
@@ -368,7 +368,20 @@
                         </label>
                     </div>
                     <div class="col-sm-5">
-                        <p>List</p>
+                        <table class="table">
+                            <tr>
+                                <th>SN</th>
+                                <th>Checklist Item</th>
+                                <th>Regulation Clause</th>
+                            </tr>
+                            <c:forEach items="${insRepDto.ncRegulation}" var="nc" varStatus="count">
+                                <tr>
+                                    <td>${count.count}</td>
+                                    <td>${nc.nc}</td>
+                                    <td>${nc.regulation }</td>
+                                </tr>
+                            </c:forEach>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -383,9 +396,7 @@
                             <p>Status</p>
                         </label>
                     </div>
-                    <div class="col-sm-5">
-                        <p>${insRepDto.licenceNo}</p>
-                    </div>
+                    <p>${insRepDto.status}</p>
                 </div>
             </div>
         </td>
@@ -412,6 +423,22 @@
                             List down rectification outcome of each NC in table below
                         </label>
                     </div>
+                    <div class="col-sm-5">
+                        <table class="table">
+                            <tr>
+                                <th>SN</th>
+                                <th>Checklist Item</th>
+                                <th>Regulation Clause</th>
+                            </tr>
+                            <c:forEach items="${insRepDto.ncRectification}" var="nc" varStatus="count">
+                                <tr>
+                                    <td>${count.count}</td>
+                                    <td>${nc.nc}</td>
+                                    <td>${nc.rectified }</td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </div>
                 </div>
             </div>
         </td>
@@ -425,9 +452,9 @@
                             Remarks
                         </label>
                     </div>
-                    <div class="col-sm-5">
-                        <label for="control--runtime--30--text"></label><input type="text" id="control--runtime--30--text" class="form-control control-input control-set-font control-font-normal"
-                                                                               value="" size="30">
+                    <div class="col-sm-5 col-md-5">
+                        <label for="control--runtime--30--text"></label><input type="text" id="control--runtime--30--text" name="remarks" class="form-control control-input control-set-font control-font-normal"
+                                                                                value="" size="30">
                     </div>
                 </div>
             </div>
@@ -446,17 +473,22 @@
             </div>
         </td>
     </tr>
-    <tr height="1">
+    <tr height="5">
         <td class="first last" style="width: 100%;">
             <div id="control--runtime--32" class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
                     <div class="col-sm-4 control-label formtext ">
                         <label id="control--runtime--32--label" class="control-label control-set-font control-font-label">
-                            Recommendation
+                            Recommendations
                         </label>
                     </div>
-                    <div class="col-sm-5">
-                        <p>Reject Approve with Number of Years Years Licence</p>
+                    <div class="col-sm-5 col-md-5">
+                        <select>
+                            <option value="Rject" name="recommendation">Rject</option>
+                            <option value="1year" name="recommendation">1year</option>
+                            <option value="1year" name="recommendation">12year</option>
+                            <option value="1year" name="recommendation">13year</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -464,3 +496,4 @@
     </tr>
     </tbody>
 </table>
+</td>

@@ -82,15 +82,13 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPre start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        SearchResult<InspecTaskCreAndAssDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, DemoConstants.SEARCH_RESULT);
+        SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
 
         List<SelectOption> appTypeOption = inspectionAssignTaskService.getAppTypeOption();
-        List<SelectOption> appStatusOption = inspectionAssignTaskService.getAppStatusOption();
 
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", searchResult);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
-        ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){
@@ -126,8 +124,8 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         String applicationNo = ParamUtil.getMaskedString(bpc.request,"applicationNo");
-        InspecTaskCreAndAssDto inspecTaskCreAndAssDto;
         if(!StringUtil.isEmpty(applicationNo) && !(AppConsts.NO.equals(applicationNo))){
             Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
@@ -136,6 +134,7 @@ public class InspecAssignTaskDelegator {
             inspecTaskCreAndAssDto.setTaskId(taskId);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
         }
+        ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     /**
@@ -148,15 +147,21 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAction start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
-        List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
-        inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto,"create");
+        if(nameValue == null || nameValue.length < 0) {
+            inspecTaskCreAndAssDto.setInspectorCheck(null);
+        } else {
+            List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
+            inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
+        }
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto,"create");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, DemoConstants.ERRORMAP, errorMap);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
         }else{
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
@@ -212,10 +217,10 @@ public class InspecAssignTaskDelegator {
         log.info("Step 2 ==============>" + bpc.request.getSession().getId());
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
-        String application_status = ParamUtil.getRequestString(bpc.request, "application_status");
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String sub_date = ParamUtil.getRequestString(bpc.request, "sub_date");
+        //get Common Pool
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId("A03EDD16-F90C-EA11-BE7D-000C29F371DC");
         setMapTaskId(bpc, commPools);
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = inspectionAssignTaskService.getPoolListByTaskDto(commPools);
@@ -235,9 +240,6 @@ public class InspecAssignTaskDelegator {
         if(!StringUtil.isEmpty(application_type)){
             searchParam.addFilter("application_type",application_type,true);
         }
-        if(!StringUtil.isEmpty(application_status)){
-            searchParam.addFilter("application_status",application_status,true);
-        }
         if(!StringUtil.isEmpty(hci_code)){
             searchParam.addFilter("hci_code",hci_code,true);
         }
@@ -247,7 +249,6 @@ public class InspecAssignTaskDelegator {
         if(!StringUtil.isEmpty(sub_date)){
             searchParam.addFilter("sub_date",sub_date,true);
         }
-
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
     }
@@ -296,7 +297,8 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorQuery2 start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         QueryHelp.setMainSql("inspectionQuery", "assignInspector",searchParam);
-        SearchResult searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
+        SearchResult<InspectionCommonPoolQueryDto> searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
+        searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setRequestAttr(bpc.request, "cPoolSearchResult", searchResult);
     }

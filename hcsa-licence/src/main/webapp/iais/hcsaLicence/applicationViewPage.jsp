@@ -18,8 +18,6 @@
                             <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
-                                                                        data-toggle="tab">Payment</a></li>
                             <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
                                                                         data-toggle="tab">Inspection</a></li>
                             <li class="incomplete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
@@ -29,14 +27,13 @@
                             <div class="swiper-wrapper" role="tablist">
                                 <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></div>
                                 <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
-                                <div class="swiper-slide"><a href="#tabPayment" aria-controls="tabPayment" role="tab" data-toggle="tab">Payment</a></div>
+
                                 <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabInspection" role="tab" data-toggle="tab">Inspection</a></div>
                                 <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a></div>
                             </div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
-
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
 
@@ -193,51 +190,6 @@
                                     </div>
                                 </div>
 
-                            </div>
-                            <div class="tab-pane" id="tabPayment" role="tabpanel">
-                                <div class="alert alert-info" role="alert"><strong>
-                                    <h4>Payment Details</h4>
-                                </strong></div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="table-gp">
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>Payment</th>
-                                                    <th>Amount</th>
-                                                    <th>Date</th>
-                                                    <th>Status</th>
-                                                    <th>Reference No.</th>
-                                                    <th>Payment Type</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <p>New Licence Application</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>S$400.00</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>12-Dec-2018</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>success</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>TRANS-201812000013</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Credit Card</p>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <div class="tab-pane" id="tabInspection" role="tabpanel">
                                 <div class="alert alert-info" role="alert">
@@ -497,8 +449,8 @@
                                                     </td>
                                                     <td>
                                                         <select name="nextStage" >
-                                                            <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
-                                                                <option  value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
+                                                            <c:forEach items="${applicationViewDto.routingStage}" var="routingStageMap">
+                                                                <option  value="${routingStageMap.key}">${routingStageMap.value}</option>
                                                           </c:forEach>
                                                          </select>
                                                     </td>

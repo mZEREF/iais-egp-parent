@@ -5,24 +5,23 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AppSubmisionServiceImpl
@@ -71,14 +70,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount start ...."));
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDto();
-        List<LicenceFeeQueryDto> linenceFeeQuaryDtos = new ArrayList();
+        List<LicenceFeeDto> linenceFeeQuaryDtos = new ArrayList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             List<String> premisessTypes =  new ArrayList();
             premisessTypes.add(appGrpPremisesDto.getPremisesType());
-            LicenceFeeQueryDto licenceFeeQueryDto = new LicenceFeeQueryDto();
-            licenceFeeQueryDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
-            licenceFeeQueryDto.setPremises(premisessTypes);
-            linenceFeeQuaryDtos.add(licenceFeeQueryDto);
+            LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+            licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
+            licenceFeeDto.setPremises(premisessTypes);
+            linenceFeeQuaryDtos.add(licenceFeeDto);
         }
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:"+linenceFeeQuaryDtos.size()));
         FeeDto entity = appConfigClient.newFee(linenceFeeQuaryDtos).getEntity();

@@ -25,7 +25,7 @@ public class CommonPoolTaskClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<TaskDto> createAndAssignTask(TaskDto taskDto){
+    public FeignResponseEntity<List<TaskDto>> createAndAssignTask(List<TaskDto> taskDtoList){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
