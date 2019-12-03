@@ -114,7 +114,7 @@ public class WebValidationHelper {
         dtoList.add(dto);
         dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
         try {
-            AuditLogUtil.callAuditRestApi(dtoList);
+            AuditLogUtil.callWithEventDriven(dtoList);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

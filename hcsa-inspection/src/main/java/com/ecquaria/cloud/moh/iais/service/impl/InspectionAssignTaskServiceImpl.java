@@ -29,9 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Shicheng
@@ -126,12 +124,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public List<SelectOption> getAppStatusOption() {
-        List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION});
-        return appStatusOption;
-    }
-
-    @Override
     public List<SelectOption> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
         List<SelectOption> inspectorCheckList = new ArrayList<>();
         for (int i = 0; i < nameValue.length; i++) {
@@ -163,6 +155,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);
             throw e;
         }
+    }
+
+    @Override
+    public SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
+        for(InspectionCommonPoolQueryDto icpqDto: searchResult.getRows()){
+            AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(icpqDto.getId());
+            icpqDto.setHciName(icpqDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
+        }
+        return searchResult;
     }
 
     private void createTaskByInspectorList(List<SelectOption> inspectorCheckList, List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
@@ -225,11 +226,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
       * @Descripation: get ApplicationDto By Application No.
       */
     public ApplicationDto getApplicationDtoByAppNo(String appNo){
-        Map<String,Object> map2 = new HashMap<>();
-        map2.put("applicationNo", appNo);
-        ApplicationDto applicationDto = RestApiUtil.getByReqParam("iais-application:8883/iais-inspection/one-of-inspection/{applicationNo}",map2,ApplicationDto.class);
-        return applicationDto;
-        /*return inspectionTaskClient.getApplicationDtoByAppNo(appNo).getEntity();*/
+        return inspectionTaskClient.getApplicationDtoByAppNo(appNo).getEntity();
     }
 
     /**

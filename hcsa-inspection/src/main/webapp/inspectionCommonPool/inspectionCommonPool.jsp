@@ -45,12 +45,6 @@
                       </iais:value>
                     </iais:row>
                     <iais:row>
-                      <iais:field value="Application Status"/>
-                      <iais:value width="18">
-                        <iais:select name="application_status" options="appStatusOption" firstOption="Please select" value="${cPoolSearchParam.filters['application_status']}" ></iais:select>
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
                       <iais:field value="HCI Code"/>
                       <iais:value width="18">
                         <input type="text" name="hci_code" value="${cPoolSearchParam.filters['hci_code']}" />
@@ -93,7 +87,6 @@
                   <tr align="center">
                     <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="STATUS" value="Application Status"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name / Address"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="SUBMIT_DT" value="Submission Date"></iais:sortableHeader>
@@ -107,7 +100,6 @@
                         <td colspan="6">
                           <iais:message key="ACK00001" escape="true"></iais:message>
                           <!--No Record!!-->
-                      <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="applicationNo" value="AN1911153344-01"/>');">Assign</button></td>
                         </td>
                       </tr>
                     </c:when>
@@ -116,7 +108,6 @@
                         <tr>
                           <td><c:out value="${pool.applicationNo}"/></td>
                           <td><c:out value="${pool.applicationType}"/></td>
-                          <td><c:out value="${pool.applicationStatus}"/></td>
                           <td><c:out value="${pool.hciCode}"/></td>
                           <td><c:out value="${pool.hciName}"/></td>
                           <td><c:out value="${pool.submitDt}"/></td>

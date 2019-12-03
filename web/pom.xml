@@ -41,9 +41,6 @@
     <profiles>
         <profile>
             <id>sz-nexus</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <repositories>
                 <repository>
                     <id>nexus-repo</id>
@@ -72,20 +69,32 @@
         </profile>
         <profile>
             <id>sg-nexus</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <repositories>
                 <repository>
-                    <id>nexus3-repo</id>
-                    <name>Nexus Repository</name>
-                    <url>http://192.168.4.165/repository/public-maven/</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
+                    <id>pd-nexus</id>
+                    <url>http://192.168.4.165/repository/hosted-egpcloud-maven-releases/</url>
                 </repository>
+                <repository>
+                    <id>moh-iais-nexus</id>
+                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais/</url>
+                </repository>
+
             </repositories>
+            <distributionManagement>
+                <repository>
+                    <id>moh-iais-nexus</id>
+                    <name>Nexus Releases</name>
+                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>moh-iais-nexus</id>
+                    <name>Nexus Snapshot</name>
+                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais/</url>
+                </snapshotRepository>
+            </distributionManagement>
         </profile>
 
     </profiles>

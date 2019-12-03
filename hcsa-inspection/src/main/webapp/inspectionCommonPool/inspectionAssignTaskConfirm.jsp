@@ -42,12 +42,6 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Application Status"/>
-                        <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.applicationStatus}"/></label>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
                         <iais:field value="HCI Code"/>
                         <iais:value width="7">
                           <label><c:out value="${inspecTaskCreAndAssDto.hciCode}"/></label>
