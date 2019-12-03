@@ -167,7 +167,6 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
     }
 
-
     /**
      * StartStep: rontingTaskToPSO
      *

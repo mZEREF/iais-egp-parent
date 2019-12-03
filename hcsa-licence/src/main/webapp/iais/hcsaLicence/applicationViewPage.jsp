@@ -18,7 +18,6 @@
                             <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-
                             <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
                                                                         data-toggle="tab">Inspection</a></li>
                             <li class="incomplete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
@@ -35,7 +34,6 @@
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
-
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
 
