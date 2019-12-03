@@ -4,14 +4,11 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -24,9 +21,11 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -253,30 +252,6 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
 
-    /**
-     * StartStep: rontingTaskToAO3
-     *
-     * @param bpc
-     * @throws
-     */
-    public void AO3Approved(BaseProcessClass bpc) throws FeignException {
-        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
-        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED);
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
-                ApplicationConsts.APPLICATION_STATUS_APPROVED);
-        if(isAllSubmit){
-           //update application Group status
-            ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-            applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            applicationGroupService.updateApplicationGroup(applicationGroupDto);
-        }
-        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
-    }
-
 
     /**
      * StartStep: approve
@@ -284,9 +259,21 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void approve(BaseProcessClass bpc) {
+    public void approve(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do approve start ...."));
-
+        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+                ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        if(isAllSubmit){
+            //update application Group status
+            ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+            applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            applicationGroupService.updateApplicationGroup(applicationGroupDto);
+        }
         log.debug(StringUtil.changeForLog("the do approve end ...."));
     }
 
