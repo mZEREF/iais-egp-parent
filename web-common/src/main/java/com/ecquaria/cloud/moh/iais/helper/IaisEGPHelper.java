@@ -56,7 +56,7 @@ public final class IaisEGPHelper extends EGPHelper {
         if (request == null) {
             return;
         }
-
+        AccessUtil.initLoginUserInfo(request);
         User user = SessionManager.getInstance(request).getCurrentUser();
         HttpSession session = request.getSession();
         if (user != null) {
