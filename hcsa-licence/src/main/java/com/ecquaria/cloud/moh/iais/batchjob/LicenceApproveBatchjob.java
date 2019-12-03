@@ -220,7 +220,7 @@ public class LicenceApproveBatchjob {
                         errorMessage = premisesGroupDto.getErrorMessage();
                         break;
                     }
-                    premisesGroupDtos.addAll(premisesGroupDtos);
+                    premisesGroupDtos.addAll(premisesGroupDtos1);
 
                     //create the lic_app_correlation
                     LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
