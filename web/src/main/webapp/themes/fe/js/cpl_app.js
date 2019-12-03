@@ -481,7 +481,6 @@ function premisesSelectChange(){
 
         $('.premises-summary, .vehicleSelectForm').addClass('hidden');
         if ($('input[name="premisesType"]:checked').attr("id") == "premise_conveyance") {
-
             $('.new-premise-form-conveyance').removeClass('hidden');
             $('.new-premise-form-on-site').addClass('hidden');
 
