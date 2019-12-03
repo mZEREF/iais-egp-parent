@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -24,12 +25,15 @@ import org.springframework.web.client.RestTemplate;
  * @date 2019/11/28 15:48
  */
 @Slf4j
+@Component
 public class RestBridgeHelper {
-    static {
+
+
+    public RestBridgeHelper() {
         disableSslVerification();
     }
 
-    public static <T> T  callOtherSideApi(String url, String keyId, String secretKey,
+    public <T> T  callOtherSideApi(String url, String keyId, String secretKey,
                                                   Object entity, Class<T> retrunClass, HttpMethod requestType) {
         disableSslVerification();
         HttpHeaders headers = new HttpHeaders();
@@ -44,7 +48,7 @@ public class RestBridgeHelper {
         return resp.getBody();
     }
 
-    private static void disableSslVerification() {
+    private void disableSslVerification() {
         try
         {
             // Create a trust manager that does not validate certificate chains

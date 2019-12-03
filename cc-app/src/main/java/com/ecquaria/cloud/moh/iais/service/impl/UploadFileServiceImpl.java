@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.RestBridgeHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,6 +46,8 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
 
+    @Autowired
+    private RestBridgeHelper restBridgeHelper;
     @Autowired
     private ApplicationClient applicationClient;
     @Override
@@ -266,7 +267,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setAuditTrailDto(intenet);
         String s="FAIL";
         try {
-            s = RestBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
+            s = restBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
                     String.class, HttpMethod.POST);
 
         }catch (Exception e){
