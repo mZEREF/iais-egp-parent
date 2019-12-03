@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -27,8 +26,8 @@ public interface ServiceConfigService {
     PostCodeDto getPremisesByPostalCode(String postalCode);
     String getSvcIdBySvcCode(String svcCode);
     List<AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId);
-    List<String> saveFileToRepo(List<MultipartFile> fileList) throws IOException;
-    Map<String,List<HcsaSvcDocConfigDto>> getAllHcsaSvcDocs(String serviceId);
+    String saveFileToRepo(MultipartFile file) throws IOException;
+    List<HcsaSvcDocConfigDto> getAllHcsaSvcDocs(String serviceId);
     List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId);
     List<HcsaSvcPersonnelDto> getGOSelectInfo(String serviceId, String psnType);
     AppSvcCgoDto loadGovernanceOfficerByCgoId(String cgoId);

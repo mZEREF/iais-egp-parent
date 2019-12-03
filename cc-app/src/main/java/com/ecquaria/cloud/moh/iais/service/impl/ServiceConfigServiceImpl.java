@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
@@ -11,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -58,9 +56,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public PostCodeDto getPremisesByPostalCode(String postalCode) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("postalCode", postalCode);
-        return RestApiUtil.getByReqParam(RestApiUrlConsts.POSTAL_CODE_INFO, map, PostCodeDto.class);
+        return systemAdminClient.getPostCodeByCode(postalCode).getEntity();
     }
 
     @Override
@@ -87,37 +83,25 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
-    public List<String> saveFileToRepo(List<MultipartFile> fileList) throws IOException {
-        MultipartFile file = fileList.get(0);
+    public String saveFileToRepo(MultipartFile file) throws IOException {
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         String auditTrailStr = JsonUtil.parseToJson(auditTrailDto);
         FeignResponseEntity<String> re = fileRepoClient.saveFiles(file, auditTrailStr);
-        List<String> idList = new ArrayList<>();
+        String str = "";
         if (re.getStatusCode() == HttpStatus.SC_OK) {
-            String str = re.getEntity();
-            idList.add(str);
+            str = re.getEntity();
         }
-        return idList;
+        return str;
     }
 
     @Override
-    public Map<String,List<HcsaSvcDocConfigDto>> getAllHcsaSvcDocs(String serviceId) {
-        //common doc
-        Map<String,Object> common = new HashMap<>();
-        //common.put("serviceId", "");==>serviceId null
-        common.put("flag", false);//==>false =0
-
-        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDtos =  appConfigClient.getHcsaSvcDocConfig(serviceId,false).getEntity();
-
-        //premises doc
-        Map<String,Object> premises = new HashMap<>();
-        //premises.put("serviceId", "");==>serviceId null
-        premises.put("flag", true);//==>true =1
-        List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigDtos = appConfigClient.getHcsaSvcDocConfig(serviceId,true).getEntity();
-
-        Map<String,List<HcsaSvcDocConfigDto>> map = new HashMap<>();
-        map.put("common", commonHcsaSvcDocConfigDtos);
-        return map;
+    public List<HcsaSvcDocConfigDto> getAllHcsaSvcDocs(String serviceId) {
+        Map<String,String> docMap = new HashMap<>();
+        docMap.put("common", "0");
+        docMap.put("premises", "1");
+        String docMapJson = JsonUtil.parseToJson(docMap);
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos =  appConfigClient.getHcsaSvcDocConfig(docMapJson).getEntity();
+        return hcsaSvcDocConfigDtos;
     }
 
     @Override
