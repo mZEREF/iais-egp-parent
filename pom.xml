@@ -266,8 +266,9 @@
                 </repository>
                 <repository>
                     <id>moh-iais-nexus</id>
-                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais-grp/</url>
+                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais/</url>
                 </repository>
+
             </repositories>
             <distributionManagement>
                 <repository>
