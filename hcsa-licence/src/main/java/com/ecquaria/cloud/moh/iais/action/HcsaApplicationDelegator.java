@@ -99,21 +99,21 @@ public class HcsaApplicationDelegator {
         String appNo = taskDto.getRefNo();
 //        get routing stage dropdown send to page.
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
-//        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
-//        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
-//        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
-//        for (int i = 0; i <appSupDocDtos.size(); i++) {
-//            for (int j = 0; j <docTitleList.size() ; j++) {
-//                if (appSupDocDtos.get(i).getFile().equals(docTitleList.get(j).getId())){
-//                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
-//                }
-//            }
-//            for (int j = 0; j <userNameList.size() ; j++) {
-//                if (appSupDocDtos.get(i).getSubmittedBy().equals(userNameList.get(j).getId())){
-//                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getUserName());
-//                }
-//            }
-//        }
+        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
+        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
+        for (int i = 0; i <appSupDocDtos.size(); i++) {
+            for (int j = 0; j <docTitleList.size() ; j++) {
+                if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
+                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                }
+            }
+            for (int j = 0; j <userNameList.size() ; j++) {
+                if ((appSupDocDtos.get(i).getSubmittedBy()).equals(userNameList.get(j).getId())){
+                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getUserName());
+                }
+            }
+        }
         String applicationType=MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType());
         applicationViewDto.getApplicationDto().setApplicationType(applicationType);
         String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
@@ -125,27 +125,27 @@ public class HcsaApplicationDelegator {
 
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList
              ) {
-            routingStage.put(hcsaSvcRoutingStage.getStageName(),hcsaSvcRoutingStage.getStageCode());
+            routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
 
         if("AO3".equals(applicationViewDto.getCurrentStatus())){
-            routingStage.put("RollBack","APST000");
-            routingStage.put("Pending Approval","APST002");
-            routingStage.put("Reject","APST006");
-            routingStage.put("Internal Enquiry","APST0013");
-            routingStage.put("Route To DMS","APST0014");
+            routingStage.put("APST000","RollBack");
+            routingStage.put("APST002","Pending Approval");
+            routingStage.put("APST006","Reject");
+            routingStage.put("APST0013","Internal Enquiry");
+            routingStage.put("APST0014","Route To DMS");
         }else if("AO2".equals(applicationViewDto.getCurrentStatus())
                 ||"AO1".equals(applicationViewDto.getCurrentStatus())){
-            routingStage.put("Reject","APST006");
-            routingStage.put("RollBack","APST000");
-            routingStage.put("Support","APST0015");
+            routingStage.put("APST006","Reject");
+            routingStage.put("APST000","RollBack");
+            routingStage.put("APST0015","Support");
         }else if("PSO".equals(applicationViewDto.getCurrentStatus())){
-            routingStage.put("Verified","APST0016");
-            routingStage.put("Request For Information","APST0017");
+            routingStage.put("APST0016","Verified");
+            routingStage.put("APST0017","Request For Information");
         }else if("ASO".equals(applicationViewDto.getCurrentStatus())) {
-            routingStage.put("Verified", "APST0016");
-            routingStage.put("Request For Information", "APST0017");
-            routingStage.put("Licence Start Date", "APST0018");
+            routingStage.put("APST0016", "Verified");
+            routingStage.put( "APST0017","Request For Information");
+            routingStage.put("APST0018", "Licence Start Date");
         }
         applicationViewDto.setRoutingStage(routingStage);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
