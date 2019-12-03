@@ -7,6 +7,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import lombok.extern.slf4j.Slf4j;
@@ -28,14 +29,12 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class RestBridgeHelper {
 
-
     public RestBridgeHelper() {
         disableSslVerification();
     }
 
     public <T> T  callOtherSideApi(String url, String keyId, String secretKey,
                                                   Object entity, Class<T> retrunClass, HttpMethod requestType) {
-        disableSslVerification();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -49,10 +48,24 @@ public class RestBridgeHelper {
     }
 
     private void disableSslVerification() {
-        try
-        {
-            // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[] {
+        HttpsURLConnection.setDefaultSSLSocketFactory(getTrustedSSLSocketFactory());
+
+        // Create all-trusting host name verifier
+        HostnameVerifier allHostsValid = new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
+
+        // Install the all-trusting host verifier
+        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+
+    }
+
+    private SSLSocketFactory getTrustedSSLSocketFactory() {
+        // Create a trust manager that does not validate certificate chains
+        TrustManager[] trustAllCerts = new TrustManager[] {
                 new X509TrustManager() {
 
                     @Override
@@ -66,27 +79,18 @@ public class RestBridgeHelper {
                     public void checkServerTrusted(X509Certificate[] certs, String authType) {
                     }
                 }
-            };
+        };
 
-            // Install the all-trusting trust manager
-            SSLContext sc = SSLContext.getInstance("SSL");
+        // Install the all-trusting trust manager
+        SSLContext sc = null;
+        try {
+            sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-            // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            };
-
-            // Install the all-trusting host verifier
-            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        } catch (NoSuchAlgorithmException e) {
-            log.error(e.getMessage(), e);
-        } catch (KeyManagementException e) {
+            return sc.getSocketFactory();
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
             log.error(e.getMessage(), e);
         }
+
+        return null;
     }
 }
