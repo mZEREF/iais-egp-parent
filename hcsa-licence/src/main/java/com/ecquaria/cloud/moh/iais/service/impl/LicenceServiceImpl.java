@@ -4,7 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
@@ -48,6 +48,15 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
+    public String getGroupLicenceNo(String hscaCode, int licenceNum, int yearLength) {
+        Map<String,Object> param = new HashMap();
+        param.put("hscaCode",hscaCode);
+        param.put("licenceNum",licenceNum);
+        param.put("yearLength",yearLength);
+        return RestApiUtil.getByReqParam(RestApiUrlConsts.GROUP_LICENCE,param,String.class);
+    }
+
+    @Override
     public AppPremisesRecommendationDto getTcu(String appPremCorrecId) {
         Map<String,Object> param = new HashMap<>();
         param.put("appPremId",appPremCorrecId);
@@ -56,7 +65,7 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public List<SuperLicDto> createSuperLicDto(List<SuperLicDto> superLicDtos) {
+    public List<LicenceGroupDto> createSuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
         //todo:create licence
         return null;
     }
