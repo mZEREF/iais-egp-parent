@@ -37,7 +37,7 @@
                                                 </ul>
                                                 <div class="application-service-steps">
                                                     <div class="clinical-governance-officer">
-                                                        <jsp:include page="/iais/cc/newApplication/clinicalLaboratory/CR_Form2.jsp" />
+                                                        <%@include file="CR_Form2.jsp"%>
                                                     </div>
                                                 </div>
                                             </div>

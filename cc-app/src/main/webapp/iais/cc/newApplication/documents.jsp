@@ -8,7 +8,6 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto" %>
 <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
@@ -38,35 +37,67 @@
                                         <h3>Fire Safety Certificate (FSC) from SCDF</h3>
                                         <p><a href="#" target="_blank">Preview</a></p>
                                     </div>
+                                    <c:set value="${reloadAppGrpPrimaryDocMap}" var="docMap"/>
+
                                     <!--common -->
-                                    <c:forEach var="commonDoc" items="${HcsaSvcDocConfigDtoMap.get('common')}">
+                                    <c:forEach var="commonDoc" items="${commonHcsaSvcDocConfigDto}">
+                                        <c:set var="commKey" value="common${commonDoc.id}" />
+                                        <c:set var="file" value="${docMap.get(commKey)}"/>
+                                        <c:set var="commDelFlag" value="common${commonDoc.id}flag"/>
                                         <div class="document-upload-list">
                                             <h3>${commonDoc.docTitle}</h3>
                                             <div class="file-upload-gp">
-                                                <input type="hidden" name="configId" value="${commonDoc.id}" />
-                                                <input type="hidden"  name="configType" value="common" />
-                                                <input type="hidden"  name="docConfig" value="" />
-                                                <span  ></span>
-                                                <span class="hidden delBtn">&nbsp;&nbsp;<button type="button" class="delBtn">Delete</button></span><br/>
-                                                <input class="selectedFile commDoc"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
-                                                <a class="btn btn-file-upload btn-secondary" >Upload</a>
+                                                <input class="hidden delFlag" type="hidden" name="${commDelFlag}" value="N"/>
+                                                <span  >${file.docName}</span>
+                                                <c:choose>
+                                                    <c:when test="${file.docName == '' || file.docName == null }">
+                                                    <span class="hidden delBtn">
+                                                      &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                                    </span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                      <span class="delBtn">
+                                                        &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                                    </span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                <br/>
+                                                <input class="selectedFile commDoc" id="commonDoc"  name = "${commKey}" type="file" style="display: none;" aria-label="selectedFile1" >
+                                                <a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
+                                                <span class="error-msg"><c:out value="${appGrpPrimaryDocErrMsgMap.get(commKey)}"></c:out></span>
                                             </div>
                                         </div>
                                     </c:forEach>
                                     <!--prem -->
-                                    <c:forEach var="premDoc" items="${HcsaSvcDocConfigDtoMap.get('premises')}">
-                                        <div class="document-upload-list">
-                                            <h3>${premDoc.docTitle}</h3>
-                                            <div class="file-upload-gp">
-                                                <input type="hidden" name="configId" value="${premDoc.id}" />
-                                                <input type="hidden"  name="configType" value="prem" />
-                                                <input type="hidden"  name="docConfig" value="" />
-                                                <span  ></span>
-                                                <span class="hidden delBtn">&nbsp;&nbsp;<button type="button" class="delBtn">Delete</button></span><br/>
-                                                <input class="selectedFile premDoc"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
-                                                <a class="btn btn-file-upload btn-secondary" >Upload</a>
+                                    <c:forEach var="prem" items="${appGrpPremisesList}">
+                                        <c:forEach var="premDoc" items="${premHcsaSvcDocConfigDto}">
+                                            <c:set var="premKey" value="prem${premDoc.id}${prem.hciName}" />
+                                            <c:set var="primaryDoc" value="${docMap.get(premKey)}"/>
+                                            <c:set var="premDelFlag" value="prem${premDoc.id}${prem.hciName}flag"/>
+                                            <div class="document-upload-list">
+                                                <h3>${premDoc.docTitle}</h3>
+                                                <div class="file-upload-gp">
+                                                    <input class="hidden delFlag" type="hidden" name="${premDelFlag}" value="N"/>
+                                                    <span  >${primaryDoc.docName}</span>
+                                                    <c:choose>
+                                                        <c:when test="${primaryDoc.docName == '' || primaryDoc.docName == null }">
+                                                    <span class="hidden delBtn">
+                                                      &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                                    </span>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                      <span class=" delBtn">
+                                                        &nbsp;&nbsp;<button type="button" class="">Delete</button>
+                                                    </span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <br/>
+                                                    <input class="selectedFile premDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1">
+                                                    <a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
+                                                    <span class="error-msg"><c:out value="${appGrpPrimaryDocErrMsgMap.get(premKey)}"></c:out></span>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </c:forEach>
                                     </c:forEach>
                                 </div>
                                 <div class="application-tab-footer">
@@ -112,18 +143,18 @@
     }
 
     $('.selectedFile').change(function () {
-            var file = $(this).val();
-            $(this).parent().children('span:eq(0)').html(getFileName(file));
-            $(this).parent().children('span:eq(0)').next().removeClass("hidden");
-            var configId = $(this).parent().children('input:eq(0)').val();
-            var configType = $(this).parent().children('input:eq(1)').val();
-            $(this).parent().children('input:eq(2)').val(configId+";"+configType);
-        }
-    );
+        var file = $(this).val();
+        $(this).parent().children('span:eq(0)').html(getFileName(file));
+        $(this).parent().children('span:eq(0)').next().removeClass("hidden");
+        $(this).parent().children('input delFlag').val('N');
+    });
 
     $('.delBtn').click(function () {
         $(this).parent().children('span:eq(0)').html('');
         $(this).parent().children('span:eq(0)').next().addClass("hidden");
+        $(this).parent().children('input.selectedFile').val('');
+        $(this).parent().children('input.delFlag').val('Y');
+
     });
 
 

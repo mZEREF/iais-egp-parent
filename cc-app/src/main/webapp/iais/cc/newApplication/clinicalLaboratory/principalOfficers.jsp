@@ -65,7 +65,8 @@
     $(document).ready(function() {
         //Binding method
         $('#principalOfficersBack').click(function(){
-            //submitForms('laboratoryDisciplines',null,null,'clinical');
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('disciplineAllocation',null,null,controlFormLi);
         });
         $('#principalOfficersSaveDraft').click(function(){
             // submitForms('governanceOfficers','saveDraft',null,'clinical');

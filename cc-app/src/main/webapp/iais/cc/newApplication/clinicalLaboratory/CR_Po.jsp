@@ -20,18 +20,6 @@
             <div class="panel-main-content">
               <div class="">
                 <h2>Principal Officer</h2>
-                <div class="row">
-                  <div class="col-sm-4">
-                    Deputy Principal Officer(Optional):
-                  </div>
-                  <div class="col-sm-4">
-                    <select name="deputySelect" class="form-control control-input control-set-font control-font-normal">
-                      <option>Please Select</option>
-                      <option value="0">N</option>
-                      <option value="1">Y</option>
-                    </select>
-                  </div>
-                </div>
                 <p><h4>A Principal Officer is responsible for overseeing the day-to-day operations of medical service</h4></p>
                 <div class="row">
                   <div class="control control-caption-horizontal">
@@ -135,6 +123,18 @@
                         <input name="emailAddress" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    Deputy Principal Officer(Optional):
+                  </div>
+                  <div class="col-sm-4" >
+                    <select name="deputySelect" class="form-control control-input control-set-font control-font-normal">
+                      <option>Please Select</option>
+                      <option value="0">N</option>
+                      <option value="1">Y</option>
+                    </select>
                   </div>
                 </div>
               </div>

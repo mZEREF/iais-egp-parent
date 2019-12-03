@@ -20,13 +20,15 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="premises-txt">
-                                            <p>Premises are your service operation sites that can either be at a fixed address – <strong>&#34;on-site&#34;</strong>, or in a mobile clinic or ambulance – <strong>&#34;conveyance&#34;</strong>.</p>
+                                            <p>Premises are your service operation sites that can either be at a fixed address<strong> - &#34;on-site&#34;</strong>, or in a mobile clinic or ambulance<strong> - &#34;conveyance&#34;</strong>.</p>
                                         </div>
                                     </div>
                                     <%--<button id="addPremBtn" type="button">Add Premises</button>--%>
                                 </div>
                                 <div class="row premContent" id="mainPrem">
                                     <c:set var="appGrpPremisesDto" value="${AppSubmissionDto.appGrpPremisesDto}"></c:set>
+                                    <c:set var="onSite" value="<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>" ></c:set>
+                                    <c:set var="conv" value="<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>" ></c:set>
                                     <input type="hidden" id = "premisesTypeValue" value="${appGrpPremisesDto.premisesType}" />
                                     <div class="col-xs-12">
                                         <div class="form-horizontal">
@@ -37,7 +39,14 @@
                                                     <div class="col-xs-6 col-md-2">
                                                         <div class="form-check">
                                                             <input class="form-check-input premTypeRadio ${premisesType}"  type="radio" name="premisesType" value = ${premisesType} aria-invalid="false">
-                                                            <label class="form-check-label" ><span class="check-circle"></span>${premisesType}</label>
+                                                            <label class="form-check-label" ><span class="check-circle"></span>
+                                                                <c:if test="${premisesType == onSite}">
+                                                                    <c:out value="On-site" />
+                                                                </c:if>
+                                                                <c:if test="${premisesType == conv}">
+                                                                    <c:out value="Conveyance" />
+                                                                </c:if>
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </c:forEach>
@@ -52,6 +61,15 @@
                                                 <iais:field value="Add or select a premises from the list" width="12"/>
                                                 <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
                                                     <iais:select name="premisesSelect" id="premisesSelect" options="premisesSelect" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                                    <span class="error-msg"><c:out value="${errorMap_premises.premisesSelect}"></c:out></span>
+                                                </iais:value>
+                                            </iais:row>
+
+                                            <iais:row cssClass="premiseConSelect hidden">
+                                                <iais:field value="Add or select a premises from the list" width="12"/>
+                                                <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
+                                                    con:
+                                                    <iais:select name="premisesConSelect" id="" options="" value=""></iais:select>
                                                     <span class="error-msg"><c:out value="${errorMap_premises.premisesSelect}"></c:out></span>
                                                 </iais:value>
                                             </iais:row>
@@ -77,7 +95,7 @@
                                                 <iais:row>
                                                     <iais:field value="Name of premises" width="11"/>
                                                     <iais:value width="11">
-                                                        <iais:input type="text" name="hciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
+                                                        <iais:input maxLength="100" type="text" name="hciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
                                                         <span class="error-msg"><c:out value="${errorMap_premises.hciName}"></c:out></span>
                                                     </iais:value>
                                                 </iais:row>
@@ -86,34 +104,37 @@
                                                     <iais:value width="30">
                                                         <iais:row>
                                                             <iais:value width="15">
-                                                                <iais:input type="text"  name="postalCode" id="sitePostalCode" value="${appGrpPremisesDto.postalCode}"></iais:input>
+                                                                <iais:input maxLength="6" type="text"  name="postalCode" id="sitePostalCode" value="${appGrpPremisesDto.postalCode}"></iais:input>
                                                             </iais:value>
                                                             <div class="col-xs-7 col-sm-6 col-md-6">
-                                                                <p><a id="retrieveAddr" href="#">Retrieve your address</a></p>
+                                                                <p><a id="retrieveAddr" >Retrieve your address</a></p>
                                                             </div>
                                                         </iais:row>
-                                                        <span class="error-msg"><c:out value="${errorMap_premises.postalCode}"></c:out></span>
+                                                        <span id="postalCodeMsg" class="error-msg"><c:out value="${errorMap_premises.postalCode}"></c:out></span>
                                                     </iais:value>
 
                                                 </iais:row>
+
+                                                <iais:row>
+                                                    <iais:field value="Address Type" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                                        <iais:select name="addrType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type" value="${appGrpPremisesDto.addrType}"></iais:select>
+                                                        <span class="error-msg"><c:out value="${errorMap_premises.addrType}"></c:out></span>
+                                                    </iais:value>
+                                                </iais:row>
+
                                                 <iais:row>
                                                     <iais:field value="Block / House No." width="12"/>
                                                     <iais:value width="5">
-                                                        <iais:input  type="text" name="blkNo" id="siteBlockNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
-                                                    </iais:value>
-                                                    <span class="error-msg"><c:out value="${errorMap_premises.blkNo}"></c:out></span>
-                                                </iais:row>
-                                                <iais:row>
-                                                    <iais:field value="Street Name" width="10"/>
-                                                    <iais:value width="10">
-                                                        <iais:input type="text" name="streetName" id="siteStreetName" value="${appGrpPremisesDto.streetName}"></iais:input>
-                                                        <span class="error-msg"><c:out value="${errorMap_premises.streetName}"></c:out></span>
+                                                        <iais:input maxLength="10"  type="text" name="blkNo" id="siteBlockNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
+                                                        <span class="error-msg"><c:out value="${errorMap_premises.blkNo}"></c:out></span>
                                                     </iais:value>
                                                 </iais:row>
+
                                                 <iais:row>
                                                     <iais:field value="Floor No." width="12"/>
                                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                                                        <iais:input type="text" name="floorNo" id="siteFloorNo" value="${appGrpPremisesDto.floorNo}"></iais:input>
+                                                        <iais:input maxLength="3" type="text" name="floorNo" id="siteFloorNo" value="${appGrpPremisesDto.floorNo}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
                                                         <span class="error-msg"><c:out value="${errorMap_premises.floorNo}"></c:out></span>
                                                     </iais:value>
@@ -121,7 +142,7 @@
                                                 <iais:row>
                                                     <iais:field value="Unit No." width="12"/>
                                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                                                        <iais:input type="text" name="unitNo" id="siteUnitNo" value="${appGrpPremisesDto.unitNo}"></iais:input>
+                                                        <iais:input maxLength="5" type="text" name="unitNo" id="siteUnitNo" value="${appGrpPremisesDto.unitNo}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
                                                         <span class="error-msg"><c:out value="${errorMap_premises.unitNo}"></c:out></span>
                                                     </iais:value>
@@ -129,16 +150,17 @@
                                                 <iais:row>
                                                     <iais:field value="Building Name" width="12"/>
                                                     <iais:value width="11" cssClass="input-with-label">
-                                                        <iais:input type="text" name="buildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
+                                                        <iais:input maxLength="45" type="text" name="buildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
                                                         <p class="small-txt">(Optional)</p>
                                                         <span class="error-msg"><c:out value="${errorMap_premises.buildingName}"></c:out></span>
                                                     </iais:value>
                                                 </iais:row>
-                                                <iais:row>
-                                                    <iais:field value="Address Type" width="12"/>
-                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                                                        <iais:select name="addrType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type"></iais:select>
 
+                                                <iais:row>
+                                                    <iais:field value="Street Name" width="10"/>
+                                                    <iais:value width="10">
+                                                        <iais:input maxLength="32" type="text" name="streetName" id="siteStreetName" value="${appGrpPremisesDto.streetName}"></iais:input>
+                                                        <span class="error-msg"><c:out value="${errorMap_premises.streetName}"></c:out></span>
                                                     </iais:value>
                                                 </iais:row>
                                                 <div class="form-group">
@@ -147,6 +169,55 @@
                                                         <input id="siteSafefyNo" name="siteSafefyNo" type="text" value="${appGrpPremisesDto.siteSafefyNo}">
                                                     </div>
                                                 </div>
+                                                <iais:row>
+                                                    <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                                        <iais:datePicker />
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Office Telephone No" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                                        <iais:input type="text" name="offTelNo" maxLength="8" value="" />
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Are you co-locating with another licensee?" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Operating Hours (Start)" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                                        <iais:input name="startOperating "/>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Operating Hours (End)" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                                        <iais:input name="endOperating "/>
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Select Public Holiday" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Public Holidays Operating Hours (Start)" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+
+                                                    </iais:value>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <iais:field value="Public Holidays Operating Hours (End)" width="12"/>
+                                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+
+                                                    </iais:value>
+                                                </iais:row>
+
                                             </div>
                                         </div>
                                         <div class="new-premise-form-conveyance hidden">
@@ -246,7 +317,7 @@
                                             <p><a class="back hidden" href="#"><em class="fa fa-angle-left"></em> Back</a></p>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group"><a id="premiseSaveDraft" class="btn btn-secondary" >Save as Draft</a><a id="premiseId" class="btn btn-primary next" >Next</a></div>
+                                            <div class="button-group"><a class="btn btn-secondary premiseSaveDraft" >Save as Draft</a><a class="btn btn-primary next premiseId" >Next</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -264,46 +335,70 @@
     $(document).ready(function() {
         premContent = $('#mainPrem').eq(0).html();
         var premisesTypeValue = $('#premisesTypeValue').val();
-        if('ONSITE'==premisesTypeValue){
+        if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==premisesTypeValue){
 
             $('.ONSITE').attr("checked","checked");
             $('#premise_conveyance').removeAttr("checked");
             $('.premiseLocationSelect').removeClass('hidden');
             $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
         }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>'==premisesTypeValue){
-            $('.CONVEYANCE').attr("checked","checked");
+            /*$('.CONVEYANCE').attr("checked","checked");
             $('#premise_conveyance').attr("checked","checked");
             $('#premise_onsite').removeAttr("checked");
             $('.premiseLocationSelect').removeClass('hidden');
-            $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
+            $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');*/
         }
         premisesSelectChange();
 
         //Binding method
-        $('#premiseId').click(function(){
+        $('.premiseId').click(function(){
             submit('documents',null,null);
         });
-        $('#premiseSaveDraft').click(function(){
+        $('.premiseSaveDraft').click(function(){
             submit('premises','saveDraft',null);
         });
+
+        if(<c:out value="${errorMap_premises eq null}"/>){
+            $('#premisesli').removeClass('incomplete');
+        }else{
+            $('#premisesli').addClass('incomplete');
+        }
+
     });
 
     $('.premTypeRadio').click(function () {
         var checkedType = $(this).val()
         $('#premisesTypeValue').val(checkedType);
-        if('ONSITE'==checkedType){
-            //$('#premise_onsite').attr("checked","checked");
-            //$('#premise_conveyance').removeAttr("checked");
+        if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==checkedType){
+            $('.premiseConSelect').addClass('hidden');
             $('.premiseLocationSelect').removeClass('hidden');
             $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');
+        }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
+            /*$('.premiseLocationSelect').addClass('hidden');
+            $('.premiseConSelect').removeClass('hidden');
+            $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');*/
         }
+
+
     });
 
     $('#retrieveAddr').click(function(){
-        var postCode = $('#sitePostalCode').val();
+        var postalCode = $('#sitePostalCode').val();
+        var re=new RegExp('^[0-9]*$');
+        var errMsg = '';
+        if(''== postalCode ){
+            errMsg = 'the postal code could not be null';
+        }else if(postalCode.length != 6){
+            errMsg = 'the postal code length must be 6';
+        }else if(!re.test(postalCode)){
+            errMsg = 'the postal code must be numbers';
+        }
+        if("" != errMsg){
+            $('#postalCodeMsg').html(errMsg);
+            return;
+        }
         var data = {
-            'searchField':'postalCode',
-            'filterValue':postCode
+            'postalCode':postalCode
         };
         $.ajax({
             'url':'https://egp.sit.inter.iais.com/hcsaapplication/retrieve-address',
@@ -311,22 +406,26 @@
             'data':data,
             'type':'GET',
             'success':function (data) {
-                console.log("success");
                 console.log(data);
+                if(data == null){
+                    console.log("data is null");
+                    $('#postalCodeMsg').html("the postal code information could not be found");
+                    return;
+                }
+                $('#siteBlockNo').val(data.blkHseNo);
+                $('#siteStreetName').val(data.streetName);
+                $('#siteBuildingName').val(data.buildingName);
             },
             'error':function () {
-                console.log("failed");
+                $('#postalCodeMsg').html("the postal code information could not be found");
             }
         });
 
     });
 
+    //add premises testing.......
     $('#addPremBtn').click(function () {
-
-
         $("#mainPrem").append(premContent);
-
-
     });
 
 

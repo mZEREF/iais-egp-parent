@@ -1,11 +1,8 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator" %>
+
 <%
-    String actionForm = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-    if(StringUtil.isEmpty(actionForm)){
-        actionForm = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-    }
+    String actionForm = (String)ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
 
 %>
 <input type="hidden" id = "controlFormLi" value="<%=actionForm%>">

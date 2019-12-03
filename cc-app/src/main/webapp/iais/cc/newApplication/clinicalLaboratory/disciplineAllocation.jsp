@@ -50,8 +50,10 @@
                                 </tr>
                                 </thead>
                                 <c:forEach var="premisesAndChkLst" items="${PremisesAndChkLst}" >
+                                  <c:set value="${premisesAndChkLst.premisesIndexNo}" var="premisesIndexNo"/>
                                   <tbody>
                                   <c:forEach var="chkLst" items="${premisesAndChkLst.appSvcChckListDtoList}" varStatus="status"  >
+                                    <c:set value="${premisesIndexNo}${status.index}" var="cgoName"/>
                                     <tr>
                                       <c:if test="${status.first}">
                                         <td rowspan="4">
@@ -62,12 +64,14 @@
                                       </c:if>
                                       <td>
                                         <p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>
-                                        <input type="hidden" name="${premisesAndChkLst.premisesIndexNo}${status.index}" value="${chkLst.chkLstConfId}"/>
+                                        <input type="hidden" name="${cgoName}" value="${chkLst.chkLstConfId}"/>
                                         <p>${chkLst.chkName}</p>
                                       </td>
                                       <td>
                                         <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
-                                        <iais:select name="${premisesAndChkLst.premisesIndexNo}${status.index}" firstOption="select cgo"  options="CgoSelect"  value="${CgoSelect} "></iais:select>
+                                        <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
+
+                                        <iais:select name="${cgoName}" firstOption="select cgo"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
                                       </td>
                                     </tr>
                                   </c:forEach>
@@ -108,7 +112,8 @@
 
         //Binding method
         $('#disciplineAllocationBack').click(function(){
-            submitForms('laboratoryDisciplines',null,null,'clinical');
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('governanceOfficers',null,null,controlFormLi);
         });
         $('#disciplineAllocationSaveDraft').click(function(){
             submitForms('governanceOfficers','saveDraft',null,'clinical');
