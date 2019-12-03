@@ -114,8 +114,8 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
-        String applicationType=MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType());
-        applicationViewDto.getApplicationDto().setApplicationType(applicationType);
+        String applicationType=MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType());
+        applicationViewDto.setApplicationType(applicationType);
         String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(serviceType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
