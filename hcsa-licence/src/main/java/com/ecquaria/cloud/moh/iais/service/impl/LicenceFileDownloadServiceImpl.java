@@ -17,14 +17,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppliGrpPremisesD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedInputStream;
@@ -52,10 +52,17 @@ import java.util.zip.ZipFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-    private static  final  String DOWNLOAD="D:/compress/folder";
-    private static  final  String BACKUPS="D:/backups/";
-    private static  final  String FILE_FORMAT=".text";
-    private static  final  String COMPRESS_PATH="D:/compress";
+    @Value("iais.syncFileTracking.download")
+    private    String download;
+
+    @Value("iais.syncFileTracking.backups")
+    private     String backups;
+
+    @Value("iais.syncFileTracking.fileFormat")
+    private     String fileFormat;
+
+    @Value("iais.syncFileTracking.compressPath")
+    private     String compressPath;
 
     @Autowired
     private ApplicationClient applicationClient;
@@ -63,8 +70,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private SystemClient systemClient;
     @Override
                 public void compress(){
-        if(new File(BACKUPS).isDirectory()){
-            File[] files = new File(BACKUPS).listFiles();
+        if(new File(backups).isDirectory()){
+            File[] files = new File(backups).listFiles();
             for(File fil:files){
                 if(fil.getName().endsWith(".zip")){
                     String name = fil.getName();
@@ -149,7 +156,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Override
     public void delete() {
-        File file =new File(DOWNLOAD);
+        File file =new File(download);
         deleteFile(file);
     }
 
@@ -158,11 +165,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         FileInputStream fileInputStream=null;
         Boolean flag=false;
         try {
-            File file =new File(DOWNLOAD);
+            File file =new File(download);
             if(file.isDirectory()){
                 File[] files = file.listFiles();
                 for(File  filzz:files){
-                    if(filzz.isFile() &&filzz.getName().endsWith(FILE_FORMAT)){
+                    if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
                        fileInputStream =new FileInputStream(filzz);
                         ByteArrayOutputStream by=new ByteArrayOutputStream();
                         int count=0;
@@ -203,11 +210,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos)  {
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
-                    File file =new File(COMPRESS_PATH+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
+                    File file =new File(compressPath+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(COMPRESS_PATH+File.separator+zipEntry.getName());
+                    os=new FileOutputStream(compressPath+File.separator+zipEntry.getName());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -222,7 +229,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(COMPRESS_PATH+File.separator+zipEntry.getName()).mkdirs();
+                    new File(compressPath+File.separator+zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 
@@ -266,10 +273,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private Boolean  backups(Boolean aBoolean ,File file){
             Boolean flag=false;
         if(aBoolean){
-            if(!new File(BACKUPS).exists()){
-                new File(BACKUPS).mkdirs();
+            if(!new File(backups).exists()){
+                new File(backups).mkdirs();
             }
-            File newFile=new File(BACKUPS+File.separator+file.getName());
+            File newFile=new File(backups+File.separator+file.getName());
             FileInputStream fileInputStream = null;
             FileOutputStream fileOutputStream = null;
             try {
@@ -316,7 +323,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                  deleteFile(f);
              }
          }else{
-             if(file.exists()&&file.getName().endsWith(FILE_FORMAT)){
+             if(file.exists()&&file.getName().endsWith(fileFormat)){
                  file.delete();
              }
          }
@@ -378,9 +385,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         applicationListDto.setAuditTrailDto(intranet);
-        Boolean aBoolean = RestApiUtil.postGetObject("iais-application:8883/iais-application/files", applicationListDto, Boolean.class);
-      /*  Boolean entity = applicationClient.getDownloadFile(str).getEntity();*/
+       return applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
 
-        return aBoolean;
     }
 }

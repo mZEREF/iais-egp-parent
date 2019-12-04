@@ -29,7 +29,7 @@ public class ApplicationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<Boolean> getDownloadFile(@RequestBody ApplicationListDto  applicationListDto){
+    FeignResponseEntity<Void> getDownloadFile(@RequestBody ApplicationListDto  applicationListDtos){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
