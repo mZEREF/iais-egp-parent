@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -10,20 +9,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -35,41 +34,55 @@ import java.util.Map;
 @Slf4j
 public class TaskServiceImpl implements TaskService {
 
+    @Autowired
+    private TaskOrganizationClient taskOrganizationClient;
+
+    @Autowired
+    private TaskHcsaConfigClient taskHcsaConfigClient;
+
+    @Autowired
+    private TaskApplicationClient taskApplicationClient;
 
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
-        return RestApiUtil.save( RestApiUrlConsts.IAIS_TASK,taskDtos,List.class);
+       // return RestApiUtil.save( RestApiUrlConsts.IAIS_TASK,taskDtos,List.class);
+        return taskOrganizationClient.createTask(taskDtos).getEntity();
     }
 
     @Override
     public TaskDto updateTask(TaskDto taskDto) {
-        return RestApiUtil.update(RestApiUrlConsts.IAIS_TASK,taskDto,TaskDto.class);
+        //return RestApiUtil.update(RestApiUrlConsts.IAIS_TASK,taskDto,TaskDto.class);
+        return taskOrganizationClient.updateTask(taskDto).getEntity();
     }
 
     @Override
     public List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos) {
-        return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDtos,HcsaSvcStageWorkingGroupDto.class);
+        //return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDtos,HcsaSvcStageWorkingGroupDto.class);
+        return taskHcsaConfigClient.getWrkGrp(hcsaSvcStageWorkingGroupDtos).getEntity();
     }
 
     @Override
     public TaskDto getTaskById(String taskId) {
-        return RestApiUtil.getByPathParam(RestApiUrlConsts.TASK_TASKID,taskId,TaskDto.class);
+        //return RestApiUtil.getByPathParam(RestApiUrlConsts.TASK_TASKID,taskId,TaskDto.class);
+        return taskOrganizationClient.getTaskById(taskId).getEntity();
     }
 
 
     @Override
     public List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status) {
-        Map<String,Object> params = new HashMap<>();
-        params.put("workGroupId",workGroupId);
-        params.put("status",status);
-        return RestApiUtil.getListByReqParam(RestApiUrlConsts.USER_WORKGROUPID_STATUS,params,OrgUserDto.class);
+//        Map<String,Object> params = new HashMap<>();
+//        params.put("workGroupId",workGroupId);
+//        params.put("status",status);
+//        return RestApiUtil.getListByReqParam(RestApiUrlConsts.USER_WORKGROUPID_STATUS,params,OrgUserDto.class);
+        return taskOrganizationClient.getUsersByWorkGroupName(workGroupId,status).getEntity();
     }
 
     @Override
     public List<TaskDto> getTaskDtoScoresByWorkGroupId(String workGroupId) {
-        Map<String,Object> params = new HashMap<>();
-        params.put("workGroupId",workGroupId);
-        return RestApiUtil.getListByReqParam(RestApiUrlConsts.TASKSCORES_WORKGROUPNAME,params,TaskDto.class);
+//        Map<String,Object> params = new HashMap<>();
+//        params.put("workGroupId",workGroupId);
+//        return RestApiUtil.getListByReqParam(RestApiUrlConsts.TASKSCORES_WORKGROUPNAME,params,TaskDto.class);
+        return taskOrganizationClient.getTaskScores(workGroupId).getEntity();
     }
 
     @Override
@@ -187,18 +200,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId) {
-        return RestApiUtil.getListByPathParam(RestApiUrlConsts.APPLICATION_APPPREMISESCORRELATIONS_APPGROPID,appGroupId,AppPremisesCorrelationDto.class);
+        //return RestApiUtil.getListByPathParam(RestApiUrlConsts.APPLICATION_APPPREMISESCORRELATIONS_APPGROPID,appGroupId,AppPremisesCorrelationDto.class);
+        return taskApplicationClient.getGroupAppsByNo(appGroupId).getEntity();
     }
     @Override
     public List<AppPremisesRoutingHistoryDto> createHistorys(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList) {
-        return RestApiUtil.save(RestApiUrlConsts.APPLICATION_HISTORYS,appPremisesRoutingHistoryDtoList,List.class);
+        //return RestApiUtil.save(RestApiUrlConsts.APPLICATION_HISTORYS,appPremisesRoutingHistoryDtoList,List.class);
+        return taskApplicationClient.createAppPremisesRoutingHistorys(appPremisesRoutingHistoryDtoList).getEntity();
     }
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(String workGroupId) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("workGroupId", workGroupId);
-        return RestApiUtil.getListByReqParam(RestApiUrlConsts.TASK_COMMON_POOL_BY_WORKGPID,map,TaskDto.class);
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("workGroupId", workGroupId);
+//        return RestApiUtil.getListByReqParam(RestApiUrlConsts.TASK_COMMON_POOL_BY_WORKGPID,map,TaskDto.class);
+        return taskOrganizationClient.getCommPoolTaskByWorkGroupId(workGroupId).getEntity();
     }
 
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
