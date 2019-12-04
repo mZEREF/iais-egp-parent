@@ -1,9 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -17,7 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Shicheng
@@ -43,48 +49,40 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<SelectOption> getAppStatusOption() {
-        List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION});
+        String[] statusStrs = new String[]{
+                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+                ApplicationConsts.APPLICATION_STATUS_APPROVED,
+                ApplicationConsts.APPLICATION_STATUS_REJECTED,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03
+                                         };
+        List<SelectOption> appStatusOption = MasterCodeUtil.retrieveOptionsByCodes(statusStrs);
         return appStatusOption;
     }
 
     @Override
-    public List<TaskDto> getCommPoolByGroupWordId(String workGroupId) {
-        return commonPoolTaskClient.getCommPoolByGroupWordId(workGroupId).getEntity();
+    public List<TaskDto> getSupervisorPoolByGroupWordId(String workGroupId) {
+        return commonPoolTaskClient.getSupervisorPoolByGroupWordId(workGroupId).getEntity();
     }
 
     @Override
-    public List<InspectionTaskPoolListDto> getPoolListByTaskDto(List<TaskDto> taskDtoList) {
-        List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = new ArrayList<>();
-        if(taskDtoList != null || taskDtoList.size() > 0) {
-            for(TaskDto td:taskDtoList){
-                InspectionTaskPoolListDto inspectionTaskPoolListDto = getInspectionTaskPoolListDtoByTaskDto(td);
-                inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
-            }
+    public String[] getApplicationNoListByPool(List<TaskDto> commPools) {
+        if(commPools == null || commPools.size() <= 0){
+            return null;
         }
-        return inspectionTaskPoolListDtoList;
-    }
-
-    /**
-     * @author: shicheng
-     * @Date 2019/11/22
-     * @Param: taskDto
-     * @return: InspectionTaskPoolListDto
-     * @Descripation: Gets a single Common Pool
-     */
-    private InspectionTaskPoolListDto getInspectionTaskPoolListDtoByTaskDto(TaskDto taskDto){
-        InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
-        inspectionTaskPoolListDto.setApplicationNo(taskDto.getRefNo());
-        inspectionTaskPoolListDto.setInspectionLead(taskDto.getUserId());
-        ApplicationDto applicationDto = null;
-        HcsaServiceDto hcsaServiceDto = null;
-        if(!StringUtil.isEmpty(taskDto.getRefNo())) {
-            applicationDto = getApplicationDtoByAppNo(taskDto.getRefNo());
+        Set<String> applicationNoSet = new HashSet<>();
+        for(TaskDto tDto:commPools){
+            applicationNoSet.add(tDto.getRefNo());
         }
-        if(!StringUtil.isEmpty(taskDto.getRefNo())) {
-            hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
+        List<String> applicationNoList = new ArrayList<>(applicationNoSet);
+        String[] applicationStrs = new String[applicationNoList.size()];
+        for(int i = 0; i < applicationStrs.length; i++){
+            applicationStrs[i] = applicationNoList.get(i);
         }
-        inspectionTaskPoolListDto.setServiceName(hcsaServiceDto.getSvcName());
-        return inspectionTaskPoolListDto;
+        return applicationStrs;
     }
 
     /**
@@ -98,25 +96,55 @@ public class InspectionServiceImpl implements InspectionService {
         return hcsaServiceClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
     }
 
-    /**
-     * @author: shicheng
-     * @Date 2019/11/22
-     * @Param: appNo
-     * @return: ApplicationDto
-     * @Descripation: get ApplicationDto By Application No.
-     */
-    public ApplicationDto getApplicationDtoByAppNo(String appNo){
-        return inspectionTaskClient.getApplicationDtoByAppNo(appNo).getEntity();
+    @Override
+    public SearchResult<InspectionSubPoolQueryDto> getSupPoolByParam(SearchParam searchParam) {
+        return inspectionTaskClient.searchInspectionSupPool(searchParam).getEntity();
     }
 
     @Override
-    public String[] getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList) {
-        String[] appNoList = new String[inspectionTaskPoolListDtoList.size()];
-        if(inspectionTaskPoolListDtoList != null || inspectionTaskPoolListDtoList.size() > 0) {
-            for (int i = 0; i < inspectionTaskPoolListDtoList.size(); i++) {
-                appNoList[i] = inspectionTaskPoolListDtoList.get(i).getApplicationNo();
+    public SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools) {
+        List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = new ArrayList<>();
+        if(commPools == null || commPools.size() <= 0){
+            return null;
+        }
+        for(TaskDto tDto:commPools){
+            InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
+            inspectionTaskPoolListDto.setApplicationNo(tDto.getRefNo());
+            inspectionTaskPoolListDto.setTaskId(tDto.getId());
+            inspectionTaskPoolListDto.setInspector(StringUtil.isEmpty(tDto.getUserId())?tDto.getUserId():"");
+            inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
+            inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
+        }
+        for(InspectionSubPoolQueryDto iDto: searchResult.getRows()){
+            for(InspectionTaskPoolListDto itplDto:inspectionTaskPoolListDtoList){
+                if((iDto.getApplicationNo()).equals(itplDto.getApplicationNo())){
+                    itplDto.setServiceId(iDto.getServiceId());
+                    HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(iDto.getServiceId());
+                    itplDto.setServiceName(hcsaServiceDto.getSvcName());
+                    itplDto.setApplicationStatus(iDto.getApplicationStatus());
+                    itplDto.setApplicationType(iDto.getApplicationType());
+                    itplDto.setHciCode(iDto.getHciCode());
+                    AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(iDto.getId());
+                    itplDto.setHciName(iDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
+                    itplDto.setSubmitDt(iDto.getSubmitDt());
+                    itplDto.setApplicationType(iDto.getApplicationType());
+                    itplDto.setInspectionTypeName(iDto.getInspectionType() == 0? "Post":"Pre");
+                    itplDto.setServiceEndDate(hcsaServiceDto.getEndDate());
+                    itplDto.setInspectionDate(new Date());
+                }
             }
         }
-        return appNoList;
+        return null;
+    }
+
+    /**
+     * @author: shicheng
+     * @Date 2019/11/23
+     * @Param: appGroupId
+     * @return: AppGrpPremisesDto
+     * @Descripation: get Application Group Premises By Application Id
+     */
+    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String applicationId){
+        return inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(applicationId).getEntity();
     }
 }

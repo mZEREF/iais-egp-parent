@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
@@ -33,20 +36,11 @@ public interface InspectionService {
     /**
       * @author: shicheng
       * @Date 2019/12/2
-      * @Param: s
+      * @Param: workGroupId
       * @return: List<TaskDto>
       * @Descripation: According to the group Id, get the work pool
       */
-    List<TaskDto> getCommPoolByGroupWordId(String workGroupId);
-
-    /**
-      * @author: shicheng
-      * @Date 2019/12/2
-      * @Param: commPools
-      * @return: List<InspectionTaskPoolListDto>
-      * @Descripation: Display Common Pools
-      */
-    List<InspectionTaskPoolListDto> getPoolListByTaskDto(List<TaskDto> commPools);
+    List<TaskDto> getSupervisorPoolByGroupWordId(String workGroupId);
 
     /**
       * @author: shicheng
@@ -55,5 +49,23 @@ public interface InspectionService {
       * @return: String[]
       * @Descripation: get Application No By InspectionTaskPoolListDto
       */
-    String[] getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList);
+    String[] getApplicationNoListByPool(List<TaskDto> commPools);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/3
+      * @Param: searchParam
+      * @return: SearchResult<InspectionSubPoolQueryDto>
+      * @Descripation: get Sup Pool By Param
+      */
+    SearchResult<InspectionSubPoolQueryDto> getSupPoolByParam(SearchParam searchParam);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/3
+      * @Param: searchResult commPools
+      * @return: SearchResult<InspectionSubPoolQueryDto>, List<TaskDto>
+      * @Descripation: get Other Data For SearchResult
+      */
+    SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools);
 }

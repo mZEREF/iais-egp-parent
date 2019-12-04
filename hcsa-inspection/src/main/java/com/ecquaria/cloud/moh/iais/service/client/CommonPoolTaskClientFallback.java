@@ -31,4 +31,11 @@ public class CommonPoolTaskClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    public FeignResponseEntity<List<TaskDto>> getSupervisorPoolByGroupWordId(String workGroupId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
