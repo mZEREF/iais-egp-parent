@@ -68,4 +68,22 @@ public interface InspectionService {
       * @Descripation: get Other Data For SearchResult
       */
     SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/4
+      * @Param: nameValue, inspectionTaskPoolListDto
+      * @return: List<SelectOption>
+      * @Descripation: get check Inspector
+      */
+    List<SelectOption> getCheckInspector(String[] nameValue, InspectionTaskPoolListDto inspectionTaskPoolListDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/4
+      * @Param: inspectionTaskPoolListDto, commPools
+      * @return: void
+      * @Descripation: Assign Task For Inspectors
+      */
+    void assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools);
 }

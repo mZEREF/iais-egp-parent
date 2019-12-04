@@ -6,6 +6,7 @@ import com.ecquaria.cloud.client.task.TaskService;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -64,8 +65,12 @@ public class FillupChklistDelegator {
         String taskId = ParamUtil.getString(request,"TaskId");
         String serviceCode ="BLB";
         String serviceType = "Inspection";
+
         InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceCode,serviceType);
+        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
+        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
+
 
     }
     /**
@@ -142,6 +147,8 @@ public class FillupChklistDelegator {
         }
         String tcu = ParamUtil.getString(request,"tuc");
         String bestpractice = ParamUtil.getString(request,"bestpractice");
+        String tcuRemark = ParamUtil.getString(request,"tcuRemark");
+        cDto.setTcuRemark(tcuRemark);
         cDto.setTuc(tcu);
         cDto.setBestPractice(bestpractice);
         fillupChklistService.fillInspectionFillCheckListDto(cDto);
