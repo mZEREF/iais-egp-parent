@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         fallback = TaskApplicationClientFallback.class)
 public interface TaskApplicationClient {
     @GetMapping(path = "/iais-apppremisescorrelation-be/AppPremisesCorrelations/{appGropId}",
-            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesCorrelationDto>> getGroupAppsByNo(@PathVariable("appGropId") String appGropId);
 
     @PostMapping(path = "/iais-application-history/historys",
