@@ -32,9 +32,6 @@ public class INTRANET___MohInspectEmail___1 extends BaseProcessClass {
 	public void sendEmail_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "sendEmail", this); 	}
 
-	public void validationEmail_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "validationEmail", this); 	}
-
 	public void doRecallEmail_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doRecallEmail", this);
 	}

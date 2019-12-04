@@ -28,7 +28,7 @@
                             <li class="incomplete" role="presentation"><a href="#tabQiceList" aria-controls="QiceList" role="tab"
                                                                           data-toggle="tab">checkList</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
-                                                                          data-toggle="tab">Processing</a></li>
+                                                                        data-toggle="tab">Processing</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -680,7 +680,73 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
-                                    <%@ include file="email.jsp" %>
+                                <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+                                <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/jquery-3.4.1.min.js"></script>
+                                <jsp:useBean id="insEmailDto" scope="session" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
+                                <table class="table">
+                                    <tbody>
+                                    <tr height="1">
+                                        <td class="col-xs-2" >
+                                            <p >
+                                                subject:
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-9">
+                                                <p><input name="subject" type="text" id="subject" title="subject"  readonly value="${insEmailDto.subject}"></p>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="col-xs-2" >
+                                            <p >
+                                                content:
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-9">
+                                                <p><textarea name="messageContent" cols="80" rows="23" class="wenbenkuang" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="col-xs-2" >
+                                            <p >
+                                                content:
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-9">
+                                                <p><textarea name="remarks" cols="80" rows="10" class="wenbenkuang" id="remarks" title="remarks"  ></textarea></p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="col-xs-2" >
+                                            <p >
+                                                Processing Decision:
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-9">
+                                                <select name="decision">
+                                                    <option value="Acknowledge email/Letter Content">Acknowledge email/Letter Content</option>
+                                                    <option value="Revise email/Letter Content">Revise email/Letter Content</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+
+                                    </tbody>
+                                </table>
+                                <p class="text-right text-center-mobile">
+                                    <input type="submit" class="search btn" value="submit">
+
+                                </p>
+
+
                             </div>
 
                         </div>
@@ -692,20 +758,6 @@
 </form>
 
 
-<script type="text/javascript">
-    function doPreview(){
-        SOP.Crud.cfxSubmit("mainForm", "preview");
-    }
-
-    function doSend(){
-        var r=confirm("Are you sure to send it directly and not to AO1 for review?");
-        if (r==true){
-            SOP.Crud.cfxSubmit("mainForm", "send");
-        }
-    }
-
-
-</script>
 
 
 

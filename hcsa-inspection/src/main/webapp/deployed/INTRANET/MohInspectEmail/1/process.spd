@@ -23,13 +23,6 @@
     <JavaCode defClass="" executor="" methodName="emailSubmitStep_OnStepProcess_0" name="emailSubmitStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="ValidationEmail" x="650" y="190">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="validationEmail_OnStepProcess_0" name="validationEmail_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreviewEmail" x="890" y="100">
    <Description/>
    <probepoint type="none"/>
@@ -37,14 +30,14 @@
     <JavaCode defClass="" executor="" methodName="previewEmail_OnStepProcess_0" name="previewEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="SendEmail" x="820" y="220">
+  <AutomaticStep defClass="" executor="" icon="" name="SendEmail" x="730" y="220">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="sendEmail_OnStepProcess_0" name="sendEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doRecallEmail" x="610" y="410">
+  <AutomaticStep defClass="" executor="" icon="" name="doRecallEmail" x="550" y="290">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -59,7 +52,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RecallEmailPage" stageIndicator="" x="900" y="290">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RecallEmailPage" stageIndicator="" x="760" y="340">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -86,46 +79,29 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/emailSubmitStep" style="oblique">
    <position>{(570,120)(720,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/ValidationEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(670,210)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreviewEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(720,120)(910,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SendEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(840,240)}</position>
+   <position>{(720,120)(750,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/RecallEmailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SendEmail" style="oblique">
-   <position>{(840,240)(920,310)}</position>
+   <position>{(750,240)(780,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/PreviewEmailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreviewEmail" style="oblique">
    <position>{(910,120)(1080,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ValidationEmail" style="oblique">
-   <position>{(670,210)(660,310)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/SendEmail" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(660,310)(840,240)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(660,310)(270,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doRecallEmail" linkstyle="Direct" name="" sourceName="/Pages/WebPage/RecallEmailPage" style="oblique">
-   <position>{(920,310)(655,460)}</position>
+   <position>{(780,360)(570,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRecallEmail" style="oblique">
-   <position>{(655,460)(270,120)}</position>
+   <position>{(570,310)(270,120)}</position>
   </SynchronousLink>
  </Links>
- <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/emailViewPage" componentIfTrue="/Steps/AutomaticStep/SendEmail" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="640" y="290">
-   <Description/>
-  </Condition>
- </Conditions>
+ <Conditions/>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/PreviewEmail" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="700" y="100">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/ValidationEmail" value="&quot;validation&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreviewEmail" value="&quot;preview&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/SendEmail" value="&quot;send&quot;"/>
   </Switch>

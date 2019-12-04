@@ -32,8 +32,10 @@ public class InspEmailServiceImpl implements InspEmailService {
          insEmailClient.recallEmailTemplate(id);
     }
 
-
-
+    @Override
+    public InspectionEmailTemplateDto getInsertEmail(String appPremCorrId) {
+        return insEmailClient.getInsertEmail(appPremCorrId);
+    }
 
 
 }
