@@ -6,7 +6,6 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @date 2019/12/2
  */
 @FeignClient(name = "iais-application", configuration = {FeignConfiguration.class},
-        fallback = InsEmailClientFallback.class)
+        fallback = InsEmailClientFallBack.class)
 public interface InsEmailClient {
 
     @PostMapping(path = "/iais-inspection/insert-template",  consumes =  MediaType.APPLICATION_JSON_VALUE)

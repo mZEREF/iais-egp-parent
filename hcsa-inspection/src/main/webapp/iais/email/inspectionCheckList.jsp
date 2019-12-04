@@ -28,7 +28,7 @@
                             <li class="incomplete" role="presentation"><a href="#tabQiceList" aria-controls="QiceList" role="tab"
                                                                           data-toggle="tab">checkList</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
-                                                                          data-toggle="tab">Processing</a></li>
+                                                                        data-toggle="tab">Processing</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -680,7 +680,7 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
-                                    <%@ include file="email.jsp" %>
+                                <%@ include file="email.jsp" %>
                             </div>
 
                         </div>

@@ -2,63 +2,97 @@
 <Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectEmail" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
+  <StartStep defClass="" executor="" icon="" name="Start" x="10" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="250" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareData" x="110" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="emailSubmitStep" x="550" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="emailSubmitStep" x="600" y="140">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="emailSubmitStep_OnStepProcess_0" name="emailSubmitStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreviewEmail" x="890" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="PreviewEmail" x="290" y="320">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="previewEmail_OnStepProcess_0" name="previewEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="SendEmail" x="730" y="220">
+  <AutomaticStep defClass="" executor="" icon="" name="SendEmail" x="310" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="sendEmail_OnStepProcess_0" name="sendEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doRecallEmail" x="550" y="290">
+  <AutomaticStep defClass="" executor="" icon="" name="doRecallEmail" x="610" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doRecallEmail_OnStepProcess_0" name="doRecallEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preCheckList" x="280" y="0">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preCheckList_OnStepProcess_0" name="preCheckList_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="checkListNext" x="500" y="0">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="checkListNext_OnStepProcess_0" name="checkListNext_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preEmailView" x="300" y="140">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preEmailView_OnStepProcess_0" name="preEmailView_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step4" x="640" y="310">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step4_OnStepProcess_0" name="step4_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="emailViewPage" stageIndicator="" x="400" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="emailViewPage" stageIndicator="" x="460" y="140">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RecallEmailPage" stageIndicator="" x="760" y="340">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RecallEmailPage" stageIndicator="" x="470" y="230">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewEmailPage" stageIndicator="" x="1060" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewEmailPage" stageIndicator="" x="470" y="320">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="checkListpage" stageIndicator="" x="400" y="0">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -68,46 +102,89 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
-   <position>{(120,120)(270,120)}</position>
+   <position>{(30,120)(130,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/emailViewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
-   <position>{(270,120)(420,120)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
+   <position>{(130,120)(220,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/emailSubmitStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/emailViewPage" style="oblique">
-   <position>{(420,120)(570,120)}</position>
+   <position>{(480,160)(620,160)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/emailSubmitStep" style="oblique">
-   <position>{(570,120)(720,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PreviewEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(910,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/SendEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(750,240)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/emailSubmitStep" style="oblique">
+   <position>{(620,160)(800,100)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/RecallEmailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SendEmail" style="oblique">
-   <position>{(750,240)(780,360)}</position>
+   <position>{(330,250)(490,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/PreviewEmailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreviewEmail" style="oblique">
-   <position>{(910,120)(1080,120)}</position>
+   <position>{(310,340)(490,340)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doRecallEmail" linkstyle="Direct" name="" sourceName="/Pages/WebPage/RecallEmailPage" style="oblique">
-   <position>{(780,360)(570,310)}</position>
+   <position>{(490,250)(630,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRecallEmail" style="oblique">
-   <position>{(570,310)(270,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(220,120)(300,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/checkListpage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preCheckList" style="rectanular">
+   <position>{(300,20)(420,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/checkListNext" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/checkListpage" style="rectanular">
+   <position>{(420,20)(520,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preEmailView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(220,120)(320,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/emailViewPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preEmailView" style="rectanular">
+   <position>{(320,160)(480,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(640,20)(800,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(800,100)(148,424)(130,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SendEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(220,120)(330,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreviewEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(220,120)(310,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRecallEmail" style="oblique">
+   <position>{(630,250)(800,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/checkListNext" style="rectanular">
+   <position>{(520,20)(640,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(640,20)(300,108)(300,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step4" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/PreviewEmailPage" style="rectanular">
+   <position>{(490,340)(660,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step4" style="oblique">
+   <position>{(660,330)(800,100)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
- <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/PreviewEmail" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="700" y="100">
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preCheckList" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="620" y="0">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PreviewEmail" value="&quot;preview&quot;"/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preCheckList" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="200" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/preCheckList" value="&quot;checkList&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preEmailView" value="&quot;emailView&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/SendEmail" value="&quot;send&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreviewEmail" value="&quot;preview&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
- <Merges/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="780" y="80">
+   <Description/>
+  </Merge>
+ </Merges>
  <StudioLabels/>
  <StageIndicator/>
  <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
