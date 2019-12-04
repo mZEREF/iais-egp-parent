@@ -57,12 +57,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-bus</artifactId>
         </dependency>
-        <dependency>
-            <groupId>sg.gov.moh.iais-egp</groupId>
-            <artifactId>hcsa-licence</artifactId>
-            <version>0.1</version>
-            <scope>compile</scope>
-        </dependency>
+
     </dependencies>
     <build>
         <finalName>hcsainspection</finalName>

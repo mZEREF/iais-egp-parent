@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,7 @@ public class InspecEmailDelegator {
     @Autowired
     InsRepService insRepService;
     @Autowired
-    ApplicationClient applicationClient;
+    InsEmailClient insEmailClient;
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
     }
@@ -50,7 +51,7 @@ public class InspecEmailDelegator {
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         String appNo = "AN1911136061-01";
-        ApplicationViewDto applicationViewDto = applicationClient.getAppViewByNo(appNo).getEntity();
+        ApplicationViewDto applicationViewDto = insEmailClient.getAppViewByNo(appNo).getEntity();
         String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
         ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
         InspectionEmailTemplateDto inspectionEmailTemplateDto = RestApiUtil.postGetObject("system-admin:8886/iais-messageTemplate",templateId, InspectionEmailTemplateDto.class);
