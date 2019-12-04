@@ -15,11 +15,12 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___TestApi___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="hcsaApplicationDelegator";
-
+	//private static final String DELEGATOR ="hcsaApplicationDelegator";
+	private static final String DELEGATOR ="licenceApproveBatchjob";
 	public void step2_OnStepProcess_0() throws Exception {
 	// 		Step2->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "routingTask", this);
+		//EngineHelper.delegate(DELEGATOR, "routingTask", this);
+		EngineHelper.delegate(DELEGATOR, "doBatchJob", this);
 	}
 
 }

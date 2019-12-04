@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 public class LicenceServiceImpl implements LicenceService {
     @Override
     public List<ApplicationLicenceDto> getCanGenerateApplications(int day) {
-        return RestApiUtil.getListByPathParam(RestApiUrlConsts.APPLICATION_GROUP,String.valueOf(day),ApplicationLicenceDto.class);
+        Map<String,Object> param = new HashMap<>();
+        param.put("day",day);
+        return RestApiUtil.getListByReqParam(RestApiUrlConsts.APPLICATION_GROUP,param,ApplicationLicenceDto.class);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public List<LicenceGroupDto> createSuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
-        //todo:create licence
-        return null;
+
+        return RestApiUtil.save(RestApiUrlConsts.LICENCES,licenceGroupDtos,List.class);
     }
 }
