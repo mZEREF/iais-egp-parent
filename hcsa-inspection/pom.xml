@@ -57,6 +57,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-bus</artifactId>
         </dependency>
+
     </dependencies>
     <build>
         <finalName>hcsainspection</finalName>
