@@ -189,7 +189,7 @@ public class LicenceApproveBatchjob {
                 //create licence
                 //todo:get the yearLenth.
                 int yearLength = 1;
-                String licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(),applicationListDtos.size(),yearLength);
+                String licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(),yearLength);
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
                 if(StringUtil.isEmpty(licenceNo)){
                     errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() + ":" + yearLength;
