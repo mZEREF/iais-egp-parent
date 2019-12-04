@@ -141,12 +141,12 @@
             <dependency>
                 <groupId>com.ecquaria.sz</groupId>
                 <artifactId>ecq-sz-commons</artifactId>
-                <version>0.2</version>
+                <version>0.3</version>
             </dependency>
             <dependency>
                 <groupId>com.ecquaria.submission.client</groupId>
                 <artifactId>submissionclient</artifactId>
-                <version>0.1</version>
+                <version>0.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
