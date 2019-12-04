@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListCilent;
@@ -56,6 +58,16 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam) {
         return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.CHECKLIST_ITEM_RESULTS, searchParam);
     }
+    @Override
+    public ApplicationViewDto getAppViewDto(String taskId){
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "7102C311-D10D-EA11-BE7D-000C29F371DC";
+        }
+        TaskDto taskDto = fillUpCheckListGetTaskCilent.getTaskDtoByTaskId(taskId).getEntity();
+        String refNo = taskDto.getRefNo();
+        ApplicationViewDto viewDto = fillUpCheckListGetAppClient.getAppViewDtoByNo(refNo).getEntity();
+        return viewDto;
+    }
 
     @Override
     public InspectionFillCheckListDto getInspectionFillCheckListDto(String taskId,String svcCode,String svcType) {
@@ -63,7 +75,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         Map<String,Object> paramMap= new HashMap<> ();
         paramMap.put("svcCode",svcCode);
         paramMap.put("svcType",svcType);
-        taskId = "7102C311-D10D-EA11-BE7D-000C29F371DC";
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "7102C311-D10D-EA11-BE7D-000C29F371DC";
+        }
         //List<ChecklistQuestionDto> cDtoList = RestApiUtil.getListByReqParam("hcsa-config:8878/iais-hcsa-checklist/config/results/{svcCode}/{svcType}",paramMap,ChecklistQuestionDto.class);
         //List<ChecklistQuestionDto> cDtoList = fillUpCheckListCilent.getcheckListQuestionDtoList(svcCode,svcType).getEntity();
         //TaskDto taskDto = RestApiUtil.getByPathParam("hcsa-config:8879/iais-task/{taskId}",taskId, TaskDto.class);
@@ -76,7 +90,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             ApplicationDto appDto = fillUpCheckListGetAppClient.getAppViewDtoByRefNo(refNo).getEntity();
             String appId = appDto.getId();
             //appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
-            //appCorrDtolist = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-application/application/correlations/{appid}",appId,AppPremisesCorrelationDto.class);
+            appCorrDtolist = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-application/application/correlations/{appid}",appId,AppPremisesCorrelationDto.class);
 
             if(appCorrDtolist!=null && !appCorrDtolist.isEmpty()){
                 appPremCorrId = appCorrDtolist.get(0).getId();
@@ -222,19 +236,22 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
         appPreRecommentdationDto.setAppPremCorreId("4B7DB578-A1B4-4836-A43E-53450A58F078");
         appPreRecommentdationDto.setBestPractice(dto.getBestPractice());
-        appPreRecommentdationDto.setRemarks("haha");
+        appPreRecommentdationDto.setRemarks(dto.getTcuRemark());
         appPreRecommentdationDto.setStatus("CMSTAT001");
         appPreRecommentdationDto.setRecomType("tcu");
         appPreRecommentdationDto.setVersion(1);
         appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         try {
-            RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinschkl-be/AppPremissChkl",appDto,AppPremisesPreInspectChklDto.class);
-            RestApiUtil.postGetObject("hcsa-config:8883/application-be/RescomDtoStorage",appPreRecommentdationDto,AppPremisesRecommendationDto.class);
-            AppPremPreInspectionNcDto AppPremPreInspectionNcDto = getAppPremPreInspectionNcDto(dto);
-            AppPremPreInspectionNcDto = RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinsnc-be/AppPremNcResult",AppPremPreInspectionNcDto,AppPremPreInspectionNcDto.class);
-            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(dto,AppPremPreInspectionNcDto);
-            RestApiUtil.postGetList("hcsa-config:8883/iais-apppreinsncitem-be/AppPremNcItemResult",appPremisesPreInspectionNcItemDtoList,AppPremisesPreInspectionNcItemDto.class);
-
+            //RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinschkl-be/AppPremissChkl",appDto,AppPremisesPreInspectChklDto.class);
+            fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
+            //RestApiUtil.postGetObject("hcsa-config:8883/application-be/RescomDtoStorage",appPreRecommentdationDto,AppPremisesRecommendationDto.class);
+            fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+            AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDto(dto);
+            //appPremPreInspectionNcDto = RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinsnc-be/AppPremNcResult",appPremPreInspectionNcDto,AppPremPreInspectionNcDto.class);
+            appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
+            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(dto,appPremPreInspectionNcDto);
+            //RestApiUtil.postGetList("hcsa-config:8883/iais-apppreinsncitem-be/AppPremNcItemResult",appPremisesPreInspectionNcItemDtoList,AppPremisesPreInspectionNcItemDto.class);
+            fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtoList);
         }catch (Exception e){
             e.printStackTrace();
             throw e;

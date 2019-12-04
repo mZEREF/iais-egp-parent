@@ -1,1 +1,1 @@
-<%@include file="/iais/inspectionFillupChecklist/checklistSuccess.jsp"%>
+<%@include file="/iais/inspectionFillupChecklist/totalCheckListSuccess.jsp"%>
