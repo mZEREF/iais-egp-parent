@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -16,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesSco
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppliGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -331,7 +331,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     private Boolean fileToDto(String str){
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
-        ApplicationListDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListDto.class);
+        ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
         for(AppGrpPersonnelDto every:appGrpPersonnel){
             every.setAuditTrailDto(intranet);

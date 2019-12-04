@@ -1,8 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationListDto;
+
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +30,7 @@ public class ApplicationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<Void> getDownloadFile(@RequestBody ApplicationListDto  applicationListDtos){
+    FeignResponseEntity<Void> getDownloadFile(@RequestBody ApplicationListFileDto applicationListDtos){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
