@@ -4,9 +4,11 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -19,4 +21,12 @@ import java.util.Map;
 public interface SystemClient {
     @RequestMapping(path = "/file-existence",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> isFileExistence(@RequestBody Map<String,String> map);
+    @RequestMapping(path = "/hcl-code/{serviceCode}",method = RequestMethod.GET)
+    FeignResponseEntity<String> hclCodeByCode(@PathVariable(name = "serviceCode") String code);
+    @RequestMapping(path = "/licence-number",method = RequestMethod.GET)
+    FeignResponseEntity<String> licence(@RequestParam("hciCode") String hciCode, @RequestParam("serviceCode") String serviceCode,
+                                        @RequestParam("yearLength") Integer yearLength, @RequestParam("licenceSeq") Integer licenceSeq) ;
+    @RequestMapping
+    FeignResponseEntity<String> groupLicence(@RequestParam("hscaCode") String hscaCode,
+                                             @RequestParam("yearLength") String yearLength,@RequestParam("licence") String licence);
 }

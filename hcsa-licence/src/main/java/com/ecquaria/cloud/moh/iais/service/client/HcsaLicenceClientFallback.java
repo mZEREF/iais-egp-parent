@@ -1,32 +1,32 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author Wenkang
- * @date 2019/11/28 10:28
+ * @date 2019/12/4 16:02
  */
-public class SystemClientFallback {
-    FeignResponseEntity<Boolean> isFileExistence( Map<String,String> map){
+public class HcsaLicenceClientFallback {
+    FeignResponseEntity<Integer> licenceNumber( String hciCode){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<String> hclCodeByCode(String code){
+    FeignResponseEntity<String > groupLicenceNumber( String groupLicence){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<String> licence( String hciCode,  String serviceCode,
-                                       Integer yearLength,  Integer licenceSeq) {
+    FeignResponseEntity<List<LicenceGroupDto>> createLicence( List<LicenceGroupDto> licenceGroupDtoList){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

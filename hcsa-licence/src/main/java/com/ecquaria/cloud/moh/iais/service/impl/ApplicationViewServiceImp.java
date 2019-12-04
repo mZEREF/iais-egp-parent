@@ -12,6 +12,9 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +23,15 @@ import org.springframework.stereotype.Service;
 public class ApplicationViewServiceImp implements ApplicationViewService {
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private OrganizationClient organizationClient;
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
     @Override
     public ApplicationViewDto searchByAppNo(String appNo) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
         return applicationClient.getAppViewByNo(appNo).getEntity();
     }
-
-
 
     @Override
     public ApplicationDto getApplicaitonByAppNo(String appNo) {
@@ -35,25 +40,26 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public ApplicationDto updateApplicaiton(ApplicationDto applicationDto) {
-        return RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationDto,ApplicationDto.class);
+
+        return  applicationClient.updateApplication(applicationDto).getEntity();
     }
 
     @Override
     public List<OrgUserDto> getUserNameById(List<String> userIdList) {
-        return RestApiUtil.postGetList("iais-organization:8879/users-by-ids",userIdList,OrgUserDto.class);
+
+        return  organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
     }
 
     @Override
     public List<HcsaSvcDocConfigDto> getTitleById(List<String> titleIdList) {
-        return RestApiUtil.postGetList("hcsa-config:8878/iais-hcsa-service/list-svc-doc-config",titleIdList,HcsaSvcDocConfigDto.class);
+
+        return  hcsaConfigClient.listSvcDocConfig(titleIdList).getEntity();
     }
 
     @Override
     public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("serviceId",serviceId);
-        map.put("stageId",stageId);
-        return RestApiUtil.getListByReqParam("hcsa-config:8878/hcsa-routing/stage-id",map,HcsaSvcRoutingStageDto.class);
+
+        return   hcsaConfigClient.getStageName(serviceId,stageId).getEntity();
 
 
     }
