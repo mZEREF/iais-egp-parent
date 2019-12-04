@@ -13,6 +13,17 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
+
 /**
  * AccessUtil
  *
@@ -64,5 +75,26 @@ public class AccessUtil {
     */
     public static boolean isIntranet(){
         return true;
+    }
+
+    public static void initLoginUserInfo(HttpServletRequest request) {
+        LoginContext loginContext = new LoginContext();
+        User user = SessionManager.getInstance(request).getCurrentUser();
+        ComSystemAdminClient client = SpringContextHelper.getContext().getBean(ComSystemAdminClient.class);
+        OrgUserDto orgUser = client.retrieveOrgUserAccount(user.getId()).getEntity();
+        if (orgUser != null) {
+            loginContext.setUserId(orgUser.getId());
+            loginContext.setLoginId(user.getId());
+            loginContext.setUserDomain(user.getUserDomain());
+            List<String> wrkGrps = client.getWorkGrpsByUserId(orgUser.getId()).getEntity();
+            if (wrkGrps != null && !wrkGrps.isEmpty()) {
+                loginContext.getWrkGrpIds().addAll(wrkGrps);
+            }
+            List<String> userRoles = client.retrieveUserRoles(orgUser.getId()).getEntity();
+            if (userRoles != null && !userRoles.isEmpty()) {
+                loginContext.getRoleIds().addAll(userRoles);
+            }
+        }
+        ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
     }
 }

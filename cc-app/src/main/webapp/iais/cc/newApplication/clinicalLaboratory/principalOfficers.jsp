@@ -65,12 +65,33 @@
     $(document).ready(function() {
         //Binding method
         $('#principalOfficersBack').click(function(){
-            //submitForms('laboratoryDisciplines',null,null,'clinical');
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('disciplineAllocation',null,null,controlFormLi);
         });
         $('#principalOfficersSaveDraft').click(function(){
             // submitForms('governanceOfficers','saveDraft',null,'clinical');
         });
         $('#principalOfficersNext').click(function(){
+            var flag=true;
+            if(!$('#mobileNo').val().startsWith("8")&&!$('#mobileNo').val().startsWith("9")){
+                $('#mobileNo+span').removeAttr('style');
+                $('#mobileNo').attr('class','error');
+                flag=false;
+            }
+            var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+            if(!rel.test($('#emailAdress').val())){
+                $('#emailAdress+span').removeAttr('style');
+                $('#emailAdress').attr('class','error');
+                flag=false;
+            }
+            if(!$('#telephone').val().startsWith("6")){
+                $('#telephone+span').removeAttr('style');
+                $('#telephone').attr('class','error');
+                flag=false;
+            }
+            if(!flag){
+                return;
+            }
             var controlFormLi = $('#controlFormLi').val();
             submitForms('documents',null,null,controlFormLi);
         });

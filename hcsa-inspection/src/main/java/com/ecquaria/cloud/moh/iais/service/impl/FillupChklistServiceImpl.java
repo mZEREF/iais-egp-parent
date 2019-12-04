@@ -3,23 +3,38 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListCilent;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetTaskCilent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +44,11 @@ import java.util.Map;
 public class FillupChklistServiceImpl implements FillupChklistService {
     @Autowired
     private FillUpCheckListCilent fillUpCheckListCilent;
+    @Autowired
+    private FillUpCheckListGetTaskCilent fillUpCheckListGetTaskCilent;
+
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Override
     public SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam) {
         return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.CHECKLIST_CONFIG_RESULTS, searchParam);
@@ -38,29 +58,61 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam) {
         return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.CHECKLIST_ITEM_RESULTS, searchParam);
     }
+    @Override
+    public ApplicationViewDto getAppViewDto(String taskId){
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "7102C311-D10D-EA11-BE7D-000C29F371DC";
+        }
+        TaskDto taskDto = fillUpCheckListGetTaskCilent.getTaskDtoByTaskId(taskId).getEntity();
+        String refNo = taskDto.getRefNo();
+        ApplicationViewDto viewDto = fillUpCheckListGetAppClient.getAppViewDtoByNo(refNo).getEntity();
+        return viewDto;
+    }
 
     @Override
     public InspectionFillCheckListDto getInspectionFillCheckListDto(String taskId,String svcCode,String svcType) {
-        //List<ChecklistQuestionDto> cDtoList = fillUpCheckListCilent.getcheckListQuestionDtoList("CLB","Self-Assessment").getEntity();
+        List<ChecklistQuestionDto> cDtoList = fillUpCheckListCilent.getcheckListQuestionDtoList("BLB","Inspection").getEntity();
         Map<String,Object> paramMap= new HashMap<> ();
         paramMap.put("svcCode",svcCode);
         paramMap.put("svcType",svcType);
-        List<ChecklistQuestionDto> cDtoList = RestApiUtil.getListByReqParam("hcsa-config:8878/iais-hcsa-checklist/config/results/{svcCode}/{svcType}",paramMap,ChecklistQuestionDto.class);
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "7102C311-D10D-EA11-BE7D-000C29F371DC";
+        }
+        //List<ChecklistQuestionDto> cDtoList = RestApiUtil.getListByReqParam("hcsa-config:8878/iais-hcsa-checklist/config/results/{svcCode}/{svcType}",paramMap,ChecklistQuestionDto.class);
+        //List<ChecklistQuestionDto> cDtoList = fillUpCheckListCilent.getcheckListQuestionDtoList(svcCode,svcType).getEntity();
+        //TaskDto taskDto = RestApiUtil.getByPathParam("hcsa-config:8879/iais-task/{taskId}",taskId, TaskDto.class);
+        TaskDto taskDto = fillUpCheckListGetTaskCilent.getTaskDtoByTaskId(taskId).getEntity();
+        List<AppPremisesCorrelationDto> appCorrDtolist = null;
+        String appPremCorrId = null;
+        if(taskDto!=null){
+            String refNo = taskDto.getRefNo();
+            //ApplicationViewDto appDto = RestApiUtil.getByPathParam("hcsa-config:8883/iais-application/application/{AppNo}",refNo, ApplicationViewDto.class);
+            ApplicationDto appDto = fillUpCheckListGetAppClient.getAppViewDtoByRefNo(refNo).getEntity();
+            String appId = appDto.getId();
+            //appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
+            appCorrDtolist = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-application/application/correlations/{appid}",appId,AppPremisesCorrelationDto.class);
+
+            if(appCorrDtolist!=null && !appCorrDtolist.isEmpty()){
+                appPremCorrId = appCorrDtolist.get(0).getId();
+            }
+        }
         InspectionFillCheckListDto infillCheckListDto = new InspectionFillCheckListDto();
         if(cDtoList!=null && !cDtoList.isEmpty()){
             List<InspectionCheckQuestionDto> cqDtoList = new ArrayList<>();
             for(ChecklistQuestionDto temp:cDtoList){
                 InspectionCheckQuestionDto inspectionCheckQuestionDto = null;
                 inspectionCheckQuestionDto = transferQuestionDtotoInDto(temp);
+                inspectionCheckQuestionDto.setAppPreCorreId(appPremCorrId);
                 cqDtoList.add(inspectionCheckQuestionDto);
             }
             infillCheckListDto.setCheckList(cqDtoList);
-            getInspectionFillCheckListDto(infillCheckListDto);
+            fillInspectionFillCheckListDto(infillCheckListDto);
             return infillCheckListDto;
         }
         return null;
     }
-    public InspectionFillCheckListDto getInspectionFillCheckListDto(InspectionFillCheckListDto infillCheckListDto){
+    @Override
+    public InspectionFillCheckListDto fillInspectionFillCheckListDto(InspectionFillCheckListDto infillCheckListDto){
         List<InspectionCheckQuestionDto> iqdDtolist = infillCheckListDto.getCheckList();
         List<SectionDto> sectionDtoList = new ArrayList<>();
         for(InspectionCheckQuestionDto temp:iqdDtolist){
@@ -142,6 +194,94 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         icDto.setSubTypeName(cdto.getSubTypeName());
         icDto.setSvcCode(cdto.getSvcCode());
         icDto.setSvcId(cdto.getSvcId());
+        icDto.setRectified(false);
         return icDto;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveDto(InspectionFillCheckListDto dto) {
+        List<InspectionCheckQuestionDto> icqDtoList = dto.getCheckList();
+        List<InspectionCheckListAnswerDto> answerDtoList = new ArrayList<>();
+        InspectionCheckListAnswerDto answerDto = null;
+        for (InspectionCheckQuestionDto temp : icqDtoList) {
+            answerDto = new InspectionCheckListAnswerDto();
+            answerDto.setAnswer(temp.getChkanswer());
+            answerDto.setRemark(temp.getRemark());
+            answerDto.setItemId(temp.getItemId());
+            answerDtoList.add(answerDto);
+        }
+        String answerJson = JsonUtil.parseToJson(answerDtoList);
+        String appPremCorrId = icqDtoList.get(0).getAppPreCorreId();
+        String configId = icqDtoList.get(0).getConfigId();
+        AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
+        appDto.setAnswer(answerJson);
+        appDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
+        appDto.setAppPremCorrId("4B7DB578-A1B4-4836-A43E-53450A58F078");
+        appDto.setVersion(1+"");
+        appDto.setChkLstConfId(configId);
+        appDto.setStatus("CMSTAT001");
+        appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
+        appPreRecommentdationDto.setAppPremCorreId("4B7DB578-A1B4-4836-A43E-53450A58F078");
+        appPreRecommentdationDto.setRecomType("tcu");
+        Date tcuDate = null;
+        try {
+            tcuDate = Formatter.parseDate(dto.getTuc());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(tcuDate!=null){
+            appPreRecommentdationDto.setRecomInDate(tcuDate);
+        }
+        appPreRecommentdationDto.setAppPremCorreId("4B7DB578-A1B4-4836-A43E-53450A58F078");
+        appPreRecommentdationDto.setBestPractice(dto.getBestPractice());
+        appPreRecommentdationDto.setRemarks(dto.getTcuRemark());
+        appPreRecommentdationDto.setStatus("CMSTAT001");
+        appPreRecommentdationDto.setRecomType("tcu");
+        appPreRecommentdationDto.setVersion(1);
+        appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        try {
+            //RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinschkl-be/AppPremissChkl",appDto,AppPremisesPreInspectChklDto.class);
+            fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
+            //RestApiUtil.postGetObject("hcsa-config:8883/application-be/RescomDtoStorage",appPreRecommentdationDto,AppPremisesRecommendationDto.class);
+            fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+            AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDto(dto);
+            //appPremPreInspectionNcDto = RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinsnc-be/AppPremNcResult",appPremPreInspectionNcDto,AppPremPreInspectionNcDto.class);
+            appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
+            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(dto,appPremPreInspectionNcDto);
+            //RestApiUtil.postGetList("hcsa-config:8883/iais-apppreinsncitem-be/AppPremNcItemResult",appPremisesPreInspectionNcItemDtoList,AppPremisesPreInspectionNcItemDto.class);
+            fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtoList);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+     }
+    public List<AppPremisesPreInspectionNcItemDto> getAppPremisesPreInspectionNcItemDto(InspectionFillCheckListDto dto,AppPremPreInspectionNcDto ncDto){
+        List<InspectionCheckQuestionDto> insqDtoList =  dto.getCheckList();
+        List<AppPremisesPreInspectionNcItemDto> ncItemDtoList = new ArrayList<>();
+        for(InspectionCheckQuestionDto temp:insqDtoList){
+            AppPremisesPreInspectionNcItemDto ncItemDto = null;
+                ncItemDto = new AppPremisesPreInspectionNcItemDto();
+                ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                ncItemDto.setItemId(temp.getItemId());
+                ncItemDto.setPreNcId(ncDto.getId());
+                if(temp.isRectified()){
+                    ncItemDto.setIsRecitfied(1);
+                }else{
+                    ncItemDto.setIsRecitfied(0);
+                }
+            ncItemDtoList.add(ncItemDto);
+        }
+        return ncItemDtoList;
+    }
+    public AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(InspectionFillCheckListDto dto){
+        AppPremPreInspectionNcDto ncDto = new AppPremPreInspectionNcDto();
+        ncDto.setStatus("CMSTAT001");
+        ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
+        ncDto.setVersion(1+"");
+        ncDto.setAppPremCorrId("4B7DB578-A1B4-4836-A43E-53450A58F078");
+        ncDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return ncDto;
     }
 }

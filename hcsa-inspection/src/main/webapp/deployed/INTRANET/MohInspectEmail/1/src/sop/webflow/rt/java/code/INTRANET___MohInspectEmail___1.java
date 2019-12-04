@@ -20,9 +20,6 @@ public class INTRANET___MohInspectEmail___1 extends BaseProcessClass {
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this); 	}
 
-	public void prepareData_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "prepareData", this); 	}
-
 	public void emailSubmitStep_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "emailSubmitStep", this); 	}
 
@@ -32,11 +29,27 @@ public class INTRANET___MohInspectEmail___1 extends BaseProcessClass {
 	public void sendEmail_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "sendEmail", this); 	}
 
-	public void validationEmail_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "validationEmail", this); 	}
-
 	public void doRecallEmail_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doRecallEmail", this);
 	}
 
+	public void prepareData_OnStepProcess_0 () throws Exception { 
+	
+		EngineHelper.delegate(DELEGATOR, "prepareData", this); 	}
+
+	public void preCheckList_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preCheckList", this);
+	}
+
+	public void checkListNext_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "checkListNext", this);
+	}
+
+	public void preEmailView_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preEmailView", this);
+	}
+
+	public void step4_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "emailView", this);
+	}
 }

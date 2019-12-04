@@ -2,22 +2,18 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +36,6 @@ import java.util.Map;
 public class InspecEmailDelegator {
     @Autowired
     InspEmailService inspEmailService;
-    @Autowired
-    InsRepService insRepService;
-
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -51,14 +44,17 @@ public class InspecEmailDelegator {
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String templateId = "08BDA324-5D13-EA11-BE78-000C29D29DB0" ;
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = RestApiUtil.postGetObject("system-admin:8886/iais-messageTemplate",templateId, InspectionEmailTemplateDto.class);
-
+        String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
+        String appNo = "AN1911136061-01";
+        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
+        String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
+        ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
+        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
+        inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
         inspectionEmailTemplateDto.setApplicantName("li cen");
-        inspectionEmailTemplateDto.setAddressee("shiquanjie@163.com");
-        inspectionEmailTemplateDto.setApplicationNumber("AN1911153344-01");
-        inspectionEmailTemplateDto.setHciCode("HCI00001");
-        inspectionEmailTemplateDto.setHciNameOrAddress("ganjianglu123");
+        inspectionEmailTemplateDto.setApplicationNumber(appNo);
+        inspectionEmailTemplateDto.setHciCode("HCI123");
+        inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
         inspectionEmailTemplateDto.setServiceName("cosmetic surgery");
         inspectionEmailTemplateDto.setSn("No");
         inspectionEmailTemplateDto.setChecklistItem("checklistItem");
@@ -72,7 +68,7 @@ public class InspecEmailDelegator {
         map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
         map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
         map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
-        if(!inspectionEmailTemplateDto.getSn().equals("Yes")){
+        if(inspectionEmailTemplateDto.getSn().equals("No")){
             StringBuilder stringBuilder=new StringBuilder();
             stringBuilder.append("<tr><td>"+inspectionEmailTemplateDto.getSn());
             stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getChecklistItem());
@@ -87,7 +83,10 @@ public class InspecEmailDelegator {
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
         inspectionEmailTemplateDto.setMessageContent(mesContext);
+        ParamUtil.setSessionAttr(request,"mesContext", mesContext);
+        ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "checkList");
     }
     public void emailSubmitStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -110,19 +109,6 @@ public class InspecEmailDelegator {
 
     }
 
-    public void validationEmail(BaseProcessClass bpc){
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
-        HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"validation".equals(currentAction)){
-            return;
-        }
-        InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
-        String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
-        ParamUtil.setSessionAttr(request,"templateId",id);
-        String flag="Y";
-        ParamUtil.setRequestAttr(request,"flag", flag);
-    }
     public void sendEmail(BaseProcessClass bpc){
 
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -131,10 +117,31 @@ public class InspecEmailDelegator {
         if(!"send".equals(currentAction)){
             return;
         }
+        String decision=ParamUtil.getRequestString(request,"decision");
+
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,"messageContent"));
-        inspectionEmailTemplateDto.setRemarks(ParamUtil.getString(request,"remarks"));
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
+        if (inspectionEmailTemplateDto.getSubject().isEmpty()){
+            Map<String,String> errorMap = new HashMap<>();
+            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
+            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
+        }
+        if (inspectionEmailTemplateDto.getMessageContent().isEmpty()){
+            Map<String,String> errorMap = new HashMap<>();
+            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
+            ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
+        }
+        if (decision.equals("Route email/letter to AO1 for review")){
+            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01);
+            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationViewDto.getApplicationDto(), ApplicationDto.class);
+        }
+        else {
+            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationViewDto.getApplicationDto(), ApplicationDto.class);
+
+        }
         String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
         ParamUtil.setSessionAttr(request,"templateId",id);
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
@@ -145,6 +152,21 @@ public class InspecEmailDelegator {
         HttpServletRequest request = bpc.request;
         String id= (String) ParamUtil.getSessionAttr(request,"templateId");
         inspEmailService.recallEmailTemplate(id);
+    }
+
+    public void preCheckList(BaseProcessClass bpc) {
+
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+    }
+    public void checkListNext(BaseProcessClass bpc) {
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+    }
+    public void preEmailView(BaseProcessClass bpc) {
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+    }
+    public void emailView(BaseProcessClass bpc) {
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
     }
 
 }

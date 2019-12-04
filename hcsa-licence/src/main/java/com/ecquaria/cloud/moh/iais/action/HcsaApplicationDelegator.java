@@ -24,9 +24,11 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,23 +101,23 @@ public class HcsaApplicationDelegator {
         String appNo = taskDto.getRefNo();
 //        get routing stage dropdown send to page.
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
-//        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
-//        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
-//        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
-//        for (int i = 0; i <appSupDocDtos.size(); i++) {
-//            for (int j = 0; j <docTitleList.size() ; j++) {
-//                if (appSupDocDtos.get(i).getFile().equals(docTitleList.get(j).getId())){
-//                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
-//                }
-//            }
-//            for (int j = 0; j <userNameList.size() ; j++) {
-//                if (appSupDocDtos.get(i).getSubmittedBy().equals(userNameList.get(j).getId())){
-//                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getUserName());
-//                }
-//            }
-//        }
-        String applicationType=MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getApplicationType());
-        applicationViewDto.getApplicationDto().setApplicationType(applicationType);
+        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
+        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
+        for (int i = 0; i <appSupDocDtos.size(); i++) {
+            for (int j = 0; j <docTitleList.size() ; j++) {
+                if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
+                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                }
+            }
+            for (int j = 0; j <userNameList.size() ; j++) {
+                if ((appSupDocDtos.get(i).getSubmittedBy()).equals(userNameList.get(j).getId())){
+                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getUserName());
+                }
+            }
+        }
+        String applicationType=MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType());
+        applicationViewDto.setApplicationType(applicationType);
         String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(serviceType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
@@ -125,28 +127,28 @@ public class HcsaApplicationDelegator {
 
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList
              ) {
-            routingStage.put(hcsaSvcRoutingStage.getStageName(),hcsaSvcRoutingStage.getStageCode());
+            routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
 
-        if("AO3".equals(applicationViewDto.getCurrentStatus())){
-            routingStage.put("RollBack","APST000");
-            routingStage.put("Pending Approval","APST002");
-            routingStage.put("Reject","APST006");
-            routingStage.put("Internal Enquiry","APST0013");
-            routingStage.put("Route To DMS","APST0014");
-        }else if("AO2".equals(applicationViewDto.getCurrentStatus())
-                ||"AO1".equals(applicationViewDto.getCurrentStatus())){
-            routingStage.put("Reject","APST006");
-            routingStage.put("RollBack","APST000");
-            routingStage.put("Support","APST0015");
-        }else if("PSO".equals(applicationViewDto.getCurrentStatus())){
-            routingStage.put("Verified","APST0016");
-            routingStage.put("Request For Information","APST0017");
-        }else if("ASO".equals(applicationViewDto.getCurrentStatus())) {
-            routingStage.put("Verified", "APST0016");
-            routingStage.put("Request For Information", "APST0017");
-            routingStage.put("Licence Start Date", "APST0018");
-        }
+//        if("AO3".equals(applicationViewDto.getCurrentStatus())){
+//            routingStage.put("APST000","RollBack");
+//            routingStage.put("APST002","Pending Approval");
+//            routingStage.put("APST006","Reject");
+//            routingStage.put("APST0013","Internal Enquiry");
+//            routingStage.put("APST0014","Route To DMS");
+//        }else if("AO2".equals(applicationViewDto.getCurrentStatus())
+//                ||"AO1".equals(applicationViewDto.getCurrentStatus())){
+//            routingStage.put("APST006","Reject");
+//            routingStage.put("APST000","RollBack");
+//            routingStage.put("APST0015","Support");
+//        }else if("PSO".equals(applicationViewDto.getCurrentStatus())){
+//            routingStage.put("APST0016","Verified");
+//            routingStage.put("APST0017","Request For Information");
+//        }else if("ASO".equals(applicationViewDto.getCurrentStatus())) {
+//            routingStage.put("APST0016", "Verified");
+//            routingStage.put( "APST0017","Request For Information");
+//            routingStage.put("APST0018", "Licence Start Date");
+//        }
         applicationViewDto.setRoutingStage(routingStage);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
@@ -166,7 +168,6 @@ public class HcsaApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
     }
-
 
     /**
      * StartStep: rontingTaskToPSO
@@ -254,30 +255,6 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
 
-    /**
-     * StartStep: rontingTaskToAO3
-     *
-     * @param bpc
-     * @throws
-     */
-    public void AO3Approved(BaseProcessClass bpc) throws FeignException {
-        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
-        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED);
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
-                ApplicationConsts.APPLICATION_STATUS_APPROVED);
-        if(isAllSubmit){
-           //update application Group status
-            ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-            applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            applicationGroupService.updateApplicationGroup(applicationGroupDto);
-        }
-        log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
-    }
-
 
     /**
      * StartStep: approve
@@ -285,9 +262,21 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void approve(BaseProcessClass bpc) {
+    public void approve(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do approve start ...."));
-
+        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+                ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        if(isAllSubmit){
+            //update application Group status
+            ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+            applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            applicationGroupService.updateApplicationGroup(applicationGroupDto);
+        }
         log.debug(StringUtil.changeForLog("the do approve end ...."));
     }
 

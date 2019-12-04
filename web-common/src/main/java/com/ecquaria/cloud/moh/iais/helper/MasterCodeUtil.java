@@ -21,13 +21,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * MasterCodeUtil
@@ -69,6 +70,8 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_SUB_TYPE_TYPE               = "E214989D-CF0C-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_MSG_TEMPLATE_TYPE           = "427AA14F-4A13-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_DELIVERY_MODE               = "754889D0-5213-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_DESIGNATION                 = "136A214B-8611-EA11-BE78-000C29D29DB0";
+    public static final String CATE_ID_PROFESSIONAL_TYPE           = "444ADC42-8A11-EA11-BE78-000C29D29DB0";
 
     /**
      * @description: refresh the master codes into cache

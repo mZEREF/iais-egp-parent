@@ -503,8 +503,8 @@
                                                         </td>
                                                         <td>
                                                             <select name="nextStage" >
-                                                                <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
-                                                                    <option  value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
+                                                                <c:forEach items="${applicationViewDto.routingStage}" var="routingStageMap">
+                                                                    <option  value="${routingStageMap.key}">${routingStageMap.value}</option>
                                                                 </c:forEach>
                                                             </select>
                                                         </td>
@@ -696,18 +696,15 @@
     function doPreview(){
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }
-    function doValidation(){
-        SOP.Crud.cfxSubmit("mainForm", "validation");
-    }
 
     function doSend(){
-        SOP.Crud.cfxSubmit("mainForm", "send");
+        var r=confirm("Are you sure to send it directly and not to AO1 for review?");
+        if (r==true){
+            SOP.Crud.cfxSubmit("mainForm", "send");
+        }
     }
 
-    <%--function doReset(){--%>
-    <%--    var Edit= document.getElementById("htmlEditroArea");--%>
-    <%--    Edit.value=${insEmailDto.messageContent};--%>
-    <%--}--%>
+
 </script>
 
 

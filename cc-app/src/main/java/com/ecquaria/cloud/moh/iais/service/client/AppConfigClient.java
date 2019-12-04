@@ -59,7 +59,7 @@ public interface AppConfigClient {
     FeignResponseEntity<String>  getServiceIdByCode(@PathVariable(name = "code")String svcCode);
 
     @RequestMapping(path = "/iais-hcsa-service/svc-doc-config-results",method = RequestMethod.GET)
-    FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfig(String serviceId,@RequestParam(name="flag") Boolean flag);
+    FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfig(@RequestParam(value = "string") String docMapJson);
 
     @GetMapping(path = "/iais-hcsa-service/one-of-hcsa-service/{serviceId}", produces = { MediaType.APPLICATION_JSON_VALUE })
     FeignResponseEntity<HcsaServiceDto> getHcsaServiceDtoByServiceId(@PathVariable(value = "serviceId") String serviceId);

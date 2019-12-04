@@ -37,7 +37,7 @@
     padding-right: 25px;
   }
 </style>
-
+<%--<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>--%>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
   <div id="wizard-page-title">Clinical Governance Officer</div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
@@ -57,364 +57,338 @@
           <td class="first last" style="width: 100%;">
             <div id="control--runtime--1" class="section control  container-s-1">
               <div class="control-set-font control-font-header section-header"><label>A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</label></div>
+
               <span class="upload_controls"></span>
               <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
-              <table class="control-grid">
-                <tbody>
-                <tr height="1">
-                  <td class="first last" style="width: 100%;">
-                    <div id="control--runtime--2" class="control control-caption-horizontal">
-                      <div class=" form-group form-horizontal formgap">
-                        <div class="col-sm-4 control-label formtext ">
-                          <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Clinical Governance Officer</label>
-                          <span class="upload_controls"></span>
-                        </div>
-                        <div class="col-sm-5">
-                          <div class="">
-                            <select id="cgoSelect" name="assignSelect" class="form-control control-input control-set-font control-font-normal">
-                              <option>Select Personnel</option>
-                              <option value="newOfficer">I'd like to add a new personnel</option>
-                              <option>Linda Tan, XXX442 (NRIC)</option>
-                              <option>Deng Jin, XXX675 (NRIC)</option>
-                            </select>
-                            <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
+              <c:forEach  begin="0" end="${CgoMandatoryCount-1}"  step="1" varStatus="status" >
+                <c:set value="cgo-${status.index}-" var="cgoIndeNo"/>
+                <c:set value="${GovernanceOfficersList}" var="cgoList"/>
+                <c:set value="${cgoList[status.index]}" var="currentCgo"/>
+                <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
+                <table class="assignContent control-grid">
+                  <tbody>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div id="control--runtime--2" class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="col-sm-4 control-label formtext ">
+                            <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Clinical Governance Officer</label>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-sm-5">
+                            <div class="">
+                              <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                              <span class="error-msg"><c:out value="${errorMap.assignSelect}"></c:out></span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="profile-info-gp hidden">
-                      <div class="officer-info">
-                        <h3>Linda Tan</h3>
-                        <div class="row profile-line">
-                          <div class="col-xs-6 col-md-3">
-                            <p>Name</p>
+                      <div class="profile-info-gp hidden">
+                        <div class="officer-info">
+                          <h3>Linda Tan</h3>
+                          <div class="row profile-line">
+                            <div class="col-xs-6 col-md-3">
+                              <p>Name</p>
+                            </div>
+                            <div class="col-xs-6 col-md-7">
+                              <p>Linda Tan</p>
+                            </div>
                           </div>
-                          <div class="col-xs-6 col-md-7">
-                            <p>Linda Tan</p>
+                          <div class="row profile-line">
+                            <div class="col-xs-6 col-md-3">
+                              <p>ID No.</p>
+                            </div>
+                            <div class="col-xs-6 col-md-7">
+                              <p>XXXX422 (NRIC)</p>
+                            </div>
                           </div>
-                        </div>
-                        <div class="row profile-line">
-                          <div class="col-xs-6 col-md-3">
-                            <p>ID No.</p>
+                          <div class="row profile-line">
+                            <div class="col-xs-6 col-md-3">
+                              <p>Mobile No.</p>
+                            </div>
+                            <div class="col-xs-6 col-md-7">
+                              <p>+65 90009098</p>
+                            </div>
                           </div>
-                          <div class="col-xs-6 col-md-7">
-                            <p>XXXX422 (NRIC)</p>
+                          <div class="row profile-line">
+                            <div class="col-xs-6 col-md-3">
+                              <p>Email Address</p>
+                            </div>
+                            <div class="col-xs-6 col-md-7">
+                              <p>lindatan@hotmail.com</p>
+                            </div>
                           </div>
-                        </div>
-                        <div class="row profile-line">
-                          <div class="col-xs-6 col-md-3">
-                            <p>Mobile No.</p>
-                          </div>
-                          <div class="col-xs-6 col-md-7">
-                            <p>+65 90009098</p>
-                          </div>
-                        </div>
-                        <div class="row profile-line">
-                          <div class="col-xs-6 col-md-3">
-                            <p>Email Address</p>
-                          </div>
-                          <div class="col-xs-6 col-md-7">
-                            <p>lindatan@hotmail.com</p>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-xs-12">
-                            <p>To edit these details, you will need to <a data-toggle="modal" data-target="#officerAmend">amend</a> it first before proceeding with your application.</p>
+                          <div class="row">
+                            <div class="col-xs-12">
+                              <p>To edit these details, you will need to <a data-toggle="modal" data-target="#officerAmend">amend</a> it first before proceeding with your application.</p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div id="newOfficer" class="new-officer-form hidden">
-                      <table class="control-grid">
-                        <tbody>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div  class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext ">
-                                  <label  class="control-label control-set-font control-font-label">Salutation</label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <select name="salutation" class="form-control control-input control-set-font control-font-normal">
-                                    <option>Select Salution</option>
-                                    <option selected>Mr</option>
-                                    <option>Mrs</option>
-                                    <option>Miss</option>
-                                    <option>Madam</option>
-                                  </select>
-                                  <div  style="display: none;" class="error_placements"></div>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div  class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext ">
-                                  <label  class="control-label control-set-font control-font-label">
-                                    Name
-                                  </label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <input name="name" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                                    <div  style="display: none;" class="error_placements"></div>
+                      <div id="newOfficer" class="new-officer-form ${cgoIndeNo}-new hidden">
+                        <table class="control-grid">
+                          <tbody>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div  class="control control-caption-horizontal">
+                                <div class=" form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Salutation</label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <iais:select  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Select Salution"></iais:select>
+                                    <span class="error-msg"><c:out value="${errorMap.salutation}"></c:out></span>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div id="control--runtime--3" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext ">
-                                  <label id="control--runtime--3--label" class="control-label control-set-font control-font-label">ID Type</label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <select name="idType" class="form-control control-input control-set-font control-font-normal">
-                                      <option>NRIC</option>
-                                      <option>FIN</option>
-                                    </select>
-                                    <div id="control--runtime--3--errorMsg_right" style="display: none;" class="error_placements"></div>
+                            </td>
+                          </tr>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div  class="control control-caption-horizontal">
+                                <div class=" form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">
+                                      Name
+                                    </label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <div class="">
+                                      <iais:input maxLength="66" type="text" name="name" value="${currentCgo.name}"></iais:input>
+                                      <span class="error-msg"><c:out value="${errorMap.name}"></c:out></span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div id="control--runtime--28" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext ">
-                                  <label id="control--runtime--28--label" class="control-label control-set-font control-font-label">
-                                    ID No.
-                                  </label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <input name="idNo" type="text" id="control--runtime--28--text" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                                    <div id="control--runtime--28--errorMsg_right" style="display: none;" class="error_placements"></div>
+                            </td>
+                          </tr>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div id="control--runtime--3" class="control control-caption-horizontal">
+                                <div class=" form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext ">
+                                    <label id="control--runtime--3--label" class="control-label control-set-font control-font-label">ID Type</label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <div class="">
+                                      <iais:select  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
+                                      <span class="error-msg"><c:out value="${errorMap.idType}"></c:out></span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div  class="control control-caption-horizontal">
-                              <div class="form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext">
-                                  <label class="control-label control-set-font control-font-label">Designation</label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <select name="designation" class="form-control control-input control-set-font control-font-normal">
-                                      <option>CEO</option>
-                                      <option>CFO</option>
-                                      <option>COO</option>
-                                      <option>Others</option>
-                                    </select>
-                                    <div  style="display: none;" class="error_placements"></div>
+                            </td>
+                          </tr>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div id="control--runtime--28" class="control control-caption-horizontal">
+                                <div class=" form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext ">
+                                    <label id="control--runtime--28--label" class="control-label control-set-font control-font-label">
+                                      ID No.
+                                    </label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <div class="">
+                                      <iais:input maxLength="9" type="text" name="idNo" value="${currentCgo.idNo}"></iais:input>
+                                      <span class="error-msg"><c:out value="${errorMap.idNo}"></c:out></span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div id="control--runtime--30" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext ">
-                                  <label id="control--runtime--30--label" class="control-label control-set-font control-font-label">
-                                    Profession Type
-                                  </label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <input name="professionType" type="text" id="control--runtime--30--text" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                                    <div id="control--runtime--30--errorMsg_right" style="display: none;" class="error_placements"></div>
+                            </td>
+                          </tr>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div  class="control control-caption-horizontal">
+                                <div class="form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext">
+                                    <label class="control-label control-set-font control-font-label">Designation</label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <div class="">
+                                      <iais:select name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Select Designation"></iais:select>
+                                      <span class="error-msg"><c:out value="${errorMap.designation}"></c:out></span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div  class="control control-caption-horizontal">
-                              <div class="form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext">
-                                  <label  class="control-label control-set-font control-font-label">Professional Regn Type</label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
+                            </td>
+                          </tr>
+                            <%--<tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <div id="control--runtime--30" class="control control-caption-horizontal">
+                                  <div class=" form-group form-horizontal formgap">
+                                    <div class="col-sm-4 control-label formtext ">
+                                      <label id="control--runtime--30--label" class="control-label control-set-font control-font-label">
+                                        Profession Type
+                                      </label>
+                                      <span class="mandatory">*</span>
+                                      <span class="upload_controls"></span>
+                                    </div>
+                                    <div class="col-sm-5">
+                                      <div class="">
+                                        <input name="professionType" type="text" id="control--runtime--30--text" class="form-control control-input control-set-font control-font-normal" value="${currentCgo.professionType}" size="30">
+                                        <span class="error-msg"><c:out value="${errorMap.professionType}"></c:out></span>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <select name="professionRegoType"  class="form-control control-input control-set-font control-font-normal">
-                                      <option>Doctor</option>
-                                      <option>Option 1</option>
-                                      <option>Option 2</option>
-                                      <option>Option 3</option>
-                                    </select>
-                                    <div  style="display: none;" class="error_placements"></div>
+                              </td>
+                            </tr>--%>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div  class="control control-caption-horizontal">
+                                <div class="form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext">
+                                    <label  class="control-label control-set-font control-font-label">Professional Regn Type</label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <div class="professionRegoType">
+                                      <iais:select name="professionRegoType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionRegoType}" firstOption="Select professionRegoType"></iais:select>
+                                      <span class="error-msg"><c:out value="${errorMap.professionRegoType}"></c:out></span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div id="control--runtime--31" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext ">
-                                  <label id="control--runtime--31--label" class="control-label control-set-font control-font-label">
-                                    Professional Regn No.
-                                  </label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <input name="professionRegoNo" type="text" id="control--runtime--31--text" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                                    <div id="control--runtime--31--errorMsg_right" style="display: none;" class="error_placements"></div>
+                            </td>
+                          </tr>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div id="control--runtime--31" class="control control-caption-horizontal">
+                                <div class=" form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext ">
+                                    <label id="control--runtime--31--label" class="control-label control-set-font control-font-label">
+                                      Professional Regn No.
+                                    </label>
+                                    <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <div class="">
+                                      <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.professionRegoNo}"></iais:input>
+                                      <span class="error-msg"><c:out value="${errorMap.professionRegoNo}"></c:out></span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div id="control--runtime--29" class="control control-caption-horizontal">
-                              <div class="form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext">
-                                  <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Speciality</label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <select name="specialty" id="control--runtime--29--select" class="form-control control-input control-set-font control-font-normal">
-                                      <option>Pathology</option>
-                                      <option>Hematology</option>
-                                      <option>Other</option>
-                                    </select>
-                                    <div id="control--runtime--29--errorMsg_right" style="display: none;" class="error_placements"></div>
+                            </td>
+                          </tr>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div id="control--runtime--29" class="control control-caption-horizontal">
+                                <div class="form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext">
+                                    <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
+                                    <span class="upload_controls">*</span>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <div class="">
+                                      <iais:select cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
+                                      <c:choose>
+                                        <c:when test="${currentCgo.speciality eq 'other'}">
+                                          <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" size="30">
+                                        </c:when>
+                                        <c:otherwise>
+                                          <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" size="30">
+                                        </c:otherwise>
+                                      </c:choose>
+                                      <span class="error-msg"><c:out value="${errorMap.speciality}"></c:out></span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div  class="control control-caption-horizontal">
-                              <div class="form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext">
-                                  <label class="control-label control-set-font control-font-label"></label>
-                                  <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                                    <div  style="display: none;" class="error_placements"></div>
+                            </td>
+                          </tr>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div id="control--runtime--32" class="control control-caption-horizontal">
+                                <div class=" form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext ">
+                                    <label id="control--runtime--32--label" class="control-label control-set-font control-font-label">
+                                      Subspeciality or relevant qualification
+                                    </label>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <div class="">
+                                      <iais:input maxLength="100" type="text" name="qualification" value="${currentCgo.qualification}"></iais:input>
+                                      <span class="error-msg"><c:out value="${errorMap.qualification}"></c:out></span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div id="control--runtime--32" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext ">
-                                  <label id="control--runtime--32--label" class="control-label control-set-font control-font-label">
-                                    Subspeciality or relevant qualification
-                                  </label>
-                                  <span class="upload_controls"></span>
+                            </td>
+                          </tr>
+                          <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div  class="control control-caption-horizontal">
+                                <div class=" form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext ">
+                                    <label  class="control-label control-set-font control-font-label">Mobile No.
+                                    </label>                                                                                                                                        <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <div class="col-sm-5">
+                                    <div class="">
+                                      <iais:input maxLength="8" type="text" name="mobileNo" value="${currentCgo.mobileNo}"></iais:input>
+                                      <span class="error-msg"><c:out value="${errorMap.mobileNo}"></c:out></span>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <input name="qualification" type="text" id="control--runtime--32--text" class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                              </div>
+                            </td>
+                          </tr>
+                          <tr height="1">
+                            <td class="first last" style="">
+                              <div id="control--runtime--33" class="control control-caption-horizontal">
+                                <div class=" form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext ">
+                                    <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email address
+                                    </label>                                                                                                                                                        <span class="mandatory">*</span>
+                                    <span class="upload_controls"></span>
+                                  </div>
+                                  <div class="col-sm-4">
+                                    <div class="">
+                                      <iais:input maxLength="66" type="text" name="emailAddress" value="${currentCgo.emailAddr}"></iais:input>
+                                      <span class="error-msg"><c:out value="${errorMap.emailAddr}"></c:out></span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <c:if test="${!status.last}">
+                  <hr/>
+                </c:if>
+              </c:forEach>
 
-                                    <div id="control--runtime--32--errorMsg_right" style="display: none;" class="error_placements"></div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div  class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext ">
-                                  <label  class="control-label control-set-font control-font-label">Mobile No.
-                                  </label>                                                                                                                                        <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <input name="mobileNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
-
-                                    <div  style="display: none;" class="error_placements"></div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr height="1">
-                          <td class="first last" style="width: 100%;">
-                            <div id="control--runtime--33" class="control control-caption-horizontal">
-                              <div class=" form-group form-horizontal formgap">
-                                <div class="col-sm-4 control-label formtext ">
-                                  <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email address
-                                  </label>                                                                                                                                        <span class="mandatory">*</span>
-                                  <span class="upload_controls"></span>
-                                </div>
-                                <div class="col-sm-5">
-                                  <div class="">
-                                    <input name="emailAddress" type="text" id="control--runtime--33--text" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                                    <div id="control--runtime--33--errorMsg_right" style="display: none;" class="error_placements"></div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
             </div>
+          </td>
+        </tr>
+        <hr/>
+        <tr id="addInfo">
+          <td>
+            <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Clinical Governance Officer</span>
           </td>
         </tr>
         </tbody>
@@ -424,9 +398,61 @@
 </div>
 
 <script>
-    $('#cgoSelect').change(function () {
-        $('#newOfficer').removeClass("hidden");
+    $(document).ready(function () {
+        //get from cpl_custom_form_script
+        $('select.assignSel').change(function () {
+            $parentEle = $(this).closest('td.first');
+            if ($(this).val() == "newOfficer") {
+                $parentEle.find('> .new-officer-form').removeClass('hidden');
+                $parentEle.find('> .profile-info-gp').addClass('hidden');
+            } else {
+                $parentEle.find('> .profile-info-gp').removeClass('hidden');
+                $parentEle.find('> .new-officer-form').addClass('hidden');
+            }
+        });
 
+        reLoadChange();
+    });
+
+
+    $('.specialty').change(function () {
+        $specialtyEle = $(this).closest('tr');
+        var val = $(this).val();
+
+        if('other' == val){
+            $specialtyEle.next().find('tr.specialtyOtherTr').removeClass('hidden');
+        }else{
+            $specialtyEle.next().find('tr.specialtyOtherTr').addClass('hidden');
+        }
+    });
+
+    var reLoadChange = function () {
+        var i=0;
+        $('select.assignSel').each(function (k,v) {
+            if("newOfficer" ==$(this).val()){
+                var removeClass = '.cgo-'+i+'--new';
+                console.log("removeClass"+removeClass);
+                $(removeClass).removeClass('hidden');
+                i++;
+            }
+        });
+    }
+
+    $('.addListBtn').click(function () {
+        /*var assignContent = $('.assignContent:last').html();
+        var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
+        $('.assignContent:last').after(appendHtml);*/
+        $.ajax({
+            'url':'https://egp.sit.inter.iais.com/hcsaapplication/governance-officer-list',
+            'dataType':'json',
+            'type':'GET',
+            'success':function (data) {
+                console.log("data:"+data);
+            },
+            'error':function (data) {
+                console.log("data:"+data);
+            }
+        });
     });
 
 </script>

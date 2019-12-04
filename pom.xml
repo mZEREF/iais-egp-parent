@@ -141,7 +141,7 @@
             <dependency>
                 <groupId>com.ecquaria.sz</groupId>
                 <artifactId>ecq-sz-commons</artifactId>
-                <version>0.1</version>
+                <version>0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.ecquaria.submission.client</groupId>
@@ -152,6 +152,11 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>4.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ecquaria.kafka</groupId>
+                <artifactId>servicewrapper</artifactId>
+                <version>0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -266,7 +271,7 @@
                 </repository>
                 <repository>
                     <id>moh-iais-nexus</id>
-                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais/</url>
+                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais-grp/</url>
                 </repository>
 
             </repositories>

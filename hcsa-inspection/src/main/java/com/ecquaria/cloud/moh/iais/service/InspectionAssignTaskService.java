@@ -5,8 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
 
@@ -18,20 +18,11 @@ public interface InspectionAssignTaskService {
     /**
      * @author: shicheng
      * @Date 2019/11/21
-     * @Param: name
+     * @Param: loginContext
      * @return: List<TaskDto>
      * @Descripation: According to the group Id, get the work pool
      */
-    List<TaskDto> getCommPoolByGroupWordId(String workGroupId);
-
-    /**
-      * @author: shicheng
-      * @Date 2019/11/22
-      * @Param: taskDtoList
-      * @return: List<InspectionTaskPoolListDto>
-      * @Descripation: Display Common Pools
-      */
-    List<InspectionTaskPoolListDto> getPoolListByTaskDto(List<TaskDto> taskDtoList);
+    List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext);
 
     /**
       * @author: shicheng
@@ -54,11 +45,11 @@ public interface InspectionAssignTaskService {
     /**
       * @author: shicheng
       * @Date 2019/11/27
-      * @Param: inspectionTaskPoolListDtoList
+      * @Param: commPools
       * @return: List<String>
-      * @Descripation: get Application No By InspectionTaskPoolListDto
+      * @Descripation: get Application No By commPools
       */
-    String[] getApplicationNoListByPool(List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList);
+    String[] getApplicationNoListByPool(List<TaskDto> commPools);
 
     /**
       * @author: shicheng
@@ -68,15 +59,6 @@ public interface InspectionAssignTaskService {
       * @Descripation: getAppTypeOption
       */
     List<SelectOption> getAppTypeOption();
-
-    /**
-      * @author: shicheng
-      * @Date 2019/11/27
-      * @Param: null
-      * @return: List<SelectOption>
-      * @Descripation: getAppStatusOption
-      */
-    List<SelectOption> getAppStatusOption();
 
     /**
       * @author: shicheng

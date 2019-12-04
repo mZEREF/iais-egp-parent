@@ -36,18 +36,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,8 +66,12 @@ public class NewApplicationDelegator {
     public static final String CURRENTSVCCODE = "currentSvcCode";
     private static final String PREMISESTYPE = "premisesType";
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
-    private static final String HCSASVCDOCCONFIGDTOMAP = "HcsaSvcDocConfigDtoMap";
-
+    public static final String COMMONHCSASVCDOCCONFIGDTO = "commonHcsaSvcDocConfigDto";
+    public static final String PREMHCSASVCDOCCONFIGDTO = "premHcsaSvcDocConfigDto";
+    public static final String APPGRPPREMISESLIST = "appGrpPremisesList";
+    public static final String RELOADAPPGRPPRIMARYDOCMAP = "reloadAppGrpPrimaryDocMap";
+    public static final String APPGRPPRIMARYDOCLIST = "appGrpPrimaryDocList";
+    public static final String  APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
 
     @Autowired
     private ServiceConfigService serviceConfigService;
@@ -151,6 +153,7 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, "premisesSelect", premisesSelect);
         //get premises type
         if (svcIds.size() > 0) {
+            log.debug(StringUtil.changeForLog("svcId not null"));
             Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }
@@ -167,9 +170,19 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareDocuments start ...."));
 
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        Map<String, List<HcsaSvcDocConfigDto>> hcsaSvcCommonDocDtoMap = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-        if (hcsaSvcCommonDocDtoMap != null) {
-            ParamUtil.setSessionAttr(bpc.request, HCSASVCDOCCONFIGDTOMAP, (Serializable) hcsaSvcCommonDocDtoMap);
+        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
+        if (hcsaSvcDocDtos != null) {
+            List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto = new ArrayList<>();
+            List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigDto = new ArrayList<>();
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
+                if("0".equals(hcsaSvcDocConfigDto.getDupForPrem())){
+                    commonHcsaSvcDocConfigDto.add(hcsaSvcDocConfigDto);
+                }else if("1".equals(hcsaSvcDocConfigDto.getDupForPrem())){
+                    premHcsaSvcDocConfigDto.add(hcsaSvcDocConfigDto);
+                }
+            }
+            ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, (Serializable) commonHcsaSvcDocConfigDto);
+            ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, (Serializable) premHcsaSvcDocConfigDto);
         }
         log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
@@ -228,10 +241,14 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         appSubmissionDto.setAppGrpPremisesDto(appGrpPremisesDto);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, appGrpPremisesDto);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
+        appGrpPremisesDtoList.add(appGrpPremisesDto);
+        ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, (Serializable) appGrpPremisesDtoList);
 
         /*Map<String,String> errorMap = doValidatePremiss(bpc);
         if(errorMap.size()>0){
-           ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+            ParamUtil.setRequestAttr(bpc.request, ERRORMAP_PREMISES, errorMap);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
         }else {
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }*/
@@ -256,43 +273,95 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
 
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
-        List<MultipartFile> files = null;
-        List<MultipartFile> oneFile = null;
-        for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {
-            String name = en.next();
-            files = mulReq.getFiles(name);
-        }
+        CommonsMultipartFile file = null;
 
-        String[] docConfig = mulReq.getParameterValues("docConfig");
+        List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
+        List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
+        List<AppGrpPremisesDto> appGrpPremisesList = (List<AppGrpPremisesDto>) ParamUtil.getSessionAttr(bpc.request, APPGRPPREMISESLIST);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
-        if (files != null && docConfig != null) {
-            for (MultipartFile file : files) {
+        Map<String,String> errorMap = new HashMap<>();
+        Map<String,AppGrpPrimaryDocDto> reloadDocMap = new HashMap();
+        Map<String,AppGrpPrimaryDocDto> beforeReloadDocMap = (Map<String, AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP);
+        for(HcsaSvcDocConfigDto comm:commonHcsaSvcDocConfigList){
+            String name = "common"+comm.getId();
+            file = (CommonsMultipartFile) mulReq.getFile(name);
+            file.getFileItem().setFieldName("selectedFile");
+            String delFlag = name+"flag";
+            String delFlagValue =  mulReq.getParameter(delFlag);
+            if(file != null && file.getSize() != 0){
                 if (!StringUtil.isEmpty(file.getOriginalFilename())) {
-                    String[] config = docConfig[0].split(";");
-
-                    //do by wenkang
-
-
-
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
-                    appGrpPrimaryDocDto.setSvcComDocId(config[0]);
+                    appGrpPrimaryDocDto.setSvcComDocId(comm.getId());
                     appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
+                    appGrpPrimaryDocDto.setRealDocSize(file.getSize());
                     long size = file.getSize() / 1024;
                     appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
-                    oneFile = new ArrayList<>();
-                    oneFile.add(file);
-                    //api side not get value
-                    List<String> fileRepoGuidList = serviceConfigService.saveFileToRepo(oneFile);
-                    appGrpPrimaryDocDto.setFileRepoId(fileRepoGuidList.get(0));
-                    //if config[1] equals common ==> set null
+                    //if  common ==> set null
                     appGrpPrimaryDocDto.setPremisessName("");
                     appGrpPrimaryDocDto.setPremisessType("");
-
+                    String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
+                    appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
                     appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
+                    reloadDocMap.put(name, appGrpPrimaryDocDto);
+                }
+            }else if("N".equals(delFlagValue)){
+                AppGrpPrimaryDocDto beforeDto = (AppGrpPrimaryDocDto) beforeReloadDocMap.get(name);
+                if(beforeDto != null){
+                   appGrpPrimaryDocDtoList.add(beforeDto);
+                   reloadDocMap.put(name, beforeDto);
+                }
+            } else{
+                if(comm.getIsMandatory()){
+                    errorMap.put(name, "can not is empty");
                 }
             }
         }
+        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesList){
+            for(HcsaSvcDocConfigDto prem:premHcsaSvcDocConfigList){
+                String name = "prem"+prem.getId()+appGrpPremisesDto.getHciName();
+                file = (CommonsMultipartFile) mulReq.getFile(name);
+                file.getFileItem().setFieldName("selectedFile");
+                String delFlag = name+"flag";
+                String delFlagValue =  mulReq.getParameter(delFlag);
+                if(file != null && file.getSize() != 0){
+                    if (!StringUtil.isEmpty(file.getOriginalFilename())) {
+                        appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
+                        appGrpPrimaryDocDto.setSvcComDocId(prem.getId());
+                        appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
+                        appGrpPrimaryDocDto.setRealDocSize(file.getSize());
+                        long size = file.getSize() / 1024;
+                        appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+                        appGrpPrimaryDocDto.setPremisessName(appGrpPremisesDto.getHciName());
+                        appGrpPrimaryDocDto.setPremisessType(appGrpPremisesDto.getPremisesType());
+                        String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
+                        appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
+                        appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
+                        reloadDocMap.put(name, appGrpPrimaryDocDto);
+                    }
+                }else if("N".equals(delFlagValue)){
+                    AppGrpPrimaryDocDto beforeDto = (AppGrpPrimaryDocDto) beforeReloadDocMap.get(name);
+                    if(beforeDto != null){
+                        reloadDocMap.put(name, beforeDto);
+                        appGrpPrimaryDocDtoList.add(beforeDto);
+                    }
+                } else{
+                    if(prem.getIsMandatory()) {
+                        errorMap.put(name, "can not is empty");
+                    }
+                }
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCLIST, (Serializable) appGrpPrimaryDocDtoList);
+        ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) reloadDocMap);
+        // do by wenkang
 
+        documentValid(bpc.request, errorMap);
+        if(errorMap.size()>0){
+            ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
+            return;
+        }
         //set value into AppSubmissionDto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtoList);
@@ -456,12 +525,12 @@ public class NewApplicationDelegator {
             return null;
         }
         PostCodeDto postCodeDto = null;
-        /*try {*/
+        try {
             postCodeDto = serviceConfigService.getPremisesByPostalCode(postalCode);
-        /*}catch (Exception e){
-            log.debug(StringUtil.changeForLog("call retrieve address api failed"));
-            postCodeDto = null;
-        }*/
+        }catch (Exception e){
+            log.debug(StringUtil.changeForLog("api exception"));
+        }
+
         log.debug(StringUtil.changeForLog("the do loadPremisesByPostCode end ...."));
         return postCodeDto;
     }
@@ -571,51 +640,53 @@ public class NewApplicationDelegator {
         String premiseType = appGrpPremisesDto.getPremisesType();
         if (StringUtil.isEmpty(premiseType)) {
             errorMap.put("premisesType", "Please select the premises Type");
-        }
-        String premisesSelect = appGrpPremisesDto.getPremisesSelect();
-        if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
-            errorMap.put("premisesSelect", "Please select the premises from");
-        } else if ("newPremise".equals(premisesSelect)) {
-            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
-                ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto, AppServicesConsts.VALIDATE_PROFILES_CREATE + "," + AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
-                if (validationResult.isHasErrors()) {
-                    errorMap = validationResult.retrieveAll();
-                }
-                //do by wenkang
-                String addrType = appGrpPremisesDto.getAddrType();
-                if (!StringUtil.isEmpty(addrType)) {
-                    if ("Apt Blk".equals(addrType)) {
-                        boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getFloorNo());
-                        boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getBlkNo());
-                        boolean empty2 = StringUtil.isEmpty(appGrpPremisesDto.getUnitNo());
-                        if (empty) {
-                            errorMap.put("floorNo", "can not is null");
-                        }
-                        if (empty1) {
-                            errorMap.put("blkNo", "can not is null");
-                        }
-                        if (empty2) {
-                            errorMap.put("unitNo", "can not is null");
+        }else {
+            String premisesSelect = appGrpPremisesDto.getPremisesSelect();
+            if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
+                errorMap.put("premisesSelect", "Please select the premises from");
+            } else if ("newPremise".equals(premisesSelect)) {
+                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
+                    ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto, AppServicesConsts.VALIDATE_PROFILES_CREATE + "," + AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
+                    if (validationResult.isHasErrors()) {
+                        errorMap = validationResult.retrieveAll();
+                    }
+                    //do by wenkang
+                    String addrType = appGrpPremisesDto.getAddrType();
+                    if(StringUtil.isEmpty(addrType)){
+                        errorMap.put("ADDTY001", "can not is null");
+                    }else {
+                        if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
+                            boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getFloorNo());
+                            boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getBlkNo());
+                            boolean empty2 = StringUtil.isEmpty(appGrpPremisesDto.getUnitNo());
+                            if (empty) {
+                                errorMap.put("floorNo", "can not is null");
+                            }
+                            if (empty1) {
+                                errorMap.put("blkNo", "can not is null");
+                            }
+                            if (empty2) {
+                                errorMap.put("unitNo", "can not is null");
+                            }
                         }
                     }
-                }
-                String postalCode = appGrpPremisesDto.getPostalCode();
-                if (!StringUtil.isEmpty(postalCode)) {
-                    if (!postalCode.matches("^[0-9]*$")) {
-                        errorMap.put("postalCode", "");
+                    String postalCode = appGrpPremisesDto.getPostalCode();
+                    if (!StringUtil.isEmpty(postalCode)) {
+                        if (!postalCode.matches("^[0-9]*$")) {
+                            errorMap.put("postalCode", "");
+                        }
+                    }
+                } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
+                    ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto, AppServicesConsts.VALIDATE_PROFILES_CREATE + "," + AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
+                    if (validationResult.isHasErrors()) {
+                        errorMap = validationResult.retrieveAll();
                     }
                 }
-            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto, AppServicesConsts.VALIDATE_PROFILES_CREATE + "," + AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
-                if (validationResult.isHasErrors()) {
-                    errorMap = validationResult.retrieveAll();
-                }
-            }
-        } else {
-            //premiseSelect = organization hci code
+            } else {
+                //premiseSelect = organization hci code
 
+            }
         }
-        ParamUtil.setRequestAttr(bpc.request, ERRORMAP_PREMISES, errorMap);
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
         return errorMap;
     }
@@ -701,6 +772,7 @@ public class NewApplicationDelegator {
         String siteAddressType = ParamUtil.getString(request, "siteAddressType");
         String siteSafefyNo = ParamUtil.getString(request, "siteSafefyNo");
         String addrType = ParamUtil.getString(request, "addrType");
+        String fireSafetyCertIssuedDate  = ParamUtil.getString(request, "fireSafetyCertIssuedDate");
         appGrpPremisesDto.setPremisesType(premisesType);
         appGrpPremisesDto.setPremisesSelect(premisesSelect);
         appGrpPremisesDto.setHciName(hciName);
@@ -766,38 +838,48 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.APPSVCRELATEDINFOMAP, (Serializable) svcRelatedMap);
+
+        ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST, null);
+        Map<String,AppGrpPrimaryDocDto> initBeforeReloadDocMap = new HashMap<>();
+        ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) initBeforeReloadDocMap);
+
+        ParamUtil.setSessionAttr(bpc.request, ERRORMAP_PREMISES, null);
+        ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, null);
+        ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.ERRORMAP_GOVERNANCEOFFICERS, null);
+
     }
 
-    private List getKeyWords(){
-        List keyWords = new ArrayList();
-        keyWords.add("asd");
-        keyWords.add("mzx");
-        return keyWords;
-    }
-
-        private Map<String,String>  documentValid(BaseProcessClass bpc){
+    private void  documentValid(HttpServletRequest request, Map<String,String> errorMap){
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
-
-        Map errorMap=new HashMap();
-        File file  =new File("");
-        if(file.exists()){
-            long length = file.length();
-            if(length>1024*1024){
-                errorMap.put("file","File size is too large!");
-            }
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = (List<AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(request, APPGRPPRIMARYDOCLIST);
+        if(appGrpPrimaryDocDtoList == null){
+            return;
         }
-        Boolean flag=false;
-            String name = file.getName();
-            String substring = name.substring(name.lastIndexOf("."));
+        for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
+            String keyName = "";
+            if(StringUtil.isEmpty(appGrpPrimaryDocDto.getPremisessName()) && StringUtil.isEmpty(appGrpPrimaryDocDto.getPremisessType())){
+                //common
+                keyName = "common"+appGrpPrimaryDocDto.getSvcComDocId();
+            }else{
+                keyName = "prem"+appGrpPrimaryDocDto.getSvcComDocId()+appGrpPrimaryDocDto.getPremisessName();
+            }
+            long length = appGrpPrimaryDocDto.getRealDocSize();
+            if(length>1024*1024){
+                errorMap.put(keyName,"File size is too large!");
+                continue;
+            }
+            Boolean flag=false;
+            String name = appGrpPrimaryDocDto.getDocName();
+            String substring = name.substring(name.lastIndexOf(".")+1);
             for(String fileType: AppServicesConsts.FILE_TYPE){
                 if(fileType.equals(substring)){
                     flag=true;
                 }
             }
             if(!flag){
-                errorMap.put("fileType","Wrong file type");
+                errorMap.put(keyName,"Wrong file type");
             }
-            return errorMap;
+        }
     }
 }
 

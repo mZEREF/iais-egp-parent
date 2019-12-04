@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.RestBridgeHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,10 +34,18 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class UploadFileServiceImpl implements UploadFileService {
-    private static  final String DOWNLOAD="D:/folder";
-    private static  final  String FILE_NAME="folder";
-    private static  final  String FILE_FORMAT=".text";
-    private static  final String BACKUPS="D:/backups";
+    @Value("iais.syncFileTracking.download")
+    private String download;
+
+    @Value("iais.syncFileTracking.fileName")
+    private String fileName;
+
+    @Value("iais.syncFileTracking.fileFormat")
+    private String fileFormat;
+
+    @Value("iais.syncFileTracking.backups")
+    private String backups;
+
     private Boolean flag=true;
     @Value("${iais.syncFileTracking.url}")
     private String syncFileTrackUrl;
@@ -48,18 +55,20 @@ public class UploadFileServiceImpl implements UploadFileService {
     private String secretKey;
 
     @Autowired
+    private RestBridgeHelper restBridgeHelper;
+    @Autowired
     private ApplicationClient applicationClient;
     @Override
     public Boolean saveFile(String  str) {
         FileOutputStream fileOutputStream = null;
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
-        File file=new File(DOWNLOAD+ File.separator+s+FILE_FORMAT);
+        File file=new File(download+ File.separator+s+fileFormat);
         FileOutputStream fileInputStream = null;
         try {
             if(!file.exists()){
                 file.createNewFile();
             }
-            fileInputStream =new FileOutputStream(BACKUPS+File.separator+file.getName());
+            fileInputStream =new FileOutputStream(backups+File.separator+file.getName());
             fileOutputStream =new FileOutputStream(file);
             fileOutputStream.write(str.getBytes());
             fileInputStream.write(str.getBytes());
@@ -115,10 +124,10 @@ public class UploadFileServiceImpl implements UploadFileService {
         CheckedOutputStream cos=null;
         OutputStream is=null;
         try {
-             is=new FileOutputStream(BACKUPS+File.separator+System.currentTimeMillis()+".zip");
+             is=new FileOutputStream(backups+File.separator+System.currentTimeMillis()+".zip");
             cos =new CheckedOutputStream(is,new CRC32());
              zos =new ZipOutputStream(cos);
-            File file =new File(DOWNLOAD);
+            File file =new File(download);
             zipFile(zos,file);
 
         } catch (IOException e) {
@@ -154,13 +163,13 @@ public class UploadFileServiceImpl implements UploadFileService {
         InputStream is=null;
         try {
             if(file.isDirectory()){
-                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(FILE_NAME))+File.separator));
+                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))+File.separator));
                 for(File f: Objects.requireNonNull(file.listFiles())){
                     zipFile(zos,f);
                 }
             }
             else {
-                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(FILE_NAME))));
+                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                is=new FileInputStream(file.getPath());
                  bis =new BufferedInputStream(is);
                 int count ;
@@ -202,7 +211,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     private void rename()  {
         flag=true;
-        File zipFile =new File(BACKUPS);
+        File zipFile =new File(backups);
        if(zipFile.isDirectory()){
            File[] files = zipFile.listFiles((dir, name) -> {
                if (name.endsWith(".zip")) {
@@ -225,10 +234,10 @@ public class UploadFileServiceImpl implements UploadFileService {
                     is.close();
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
-                   file.renameTo(new File(BACKUPS+File.separator+s+".zip"));
-                   String s1 = saveFileName(s+".zip",BACKUPS+File.separator+s+".zip");
+                   file.renameTo(new File(backups+File.separator+s+".zip"));
+                   String s1 = saveFileName(s+".zip",backups+File.separator+s+".zip");
                    if(!s1.equals("SUCCESS")){
-                       new File(BACKUPS+File.separator+s+".zip").delete();
+                       new File(backups+File.separator+s+".zip").delete();
                        flag=false;
                        break;
                    }
@@ -240,10 +249,10 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     private void deleteFile(){
-        File file =new File(DOWNLOAD);
+        File file =new File(download);
         if(file.isDirectory()){
             File[] files = file.listFiles((dir, name) -> {
-                if (name.endsWith(FILE_FORMAT)) {
+                if (name.endsWith(fileFormat)) {
                     return true;
                 }
                 return false;
@@ -266,7 +275,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setAuditTrailDto(intenet);
         String s="FAIL";
         try {
-            s = RestBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
+            s = restBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
                     String.class, HttpMethod.POST);
 
         }catch (Exception e){

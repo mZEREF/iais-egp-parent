@@ -31,31 +31,29 @@
     <tr height="1">
         <td class="col-xs-2" >
             <p >
-                remarks:
+                Processing Decision:
             </p>
         </td>
         <td>
             <div class="col-sm-9">
-                <p><textarea name="remarks" cols="80" rows="8" class="wenbenkuang" id="remarks" title="content"  >${insEmailDto.remarks}</textarea></p>
+                <select name="decision">
+                    <option value="Sends email/letter to Applicant">Sends email/letter to Applicant</option>
+                    <option selected value="Route email/letter to AO1 for review">Route email/letter to AO1 for review</option>
+                </select>
             </div>
         </td>
     </tr>
 
 
-
     </tbody>
 </table>
 <p class="text-right text-center-mobile">
+
     <iais:action>
-        <button type="button" class="search btn" onclick="javascript:doValidation();">validation</button>
+        <button type="button" class="search btn" onclick="javascript:doSend();">Submit</button>
     </iais:action>
     <iais:action>
-        <button type="button" class="search btn" onclick="javascript:doReset();">reset</button>
-    </iais:action>
-    <iais:action>
-        <button type="button" class="search btn" onclick="javascript:doSend();">send</button>
-    </iais:action>
-    <iais:action>
-        <button type="button" class="search btn" onclick="javascript:doPreview();">preview</button>
+        <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
     </iais:action>
 </p>
+

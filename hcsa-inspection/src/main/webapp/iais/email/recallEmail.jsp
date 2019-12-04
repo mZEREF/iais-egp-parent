@@ -34,5 +34,7 @@
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
 <form method="post" action=<%=process.runtime.continueURL()%>>
+    <p>    Send a success
+    </p>
 <input type="submit" class="search btn" value="recall">
 </form>
