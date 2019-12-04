@@ -21,7 +21,7 @@ public class ApplicationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-    public FeignResponseEntity<Boolean> updateStatus(){
+    public FeignResponseEntity<Void> updateStatus(){
          FeignResponseEntity entity = new FeignResponseEntity<>();
          HttpHeaders headers = new HttpHeaders();
          entity.setHeaders(headers);

@@ -245,13 +245,13 @@ public class NewApplicationDelegator {
         appGrpPremisesDtoList.add(appGrpPremisesDto);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, (Serializable) appGrpPremisesDtoList);
 
-        Map<String,String> errorMap = doValidatePremiss(bpc);
+        /*Map<String,String> errorMap = doValidatePremiss(bpc);
         if(errorMap.size()>0){
             ParamUtil.setRequestAttr(bpc.request, ERRORMAP_PREMISES, errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
         }else {
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        }
+        }*/
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
