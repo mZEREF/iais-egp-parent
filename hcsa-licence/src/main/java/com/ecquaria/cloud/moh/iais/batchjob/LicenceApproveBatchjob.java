@@ -66,6 +66,8 @@ public class LicenceApproveBatchjob {
     @Autowired
     private LicenceService licenceService;
 
+    private Map<String,Integer> hciCodeVersion = new HashMap();
+
     public void doBatchJob(BaseProcessClass bpc){
         AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is start ..."));
@@ -693,10 +695,16 @@ public class LicenceApproveBatchjob {
 
     private Integer getVersionByHciCode(String hciCode){
         Integer result = 1;
-        PremisesDto premisesDto = licenceService.getLatestVersionPremisesByHciCode(hciCode);
-        if(premisesDto!= null){
-            result = premisesDto.getVersion()+1;
+        Integer version = hciCodeVersion.get(hciCode);
+        if(version==null){
+            PremisesDto premisesDto = licenceService.getLatestVersionPremisesByHciCode(hciCode);
+            if(premisesDto!= null){
+                result = premisesDto.getVersion()+1;
+            }
+        }else{
+            result = version+1;
         }
+        hciCodeVersion.put(hciCode,result);
         return result;
     }
     //getAllServiceId
