@@ -35,7 +35,7 @@ import java.util.Set;
  * @author Jinhua
  * @date 2019/11/19 9:47
  */
-@FeignClient(name = "hcsa-config", configuration = FeignConfiguration.class,
+@FeignClient(name = "test1", configuration = FeignConfiguration.class,
         fallback = AppConfigClientFallback.class)
 public interface AppConfigClient {
 
