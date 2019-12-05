@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
     public void deleteRecord(String configId) {
-        chklClient.deleteRecord(configId);
+        chklClient.inActiveConfig(configId);
     }
 
     @Override
@@ -85,4 +86,10 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     public List<String> listServiceName() {
         return chklClient.listServiceName().getEntity();
     }
+
+    @Override
+    public ChecklistConfigDto getChecklistConfigById(String id) {
+        return RestApiUtil.getByPathParam("hcsa-config:8878/iais-hcsa-checklist/config/{id}", id, ChecklistConfigDto.class);
+    }
+
 }

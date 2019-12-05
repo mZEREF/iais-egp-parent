@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
@@ -65,6 +66,8 @@ public class LicenceApproveBatchjob {
 
     @Autowired
     private LicenceService licenceService;
+
+    private Map<String,Integer> hciCodeVersion = new HashMap();
 
     public void doBatchJob(BaseProcessClass bpc){
         AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
@@ -231,7 +234,11 @@ public class LicenceApproveBatchjob {
                     licAppCorrelationDto.setApplicationId(applicationListDto.getApplicationDto().getId());
                     licAppCorrelationDtos.add(licAppCorrelationDto);
                     superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
-
+                    //create LicFeeGroupItemDto
+                    List<LicFeeGroupItemDto> licFeeGroupItemDtos = new ArrayList<>();
+                    LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
+                    licFeeGroupItemDtos.add(licFeeGroupItemDto);
+                    superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
                     //create the document and lic_document from the primary doc.
                     List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                     List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
@@ -359,7 +366,11 @@ public class LicenceApproveBatchjob {
                 licAppCorrelationDto.setApplicationId(applicationDto.getId());
                 licAppCorrelationDtos.add(licAppCorrelationDto);
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
-
+                //create LicFeeGroupItemDto
+                List<LicFeeGroupItemDto> licFeeGroupItemDtos = new ArrayList<>();
+                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
+                licFeeGroupItemDtos.add(licFeeGroupItemDto);
+                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
                 //create the document and lic_document from the primary doc.
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                 List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
@@ -693,10 +704,16 @@ public class LicenceApproveBatchjob {
 
     private Integer getVersionByHciCode(String hciCode){
         Integer result = 1;
-        PremisesDto premisesDto = licenceService.getLatestVersionPremisesByHciCode(hciCode);
-        if(premisesDto!= null){
-            result = premisesDto.getVersion()+1;
+        Integer version = hciCodeVersion.get(hciCode);
+        if(version==null){
+            PremisesDto premisesDto = licenceService.getLatestVersionPremisesByHciCode(hciCode);
+            if(premisesDto!= null){
+                result = premisesDto.getVersion()+1;
+            }
+        }else{
+            result = version+1;
         }
+        hciCodeVersion.put(hciCode,result);
         return result;
     }
     //getAllServiceId

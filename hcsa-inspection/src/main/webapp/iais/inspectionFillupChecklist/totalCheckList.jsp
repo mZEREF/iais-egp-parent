@@ -245,13 +245,17 @@
                                                         <textarea cols="70" rows="7" name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
                                                     </div>
                                                 </div>
-                                                <br>
-                                                <br>
                                                 <div class="input-group">
-                                                    <b>TCU Date</b> &nbsp;<iais:datePicker id = "tuc" name = "tuc" value="${fillCheckListDto.tuc}"></iais:datePicker>
+                                                    <div class="ax_default text_area">
+                                                        <h4>TCU Date</h4> &nbsp;<iais:datePicker id = "tuc" name = "tuc" value="${fillCheckListDto.tuc}"></iais:datePicker><br>
+                                                    </div>
+                                                </div>
+                                                <div class="input-group">
+                                                    <div class="ax_default text_area">
+                                                        <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                    </div>
                                                 </div>
                                             </div>
-
                                             <div align="right">
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
                                                     Next

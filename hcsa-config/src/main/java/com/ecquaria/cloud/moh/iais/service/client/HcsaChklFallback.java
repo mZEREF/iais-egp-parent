@@ -18,7 +18,7 @@ import java.util.List;
 
 public class HcsaChklFallback {
 
-    public FeignResponseEntity<String> deleteRecord(String confId){
+    public FeignResponseEntity<String> inActiveConfig(String confId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

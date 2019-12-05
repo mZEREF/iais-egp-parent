@@ -3,17 +3,15 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +31,8 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public InspectionReportDto getInsRepDto(String appNo) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
-        AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appNo).getEntity();
+        //AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appNo).getEntity();
+        AppInsRepDto appInsRepDto =new AppInsRepDto();
         inspectionReportDto.setServiceName(appInsRepDto.getServiceId());
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         inspectionReportDto.setHciName(appInsRepDto.getHciName());
@@ -74,6 +73,11 @@ public class InsRepServiceImpl implements InsRepService {
     public ApplicationViewDto getApplicationViewDto(String appNo) {
         ApplicationViewDto applicationViewDto = insRepClient.getAppViewByNo(appNo).getEntity();
         return applicationViewDto;
+    }
+
+    @Override
+    public ApplicationDto updateApplicaiton(ApplicationDto applicationDto) {
+        return  insRepClient.updateApplication(applicationDto).getEntity();
     }
 
 

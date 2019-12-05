@@ -17,24 +17,60 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class INTRANET___MohAO1ValidateEmail___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="validateEmailDelegator";
 
-	public void prepareEmail_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "prepareEmail", this); 	
-	// 		PrepareEmail->OnStepProcess
-	}
+	public void previewEmail_OnStepProcess_0 () throws Exception { 
+	 
+		
+				EngineHelper.delegate(DELEGATOR, "previewEmail", this); 	}
 
-	public void start_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "start", this); 	
-	// 		Start->OnStepProcess
-	}
+	public void start_OnStepProcess_0 () throws Exception { 
+	 
+		
+				EngineHelper.delegate(DELEGATOR, "start", this); 	}
 
-	public void doValidate_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doValidate", this); 	
-	// 		doValidate->OnStepProcess
-	}
+	public void prepareData_OnStepProcess_0 () throws Exception { 
+	 
+		 
+			
+				EngineHelper.delegate(DELEGATOR, "prepareData", this); 	}
 
-	public void step3_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "step3", this); 
-	// 		Step3->OnStepProcess
-	}
+	public void sendEmail_OnStepProcess_0 () throws Exception { 
+	 
+		
+				EngineHelper.delegate(DELEGATOR, "sendEmail", this); 	}
+
+	public void doRecallEmail_OnStepProcess_0 () throws Exception { 
+	 
+		
+				EngineHelper.delegate(DELEGATOR, "doRecallEmail", this);
+			}
+
+	public void step4_OnStepProcess_0 () throws Exception { 
+	 
+		
+				EngineHelper.delegate(DELEGATOR, "emailView", this);
+			}
+
+	public void emailSubmitStep_OnStepProcess_0 () throws Exception { 
+	 
+		
+				EngineHelper.delegate(DELEGATOR, "emailSubmitStep", this); 	}
+
+	public void preEmailView_OnStepProcess_0 () throws Exception { 
+	 
+		
+				EngineHelper.delegate(DELEGATOR, "preEmailView", this);
+			}
+
+	public void checkListNext_OnStepProcess_0 () throws Exception { 
+	 
+		
+				EngineHelper.delegate(DELEGATOR, "checkListNext", this);
+			}
+
+	public void preCheckList_OnStepProcess_0 () throws Exception { 
+	 
+		
+				EngineHelper.delegate(DELEGATOR, "preCheckList", this);
+			}
 
 }

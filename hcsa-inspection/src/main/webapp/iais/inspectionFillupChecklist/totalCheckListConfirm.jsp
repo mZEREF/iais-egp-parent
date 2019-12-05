@@ -236,34 +236,25 @@
                                                 <div class="input-group">
                                                     <div class="ax_default text_area">
                                                         <h4>Best Practice</h4>
-                                                        <textarea cols="70" rows="7" name="bestpractice" id="bestpractice" disabled><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                        <textarea cols="70" rows="7" disabled name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
                                                     </div>
                                                 </div>
-                                                <br>
-                                                <br>
                                                 <div class="input-group">
-                                                    <b>TCU Date</b> <c:out value="${fillCheckListDto.tuc}"/>&nbsp;
+                                                    <div class="ax_default text_area">
+                                                        <h4>TCU Date</h4> &nbsp;<c:out value="${fillCheckListDto.tuc}"/>&nbsp;<br>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div align="left">
-                                                <button type="button" class="btn btn-primary" onclick="javascript: doback();">
-                                                    Back
-                                                </button>
+                                                <div class="input-group">
+                                                    <div class="ax_default text_area">
+                                                        <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" disabled id="tcuRemark"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div align="right">
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
                                                     Submit
                                                 </button>
                                             </div>
-                                            <iais:error>
-                                                <c:if test = "${not empty errorMap}">
-                                                    <div class="error">
-                                                        <c:forEach items="${errorMap}" var="map">
-                                                            ${map.key}  ${map.value} <br/>
-                                                        </c:forEach>
-                                                    </div>
-                                                </c:if>
-                                            </iais:error>
                                         </div>
                                     </div>
                                 </div>

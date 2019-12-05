@@ -9,6 +9,7 @@
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <input type="hidden" name="crud_action_type" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -438,7 +439,7 @@
                                                     <td>
                                                         <div class="input-group">
                                                             <div class="ax_default text_area">
-                                                                <textarea name="internalRemarks" cols="70" rows="7"></textarea>
+                                                                <textarea id="internalRemarksId" name="internalRemarks" cols="70" rows="7"></textarea>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -457,7 +458,7 @@
                                                 </tr>
                                             </table>
                                             <div align="center">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <button id="submitButton" type="submit" class="btn btn-primary">Submit</button>
                                             </div>
                                             <div>&nbsp;</div>
                                         </div>
@@ -635,7 +636,20 @@
 </form>
 
 <script type="text/javascript">
+    $("#submitButton").click(function () {
+        var textarea = $("#internalRemarksId").val();
+        if(textarea==""){
+            $('#notNull').remove();
+            $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>")
+            return false;
+        }else{
+            var nextStage=$("[name='nextStage']").val();
+            console.log(nextStage);
+            $("[name='crud_action_type']").val(nextStage);
+            return true;
+        }
 
+    });
 
 </script>
 

@@ -1,12 +1,18 @@
 <div class="tab-pane" id="tabLicence" role="tabpanel">
     <div class="tab-search license-search clearfix">
-        <div class="licence-btns"><a class="btn btn-primary disabled" href="javascript:;">Renew</a><a class="btn btn-secondary disabled" href="javascript:;">Cease</a><a class="btn btn-secondary disabled" href="javascript:;">Amend</a></div>
-        <div class="search-wrap">
-            <div class="input-group">
-                <input class="form-control" id="licenseAdvancedSearcch" type="text" placeholder="Licence no." name="licenseAdvancedSearcch" aria-label="licenseAdvancedSearcch"><span class="input-group-btn">
-                          <button class="btn btn-default buttonsearch" title="Search by keywords"><em class="fa fa-search"></em></button></span>
+        <form class="form-inline" method="post" id="licenceForm" action=<%=process.runtime.continueURL()%>>
+            <div class="licence-btns">
+                <a class="btn btn-primary disabled" href="javascript:;">Renew</a>
+                <a class="btn btn-secondary disabled" href="javascript:;">Cease</a>
+                <a class="btn btn-secondary disabled" href="javascript:;">Amend</a>
             </div>
-        </div><a class="advanced-search" href="#">Advanced Search</a>
+            <div class="search-wrap">
+                <div class="input-group">
+                    <input class="form-control" id="licenseAdvancedSearch" type="text" placeholder="Licence no." name="licenseAdvancedSearch" aria-label="licenseAdvancedSearch"><span class="input-group-btn">
+                              <button class="btn btn-default buttonsearch" title="Search by keywords"><em class="fa fa-search"></em></button></span>
+                </div>
+            </div><a class="btn btn-default advanced-search" href="#">Advanced Search</a>
+        </form>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -15,7 +21,7 @@
                     <thead>
                     <tr>
                         <th>Licence No.</th>
-                        <th>Type <span class="sort"></span></th>
+                        <th class="sorting">Type <span class="column-sort"></span></th>
                         <th>Status <span class="sort"></span></th>
                         <th>Premises <span class="sort"></span></th>
                         <th>Start Date <span class="desc"></span></th>
@@ -23,305 +29,63 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check">
-                                <input class="form-check-input licenceCheck" id="licence1" type="checkbox" name="licence1" aria-invalid="false">
-                                <label class="form-check-label" for="licence1"><span class="check-square"></span><a href="#">RW-2019-00004</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Clinical Laboratory</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Active</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check">
-                                <input class="form-check-input licenceCheck" id="licence2" type="checkbox" name="licence2" aria-invalid="false">
-                                <label class="form-check-label" for="licence2"><span class="check-square"></span><a href="#">RW-2019-00003</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Nuclear Medicine</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Active</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p>16 Raffles Quay <br> # 01-03, 048581</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check disabled">
-                                <input class="form-check-input licenceCheck" id="licence3" type="checkbox" name="licence3" aria-invalid="false">
-                                <label class="form-check-label" for="licence3"><span class="check-square"></span><a href="#">RW-2019-00002</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Tissue Banking</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Expired</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p><a class="collapsed" data-toggle="collapse" href="#serviceCollapse" aria-expanded="false" aria-controls="serviceCollapse">Multiple</a></p>
-                            <div class="collapse" id="serviceCollapse">
-                                <ul>
-                                    <li>16 Raffles Quay <br> # 01-03, 048581</li>
-                                    <li>111 North Bridge Rd. <br> # 07-04, 179098</li>
-                                    <li>568 Raffles Place. <br> # 08-01, 589098</li>
-                                </ul>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check disabled">
-                                <input class="form-check-input licenceCheck" id="licence4" type="checkbox" name="licence4" aria-invalid="false">
-                                <label class="form-check-label" for="licence4"><span class="check-square"></span><a href="#">RW-2019-00001</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Blood Banking</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Expired</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p>16 Raffles Quay <br> # 01-03, 048581</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check">
-                                <input class="form-check-input licenceCheck" id="licence5" type="checkbox" name="licence5" aria-invalid="false">
-                                <label class="form-check-label" for="licence5"><span class="check-square"></span><a href="#">RW-2019-00004</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Clinical Laboratory</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Active</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check">
-                                <input class="form-check-input licenceCheck" id="licence6" type="checkbox" name="licence6" aria-invalid="false">
-                                <label class="form-check-label" for="licence6"><span class="check-square"></span><a href="#">RW-2019-00003</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Nuclear Medicine</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Active</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p>16 Raffles Quay <br> # 01-03, 048581</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check">
-                                <input class="form-check-input licenceCheck" id="licence7" type="checkbox" name="licence7" aria-invalid="false">
-                                <label class="form-check-label" for="licence7"><span class="check-square"></span><a href="#">RW-2019-00004</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Clinical Laboratory</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Active</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check">
-                                <input class="form-check-input licenceCheck" id="licence8" type="checkbox" name="licence8" aria-invalid="false">
-                                <label class="form-check-label" for="licence8"><span class="check-square"></span><a href="#">RW-2019-00003</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Nuclear Medicine</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Active</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p>16 Raffles Quay <br> # 01-03, 048581</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021			</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check disabled">
-                                <input class="form-check-input licenceCheck" id="licence9" type="checkbox" name="licence9" aria-invalid="false">
-                                <label class="form-check-label" for="licence9"><span class="check-square"></span><a href="#">RW-2019-00001</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Blood Banking</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Expired</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p>16 Raffles Quay <br> # 01-03, 048581</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                            <div class="form-check disabled">
-                                <input class="form-check-input licenceCheck" id="licence10" type="checkbox" name="licence10" aria-invalid="false">
-                                <label class="form-check-label" for="licence10"><span class="check-square"></span><a href="#">RW-2019-00001</a></label>
-                            </div>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Blood Banking</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Status</p>
-                            <p>Expired</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Premises</p>
-                            <p>16 Raffles Quay <br> # 01-03, 048581</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                            <p>14 Feb 2019</p>
-                        </td>
-                        <td>
-                            <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                            <p>14 Feb 2021</p>
-                        </td>
-                    </tr>
+                    <c:choose>
+                        <c:when test="${empty licResult.rows}">
+                            <tr>
+                                <td colspan="6">
+                                    No Record!!
+                                </td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var = "licenceQuery" items = "${licResult.rows}" varStatus="status">
+                                <tr>
+                                    <td>
+                                        <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input licenceCheck" id="licence1" type="checkbox" name="licence1" aria-invalid="false">
+                                            <label class="form-check-label" for="licence1"><span class="check-square"></span><a href="#">${licenceQuery.licenceNo}</a></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="visible-xs visible-sm table-row-title">Type</p>
+                                        <p>${licenceQuery.svcName}</p>
+                                    </td>
+                                    <td>
+                                        <p class="visible-xs visible-sm table-row-title">Status</p>
+                                        <p>Active</p>
+                                    </td>
+                                    <td>
+                                        <p class="visible-xs visible-sm table-row-title">Premises</p>
+                                        <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
+                                    </td>
+                                    <td>
+                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                        <p><fmt:formatDate value="${licenceQuery.startDate}" pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                    </td>
+                                    <td>
+                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                        <p><fmt:formatDate value="${licenceQuery.expiryDate}" pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                     </tbody>
                 </table>
+                <div class="table-footnote">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-4">
+                            <p class="count">${licResult.rowCount} out of ${licParam.pageNo}</p>
+                        </div>
+                        <div class="col-xs-6 col-md-8 text-right">
+                            <div class="nav">
+                                <ul class="pagination">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -190,14 +190,12 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="tab-pane" id="tabPayment" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
                                 </strong></div>
                                 <div class="row">
                                     <div class="col-xs-12">
-
                                         <div class="table-gp">
                                             <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
                                                 <br/>
@@ -233,13 +231,18 @@
                                                 <div class="input-group">
                                                     <div class="ax_default text_area">
                                                         <h4>Best Practice</h4>
-                                                        <textarea cols="70" rows="7" name="bestpractice" id="bestpractice" disabled><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                        <textarea cols="70" rows="7" disabled name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
                                                     </div>
                                                 </div>
-                                                <br>
-                                                <br>
                                                 <div class="input-group">
-                                                    <b>TCU Date</b> &nbsp;<c:out value="${fillCheckListDto.tuc}"/>&nbsp;
+                                                    <div class="ax_default text_area">
+                                                        <h4>TCU Date</h4> &nbsp;<c:out value="${fillCheckListDto.tuc}"/>&nbsp;<br>
+                                                    </div>
+                                                </div>
+                                                <div class="input-group">
+                                                    <div class="ax_default text_area">
+                                                        <h4>Remark</h4> <textarea cols="70" rows="7" disabled name="tcuRemark" id="tcuRemark"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
