@@ -13,33 +13,32 @@ package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTERNET___Inter_Inbox___1 extends BaseProcessClass {
+public class INTERNET___MohInterInbox___1 extends BaseProcessClass {
 	
 	private static final String DELEGATOR ="inboxDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-		// 		Start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "startStep", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		PrepareData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareStep", this);
+		EngineHelper.delegate(DELEGATOR, "prepareDataStep", this);
 	}
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	// 		PrepareSwitch->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "switchStep", this);
+		EngineHelper.delegate(DELEGATOR, "prepareSwitchStep", this);
 	}
 
 	public void doSearch_OnStepProcess_0() throws Exception {
-	// 		doSearch->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doSearch", this);
 	}
 
 	public void doSort_OnStepProcess_0() throws Exception {
-	// 		doSort->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doSort", this);
+	}
+
+	public void doPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doPage", this);
 	}
 
 }

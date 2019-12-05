@@ -352,14 +352,14 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
         //do validate
-        List<Map<String,String>> errList = doValidateGovernanceOfficers(bpc.request);
+        /*List<Map<String,String>> errList = doValidateGovernanceOfficers(bpc.request);
         for(Map<String,String> errMap:errList){
             if(errMap.size() > 0){
                 ParamUtil.setSessionAttr(bpc.request, ERRORMAP_GOVERNANCEOFFICERS, (Serializable) errList);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "governanceOfficers");
                 return;
             }
-        }
+        }*/
 
         //save into sub-svc dto
         /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);

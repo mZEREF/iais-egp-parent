@@ -2,10 +2,14 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +30,7 @@ import java.util.Map;
 @Slf4j
 public class ValidateEmailDelegator {
     @Autowired
-    InsEmailClient insEmailClient;
+    InspEmailService inspEmailService;
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -35,18 +39,24 @@ public class ValidateEmailDelegator {
     public void prepareEmail(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        InspectionEmailTemplateDto inspectionEmailTemplateDto= insEmailClient.getInsertEmail("B14E19EA-E4F8-4298-935A-8C50346BD01F");
+        InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail("B14E19EA-E4F8-4298-935A-8C50346BD01F");
+        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
     }
 
     public void doValidate(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String decision=ParamUtil.getRequestString(request,"decision");
+        InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
+        ApplicationDto applicationDto=inspEmailService.getApplicationDtoByAppPremCorrId(inspectionEmailTemplateDto.getAppPremCorrId());
         if (decision.equals("Acknowledge email/Letter Content")){
-            ;
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationDto, ApplicationDto.class);
         }else {
-
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationDto, ApplicationDto.class);
         }
+        inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
     }
 
     public void step3(BaseProcessClass bpc){

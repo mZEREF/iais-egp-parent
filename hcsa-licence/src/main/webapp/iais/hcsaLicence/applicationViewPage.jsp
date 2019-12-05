@@ -438,7 +438,7 @@
                                                     <td>
                                                         <div class="input-group">
                                                             <div class="ax_default text_area">
-                                                                <textarea name="internalRemarks" cols="70" rows="7"></textarea>
+                                                                <textarea id="internalRemarksId" name="internalRemarks" cols="70" rows="7"></textarea>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -457,7 +457,7 @@
                                                 </tr>
                                             </table>
                                             <div align="center">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <button id="submitButton" type="submit" class="btn btn-primary">Submit</button>
                                             </div>
                                             <div>&nbsp;</div>
                                         </div>
@@ -635,7 +635,18 @@
 </form>
 
 <script type="text/javascript">
+    $("#submitButton").click(function () {
+        var textarea = $("#internalRemarksId").val();
+        if(textarea==""){
+            $("#internalRemarksId").after("<span style='color: red;'>*NOT NULL!</span>")
+            return false;
+        }else{
+            var nextStage=$("[name='nextStage']").val();
+            $("[name='sopEngineTabRef']").val(nextStage);
+            return true;
+        }
 
+    });
 
 </script>
 

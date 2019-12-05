@@ -29,7 +29,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<String> fileAll();
 
     @PutMapping(path = "/iais-application/status")
-    FeignResponseEntity<Boolean> updateStatus();
+    FeignResponseEntity<Void> updateStatus();
 
     @PostMapping(path = "/iais-application/file-name",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String>  savedFileName(@RequestBody String fileName);

@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,6 +51,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -64,7 +66,8 @@ public class LicenceApproveBatchjob {
     @Autowired
     private LicenceService licenceService;
 
-    public void doBatchJob(){
+    public void doBatchJob(BaseProcessClass bpc){
+        AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is start ..."));
         int day = 0;
        //get can Generate Licence
@@ -105,6 +108,7 @@ public class LicenceApproveBatchjob {
 
         //todo:step1 create Licence to BE DB
         licenceGroupDtos = licenceService.createSuperLicDto(licenceGroupDtos);
+
         //if create licence success
         //todo:update the success application group.
         //todo:send the email to admin for fail Data.
@@ -185,7 +189,7 @@ public class LicenceApproveBatchjob {
                 //create licence
                 //todo:get the yearLenth.
                 int yearLength = 1;
-                String licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(),applicationListDtos.size(),yearLength);
+                String licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(),yearLength);
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
                 if(StringUtil.isEmpty(licenceNo)){
                     errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() + ":" + yearLength;
@@ -589,6 +593,7 @@ public class LicenceApproveBatchjob {
                 documentDto.setSubmitDt(appGrpPrimaryDocDto.getSubmitDt());
                 documentDto.setSubmitBy(appGrpPrimaryDocDto.getSubmitBy());
                 licDocumentRelationDto.setDocumentDto(documentDto);
+
                 LicDocumentDto licDocumentDto = new LicDocumentDto();
                 licDocumentDto.setSvcDocId(appGrpPrimaryDocDto.getSvcComDocId());
                 //set the old premises Id ,get the releation when the save.

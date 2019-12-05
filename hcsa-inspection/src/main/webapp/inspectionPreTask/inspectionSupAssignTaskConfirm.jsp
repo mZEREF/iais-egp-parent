@@ -28,59 +28,69 @@
               <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                 <div class="panel-body">
                   <div class="panel-main-content">
+                    <c:if test = "${not empty errorMap}">
+                      <iais:error>
+                        <div class="error">
+                          <c:forEach items="${errorMap}" var="map">
+                            ${map.key}  ${map.value} <br/>
+                          </c:forEach>
+                        </div>
+                      </iais:error>
+                    </c:if>
                     <iais:section title="" id = "assign_Task">
                       <iais:row>
                         <iais:field value="Application Number"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.applicationNo}"/></label>
+                          <label><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Application Type"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.applicationType}"/></label>
+                          <label><c:out value="${inspectionTaskPoolListDto.applicationType}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Application Status"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.applicationStatus}"/></label>
+                          <label><c:out value="${inspectionTaskPoolListDto.applicationStatus}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="HCI Code"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.hciCode}"/></label>
+                          <label><c:out value="${inspectionTaskPoolListDto.hciCode}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="HCI Name / Address"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.hciName}"/></label>
+                          <label><c:out value="${inspectionTaskPoolListDto.hciName}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Service Name"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.serviceName}"/></label>
+                          <label><c:out value="${inspectionTaskPoolListDto.serviceName}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Submission Date"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.submitDt}"/></label>
+                          <%--<iais:datePicker id = "submitDt" name = "submitDt" value="${inspecTaskCreAndAssDto.submitDt}"></iais:datePicker>--%>
+                          <label><c:out value="${inspectionTaskPoolListDto.submitDt}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Inspection Lead"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.inspectionLead}"/></label>
+                          <label><c:out value="${inspectionTaskPoolListDto.inspectorLead}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Inspector"/>
                         <iais:value width="10">
-                          <c:forEach items="${inspecTaskCreAndAssDto.inspectorCheck}" var="name">
+                          <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="name">
                             <label><c:out value="${name.text}"/></label>
                           </c:forEach>
                         </iais:value>
@@ -88,7 +98,7 @@
                       <iais:row>
                         <iais:field value="Inspection Type"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></label>
+                          <label><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:action >

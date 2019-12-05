@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @author junyu
  * @date 2019/12/2
  */
-public class InsEmailClientFallback {
+public class InsEmailClientFallBack {
     FeignResponseEntity<ApplicationViewDto> getAppViewByNo(@PathVariable("appNo") String appNo){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -33,6 +34,12 @@ public class InsEmailClientFallback {
         return entity;
     }
     public FeignResponseEntity<InspectionEmailTemplateDto> getInsertEmail( String appPremCorrId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+    public FeignResponseEntity<ApplicationDto> getApplicationDtoByAppPremCorrId( String appPremCorrId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

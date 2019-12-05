@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @date 2019/12/2
  */
 @FeignClient(name = "iais-application", configuration = {FeignConfiguration.class},
-        fallback = InsEmailClientFallback.class)
+        fallback = InsEmailClientFallBack.class)
 public interface InsEmailClient {
 
     @PostMapping(path = "/iais-inspection/insert-template",  consumes =  MediaType.APPLICATION_JSON_VALUE)
@@ -33,6 +34,11 @@ public interface InsEmailClient {
 
     @GetMapping(path = "/iais-inspection/recall-template/{appPremCorrId}",  consumes =  MediaType.APPLICATION_JSON_VALUE)
     InspectionEmailTemplateDto getInsertEmail(@PathVariable(value = "appPremCorrId") String appPremCorrId);
+
     @RequestMapping(path = "/iais-application-be/applicationview/{appNo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationViewDto> getAppViewByNo(@PathVariable("appNo") String appNo);
-}
+
+    @GetMapping(value = "/applicationDto/{appPremCorrId}",  consumes =  MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationDtoByAppPremCorrId(@PathVariable("appPremCorrId") String appPremCorrId);
+
+    }

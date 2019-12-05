@@ -18,7 +18,7 @@
           <div class="panel-body">
             <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
             <div class="panel-main-content">
-              <div class="">
+              <div class="" style="height: auto">
                 <h2>Principal Officer</h2>
                 <p><h4>A Principal Officer is responsible for overseeing the day-to-day operations of medical service</h4></p>
                 <div class="row">
@@ -108,7 +108,21 @@
                         <label  class="control-label control-set-font control-font-label">Mobile No.</label>
                       </div>
                       <div class="col-sm-4">
-                        <input name="mobileNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input name="mobileNo" type="text"  id="mobileNo" class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <span class="error-msg" style="display: none">Please key in a valid mobile number</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="control control-caption-horizontal">
+                    <div class=" form-group form-horizontal formgap">
+                      <div class="col-sm-3 control-label formtext ">
+                        <label  class="control-label control-set-font control-font-label">Office Telephone.</label>
+                      </div>
+                      <div class="col-sm-4">
+                        <input name="telephone" type="text"  id="telephone" class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <span class="error-msg" style="display: none">Please key in a valid phone number</span>
                       </div>
                     </div>
                   </div>
@@ -120,7 +134,8 @@
                         <label  class="control-label control-set-font control-font-label">Email Address</label>
                       </div>
                       <div class="col-sm-4">
-                        <input name="emailAddress" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <span class="error-msg" style="display: none">Please key in a valid email address</span>
                       </div>
                     </div>
                   </div>
@@ -173,5 +188,38 @@
         var selectVal = $(this).val();
         $('.principalOfficers').removeClass('hidden');
     });
+
+    $('#mobileNo').blur(function () {
+        var rel=/^[8|9][0-9]*$/;
+            if(!rel.test($('#mobileNo').val())){
+                $('#mobileNo+span').removeAttr('style');
+                $('#mobileNo').attr('class','error');
+            }else {
+                $('#mobileNo+span').attr('style','display: none');
+                $('#mobileNo').attr('class',' form-control control-input control-set-font control-font-normal');
+            }
+        }
+    );
+    $('#emailAdress').blur(function(){
+        var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        if(!rel.test($('#emailAdress').val())){
+            $('#emailAdress+span').removeAttr('style');
+            $('#emailAdress').attr('class','error');
+        }else {
+            $('#emailAdress+span').attr('style','display: none');
+            $('#emailAdress').attr('class',' form-control control-input control-set-font control-font-normal');
+        }
+    });
+    $('#telephone').blur(function () {
+        var rel=/^[6][0-9]*$/;
+        if(!rel.test($('#telephone').val())){
+            $('#telephone+span').removeAttr('style');
+            $('#telephone').attr('class','error');
+        }else {
+            $('#telephone+span').attr('style','display: none');
+            $('#telephone').attr('class',' form-control control-input control-set-font control-font-normal');
+        }
+    });
+
 
 </script>
