@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -18,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -194,7 +197,22 @@ public class InspecAssignTaskDelegator {
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         inspectionAssignTaskService.assignTaskForInspectors(commPools, inspecTaskCreAndAssDto);
+        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppNo(inspecTaskCreAndAssDto.getApplicationNo());
+
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+    }
+
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                         String stageId, String internalRemarks){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        //appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        return appPremisesRoutingHistoryDto;
     }
 
     /**

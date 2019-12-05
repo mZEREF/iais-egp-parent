@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -44,6 +45,13 @@ public class InspectionTaskClientFallback {
     }
 
     public FeignResponseEntity<SearchResult<InspectionSubPoolQueryDto>> searchInspectionSupPool(SearchParam searchParam){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<ApplicationViewDto> getAppViewByNo(String appNo){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

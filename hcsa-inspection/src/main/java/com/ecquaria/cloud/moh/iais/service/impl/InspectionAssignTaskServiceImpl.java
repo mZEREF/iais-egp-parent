@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -204,12 +205,17 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return searchResult;
     }
 
+    @Override
+    public ApplicationViewDto searchByAppNo(String applicationNo) {
+        return inspectionTaskClient.getAppViewByNo(applicationNo).getEntity();
+    }
+
     private void createTaskByInspectorList(List<SelectOption> inspectorCheckList, List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
         List<TaskDto> taskDtoList = new ArrayList<>();
         for(SelectOption so : inspectorCheckList) {
             for (TaskDto td : commPools) {
                 if(td.getId().equals(inspecTaskCreAndAssDto.getTaskId())){
-                    td.setId("");
+                    td.setId(null);
                     td.setUserId(so.getValue());
                     td.setDateAssigned(new Date());
                     taskDtoList.add(td);
