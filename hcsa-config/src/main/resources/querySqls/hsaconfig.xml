@@ -37,9 +37,19 @@
 
     <sql key="listChecklistConfig" remarks="query results of checklist config">
         <![CDATA[
-             select distinct svc.id as config_id, svc.module as module, svc.svc_subtype_name as subtype_name, svc.hci_code as hci_code, svc.[type] as type,
-             svc.is_common as is_common, hcsa.svc_name as service, svc.EFFECTIVE_DATE as START_DATE, svc.end_date as END_DATE, svc.version as version
-             from chkl_config_hcsa_service svc, hcsa_service hcsa where hcsa.svc_code = svc.svc_code and svc.status = 'CMSTAT001'
+            select distinct svc.id as config_id,
+            svc.module as module,
+            svc.svc_subtype_name as subtype_name,
+            svc.hci_code as hci_code,
+            svc.[type] as type,
+            svc.is_common as is_common,
+            hcsa.svc_name as service,
+            svc.EFFECTIVE_DATE as START_DATE,
+            svc.end_date as END_DATE,
+            svc.version as version
+            from chkl_config_hcsa_service svc
+            left join hcsa_service hcsa on svc.svc_code = hcsa.svc_code
+            where (svc.is_common = 1 or svc.is_common = 0) and svc.status = 'CMSTAT001'
              <#if svcName??> and hcsa.svc_name = :svcName</#if>
              <#if common??> and svc.is_common = :common</#if>
              <#if module??> and svc.module = :module</#if>
