@@ -157,7 +157,7 @@ public class LicenceApproveBatchjob {
         LicenceGroupDto licenceGroupDto = new LicenceGroupDto();
         List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
-        String isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
+        Integer isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
 
         //create licence group fee
@@ -189,7 +189,7 @@ public class LicenceApproveBatchjob {
                 //create licence
                 //todo:get the yearLenth.
                 int yearLength = 1;
-                String licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(),applicationListDtos.size(),yearLength);
+                String licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(),yearLength);
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
                 if(StringUtil.isEmpty(licenceNo)){
                     errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() + ":" + yearLength;
@@ -286,7 +286,7 @@ public class LicenceApproveBatchjob {
         LicenceGroupDto licenceGroupDto = new LicenceGroupDto();
         List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
         ApplicationGroupDto applicationGroupDto = applicationLicenceDto.getApplicationGroupDto();
-        String isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
+        Integer isPostInspNeeded = isPostInspNeeded(applicationGroupDto);
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
 
         //create licence group fee
@@ -406,7 +406,7 @@ public class LicenceApproveBatchjob {
                                                        List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos,
                                                        HcsaServiceDto hcsaServiceDto,
                                                        String organizationId,
-                                                       String isPostInspNeeded){
+                                                       Integer isPostInspNeeded){
         List<PremisesGroupDto> reuslt = new ArrayList<>();
 
         for (AppGrpPremisesEntityDto appGrpPremisesEntityDto : appGrpPremisesEntityDtos){
@@ -439,9 +439,9 @@ public class LicenceApproveBatchjob {
             licPremisesDto.setPremisesId(premisesId);
             licPremisesDto.setIsPostInspNeeded(isPostInspNeeded);
             if(appPremisesRecommendationDto == null){
-                licPremisesDto.setIsTcuNeeded(AppConsts.NO);
+                licPremisesDto.setIsTcuNeeded(Integer.parseInt(AppConsts.NO));
             }else{
-                licPremisesDto.setIsTcuNeeded(AppConsts.YES);
+                licPremisesDto.setIsTcuNeeded(Integer.parseInt(AppConsts.YES));
                 licPremisesDto.setTcuDate(appPremisesRecommendationDto.getRecomInDate());
             }
             premisesGroupDto.setLicPremisesDto(licPremisesDto);
@@ -491,15 +491,15 @@ public class LicenceApproveBatchjob {
         licFeeGroupDto.setFeeAmount(amount);
         return licFeeGroupDto;
     }
-    private String isPostInspNeeded(ApplicationGroupDto applicationGroupDto){
+    private Integer isPostInspNeeded(ApplicationGroupDto applicationGroupDto){
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is start ..."));
         int inspectionNeed = applicationGroupDto.getIsInspectionNeeded();
         log.debug(StringUtil.changeForLog("The inspectionNeed is -->:"+inspectionNeed));
         int isPreInspection = applicationGroupDto.getIsPreInspection();
         log.debug(StringUtil.changeForLog("The isPreInspection is -->:"+isPreInspection));
-        String isPostInspNeeded = AppConsts.NO;
+        Integer isPostInspNeeded = Integer.parseInt(AppConsts.NO);
         if(inspectionNeed == 1 && isPreInspection == 0){
-            isPostInspNeeded = AppConsts.YES;
+            isPostInspNeeded = Integer.parseInt(AppConsts.YES);
         }
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is end ..."));
         return isPostInspNeeded;
@@ -518,7 +518,7 @@ public class LicenceApproveBatchjob {
             KeyPersonnelDto keyPersonnelDto = MiscUtil.transferEntityDto(appGrpPersonnelDto,KeyPersonnelDto.class);
             keyPersonnelDto.setId(null);
             //todo:controller the psersonnel version
-            keyPersonnelDto.setVersion("1");
+            keyPersonnelDto.setVersion(1);
             //todo: controller status
             keyPersonnelDto.setStatus("active");
             personnelsDto.setKeyPersonnelDto(keyPersonnelDto);
@@ -661,14 +661,19 @@ public class LicenceApproveBatchjob {
         licenceDto.setLicenceNo(licenceNo);
         licenceDto.setSvcName(svcName);
         //todo:The latest choose from Giro pay Date, Approved Date,Aso set Date,
-        licenceDto.setStartDate(applicationGroupDto.getModifiedAt());
+        Date startDate = applicationGroupDto.getModifiedAt();
+        log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
+        if(startDate == null){
+            startDate = new Date();
+        }
+        licenceDto.setStartDate(startDate);
         licenceDto.setExpiryDate(getExpiryDate(licenceDto.getStartDate(),yearLength));
         licenceDto.setIsGrpLic(applicationGroupDto.getIsGrpLic());
         licenceDto.setOrganizationId(organizationId);
         licenceDto.setOriginLicenceId(originLicenceId);
-        licenceDto.setIsMigrated(AppConsts.NO);
-        licenceDto.setIsFeeRetroNeeded(AppConsts.NO);
-        licenceDto.setVersion("1");
+        licenceDto.setIsMigrated(Integer.parseInt(AppConsts.NO));
+        licenceDto.setIsFeeRetroNeeded(Integer.parseInt(AppConsts.NO));
+        licenceDto.setVersion(1);
         //todo:Judge the licence status
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
         licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
