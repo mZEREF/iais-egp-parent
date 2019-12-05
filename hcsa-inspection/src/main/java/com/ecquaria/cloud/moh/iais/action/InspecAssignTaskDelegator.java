@@ -273,7 +273,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorSort(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSort start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        CrudHelper.doSorting(searchParam,  bpc.request);
+        CrudHelper.doSorting(searchParam, bpc.request);
     }
 
     /**
