@@ -84,6 +84,12 @@
            }else {
                $('.laboratory-disciplines>span').attr('style','display: none');
            }
+
+            $.post("",$('#mainForm').serialize(),function (resulet){
+
+
+            });
+
             submitForms('governanceOfficers',null,null,controlFormLi);
         });
 

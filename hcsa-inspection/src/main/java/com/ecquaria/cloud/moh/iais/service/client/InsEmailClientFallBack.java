@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @date 2019/12/2
  */
 public class InsEmailClientFallBack {
-    FeignResponseEntity<ApplicationViewDto> getAppViewByNo(@PathVariable("appNo") String appNo){
+    FeignResponseEntity<ApplicationViewDto> getAppViewByNo( String appNo){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

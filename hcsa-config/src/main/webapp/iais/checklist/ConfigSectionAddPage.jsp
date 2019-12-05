@@ -71,7 +71,14 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12">
-          <h2>Add Section</h2>
+        <c:choose>
+          <c:when test="${operationType == 'doEdit'}">
+            <h2>Edit Section</h2>
+          </c:when>
+          <c:otherwise>
+            <h2>Add Section</h2>
+          </c:otherwise>
+        </c:choose>
           <div class="instruction-content center-content" id="instruction">
             <div class="sort section" id="sortSection">
               <c:forEach var = "chklsec" items = "${configSessionAttr.sectionDtos}" varStatus="status">
@@ -80,8 +87,9 @@
                   <div class="panel panel-default">
                     <div class="panel-heading"  role="tab">
                       <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">${chklsec.section}</a>
-                        <p class="text-right"><a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'UP', 'sectionSon')"><i class=""></i>UP</a></p>
-                        <p class="text-right"><a class="btnDown" data-id="${status.index}"  onclick="javascript:swapPosition(${status.index},'DOWN', 'sectionSon')"><i class=""></i>DOWN</a></p>
+                        <p class="text-right"><a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'UP', 'sectionSon')"><i class=""></i>Up</a></p>
+                        <p class="text-right"><a class="btnDown" data-id="${status.index}"  onclick="javascript:swapPosition(${status.index},'DOWN', 'sectionSon')"><i class=""></i>Down</a></p>
+                        <p class="text-right"><a class="btnDown" data-id="${status.index}"  onclick="javascript:removeSection('${chklsec.id}')"><i class=""></i>Remove</a></p>
                       </h4>
 
                     </div>
@@ -90,68 +98,65 @@
                         <p class="text-right"><a onclick="javascript:routeToItemProcess('${chklsec.id}');"><i class="fa fa-pencil-square-o"></i>Config Checklist Item </a></p>
 
 
-                        <div class="panel-main-content">
-                          <div class="table-gp">
+                        <table class="table">
+                          <thead>
+                          <tr>
+                            <th>Regulation Clause Number</th>
+                            <th>Regulations</th>
+                            <th>Checklist Item</th>
+                            <th>Risk Level</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                          </tr>
+                          </thead>
+                          <tbody>
 
-                              <thead>
-                              <tr>
-                                <th>Regulation Clause Number</th>
-                                <th>Regulations</th>
-                                <th>Checklist Item</th>
-                                <th>Service</th>
-                                <th>Risk Level</th>
-                                <th>Status</th>
-                                <th>Sort</th>
-                              </tr>
-                              </thead>
+                            <c:forEach var = "chklitem" items = "${chklsec.checklistItemDtos}" varStatus="status">
 
-                                <c:forEach var = "chklitem" items = "${chklsec.checklistItemDtos}" varStatus="status">
+                                    <tr class="itemClass" data-id="${status.index}">
+                                      <input type="hidden" name="${chklitem.itemId}" data-name="itemWant" value="${status.index}">
+                                        <td>
+                                          <p class="visible-xs visible-sm table-row-title">Regulation Clause Number</p>
+                                          <p>${chklitem.regulationClauseNo}</p>
+                                        </td>
+                                        <td>
+                                          <p class="visible-xs visible-sm table-row-title">Regulations</p>
+                                          <p>${chklitem.regulationClause}</p>
+                                        </td>
+                                        <td>
+                                          <p class="visible-xs visible-sm table-row-title">Checklist Item</p>
+                                          <p>${chklitem.checklistItem}</p>
+                                        </td>
+                                        <td>
+                                          <p class="visible-xs visible-sm table-row-title">Risk Level</p>
+                                          <p>${chklitem.riskLevel}</p>
+                                        </td>
+                                        <td>
+                                          <p class="visible-xs visible-sm table-row-title">Date</p>
+                                          <p>${chklitem.status}</p>
+                                        </td>
 
-                                  <div class="gray-content-box itemClass" data-id="${status.index}">
-                                    <table class="table"  >
-                                    <input type="hidden" name="${chklitem.itemId}" data-name="itemWant" value="${status.index}">
-                                        <tr>
-                                          <td>
-                                            <p>${chklitem.regulationClauseNo}</p>
-                                          </td>
+                                        <td>
+                                          <p class="visible-xs visible-sm table-row-title">Date</p>
+                                          <p><a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'UP', 'itemClass')"><i class=""> </i>Up</a>
+                                            <a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'DOWN', 'itemClass')"><i class=""></i>Down</a>
+                                            <a class="btnUp"  onclick="javascript:removeSectionItem('${chklitem.itemId}')"><i class=""></i>Remove</a></p>
+                                          </p>
 
-                                          <td>
-                                            <p>${chklitem.regulationClause}</p>
-                                          </td>
+                                        </td>
+                                      </tr>
+                                </c:forEach>
 
-                                          <td>
-                                            <p>${chklitem.checklistItem}</p>
-                                          </td>
 
-                                          <td>
-                                            <p>${chklitem.riskLevel}</p>
-                                          </td>
-
-                                          <td>
-                                            <p>${chklitem.status}</p>
-                                          </td>
-
-                                          <td>
-                                            <p>
-                                              <a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'UP', 'itemClass')"><i class=""> </i>UP</a>
-                                              <a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'DOWN', 'itemClass')"><i class=""></i>DOWN</a>
-                                            </p>
-                                          </td>
-                                        </tr>
-                                        </table>
-                                      </div>
-
-                                     </c:forEach>
-
-                          </div>
-                        </div>
+                          </tbody>
+                        </table>
 
                       </div>
                     </div>
                   </div>
                 </div>
               </c:forEach>
-            </div>
+              </div>
 
             <div class="application-tab-footer">
               <div class="row">
@@ -188,9 +193,7 @@
 
     function swapPosition(ind, status, clzName){
         var dom1 = document.querySelector("." + clzName + "[data-id='"+ ind +"']")
-
         var dom2 = status == "UP" ? dom1.previousElementSibling : dom1.nextElementSibling
-
         if(dom2){
             var a = dom1.cloneNode(true)
             var b = dom2.cloneNode(true)
@@ -235,5 +238,13 @@
 
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm","backLastPage");
+    }
+
+    function removeSectionItem(id){
+        SOP.Crud.cfxSubmit("mainForm","removeSectionItem", id);
+    }
+
+    function removeSection(id){
+        SOP.Crud.cfxSubmit("mainForm","removeSection", id);
     }
 </script>

@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /*
  *author: yichen
@@ -21,8 +22,11 @@ public class FilterParameter {
     private int pageSize = 10;
 
     //for query dto
+
     private Class<? extends Serializable> clz;
     private String searchAttr;
     private String resultAttr;
     private String sortField;
+    private String sortType;
+    private Map<String,Object> Filters;
 }

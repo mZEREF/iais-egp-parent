@@ -9,11 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +41,10 @@ public class InspecEmailDelegator {
     InspEmailService inspEmailService;
     @Autowired
     InspectionService inspectionService;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    InsRepService insRepService;
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -47,13 +54,17 @@ public class InspecEmailDelegator {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-        String appNo = "AN1911136061-01";
+        String taskId="48512333-7A16-EA11-BE7D-000C29F371DC";
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        String appNo = taskDto.getRefNo();
+        //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();
+        String licenseeName="lichen";
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
         String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
         ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
-        inspectionEmailTemplateDto.setApplicantName("li cen");
+        inspectionEmailTemplateDto.setApplicantName(licenseeName);
         inspectionEmailTemplateDto.setApplicationNumber(appNo);
         inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
         inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());

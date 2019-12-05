@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicDocumentRelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicFeeGroupItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
@@ -361,7 +362,11 @@ public class LicenceApproveBatchjob {
                 licAppCorrelationDto.setApplicationId(applicationDto.getId());
                 licAppCorrelationDtos.add(licAppCorrelationDto);
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
-
+                //create LicFeeGroupItemDto
+                List<LicFeeGroupItemDto> licFeeGroupItemDtos = new ArrayList<>();
+                LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
+                licFeeGroupItemDtos.add(licFeeGroupItemDto);
+                superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
                 //create the document and lic_document from the primary doc.
                 List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                 List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
