@@ -1,14 +1,19 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +24,7 @@ import java.util.List;
  * date 2019/11/20 16:11
  */
 @Service
+@Slf4j
 public class InsRepServiceImpl implements InsRepService {
 
     @Autowired
@@ -26,7 +32,15 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public InspectionReportDto getInsRepDto(String appNo) {
-        InspectionReportDto inspectionReportDto = insRepClient.getInspectionReportDtoByAppNo(appNo).getEntity();
+        InspectionReportDto inspectionReportDto = new InspectionReportDto();
+        AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appNo).getEntity();
+        inspectionReportDto.setServiceName(appInsRepDto.getServiceId());
+        inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
+        inspectionReportDto.setHciName(appInsRepDto.getHciName());
+        inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
+        inspectionReportDto.setPrincipalOfficer(appInsRepDto.getPrincipalOfficer());
+        inspectionReportDto.setSubsumedService(appInsRepDto.getSubsumedService());
+
         //String licenceId = "92B33E39-B7FA-428A-901A-3AC7F8886F8C";
         inspectionReportDto.setInspectionDate(new Date());
         inspectionReportDto.setInspectionTime(new Date());
@@ -41,15 +55,27 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setReportedBy("weilu");
         inspectionReportDto.setReportNoteBy("jinhua");
         inspectionReportDto.setInspectedBy(inspects());
-
         return inspectionReportDto;
     }
 
     @Override
-    public String saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
-        String isValid = insRepClient.saveData(appPremisesRecommendationDto).getEntity();
-        return isValid;
+    public Boolean saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
+        try {
+            insRepClient.saveData(appPremisesRecommendationDto);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);
+            return false;
+        }
+        return true;
+
     }
+
+    @Override
+    public ApplicationViewDto getApplicationViewDto(String appNo) {
+        ApplicationViewDto applicationViewDto = insRepClient.getAppViewByNo(appNo).getEntity();
+        return applicationViewDto;
+    }
+
 
     private List<ReportNcRegulationDto> ncRegulation() {
         List<ReportNcRegulationDto> list = new ArrayList<>();
