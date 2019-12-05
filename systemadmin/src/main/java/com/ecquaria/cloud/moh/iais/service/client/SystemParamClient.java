@@ -19,4 +19,5 @@ public interface SystemParamClient {
     @RequestMapping(path = "/actuator/bus-refresh",method = RequestMethod.POST,
             produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<String> refreshConfiguration();
+
 }
