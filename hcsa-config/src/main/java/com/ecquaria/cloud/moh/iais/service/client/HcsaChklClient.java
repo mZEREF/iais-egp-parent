@@ -16,7 +16,6 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -26,8 +25,8 @@ import java.util.List;
         fallback = HcsaChklFallback.class)
 public interface HcsaChklClient {
 
-    @DeleteMapping(path = "/iais-hcsa-checklist/config/{id}")
-    FeignResponseEntity<String> deleteRecord(String confId);
+    @PostMapping(path = "/iais-hcsa-checklist/config/{id}")
+    FeignResponseEntity<String> inActiveConfig(String confId);
 
     @PostMapping(path = "/iais-hcsa-checklist/config/results", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<ChecklistConfigQueryDto>> listChecklistConfig(SearchParam searchParam);
@@ -38,7 +37,7 @@ public interface HcsaChklClient {
     @PostMapping(path = "/iais-hcsa-checklist/item/items-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ChecklistItemDto>>  listChklItemByItemId(List<String> itemIds);
 
-    @GetMapping(path = "/iais-hcsa-checklist/item")
+    @GetMapping(path = "/iais-hcsa-checklist/item/{id}")
     FeignResponseEntity<ChecklistItemDto> getChklItemById(String id);
 
     @PostMapping(path = "/iais-hcsa-checklist/item", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -56,6 +55,9 @@ public interface HcsaChklClient {
     @GetMapping(path = "/iais-hcsa-service/subtype-name-results")
     FeignResponseEntity<List<String>> listSubTypeName();
 
-    @GetMapping(path = "/iais-hcsa-service/subtype-name-results")
+    @GetMapping(path = "/iais-hcsa-service/svc-name-results")
     FeignResponseEntity<List<String>> listServiceName();
+
+    @GetMapping(path = "/iais-hcsa-checklist/config/{id}")
+    FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(String configId);
 }

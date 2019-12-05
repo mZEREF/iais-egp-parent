@@ -94,4 +94,5 @@ public interface HcsaChklService {
     List<String> listServiceName();
 
 
+    ChecklistConfigDto getChecklistConfigById(String id);
 }

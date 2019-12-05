@@ -26,6 +26,14 @@
       <div class="row">
         <div class="col-xs-12">
           <div class="instruction-content center-content">
+
+              <c:if test = "${not empty errorMap}">
+                <div class="error">
+                  <c:forEach items="${errorMap}" var="map">
+                    ${map.key}  ${map.value} <br/>
+                  </c:forEach>
+                </div>
+              </c:if>
             <h2>Add Section Item</h2>
               <div class="gray-content-box">
                 <div class="form-horizontal">

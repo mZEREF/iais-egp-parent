@@ -28,42 +28,61 @@
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
-  <iais:error>
-    <c:if test = "${not empty errorMap}">
-      <div class="error">
-        <c:forEach items="${errorMap}" var="map">
-          ${map.key}  ${map.value} <br/>
-        </c:forEach>
-      </div>
-    </c:if>
-  </iais:error>
+
   <div class="main-content">
     <div class="container">
+
+        <c:if test = "${not empty errorMap}">
+          <div class="error">
+            <c:forEach items="${errorMap}" var="map">
+                ${map.value} <br/>
+            </c:forEach>
+          </div>
+        </c:if>
+
       <div class="form-horizontal">
         <div class="form-group">
-          <div class="col-xs-12">
-            <label>
+
+          <c:choose>
+            <c:when test="${operationType == 'doEdit'}">
+              <c:if test="${configSessionAttr.common eq true}">
+                <div class="panel-heading" id="headingOne" role="tab">
+                  <p>You are applying for <b>Common</b></p>
+                </div>
+              </c:if>
+              <c:if test="${configSessionAttr.common eq false}">
+                <c:if test="${configSessionAttr.svcSubType == null}">
+                  <p>You are applying for <b>${configSessionAttr.svcCode}</b></p>
+                </c:if>
+
+                <c:if test="${configSessionAttr.svcSubType != null}">
+                  <p>You are applying for <b>${configSessionAttr.svcCode} | ${configSessionAttr.svcSubType}</b></p>
+                </c:if>
+              </c:if>
+            </c:when>
+            <c:otherwise>
               Common  &nbsp; <input class="form-check-input"  id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
-            </label>
 
+              <div class="col-xs-12">
+                Service Name <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name"></iais:select>
+              </div>
+
+              <div class="col-xs-12">
+                Service Sub Type <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Select Service Sub Type"></iais:select>
+              </div>
+            </c:otherwise>
+          </c:choose>
+
+          <div class="col-xs-12">
+            Module <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Select Module" value="${configSessionAttr.module}"></iais:select>
           </div>
 
           <div class="col-xs-12">
-            Module <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Select Module"></iais:select>
+            Type <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Select Type" value="${configSessionAttr.type}"></iais:select>
           </div>
 
 
-          <div class="col-xs-12">
-            Type <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Select Type"></iais:select>
-          </div>
 
-          <div class="col-xs-12">
-            Service Name <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name"></iais:select>
-          </div>
-
-          <div class="col-xs-12">
-            Service Sub Type <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Select Service Sub Type"></iais:select>
-          </div>
 
         </div>
 
@@ -89,13 +108,8 @@
 
 
 <script type="text/javascript">
-    function doNext() {
-        var common = $("commmon").val();
-        console.log("sasdasda" + common);
-        if (common){
-            $("commmon").html("can not select service");
-        }
 
+    function doNext() {
         SOP.Crud.cfxSubmit("mainForm","nextPage");
     }
 
