@@ -27,11 +27,11 @@ public interface InspectionAssignTaskService {
     /**
       * @author: shicheng
       * @Date 2019/11/23
-      * @Param: applicationNo
+      * @Param: applicationNo, commPools, loginContext
       * @return: InspecTaskCreAndAssQueryDto
       * @Descripation: Gets a single Common Pool of information for allocation
       */
-    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo);
+    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo, List<TaskDto> commPools, LoginContext loginContext);
 
     /**
       * @author: shicheng
