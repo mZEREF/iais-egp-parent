@@ -151,6 +151,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         for(int i = 0; i < applicationStrs.length; i++){
             applicationStrs[i] = applicationNoList.get(i);
         }
+
         return applicationStrs;
     }
 
