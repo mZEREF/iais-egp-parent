@@ -12,6 +12,12 @@ import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,41 +28,51 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class LicenceServiceImpl implements LicenceService {
+    @Autowired
+    private ApplicationClient applicationClient;
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    private SystemClient systemClient;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
     @Override
     public List<ApplicationLicenceDto> getCanGenerateApplications(int day) {
         Map<String,Object> param = new HashMap<>();
         param.put("day",day);
-        return RestApiUtil.getListByReqParam(RestApiUrlConsts.APPLICATION_GROUP,param,ApplicationLicenceDto.class);
+
+        return   applicationClient.getGroup(day).getEntity();
     }
 
     @Override
     public List<HcsaServiceDto> getHcsaServiceById(List<String> serviceIds) {
-        return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_SERVICE_BY_IDS,serviceIds,HcsaServiceDto.class);
+
+        return  hcsaConfigClient.getHcsaService(serviceIds).getEntity();
     }
 
     @Override
     public String getHciCode(String serviceCode) {
-        return RestApiUtil.getByPathParam(RestApiUrlConsts.HCL_CODE_SERVICECODE,serviceCode,String.class);
+        return     systemClient.hclCodeByCode(serviceCode).getEntity();
     }
 
     @Override
     public String getLicenceNo(String hciCode, String serviceCode, int yearLength) {
-        Integer licenceSeq = RestApiUtil.getByPathParam(RestApiUrlConsts.HCI_CODE_LICENCE_NUMBER_HCICODE,hciCode,Integer.class);
+
+        Integer licenceSeq =  hcsaLicenceClient.licenceNumber(hciCode).getEntity();
         Map<String,Object> param = new HashMap();
         param.put("hciCode",hciCode);
         param.put("serviceCode",serviceCode);
         param.put("yearLength",yearLength);
         param.put("licenceSeq",licenceSeq);
-        return RestApiUtil.getByReqParam(RestApiUrlConsts.LICENCE_NUMBER,param,String.class);
+
+        return    systemClient.licence(hciCode,serviceCode,yearLength,licenceSeq).getEntity();
     }
 
     @Override
-    public String getGroupLicenceNo(String hscaCode, int licenceNum, int yearLength) {
-        Map<String,Object> param = new HashMap();
-        param.put("hscaCode",hscaCode);
-        param.put("licenceNum",licenceNum);
-        param.put("yearLength",yearLength);
-        return RestApiUtil.getByReqParam(RestApiUrlConsts.GROUP_LICENCE,param,String.class);
+    public String getGroupLicenceNo(String hscaCode, int yearLength) {
+        String entity = hcsaLicenceClient.groupLicenceNumber(hscaCode).getEntity();
+
+        return   systemClient.groupLicence(hscaCode,yearLength+"",entity).getEntity();
     }
 
     @Override
@@ -64,17 +80,15 @@ public class LicenceServiceImpl implements LicenceService {
         Map<String,Object> param = new HashMap<>();
         param.put("appPremId",appPremCorrecId);
         param.put("recomType",InspectionConstants.RECOM_TYPE_TCU);
-        return RestApiUtil.getByReqParam(RestApiUrlConsts.APPLICATION_BE,param,AppPremisesRecommendationDto.class);
+        return RestApiUtil.getByReqParam(RestApiUrlConsts.APPLICATION_BE_RESCOMDTO,param,AppPremisesRecommendationDto.class);
     }
-
     @Override
     public PremisesDto getLatestVersionPremisesByHciCode(String hciCode) {
         return hcsaLicenceClient.getLatestVersionPremisesByHciCode(hciCode).getEntity();
     }
-
     @Override
     public List<LicenceGroupDto> createSuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
 
-        return RestApiUtil.save(RestApiUrlConsts.LICENCES,licenceGroupDtos,List.class);
+        return    hcsaLicenceClient.createLicence(licenceGroupDtos).getEntity();
     }
 }

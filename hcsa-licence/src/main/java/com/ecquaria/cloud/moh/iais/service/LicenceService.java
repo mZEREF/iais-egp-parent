@@ -18,7 +18,7 @@ public interface LicenceService {
     public List<HcsaServiceDto> getHcsaServiceById(List<String> serviceIds);
     public String getHciCode(String serviceCode);
     public String getLicenceNo(String hciCode,String serviceCode,int yearLength);
-    public String getGroupLicenceNo(String hscaCode,int licenceNum,int yearLength);
+    public String getGroupLicenceNo(String hscaCode,int yearLength);
     public AppPremisesRecommendationDto getTcu(String appPremCorrecId);
     public PremisesDto getLatestVersionPremisesByHciCode(String hciCode);
 
