@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -69,21 +68,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo, List<TaskDto> commPools, LoginContext loginContext) {
+    public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo) {
         if(StringUtil.isEmpty(applicationNo)){
             applicationNo = SystemParameterConstants.PARAM_FALSE;
         }
-        String workGrpId;
-        String status;
-        List<OrgUserDto> orgUserDtos = new ArrayList<>();
-        for(TaskDto tDto:commPools){
-            if(applicationNo.equals(tDto.getRefNo())){
-                workGrpId = tDto.getWkGrpId();
-                status = tDto.getTaskStatus();
-                orgUserDtos =  commonPoolTaskClient.getUsersByWorkGroupName(workGrpId, status).getEntity();
-            }
-        }
-
         ApplicationDto applicationDto = getApplicationDtoByAppNo(applicationNo);
         AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(applicationDto.getId());
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
@@ -99,36 +87,16 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
         inspecTaskCreAndAssDto.setInspectionType(applicationGroupDto.getIsPreInspection());
         inspecTaskCreAndAssDto.setSubmitDt(applicationGroupDto.getSubmitDt());
-        //set inspector checkbox list
-        setInspectorByOrgUserDto(inspecTaskCreAndAssDto, orgUserDtos);
-        setInspectorLeadName(inspecTaskCreAndAssDto, orgUserDtos, loginContext);
-        return inspecTaskCreAndAssDto;
-    }
-
-    private void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, LoginContext loginContext) {
-        String userId = loginContext.getUserId();
-        for(OrgUserDto orgUserDto:orgUserDtos){
-            if(userId.equals(orgUserDto.getId())){
-                inspecTaskCreAndAssDto.setInspectionLead(orgUserDto.getUserName());
-            }
-        }
-    }
-
-    private void setInspectorByOrgUserDto(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos) {
-        if(orgUserDtos == null || orgUserDtos.size() <= 0){
-            inspecTaskCreAndAssDto.setInspector(null);
-            return;
-        }
+        //get inspector lead
+        inspecTaskCreAndAssDto.setInspectionLead("ao1staff01");
+        //get inspector checkbox list
+        SelectOption inspector = new SelectOption("ins001staff01","ins001staff01");
+        SelectOption inspector2 = new SelectOption("ins001staff02","ins001staff02");
         List<SelectOption> inspectorList = new ArrayList<>();
-        for(OrgUserDto oDto:orgUserDtos){
-            for(String role:oDto.getUserRoles()){
-                if("inspector".equals(role)){
-                    SelectOption inspector = new SelectOption(oDto.getId(), oDto.getUserName());
-                    inspectorList.add(inspector);
-                }
-            }
-        }
+        inspectorList.add(inspector);
+        inspectorList.add(inspector2);
         inspecTaskCreAndAssDto.setInspector(inspectorList);
+        return inspecTaskCreAndAssDto;
     }
 
     @Override

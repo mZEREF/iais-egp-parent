@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 
@@ -10,7 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 public interface InsRepService {
 
     InspectionReportDto getInsRepDto (String appNo);
-    String saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
-
+    Boolean saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
+    ApplicationViewDto getApplicationViewDto (String appNo);
 
 }

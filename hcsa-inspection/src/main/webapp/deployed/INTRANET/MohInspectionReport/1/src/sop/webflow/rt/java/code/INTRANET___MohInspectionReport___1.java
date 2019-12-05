@@ -14,15 +14,20 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___Report___1 extends BaseProcessClass {
+public class INTRANET___MohInspectionReport___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="insReport";
 
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
-
+	public void inspectionReportInit_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "inspectionReportInit", this);
+	}
 	public void prepare_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "prepareData", this);
+		EngineHelper.delegate(DELEGATOR, "inspectionReportPre", this);
+	}
+	public void inspectorReportSave_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "inspectorReportSave", this);
 	}
 
 }
