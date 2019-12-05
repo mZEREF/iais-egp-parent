@@ -28,23 +28,12 @@ public class SystemClientFallback {
     }
     FeignResponseEntity<String> licence( String hciCode,  String serviceCode,
                                        Integer yearLength,  Integer licenceSeq) {
-    FeignResponseEntity<Boolean> isFileExistence( Map<String,String> map){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<String> hclCodeByCode(String code){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<String> licence( String hciCode, @RequestParam("serviceCode") String serviceCode,
-                                       Integer yearLength,  Integer licenceSeq) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
+
+
+
 }
