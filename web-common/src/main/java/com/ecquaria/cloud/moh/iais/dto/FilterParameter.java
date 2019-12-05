@@ -20,7 +20,6 @@ public class FilterParameter {
 
     private int pageNo = 1;
     private int pageSize = 5;
-
     //for query dto
 
     private Class<? extends Serializable> clz;
