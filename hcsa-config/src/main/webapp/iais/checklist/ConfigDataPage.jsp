@@ -41,7 +41,7 @@
           <div class="col-xs-12">
             <td>
               <label>
-                Common  &nbsp; <input class="form-check-input " checked="checked" id="commmon" type="radio" name="common" aria-invalid="false" value="General Regulation"> General Regulation
+                Common  &nbsp; <input class="form-check-input " id="commmon" type="radio" name="module" aria-invalid="false" value="General Regulation"> General Regulation
               </label>
             </td>
           </div>
@@ -117,8 +117,8 @@
               <td>${config.eftStartDate}</td>
               <td>${config.eftEndDate}</td>
               <td>
-                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEditConfig('${config.id}');"/>
-                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${config.id}');"/>
+                <iais:link icon="form_edit" title="Edit" onclick="javascript:loadEditData('${config.id}');"/>
+                <iais:link icon="form_delete" title="Disable" onclick="javascript:ivActiveRecord('${config.id}');"/>
               </td>
             </tr>
             </c:forEach>
@@ -157,20 +157,8 @@
         </div>
 
       </div>
-
-
-
-
-
-
-
     </div>
-
-
-
-
   </div>
-
 
 </form>
 
@@ -181,8 +169,14 @@
     SOP.Crud.cfxSubmit("mainForm", "doSearch");
   }
 
-  function prepareEditConfig(id){
-    SOP.Crud.cfxSubmit("mainForm", "doSearch", id);
+  function ivActiveRecord(id){
+      console.log("=========id==>>>>>>>", id);
+    SOP.Crud.cfxSubmit("mainForm", "deleteRecord", id);
+  }
+
+  function loadEditData(id){
+      console.log("=========prepareEditConfig==>>>>>>>", id);
+    SOP.Crud.cfxSubmit("mainForm", "loadEditData", id);
   }
 
   function prepareAddConfig(){

@@ -320,6 +320,10 @@ public class HcsaChklItemDelegator {
 
         ChecklistConfigDto currentConfig = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
         String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+        if (checkBoxItemId == null || checkBoxItemId.length == 0){
+            return;
+        }
+
         List<ChecklistSectionDto> sectionDtos = currentConfig.getSectionDtos();
         String currentValidateId = (String) ParamUtil.getSessionAttr(request, "currentValidateId");
         for (ChecklistSectionDto currentSection : sectionDtos){
@@ -332,9 +336,10 @@ public class HcsaChklItemDelegator {
                 for (ChecklistItemDto chkl : checklistItemDtos){
                     for (String s : checkBoxItemId){
                         if (chkl.getItemId().equals(s)){
-                            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,"N");
                             Map<String,String> errorMap = new HashMap<>();
                             errorMap.put("A", "The same section cannot configure the same item");
+
+                            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,"N");
                             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP, errorMap);
                             return;
                         }

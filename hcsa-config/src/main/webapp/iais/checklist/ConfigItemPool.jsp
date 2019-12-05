@@ -83,17 +83,6 @@
                   <table class="table">
                     <thead>
                     <tr>
-
-                      <iais:error>
-                        <c:if test = "${not empty errorMap}">
-                          <div class="error">
-                            <c:forEach items="${errorMap}" var="map">
-                              ${map.key}  ${map.value} <br/>
-                            </c:forEach>
-                          </div>
-                        </c:if>
-                      </iais:error>
-
                       <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
                       <td></td>
                       <iais:sortableHeader needSort="true"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>
@@ -104,6 +93,15 @@
                     </tr>
                     </thead>
                     <tbody>
+
+                    <c:if test = "${not empty errorMap}">
+                      <div class="error">
+                        <c:forEach items="${errorMap}" var="map">
+                          ${map.key}  ${map.value} <br/>
+                        </c:forEach>
+                      </div>
+                    </c:if>
+
                     <c:choose>
                       <c:when test="${empty checklistItemResult.rows}">
                         <tr>
