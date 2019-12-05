@@ -26,13 +26,29 @@
                 app.status,
                 app.service_id,
                 app.created_dt
-            FROM APPLICATIONS AS app
+            FROM APPLICATION AS app
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND app.app_type = :appType</#if>
+            <#if appNo??> AND app.application_no = :appNo</#if>
             <#if appStatus??> AND app.status = :appStatus</#if>
         ]]>
     </sql>
 
-</sqls>
 
+    <sql key = "licenceQuery" remarks = "Query Inter-Licence Data by condition">
+        <![CDATA[
+            SELECT
+                lic.id,
+                lic.licence_no,
+                lic.svc_name,
+                lic.start_date,
+                lic.expiry_date
+            FROM LICENCE AS lic
+            WHERE 1=1
+            <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
+            <#if licenseAdvancedSearch??> AND lic.licence_no = :licenseAdvancedSearch</#if>
+        ]]>
+    </sql>
+
+</sqls>
