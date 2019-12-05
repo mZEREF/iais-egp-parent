@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * @author Wenkang
- * @date 2019/11/27 17:12
+ * SystemAdminClientFallback
+ *
+ * @author suocheng
+ * @date 12/5/2019
  */
 public class SystemAdminClientFallback {
     FeignResponseEntity<String> draftNumber(@PathVariable(name = "type")  String applicationType){
@@ -29,5 +31,4 @@ public class SystemAdminClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-
 }

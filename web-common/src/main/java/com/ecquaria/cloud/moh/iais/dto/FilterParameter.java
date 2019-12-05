@@ -19,7 +19,8 @@ import java.util.Map;
 public class FilterParameter {
 
     private int pageNo = 1;
-    private int pageSize = 5;
+    private int pageSize = 10;
+
     //for query dto
 
     private Class<? extends Serializable> clz;

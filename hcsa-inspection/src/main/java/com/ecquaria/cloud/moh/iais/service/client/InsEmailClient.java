@@ -30,7 +30,7 @@ public interface InsEmailClient {
     FeignResponseEntity<String> insertEmailTemplate(@RequestBody InspectionEmailTemplateDto inspectionEmailTemplateDto);
 
     @DeleteMapping(path = "/iais-inspection/recall-template",  consumes =  MediaType.APPLICATION_JSON_VALUE)
-     void recallEmailTemplate(@RequestBody String id);
+    void recallEmailTemplate(@RequestBody String id);
 
     @GetMapping(path = "/iais-inspection/recall-template/{appPremCorrId}",  consumes =  MediaType.APPLICATION_JSON_VALUE)
     InspectionEmailTemplateDto getInsertEmail(@PathVariable(value = "appPremCorrId") String appPremCorrId);
@@ -41,4 +41,4 @@ public interface InsEmailClient {
     @GetMapping(value = "/applicationDto/{appPremCorrId}",  consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppPremCorrId(@PathVariable("appPremCorrId") String appPremCorrId);
 
-    }
+}

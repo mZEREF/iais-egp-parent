@@ -6,10 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import java.util.List;
-
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,12 +18,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ApplicationServiceImpl implements ApplicationService {
-    @Autowired
-    private ApplicationClient applicationClient;
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
-
-        return    applicationClient. getGroupAppsByNo(appGroupId).getEntity();
+        return RestApiUtil.getListByPathParam(RestApiUrlConsts.APPLICATION_APPLICATIONS_APPGROUPID,appGroupId,ApplicationDto.class);
     }
 
     @Override

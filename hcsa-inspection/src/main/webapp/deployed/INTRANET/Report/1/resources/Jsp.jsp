@@ -1,1 +1,0 @@
-<%@include file="/iais/report/inspectionReport.jsp"%>

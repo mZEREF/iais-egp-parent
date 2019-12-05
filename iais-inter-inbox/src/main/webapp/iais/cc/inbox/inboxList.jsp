@@ -3,17 +3,18 @@
         <form class="form-inline" method="post" id="inboxForm" action=<%=process.runtime.continueURL()%>>
             <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
             <input type="hidden" name="crud_action_type" value="">
-            <input type="hidden" name="crud_action_value" value="">
             <div class="form-group">
                 <label class="control-label" for="inboxType">Type</label>
                 <div class="col-xs-12 col-md-8 col-lg-9">
-                    <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect" firstOption="Select an type"></iais:select>
+                    <iais:select name="inboxType" id="inboxType"
+                                 options="inboxTypeSelect" firstOption="Select an type"></iais:select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label" for="inboxService">Service</label>
                 <div class="col-xs-12 col-md-8 col-lg-9">
-                    <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect" firstOption="Select an service"></iais:select>
+                    <iais:select name="inboxService" id="inboxService"
+                                 options="inboxServiceSelect" firstOption="Select an service"></iais:select>
                 </div>
             </div>
             <div class="form-group large right-side">
@@ -71,7 +72,7 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Date</p>
-                                        <p><a href="#"><fmt:formatDate value="${inboxQuery.createdAt}" pattern="MM/dd/yyyy HH:mm:ss" /></a></p>
+                                        <p><a href="#">${inboxQuery.createdAt}</a></p>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -87,6 +88,11 @@
                         <div class="col-xs-6 col-md-8 text-right">
                             <div class="nav">
                                 <ul class="pagination">
+                                    <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><em class="fa fa-chevron-left"></em></span></a></li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#" aria-label="Next"><span aria-hidden="true"><em class="fa fa-chevron-right"></em></span></a></li>
                                 </ul>
                             </div>
                         </div>

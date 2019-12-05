@@ -503,8 +503,8 @@
                                                         </td>
                                                         <td>
                                                             <select name="nextStage" >
-                                                                <c:forEach items="${applicationViewDto.routingStage}" var="routingStageMap">
-                                                                    <option  value="${routingStageMap.key}">${routingStageMap.value}</option>
+                                                                <c:forEach items="${applicationViewDto.hcsaSvcRoutingStageDtoList}" var="hcsaSvcRoutingStageDtoList">
+                                                                    <option  value="${hcsaSvcRoutingStageDtoList.stageCode}">${hcsaSvcRoutingStageDtoList.stageName}</option>
                                                                 </c:forEach>
                                                             </select>
                                                         </td>
@@ -698,10 +698,17 @@
     }
 
     function doSend(){
-        var r=confirm("Are you sure to send it directly and not to AO1 for review?");
-        if (r==true){
+        var decision=document.getElementById("decision-email");
+        if(decision.value=="Sends email/letter to Applicant"){
+            var r=confirm("Are you sure to send it directly and not to AO1 for review?");
+            if (r==true){
+                SOP.Crud.cfxSubmit("mainForm", "send");
+            }
+        }
+        else {
             SOP.Crud.cfxSubmit("mainForm", "send");
         }
+
     }
 
 

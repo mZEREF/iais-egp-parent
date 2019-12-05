@@ -19,4 +19,4 @@ public interface InspEmailService {
     InspectionEmailTemplateDto loadingEmailTemplate(String id);
     ApplicationDto getApplicationDtoByAppPremCorrId(String appPremCorrId);
 
-    }
+}

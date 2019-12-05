@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
@@ -79,9 +80,12 @@ public class LicenceServiceImpl implements LicenceService {
         Map<String,Object> param = new HashMap<>();
         param.put("appPremId",appPremCorrecId);
         param.put("recomType",InspectionConstants.RECOM_TYPE_TCU);
-        return RestApiUtil.getByReqParam(RestApiUrlConsts.APPLICATION_BE,param,AppPremisesRecommendationDto.class);
+        return RestApiUtil.getByReqParam(RestApiUrlConsts.APPLICATION_BE_RESCOMDTO,param,AppPremisesRecommendationDto.class);
     }
-
+    @Override
+    public PremisesDto getLatestVersionPremisesByHciCode(String hciCode) {
+        return hcsaLicenceClient.getLatestVersionPremisesByHciCode(hciCode).getEntity();
+    }
     @Override
     public List<LicenceGroupDto> createSuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
 

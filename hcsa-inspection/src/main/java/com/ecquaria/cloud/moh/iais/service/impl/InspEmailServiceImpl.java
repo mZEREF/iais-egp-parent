@@ -33,7 +33,7 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Override
     public void recallEmailTemplate(String id) {
-         insEmailClient.recallEmailTemplate(id);
+        insEmailClient.recallEmailTemplate(id);
     }
 
     @Override

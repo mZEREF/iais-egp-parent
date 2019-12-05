@@ -190,8 +190,7 @@
     });
 
     $('#mobileNo').blur(function () {
-        var rel=/^[8|9][0-9]*$/;
-            if(!rel.test($('#mobileNo').val())){
+            if(!$('#mobileNo').val().startsWith("8")&&!$('#mobileNo').val().startsWith("9")){
                 $('#mobileNo+span').removeAttr('style');
                 $('#mobileNo').attr('class','error');
             }else {
@@ -211,8 +210,7 @@
         }
     });
     $('#telephone').blur(function () {
-        var rel=/^[6][0-9]*$/;
-        if(!rel.test($('#telephone').val())){
+        if(!$('#telephone').val().startsWith("6")){
             $('#telephone+span').removeAttr('style');
             $('#telephone').attr('class','error');
         }else {

@@ -4,9 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,17 +16,13 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ApplicationGroupServiceImpl implements ApplicationGroupService {
-    @Autowired
-    private ApplicationClient applicationClient;
     @Override
     public ApplicationGroupDto getApplicationGroupDtoById(String appGroupId) {
-
-        return   applicationClient.getAppById(appGroupId).getEntity();
+        return RestApiUtil.getByPathParam(RestApiUrlConsts.APPLICATION_GROUP_GROUPID,appGroupId,ApplicationGroupDto.class);
     }
 
     @Override
     public ApplicationGroupDto updateApplicationGroup(ApplicationGroupDto applicationGroupDto) {
-
-        return   applicationClient.updateApplication(applicationGroupDto).getEntity();
+        return RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_GROUP_BE,applicationGroupDto,ApplicationGroupDto.class);
     }
 }

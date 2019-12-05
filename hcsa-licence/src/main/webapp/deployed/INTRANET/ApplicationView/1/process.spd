@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="13" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="11" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="doStart" x="310" y="20">
@@ -93,6 +93,16 @@
     <JavaCode defClass="" executor="" methodName="internalEnquiry_OnStepProcess_0" name="internalEnquiry_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step1" x="740" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="790" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewPage" stageIndicator="" x="310" y="220">
@@ -101,7 +111,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckSuccessPage" stageIndicator="" x="530" y="670">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckSuccessPage" stageIndicator="" x="660" y="670">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -114,6 +124,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ViewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareData" style="oblique">
    <position>{(320,140)(330,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(330,690)(17,582)(320,140)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ASO" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(330,460)(180,560)}</position>
@@ -173,24 +186,12 @@
    <position>{(520,560)(330,690)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/AckSuccessPage" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(330,690)(550,690)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(330,460)(117,304)(320,140)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DMS" style="oblique">
-   <position>{(580,560)(330,690)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/RouteBack" style="oblique">
-   <position>{(620,560)(330,690)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InternalEnquiry" style="oblique">
-   <position>{(690,560)(330,690)}</position>
+   <position>{(330,690)(680,690)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Approve" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="310" y="440">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="310" y="440">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/ASO" value="&quot;ASO&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PSO" value="&quot;PSO&quot;"/>
@@ -202,7 +203,6 @@
    <SwitchCase component="/Steps/AutomaticStep/DMS" value=""/>
    <SwitchCase component="/Steps/AutomaticStep/RouteBack" value=""/>
    <SwitchCase component="/Steps/AutomaticStep/InternalEnquiry" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareData" value=""/>
   </Switch>
  </Switches>
  <Branches/>

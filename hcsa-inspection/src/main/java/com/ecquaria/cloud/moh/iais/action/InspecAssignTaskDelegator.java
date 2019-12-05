@@ -129,10 +129,12 @@ public class InspecAssignTaskDelegator {
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         String applicationNo = ParamUtil.getMaskedString(bpc.request,"applicationNo");
         if(!StringUtil.isEmpty(applicationNo) && !(AppConsts.NO.equals(applicationNo))){
+            List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
             Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             String taskId = map.get(applicationNo);
-            inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo);
+            inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo, commPools, loginContext);
             inspecTaskCreAndAssDto.setTaskId(taskId);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
         }
@@ -271,7 +273,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorSort(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSort start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        CrudHelper.doSorting(searchParam,  bpc.request);
+        CrudHelper.doSorting(searchParam, bpc.request);
     }
 
     /**
