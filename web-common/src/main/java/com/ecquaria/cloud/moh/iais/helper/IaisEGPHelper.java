@@ -200,5 +200,26 @@ public final class IaisEGPHelper extends EGPHelper {
         return formatter.parse(val, position);
     }
 
+    public static String genTokenForCallback(String submissionId, String serviceName) {
+        String secKey = RedisCacheHelper.getInstance().get("iaisEdToken",
+                "Callback_SecKEy__SubId_" + submissionId);
+        if (StringUtil.isEmpty(secKey)) {
+            secKey = String.valueOf(System.currentTimeMillis());
+            RedisCacheHelper.getInstance().set("iaisEdToken",
+                    "Callback_SecKEy__SubId_" + submissionId, secKey);
+        }
+        String token = StringUtil.digestStrSha256(serviceName + secKey);
+
+        return token;
+    }
+
+    public static boolean verifyCallBackToken(String submissionId, String serviceName, String token) {
+        String secKey = RedisCacheHelper.getInstance().get("iaisEdToken",
+                "Callback_SecKEy__SubId_" + submissionId);
+        String corrToken = StringUtil.digestStrSha256(serviceName + secKey);
+
+        return token.equals(corrToken);
+    }
+
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
 }
