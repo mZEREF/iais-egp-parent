@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -86,4 +87,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: get Address By Result
       */
     SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/5
+      * @Param: applicationNo
+      * @return: ApplicationViewDto
+      * @Descripation: search ApplicationViewDto By Application No
+      */
+    ApplicationViewDto searchByAppNo(String applicationNo);
 }
