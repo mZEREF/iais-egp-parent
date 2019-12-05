@@ -662,6 +662,7 @@ public class LicenceApproveBatchjob {
         licenceDto.setSvcName(svcName);
         //todo:The latest choose from Giro pay Date, Approved Date,Aso set Date,
         Date startDate = applicationGroupDto.getModifiedAt();
+        log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
         if(startDate == null){
             startDate = new Date();
         }
