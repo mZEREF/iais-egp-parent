@@ -36,7 +36,7 @@
         </td>
         <td>
             <div class="col-sm-9">
-                <select name="decision">
+                <select id="decision-email" name="decision">
                     <option value="Sends email/letter to Applicant">Sends email/letter to Applicant</option>
                     <option value="Route email/letter to AO1 for review">Route email/letter to AO1 for review</option>
                 </select>
