@@ -282,6 +282,9 @@ public class ClinicalLaboratoryDelegator {
         if(StringUtil.isEmpty(checkListInfo)){
             return;
         }
+
+
+
         // one premises flow
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcDto =getAppSvcRelatedInfo(bpc.request,currentSvcId);

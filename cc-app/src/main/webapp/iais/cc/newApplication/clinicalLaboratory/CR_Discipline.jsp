@@ -26,7 +26,7 @@
                             <div class="control-item-container parent-form-check" data-parent="${levelOneList.code}" >
                               <input type="checkbox" id="control--${levelOne.index}--${levelOne.index}"
                                      name="control--runtime--1" class="control-input"
-                                     value="<c:out value="${levelOneList.id};${levelOneList.type};${levelOneList.name }" />">
+                                     value="<c:out value="${levelOneList.id};${levelOneList.type};${levelOneList.name };${levelOneList.parentId}" />">
                               <label  for="control--${levelOne.index}--${levelOne.index}" data-code="<c:out value="${levelOneList.code}" />" class="control-label control-set-font control-font-normal">
                                 <span class="check-square"></span>${levelOneList.name}
                               </label>
@@ -41,7 +41,7 @@
                                 <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="${levelTwoList.code}" data-child="${levelOneList.code}" >
                                   <input type="checkbox" id="control--${levelTwo.begin}--${levelTwo.index}"
                                          name="control--runtime--1" class="control-input"
-                                         value="<c:out value="${levelTwoList.id};${levelTwoList.type};${levelTwoList.name }" />">
+                                         value="<c:out value="${levelTwoList.id};${levelTwoList.type};${levelTwoList.name };${levelTwoList.parentId}" />">
                                   <label  for="control--${levelTwo.index}--${levelTwo.index}" class="control-label control-set-font control-font-normal">
                                     <span class="check-square"></span>${levelTwoList.name}
                                   </label>
@@ -56,7 +56,7 @@
                                     <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="${levelThreeList.code}" data-child="${levelTwoList.code}" >
                                       <input type="checkbox" id="control--${levelThree.index}--${levelThree.index}"
                                              name="control--runtime--1" class="control-input"
-                                             value="<c:out value="${levelThreeList.id};${levelThreeList.type};${levelThreeList.name }" />">
+                                             value="<c:out value="${levelThreeList.id};${levelThreeList.type};${levelThreeList.name };${levelThreeList.parentId}" />">
                                       <label  for="control--${levelThree.index}--${levelThree.index}" class="control-label control-set-font control-font-normal">
                                         <span class="check-square"></span>${levelThreeList.name}
                                       </label>
