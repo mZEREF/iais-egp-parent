@@ -8,140 +8,147 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
-
+<webui:setLayout name="iais-intranet"/>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+<style>
+    .form-check-gp{
+        width: 50%;
+        float:left;
+    }
 
+</style>
 
-<webui:setAttribute name="header-ext">
-    <%
-        /* You can add additional content (SCRIPT, STYLE elements)
-         * which need to be placed inside HEAD element here.
-         */
-    %>
-</webui:setAttribute>
-
-<webui:setAttribute name="title">
-    <%
-        /* You can set your page title here. */
-    %>
-
-    <%=process.runtime.getCurrentComponentName()%>
-
-</webui:setAttribute>
-<!-- START: CSS -->
-
-<!-- END: CSS -->
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-
-    <iais:body>
-    <iais:section title="System Parameter List" id="spList">
-        <iais:row>
-            <iais:field value="Domain Type" required="true"></iais:field>
-            <iais:value width="7">
-                <iais:select name="domainType" id="domainType" options="domainTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
-            </iais:value>
-
-            <iais:field value="Module" required="false"></iais:field>
-            <iais:value width="7">
-                <iais:select name="module" id="module" options="moduleTypeSelect" firstOption="Please select"></iais:select>
-            </iais:value>
-
-            <iais:field value="Desciption" required="false"></iais:field>
-            <iais:value width="7">
-                <input type="text" name="desciption" value="" />
-            </iais:value>
-
-            <iais:field value="Status" required="false"></iais:field>
-            <iais:value width="7">
-                <iais:select name="status" id="status" options="statusTypeSelect" firstOption="Please select"></iais:select>
-            </iais:value>
-        </iais:row>
-
-        <iais:action>
-            <button type="button" class="search btn" onclick="javascript:doQuery();">Search</button>
-        </iais:action>
-    </iais:section>
-    </br>
-
-    <iais:error>
-        <c:if test = "${not empty errorMap}">
-            <div class="error">
-                <c:forEach items="${errorMap}" var="map">
-                    ${map.key}  ${map.value} <br/>
-                </c:forEach>
-            </div>
-        </c:if>
-    </iais:error>
-
-    </br>
-    <iais:pagination  param="systemParamSearch" result="systemParamSearchResult"/>
-    <iais:searchSection title="" onclick="">
-    <div class="table-responsive" id="no-more-tables">
-        <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
-            <colgroup>
-                <col style="width: 10%;"/>
-                <col style="width: 20%;"/>
-                <col style="width: 20%;"/>
-                <col style="width: 20%;"/>
-                <col style="width: 20%;"/>
-                <col style="width: 10%;"/>
-            </colgroup>
-            <thead>
-            <tr>
-                <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"  field="domain_type" value="Domain Type"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="valueType" value="Value Of Type"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="value" value="Value"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="status" value="Status"></iais:sortableHeader>
-            </tr>
-            </thead>
-
-            <tbody style="text-align: center">
-            <c:choose>
-                <c:when test="${empty systemParamSearchResult.rows}">
-                    <tr>
-                        <td colspan="6">
-                            No Record!!
+    <div class="main-content">
+        <div class="container">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <td>
+                            <label class="col-xs-12 col-md-3 control-label">Domain Type</label>
+                            <div class="col-xs-12 col-md-5">
+                                <iais:select name="domainType" id="domainType" options="domainTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
+                            </div>
                         </td>
-                    </tr>
-                </c:when>
-                <c:otherwise>
-                    <%-- message entity--%>
-                    <c:forEach var = "resultRow" items = "${systemParamSearchResult.rows}" varStatus="status">
+                    </div>
+
+
+
+                    <div class="col-xs-12">
+                        <td>
+                            <label class="col-xs-12 col-md-3 control-label">Module</label>
+                            <div class="col-xs-12 col-md-5">
+                                <iais:select name="module" id="module" options="moduleTypeSelect" firstOption="Please select"></iais:select>
+                            </div>
+                        </td>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <td>
+                            <label class="col-xs-12 col-md-3 control-label">Description</label>
+                            <div class="col-xs-12 col-md-5">
+                                <input id="desciption" type="text">
+                            </div>
+                        </td>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <td>
+                            <label class="col-xs-12 col-md-3 control-label">Status</label>
+                            <div class="col-xs-12 col-md-5">
+                                <iais:select name="status" id="status" options="statusTypeSelect" firstOption="Please select"></iais:select>
+                            </div>
+                        </td>
+                    </div>
+
+                </div>
+
+                    <c:if test = "${not empty errorMap}">
+                        <div class="error">
+                            <c:forEach items="${errorMap}" var="map">
+                                ${map.key}  ${map.value} <br/>
+                            </c:forEach>
+                        </div>
+                    </c:if>
+
+                </br>
+                <iais:pagination  param="systemParamSearch" result="systemParamSearchResult"/>
+                <div class="table-responsive" id="no-more-tables">
+                    <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
+                        <colgroup>
+                            <col style="width: 10%;"/>
+                            <col style="width: 20%;"/>
+                            <col style="width: 20%;"/>
+                            <col style="width: 20%;"/>
+                            <col style="width: 20%;"/>
+                            <col style="width: 10%;"/>
+                        </colgroup>
+                        <thead>
                         <tr>
-                            <td class="row_no">${(status.index + 1) + (systemParamSearchParam.pageNo - 1) * systemParamSearchParam.pageSize}</td>
-                            <td>${resultRow.domainType}</td>
-                            <td>${resultRow.module}</td>
-                            <td>${resultRow.description}</td>
-                            <td>${resultRow.valueType}</td>
-                            <td>${resultRow.value}</td>
-                            <td>${resultRow.status}</td>
-                            <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${resultRow.id}');"/>
-                                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${resultRow.id}');"/>
-                            </td>
+                            <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"  field="domain_type" value="Domain Type"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="valueType" value="Value Of Type"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="value" value="Value"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="status" value="Status"></iais:sortableHeader>
                         </tr>
-                    </c:forEach>
-                </c:otherwise>
-            </c:choose>
-            </tbody>
-        </table>
+                        </thead>
 
-        </iais:searchSection>
+                        <tbody style="text-align: center">
+                        <c:choose>
+                            <c:when test="${empty systemParamSearchResult.rows}">
+                                <tr>
+                                    <td colspan="6">
+                                        No Record!!
+                                    </td>
+                                </tr>
+                            </c:when>
+                            <c:otherwise>
+                                <%-- message entity--%>
+                                <c:forEach var = "resultRow" items = "${systemParamSearchResult.rows}" varStatus="status">
+                                    <tr>
+                                        <td class="row_no">${(status.index + 1) + (systemParamSearchParam.pageNo - 1) * systemParamSearchParam.pageSize}</td>
+                                        <td>${resultRow.domainType}</td>
+                                        <td>${resultRow.module}</td>
+                                        <td>${resultRow.description}</td>
+                                        <td>${resultRow.valueType}</td>
+                                        <td>${resultRow.value}</td>
+                                        <td>${resultRow.status}</td>
+                                        <td>
+                                            <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${resultRow.id}');"/>
+                                            <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${resultRow.id}');"/>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                        </tbody>
+                    </table>
 
-        </iais:body>
-</form>
+            </div>
+            <div class="application-tab-footer">
+                <td>
+                    <div class="text-right text-center-mobile">
+                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doQuery();">Search</a>
+
+                    </div>
+
+                </td>
+            </div>
+        </div>
+    </div>
+</>
+
 
 <script type="text/javascript">
     function doQuery(){
@@ -183,4 +190,3 @@
     }
 
 </script>
-
