@@ -234,7 +234,11 @@ public class LicenceApproveBatchjob {
                     licAppCorrelationDto.setApplicationId(applicationListDto.getApplicationDto().getId());
                     licAppCorrelationDtos.add(licAppCorrelationDto);
                     superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
-
+                    //create LicFeeGroupItemDto
+                    List<LicFeeGroupItemDto> licFeeGroupItemDtos = new ArrayList<>();
+                    LicFeeGroupItemDto licFeeGroupItemDto = new LicFeeGroupItemDto();
+                    licFeeGroupItemDtos.add(licFeeGroupItemDto);
+                    superLicDto.setLicFeeGroupItemDtos(licFeeGroupItemDtos);
                     //create the document and lic_document from the primary doc.
                     List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = applicationListDto.getAppGrpPrimaryDocDtos();
                     List<AppSvcDocDto> appSvcDocDtos = applicationListDto.getAppSvcDocDtos();
