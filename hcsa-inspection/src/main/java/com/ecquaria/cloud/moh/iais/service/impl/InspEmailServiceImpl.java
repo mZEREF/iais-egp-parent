@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -48,6 +49,11 @@ public class InspEmailServiceImpl implements InspEmailService {
     @Override
     public InspectionEmailTemplateDto loadingEmailTemplate(String id) {
         return sysAdminMessageTemplateClient.loadingEmailTemplate(id).getEntity();
+    }
+
+    @Override
+    public ApplicationDto getApplicationDtoByAppPremCorrId(String appPremCorrId) {
+        return insEmailClient.getApplicationDtoByAppPremCorrId(appPremCorrId).getEntity();
     }
 
 

@@ -2,7 +2,10 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
@@ -45,11 +48,13 @@ public class ValidateEmailDelegator {
         HttpServletRequest request = bpc.request;
         String decision=ParamUtil.getRequestString(request,"decision");
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
-
+        ApplicationDto applicationDto=inspEmailService.getApplicationDtoByAppPremCorrId(inspectionEmailTemplateDto.getAppPremCorrId());
         if (decision.equals("Acknowledge email/Letter Content")){
-            ;
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationDto, ApplicationDto.class);
         }else {
-
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationDto, ApplicationDto.class);
         }
         inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
     }

@@ -11,9 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +40,7 @@ public class InspecEmailDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         String appNo = "AN1911136061-01";
@@ -97,7 +95,7 @@ public class InspecEmailDelegator {
     }
 
     public void previewEmail(BaseProcessClass bpc){
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======>>>>>previewEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!"preview".equals(currentAction)){
@@ -111,7 +109,7 @@ public class InspecEmailDelegator {
 
     public void sendEmail(BaseProcessClass bpc){
 
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======>>>>>sendEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!"send".equals(currentAction)){
@@ -148,7 +146,7 @@ public class InspecEmailDelegator {
 
     }
     public void doRecallEmail(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String id= (String) ParamUtil.getSessionAttr(request,"templateId");
         inspEmailService.recallEmailTemplate(id);
@@ -156,17 +154,60 @@ public class InspecEmailDelegator {
 
     public void preCheckList(BaseProcessClass bpc) {
 
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======>>>>>preCheckList>>>>>>>>>>>>>>>>emailRequest");
     }
     public void checkListNext(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
     }
-    public void preEmailView(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+    public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
+        log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+        String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
+        String appNo = "AN1911136061-01";
+        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
+        String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
+        ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
+        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
+        inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
+        inspectionEmailTemplateDto.setApplicantName("li cen");
+        inspectionEmailTemplateDto.setApplicationNumber(appNo);
+        inspectionEmailTemplateDto.setHciCode("HCI123");
+        inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
+        inspectionEmailTemplateDto.setServiceName("cosmetic surgery");
+        inspectionEmailTemplateDto.setSn("No");
+        inspectionEmailTemplateDto.setChecklistItem("checklistItem");
+        inspectionEmailTemplateDto.setRegulationClause("regulationClause");
+        inspectionEmailTemplateDto.setRemarks("no remarks");
+        inspectionEmailTemplateDto.setBestPractices("GOOD");
+
+        Map<String,Object> map=new HashMap<>();
+        map.put("APPLICANT_NAME",inspectionEmailTemplateDto.getApplicantName());
+        map.put("APPLICATION_NUMBER",inspectionEmailTemplateDto.getApplicationNumber());
+        map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
+        map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
+        map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
+        if(inspectionEmailTemplateDto.getSn().equals("No")){
+            StringBuilder stringBuilder=new StringBuilder();
+            stringBuilder.append("<tr><td>"+inspectionEmailTemplateDto.getSn());
+            stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getChecklistItem());
+            stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getRegulationClause());
+            stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getRemarks());
+            stringBuilder.append("</td><tr>");
+            map.put("NC_DETAILS",stringBuilder.toString());
+        }
+        if(inspectionEmailTemplateDto.getBestPractices()!=null){
+            map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
+        }
+        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+        String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
+        inspectionEmailTemplateDto.setMessageContent(mesContext);
+        ParamUtil.setSessionAttr(request,"mesContext", mesContext);
+        ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
+        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
     }
     public void emailView(BaseProcessClass bpc) {
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======>>>>>emailView>>>>>>>>>>>>>>>>emailRequest");
     }
 
 }

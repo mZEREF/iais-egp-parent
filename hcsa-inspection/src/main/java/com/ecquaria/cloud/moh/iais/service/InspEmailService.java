@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 
 
@@ -16,5 +17,6 @@ public interface InspEmailService {
     InspectionEmailTemplateDto getInsertEmail(String appPremCorrId);
     ApplicationViewDto getAppViewByNo( String appNo);
     InspectionEmailTemplateDto loadingEmailTemplate(String id);
+    ApplicationDto getApplicationDtoByAppPremCorrId(String appPremCorrId);
 
     }
