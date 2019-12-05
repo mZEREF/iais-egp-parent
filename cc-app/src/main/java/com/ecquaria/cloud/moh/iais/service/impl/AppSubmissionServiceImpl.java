@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.base.SeqGuidDao;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -10,18 +12,22 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.submission.client.model.SubmitReq;
+import com.ecquaria.submission.client.model.SubmitResp;
+import com.ecquaria.submission.client.wrapper.SubmissionClient;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
+import sop.webflow.rt.api.Process;
 
 /**
  * AppSubmisionServiceImpl
@@ -40,11 +46,22 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Autowired
     private AppConfigClient appConfigClient;
     @Autowired
+    private SeqGuidDao seqGuidDao;
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Autowired
     private SystemAdminClient systemAdminClient;
     @Override
-    public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto) {
+    public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return applicationClient.saveSubmision(appSubmissionDto).getEntity();
+        AppSubmissionDto dto = applicationClient.saveSubmision(appSubmissionDto).getEntity();
+        //asynchronous save the other data.
+        eventBus(appSubmissionDto, process);
+        return dto;
     }
 
     @Override
@@ -138,4 +155,24 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
        return result;
    }
 
+    private  void eventBus(AppSubmissionDto appSubmissionDto, Process process){
+        SubmissionClient client = new SubmissionClient();
+        //prepare request parameters
+        appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
+        SubmitReq req = new SubmitReq();
+        req.setSubmissionId(seqGuidDao.generateIds(1));
+        req.setProject(process.getCurrentProject());
+        req.setProcess(process.getCurrentProcessName());
+        req.setStep(process.getCurrentComponentName());
+        req.setService("appsubmit");
+        req.setOperation("Create");
+        req.setSopUrl("https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication");
+        req.setData(JsonUtil.parseToJson(appSubmissionDto));
+        req.setCallbackUrl(null);
+        req.setUserId("SOP");
+        req.setWait(false);
+        req.addCallbackParam("token", IaisEGPHelper.genTokenForCallback(req.getSubmissionId(), req.getService()));
+        //
+        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+    }
 }

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
+import sop.webflow.rt.api.Process;
 
 /**
  * AppSubmissionService
@@ -10,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
  * @date 11/9/2019
  */
 public interface AppSubmissionService {
-    public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto);
+    public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process);
 
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
 

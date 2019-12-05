@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
@@ -17,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -28,9 +26,14 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.submission.client.model.SubmitReq;
-import com.ecquaria.submission.client.model.SubmitResp;
-import com.ecquaria.submission.client.wrapper.SubmissionClient;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,15 +43,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * NewApplicationDelegator
@@ -468,10 +462,9 @@ public class NewApplicationDelegator {
         //set Risk Score
         appSubmissionService.setRiskToDto(appSubmissionDto);
 
-        appSubmissionDto = appSubmissionService.submit(appSubmissionDto);
+        appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        //asynchronous save the other data.
-        eventBus(appSubmissionDto, bpc);
+
         //get wrokgroup
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }
@@ -797,26 +790,6 @@ public class NewApplicationDelegator {
         }
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
-    }
-    private  void eventBus( AppSubmissionDto appSubmissionDto,BaseProcessClass bpc){
-        SubmissionClient client = new SubmissionClient();
-        //prepare request parameters
-        appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
-        SubmitReq req = new SubmitReq();
-        req.setSubmissionId(appSubmissionDto.getAppGrpId());
-        req.setProject(bpc.process.getCurrentProject());
-        req.setProcess(bpc.process.getCurrentProcessName());
-        req.setStep(bpc.process.getCurrentComponentName());
-        req.setService("appsubmit");
-        req.setOperation("Create");
-        req.setSopUrl("https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication");
-        req.setData(JsonUtil.parseToJson(appSubmissionDto));
-        req.setCallbackUrl(null);
-        req.setUserId("SOP");
-        //req.setWait(true);
-        req.setTotalWait(30);
-        //
-        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
     }
 
     private void initSession(BaseProcessClass bpc){
