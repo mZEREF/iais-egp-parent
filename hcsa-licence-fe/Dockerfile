@@ -1,6 +1,6 @@
 FROM 192.168.7.88/ecq/tomcat:9.0.21-adoptopenjdk8-alpine3.10
 
-COPY target/hcsaapplication.war /usr/local/tomcat/webapps/hcsaapplication.war
+COPY target/hcsa-licence-fe.war /usr/local/tomcat/webapps/hcsa-licence-fe.war
 
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY docker/server.xml /usr/local/tomcat/conf/server.xml
