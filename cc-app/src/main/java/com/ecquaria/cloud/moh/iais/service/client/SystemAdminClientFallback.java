@@ -1,33 +1,39 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Wenkang
- * @date 2019/11/27 17:12
+ * @date 2019/12/4 16:02
  */
-public class SystemAdminClientFallback {
-    FeignResponseEntity<String> draftNumber(@PathVariable(name = "type")  String applicationType){
+public class HcsaLicenceClientFallback {
+    FeignResponseEntity<Integer> licenceNumber( String hciCode){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<String> applicationNumber(@PathVariable(name = "type") String applicationType){
+    FeignResponseEntity<String > groupLicenceNumber( String groupLicence){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<PostCodeDto> getPostCodeByCode(@RequestParam(value = "postalCode") String postalCode){
+    FeignResponseEntity<List<LicenceGroupDto>> createLicence( List<LicenceGroupDto> licenceGroupDtoList){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
+    FeignResponseEntity<PremisesDto> getLatestVersionPremisesByHciCode(String hciCode){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

@@ -686,9 +686,13 @@ public class LicenceApproveBatchjob {
         return  calendar.getTime();
     }
 
-    private String getVersionByHciCode(String hciCode){
-        //todo:controller the version
-        return "1";
+    private Integer getVersionByHciCode(String hciCode){
+        Integer result = 1;
+        PremisesDto premisesDto = licenceService.getLatestVersionPremisesByHciCode(hciCode);
+        if(premisesDto!= null){
+            result = premisesDto.getVersion()+1;
+        }
+        return result;
     }
     //getAllServiceId
     private List<String> getAllServiceId(List<ApplicationLicenceDto> applicationLicenceDtos){
