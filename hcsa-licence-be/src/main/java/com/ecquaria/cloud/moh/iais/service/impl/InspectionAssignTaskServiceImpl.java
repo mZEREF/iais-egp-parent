@@ -20,9 +20,9 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.CommonPoolTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +48,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     private HcsaServiceClient hcsaServiceClient;
 
     @Autowired
-    private CommonPoolTaskClient commonPoolTaskClient;
+    private OrganizationClient organizationClient;
 
     @Autowired
     private TaskService taskService;
@@ -62,7 +62,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
         List<String> workGrpIdList = new ArrayList<>(workGrpIds);
         for(String workGrpId:workGrpIdList){
-            for(TaskDto tDto:commonPoolTaskClient.getCommPoolByGroupWordId(workGrpId).getEntity()){
+            for(TaskDto tDto:taskService.getCommPoolByGroupWordId(workGrpId)){
                 taskDtoList.add(tDto);
             }
         }
@@ -81,7 +81,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             if(applicationNo.equals(tDto.getRefNo())){
                 workGrpId = tDto.getWkGrpId();
                 status = tDto.getTaskStatus();
-                orgUserDtos =  commonPoolTaskClient.getUsersByWorkGroupName(workGrpId, status).getEntity();
+                orgUserDtos =  organizationClient.getUsersByWorkGroupName(workGrpId, status).getEntity();
             }
         }
 

@@ -14,9 +14,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.CommonPoolTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class InspectionServiceImpl implements InspectionService {
     private HcsaServiceClient hcsaServiceClient;
 
     @Autowired
-    private CommonPoolTaskClient commonPoolTaskClient;
+    private OrganizationClient organizationClient;
 
     @Autowired
     private TaskService taskService;
@@ -71,7 +71,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public List<TaskDto> getSupervisorPoolByGroupWordId(String workGroupId) {
-        return commonPoolTaskClient.getSupervisorPoolByGroupWordId(workGroupId).getEntity();
+        return organizationClient.getSupervisorPoolByGroupWordId(workGroupId).getEntity();
     }
 
     @Override
