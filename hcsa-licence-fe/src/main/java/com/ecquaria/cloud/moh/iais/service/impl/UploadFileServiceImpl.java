@@ -4,9 +4,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.RestBridgeHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,7 +26,6 @@ import java.util.zip.ZipOutputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 /**
@@ -58,6 +59,9 @@ public class UploadFileServiceImpl implements UploadFileService {
     private RestBridgeHelper restBridgeHelper;
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private EicGatewayClient eicGatewayClient;
+
     @Override
     public Boolean saveFile(String  str) {
         FileOutputStream fileOutputStream = null;
@@ -275,8 +279,10 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setAuditTrailDto(intenet);
         String s="FAIL";
         try {
-            s = restBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
-                    String.class, HttpMethod.POST);
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization()).getBody();
+//            s = restBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
+//                    String.class, HttpMethod.POST);
 
         }catch (Exception e){
             log.error(e.getMessage(),e);
