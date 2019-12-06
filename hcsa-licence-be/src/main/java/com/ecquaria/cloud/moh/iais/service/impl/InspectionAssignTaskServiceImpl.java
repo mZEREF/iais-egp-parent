@@ -20,7 +20,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +45,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
-    private HcsaServiceClient hcsaServiceClient;
+    private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
     private OrganizationClient organizationClient;
@@ -258,7 +258,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
       * @Descripation: get HcsaServiceDto By Service Id
       */
     public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
-        return hcsaServiceClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+        return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
     }
 
     /**
