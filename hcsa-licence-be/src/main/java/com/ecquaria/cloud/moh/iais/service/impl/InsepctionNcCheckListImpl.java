@@ -15,9 +15,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListCilent;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetTaskCilent;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,9 +36,10 @@ import java.util.Map;
 @Service
 public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Autowired
-    private FillUpCheckListCilent fillUpCheckListCilent;
+    private TaskService taskService;
+
     @Autowired
-    private FillUpCheckListGetTaskCilent fillUpCheckListGetTaskCilent;
+    private ApplicationClient applicationClient;
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
@@ -146,12 +148,12 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         if(StringUtil.isEmpty(taskId)){
             taskId = "7102C311-D10D-EA11-BE7D-000C29F371DC";
         }
-        TaskDto taskDto = fillUpCheckListGetTaskCilent.getTaskDtoByTaskId(taskId).getEntity();
+        TaskDto taskDto = taskService.getTaskById(taskId);
         List<AppPremisesCorrelationDto> appCorrDtolist = null;
         String appPremCorrId = null;
         if(taskDto!=null){
             String refNo = taskDto.getRefNo();
-            ApplicationDto appDto = fillUpCheckListGetAppClient.getAppViewDtoByRefNo(refNo).getEntity();
+            ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
             String appId = appDto.getId();
             appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
             if(appCorrDtolist!=null && !appCorrDtolist.isEmpty()){

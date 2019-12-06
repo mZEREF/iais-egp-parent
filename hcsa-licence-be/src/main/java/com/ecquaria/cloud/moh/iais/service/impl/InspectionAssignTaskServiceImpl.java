@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -52,6 +53,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {
@@ -207,7 +211,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public ApplicationViewDto searchByAppNo(String applicationNo) {
-        return inspectionTaskClient.getAppViewByNo(applicationNo).getEntity();
+        return applicationClient.getAppViewByNo(applicationNo).getEntity();
     }
 
     private void createTaskByInspectorList(List<SelectOption> inspectorCheckList, List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {

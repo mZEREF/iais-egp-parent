@@ -3,15 +3,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.SysAdminMessageTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * InspEmailServiceImpl
@@ -22,9 +19,13 @@ import java.util.Map;
 @Service
 public class InspEmailServiceImpl implements InspEmailService {
     @Autowired
-    InsEmailClient insEmailClient;
+    private InsEmailClient insEmailClient;
+
     @Autowired
-    SysAdminMessageTemplateClient sysAdminMessageTemplateClient;
+    private SystemClient systemClient;
+
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Override
     public String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
@@ -43,12 +44,12 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Override
     public ApplicationViewDto getAppViewByNo(String appNo) {
-        return insEmailClient.getAppViewByNo(appNo).getEntity();
+        return applicationClient.getAppViewByNo(appNo).getEntity();
     }
 
     @Override
     public InspectionEmailTemplateDto loadingEmailTemplate(String id) {
-        return sysAdminMessageTemplateClient.loadingEmailTemplate(id).getEntity();
+        return systemClient.loadingEmailTemplate(id).getEntity();
     }
 
     @Override

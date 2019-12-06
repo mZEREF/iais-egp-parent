@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Autowired
     private InsRepClient insRepClient;
+
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Override
     public InspectionReportDto getInsRepDto(String appNo) {
@@ -71,13 +75,13 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public ApplicationViewDto getApplicationViewDto(String appNo) {
-        ApplicationViewDto applicationViewDto = insRepClient.getAppViewByNo(appNo).getEntity();
+        ApplicationViewDto applicationViewDto = applicationClient.getAppViewByNo(appNo).getEntity();
         return applicationViewDto;
     }
 
     @Override
     public ApplicationDto updateApplicaiton(ApplicationDto applicationDto) {
-        return  insRepClient.updateApplication(applicationDto).getEntity();
+        return  applicationClient.updateApplication(applicationDto).getEntity();
     }
 
 
