@@ -1,13 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
-import org.springframework.http.HttpHeaders;
 
 /**
  * @author Wenkang
@@ -34,6 +31,11 @@ public class SystemClientFallback {
         return entity;
     }
 
-
+    public FeignResponseEntity<InspectionEmailTemplateDto> loadingEmailTemplate(String id ){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
 }
