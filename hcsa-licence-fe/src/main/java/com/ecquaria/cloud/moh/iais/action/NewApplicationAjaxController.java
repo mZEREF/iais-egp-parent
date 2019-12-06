@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +20,8 @@ import java.util.Map;
  * @date 2019/12/5 15:51
  */
 @Controller
-
 public class NewApplicationAjaxController {
-    @RequestMapping(value = "/",method = RequestMethod.POST)
+    @RequestMapping(value = "/request-check-error",method = RequestMethod.POST)
     public @ResponseBody Map<String,String> doVail(HttpServletRequest request, HttpServletResponse response){
         List<String> subList=new ArrayList<>();
         List<String> sumList=new ArrayList<>();
@@ -28,11 +30,11 @@ public class NewApplicationAjaxController {
         Map<String,String> map=new HashMap<>();
         String[] parameterValues = request.getParameterValues("control--runtime--1");
         for(String every:parameterValues){
-         if(every.contains("true")){
-             subList.add(every);
-         }else if(every.contains("false")){
-             sumList.add(every);
-         }
+            if(every.contains("true")){
+                subList.add(every);
+            }else if(every.contains("false")){
+                sumList.add(every);
+            }
         }
         for(String every:subList){
             String[] split = every.split(";");
@@ -43,24 +45,50 @@ public class NewApplicationAjaxController {
             }
         }
         if(idList.isEmpty()&&!parentId.isEmpty()){
-            map.put("error","error massage!");
+            map.put("errorM","error massage!");
         }
-        for(String every :parentId){
-            recursion(every,parentId);
+        boolean recursion = recursion(parentId);
+        if(!recursion){
+            map.put("errorM","error massage!");
         }
-
+        boolean recursion1 = recursion(sumList);
+        if(!recursion1){
+            map.put("errorM","error massage!");
+        }
         return map;
     }
 
-    private void recursion(String ids,List<String> parentId){
-       for(int i=0;i<parentId.size();  i++){
-           String[] split = parentId.get(i).split(";");
-            if(split[3].equals(ids)){
-                recursion(split[0],parentId);
-            }else {
-                return;
+    private boolean recursion(List<String> parentId){
+        boolean flag=false;
+        for(String every:parentId){
+            for(String index:parentId){
+                if( every.split(";")[3].equals(index.split(";")[0]) ){
+                    flag=true;
+                }
             }
-       }
+        }
+        return flag;
     }
 
+    @GetMapping(value = "/sg-number-validator")
+    @ResponseBody
+    public Map<String,String> sgNoValidator(@RequestParam("idType") String idType,@RequestParam("idNumber") String idNumber){
+        Map<String,String> map=new HashMap<>();
+        if(idNumber==null||"".equals(idNumber)){
+            map.put("errorM","cannot be blank!");
+        }else {
+            boolean aBoolean = false;
+            if(idType.equals("fin")){
+                aBoolean= SgNoValidator.validateFin(idNumber);
+            }else  if(idType.equals("nric")){
+              aBoolean = SgNoValidator.validateNric(idNumber);
+            }
+            if(!aBoolean){
+                map.put("errorM","Please key in a valid NRIC/FIN!");
+            }
+
+        }
+
+        return map;
+    };
 }

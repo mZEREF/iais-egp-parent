@@ -76,7 +76,7 @@
             var relm=/^[8|9][0-9]{7}$/;
             var relt=/^[6][0-9]{7}$/;
             var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-            if(!relm.test($('#emailAdress').val())){
+            if(!relm.test($('#mobileNo').val())){
                 $('#mobileNo+span').removeAttr('style');
                 $('#mobileNo').attr('class','error');
                 flag=false;

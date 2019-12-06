@@ -72,14 +72,15 @@
                       </div>
                       <div class="col-sm-2">
                         <div class="">
-                          <select name="idType" class="form-control control-input control-set-font control-font-normal">
-                            <option>NRIC</option>
-                            <option>FIN</option>
+                          <select name="idType" class="form-control control-input control-set-font control-font-normal" id="selectType">
+                            <option value="nric">NRIC</option>
+                            <option  value="fin">FIN</option>
                           </select>
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input id="idType-idNo" name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <span class="error-msg" id="error-msg-idType"></span>
                       </div>
                     </div>
                   </div>
@@ -200,6 +201,15 @@
             }
         }
     );
+
+    $('#idType-idNo').blur(function () {
+       var idType= $('#selectType').val();
+       var idNo=$('#idType-idNo').val();
+        $.getJSON("${pageContext.request.contextPath}/sg-number-validator",{"idType":idType,"idNumber":idNo},function (rel) {
+          $('#error-msg-idType').html(rel.errorM);
+        });
+    });
+  
     $('#emailAdress').blur(function(){
         var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
         if(!rel.test($('#emailAdress').val())){
@@ -212,7 +222,7 @@
     });
     $('#telephone').blur(function () {
         var rel=/^[6][0-9]{7}$/;
-        if(!rel.test($('#telephone').val()){
+        if(!rel.test($('#telephone').val())){
             $('#telephone+span').removeAttr('style');
             $('#telephone').attr('class','error');
         }else {
