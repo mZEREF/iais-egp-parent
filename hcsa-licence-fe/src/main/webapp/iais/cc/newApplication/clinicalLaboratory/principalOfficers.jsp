@@ -73,18 +73,20 @@
         });
         $('#principalOfficersNext').click(function(){
             var flag=true;
-            if(!$('#mobileNo').val().startsWith("8")&&!$('#mobileNo').val().startsWith("9")){
+            var relm=/^[8|9][0-9]{7}$/;
+            var relt=/^[6][0-9]{7}$/;
+            var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+            if(!relm.test($('#emailAdress').val())){
                 $('#mobileNo+span').removeAttr('style');
                 $('#mobileNo').attr('class','error');
                 flag=false;
             }
-            var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
             if(!rel.test($('#emailAdress').val())){
                 $('#emailAdress+span').removeAttr('style');
                 $('#emailAdress').attr('class','error');
                 flag=false;
             }
-            if(!$('#telephone').val().startsWith("6")){
+            if(!relt.test($('#telephone').val())){
                 $('#telephone+span').removeAttr('style');
                 $('#telephone').attr('class','error');
                 flag=false;
