@@ -756,6 +756,27 @@
         </div>
     </div>
 </form>
+<script type="text/javascript">
+    function doPreview(){
+        SOP.Crud.cfxSubmit("mainForm", "PreviewEmail");
+    }
+
+    function doSend(){
+        var decision=document.getElementById("decision-email");
+        if(decision.value=="Sends email/letter to Applicant"){
+            var r=confirm("Are you sure to send it directly and not to AO1 for review?");
+            if (r==true){
+                SOP.Crud.cfxSubmit("mainForm", "SendEmail");
+            }
+        }
+        else {
+            SOP.Crud.cfxSubmit("mainForm", "SendEmail");
+        }
+
+    }
+
+
+</script>
 
 
 

@@ -164,6 +164,9 @@ public class InspecEmailDelegator {
     public void doRecallEmail(BaseProcessClass bpc) {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
+        applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
+        RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationViewDto.getApplicationDto(), ApplicationDto.class);
         String id= (String) ParamUtil.getSessionAttr(request,"templateId");
         inspEmailService.recallEmailTemplate(id);
     }

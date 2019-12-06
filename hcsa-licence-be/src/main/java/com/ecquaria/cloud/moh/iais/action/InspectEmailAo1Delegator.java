@@ -36,7 +36,7 @@ import java.util.Map;
  */
 @Delegator("validateEmailDelegator")
 @Slf4j
-public class ValidateEmailDelegator {
+public class InspectEmailAo1Delegator {
     @Autowired
     InspEmailService inspEmailService;
     @Autowired
@@ -54,8 +54,9 @@ public class ValidateEmailDelegator {
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
+        String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        log.debug("*******************crudAction-->:" + crudAction);
+       // request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
     }
     public void emailSubmitStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -69,7 +70,7 @@ public class ValidateEmailDelegator {
         log.info("=======>>>>>previewEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"preview".equals(currentAction)){
+        if(!"PreviewEmail".equals(currentAction)){
             return;
         }
         String context=ParamUtil.getString(request,"messageContent");
@@ -83,7 +84,7 @@ public class ValidateEmailDelegator {
         log.info("=======>>>>>sendEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"send".equals(currentAction)){
+        if(!"SendEmail".equals(currentAction)){
             return;
         }
         String decision=ParamUtil.getRequestString(request,"decision");
@@ -126,6 +127,11 @@ public class ValidateEmailDelegator {
     public void preCheckList(BaseProcessClass bpc) {
 
         log.info("=======>>>>>preCheckList>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!"CheckList".equals(currentAction)){
+            return;
+        }
     }
     public void checkListNext(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");
@@ -183,6 +189,10 @@ public class ValidateEmailDelegator {
     public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(!"preEmailView".equals(currentAction)){
+            return;
+        }
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail("B14E19EA-E4F8-4298-935A-8C50346BD01F");
 
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
