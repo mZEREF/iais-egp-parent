@@ -64,54 +64,6 @@ public class EventBusCallBackDelegator {
                         submissionId, operation, "");
             }
         }
-//
-//        Long submissionId = (Long) request.getAttribute("submissionId");
-//        String operation = (String) request.getAttribute("operation");
-//
-//        Map submissionStatusMap = wrapper.getSubmissionStatus(submissionId.longValue(), operation);
-//
-//        if(submissionStatusMap.size()==5) {
-//            Iterator it = submissionStatusMap.keySet().iterator();
-//            String svc = null;
-//            ServiceStatus serviceStatus = null;
-//            String svcStatus;
-//            String errorCode = null;
-//            String errorMsg = null;
-//            boolean completed = true;
-//            boolean success = true;
-//
-//            while (it.hasNext()) {
-//                svc  = (String) it.next();
-//                serviceStatus = (ServiceStatus) submissionStatusMap.get(svc);
-//                svcStatus = (serviceStatus.getStatus());
-//                if (!svcStatus.startsWith("Comp.")) {
-//                    completed = false;
-//                    break;
-//                }
-//
-//                if (!svcStatus.endsWith("Success")) {
-//                    success = false;
-//                    errorCode = serviceStatus.getErrorCode();
-//                    errorMsg = serviceStatus.getErrorMsg();
-//                    break;
-//                }
-//            }
-//
-//            if (!completed) {
-//                request.setAttribute("ApplicationStatus", "Pending");
-//                request.setAttribute("waitCompletionStatus","Pending");
-//            } else if (!success) {
-//                request.setAttribute("ApplicationStatus", "Error");
-//                request.setAttribute("ErrorMsg",errorMsg);
-//                wrapper.setCompensation(submissionId.longValue(),operation, "Error (" + svc + ")");
-//                request.setAttribute("waitCompletionStatus","Error");
-//            } else {
-//                request.setAttribute("ApplicationStatus","Success");
-//                request.setAttribute("waitCompletionStatus","Success");
-//            }
-//        } else {
-//            request.setAttribute("ApplicationStatus","Incomplete");
-//            request.setAttribute("waitCompletionStatus","Incomplete");
-//        }
+
     }
 }
