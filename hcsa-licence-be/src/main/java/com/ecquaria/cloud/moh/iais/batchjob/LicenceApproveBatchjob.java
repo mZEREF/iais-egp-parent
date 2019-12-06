@@ -527,7 +527,7 @@ public class LicenceApproveBatchjob {
                 return  null;
             }
             KeyPersonnelDto keyPersonnelDto = MiscUtil.transferEntityDto(appGrpPersonnelDto,KeyPersonnelDto.class);
-            keyPersonnelDto.setId(null);
+            //keyPersonnelDto.setId(null);
             //todo:controller the psersonnel version
             keyPersonnelDto.setVersion(1);
             //todo: controller status
