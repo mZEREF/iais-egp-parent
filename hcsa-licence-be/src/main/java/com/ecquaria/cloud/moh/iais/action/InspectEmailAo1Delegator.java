@@ -3,15 +3,12 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
@@ -51,32 +48,32 @@ public class InspectEmailAo1Delegator {
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
     }
 
 
-    public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
+    public void prepareData(BaseProcessClass bpc) {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
-        String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crudAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.debug("*******************crudAction-->:" + crudAction);
 
     }
     public void emailSubmitStep(BaseProcessClass bpc){
+        log.info("=======>>>>>emailSubmitStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,"insEmailDto");
-        String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         String content=ParamUtil.getString(request,"messageContent");
         ParamUtil.setSessionAttr(request,"content",content);
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
-        log.debug("*******************crudAction-->:" + crudAction);
     }
 
     public void previewEmail(BaseProcessClass bpc){
         log.info("=======>>>>>previewEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"PreviewEmail".equals(currentAction)){
+        if(!"preview".equals(currentAction)){
             return;
         }
         String content=ParamUtil.getString(request,"messageContent");
@@ -90,7 +87,7 @@ public class InspectEmailAo1Delegator {
         log.info("=======>>>>>sendEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"SendEmail".equals(currentAction)){
+        if(!"send".equals(currentAction)){
             return;
         }
         String decision=ParamUtil.getRequestString(request,"decision");
@@ -129,7 +126,7 @@ public class InspectEmailAo1Delegator {
         ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
         applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
         applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
     }
 
     public void preCheckList(BaseProcessClass bpc) {
@@ -137,7 +134,7 @@ public class InspectEmailAo1Delegator {
         log.info("=======>>>>>preCheckList>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"CheckList".equals(currentAction)){
+        if(!"checkList".equals(currentAction)){
             return;
         }
     }
@@ -212,5 +209,7 @@ public class InspectEmailAo1Delegator {
     }
     public void emailView(BaseProcessClass bpc) {
         log.info("=======>>>>>emailView>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
     }
 }

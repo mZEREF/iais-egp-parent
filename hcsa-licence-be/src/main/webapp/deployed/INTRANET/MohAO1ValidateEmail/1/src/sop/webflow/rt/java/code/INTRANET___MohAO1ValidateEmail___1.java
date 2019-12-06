@@ -44,11 +44,7 @@ public class INTRANET___MohAO1ValidateEmail___1 extends BaseProcessClass {
 				EngineHelper.delegate(DELEGATOR, "doRecallEmail", this);
 			}
 
-	public void step4_OnStepProcess_0 () throws Exception { 
-	 
-		
-				EngineHelper.delegate(DELEGATOR, "emailView", this);
-			}
+	
 
 	public void emailSubmitStep_OnStepProcess_0 () throws Exception { 
 	 
@@ -72,5 +68,10 @@ public class INTRANET___MohAO1ValidateEmail___1 extends BaseProcessClass {
 		
 				EngineHelper.delegate(DELEGATOR, "preCheckList", this);
 			}
+
+	public void emailView_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "emailView", this);
+	// 		emailView->OnStepProcess
+	}
 
 }

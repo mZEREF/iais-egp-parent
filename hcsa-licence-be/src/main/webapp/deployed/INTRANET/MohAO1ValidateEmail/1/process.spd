@@ -65,11 +65,11 @@
     <JavaCode defClass="" executor="" methodName="doRecallEmail_OnStepProcess_0" name="doRecallEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step4" x="697" y="391">
+  <AutomaticStep defClass="" executor="" icon="" name="emailView" x="680" y="400">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="step4_OnStepProcess_0" name="step4_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="emailView_OnStepProcess_0" name="emailView_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -119,14 +119,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/emailSubmitStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/emailViewPage" style="oblique">
    <position>{(537,241)(677,241)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step4" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/PreviewEmailPage" style="rectanular">
-   <position>{(547,421)(717,411)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRecallEmail" style="oblique">
    <position>{(687,331)(857,181)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step4" style="oblique">
-   <position>{(717,411)(857,181)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/checkListNext" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/checkListpage" style="rectanular">
    <position>{(480,150)(570,150)}</position>
@@ -163,6 +157,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(720,150)(547,57)(370,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/emailView" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreviewEmailPage" style="oblique">
+   <position>{(547,421)(725,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/emailView" style="oblique">
+   <position>{(725,450)(857,181)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

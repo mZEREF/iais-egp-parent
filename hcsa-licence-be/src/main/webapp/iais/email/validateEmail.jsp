@@ -718,7 +718,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <select name="decision">
+                                                <select id="decision-email" name="decision">
                                                     <option value="Acknowledge email/Letter Content">Acknowledge email/Letter Content</option>
                                                     <option value="Revise email/Letter Content">Revise email/Letter Content</option>
                                                 </select>
@@ -748,7 +748,7 @@
 </form>
 <script type="text/javascript">
     function doPreview(){
-        SOP.Crud.cfxSubmit("mainForm", "PreviewEmail");
+        SOP.Crud.cfxSubmit("mainForm", "preview");
     }
 
     function doSend(){
@@ -756,11 +756,11 @@
         if(decision.value=="Sends email/letter to Applicant"){
             var r=confirm("Are you sure to send it directly and not to AO1 for review?");
             if (r==true){
-                SOP.Crud.cfxSubmit("mainForm", "SendEmail");
+                SOP.Crud.cfxSubmit("mainForm", "send");
             }
         }
         else {
-            SOP.Crud.cfxSubmit("mainForm", "SendEmail");
+            SOP.Crud.cfxSubmit("mainForm", "send");
         }
 
     }
