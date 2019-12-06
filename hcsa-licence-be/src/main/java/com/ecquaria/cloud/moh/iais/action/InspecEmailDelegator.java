@@ -13,6 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -45,6 +47,8 @@ public class InspecEmailDelegator {
     private TaskService taskService;
     @Autowired
     InsRepService insRepService;
+    @Autowired
+    ApplicationViewService applicationViewService;
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -117,8 +121,8 @@ public class InspecEmailDelegator {
         if(!"preview".equals(currentAction)){
             return;
         }
-        String context=ParamUtil.getString(request,"messageContent");
-        ParamUtil.setRequestAttr(request,"context", context);
+        String content=ParamUtil.getString(request,"messageContent");
+        ParamUtil.setRequestAttr(request,"content", content);
 
 
     }
@@ -149,12 +153,11 @@ public class InspecEmailDelegator {
         }
         if (decision.equals("Route email/letter to AO1 for review")){
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01);
-            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationViewDto.getApplicationDto(), ApplicationDto.class);
+            applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
         }
         else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationViewDto.getApplicationDto(), ApplicationDto.class);
-
+            applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
         }
         String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
         ParamUtil.setSessionAttr(request,"templateId",id);
@@ -166,7 +169,7 @@ public class InspecEmailDelegator {
         HttpServletRequest request = bpc.request;
         ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
         applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
-        RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationViewDto.getApplicationDto(), ApplicationDto.class);
+        applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
         String id= (String) ParamUtil.getSessionAttr(request,"templateId");
         inspEmailService.recallEmailTemplate(id);
     }

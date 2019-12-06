@@ -34,9 +34,9 @@
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
 <div class="col-sm-5">
-    <p><textarea name="messageContent" cols="80" rows="25" class="wenbenkuang" id="htmlEditroArea" title="content" readonly >${context}</textarea></p>
+    <p><textarea name="messageContent" cols="80" rows="25" class="wenbenkuang" id="htmlEditroArea" title="content" readonly >${content}</textarea></p>
 </div>
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-
+    <input type="submit" class="search btn" value="Back">
 </form>

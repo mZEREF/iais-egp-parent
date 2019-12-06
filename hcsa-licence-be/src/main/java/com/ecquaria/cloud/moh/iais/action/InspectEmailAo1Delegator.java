@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -45,6 +46,8 @@ public class InspectEmailAo1Delegator {
     private TaskService taskService;
     @Autowired
     InsRepService insRepService;
+    @Autowired
+    ApplicationViewService applicationViewService;
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -54,14 +57,17 @@ public class InspectEmailAo1Delegator {
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
         String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.debug("*******************crudAction-->:" + crudAction);
-       // request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
+
     }
     public void emailSubmitStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,"insEmailDto");
         String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        String content=ParamUtil.getString(request,"messageContent");
+        ParamUtil.setSessionAttr(request,"content",content);
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
         log.debug("*******************crudAction-->:" + crudAction);
     }
@@ -73,8 +79,8 @@ public class InspectEmailAo1Delegator {
         if(!"PreviewEmail".equals(currentAction)){
             return;
         }
-        String context=ParamUtil.getString(request,"messageContent");
-        ParamUtil.setRequestAttr(request,"context", context);
+        String content=ParamUtil.getString(request,"messageContent");
+        ParamUtil.setSessionAttr(request,"content", content);
 
 
     }
@@ -105,11 +111,11 @@ public class InspectEmailAo1Delegator {
         }
         if (decision.equals("Acknowledge email/Letter Content")){
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationViewDto.getApplicationDto(), ApplicationDto.class);
+            applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
         }
         else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
-            RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_BE,applicationViewDto.getApplicationDto(), ApplicationDto.class);
+            applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
 
         }
         String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
@@ -120,8 +126,10 @@ public class InspectEmailAo1Delegator {
     public void doRecallEmail(BaseProcessClass bpc) {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String id= (String) ParamUtil.getSessionAttr(request,"templateId");
-        inspEmailService.recallEmailTemplate(id);
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
+        applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
+        applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
+
     }
 
     public void preCheckList(BaseProcessClass bpc) {
@@ -180,9 +188,9 @@ public class InspectEmailAo1Delegator {
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
         inspectionEmailTemplateDto.setMessageContent(mesContext);
-        //inspectionEmailTemplateDto.setId();
+        String draftEmailId= (String) ParamUtil.getSessionAttr(request,"draftEmailId");
+        inspectionEmailTemplateDto.setId(draftEmailId);
         inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
-        ParamUtil.setSessionAttr(request,"mesContext", mesContext);
         ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
     }
@@ -193,8 +201,13 @@ public class InspectEmailAo1Delegator {
         if(!"preEmailView".equals(currentAction)){
             return;
         }
-        InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail("B14E19EA-E4F8-4298-935A-8C50346BD01F");
-
+        String taskId="48512333-7A16-EA11-BE7D-000C29F371DC";
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        String appNo = taskDto.getRefNo();
+        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
+        String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
+        InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
+        ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
     }
     public void emailView(BaseProcessClass bpc) {

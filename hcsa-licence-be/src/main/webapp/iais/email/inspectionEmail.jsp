@@ -25,8 +25,8 @@
                                                                         data-toggle="tab">Payment</a></li>
                             <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
                                                                         data-toggle="tab">Inspection</a></li>
-                            <li class="incomplete" role="presentation"><a href="#tabQiceList" aria-controls="QiceList" role="tab"
-                                                                          data-toggle="tab">checkList</a></li>
+                            <li class="incomplete" role="presentation"><a href="#tabCheckList" aria-controls="CheckList" role="tab"
+                                                                          data-toggle="tab">CheckList</a></li>
                             <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
                                                                           data-toggle="tab">Processing</a></li>
                         </ul>
@@ -36,8 +36,8 @@
                                 <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
                                 <div class="swiper-slide"><a href="#tabPayment" aria-controls="tabPayment" role="tab" data-toggle="tab">Payment</a></div>
                                 <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabInspection" role="tab" data-toggle="tab">Inspection</a></div>
+                                <div class="swiper-slide"><a href="#tabCheckList" aria-controls="tabCheckList" role="tab" data-toggle="tab">CheckList</a></div>
                                 <div class="swiper-slide"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a></div>
-                                <div class="swiper-slide"><a href="#tabEmailTemplate" aria-controls="tabEmailTemplate" role="tab" data-toggle="tab">EmailTemplate</a></div>
                             </div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
@@ -471,7 +471,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabQiceList" role="tabpanel">
+                            <div class="tab-pane" id="tabCheckList" role="tabpanel">
                                 <div class="alert alert-info" role="alert">
                                     <strong>
                                         <h4>Processing Status Update</h4>

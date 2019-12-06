@@ -2,7 +2,7 @@
 <Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohAO1ValidateEmail" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <AutomaticStep defClass="" executor="" icon="" name="checkListNext" x="557" y="81">
+  <AutomaticStep defClass="" executor="" icon="" name="checkListNext" x="550" y="130">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -16,7 +16,7 @@
     <JavaCode defClass="" executor="" methodName="sendEmail_OnStepProcess_0" name="sendEmail_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preCheckList" x="337" y="81">
+  <AutomaticStep defClass="" executor="" icon="" name="preCheckList" x="350" y="130">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -92,7 +92,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="checkListpage" stageIndicator="" x="457" y="81">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="checkListpage" stageIndicator="" x="460" y="130">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -129,13 +129,13 @@
    <position>{(717,411)(857,181)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/checkListNext" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/checkListpage" style="rectanular">
-   <position>{(477,101)(577,101)}</position>
+   <position>{(480,150)(570,150)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/emailSubmitStep" style="oblique">
    <position>{(677,241)(857,181)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(277,201)(357,101)}</position>
+   <position>{(277,201)(370,150)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preEmailView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(277,201)(377,241)}</position>
@@ -146,32 +146,32 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreviewEmail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(277,201)(367,421)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(857,181)(381,920)(187,201)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(857,181)(545,13)(187,201)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/emailViewPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preEmailView" style="rectanular">
    <position>{(377,241)(537,241)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/checkListNext" style="rectanular">
-   <position>{(577,101)(697,101)}</position>
+   <position>{(570,150)(720,150)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/checkListpage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preCheckList" style="rectanular">
-   <position>{(357,101)(477,101)}</position>
+   <position>{(370,150)(480,150)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(697,101)(857,181)}</position>
+   <position>{(720,150)(857,181)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(697,101)(533,604)(357,101)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCheckList" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(720,150)(547,57)(370,150)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/preCheckList" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="677" y="81">
+  <Condition componentIfFalse="/Steps/AutomaticStep/preCheckList" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="700" y="130">
    <Description/>
   </Condition>
  </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preCheckList" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="257" y="181">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preEmailView" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="257" y="181">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/preCheckList" value="&quot;checkList&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preEmailView" value="&quot;emailView&quot;"/>
