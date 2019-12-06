@@ -76,12 +76,11 @@
             var relm=/^[8|9][0-9]{7}$/;
             var relt=/^[6][0-9]{7}$/;
             var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-            if(!$(!relm.test($('#mobileNo').val())){
+            if(!relm.test($('#emailAdress').val())){
                 $('#mobileNo+span').removeAttr('style');
                 $('#mobileNo').attr('class','error');
                 flag=false;
             }
-            var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
             if(!rel.test($('#emailAdress').val())){
                 $('#emailAdress+span').removeAttr('style');
                 $('#emailAdress').attr('class','error');
