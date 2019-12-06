@@ -22,7 +22,7 @@ import java.util.List;
  * @author Wenkang
  * @date 2019/11/26 14:28
  */
-@FeignClient(name = "iais-application", configuration = FeignConfiguration.class,
+@FeignClient(name = "HCSA-APPLICATION", configuration = FeignConfiguration.class,
         fallback = ApplicationClientFallback.class)
 public interface ApplicationClient  {
     @GetMapping(path = "/iais-application/all-file")

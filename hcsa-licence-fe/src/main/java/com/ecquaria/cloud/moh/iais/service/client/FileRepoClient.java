@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Jinhua
  * @date 2019/11/26 12:29
  */
-@FeignClient(name = "file-repository", configuration = {FeignMultipartConfig.class},
+@FeignClient(name = "FILE-REPOSITORY", configuration = {FeignMultipartConfig.class},
         fallback = FileRepoClientFallback.class)
 public interface FileRepoClient {
     @RequestMapping(method = RequestMethod.POST, produces =  MediaType.APPLICATION_JSON_VALUE ,
