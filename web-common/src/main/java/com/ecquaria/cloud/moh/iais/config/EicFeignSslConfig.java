@@ -29,11 +29,9 @@ import org.springframework.core.io.ClassPathResource;
  * @author Jinhua
  * @date 2019/12/6 10:48
  */
-@Configuration
 @Slf4j
 public class EicFeignSslConfig {
 
-    @Bean
     public Client client() throws GeneralSecurityException, IOException {
         return noSllClient();
     }
