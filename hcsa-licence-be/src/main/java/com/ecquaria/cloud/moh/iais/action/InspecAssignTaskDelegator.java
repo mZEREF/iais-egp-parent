@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
@@ -10,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -24,7 +27,9 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -47,8 +52,15 @@ public class InspecAssignTaskDelegator {
     private InspectionAssignTaskService inspectionAssignTaskService;
 
     @Autowired
-    private InspecAssignTaskDelegator(InspectionAssignTaskService inspectionAssignTaskService){
+    private ApplicationViewService applicationViewService;
+
+    @Autowired
+    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
+
+    @Autowired
+    private InspecAssignTaskDelegator(InspectionAssignTaskService inspectionAssignTaskService, AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient){
         this.inspectionAssignTaskService = inspectionAssignTaskService;
+        this.appPremisesRoutingHistoryClient = appPremisesRoutingHistoryClient;
     }
 
     /**
@@ -197,9 +209,30 @@ public class InspecAssignTaskDelegator {
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         inspectionAssignTaskService.assignTaskForInspectors(commPools, inspecTaskCreAndAssDto);
+        TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppNo(inspecTaskCreAndAssDto.getApplicationNo());
-
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+        ApplicationDto applicationDto1 = updateApplicaiton(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+        applicationViewDto.setApplicationDto(applicationDto1);
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),HcsaConsts.ROUTING_STAGE_INS,null);
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+    }
+
+    private TaskDto getTaskDtoByPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
+        TaskDto taskDto = new TaskDto();
+        for(TaskDto tDto:commPools){
+            if(tDto.getId().equals(inspecTaskCreAndAssDto.getTaskId())){
+                taskDto = tDto;
+            }
+        }
+        return taskDto;
+    }
+
+    private ApplicationDto  updateApplicaiton(ApplicationDto applicationDto, String appStatus) {
+        applicationDto.setStatus(appStatus);
+        return applicationViewService.updateApplicaiton(applicationDto);
     }
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
@@ -211,7 +244,7 @@ public class InspecAssignTaskDelegator {
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        //appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto).getEntity();
         return appPremisesRoutingHistoryDto;
     }
 

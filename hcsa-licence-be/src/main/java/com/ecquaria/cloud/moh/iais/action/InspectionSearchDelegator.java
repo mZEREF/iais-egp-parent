@@ -2,12 +2,17 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
@@ -19,10 +24,14 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -47,8 +56,19 @@ public class InspectionSearchDelegator {
     private InspectionService inspectionService;
 
     @Autowired
-    private InspectionSearchDelegator(InspectionService inspectionService){
+    private InspectionAssignTaskService inspectionAssignTaskService;
+
+    @Autowired
+    private ApplicationViewService applicationViewService;
+
+    @Autowired
+    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
+
+    @Autowired
+    private InspectionSearchDelegator(InspectionService inspectionService, InspectionAssignTaskService inspectionAssignTaskService, AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient){
         this.inspectionService = inspectionService;
+        this.inspectionAssignTaskService = inspectionAssignTaskService;
+        this.appPremisesRoutingHistoryClient = appPremisesRoutingHistoryClient;
     }
 
     /**
@@ -325,6 +345,42 @@ public class InspectionSearchDelegator {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         List<TaskDto> commPools =(List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         inspectionService.assignTaskForInspectors(inspectionTaskPoolListDto, commPools);
+        TaskDto taskDto = getTaskDtoByPool(commPools, inspectionTaskPoolListDto);
+        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppNo(inspectionTaskPoolListDto.getApplicationNo());
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+        ApplicationDto applicationDto1 = updateApplicaiton(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+        applicationViewDto.setApplicationDto(applicationDto1);
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", inspectionTaskPoolListDto);
+    }
+
+    private TaskDto getTaskDtoByPool(List<TaskDto> commPools, InspectionTaskPoolListDto inspectionTaskPoolListDto) {
+        TaskDto taskDto = new TaskDto();
+        for(TaskDto tDto:commPools){
+            if(tDto.getId().equals(inspectionTaskPoolListDto.getTaskId())){
+                taskDto = tDto;
+            }
+        }
+        return taskDto;
+    }
+
+    private ApplicationDto  updateApplicaiton(ApplicationDto applicationDto, String appStatus) {
+        applicationDto.setStatus(appStatus);
+        return applicationViewService.updateApplicaiton(applicationDto);
+    }
+
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                         String stageId, String internalRemarks){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto).getEntity();
+        return appPremisesRoutingHistoryDto;
     }
 }
