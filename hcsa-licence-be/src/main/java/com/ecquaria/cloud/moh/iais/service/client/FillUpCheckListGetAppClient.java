@@ -42,5 +42,21 @@ public interface FillUpCheckListGetAppClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> saveAppPreNcItem(@RequestBody List<AppPremisesPreInspectionNcItemDto> dtoList);
 
+    @GetMapping(path = "/application-be/RescomDto/{appPremId}/{recomType}",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremisesRecommendationDto> getAppPremRecordByIdAndType(@PathVariable(value ="appPremId" ) String appPremId,@PathVariable(value ="recomType" ) String recomType);
+
+    @GetMapping(path = "/iais-apppreinschkl-be/AppPremissChklId/{appPremId}/{configId}",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremisesPreInspectChklDto> getAppPremInspeChlkByAppCorrIdAndConfigId(@PathVariable(value ="appPremId" ) String appPremId,@PathVariable(value ="configId" ) String configId);
+
+    @GetMapping(path = "/iais-apppreinsnc-be/AppPremNcByAppCorrId{appCorrId}",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremPreInspectionNcDto> getAppNcByAppCorrId(@PathVariable(value ="appCorrId" ) String appCorrId);
+
+    @GetMapping(path = "/iais-apppreinsncitem-be/AppPremNcItemByNcId{ncId}",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getAppNcItemByAppCorrId(@PathVariable(value ="ncId" ) String ncId);
+
 
 }

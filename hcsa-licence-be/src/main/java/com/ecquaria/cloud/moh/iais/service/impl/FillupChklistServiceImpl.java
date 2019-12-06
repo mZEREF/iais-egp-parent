@@ -94,8 +94,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             //ApplicationViewDto appDto = RestApiUtil.getByPathParam("hcsa-config:8883/iais-application/application/{AppNo}",refNo, ApplicationViewDto.class);
             ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
             String appId = appDto.getId();
-            //appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
-            appCorrDtolist = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-application/application/correlations/{appid}",appId,AppPremisesCorrelationDto.class);
+            appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
+            //appCorrDtolist = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-application/application/correlations/{appid}",appId,AppPremisesCorrelationDto.class);
 
             if(appCorrDtolist!=null && !appCorrDtolist.isEmpty()){
                 appPremCorrId = appCorrDtolist.get(0).getId();
@@ -214,6 +214,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             answerDto.setAnswer(temp.getChkanswer());
             answerDto.setRemark(temp.getRemark());
             answerDto.setItemId(temp.getItemId());
+            answerDto.setSectionName(temp.getSectionName());
             answerDtoList.add(answerDto);
         }
         String answerJson = JsonUtil.parseToJson(answerDtoList);
@@ -222,13 +223,13 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
         appDto.setAnswer(answerJson);
         appDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
-        appDto.setAppPremCorrId("4B7DB578-A1B4-4836-A43E-53450A58F078");
+        appDto.setAppPremCorrId(appPremCorrId);
         appDto.setVersion(1+"");
         appDto.setChkLstConfId(configId);
         appDto.setStatus("CMSTAT001");
         appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
-        appPreRecommentdationDto.setAppPremCorreId("4B7DB578-A1B4-4836-A43E-53450A58F078");
+        appPreRecommentdationDto.setAppPremCorreId(appPremCorrId);
         appPreRecommentdationDto.setRecomType("tcu");
         Date tcuDate = null;
         try {
@@ -239,7 +240,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(tcuDate!=null){
             appPreRecommentdationDto.setRecomInDate(tcuDate);
         }
-        appPreRecommentdationDto.setAppPremCorreId("4B7DB578-A1B4-4836-A43E-53450A58F078");
+        appPreRecommentdationDto.setAppPremCorreId(appPremCorrId);
         appPreRecommentdationDto.setBestPractice(dto.getBestPractice());
         appPreRecommentdationDto.setRemarks(dto.getTcuRemark());
         appPreRecommentdationDto.setStatus("CMSTAT001");
@@ -285,7 +286,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         ncDto.setStatus("CMSTAT001");
         ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
         ncDto.setVersion(1+"");
-        ncDto.setAppPremCorrId("4B7DB578-A1B4-4836-A43E-53450A58F078");
+        ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
         ncDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return ncDto;
     }

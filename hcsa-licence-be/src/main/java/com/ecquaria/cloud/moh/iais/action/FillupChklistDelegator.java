@@ -142,6 +142,8 @@ public class FillupChklistDelegator {
         }
         String tcu = ParamUtil.getString(request,"tuc");
         String bestpractice = ParamUtil.getString(request,"bestpractice");
+        String tcuremark = ParamUtil.getString(request,"tcuRemark");
+        cDto.setTcuRemark(tcuremark);
         cDto.setTuc(tcu);
         cDto.setBestPractice(bestpractice);
         fillupChklistService.fillInspectionFillCheckListDto(cDto);
