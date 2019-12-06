@@ -82,7 +82,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>hcsa-licence-fe</finalName>
+        <finalName>hcsa-licence</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

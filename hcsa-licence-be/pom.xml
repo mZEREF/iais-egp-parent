@@ -59,7 +59,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>hcsa-licence-be</finalName>
+        <finalName>hcsa-licence</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
