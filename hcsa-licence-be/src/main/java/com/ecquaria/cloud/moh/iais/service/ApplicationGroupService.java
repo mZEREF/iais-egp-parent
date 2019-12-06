@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import java.util.List;
 
 /**
  * ApplicationGroupService
@@ -11,4 +12,5 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 public interface ApplicationGroupService {
     public ApplicationGroupDto getApplicationGroupDtoById(String appGroupId);
     public ApplicationGroupDto updateApplicationGroup(ApplicationGroupDto applicationGroupDto);
+    public List<ApplicationGroupDto> updateApplicationGroups(List<ApplicationGroupDto> applicationGroupDtos);
 }
