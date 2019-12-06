@@ -39,11 +39,5 @@ public class HcsaLicenceClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<HcsaServiceDto> getHcsaServiceDtoByServiceId(String serviceId){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
 
 }
