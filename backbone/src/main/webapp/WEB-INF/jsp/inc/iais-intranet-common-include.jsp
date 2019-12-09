@@ -1,7 +1,7 @@
 
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
-    String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
+    String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
     String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <meta charset="utf-8">
@@ -17,7 +17,7 @@
 <link href="<%=webroot%>css/nice-select.css" rel="stylesheet">
 <link href="<%=webroot%>css/swiper.css" rel="stylesheet">
 <link href="<%=webroot%>css/jquery.mCustomScrollbar.css" rel="stylesheet">
-<link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
+<link rel="stylesheet" href="<%=webroot%>css/cpl_intranet_style.css">
 
 <script src="<%=webRootCommon%>js/jquery-3.4.1.min.js"></script>
 <script src="<%=webroot%>js/bootstrap.min.js"></script>
@@ -35,4 +35,5 @@
 <script src="<%=webroot%>js/cpl_app.js"></script>
 <script src="<%=webroot%>js/cpl_custom_form_script.js"></script>
 
-<%@ include file="/WEB-INF/jsp/inc/iaishcsascript.jsp" %>
+<%@ include file="/WEB-INF/jsp/inc/iaisscript.jsp" %>
+
