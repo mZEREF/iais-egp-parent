@@ -72,6 +72,9 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_DELIVERY_MODE               = "754889D0-5213-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_DESIGNATION                 = "136A214B-8611-EA11-BE78-000C29D29DB0";
     public static final String CATE_ID_PROFESSIONAL_TYPE           = "444ADC42-8A11-EA11-BE78-000C29D29DB0";
+    public static final String CATE_ID_RECOMMENDATION_TYPE         = "35829FFC-ED17-EA11-BE78-000C29D29DB0";
+    public static final String CATE_ID_PROCESSING_DECISION         = "B8A4E683-F517-EA11-BE78-000C29D29DB0";
+    public static final String CATE_ID_INSPECTION_STATUS           = "D4EA93FF-511A-EA11-BE78-000C29D29DB0";
 
     /**
      * @description: refresh the master codes into cache
