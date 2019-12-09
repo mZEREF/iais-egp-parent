@@ -301,11 +301,7 @@ public class ClinicalLaboratoryDelegator {
                     }
                     appSvcChckListDto = new AppSvcChckListDto();
                     appSvcChckListDto.setChkLstConfId(config[0]);
-                    if("true".equals(config[1])){
-                        appSvcChckListDto.setChkLstType(1);
-                    }else if("false".equals(config[1])){
-                        appSvcChckListDto.setChkLstType(0);
-                    }
+                    appSvcChckListDto.setChkLstType("true".equals(config[1]));
                     appSvcChckListDto.setChkName(config[2]);
                     appSvcChckListDtoList.add(appSvcChckListDto);
                 }
