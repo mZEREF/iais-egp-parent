@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -64,6 +65,9 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public Boolean saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
         try {
+            Integer version = 1;
+            appPremisesRecommendationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01);
+            appPremisesRecommendationDto.setVersion(version);
             insRepClient.saveData(appPremisesRecommendationDto);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);

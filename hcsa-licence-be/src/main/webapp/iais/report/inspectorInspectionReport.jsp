@@ -671,7 +671,7 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="tabInspectionReport" role="tabpanel">
-                                <jsp:include page="/iais/report/inspectionReport.jsp"></jsp:include>
+                                <jsp:include page="/iais/report/inspectorReport.jsp"></jsp:include>
                             </div>
                         </div>
                     </div>

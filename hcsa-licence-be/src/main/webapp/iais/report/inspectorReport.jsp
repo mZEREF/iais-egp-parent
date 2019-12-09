@@ -9,7 +9,6 @@
     String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
         <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-            <input type="hidden" name="taskId" value="12848A70-820B-EA11-BE7D-000C29F371DC">
             <div class="tab-pane" id="tabInspection" role="tabpanel">
                 <div class="alert alert-info" role="alert">
                     <p><span><strong>Section A (HCI Details)</strong></span></p>

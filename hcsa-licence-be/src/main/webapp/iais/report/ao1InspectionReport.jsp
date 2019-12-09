@@ -7,7 +7,6 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <h1>Success!!!!</h1>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -672,7 +671,7 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="tabInspectionReport" role="tabpanel">
-                                <jsp:include page="/iais/report/inspectionReport.jsp"></jsp:include>
+                                <jsp:include page="/iais/report/ao1Report.jsp"></jsp:include>
                             </div>
                         </div>
                     </div>
@@ -681,5 +680,6 @@
         </div>
     </div>
 </form>
+
 
 
