@@ -69,6 +69,8 @@ public class NewApplicationDelegator {
     public static final String RELOADAPPGRPPRIMARYDOCMAP = "reloadAppGrpPrimaryDocMap";
     public static final String APPGRPPRIMARYDOCLIST = "appGrpPrimaryDocList";
     public static final String  APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
+    public static final String FIRESTOPTION = "Select One";
+
 
     @Autowired
     private ServiceConfigService serviceConfigService;
@@ -253,17 +255,18 @@ public class NewApplicationDelegator {
         //:todo delete
         AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
         appSubmissionDto.setAppGrpPremisesDto(appGrpPremisesDto);
-        //
 
+        //:todo delete
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, appGrpPremisesDto);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, (Serializable) appGrpPremisesDtoList);
 
-       /* Map<String,String> errorMap = doValidatePremiss(bpc);
-        if(errorMap.size()>0){
-            ParamUtil.setRequestAttr(bpc.request, ERRORMAP_PREMISES, errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
-        }else {
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+       /* Map<String, Map<String,String>> errorMap = doValidatePremiss(bpc);
+        for(Map<String,String> value:errorMap.values()){
+            if(value.size()>0){
+                ParamUtil.setRequestAttr(bpc.request, ERRORMAP_PREMISES, errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+                return;
+            }
         }*/
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
@@ -298,11 +301,11 @@ public class NewApplicationDelegator {
         for(HcsaSvcDocConfigDto comm:commonHcsaSvcDocConfigList){
             String name = "common"+comm.getId();
             file = (CommonsMultipartFile) mulReq.getFile(name);
-            file.getFileItem().setFieldName("selectedFile");
             String delFlag = name+"flag";
             String delFlagValue =  mulReq.getParameter(delFlag);
             if(file != null && file.getSize() != 0){
                 if (!StringUtil.isEmpty(file.getOriginalFilename())) {
+                    file.getFileItem().setFieldName("selectedFile");
                     appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setSvcComDocId(comm.getId());
                     appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
@@ -333,11 +336,11 @@ public class NewApplicationDelegator {
             for(HcsaSvcDocConfigDto prem:premHcsaSvcDocConfigList){
                 String name = "prem"+prem.getId()+appGrpPremisesDto.getHciName();
                 file = (CommonsMultipartFile) mulReq.getFile(name);
-                file.getFileItem().setFieldName("selectedFile");
                 String delFlag = name+"flag";
                 String delFlagValue =  mulReq.getParameter(delFlag);
                 if(file != null && file.getSize() != 0){
                     if (!StringUtil.isEmpty(file.getOriginalFilename())) {
+                        file.getFileItem().setFieldName("selectedFile");
                         appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                         appGrpPrimaryDocDto.setSvcComDocId(prem.getId());
                         appGrpPrimaryDocDto.setDocName(file.getOriginalFilename());
@@ -602,7 +605,7 @@ public class NewApplicationDelegator {
                     .append("</div>");
         }
 
-        //premiseSelect -- onsite
+        //premiseSelect -- on-site
         List<SelectOption> premisesOnSite= (List) ParamUtil.getSessionAttr(request, "premisesSelect");
         Map<String,String> premisesOnsiteOpt = new HashMap<>();
         for(SelectOption sp:premisesOnSite){
@@ -612,9 +615,10 @@ public class NewApplicationDelegator {
         premisesOnSiteAttr.put("class", "premSelect");
         premisesOnSiteAttr.put("id", "premOnsiteSel");
         premisesOnSiteAttr.put("name", premIndexNo+"premOnSiteSelect");
+        premisesOnSiteAttr.put("style", "display: none;");
         String premOnSiteSelectStr = HtmlElementHelper.generateSelect(premisesOnSiteAttr,premisesOnsiteOpt,null,null,-1,false);
 
-        //premiseSelect -- conv
+        //premiseSelect -- conveyance
         List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
         Map<String,String> premisesConvOpt = new HashMap<>();
         for(SelectOption sp:premisesOnSite){
@@ -624,31 +628,36 @@ public class NewApplicationDelegator {
         premisesConvAttr.put("class", "premSelect");
         premisesConvAttr.put("id", "premConSel");
         premisesConvAttr.put("name", premIndexNo+"premOnSiteSelect");
+        premisesConvAttr.put("style", "display: none;");
         String premConvSelectStr = HtmlElementHelper.generateSelect(premisesConvAttr,premisesConvOpt,null,null,-1,false);
 
-        //Address Type
+        //Address Type on-site
         List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
         Map<String,String> addrTypeOpt = new HashMap<>();
+        addrTypeOpt.put("-1", FIRESTOPTION);
         for(SelectOption addrType:addrTypes){
             addrTypeOpt.put(addrType.getValue(), addrType.getText());
         }
         Map<String,String> addrTypesAttr = new HashMap<>();
         addrTypesAttr.put("id", "siteAddressType");
         addrTypesAttr.put("name", premIndexNo+"addrType");
-        String addrTypeSelectStr = HtmlElementHelper.generateSelect(addrTypesAttr,addrTypeOpt,null,null,-1,false);
+        addrTypesAttr.put("style", "display: none;");
+        String addrTypeSelect = HtmlElementHelper.generateSelect(addrTypesAttr,addrTypeOpt,null,null,-1,false);
+        String addrTypeSelectStr = generateDropDownHtml(addrTypeSelect, MasterCodeUtil.CATE_ID_ADDRESS_TYPE, FIRESTOPTION);
 
-
-        //Address Type
+        //Address Type conveyance
         List<SelectOption> conAddrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
         Map<String,String> conAddrTypeOpt = new HashMap<>();
+        conAddrTypeOpt.put("-1", FIRESTOPTION);
         for(SelectOption addrType:addrTypes){
             addrTypeOpt.put(addrType.getValue(), addrType.getText());
         }
         Map<String,String> conAddrTypesAttr = new HashMap<>();
-        addrTypesAttr.put("id", "siteAddressType");
-        addrTypesAttr.put("name", premIndexNo+"conAddrType");
-        String conAddrTypeSelectStr = HtmlElementHelper.generateSelect(conAddrTypesAttr,conAddrTypeOpt,null,null,-1,false);
-
+        conAddrTypesAttr.put("id", "siteAddressType");
+        conAddrTypesAttr.put("name", premIndexNo+"conAddrType");
+        conAddrTypesAttr.put("style", "display: none;");
+        String conAddrTypeSelect = HtmlElementHelper.generateSelect(conAddrTypesAttr,conAddrTypeOpt,null,null,-1,false);
+        String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypeSelect, MasterCodeUtil.CATE_ID_ADDRESS_TYPE, FIRESTOPTION);
 
         sql = sql.replace("(0)", premIndexNo);
         sql = sql.replace("(1)", premTypeBuffer.toString());
@@ -729,20 +738,21 @@ public class NewApplicationDelegator {
         list.sort((h1, h2) -> h1.getSvcName().compareTo(h2.getSvcName()));
     }
 
-    private Map<String, Map<String, String>> doValidate(BaseProcessClass bpc) {
+/*    private Map<String, Map<String, String>> doValidate(BaseProcessClass bpc) {
         Map<String, Map<String, String>> reuslt = new HashMap<>();
         //do validate premiss
         Map<String, String> premises = doValidatePremiss(bpc);
         reuslt.put("premises", premises);
         return reuslt;
-    }
+    }*/
 
-    private Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
+    private Map<String, Map<String,String>> doValidatePremiss(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate one premiss
-        Map<String, String> errorMap = new HashMap<>();
+        Map<String,Map<String,String>> errorMaps = new HashMap<>();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = (List<AppGrpPremisesDto>) ParamUtil.getSessionAttr(bpc.request, APPGRPPREMISESLIST);
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+            Map<String, String> errorMap = new HashMap<>();
             String premiseType = appGrpPremisesDto.getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
                 errorMap.put("premisesType", "Please select the premises Type");
@@ -759,7 +769,7 @@ public class NewApplicationDelegator {
                         //do by wenkang
                         String addrType = appGrpPremisesDto.getAddrType();
                         if(StringUtil.isEmpty(addrType)){
-                            errorMap.put("ADDTY001", "can not is null");
+                            errorMap.put("addrType", "can not is null");
                         }else {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
                                 boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getFloorNo());
@@ -779,7 +789,7 @@ public class NewApplicationDelegator {
                         String postalCode = appGrpPremisesDto.getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
                             if (!postalCode.matches("^[0-9]*$")) {
-                                errorMap.put("postalCode", "");
+                                errorMap.put("postalCode", "the postal code must be numbers ");
                             }
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
@@ -789,20 +799,20 @@ public class NewApplicationDelegator {
                         }
                         String addrType = appGrpPremisesDto.getConveyanceAddressType();
                         if(StringUtil.isEmpty(addrType)){
-                            errorMap.put("ADDTY001", "can not is null");
+                            errorMap.put("conveyanceAddressType", "can not is null");
                         }else {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
                                 boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo());
                                 boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBlockNo());
                                 boolean empty2 = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceUnitNo());
                                 if (empty) {
-                                    errorMap.put("floorNo", "can not is null");
+                                    errorMap.put("conveyanceFloorNo", "can not is null");
                                 }
                                 if (empty1) {
-                                    errorMap.put("blkNo", "can not is null");
+                                    errorMap.put("conveyanceBlockNo", "can not is null");
                                 }
                                 if (empty2) {
-                                    errorMap.put("unitNo", "can not is null");
+                                    errorMap.put("conveyanceUnitNo", "can not is null");
                                 }
                             }
                         }
@@ -812,10 +822,10 @@ public class NewApplicationDelegator {
 
                 }
             }
-
+            errorMaps.put(appGrpPremisesDto.getPremisesIndexNo(), errorMap);
         }
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
-        return errorMap;
+        return errorMaps;
     }
 
 
@@ -920,7 +930,7 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setAddrType(addrType);
                 //add index for dto refer
                 appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
-                appGrpPremisesDtoList.add(appGrpPremisesDto);
+
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
                 String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premConSelect");
                 String vehicleNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceVehicleNo");
@@ -940,9 +950,8 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setConveyanceUnitNo(unitNo);
                 appGrpPremisesDto.setConveyanceBuildingName(buildingName);
                 appGrpPremisesDto.setConveyanceAddressType(siteAddressType);
-                appGrpPremisesDtoList.add(appGrpPremisesDto);
             }
-
+            appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
 
 
@@ -1033,5 +1042,69 @@ public class NewApplicationDelegator {
             }
         }
     }
+
+    /**
+     * @description:
+     * @author: zixian
+     * @date: 12/9/2019 2:47 PM
+     * @param:  [baseDropDown] --- DropDown Html    [category] --Master Code Categorys
+     * @return: dropdown html
+     */
+    public String generateDropDownHtml(String baseDropDown, String category, String firestOption){
+        StringBuffer sBuffer = new StringBuffer();
+        sBuffer.append(baseDropDown)
+                .append("<div class=\"nice-select input-large\" tabindex=\"0\">")
+                .append("<span class=\"current\">"+firestOption+"</span>")
+                .append("<ul class=\"list mCustomScrollbar _mCS_3 mCS_no_scrollbar\">")
+                .append("<div id=\"mCSB_3\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
+                .append("<div id=\"mCSB_3_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">")
+                .append("<li data-value=\"-1\" class=\"option selected\">"+firestOption+"</li>");
+        List<SelectOption> selectOptionList= MasterCodeUtil.retrieveOptionsByCate(category);
+        for(SelectOption kv:selectOptionList){
+            sBuffer.append(" <li data-value="+kv.getValue()+" class=\"option\">"+kv.getText()+"</li>");
+        }
+        sBuffer.append("</div>")
+                .append("<div id=\"mCSB_3_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_3_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
+                .append("<div class=\"mCSB_draggerContainer\">")
+                .append(" <div id=\"mCSB_3_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px;\">")
+                .append(" <div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\"></div>")
+                .append("</div>")
+                .append("<div class=\"mCSB_draggerRail\"></div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</ul>")
+                .append("</div>");
+        return sBuffer.toString();
+    }
+
+    /*public String generateDropDownHtml(String baseDropDown,List<SelectOption> selectOptionList, String firestOption){
+        StringBuffer sBuffer = new StringBuffer();
+        sBuffer.append(baseDropDown)
+                .append("<div class=\"nice-select input-large\" tabindex=\"0\">")
+                .append("<span class=\"current\">"+firestOption+"</span>")
+                .append("<ul class=\"list mCustomScrollbar _mCS_3 mCS_no_scrollbar\">")
+                .append("<div id=\"mCSB_3\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
+                .append("<div id=\"mCSB_3_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">")
+                .append("<li data-value=\"-1\" class=\"option selected\">"+firestOption+"</li>");
+        List<SelectOption> selectOptionList= MasterCodeUtil.retrieveOptionsByCate(category);
+        for(SelectOption kv:selectOptionList){
+            sBuffer.append(" <li data-value="+kv.getValue()+" class=\"option\">"+kv.getText()+"</li>");
+        }
+        sBuffer.append("</div>")
+                .append("<div id=\"mCSB_3_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_3_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
+                .append("<div class=\"mCSB_draggerContainer\">")
+                .append(" <div id=\"mCSB_3_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px;\">")
+                .append(" <div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\"></div>")
+                .append("</div>")
+                .append("<div class=\"mCSB_draggerRail\"></div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</div>")
+                .append("</ul>")
+                .append("</div>");
+        return sBuffer.toString();
+    }*/
+
 }
 
