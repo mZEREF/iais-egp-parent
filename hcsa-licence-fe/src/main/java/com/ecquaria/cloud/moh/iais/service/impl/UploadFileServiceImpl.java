@@ -280,10 +280,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         String s="FAIL";
         try {
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization()).getBody();
-//            s = restBridgeHelper.callOtherSideApi(syncFileTrackUrl, keyId, secretKey, processFileTrackDto,
-//                    String.class, HttpMethod.POST);
-
+            s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization()).getEntity();
         }catch (Exception e){
             log.error(e.getMessage(),e);
             return s;
