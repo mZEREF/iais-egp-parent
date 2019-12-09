@@ -37,14 +37,13 @@
         <td>
             <div class="col-sm-9">
                 <select id="decision-email" name="decision">
-                    <option value="Sends email/letter to Applicant">Sends email/letter to Applicant</option>
-                    <option value="Route email/letter to AO1 for review">Route email/letter to AO1 for review</option>
+                    <c:forEach items="${appTypeOption}" var="decision">
+                        <option  value="${decision.value}">${decision.text}</option>
+                    </c:forEach>
                 </select>
             </div>
         </td>
     </tr>
-
-
     </tbody>
 </table>
 <p class="text-right text-center-mobile">

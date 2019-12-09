@@ -57,24 +57,23 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <select id="decision-email" name="decision">
-                                                    <option value="Acknowledge email/Letter Content">Acknowledge email/Letter Content</option>
-                                                    <option value="Revise email/Letter Content">Revise email/Letter Content</option>
+                                                    <c:forEach items="${appTypeOption}" var="decision">
+                                                        <option  value="${decision.value}">${decision.text}</option>
+                                                    </c:forEach>
                                                 </select>
                                             </div>
                                         </td>
                                     </tr>
-
-
                                     </tbody>
                                 </table>
-                                <p class="text-right text-center-mobile">
+                                <div class="text-right text-center-mobile">
                                     <iais:action>
                                         <button type="button" class="search btn" onclick="javascript:doSend();">Submit</button>
                                     </iais:action>
                                     <iais:action>
                                         <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
                                     </iais:action>
-                                </p>
+                                </div>
                             </div>
 
                         </div>
