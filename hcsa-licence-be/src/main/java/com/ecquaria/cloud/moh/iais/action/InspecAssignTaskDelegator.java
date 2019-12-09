@@ -214,7 +214,7 @@ public class InspecAssignTaskDelegator {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
-        ApplicationDto applicationDto1 = updateApplicaiton(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
         applicationViewDto.setApplicationDto(applicationDto1);
         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),HcsaConsts.ROUTING_STAGE_INS,null);
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
@@ -230,7 +230,7 @@ public class InspecAssignTaskDelegator {
         return taskDto;
     }
 
-    private ApplicationDto  updateApplicaiton(ApplicationDto applicationDto, String appStatus) {
+    private ApplicationDto updateApplication(ApplicationDto applicationDto, String appStatus) {
         applicationDto.setStatus(appStatus);
         return applicationViewService.updateApplicaiton(applicationDto);
     }

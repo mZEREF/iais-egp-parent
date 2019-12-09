@@ -102,8 +102,8 @@
                         </iais:value>
                       </iais:row>
                       <iais:action >
-                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doBack()">Back</button>
-                        <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:doSubmit()">Submit</button>
+                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectionSupAssignTaskConfirmBack()">Back</button>
+                        <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:doInspectionSupAssignTaskConfirmSubmit()">Submit</button>
                       </iais:action>
                     </iais:section>
                   </div>
@@ -117,11 +117,11 @@
   </form>
 </div>
 <script type="text/javascript">
-    function doBack() {
+    function doInspectionSupAssignTaskConfirmBack() {
         submit('assign');
     }
 
-    function doSubmit() {
+    function doInspectionSupAssignTaskConfirmSubmit() {
         submit('success');
     }
     function submit(action){

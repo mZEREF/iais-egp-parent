@@ -16,6 +16,7 @@
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="InspectionSupSearchSwitchType" value="">
   <input type="hidden" id="taskId" name="taskId" value="">
+  <input type="hidden" id="inspector_name" name="inspector_name" value="">
 
   <iais:body >
     <div class="container">
@@ -68,12 +69,19 @@
                     <iais:row>
                       <iais:field value="Inspector Name"/>
                       <iais:value width="18">
-                        <iais:select name="inspector_name" options="inspectorOption" firstOption="Please select" value="${supTaskSearchParam.filters['appNo_list']}" ></iais:select>
+                        <div onload="inspectorSearchTask_optionNameAuto(${inspectorValue})">
+                          <select name = "inspectorSearchTask_inspectorName" id="inspectorSearchTask_inspectorName" onclick="javascript:doInspectorSearchTaskSelect()">
+                            <option value="-">Please select</option>
+                            <c:forEach var="inspector" items="${inspectorOption.rows}">
+                              <option value="<iais:mask name="inspectorName" value="${inspector.value}"/>"><c:out value="${inspector.text}"/></option>
+                            </c:forEach>
+                          </select>
+                        </div>
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:center;">
-                      <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSearch()">Search</button>
-                      <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
+                      <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
+                      <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
                     </iais:action>
                   </iais:section>
                 </div>
@@ -132,7 +140,7 @@
                       <td><c:out value="${pool.applicationStatus}"/></td>
                       <td><c:out value="${pool.inspector}"/></td>
                       <td><c:out value="${pool.inspectorLead}"/></td>
-                      <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="taskId" value="${pool.taskId}"/>');">Assign</button></td>
+                      <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectorSearchTaskAssign('<iais:mask name="taskId" value="${pool.taskId}"/>');">Assign</button></td>
                     </tr>
                   </c:forEach>
                 </c:otherwise>
@@ -146,13 +154,24 @@
   </iais:body>
 </form>
 <script type="text/javascript">
+    function inspectorSearchTask_optionNameAuto(value){
+      if(value != null && value != null){
+          $("#inspectorSearchTask_inspectorName").val(value);
+      }
+        doInspectorSearchTaskSelect();
+    }
 
-    function doAssign(taskId) {
+    function doInspectorSearchTaskSelect(){
+        var options=$("#inspectorSearchTask_inspectorName option:selected");
+        $("#inspector_name").val(options);
+    }
+
+    function doInspectorSearchTaskAssign(taskId) {
         $("#taskId").val(taskId);
         submit('assign');
     }
 
-    function doClear() {
+    function doInspectorSearchTaskClear() {
         $('input[name="application_no"]').val("");
         $("#application_type option:first").prop("selected", 'selected');
         $("#application_status option:first").prop("selected", 'selected');
@@ -166,7 +185,7 @@
         var mainPoolForm = document.getElementById('mainSupForm');
         mainPoolForm.submit();
     }
-    function doSearch() {
+    function doInspectorSearchTaskSearch() {
         submit('search');
     }
 </script>

@@ -63,8 +63,8 @@
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:center;">
-                      <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSearch()">Search</button>
-                      <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doClear()">Clear</button>
+                      <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
+                      <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectionCommonPoolClear()">Clear</button>
                     </iais:action>
                   </iais:section>
                 </div>
@@ -111,7 +111,7 @@
                           <td><c:out value="${pool.hciCode}"/></td>
                           <td><c:out value="${pool.hciName}"/></td>
                           <td><c:out value="${pool.submitDt}"/></td>
-                          <td><button type="button"  class="btn btn-default" onclick="javascript:doAssign('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Assign</button></td>
+                          <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectionCommonPoolAssign('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Assign</button></td>
                         </tr>
                       </c:forEach>
                     </c:otherwise>
@@ -127,12 +127,12 @@
 </div>
 <script type="text/javascript">
 
-    function doAssign(applicationNo) {
+    function doInspectionCommonPoolAssign(applicationNo) {
         $("#applicationNo").val(applicationNo);
         submit('assign');
     }
 
-    function doClear() {
+    function doInspectionCommonPoolClear() {
         $('input[name="application_no"]').val("");
         $("#application_type option:first").prop("selected", 'selected');
         $("#application_status option:first").prop("selected", 'selected');
@@ -146,7 +146,7 @@
         var mainPoolForm = document.getElementById('mainPoolForm');
         mainPoolForm.submit();
     }
-    function doSearch() {
+    function doInspectionCommonPoolSearch() {
         submit('search');
     }
 </script>

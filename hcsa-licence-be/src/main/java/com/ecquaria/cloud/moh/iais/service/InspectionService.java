@@ -88,5 +88,12 @@ public interface InspectionService {
       */
     void assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools);
 
+    /**
+     * @author: shicheng
+     * @Date 2019/11/22
+     * @Param: serviceId
+     * @return: HcsaServiceDto
+     * @Descripation: get HcsaServiceDto By Service Id
+     */
     HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId);
 }

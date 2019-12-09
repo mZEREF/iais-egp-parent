@@ -107,8 +107,8 @@
                       </iais:value>
                     </iais:row>
                     <iais:action >
-                      <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doBack()">Back</button>
-                      <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doNext()">Next</button>
+                      <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectionAssignTaskBack()">Back</button>
+                      <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doInspectionAssignTaskNext()">Next</button>
                     </iais:action>
                   </iais:section>
                 </div>
@@ -122,12 +122,12 @@
   </form>
 </div>
 <script type="text/javascript">
-    function doBack() {
+    function doInspectionAssignTaskBack() {
         $("[name='actionValue']").val('back');
         submit('back');
     }
 
-    function doNext() {
+    function doInspectionAssignTaskNext() {
         $("[name='actionValue']").val('confirm');
         submit('confirm');
     }

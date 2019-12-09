@@ -65,10 +65,11 @@ public class InspectionSearchDelegator {
     private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
     @Autowired
-    private InspectionSearchDelegator(InspectionService inspectionService, InspectionAssignTaskService inspectionAssignTaskService, AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient){
+    private InspectionSearchDelegator(InspectionService inspectionService, ApplicationViewService applicationViewService, InspectionAssignTaskService inspectionAssignTaskService, AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient){
         this.inspectionService = inspectionService;
         this.inspectionAssignTaskService = inspectionAssignTaskService;
         this.appPremisesRoutingHistoryClient = appPremisesRoutingHistoryClient;
+        this.applicationViewService = applicationViewService;
     }
 
     /**
@@ -150,7 +151,7 @@ public class InspectionSearchDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
-        String inspectorValue = ParamUtil.getRequestString(bpc.request, "inspector_name");
+        String inspectorValue = ParamUtil.getMaskedString(bpc.request, "inspector_name");
 
         List<TaskDto> commPools = getCommPoolByGroupWordId(loginContext);
         String[] applicationNo_list = inspectionService.getApplicationNoListByPool(commPools);
@@ -196,6 +197,7 @@ public class InspectionSearchDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "inspectorValue", inspectorValue);
     }
 
     private List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {

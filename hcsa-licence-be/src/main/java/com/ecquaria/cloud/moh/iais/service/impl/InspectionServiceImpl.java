@@ -91,13 +91,6 @@ public class InspectionServiceImpl implements InspectionService {
         return applicationStrs;
     }
 
-    /**
-     * @author: shicheng
-     * @Date 2019/11/22
-     * @Param: serviceId
-     * @return: HcsaServiceDto
-     * @Descripation: get HcsaServiceDto By Service Id
-     */
     @Override
     public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
         return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
