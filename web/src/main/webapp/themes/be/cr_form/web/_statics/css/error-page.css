@@ -1,0 +1,117 @@
+.fb-rounded-box-content-error-SOPexception {
+	background-color: #ffeff5;
+	border-left: 1px dotted #ddaabd;
+	border-right: 1px dotted #ddaabd;
+	padding: 5px 2px 5px 80px;
+}
+
+.fb-summary-info-error-SOPexception {
+	color: #c00f0f;
+	background-image:url(../images/sop/icon-alert-error-SOPexception.png);
+	background-repeat:no-repeat;
+	background-position:5px 3px;
+	padding:5px 2px 5px 80px;
+}
+
+.fb-summary-info-error-SOPexception-action {
+	color: #3c3133;
+}
+
+.fb-rounded-box-top-error-SOPexception {
+	background:  url(../images/sop/rounded-box-top-error-SOPexception.png) repeat-x;
+	height: 5px;
+	background-color: #ffeff5;
+}	
+
+.fb-rounded-box-top-left-error-SOPexception {
+	background:  url(../images/sop/rounded-box-tl-error-SOPexception.png) no-repeat;
+	float: left;
+	width: 5px;
+	height: 5px;
+}
+
+.fb-rounded-box-top-right-error-SOPexception {
+	background:   url(../images/sop/rounded-box-tr-error-SOPexception.png) no-repeat;
+	float: right;
+	width: 5px;
+	height: 5px;
+}
+
+.fb-rounded-box-bottom-error-SOPexception {
+	background:  url(../images/sop/rounded-box-bottom-error-SOPexception.png) repeat-x;
+	height: 5px;
+	background-color: #ffeff5;
+}
+
+.fb-rounded-box-bottom-left-error-SOPexception {
+	background:  url(../images/sop/rounded-box-bl-error-SOPexception.png) no-repeat;
+	float: left;
+	width: 5px;
+	height: 5px;
+}
+
+.fb-rounded-box-bottom-right-error-SOPexception {
+	background:  url(../images/sop/rounded-box-br-error-SOPexception.png) no-repeat;
+	float: right;
+	width: 5px;
+	height: 5px;
+}
+
+.fb-rounded-box-content-error-Appexception {
+	background-color: #ffffef;
+	border-left: 1px dotted #ddddaa;
+	border-right: 1px dotted #ddddaa;
+	padding: 0px 5px 0px 5px;
+}
+
+.fb-summary-info-error-Appexception {
+	color: #c00f0f;
+	background-image:url(../images/sop/icon-alert-error-Appexception.png);
+	background-repeat:no-repeat;
+	background-position:5px 3px;
+	padding:0px 0px 0px 80px;
+}
+
+.fb-summary-info-error-Appexception-action {
+	color: #3c3133;
+}
+
+.fb-rounded-box-top-error-Appexception {
+	background:  url(../images/sop/rounded-box-top-error-Appexception.png) repeat-x;
+	height: 5px;
+	background-color: #ffffef;
+}	
+
+.fb-rounded-box-top-left-error-Appexception {
+	background:  url(../images/sop/rounded-box-tl-error-Appexception.png) no-repeat;
+	float: left;
+	width: 5px;
+	height: 5px;
+}
+
+.fb-rounded-box-top-right-error-Appexception {
+	background:   url(../images/sop/rounded-box-tr-error-Appexception.png) no-repeat;
+	float: right;
+	width: 5px;
+	height: 5px;
+}
+
+.fb-rounded-box-bottom-error-Appexception {
+	background:  url(../images/sop/rounded-box-bottom-error-Appexception.png) repeat-x;
+	height: 5px;
+	background-color: #ffffef;
+}
+
+.fb-rounded-box-bottom-left-error-Appexception {
+	background:  url(../images/sop/rounded-box-bl-error-Appexception.png) no-repeat;
+	float: left;
+	width: 5px;
+	height: 5px;
+}
+
+.fb-rounded-box-bottom-right-error-Appexception {
+	background:  url(../images/sop/rounded-box-br-error-Appexception.png) no-repeat;
+	float: right;
+	width: 5px;
+	height: 5px;
+}

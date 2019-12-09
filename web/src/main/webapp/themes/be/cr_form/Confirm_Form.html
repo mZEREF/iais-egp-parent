@@ -1,0 +1,2957 @@
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+    <title></title>
+
+
+
+
+
+
+    <!-- START of egp-blank-common-include.jsp  -->
+
+
+
+
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+
+
+
+
+
+    <link rel="shortcut icon" href="web/_themes/egov/images/ecq.ico" type="image/x-icon">
+
+    <!-- START: CSS -->
+    <link href="web/_statics/css/jquery-ui/smoothness/jquery-ui-custom.css" type="text/css" rel="stylesheet"
+        media="all">
+    <link href="web/_statics/css/jquery-ui/form-viewer/jquery-ui-all.css" type="text/css" rel="stylesheet" media="all">
+    <link href="web/_statics/css/core/core.css" rel="stylesheet" type="text/css" media="all">
+
+
+    <link href="web/_themes/egov/css/custom.css" rel="stylesheet" type="text/css" media="all">
+    <link href="web/_themes/egov/css/jquery.treeview.css" rel="stylesheet" type="text/css" media="all">
+    <link href="web/_themes/egov/css/jquery.autocomplete.css" rel="stylesheet" type="text/css" media="all">
+    <!-- END: CSS -->
+
+    <script type="text/javascript"
+        src="web/javascripts/egov/jquery-3.4.1.min.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/egov/jquery-migrate.1.4.1.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/javascripts/egov/jquery-migrate.3.0.0.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript">
+        var $jbs = jQuery.noConflict();
+    </script>
+
+    <!-- START: javascript -->
+
+
+
+
+
+
+    <script type="text/javascript"
+        src="web/javascripts/sop/reset.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+
+
+    <script type="text/javascript"
+        src="web/javascripts/egov/jquery-3.4.1.min.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/egov/jquery-migrate.1.4.1.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/javascripts/egov/jquery-migrate.3.0.0.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/jquery.cookie.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/jquery.dimensions.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/jquery.positionBy.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/jquery.bgiframe-2.1.1.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/jquery.jdMenu.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/hint.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/jquery-ui-custom.min.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/sop.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="/cr/javascripts/sop.js.jsp?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+
+    <script type="text/javascript">
+        var webContextPath = "web";
+        var dateFormatJava = "dd-MMM-yyyy";
+        var dateFormatCommon = SOP.javaDateFormatToJsDateFormat(dateFormatJava);
+        var pleaseWaitStr = "Please Wait";
+        var isSureDelete = "Are you sure you want to delete?";
+    </script>
+    <script type="text/javascript"
+        src="/cr/javascripts/sop/sop.message.js.jsp?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/sop.util.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/sop.common.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/sop.crud.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/sopAjax.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/jquery.treeview.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/jquery.dd.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/base64.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/sopweb-base.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="/cr/javascripts/sop/sopweb-base.js.jsp?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/tooltip.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/timepicker.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/csrf.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <!-- END: javascript -->
+
+
+    <script src="/egov/JavaScriptServlet?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+
+
+    <script src="web/javascripts/egov/egp.common.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"
+        type="text/javascript"></script>
+
+
+
+
+
+
+
+    <script type="text/javascript">
+        (function () {
+            EGP.Common.setAutoWidth4Selector();
+            EGP.Common.getLocation();
+        })();
+        var contextPath = "/cr";
+    </script>
+
+
+    <!-- END of egp-blank-common-include.jsp  -->
+
+
+
+
+
+</head>
+
+<body class="nobg">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script language="Javascript">
+        var sopFormContext = "/cr/sopforms/"
+    </script>
+    <script language="Javascript">
+        var egovFormContext = "/cr/egovforms/"
+    </script>
+    <script language="Javascript">
+        var sopFormWebContext = "web/"
+    </script>
+
+
+    <script type="text/javascript">
+        var servletRoot = "/cr";
+        var sopFormTheme = "web/_themes/egov/";
+        var retrieveInfoError = 'null';
+
+        function hideMyinfoError() {
+            $("#myinfo_error").hide();
+        }
+
+        $(function () {
+
+            if (retrieveInfoError != 'null' && retrieveInfoError != '') {
+                var errorHtml = '<div class="alert-error" id="myinfo_error" onclick="hideMyinfoError()"><p>' +
+                    retrieveInfoError + '</p> </div>';
+                $("#overDiv").after(errorHtml);
+            }
+        });
+    </script>
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="web/_themes/egov/css/egovforms/default.css">
+    <link rel="stylesheet" type="text/css" href="web/_themes/egov/css/egovforms/sopform.flow.css">
+    <link rel="stylesheet" type="text/css" href="web/_themes/egov/css/egovforms/sopform.form.css">
+
+
+    <link href="web/sample/saas-new/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="web/sample/saas-new/assets/css/general-new.css" rel="stylesheet">
+    <link href="web/sample/saas-new/assets/css/responsive.css" rel="stylesheet">
+    <link href="web/sample/saas-new/assets/css/sop2.css" rel="stylesheet">
+    <link href="web/sample/saas-new/assets/css/font-awesome.min.css" rel="stylesheet">
+    <link href="web/sample/saas-new/assets/css/scrolltabs.css" rel="stylesheet">
+
+    <style type="text/css">
+        .edit_myinfo {
+            / / width: 1049 px !important;
+            width: 48%;
+        }
+
+        .load_myinfo {
+            width: 150px;
+            position: relative;
+            top: -43px;
+            left: 26%;
+        }
+
+        .radioTable {
+            width: 60% !important;
+            max-width: 214px !important;
+        }
+
+        html {
+            overflow-y: hidden;
+        }
+
+
+        div.normal-indicator {
+            overflow: hidden;
+        }
+    </style>
+
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <script type="text/javascript">
+        function inIframe() {
+
+            return false
+
+            try {
+                return window.self !== window.top;
+            } catch (e) {
+                return true;
+            }
+        }
+
+        //if (inIframe()) {
+        $(window).resize(adjustPage);
+        //}
+        var buttonsCount = 0;
+        var wizardMode = true;
+        var isServerRender = false;
+        var pagesCount = 0;
+        var lessHeight = 27;
+        var timerid;
+        var __rrColumnWidth = 140;
+        var __rrTwoColumnWidth = 420;
+
+        function __respRR() {
+            var outerWidth = $(window).width();
+            $(".repeatable-row").each(function () {
+                var control = Form.getControl($(this));
+                var id = control.properties.id;
+                var sectionCols = 1,
+                    pageCols = 1;
+                var isTwoColumn = false;
+                if (control.isInSection()) {
+                    sectionCols = control.getContainingSection().properties.cols;
+                }
+                pageCols = control.getContainingPage().properties.cols;
+                containerWidth = outerWidth / pageCols / sectionCols;
+                if (containerWidth < __rrTwoColumnWidth) {
+                    containerWidth = 9999;
+                    isTwoColumn = true;
+                }
+                var isRefresh = control.getGrid().columns("responseWidthCss", __rrColumnWidth, containerWidth);
+
+                if (isRefresh == true) {
+                    window.validationManager._tempErrorForResponsive = $(".error_placements:not(:empty)",
+                        control.getElement());
+                    control.refresh();
+                    if (Form.isView) control.setViewData();
+                    else control.setRuntimeData();
+
+                    if (window.conditionManager) conditionManager.doRepeatableRowCondition(control);
+                    if (window.aclManager) aclManager.processACLDisabledChildren([control], Form.currentPage);
+
+
+                    window.validationManager._tempErrorForResponsive.each(function () {
+                        var content = $(this).text();
+                        if (content) {
+                            $("#" + $(this).attr("id")).text(content).css("display", "inline");
+                        }
+                    });
+                }
+                var $val = __respCSSItems[id];
+                var len = $val.length;
+                var val = __respCSSNodes[id] ? __respCSSNodes[id] : [];
+                if (isTwoColumn) {
+                    for (var i = 0; i < len; i++) {
+                        var parent = $($val[i]).parent();
+                        if (parent.is('.control-caption-horizontal')) {
+                            parent.removeClass('control-caption-horizontal');
+                            parent.addClass('control-caption-horz-disabled');
+                        }
+                    }
+
+                    var $head = $('head');
+                    for (var i = 0; i < val.length; i++) {
+                        if ($('#rrrcss-' + id + '-' + i).length <= 0) {
+                            var valItem = val[i];
+                            var $valItem = $(valItem);
+                            $head.append($valItem);
+                            $valItem.attr('id', 'rrrcss-' + id + '-' + i);
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < len; i++) {
+                        var parent = $($val[i]).parent();
+                        if (parent.is('.control-caption-horz-disabled')) {
+                            parent.removeClass('control-caption-horz-disabled');
+                            parent.addClass('control-caption-horizontal')
+                        }
+                    }
+
+                    for (var i = 0; i < val.length; i++) {
+                        $('#rrrcss-' + id + '-' + i).remove();
+                    }
+                }
+
+            });
+        }
+
+        var __respCSSItems = {};
+        var __respCSSNodes = {};
+
+        function __addRespCSSItem(id, selector, extra) {
+            if (extra) {
+                var stylesheet = '<style type="text/css">\n';
+                stylesheet += selector + ' table, ';
+                stylesheet += selector + ' thead, ';
+                stylesheet += selector + ' tbody, ';
+                stylesheet += selector + ' th, ';
+                stylesheet += selector + ' tr, ';
+                stylesheet += selector + ' td {display: block}\n';
+                stylesheet += selector + ' tr.table_header {position: absolute; top: -9999px; left: -9999px;}\n';
+                // stylesheet += selector + ' tr {border: 1px solid #ccc;}\n';
+                stylesheet += selector +
+                    ' td {border: none; border-bottom: 1px solid #eee; position: relative; padding-left: 50%; height: auto;}\n';
+                stylesheet += selector +
+                    ' td:before {position: absolute; top: 6px; left: 6px; width: 45%; padding-right: 10px;}\n';
+                stylesheet += selector + ' td:nth-of-type(1):before { content: "No."; }\n';
+                for (var i = 1; i <= extra.length; i++) {
+                    stylesheet += selector + ' td:nth-of-type(' + (i + 1) + '):before { content: "' + extra[i - 1]
+                        .replace(/"/g, '\\"') + '"; }\n';
+                }
+                stylesheet += selector + ' td:nth-of-type(' + (extra.length + 2) + '):before { content: ""; }\n';
+                stylesheet += '</style>';
+
+                var val = __respCSSNodes[id];
+                if (val)
+                    val.push(stylesheet);
+                else
+                    __respCSSNodes[id] = [stylesheet];
+            } else {
+                var val = __respCSSItems[id];
+                if (val)
+                    val.push(selector);
+                else
+                    __respCSSItems[id] = [selector];
+            }
+        }
+
+        function __generateRespCSSItem() {
+            Form.traverse(function (control) {
+                if (control.isRepeatableRow()) {
+                    var id = control.properties.id;
+                    var pageCols = control.getContainingPage().properties.cols;
+                    var names = [];
+                    if (control.children) {
+                        $(control.children).each(function () {
+                            names.push(this.properties.caption);
+                        });
+                    }
+                    if (names.length) {
+                        __addRespCSSItem(id, " .control.container-p-" + pageCols +
+                            " .control.container-rr-id-" + id, names);
+                    }
+                    __addRespCSSItem(id, " .control.container-p-" + pageCols + " .control-label-span");
+                }
+            });
+            $(".repeatable-row").each(function () {
+                var control = Form.getControl($(this));
+
+            });
+            window.isRespCSSItemReady = true;
+        }
+
+        function adjustPage() {
+            if (window.Form && Form.currentMode == 'printerFriendly') return;
+            if (window.Form && !window.isRespCSSItemReady) {
+                __generateRespCSSItem();
+            }
+
+            try {
+                if (window.parent && window.parent.EGP && window.parent.EGP.Common && window.parent.EGP.Common
+                    .getAutoHeightMode() == 1)
+                    return;
+            } catch (e) {}
+
+            var tmpHeight = lessHeight;
+            if (wizardMode) {
+                tmpHeight += 71;
+            } else {
+                if (buttonsCount > 0)
+                    tmpHeight += 47;
+                if (pagesCount > 1)
+                    tmpHeight += 41;
+            }
+            var globalError = $('#global-error');
+            if (globalError.length != 0)
+                tmpHeight += globalError.height();
+
+            (timerid && clearTimeout(timerid));
+            timerid = setTimeout(function () {
+                $(".control-area").height($(window).height() - tmpHeight);
+                __respRR();
+            }, 10);
+        }
+    </script>
+
+    <!-- Base -->
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/firebug/firebugx.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/base/1.1/Base.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/ckeditor/ckeditor.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/jscache/jscache.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/navigation.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/jquery.pagination.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+
+    <!-- SOP Form -->
+    <script type="text/javascript">
+        function getCommonValidationJSSupport() {
+            return {
+                // TODO add common validation methods here.
+                //example
+                validateEmail: function () {
+                    var value = this.getFieldValue();
+                    var regex = /^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/;
+                    if ($.trim(value) == "") {
+                        this.setErrorMessage("Please enter Email address.");
+                    } else if (!regex.test(value)) {
+                        this.setErrorMessage("Please enter a valid email address.");
+                    }
+                },
+
+                validatePassword: function () {
+                    var value = this.getFieldValue();
+                    if (value == "") {
+                        this.setErrorMessage("Password can not be empty.");
+                    } else if (value.length < 6) {
+                        this.setErrorMessage("Please enter at least 6 characters.");
+                    } else if (value.indexOf(" ") != -1) {
+                        this.setErrorMessage("The password can't contain space.");
+                    }
+                },
+
+                validateNumber: function () {
+                    var value = this.getFieldValue();
+                    if (!(/(^\d*$)/.test(value))) {
+                        this.setErrorMessage('Only accepts numbers.');
+                    }
+                }
+            }
+        };
+    </script>
+
+
+    <script type="text/javascript"
+        src="web/sds/js/form/EgovFormJSSupport.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+
+
+
+    <!-- JQuery -->
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/trimpath/template.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/jquery-plugin/jquery.form.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/jquery-plugin/jquery.field.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/jquery-plugin/jquery.timeentry.min.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/jquery-plugin/jquery.maskedinput-1.2.2.min.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+
+    <!-- Sarissa -->
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sarissa/0.9.9.4/sarissa.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sarissa/0.9.9.4/sarissa_ieemu_xpath.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+
+    <!-- Overlib -->
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/overlib/4.17/overlib.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+
+    <!-- SOP Form -->
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.loader.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.formcontrol.design.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopforms.api.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+
+
+    <script language="javascript">
+        Form.Loader.setBase(sopFormWebContext + 'plugins/components/');
+        EgovFormJSSupport.AJAX_VALIDATE_URL = "null";
+    </script>
+
+    <script type="text/javascript"
+        src="/cr/egovforms/componentdynamictemplatescript?FormDefinitionPath=DEMOPROJECT.CR.1.Form&amp;OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="/cr/egovforms/componentscript?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+
+
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/Map.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/javascripts/sop/sop.sopforms.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/Parameter.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/Parameters.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/JSON_Modified.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.runtime.model.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.runtime.wizard.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.sortabledroppable.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.optionlookup.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.condition.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="/cr/_statics/js/egovforms/sopform.form.validation.manager.message.js.jsp?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.validation.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.generate.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.runtime.acl.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.developer.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.calc.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.aggregation.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.attachment.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.grid.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.columns.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/jquery-plugin/scrollable.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+
+
+
+    <link rel="stylesheet" type="text/css" href="web/_themes/egov/css/egovforms/print_overrides.css">
+    <script type="text/javascript"
+        src="web/_statics/js/egovforms/sopform.form.pf.manager.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet'>
+    <link href='../css/font-awesome.min.css' rel='stylesheet'>
+    <link href='../css/cpl_style.css' rel='stylesheet'>
+
+    <script>
+        var webContext = 'web/_statics/';
+        var myInfoImgTitle = 'Ecquaria Verified';
+        var isPreFillMyInfo = false;
+        var isRuntime = true;
+        var isSinglePage = false;
+        var sopformsApi = new SOPFormsAPI();
+
+        var pfManager = new PrinterFriendlyManager();
+
+        var optionLookupManager = new OptionLookupManager();
+        var conditionManager = new ConditionManager();
+        var validationManager = new ValidationManager();
+        var aclManager = new ACLManager('Form');
+        var generateManager = new GenerateManager();
+        var developerManager = new DeveloperManager();
+        var calculationManager = new CalculationManager();
+        var aggregationManager = new AggregationManager();
+        var attachmentManager = new AttachmentManager();
+
+        var modelManager = new ModelManager();
+
+        var data_json_str =
+            "eyIyIjp7InR5cGUiOiJzaW5nbGUtdmFsdWUiLCJ2YWx1ZSI6InRlc3QifSwiMyI6eyJ0eXBlIjoic2luZ2xlLXZhbHVlIiwidmFsdWUiOiIifSwiMjgiOnsidHlwZSI6InNpbmdsZS12YWx1ZSIsInZhbHVlIjoiIn0sIjI5Ijp7InR5cGUiOiJzaW5nbGUtdmFsdWUiLCJ2YWx1ZSI6IlBVQkxJQyBDT01QQU5ZIExJTUlURUQgQlkgU0hBUkVTIn0sIjMwIjp7InR5cGUiOiJzaW5nbGUtdmFsdWUiLCJ2YWx1ZSI6InRlc3QifSwiMzEiOnsidHlwZSI6InNpbmdsZS12YWx1ZSIsInZhbHVlIjoidGVzdCJ9LCIzMiI6eyJ0eXBlIjoic2luZ2xlLXZhbHVlIiwidmFsdWUiOiIifSwiMzMiOnsidHlwZSI6InNpbmdsZS12YWx1ZSIsInZhbHVlIjoiIn0sIjQwIjp7InR5cGUiOiJzaW5nbGUtdmFsdWUiLCJ2YWx1ZSI6IiJ9LCI0MiI6eyJ0eXBlIjoibXVsdGktcm93IiwidmFsdWUiOlt7IjQzIjp7InR5cGUiOiJzaW5nbGUtdmFsdWUiLCJ2YWx1ZSI6IkRpcmVjdG9yIn0sIjQ1Ijp7InR5cGUiOiJzaW5nbGUtdmFsdWUiLCJ2YWx1ZSI6InRlc3QifSwiNDYiOnsidHlwZSI6InNpbmdsZS12YWx1ZSIsInZhbHVlIjoidGVzdCJ9LCI0NyI6eyJ0eXBlIjoic2luZ2xlLXZhbHVlIiwidmFsdWUiOiJBTCJ9LCI0OCI6eyJ0eXBlIjoic2luZ2xlLXZhbHVlIiwidmFsdWUiOiIifSwiNDkiOnsidHlwZSI6InNpbmdsZS12YWx1ZSIsInZhbHVlIjoiIn0sIjUwIjp7InR5cGUiOiJibG9iLXZhbHVlIiwidmFsdWUiOiIifX1dfSwiNzIiOnsidHlwZSI6ImJsb2ItdmFsdWUiLCJ2YWx1ZSI6InRlc3QifSwiNzMiOnsidHlwZSI6InNpbmdsZS12YWx1ZSIsInZhbHVlIjoidGVzdCJ9LCI3NSI6eyJ0eXBlIjoic2luZ2xlLXZhbHVlIiwidmFsdWUiOiIifSwiNzYiOnsidHlwZSI6InNpbmdsZS12YWx1ZSIsInZhbHVlIjoidGVzdCJ9LCI4NSI6eyJ0eXBlIjoic2luZ2xlLXZhbHVlIiwidmFsdWUiOiIifSwiODYiOnsidHlwZSI6InNpbmdsZS12YWx1ZSIsInZhbHVlIjoiQVoifX0=";
+        eval("var data_json = " + Base64.decode(data_json_str));
+        Form.instanceMeta = {
+            "formId": "0",
+            "refNumber": "00082"
+        };
+
+
+        function clearMyInfoData() {
+            var map = 'null';
+            if (map != null) {
+                var jsonObj = eval("(" +
+                    map + ")");
+                for (key in jsonObj) {
+                    page = Form.currentPage;
+                    flag = false;
+                    if (page != null) {
+                        var children = page.children;
+                        if (children != null && children.length > 0) {
+                            for (var j = 0; j < children.length; j++) {
+                                var properties = children[j].properties;
+                                if (properties != null && properties['name'] == key && jsonObj[key] != null && jsonObj[
+                                        key] != '') {
+                                    $("#control--runtime--" + properties['id'] + "--text").val("");
+                                    $("#control--runtime--" + properties['id'] + "--text").attr("disabled", false);
+                                    if ($("#control--runtime--" + properties['id'] + "--text").parent().children(
+                                            '.myinfo_icon').length > 0) {
+                                        $("#control--runtime--" + properties['id'] + "--text").parent().children(
+                                            '.myinfo_icon').remove();
+                                    }
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        function makeFilledMyInfoEditable() {
+            var map = 'null';
+            if (map != null) {
+                var jsonObj = eval("(" +
+                    map + ")");
+                for (key in jsonObj) {
+                    page = Form.currentPage;
+                    flag = false;
+                    if (page != null) {
+                        var children = page.children;
+                        if (children != null && children.length > 0) {
+                            //
+                            depthEditMyInfoData(children, key, jsonObj[key]);
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function depthEditMyInfoData(children, key, result) {
+            for (var j = 0; j < children.length; j++) {
+                var properties = children[j].properties;
+                if (properties != null && properties['name'] == key && result != null && result != '') {
+                    if (properties.options != null && properties.options.length > 0) {
+                        var $radios = $("#control--runtime--" + properties['id']).find(":input");
+                        $radios.each(function (index, obj) {
+                            // obj.checked = false;
+                            $(obj).attr("disabled", false);
+                            var $radioTable = $("#control--runtime--" + properties['id']).find("table");
+                            if ($radioTable.parent().children('.myinfo_icon').length > 0) {
+                                $radioTable.parent().children('.myinfo_icon').remove();
+                            }
+                        });
+                    } else {
+                        $("#control--runtime--" + properties['id'] + "--text").attr("disabled", false);
+                        $("#control--runtime--" + properties['id'] + "--text").parent().children(
+                            '.ui-datepicker-trigger').show();
+                        if ($("#control--runtime--" + properties['id'] + "--text").parent().children('.myinfo_icon')
+                            .length > 0) {
+                            $("#control--runtime--" + properties['id'] + "--text").parent().children('.myinfo_icon')
+                                .remove();
+
+                        }
+
+                        flag = true;
+                        break;
+                    }
+                }
+                if (children[j].children != null && children[j].children.length > 0) {
+                    depthEditMyInfoData(children[j].children, key, result);
+                }
+            }
+        }
+
+        function fillMyInfoData() {
+
+            var map = 'null';
+            if (map != null) {
+                var jsonObj = eval("(" +
+                    map + ")");
+                for (key in jsonObj) {
+                    page = Form.currentPage;
+                    flag = false;
+                    if (page != null) {
+                        var children = page.children;
+                        if (children != null && children.length > 0) {
+                            depthLoadMyInfo(children, key, jsonObj, myInfoImgTitle)
+                        }
+
+                    }
+                }
+            }
+
+
+        };
+
+        function depthLoadMyInfo(children, key, jsonObj, myInfoImgTitle) {
+            for (var j = 0; j < children.length; j++) {
+                var properties = children[j].properties;
+                if (properties != null && properties['name'] == key && jsonObj[key] != null && jsonObj[key] != '') {
+                    if (properties.options != null && properties.options.length > 0) {
+                        var $radios = $("#control--runtime--" + properties['id']).find(":input[type='radio']");
+                        $radios.each(function (index, obj) {
+                            if (jsonObj[key] == $(obj).val()) {
+                                obj.checked = true;
+                                var $radioTable = $("#control--runtime--" + properties['id']).find("table");
+                                if ($radioTable.parent().children('.myinfo_icon').length == 0) {
+                                    var appendHlmt =
+                                        '<img src="web/_statics/egov-login/img/verifed.png" title="' +
+                                        myInfoImgTitle +
+                                        '" class="myinfo_icon" style="width:13px;height:13px;margin-left:5px;">';
+                                    if (!$radioTable.hasClass("radioTable")) {
+                                        $radioTable.addClass("radioTable");
+                                    }
+                                    $radioTable.after(appendHlmt);
+                                }
+                            }
+                            $(obj).attr("disabled", true);
+                        });
+                    } else {
+                        $("#control--runtime--" + properties['id'] + "--text").val(jsonObj[key]);
+                        $("#control--runtime--" + properties['id'] + "--text").attr("disabled", true);
+                        if ($("#control--runtime--" + properties['id'] + "--text").parent().children(
+                                '.ui-datepicker-trigger').length > 0) {
+                            $("#control--runtime--" + properties['id'] + "--text").parent().children(
+                                '.ui-datepicker-trigger').hide();
+                        }
+                        $("#control--runtime--" + properties['id'] + "--text").addClass("isClicked");
+                        var id = properties['id'];
+                        if ($("#control--runtime--" + properties['id'] + "--text").parent().children('.myinfo_icon')
+                            .length == 0) {
+                            var appendHlmt = '<img src="web/_statics/egov-login/img/verifed.png" title="' +
+                                myInfoImgTitle +
+                                '" class="myinfo_icon" style="width:13px;height:13px;margin-left:5px;">';
+                            $("#control--runtime--" + properties['id'] + "--text").after(appendHlmt);
+                        }
+
+                        flag = true;
+                        break;
+                    }
+                }
+                if (children[j].children != null && children[j].children.length > 0) {
+                    depthLoadMyInfo(children[j].children, key, jsonObj, myInfoImgTitle);
+                }
+            }
+        };
+    </script>
+
+
+
+
+
+
+
+
+
+    <div class="wrapper">
+        <div class="form-inner-content ">
+            <div></div>
+            <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+
+            <form action="empty?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD" name="formRender"
+                method="post">
+                <input type="hidden" name="outerAction" id="outerAction">
+                <input type="hidden" name="sopEngineTabRef" value="15610908251964238">
+                <input type="hidden" name="pageIndex">
+                <input type="hidden" name="appNo" value="">
+
+                <input type="hidden" name="formName" value="Form">
+
+                <!-- closes div id="center" -->
+                <input type="hidden" name="OWASP_CSRFTOKEN" value="B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD"></form>
+        </div>
+
+
+
+        <script>
+            Form.$ROOT_PANEL = $('#formPanel');
+            var wizard = null;
+            Form.isView = true;
+            Form.defaultEmptyValue = "";
+
+            function doFormSubmit(action, options) {
+                SOP.Common.showMask();
+
+                if (!options) {
+                    options = {
+                        needValidate: true
+                    };
+                }
+                var validationSuccess = true;
+
+                if (options.needValidate) {
+                    if (wizard) {
+                        var page = Form.PAGES[wizard.currentPageIndex];
+                        var events = $(document).data("events");
+                        if (events && events['preEGovFormWizardPageChange' + page.properties.id]) {
+                            $(document).trigger('preEGovFormWizardPageChange' + page.properties.id);
+                        }
+                        validationSuccess = validationManager.doValidationTrigger();
+                        if (!wizard.canNext || !validationSuccess) {
+                            SOP.Common.hideMask();
+                            return;
+                        }
+                    } else {
+                        validationSuccess = validationManager.doValidationTrigger();
+                    }
+                }
+
+                if (options.formTarget && options.formTarget != "null") {
+                    $("form[name='formRender']").attr("target", options.formTarget);
+                }
+                if (options.func && typeof eval(options.func) == "function") {
+
+                    if (!eval(options.func + "()")) {
+                        SOP.Common.hideMask();
+                        return false;
+                    }
+                }
+                if (validationSuccess) {
+                    //$("input[name='Action']")[0].value = "Submit";
+                    var n = "_jsonString";
+                    if (!Form.isView) {
+                        $("input[name='" + n + "']")[0].value = modelManager.generateJSONStringForSubmission();
+                    }
+                    $('[name="crud_action_type"]').val(action);
+                    $('[name="pageIndex"]').val(Form.getPageIndexByPageId(Form.currentPage.properties.id));
+                    $("#outerAction").val(window.top.$("form").prop("action"))
+                    $('form[name="formRender"]').submit();
+                } else {
+                    SOP.Common.hideMask();
+                }
+
+            }
+
+            jQuery(function ($jq) {
+                var $panel = $('#formPanel');
+
+                $panel.hide();
+
+
+                Form.currentMode = 'printerFriendly';
+
+
+                Form.createRuntimePageTabs();
+
+
+                Form.TABS.sopformTabs('hide');
+                $('#formPanel').children(':first').before('<div id="wizard-page-title"></div>');
+
+                function doRuntimeRenderForWizardInterface() {
+                    Form.setApplicationName('Company Registration');
+                    Form.properties = $.extend({}, Form.defaultProperties, {
+                        "themeName": "Default",
+                        "publishFormFor": "system",
+                        "requiresLogin": "true",
+                        "refNumber": {
+                            "format": "{seq}",
+                            "startNum": 1,
+                            "digits": 5
+                        },
+                        "initValueString": "{}",
+                        "submissionMode": "wizard",
+                        "processingMode": "wizard",
+                        "font": {
+                            "inherited": true
+                        }
+                    });
+                    try {
+                        eval('Form.initValues = ' + Form.properties.initValueString);
+                    } catch (e) {
+                        Form.initValues = {}
+                    };
+                    if (!Form.initValues) Form.initValues = {};
+                    if (window.data_json) $.each(Form.initValues, function (key, value) {
+                        if (!data_json[key]) {
+                            data_json[key] = value;
+                        }
+                    });
+                    var var1 = (function () {
+                        var control = Form.createControl('sopform.controls.base.Page', {
+                            "help": "",
+                            "captionOrientation": "horizontal",
+                            "hint": "",
+                            "width": "",
+                            "id": "0",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "not-editable-in",
+                                    "stages": ["FormLink1"]
+                                }
+                            },
+                            "title": "Page 1",
+                            "cols": 1
+                        }, -1);
+                        return control;
+                    }).call();
+                    Form.addPageForWizard(var1);
+                    var var2 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.Html', {
+                            "name": "cssStyle",
+                            "id": "85",
+                            "source": "<style>\n/* label in the component */\ndiv.capital-info div.control div.control-label-span {\n    display: none;\n}\n\n/* label component */\ndiv.capital-info div.control div.label-control {\n    display: block;\n}\n\ndiv.capital-info div.info-header div.label-control {\n    padding-left:16px;\n    text-align:left;\n}\n\ndiv.capital-info  td.first div.control  div.label-control{\n    width: 100%;\n}\n\ndiv.capital-info  td.first{\n    width: 350px;\n}\n\ndiv.capital-info  div.no-label div.control-input-span {\n    width: 90%;\n}\n\ndiv.capital-info .control .control-input-span input[type=\"text\"] {\n    max-width: none;\n    width: 90%;\n}\n\ndiv.capital-info table.control-grid tr td td {\n    width: auto;\n    padding-right: 25px;\n}\n<\/style>",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            }
+                        }, 0);
+                        return control;
+                    }).call();
+                    var1.append(false, var2, 0);
+                    var var3 = (function () {
+                        var control = Form.createControl('sopform.controls.base.Section', {
+                            "border": false,
+                            "help": "",
+                            "captionOrientation": "horizontal",
+                            "hint": "",
+                            "width": "",
+                            "id": "1",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "title": "Company Details",
+                            "cols": 1,
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 1);
+                        return control;
+                    }).call();
+                    var1.append(false, var3, 1);
+                    var var4 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "proposedName",
+                            "caption": "Proposed Name",
+                            "id": "2",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": ""
+                            },
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 0);
+                        return control;
+                    }).call();
+                    var3.append(false, var4, 0);
+                    var var5 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "alternativeName1",
+                            "caption": "Alternative Name (I)",
+                            "id": "3",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": ""
+                            },
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 1);
+                        return control;
+                    }).call();
+                    var3.append(false, var5, 1);
+                    var var6 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "alternativeName2",
+                            "caption": "Alternative Name (II)",
+                            "id": "28",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {},
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 2);
+                        return control;
+                    }).call();
+                    var3.append(false, var6, 2);
+                    var var7 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.DropDown', {
+                            "server_lookup_chosen": "",
+                            "empty_option": "true",
+                            "caption": "Company Type",
+                            "source_type": "",
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "validationModelPersistentMap": {
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "blur-func": "",
+                                "customErrorMessage": "",
+                                "select_pred_vald_3": "",
+                                "change-func": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default"
+                            },
+                            "help": "",
+                            "reference_chosen": "",
+                            "hint": "",
+                            "options": [{
+                                "code": "PUBLIC COMPANY LIMITED BY SHARES",
+                                "description": "PUBLIC COMPANY LIMITED BY SHARES"
+                            }, {
+                                "code": "COMPANY LIMITED BY GUARANTEE",
+                                "description": "COMPANY LIMITED BY GUARANTEE"
+                            }, {
+                                "code": "UNLIMITED PUBLIC COMPANY",
+                                "description": "UNLIMITED PUBLIC COMPANY"
+                            }, {
+                                "code": "LIMITED PRIVATE COMPANY",
+                                "description": "LIMITED PRIVATE COMPANY"
+                            }, {
+                                "code": "LIMITED EXEMPT PRIVATE COMPANY",
+                                "description": "LIMITED EXEMPT PRIVATE COMPANY"
+                            }, {
+                                "code": "UNLIMITED PRIVATE COMPANY",
+                                "description": "UNLIMITED PRIVATE COMPANY"
+                            }, {
+                                "code": "UNLIMITED EXEMPT PRIVATE COMPANY",
+                                "description": "UNLIMITED EXEMPT PRIVATE COMPANY"
+                            }],
+                            "name": "companyType",
+                            "empty_option_desc": "-Please Select-",
+                            "id": "29",
+                            "conditionModelPersistentMap": {},
+                            "alignment": "left",
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 3);
+                        return control;
+                    }).call();
+                    var3.append(false, var7, 3);
+                    var var8 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "companyActivity1",
+                            "caption": "Company Activity (I)",
+                            "id": "30",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": ""
+                            },
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 4);
+                        return control;
+                    }).call();
+                    var3.append(false, var8, 4);
+                    var var9 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "desc1",
+                            "caption": "Description",
+                            "id": "31",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": ""
+                            },
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 5);
+                        return control;
+                    }).call();
+                    var3.append(false, var9, 5);
+                    var var10 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "companyActivity2",
+                            "caption": "Company Activity (II)",
+                            "id": "32",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {},
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 6);
+                        return control;
+                    }).call();
+                    var3.append(false, var10, 6);
+                    var var11 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "desc2",
+                            "caption": "Description",
+                            "id": "33",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {},
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 7);
+                        return control;
+                    }).call();
+                    var3.append(false, var11, 7);
+                    var var12 = (function () {
+                        var control = Form.createControl('sopform.controls.base.Section', {
+                            "border": false,
+                            "help": "",
+                            "captionOrientation": "horizontal",
+                            "hint": "",
+                            "width": "",
+                            "id": "34",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "title": "Operating Details",
+                            "cols": 1,
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 8);
+                        return control;
+                    }).call();
+                    var3.append(false, var12, 8);
+                    var var13 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextArea', {
+                            "caption": "Address",
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "rows": 3,
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": ""
+                            },
+                            "help": "",
+                            "hint": "",
+                            "name": "detailAddress",
+                            "id": "72",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "alignment": "left",
+                            "cols": 27,
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 0);
+                        return control;
+                    }).call();
+                    var12.append(false, var13, 0);
+                    var var14 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "detailPostalCode",
+                            "caption": "Postal Code",
+                            "id": "73",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": ""
+                            },
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 1);
+                        return control;
+                    }).call();
+                    var12.append(false, var14, 1);
+                    var var15 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.DropDown', {
+                            "server_lookup_chosen": "Country",
+                            "empty_option": "true",
+                            "caption": "Country",
+                            "source_type": "lookup",
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "validationModelPersistentMap": {},
+                            "help": "",
+                            "reference_chosen": "",
+                            "hint": "",
+                            "options": [{
+                                "code": "SG",
+                                "description": "SG"
+                            }, {
+                                "code": "US",
+                                "description": "US"
+                            }, {
+                                "code": "CN",
+                                "description": "CN"
+                            }],
+                            "name": "control_86",
+                            "empty_option_desc": "-Please Select-",
+                            "id": "86",
+                            "conditionModelPersistentMap": {},
+                            "alignment": "left",
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 2);
+                        return control;
+                    }).call();
+                    var12.append(false, var15, 2);
+                    var var16 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "detailOfficePhoneNo",
+                            "caption": "Office Phone No.",
+                            "id": "76",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": ""
+                            },
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 3);
+                        return control;
+                    }).call();
+                    var12.append(false, var16, 3);
+                    var var17 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "detailOfficeFaxNo",
+                            "caption": "Office Fax No.",
+                            "id": "75",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {},
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 4);
+                        return control;
+                    }).call();
+                    var12.append(false, var17, 4);
+                    var var18 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.Html', {
+                            "name": "InitCapitalInfo",
+                            "id": "40",
+                            "source": "<script type=\"text/javascript\">\nvar $tds = $('.capital-info table tr:first>td');\n$tds.eq(1).attr('colspan', 3);\n$tds.eq(2).remove();\n$tds.eq(3).remove();\n$('.capital-info table tr>td').attr('style', '');\n<\/script>",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            }
+                        }, 3);
+                        return control;
+                    }).call();
+                    var1.append(false, var18, 3);
+                    var var19 = (function () {
+                        var control = Form.createControl('sopform.controls.base.Section', {
+                            "border": false,
+                            "help": "",
+                            "captionOrientation": "horizontal",
+                            "hint": "",
+                            "width": "",
+                            "id": "84",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "title": "Director / Shareholder Details",
+                            "cols": 1,
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 4);
+                        return control;
+                    }).call();
+                    var1.append(false, var19, 4);
+                    var var20 = (function () {
+                        var control = Form.createControl('sopform.controls.base.RepeatableSection', {
+                            "border": true,
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "type": "vertical",
+                            "title": "Director / Shareholder",
+                            "controlButton": "Add Director / Shareholder",
+                            "developerclass": "Details",
+                            "help": "",
+                            "repeat": 1,
+                            "captionOrientation": "horizontal",
+                            "hint": "",
+                            "width": "",
+                            "name": "control_42",
+                            "id": "42",
+                            "conditionModelPersistentMap": {},
+                            "cols": 1,
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 0);
+                        return control;
+                    }).call();
+                    var19.append(false, var20, 0);
+                    var var21 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.Radio', {
+                            "server_lookup_chosen": "",
+                            "caption": "Position Held",
+                            "source_type": "",
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "validationModelPersistentMap": {
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "blur-func": "",
+                                "customErrorMessage": "",
+                                "select_pred_vald_3": "",
+                                "change-func": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default"
+                            },
+                            "help": "",
+                            "reference_chosen": "",
+                            "hint": "",
+                            "width": -1,
+                            "options": [{
+                                "code": "Director",
+                                "description": "Director"
+                            }, {
+                                "code": "Shareholder",
+                                "description": "Shareholder"
+                            }],
+                            "name": "positionHeld",
+                            "id": "43",
+                            "conditionModelPersistentMap": {},
+                            "alignment": "left",
+                            "supportEscapeOption": "true",
+                            "cols": 2,
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 0);
+                        return control;
+                    }).call();
+                    var20.append(false, var21, 0);
+                    var var22 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "idNo",
+                            "caption": "Identification No.",
+                            "id": "45",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": ""
+                            },
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 1);
+                        return control;
+                    }).call();
+                    var20.append(false, var22, 1);
+                    var var23 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "name",
+                            "caption": "Name",
+                            "id": "46",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": ""
+                            },
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 2);
+                        return control;
+                    }).call();
+                    var20.append(false, var23, 2);
+                    var var24 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.DropDown', {
+                            "server_lookup_chosen": "Country",
+                            "empty_option": "true",
+                            "caption": "Nationality",
+                            "source_type": "lookup",
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "validationModelPersistentMap": {
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "blur-func": "",
+                                "customErrorMessage": "",
+                                "select_pred_vald_3": "",
+                                "change-func": "",
+                                "required": "required",
+                                "errMsgPosSelect": "default"
+                            },
+                            "help": "",
+                            "reference_chosen": "",
+                            "hint": "",
+                            "options": [{
+                                "code": "US",
+                                "description": "US"
+                            }, {
+                                "code": "CN",
+                                "description": "CN"
+                            }, {
+                                "code": "SG",
+                                "description": "SG"
+                            }],
+                            "name": "nationality",
+                            "empty_option_desc": "-Please Select-",
+                            "id": "47",
+                            "conditionModelPersistentMap": {},
+                            "alignment": "left",
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 3);
+                        return control;
+                    }).call();
+                    var20.append(false, var24, 3);
+                    var var25 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "mobileNo",
+                            "caption": "Mobile No.",
+                            "id": "48",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {},
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 4);
+                        return control;
+                    }).call();
+                    var20.append(false, var25, 4);
+                    var var26 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "email",
+                            "caption": "E-mail Address",
+                            "id": "49",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {
+                                "value_count-min-count": "",
+                                "alphabet-min-length": "",
+                                "decimal-max-value": "",
+                                "decimal-min-value": "",
+                                "value_count-max-count": "",
+                                "customErrorMessage": "",
+                                "alphabet-max-length": "",
+                                "errMsgPosSelect": "default",
+                                "alpha_numeric-max-length": "",
+                                "date-start": "",
+                                "select_pred_vald_2": "",
+                                "select_pred_vald_1": "",
+                                "date-end": "",
+                                "category_select": "",
+                                "blur-func": "",
+                                "number-min-value": "",
+                                "select_pred_vald_3": "",
+                                "alpha_numeric-min-length": "",
+                                "change-func": "",
+                                "date_type_option_select": "1",
+                                "number-max-value": "",
+                                "enable-change-func": ""
+                            },
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 5);
+                        return control;
+                    }).call();
+                    var20.append(false, var26, 5);
+                    var var27 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextArea', {
+                            "caption": "Residential Address",
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "rows": 3,
+                            "validationModelPersistentMap": {},
+                            "help": "",
+                            "hint": "",
+                            "name": "residentialAddress",
+                            "id": "50",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "alignment": "left",
+                            "cols": 27,
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 6);
+                        return control;
+                    }).call();
+                    var20.append(false, var27, 6);
+                    var var28 = (function () {
+                        var control = Form.createControl('sopform.controls.standard.TextBox', {
+                            "help": "",
+                            "size": 30,
+                            "hint": "",
+                            "name": "control_88",
+                            "caption": "Name",
+                            "id": "88",
+                            "text": "",
+                            "conditionModelPersistentMap": {},
+                            "acl": {
+                                "visibility": {
+                                    "mode": "always-visible"
+                                },
+                                "editability": {
+                                    "mode": "always-editable"
+                                }
+                            },
+                            "alignment": "left",
+                            "validationModelPersistentMap": {},
+                            "font": {
+                                "inherited": true
+                            }
+                        }, 0);
+                        return control;
+                    }).call();
+
+
+
+                    if (Form.PAGES.length == 0) {
+                        $("#buttons_for_preview_div").html(
+                            "According to ACL of the form, You do not have access to any pages during this stage of the form."
+                            );
+                    } else {
+                        Form.PAGES[0].refresh();
+                        Form.Runtime.pageRendered(0);
+                        //if (inIframe()) {
+                        pagesCount = Form.PAGES.length;
+                        Form.TABS.sopformTabs({
+                            show: function () {
+                                adjustPage();
+                            }
+                        });
+                        //}
+                        Form.Runtime.populateForm(0);
+                        Form.TABS.sopformTabs('select', 0); //reusing addPageTab <- selects the page last added
+                    }
+                }
+
+                doRuntimeRenderForWizardInterface();
+                wizard = new Wizard(Form);
+                wizard.doSetup();
+
+
+                try {
+                    if (parent && parent.setFormDlgTitle)
+                        parent.setFormDlgTitle('Company Registration');
+                } catch (e) {
+                    // in case cross-domain js call
+                }
+
+
+
+                conditionManager.isPreFillMyInfoData(isPreFillMyInfo, webContext, myInfoImgTitle);
+                $("#tab-panel ul li a").click(function () {
+                    conditionManager.isPreFillMyInfoData(isPreFillMyInfo, webContext, myInfoImgTitle);
+                    conditionManager.isFillMyInfoDataByButton();
+                });
+                // Execute ACLs
+                aclManager.processACLDisabled();
+
+                validationManager.doMandatoryIndicators();
+
+                // Execute Aggregation
+                //aggregationManager.doAllAggregation();
+
+
+            });
+        </script>
+
+
+        <!-- This is just a place holder for the page divs that we will put in. -->
+        <div id="custom_content_div" class="content documentContent" style="">
+            <div style="background-color:FFFFFF;" id="page_0_div">
+                <div id="control--printerFriendly--0" class="control control-area" style="overflow: visible;">
+                    <div id="control--printerFriendly--0**errorMsg_page_top" class="error_placements"></div>
+                    <table class="control-grid">
+                        <tbody>
+                            <tr height="1">
+                                <td style="width: 100%;" class="first last">
+                                    <div id="control--printerFriendly--85" class="control control-caption-horizontal"
+                                        style="overflow: visible;">
+                                        <style>
+                                            /* label in the component */
+                                            div.capital-info div.control div.control-label-span {
+                                                display: none;
+                                            }
+
+                                            /* label component */
+                                            div.capital-info div.control div.label-control {
+                                                display: block;
+                                            }
+
+                                            div.capital-info div.info-header div.label-control {
+                                                padding-left: 16px;
+                                                text-align: left;
+                                            }
+
+                                            div.capital-info td.first div.control div.label-control {
+                                                width: 100%;
+                                            }
+
+                                            div.capital-info td.first {
+                                                width: 350px;
+                                            }
+
+                                            div.capital-info div.no-label div.control-input-span {
+                                                width: 90%;
+                                            }
+
+                                            div.capital-info .control .control-input-span input[type="text"] {
+                                                max-width: none;
+                                                width: 90%;
+                                            }
+
+                                            div.capital-info table.control-grid tr td td {
+                                                width: auto;
+                                                padding-right: 25px;
+                                            }
+                                        </style>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr height="1">
+                                <td style="width: 100%;" class="first last">
+                                    <div id="control--printerFriendly--1" class="section control "
+                                        style="overflow: visible;">
+                                        <div class="control-set-font control-font-header section-header">
+                                            <h2>Company Details</h2>
+                                        </div>
+                                        <div id="control--printerFriendly--1**errorMsg_section_top"
+                                            class="error_placements"></div>
+                                        <table class="control-grid">
+                                            <tbody>
+                                                <tr height="1" class="incomplete">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--2"
+                                                            class="control control-caption-horizontal"
+                                                            style="overflow: visible;">
+                                                            <div
+                                                                class="form-group form-horizontal control-set-alignment formgap">
+                                                                <div class="col-sm-4 control-label formtext">
+                                                                    <label
+                                                                        id="control--printerFriendly--2--label">Proposed
+                                                                        Name</label>
+                                                                    <span class="upload_controls"></span>
+                                                                </div>
+                                                                <div class="col-sm-5" style="">
+                                                                    <div class="normal-indicator">
+                                                                        <label id="control--printerFriendly--2--text"
+                                                                            class="control-input control-set-font control-font-normal"
+                                                                            disabled="disabled">test</label>
+                                                                        <div class="control-item-aux-container"
+                                                                            style="display:none;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr height="1" class="incomplete">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--3"
+                                                            class="control control-caption-horizontal"
+                                                            style="overflow: visible;">
+                                                            <div
+                                                                class="form-group form-horizontal control-set-alignment formgap">
+                                                                <div class="col-sm-4 control-label formtext">
+                                                                    <label
+                                                                        id="control--printerFriendly--3--label">Alternative
+                                                                        Name (I)</label>
+                                                                    <span class="upload_controls"></span>
+                                                                </div>
+                                                                <div class="col-sm-5" style="">
+                                                                    <div class="normal-indicator">
+                                                                        <label id="control--printerFriendly--3--text"
+                                                                            class="control-input control-set-font control-font-normal"
+                                                                            disabled="disabled"></label>
+                                                                        <div class="control-item-aux-container"
+                                                                            style="display:none;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr height="1" class="incomplete">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--28"
+                                                            class="control control-caption-horizontal"
+                                                            style="overflow: visible;">
+                                                            <div
+                                                                class="form-group form-horizontal control-set-alignment formgap">
+                                                                <div class="col-sm-4 control-label formtext">
+                                                                    <label
+                                                                        id="control--printerFriendly--28--label">Alternative
+                                                                        Name (II)</label>
+                                                                    <span class="upload_controls"></span>
+                                                                </div>
+                                                                <div class="col-sm-5" style="">
+                                                                    <div class="normal-indicator">
+                                                                        <label id="control--printerFriendly--28--text"
+                                                                            class="control-input control-set-font control-font-normal"
+                                                                            disabled="disabled"></label>
+                                                                        <div class="control-item-aux-container"
+                                                                            style="display:none;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr height="1" class="incomplete">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--29"
+                                                            class="control control-caption-horizontal"
+                                                            style="overflow: visible;">
+                                                            <div
+                                                                class="form-group form-horizontal control-set-alignment formgap">
+                                                                <div class="col-sm-4 control-label formtext">
+                                                                    <label
+                                                                        id="control--printerFriendly--29--label">Company
+                                                                        Type</label>
+                                                                    <span class="upload_controls"></span>
+                                                                </div>
+                                                                <div class="col-sm-5" style="">
+                                                                    <div class="normal-indicator">
+                                                                        <label id="control--printerFriendly--29--text"
+                                                                            class="control-input control-set-font control-font-normal"
+                                                                            disabled="disabled">PUBLIC COMPANY LIMITED
+                                                                            BY SHARES</label>
+                                                                        <div class="control-item-aux-container"
+                                                                            style="display:none;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr height="1" class="incomplete">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--30"
+                                                            class="control control-caption-horizontal"
+                                                            style="overflow: visible;">
+                                                            <div
+                                                                class="form-group form-horizontal control-set-alignment formgap">
+                                                                <div class="col-sm-4 control-label formtext">
+                                                                    <label
+                                                                        id="control--printerFriendly--30--label">Company
+                                                                        Activity (I)</label>
+                                                                    <span class="upload_controls"></span>
+                                                                </div>
+                                                                <div class="col-sm-5" style="">
+                                                                    <div class="normal-indicator">
+                                                                        <label id="control--printerFriendly--30--text"
+                                                                            class="control-input control-set-font control-font-normal"
+                                                                            disabled="disabled">test</label>
+                                                                        <div class="control-item-aux-container"
+                                                                            style="display:none;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr height="1" class="incomplete">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--31"
+                                                            class="control control-caption-horizontal"
+                                                            style="overflow: visible;">
+                                                            <div
+                                                                class="form-group form-horizontal control-set-alignment formgap">
+                                                                <div class="col-sm-4 control-label formtext">
+                                                                    <label
+                                                                        id="control--printerFriendly--31--label">Description</label>
+                                                                    <span class="upload_controls"></span>
+                                                                </div>
+                                                                <div class="col-sm-5" style="">
+                                                                    <div class="normal-indicator">
+                                                                        <label id="control--printerFriendly--31--text"
+                                                                            class="control-input control-set-font control-font-normal"
+                                                                            disabled="disabled">test</label>
+                                                                        <div class="control-item-aux-container"
+                                                                            style="display:none;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr height="1" class="incomplete">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--32"
+                                                            class="control control-caption-horizontal"
+                                                            style="overflow: visible;">
+                                                            <div
+                                                                class="form-group form-horizontal control-set-alignment formgap">
+                                                                <div class="col-sm-4 control-label formtext">
+                                                                    <label
+                                                                        id="control--printerFriendly--32--label">Company
+                                                                        Activity (II)</label>
+                                                                    <span class="upload_controls"></span>
+                                                                </div>
+                                                                <div class="col-sm-5" style="">
+                                                                    <div class="normal-indicator">
+                                                                        <label id="control--printerFriendly--32--text"
+                                                                            class="control-input control-set-font control-font-normal"
+                                                                            disabled="disabled"></label>
+                                                                        <div class="control-item-aux-container"
+                                                                            style="display:none;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr height="1" class="incomplete">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--33"
+                                                            class="control control-caption-horizontal"
+                                                            style="overflow: visible;">
+                                                            <div
+                                                                class="form-group form-horizontal control-set-alignment formgap">
+                                                                <div class="col-sm-4 control-label formtext">
+                                                                    <label
+                                                                        id="control--printerFriendly--33--label">Description</label>
+                                                                    <span class="upload_controls"></span>
+                                                                </div>
+                                                                <div class="col-sm-5" style="">
+                                                                    <div class="normal-indicator">
+                                                                        <label id="control--printerFriendly--33--text"
+                                                                            class="control-input control-set-font control-font-normal"
+                                                                            disabled="disabled"></label>
+                                                                        <div class="control-item-aux-container"
+                                                                            style="display:none;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr height="100%">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--34" class="section control "
+                                                            style="overflow: visible;">
+                                                            <div
+                                                                class="control-set-font control-font-header section-header">
+                                                                <h2>Operating Details</h2>
+                                                            </div>
+                                                            <div id="control--printerFriendly--34**errorMsg_section_top"
+                                                                class="error_placements"></div>
+                                                            <table class="control-grid">
+                                                                <tbody>
+                                                                    <tr height="1">
+                                                                        <td style="width: 100%;" class="first last">
+                                                                            <div id="control--printerFriendly--72"
+                                                                                class="control control-caption-horizontal"
+                                                                                style="overflow: visible;">
+                                                                                <div
+                                                                                    class="form-group form-horizontal control-set-alignment formgap">
+                                                                                    <div
+                                                                                        class="col-sm-4 control-label formtext">
+                                                                                        <label
+                                                                                            id="control--printerFriendly--72--label">Address</label>
+                                                                                        <span
+                                                                                            class="upload_controls"></span>
+                                                                                    </div>
+                                                                                    <div class="col-sm-5" style="">
+                                                                                        <div class="normal-indicator">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--72--text"
+                                                                                                class="control-input control-set-font control-font-normal"
+                                                                                                disabled="disabled">test</label>
+                                                                                            <div class="control-item-aux-container"
+                                                                                                style="display:none;">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr height="1">
+                                                                        <td style="width: 100%;" class="first last">
+                                                                            <div id="control--printerFriendly--73"
+                                                                                class="control control-caption-horizontal"
+                                                                                style="overflow: visible;">
+                                                                                <div
+                                                                                    class="form-group form-horizontal control-set-alignment formgap">
+                                                                                    <div
+                                                                                        class="col-sm-4 control-label formtext">
+                                                                                        <label
+                                                                                            id="control--printerFriendly--73--label">Postal
+                                                                                            Code</label>
+                                                                                        <span
+                                                                                            class="upload_controls"></span>
+                                                                                    </div>
+                                                                                    <div class="col-sm-5" style="">
+                                                                                        <div class="normal-indicator">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--73--text"
+                                                                                                class="control-input control-set-font control-font-normal"
+                                                                                                disabled="disabled">test</label>
+                                                                                            <div class="control-item-aux-container"
+                                                                                                style="display:none;">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr height="1" class="incomplete">
+                                                                        <td style="width: 100%;" class="first last">
+                                                                            <div id="control--printerFriendly--86"
+                                                                                class="control control-caption-horizontal"
+                                                                                style="overflow: visible;">
+                                                                                <div
+                                                                                    class="form-group form-horizontal control-set-alignment formgap">
+                                                                                    <div
+                                                                                        class="col-sm-4 control-label formtext">
+                                                                                        <label
+                                                                                            id="control--printerFriendly--86--label">Country</label>
+                                                                                        <span
+                                                                                            class="upload_controls"></span>
+                                                                                    </div>
+                                                                                    <div class="col-sm-5" style="">
+                                                                                        <div class="normal-indicator">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--86--text"
+                                                                                                class="control-input control-set-font control-font-normal"
+                                                                                                disabled="disabled">AZERBAIJAN</label>
+                                                                                            <div class="control-item-aux-container"
+                                                                                                style="display:none;">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr height="1" class="incomplete">
+                                                                        <td style="width: 100%;" class="first last">
+                                                                            <div id="control--printerFriendly--76"
+                                                                                class="control control-caption-horizontal"
+                                                                                style="overflow: visible;">
+                                                                                <div
+                                                                                    class="form-group form-horizontal control-set-alignment formgap">
+                                                                                    <div
+                                                                                        class="col-sm-4 control-label formtext">
+                                                                                        <label
+                                                                                            id="control--printerFriendly--76--label">Office
+                                                                                            Phone No.</label>
+                                                                                        <span
+                                                                                            class="upload_controls"></span>
+                                                                                    </div>
+                                                                                    <div class="col-sm-5" style="">
+                                                                                        <div class="normal-indicator">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--76--text"
+                                                                                                class="control-input control-set-font control-font-normal"
+                                                                                                disabled="disabled">test</label>
+                                                                                            <div class="control-item-aux-container"
+                                                                                                style="display:none;">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr height="100%">
+                                                                        <td style="width: 100%;" class="first last">
+                                                                            <div id="control--printerFriendly--75"
+                                                                                class="control control-caption-horizontal"
+                                                                                style="overflow: visible;">
+                                                                                <div
+                                                                                    class="form-group form-horizontal control-set-alignment formgap">
+                                                                                    <div
+                                                                                        class="col-sm-4 control-label formtext">
+                                                                                        <label
+                                                                                            id="control--printerFriendly--75--label">Office
+                                                                                            Fax No.</label>
+                                                                                        <span
+                                                                                            class="upload_controls"></span>
+                                                                                    </div>
+                                                                                    <div class="col-sm-5" style="">
+                                                                                        <div class="normal-indicator">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--75--text"
+                                                                                                class="control-input control-set-font control-font-normal"
+                                                                                                disabled="disabled"></label>
+                                                                                            <div class="control-item-aux-container"
+                                                                                                style="display:none;">
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <div id="control--printerFriendly--34**errorMsg_section_bottom"
+                                                                class="error_placements"></div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div id="control--printerFriendly--1**errorMsg_section_bottom"
+                                            class="error_placements"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr height="1">
+                                <td style="width: 100%;" class="first last"></td>
+                            </tr>
+                            <tr height="1">
+                                <td class="first last">
+                                    <div id="control--printerFriendly--40" class="control control-caption-horizontal"
+                                        style="overflow: visible;">
+                                        <script type="text/javascript">
+                                            var $tds = $('.capital-info table tr:first>td');
+                                            $tds.eq(1).attr('colspan', 3);
+                                            $tds.eq(2).remove();
+                                            $tds.eq(3).remove();
+                                            $('.capital-info table tr>td').attr('style', '');
+                                        </script>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr height="100%">
+                                <td style="width: 100%;" class="first last">
+                                    <div id="control--printerFriendly--84" class="section control "
+                                        style="overflow: visible;">
+                                        <div class="control-set-font control-font-header section-header">
+                                            <h2>Director / Shareholder Details</h2>
+                                        </div>
+                                        <div id="control--printerFriendly--84**errorMsg_section_top"
+                                            class="error_placements"></div>
+                                        <table class="control-grid">
+                                            <tbody>
+                                                <tr height="100%">
+                                                    <td style="width: 100%;" class="first last">
+                                                        <div id="control--printerFriendly--42" class="section control"
+                                                            style="overflow: visible;">
+                                                            <div class="rs-pagination"></div>
+
+                                                            <fieldset>
+                                                                <div
+                                                                    class="control-set-font control-font-header section-header">
+                                                                    <label>Director / Shareholder</label>
+                                                                </div>
+
+                                                                <div id="control--printerFriendly--42--0**errorMsg_section_top"
+                                                                    class="error_placements"></div>
+                                                                <table class="control-grid">
+                                                                    <tbody>
+                                                                        <tr height="1">
+                                                                            <td style="width: 100%;" class="first last">
+                                                                                <div id="control--printerFriendly--43--0"
+                                                                                    class="form-group form-horizontal control-set-alignment formgap control control-caption-horizontal"
+                                                                                    style="overflow: visible;">
+                                                                                    <div
+                                                                                        class="col-sm-4 control-label formtext">
+                                                                                        <label
+                                                                                            id="control--printerFriendly--43--0--label">Position
+                                                                                            Held</label>
+
+                                                                                    </div>
+                                                                                    <div class="col-sm-5">
+                                                                                        <div class="normal-indicator">
+                                                                                            <table style="width:100%">
+                                                                                                <tbody>
+                                                                                                    <tr>
+                                                                                                        <td width="50%">
+                                                                                                            <div class="control-item-container form-check"
+                                                                                                                style="margin-right:10px;padding-left:5px">
+                                                                                                                <input
+                                                                                                                    class="form-check-input"
+                                                                                                                    type="radio"
+                                                                                                                    id="control--printerFriendly--43--0--0"
+                                                                                                                    name="control--printerFriendly--43--0"
+                                                                                                                    value="Director"
+                                                                                                                    checked=""
+                                                                                                                    disabled="disabled">
+                                                                                                                <label
+                                                                                                                    id="control--printerFriendly--43--0--label--0"
+                                                                                                                    for="control--printerFriendly--43--0--0"
+                                                                                                                    class="form-check-label control-set-font control-font-normal"><span class="check-circle"></span>Director</label>
+                                                                                                            </div>
+                                                                                                            <div
+                                                                                                                class="control-item-aux-container">
+                                                                                                            </div>
+                                                                                                        </td>
+                                                                                                        <td width="50%">
+                                                                                                            <div class="control-item-container form-check"
+                                                                                                                style="margin-right:10px;padding-left:5px">
+                                                                                                                <input
+                                                                                                                    class="form-check-input"
+                                                                                                                    type="radio"
+                                                                                                                    id="control--printerFriendly--43--0--1"
+                                                                                                                    name="control--printerFriendly--43--0"
+                                                                                                                    value="Shareholder"
+                                                                                                                    disabled="disabled">
+                                                                                                                <label
+                                                                                                                    id="control--printerFriendly--43--0--label--1"
+                                                                                                                    for="control--printerFriendly--43--0--1"
+                                                                                                                    class="form-check-label control-set-font control-font-normal"><span class="check-circle"></span>Shareholder</label>
+                                                                                                            </div>
+                                                                                                            <div
+                                                                                                                class="control-item-aux-container">
+                                                                                                            </div>
+                                                                                                        </td>
+
+                                                                                                    </tr>
+                                                                                                </tbody>
+                                                                                            </table>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr height="1" class="incomplete">
+                                                                            <td style="width: 100%;" class="first last">
+                                                                                <div id="control--printerFriendly--45--0"
+                                                                                    class="control control-caption-horizontal"
+                                                                                    style="overflow: visible;">
+                                                                                    <div
+                                                                                        class="form-group form-horizontal control-set-alignment formgap">
+                                                                                        <div
+                                                                                            class="col-sm-4 control-label formtext">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--45--0--label">Identification
+                                                                                                No.</label>
+                                                                                            <span
+                                                                                                class="upload_controls"></span>
+                                                                                        </div>
+                                                                                        <div class="col-sm-5" style="">
+                                                                                            <div
+                                                                                                class="normal-indicator">
+                                                                                                <label
+                                                                                                    id="control--printerFriendly--45--0--text"
+                                                                                                    class="control-input control-set-font control-font-normal"
+                                                                                                    disabled="disabled">test</label>
+                                                                                                <div class="control-item-aux-container"
+                                                                                                    style="display:none;">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr height="1">
+                                                                            <td style="width: 100%;" class="first last">
+                                                                                <div id="control--printerFriendly--46--0"
+                                                                                    class="control control-caption-horizontal"
+                                                                                    style="overflow: visible;">
+                                                                                    <div
+                                                                                        class="form-group form-horizontal control-set-alignment formgap">
+                                                                                        <div
+                                                                                            class="col-sm-4 control-label formtext">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--46--0--label">Name</label>
+                                                                                            <span
+                                                                                                class="upload_controls"></span>
+                                                                                        </div>
+                                                                                        <div class="col-sm-5" style="">
+                                                                                            <div
+                                                                                                class="normal-indicator">
+                                                                                                <label
+                                                                                                    id="control--printerFriendly--46--0--text"
+                                                                                                    class="control-input control-set-font control-font-normal"
+                                                                                                    disabled="disabled">test</label>
+                                                                                                <div class="control-item-aux-container"
+                                                                                                    style="display:none;">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr height="1" class="incomplete">
+                                                                            <td style="width: 100%;" class="first last">
+                                                                                <div id="control--printerFriendly--47--0"
+                                                                                    class="control control-caption-horizontal"
+                                                                                    style="overflow: visible;">
+                                                                                    <div
+                                                                                        class="form-group form-horizontal control-set-alignment formgap">
+                                                                                        <div
+                                                                                            class="col-sm-4 control-label formtext">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--47--0--label">Nationality</label>
+                                                                                            <span
+                                                                                                class="upload_controls"></span>
+                                                                                        </div>
+                                                                                        <div class="col-sm-5" style="">
+                                                                                            <div
+                                                                                                class="normal-indicator">
+                                                                                                <label
+                                                                                                    id="control--printerFriendly--47--0--text"
+                                                                                                    class="control-input control-set-font control-font-normal"
+                                                                                                    disabled="disabled">ALBANIA</label>
+                                                                                                <div class="control-item-aux-container"
+                                                                                                    style="display:none;">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr height="1">
+                                                                            <td style="width: 100%;" class="first last">
+                                                                                <div id="control--printerFriendly--48--0"
+                                                                                    class="control control-caption-horizontal"
+                                                                                    style="overflow: visible;">
+                                                                                    <div
+                                                                                        class="form-group form-horizontal control-set-alignment formgap">
+                                                                                        <div
+                                                                                            class="col-sm-4 control-label formtext">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--48--0--label">Mobile
+                                                                                                No.</label>
+                                                                                            <span
+                                                                                                class="upload_controls"></span>
+                                                                                        </div>
+                                                                                        <div class="col-sm-5" style="">
+                                                                                            <div
+                                                                                                class="normal-indicator">
+                                                                                                <label
+                                                                                                    id="control--printerFriendly--48--0--text"
+                                                                                                    class="control-input control-set-font control-font-normal"
+                                                                                                    disabled="disabled"></label>
+                                                                                                <div class="control-item-aux-container"
+                                                                                                    style="display:none;">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr height="1">
+                                                                            <td style="width: 100%;" class="first last">
+                                                                                <div id="control--printerFriendly--49--0"
+                                                                                    class="control control-caption-horizontal"
+                                                                                    style="overflow: visible;">
+                                                                                    <div
+                                                                                        class="form-group form-horizontal control-set-alignment formgap">
+                                                                                        <div
+                                                                                            class="col-sm-4 control-label formtext">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--49--0--label">E-mail
+                                                                                                Address</label>
+                                                                                            <span
+                                                                                                class="upload_controls"></span>
+                                                                                        </div>
+                                                                                        <div class="col-sm-5" style="">
+                                                                                            <div
+                                                                                                class="normal-indicator">
+                                                                                                <label
+                                                                                                    id="control--printerFriendly--49--0--text"
+                                                                                                    class="control-input control-set-font control-font-normal"
+                                                                                                    disabled="disabled"></label>
+                                                                                                <div class="control-item-aux-container"
+                                                                                                    style="display:none;">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr height="100%">
+                                                                            <td style="width: 100%;" class="first last">
+                                                                                <div id="control--printerFriendly--50--0"
+                                                                                    class="control control-caption-horizontal"
+                                                                                    style="overflow: visible;">
+                                                                                    <div
+                                                                                        class="form-group form-horizontal control-set-alignment formgap">
+                                                                                        <div
+                                                                                            class="col-sm-4 control-label formtext">
+                                                                                            <label
+                                                                                                id="control--printerFriendly--50--0--label">Residential
+                                                                                                Address</label>
+                                                                                            <span
+                                                                                                class="upload_controls"></span>
+                                                                                        </div>
+                                                                                        <div class="col-sm-5" style="">
+                                                                                            <div
+                                                                                                class="normal-indicator">
+                                                                                                <label
+                                                                                                    id="control--printerFriendly--50--0--text"
+                                                                                                    class="control-input control-set-font control-font-normal"
+                                                                                                    disabled="disabled"></label>
+                                                                                                <div class="control-item-aux-container"
+                                                                                                    style="display:none;">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div id="control--printerFriendly--42--0**errorMsg_section_bottom"
+                                                                    class="error_placements"></div>
+                                                            </fieldset>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div id="control--printerFriendly--84**errorMsg_section_bottom"
+                                            class="error_placements"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="control--printerFriendly--0**errorMsg_page_bottom" class="error_placements"></div>
+                </div>
+            </div>
+        </div>
+        <script language="JavaScript">
+            $(document).ready(function () {
+                pfManager.setupPFPage();
+
+            });
+
+            function runAfterPfModeReady() {
+                try {
+                    if (window !== window.parent && window.parent && window.top.__eGovFormPfModeReady)
+                        window.parent.__eGovFormPfModeReady(document.documentElement.scrollHeight);
+
+                    if (window !== window.parent && window.parent && window.parent.EGP && window.parent.EGP.Common)
+                        window.parent.EGP.Common.onEgovFormReady(document.documentElement.scrollHeight);
+                } catch (e) {
+                    console.log(e);
+                }
+                setTimeout(function () {
+                    $(document).trigger('eGovFormReady');
+                }, 1000);
+            }
+        </script>
+
+    </div>
+
+
+    <script
+        src="web/sample/saas-new/assets/js/jquery.scrolltabs.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script
+        src="web/sample/saas-new/assets/js/jquery.mousewheel.js?OWASP_CSRFTOKEN=B6LH-8P2T-9KDF-IVVZ-5D7Q-4WZ3-215S-R3FD">
+    </script>
+    <script type="text/javascript">
+        var tabs1 = null;
+        $(document).ready(function () {
+            $('.page-tab').hide()
+            $('#tabs1 span:first-child').addClass("tab_selected")
+            tabs1 = $('#tabs1').scrollTabs();
+            $("#tabs1 span").click(function () {
+                var events = $(document).data("events");
+                if (events && events['checkBeforeChangeTab']) {
+                    $(document).trigger('checkBeforeChangeTab', []);
+                }
+                var index = $(this).index() - 1
+                Form.TABS.sopformTabs('select', index)
+                $('.form-tab-panel ').addClass("ui-tabs-hide")
+                var id = $(this).prop("id")
+                $("#" + id.substring(1)).removeClass("ui-tabs-hide")
+                try {
+                    if (window !== window.parent && window.parent && window.parent.EGP && window.parent
+                        .EGP.Common) {
+                        window.parent.EGP.Common.onEgovFormReady($(document.documentElement).height());
+                    }
+                } catch (e) {}
+            });
+        });
+    </script>
+
+
+    <div id="ui-timepicker-div"
+        class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all ui-helper-hidden-accessible"
+        style="width: 100px; display: none; position: absolute;">
+        <div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-all">
+            <div class="ui-datepicker-title" style="margin:0"><span class="fragHours">08</span><span
+                    class="delim">:</span><span class="fragMinutes">45</span> <span class="fragAmpm"></span></div>
+        </div>
+        <table>
+            <tbody>
+                <tr>
+                    <th>Hour</th>
+                    <th>Minute</th>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <div id="hourSlider"
+                            class="slider ui-slider ui-slider-vertical ui-widget ui-widget-content ui-corner-all">
+                            <div class="ui-slider-range ui-widget-header ui-slider-range-min" style="height: 0%;"></div>
+                            <a class="ui-slider-handle ui-state-default ui-corner-all" href="#"
+                                style="bottom: 0%; padding: 0px;"></a>
+                        </div>
+                    </td>
+                    <td align="center">
+                        <div id="minuteSlider"
+                            class="slider ui-slider ui-slider-vertical ui-widget ui-widget-content ui-corner-all">
+                            <div class="ui-slider-range ui-widget-header ui-slider-range-min" style="height: 0%;"></div>
+                            <a class="ui-slider-handle ui-state-default ui-corner-all" href="#"
+                                style="bottom: 0%; padding: 0px;"></a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

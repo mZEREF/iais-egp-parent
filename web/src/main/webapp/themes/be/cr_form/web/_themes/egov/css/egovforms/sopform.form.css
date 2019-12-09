@@ -1,0 +1,595 @@
+/* $Id: sopform.form.css,v 1.18 2014/11/07 08:34:27 wenjun Exp $ */
+#designPanel {
+	width: auto;
+	min-height: 300px;
+}
+
+.control-hover {
+	background-color: #f0f0f0;
+}
+
+.control-button {
+	position: relative;
+	z-index: 9998;
+	background: none repeat scroll 0 0 #B4B4B5;
+}
+
+.control-button > div {
+	position: absolute;
+	right: 0px;
+	z-index: 9999;
+    display: inline-block;
+}
+
+.ui-tabs-nav .control-button > div {
+	padding: 0 2px 1px;
+	height:12px;
+	width: 25px;
+	background: none repeat scroll 0 0 #AEAEAE;
+}
+
+.control-button img:hover {
+	cursor: pointer;
+}
+
+.control {
+	margin: 3px 0;
+	overflow: auto;
+  	_border:0px;
+	padding: 0px;
+}
+.control.control-caption-horizontal {
+	overflow-y: hidden;
+}
+
+.section {
+    border: 1px solid #E0E0E0;
+    margin: 5px 0;
+    overflow: hidden
+}
+
+.section > fieldset {
+	margin: 10px 0 0 0;
+}
+
+.section > fieldset:first-child {
+	margin: 0;
+}
+
+.control-choosen {
+	background-color: #fff6cc;
+	border: 1px solid #ffe0aa;
+}
+
+.control-grid {
+	width: 100%;
+	empty-cells: show;
+	border-collapse: collapse;
+}
+
+.control-grid td {
+	vertical-align: top;
+}
+
+.design-panel .control-grid {
+	border-collapse: collapse;
+}
+
+.design-panel .control-grid > tr > td,
+.design-panel .control-grid > tbody > tr > td {
+	border-left: 1px solid #e0e0e0;
+	border-right: 1px solid #e0e0e0;
+	height: 20px;
+}
+
+.design-panel .control-grid > tr > td.first,
+.design-panel .control-grid > tbody > tr > td.first {
+	border-left: 1px transparent;
+}
+
+.design-panel .control-grid > tr > td.last,
+.design-panel .control-grid > tbody > tr > td.last {
+	border-right: 1px transparent;
+}
+
+.repeatable-row .control-grid > tr > td,
+.repeatable-row .control-grid > tbody > tr > td,
+.design-panel .repeatable-row .control-grid > tr > td,
+.design-panel .repeatable-row .control-grid > tbody > tr > td {
+	border: 0px solid #606060;
+	height: 20px;
+}
+
+.repeatable-row .control-grid td.rownum {
+	padding: 2px 5px 2px 5px;
+}
+
+.repeatable-row .control-grid tr.first td {
+	padding: 2px 5px 2px 5px;
+	background-color: #e0e0e0;
+}
+
+.control-mask {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background: url("../../images/general/space.gif") repeat scroll 0 0 transparent;
+}
+
+.hide {
+	display: none;
+}
+
+.control-label {
+}
+
+.control-input {
+	padding-left: 5px;
+}
+label.control-input {
+    display: block;
+    padding-top: 2px;
+}
+
+.control-input-span {
+}
+
+.control-label-span {
+}
+
+.control-item-container {
+}
+
+.control :disabled {
+	background-color: #ffffff;
+}
+
+.section, .repeatable-row {
+	min-height: 30px;
+	min-width: 30px;
+}
+
+.section-handle {
+	margin-right: 25px;
+	position: relative;
+    z-index: 999;
+}
+
+.section-handle div {
+	position: absolute;
+	right: 15px;
+}
+
+.section-handle img:hover {
+	cursor: pointer;
+}
+
+.page {
+	/*min-height: 350px;*/
+	padding: 0px;
+	/*_height: 350px;/*for IE6*/
+}
+
+.control .page-title {
+	font-family: tahoma, geneva, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+/*
+.screen-resolution1 .page {
+	width: 500px;
+}
+
+.screen-resolution2 .page {
+	width: 700px;
+}
+
+.screen-resolution3 .page {
+	width: 1000px;
+}
+*/
+
+.design-panel .ui-tabs-panel {
+	
+}
+
+.control-choosen .ui-droppable {
+	background-color: transparent;
+}
+
+.droppable-active {
+}
+
+.droppable-hover {
+	background-color: #ffffe0 !important;
+}
+
+.property-remove-option,
+.property-add-option {
+}
+
+.control-caption-horizontal .control-label-span {
+	float: left;
+	max-width: 350px;
+	width: 90%;
+}
+
+.control-caption-horizontal .control-input-span input,
+.control-caption-horizontal .control-input-span select,
+.control-caption-horizontal .control-input-span textarea {
+}
+
+.properties-table {
+	vertical-align: top;
+}
+
+.property-input-readonly {
+	background-color: #e0e0e0;
+}
+
+.design-panel .ui-tabs-nav .ui-tabs-selected a:link,
+.design-panel .ui-tabs-nav .ui-tabs-selected a:visited {
+	cursor: pointer;
+}
+
+div.form-tab-panel {
+	overflow-x : auto;
+	overflow-y : hidden;
+	background-color: transparent;
+}
+
+.sopform-error {
+	color: red;
+}
+
+.sopform-error ul {
+	margin: 0;
+}
+
+.ui-sortable-droppable-helper {
+	height: 20px;
+	background-color: #e0e0e0;
+}
+
+#formProperties-content .ui-tabs-panel * {
+	font-family: Tahoma, sans-serif;
+	font-size: 11px;
+}
+
+.ui-tabs-nav * {
+	font-family: Tahoma, sans-serif;
+	font-size: 11px;
+}
+
+.control-caption-horizontal .control-label-span {
+    display: inline-block;
+}
+
+.repeatable-row .control-label-span {
+	display: none;
+}
+
+.columns-highlight {
+	background-color: #FFF6CC;
+}
+
+/* START: UI Tabs Scrollable */
+ul.ui-tabs-nav li div.control-button div {
+	margin: -3px -34px 0 0;
+}
+
+ul.ui-tabs-nav li div.control-button div div.remove-page {
+    cursor: pointer;
+    height: 8px;
+    width: 8px;
+	display:inline-block;
+	*margin:-8px 0 0 13px;
+}
+
+ul.ui-tabs-nav li.ui-tabs-selected div.control-button div div.remove-page {
+    background: url("../../images/general/close-icon-small.png") repeat scroll 0 0 transparent;
+}
+
+ul.ui-tabs-nav li.ui-tabs-selected div.control-button div div.page-properties {
+    background: url("../../images/general/edit-icon-small.png") repeat scroll 0 0 transparent;
+}
+ul.ui-tabs-nav li div.control-button div div.page-properties {
+    cursor: pointer;
+    height: 8px;
+    width: 8px;
+	display:inline-block;
+}
+ul.ui-tabs-nav li div.control-button div.page-properties {
+    margin: 2px 3px 0 2px;
+}
+
+.ui-tabs-scrollable-wrapper {
+	overflow-x: hidden;
+	position: relative;
+	width: 100%;
+}
+
+.ui-tabs-scrollable-tab {
+	overflow: hidden;
+	float: left;
+	width: 100%;
+}
+
+.ui-tabs-scrollable-nav {
+	position: absolute;
+	right: 0px;
+	z-index: 9999;
+}
+
+.ui-tabs-scrollable-nav-right {
+	background: url(../../images/general/arrow-nxt.png) no-repeat;
+}
+
+.ui-tabs-scrollable-nav-left {
+	background: url(../../images/general/arrow-prev.png) no-repeat;
+}
+
+.ui-tabs-scrollable-nav-right, .ui-tabs-scrollable-nav-left {
+	background-position: 0 0;
+	cursor: pointer;
+	width: 20px;
+	height: 23px;
+	display: block;
+	float: left;
+	line-height: 23px;
+	text-align: center;
+	font-size: 1.2em;
+	font-weight: bold;
+	font-family: arial;
+	color: white;
+}
+
+/* END: UI Tabs Scrollable */
+
+.repeatable-remove-row a {
+	display: block;
+	width: 15px;
+	height: 15px;
+	background: transparent url(../../images/general/cross.gif) no-repeat scroll 0 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.repeatable-row-control-button {
+	margin-top: 2px;
+	text-align: right;
+}
+
+.sopform {
+	border: 1px solid #2F67B1;
+}
+
+#wrapper .ui-tabs-nav a span {
+	min-height: 0;
+	min-width: 0;
+}
+
+#wrapper .ui-tabs-nav li {
+	min-width: 0;
+}
+
+#wrapper .ui-tabs-nav a {
+	border: 0;
+}
+
+#wizard-page-title {
+	padding: 2px 5px;
+	color: #000;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+#sla-tracking-widget {
+	overflow-x: auto;
+}
+
+#sla-tracking-widget .kpi-widget-bubble {
+}
+
+#sla-tracking-widget .kpi-widget-bubble-mask {
+}
+
+#sla-tracking-widget .kpi-widget-bubble-mask-on {
+	background-color: #333;
+	opacity: 0.5;
+}
+
+#sla-tracking-widget .main_table_sla-tracking-widget {
+	cursor: pointer;
+}
+
+#sla-config-wrapper, #sla-stage-config-wrapper {
+}
+
+#sla-config-header, #sla-stage-config-header {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.section-select, .repeatable-edit, .repeatable-populate {
+	width: 16px;
+	height: 16px;
+}
+
+.section-select {
+	background-image: url(../../images/general/icon-accept.png);
+}
+
+.repeatable-edit {
+	background-image: url(../../images/general/page_edit.png);
+}
+
+.repeatable-end-edit {
+	background-image: url(../../images/general/page_edit2.png);
+}
+
+.repeatable-populate{
+	background-image: url(../../images/general/application_view_list.png);
+}
+
+.design-panel .control-item-aux-container {
+	min-height: 10px;
+}
+
+.moveLeft-button {
+	position: relative;
+	z-index: 9998;
+}
+
+.moveLeft-button > div {
+	position: absolute;
+	left: 0px;
+	z-index: 9999;
+}
+
+.control-button img:hover {
+	cursor: pointer;
+}
+ul.ui-tabs-nav li div.moveLeft-button div div.move-page-left {
+	width: 9px;
+	height: 9px;
+	cursor: pointer;
+}
+
+ul.ui-tabs-nav li div.moveLeft-button div {
+	margin: 6.5px 0px 0 -4px;
+}
+ul.ui-tabs-nav li.ui-tabs-selected div.moveLeft-button div div.move-page-left {
+	background: url(../../images/general/move-left.gif);
+	background-repeat:no-repeat;
+}
+
+
+.moveRight-button {
+	position: relative;
+	z-index: 9998;
+}
+
+.moveRight-button > div {
+	position: absolute;
+	right: 0px;
+	z-index: 9999;
+}
+
+ul.ui-tabs-nav li div.moveRight-button div div.move-page-right {
+	width: 9px;
+	height: 9px;
+	cursor: pointer;
+}
+
+ul.ui-tabs-nav li div.moveRight-button div {
+	margin: 6.5px -8px 0 0;
+}
+ul.ui-tabs-nav li.ui-tabs-selected div.moveRight-button div div.move-page-right {
+	background: url(../../images/general/move-right.gif);
+	background-repeat:no-repeat;
+}
+
+.hiddenRow{
+	display:none;
+}
+
+.sla-config-sla-slider-el {
+	display: none;
+}
+
+.repeatable-section-control-button {
+    margin-right: 5px;
+    text-align: right;
+}
+
+.repeatable-section-header {
+	background-color: #ccf;
+	/*height: 20px;*/
+	line-height: 20px;
+	position: relative;
+}
+
+.repeatable-section-remove-button {
+    background: url(../../images/forms/remove-control.gif) no-repeat scroll 2px 2px transparent;
+    height: 20px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    text-indent: -999999px;
+    top: 0;
+    width: 20px;
+	cursor: pointer;
+}
+
+.repeatable-section-item {
+	position: relative;
+}
+
+#tooltip.pretty {
+	background-color:#041238;
+	border-color:white;
+	color:white;
+	padding:5px;
+}
+.ui-tabs .ui-tabs-nav li.ui-state-default {
+    border-right: 1px solid #DDDFFF;
+    color: #414040;
+    font-weight: bold;
+    height: 26px;
+    padding: 5px 35px 0;
+    text-shadow: none;
+}
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+    background-color: #DDDDDD;
+    background-image: url("../../images/forms/form-active-tab-bg.gif");
+    background-repeat: repeat-x;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    color: #414040;
+    font-weight: bold;
+    height: 26px;
+    padding: 5px 35px 0;
+    margin-left: 1px !important;
+}
+
+.design-panel .control-grid > tr > td:hover, .design-panel .control-grid > tbody > tr > td:hover {
+    background: #ededed;
+}
+
+.rs-pagination {
+	position: absolute;
+    right: 0;
+}
+.pagination {
+	margin: 0;
+}
+
+.sdsformwrapper .ui-widget-content a {
+    color: #333333;
+}
+.form-viewer .ui-widget-content a {
+    color: #222222;
+}
+.ui-widget-content a {
+    color: #362b36;
+}
+.pagination a, .pagination span {
+    background: url("../../images/general/bg-switch.png") repeat-x #ccc;
+    border: 1px solid #aaa9a9;
+    color: #333;
+}
+.pagination a, .pagination span{
+    margin: 0 0 0 3px;
+    padding: 2px 7px;
+}
+
+.pagination .current {
+	background: url("../../images/general/bt-ga.png") repeat-x #999999;
+}
+.control-input-view {
+    padding-left: 5px;
+}

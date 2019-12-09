@@ -1,0 +1,265 @@
+/*Common Styles
+---------------------------------*/     
+body                    {
+                          background: url(../../assets/img/bg-cover.jpg) top center fixed;
+                          webkit-background-size: cover;
+                          -moz-background-size: cover;
+                          -o-background-size: cover;
+                          background-size: cover;
+                          filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='.myBackground.jpg', sizingMethod='scale');
+                          -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='myBackground.jpg', sizingMethod='scale')";
+                        }
+
+/*Nav Brand
+---------------------------------*/
+.navbar-brand 			{ 	font-size: 16px;}
+
+.navbar-header a:after 	{}
+.navbar-default .navbar-nav .open .dropdown-menu > li > a
+                        {	color: rgba(255,255,255,0.7);}
+
+.navbar-default .navbar-toggle
+						{
+							border-color:rgba(255,255,255,0.2);
+						}
+
+/*Button Focus
+---------------------------------*/
+.btn-focus 				{	width: 100%}
+.btn-focus .inner 		{}
+.btn-focus .inner a.right,
+.btn-focus .inner a.left,
+.btn-focus .inner a
+						{
+							min-width: auto;
+							font-size: 16px;
+							margin-top: 5px;
+							margin-bottom: 5px;
+							border-radius: 100px;
+						}
+.btn-focus .inner a.right,
+.btn-focus .inner a.left
+						{}
+.btn-focus .inner .or
+						{
+							margin-top: 8px;
+							margin-left: -166px;
+							font-size: 12px;
+
+						}
+/*Page Header
+---------------------------------*/
+.page-header h1 span 	{	font-size: 45px;}
+.page-header p 			{	margin-top: 30px; line-height: 1.3; font-size: 16px;}
+
+/*Tab Content Table
+---------------------------------*/
+
+/*Media 320, 360, 480
+---------------------------------*/
+@media screen and (max-width: 320px),
+(max-width: 360px),
+(max-width: 480px),
+(max-width: 640px)
+{
+/*Body*/
+body                    { 
+							background: url(../../assets/img/bg-cover.jpg) top left fixed;
+							background-size: cover;
+						}
+
+/*Page Header*/
+.page-header 			{ 	padding: 0;}
+.page-header h1 		{ 	font-size: 34px; margin: 20px 0 10px;}
+.page-header h2 		{ 	font-size: 20px; font-weight: 100; margin: 0;}
+.page-header h3 		{	padding-top: 20px;}
+
+/*Nav Tabs*/
+.nav-tabs > li > a 		{	font-size: 30px; padding: 5px 10px;}
+.nav-tabs > li > a span {	display: none;}
+
+/*Button Focus*/
+.btn-focus { width: 100%;}
+.btn-focus .inner a.right,
+.btn-focus .inner a.left,
+.btn-focus .inner a 	
+						{
+							/*width: 170px;*/
+						}
+
+/*Table*/
+.table-responsive-wrap 	{ 	overflow: auto; width: 100%;}
+
+}
+
+/*Media 320
+---------------------------------*/
+@media screen and (max-width: 320px){
+
+/*Button Focus*/
+.btn-focus 					{	background: none; border:0;}
+.btn-focus .inner a.left,
+.btn-focus .inner a.right
+							{
+								border-radius: 3px!important;
+								-moz-border-radius: 3px;
+								-webkit-border-radius: 3px;
+							}
+.btn-focus .inner .or 		{	display: none;}
+}
+
+.btn-grp > a span 			{	display: none;}
+.btn-grp > a  				{	font-size: 20px;}
+
+.message-boxtitle h4 		{ 	font-size: 13px;}
+.msg-datetime 				{	font-size: 13px;}
+.msg-avator span 			{
+							    font-size: 16px;
+							    padding-left: 95px;
+							    float: left;
+							    line-height: 1.3;
+							    padding-top: 1px;
+							}
+.profile-wrap input[type="file"]{
+							width: 68%;
+							margin-bottom: 0px;
+}
+.search-wrap a.btn-default:before{
+                          content: "";
+                          padding-right: 0;
+}
+/*Media 360
+---------------------------------*/
+@media screen and (max-width: 360px){
+/*Button Focus*/
+.btn-focus 					{	background: none; border:0; box-shadow:none;}
+.btn-focus .inner a.left,
+.btn-focus .inner a.right
+							{
+								border-radius: 3px!important;
+								-moz-border-radius: 3px;
+								-webkit-border-radius: 3px;
+								right: 0;
+								left: 0;
+							}
+.btn-focus .inner .or 		{	display: none;}
+}
+
+
+
+/*Media 480
+---------------------------------*/
+@media screen and (max-width: 480px){
+
+/*Button Focus*/
+.btn-focus 					{	width: 100%!important;}
+.btn-focus .inner a.right, 
+.btn-focus .inner a.left, 
+.btn-focus .inner a 		{ min-width: 190px;}
+.btn-focus .inner .or
+							{
+								margin-top: 15px;
+								margin-left: -203px!important;
+							}
+}
+
+/*Media 640
+---------------------------------*/
+@media screen and (max-width: 640px){
+
+/*Button Focus*/
+.btn-focus 					{	width: 100%;}
+.btn-focus .inner a.right 	{ 	border-left: 1px solid #C59109;
+								left: -2px;
+								border-radius: 0px 80px 80px 0px;}
+.btn-focus .inner a.left 	{ 	border-radius: 80px 0px 0px 80px;}
+
+/*.btn-focus .inner a.right,
+.btn-focus .inner a.left,
+.btn-focus .inner a 	
+							{  
+								min-width: 220px;
+							}*/
+
+.btn-focus .inner .or
+							{
+								margin-top: 15px;
+								margin-left: -232px;
+							}
+
+}
+
+
+
+
+/*Media 720
+---------------------------------*/
+@media screen and (max-width: 720px){}
+
+/*Media 768
+---------------------------------*/
+@media screen and (max-width: 768px){}
+
+
+
+@media only screen 
+    and (min-device-width : 375px) 
+    and (max-device-width : 667px) 
+    and (orientation : landscape) 
+    and (-webkit-min-device-pixel-ratio : 2)
+{ }
+
+@media only screen 
+    and (min-device-width : 375px) 
+    and (max-device-width : 667px) 
+    and (orientation : portrait) 
+    and (-webkit-min-device-pixel-ratio : 2)
+{ 
+.btn-focus .inner a.right, 
+.btn-focus .inner a.left, 
+.btn-focus .inner a 		{ min-width: 180px!important; }
+}
+
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+/*
+---------------------------------*/
+
+
+
+
+
+/*Footer
+---------------------------------*/
+#footer 		{	height: auto;}
+
+/*
+---------------------------------

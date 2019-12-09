@@ -1,0 +1,129 @@
+/*! MOH-IAIS 13-09-2019 */
+
+
+
+.pop-up-header {
+    border-bottom: 1px solid #eeeeee;
+    padding: 9px 15px;
+}
+.pop-up-header h3 {
+    line-height: 30px;
+    margin: 0;
+}
+.pop-up-header .close {
+    margin-top: 2px;
+}
+button.close {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 0 none;
+    cursor: pointer;
+    padding: 0;
+}
+.close {
+    color: #000000;
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    opacity: 0.2;
+    text-shadow: 0 1px 0 #ffffff;
+}
+.pop-up-body {
+    padding: 15px;
+    position: relative;
+}
+.pop-up-footer {
+    background-color: #f5f5f5;
+    border-radius: 0 0 6px 6px;
+    border-top: 1px solid #dddddd;
+    box-shadow: 0 1px 0 #ffffff inset;
+    margin-bottom: 0;
+    padding: 14px 15px 15px;
+    text-align: center;
+}
+.pop-up-footer {
+    box-shadow: none;
+}
+.pop-up-footer:before, .pop-up-footer:after {
+    content: "";
+    display: table;
+    line-height: 0;
+}
+.pop-up .content-body {
+    background: none repeat scroll 0 0 #e2e2e2;
+    border-radius: 6px;
+    clear: both;
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+.content-body div.field {
+    clear: both;
+    display: inline-table;
+    font-size: 14px;
+    padding-top: 10px;
+    text-align: right;
+    width: 300px;
+}
+select, input[type="file"] {
+    height: 30px;
+    line-height: 30px;
+}
+.content-body div.control {
+    display: inline;
+    font-size: 14px;
+    margin-left: 30px;
+    padding-top: 5px;
+}
+div.fileList {
+    display:inline;
+}
+span.filename {
+    display:inline
+}
+span.filename a img {
+    margin-top: 3px;
+}
+a.red {
+    background-color: #c91a1a;
+    background-image: -moz-linear-gradient(center top , #c91a1a, #820f0f);
+    border-color: #820f0f #bc1f1f #d93131;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 0 0 #f1abab inset;
+    color: #fff;
+    cursor: pointer;
+    font: 13px Tahoma,Arial,Verdana,sans-serif;
+    margin: 5px 2px;
+    outline: medium none;
+    padding: 3px 12px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.my_borderless tbody tr td, .my_borderless tbody tr th, .my_borderless thead tr th {
+    border: 0;
+    vertical-align: top;
+    background-color: #ececec;
+}
+.my_left_align {
+    text-align: left;
+}
+.number_align {
+    text-align:right;
+}
+.number_paddingright {
+    padding-right:5px;
+}
+.number_paddingleft {
+    padding-left:5px;
+}
+.number_enlarge {
+    font-size:22px !important;
+}
+.paymentheader {
+    padding:8px;
+}
+.greyline {
+	background-color:#aaaaaa;
+}

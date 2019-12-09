@@ -1,0 +1,908 @@
+.form-inner-content {
+	clear: both;
+}
+
+/****** tool menu ******/
+.assign-priv-icn {
+    background: url("../../images/general/assign.png") no-repeat scroll 0 0 transparent;
+    padding: 1px 0 0 20px;
+}
+
+.publish-icn {
+	background: url("../../images/general/icon-posts.png") no-repeat scroll 0 0 transparent;
+    padding: 1px 0 0 20px;
+}
+
+.run-icn {
+    background: url("../../images/general/run.png") no-repeat scroll 0 0 transparent;
+    padding: 1px 0 0 20px;
+}
+
+#formPanel, #flowPanel, #slaPanel, #previewPanel {
+	display: none;
+}
+#formPanel .page-tab {
+    background: none repeat scroll 0 0 #908989;
+    border-bottom: 1px solid #BBBBBB;
+    border-top: 1px solid #DDDDDD;
+    height: 30px;
+    margin-top: 1px;
+}
+
+#formPanel .page-tab ul li {
+    display: inline-block;
+    margin: 0 1px 0 0;
+}
+.ui-corner-all {
+    border-radius: 0 0 0 0;
+}
+
+.sopform {
+    border: 0px;
+}
+
+#formPanel{
+	display:none;
+}
+/*hide the toolbox*/
+#right{
+	display:none;
+}
+.addPageButton{
+	background: url("../../images/forms/form-add-new-tab.png") no-repeat scroll 0 0 transparent;
+    display: block;
+    text-indent: -50000px;
+    width: 15px;
+	height:15px;
+}
+
+.ui-tabs .ui-tabs-nav li.add-new-tab {
+    background-color: #DDDDDD;
+    background-image: url("../../images/forms/form-active-tab-bg.gif");
+    background-repeat: repeat-x;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    box-shadow: 0 0 5px #333333;
+    height: 26px;
+    padding: 5px 6px 0px 6px;
+}
+.form-content-container {
+    width: 71%;
+    float: left;
+}
+.toolbox-pallete ul li {
+    padding: 5px 0;
+}
+
+/******* flow begin ********/
+div.form-flow {
+	min-height: 500px;
+}
+#mainColumn {
+	min-height: 100px;
+}
+.formFlowSelected {
+	background-color: lightblue;
+}
+
+.formFlowBranchSelected {
+	background-color: lightblue;
+}
+
+div.branch {
+    background: url("../../images/general/branch-bg.png") repeat-x scroll 0 0 #69B8FC;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+}
+
+
+div.stagesList {
+	min-height: 50px;
+	padding: 5px 1px;
+}
+
+div.flw-split-arw-up {
+	padding: 0;
+	margin: 0;
+	height: 20px;
+	position: relative;
+	top: 13px;
+}
+
+div.split-branch {
+	background: url("../../images/general/split-bg.png") repeat-x scroll 0 0 #A6CA58;
+	padding: 10px 0px;
+}
+
+div.split-branch div.split-container {
+	padding: 0;
+	display: inline-block;
+	display: inline\9;
+	margin: 0 2px;
+	vertical-align: top;
+	zoom: 1;
+}
+div.split-branch h4.split-header {
+	margin: 0;
+}
+div.branch h4.brch-col-header {
+	margin: 0;
+	background: url("../../images/forms/brh-col-hdr-bg.png") repeat-x scroll 0 0;
+}
+/******* flow end ********/
+
+input[type='button']{
+	background: #1c4b95 none repeat scroll 0 0;
+	border: 1px solid #1c4b95;
+	color: #ffc600;
+	font-family: tahoma;
+	font-size: 1em;
+	font-weight: normal;
+	padding: 5px;
+	text-align: center;
+}
+.image-collapse {
+    text-indent: 5px;
+	height: 15px;
+    padding-top: 5px;
+}
+.toolbox-collapse{
+	background: url("../../images/general/toolbox-collapse.gif");
+	width:11px;
+	height:8px;
+}
+.toolbox-expand{
+	background: url("../../images/general/toolbox-expand.gif");
+	width:11px;
+	height:8px;
+}
+
+.pin-form-panel {
+    background: url("../../images/general/pin.gif") no-repeat scroll center center transparent;
+    cursor: pointer;
+    height: 12px;
+	float:right;
+    right: 10px;
+    top: 5px;
+    width: 12px;
+}
+.pinned {
+    background: url("../../images/general/pin2.gif") no-repeat scroll center center transparent;
+}
+
+.formFlowBranchSelected {
+	background-color: lightblue;
+}
+
+div.branch div.stagesList {
+	min-height: 50px
+}
+
+.form-toolbox {
+    right: 0;
+    position: absolute;
+}
+
+.properties-dialog .ui-dialog-titlebar {
+	background: url("../../images/forms/edit-prop-header-bg.png") repeat-x scroll 0 0 #C2C2C2;
+	font-size: 1em;
+	font-weight: bold;
+	color: #363636;
+	padding: 0;
+}
+
+.edit-page-property {
+}
+.edit-page-content {
+	box-shadow: none;
+	width: auto;
+	position:relative;
+	zoom:1;
+}
+.toolbox  .ui-state-default{
+	display:block;
+}
+.ui-accordion .ui-accordion-header a{
+	padding:0 0 0 2.2em;
+	font-size: 10.8px;
+}
+.properties-dialog{
+	background:none;
+	padding:0;
+}
+
+.properties-dialog .ui-dialog-content{
+	background-color:transparent;
+}
+
+.toolbox {
+	padding:0;
+}
+.properties-dialog  .ui-state-default{
+	background: none repeat scroll 0 0 #E0EDF6;
+    border-radius: 0;
+    color: #366382;
+    font-size: 90%;
+    font-weight: bold;
+    text-shadow: none;
+	height: 15px;
+    margin: 3px 0;
+    padding: 5px;
+    z-index: 999;
+}
+
+.properties-dialog .ui-dialog-content{
+	padding:0;
+}
+
+.help-dialog{
+	background:none;
+	padding:0;
+}
+.help-dialog .ui-dialog-titlebar{
+	padding: 0 0 0 5px;
+}
+.help-dialog .ui-dialog-content{
+	background-color: #E0E0E0;
+}
+.help-dialog  .ui-state-default{
+	background: none repeat scroll 0 0 #E0EDF6;
+    border-radius: 0;
+    color: #366382;
+    font-size: 90%;
+    font-weight: bold;
+    text-shadow: none;
+	height: 15px;
+    margin: 3px 0;
+    padding: 5px;
+    z-index: 999;
+}
+
+.help-dialog .ui-dialog-content{
+	padding:0;
+}
+
+.properties-close{
+	background: url("../../images/general/prop-close-icn.png") no-repeat scroll 0 0 transparent;
+	width:12px;
+	height:12px;
+	text-indent: -50000px;
+	display: block;
+}
+
+.property-header-icon{
+	background: url("../../images/forms/edit-active-tab-icn.png") no-repeat scroll 0 0 transparent;
+	width:11px;
+	height:13px;
+	text-indent: -50000px;
+	display: block;
+	margin-top: 3px;
+	position: absolute; 
+	left: 5px;
+}
+
+h5.page-property-header {
+	font-size:12px;
+	position: absolute;
+	left: 20px;
+	top: auto;
+}
+.page-property-header-bg ul{
+	position: absolute;
+	right: 5px;
+	top: 4px;
+}
+input.page-bttn[type="submit"],
+input.page-bttn[type="button"]
+{
+	*width:135px; /*for ie fix*/
+}
+
+.control-button > div.control-properties{
+	right:23px;
+	top: 2px;
+}
+li.edit-page-li {
+	right: 3px;
+	left: auto;
+	top: auto;
+	zoom: 1;
+}
+li.single-properties-close{
+	top:6px
+	*top:4px;
+}
+label.page-edit-label{
+	font-size: 12px;
+	font-family: Arial,Helvetica,sans-serif;
+}
+.edit-page-content  .page-content-section{
+	padding: 5px;
+}
+input.inner-rgh-switch[type="button"], input.inner-mid-switch[type="button"], input.inner-lft-switch[type="button"]{
+	margin-right:-3.5px;
+}
+fieldset{
+	border: 1px solid #B6C5D8;
+	padding: 4px 8px 10px 8px;
+	margin: 0 2px;
+}
+.ui-tabs-nav .ui-corner-top {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.page-tab{
+	height: 36px;
+	overflow: hidden;
+	position: relative;
+}
+.page-tab ul{
+	clear: both;
+	position: absolute;
+	width: 20000em;
+}
+
+.arrow-nxt {
+	z-index:9999;
+	padding: 6px 0 0 0;
+	display:block;
+	position:absolute;
+	right:0;
+	top:0;
+	height:27px;
+	width:2%;
+	text-align: center;
+}
+
+.arrow-prev{
+	height: 27px;
+	top:0;
+	padding: 6px 0 0 0;
+	display:block;
+	position:absolute;
+	width:2%;
+	text-align: center;
+}
+.arrow-prev img{
+	left:0;
+}
+.arrow-nxt img {
+	right: 0;
+}
+.condition-panel .content{
+	padding: 25px 0;
+	border:1px solid #DCE9F6 ;
+}
+.condition-panel .ui-tabs-nav{
+	background: none repeat scroll 0 0 #CCCCCC;
+}
+.condition-panel .ui-tabs-nav li{
+	margin:0;
+	top:1;
+}
+.form-toolbox{
+	display:none;
+}
+.page-content-section{
+	top:0;
+}
+#flowProperties form{
+	width: auto;
+}
+
+/*@media (min-width: 650px) {*/
+	.control-caption-horizontal .control-label-span{
+		margin: 5px 0;
+	    text-align: right;
+	}
+/*}
+@media (max-width: 650px) {
+	.control-caption-horizontal .control-label-span{
+		margin: 5px 0;
+	    text-align: right;
+	    width: 50% !important;
+	}
+	.editableMode .control-caption-horizontal .control-label-span{
+		padding: 0 0 0 15px;
+	    text-align: left;
+	    width: 50% !important;
+	}
+}
+*/
+.control-caption-horizontal .control-label-span label{
+	color: #2D3D85;
+    font-weight: bold;
+	font-size:12px;
+	font-family: Arial,Helvetica,sans-serif;
+	font-style: normal;
+	line-height: 18px;
+}
+.control-caption-horizontal .control-input-span{
+	margin: 4px 0;
+}
+
+#sopformContent{
+	position: relative;
+}
+.required-indicator-before-label{
+	background: url("../../images/forms/asteric.gif") no-repeat scroll 0 4px transparent;
+    display: block;
+    text-indent: -50000px;
+	display: inline-block;
+    height: 16px;
+    width: 16px;
+	display:none;
+}
+.required-indicator-after-label{
+	background: url("../../images/forms/asteric.gif") no-repeat scroll 0 4px transparent;
+	*background: url("../../images/forms/asteric.gif") no-repeat scroll 0 0 transparent;
+    text-indent: -50000px;
+	display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+.control-caption-horizontal .required-indicator-after-label{
+	display:none;
+}
+.required-indicator-before-input{
+	background: url("../../images/forms/asteric.gif") no-repeat scroll 0 4px transparent;
+    text-indent: -50000px;
+	display: none;
+    height: 16px;
+    width: 16px;
+	float:left;
+}
+.control-caption-horizontal .required-indicator-before-input{
+	display: inline;
+}
+
+.control-caption-horizontal .control-input-span{
+    display: inline-block;
+}
+/*.control-caption-horizontal .control-input-span > div{
+    display: inline-block;
+    float: left;
+}*/
+.control-item-aux-container .control-label-span{
+	float: none;
+	display: block;	
+	text-align: left;
+}
+
+.control-item-aux-container .control-input-span{
+	float: none;
+	display: block;	
+}
+
+.required-indicator-after-input{
+	background: url("../../images/forms/asteric.gif") no-repeat scroll 0 4px transparent;
+    text-indent: -50000px;
+	display: inline;
+    height: 16px;
+    width: 16px;
+	display:none;
+}
+
+.control-caption-horizontal .control-input-span > .normal-indicator{
+	padding: 0px 0 0 16px;
+	width: 90%;
+}
+.control-item-aux-container .control-input-span > .normal-indicator{
+	padding: 0;
+}
+.ui-tabs{
+	zoom:0;
+}
+.form-toolbox {
+	width:290px;
+}
+.toolbox-pallete ul li img{
+	*top:-3px;
+}
+.form-flow {
+	margin-top:0px;
+}
+form{
+	width:100%;
+	max-width:none;
+	min-width:0;
+}
+
+#formProperties-content input[type="text"], #formProperties-content textarea{
+	width:130px;
+}
+#formProperties-content select{
+	width:140px;
+}
+
+.control-item-aux-container .control-input-span  input[type="button"]{
+	margin-left: 0;
+}
+
+.section-header{
+	background: none repeat scroll 0 0 #AAAAAA;
+    
+    padding: 5px 10px;
+}
+
+.repeatable-section-header{
+	background: none repeat scroll 0 0 #AAAAAA;
+    
+    padding: 5px 10px;
+}
+
+.section-header > label {
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.repeatable-section-header > label{
+	font-size: 14px;
+    font-weight: bold;
+	text-align: left;
+    vertical-align: middle;
+	color: #FFFFFF;
+}
+
+.tab-panel{
+	position:relative;
+	height: 34px;
+	display: block;
+}
+
+#formPanel .page-tab {
+	display:block;
+	position:absolute;
+	width: 96%;
+	left: 2%;
+}
+
+.arrow-nxt {
+	display:block;
+	position:absolute;
+	right:0;
+	top:0;
+	height:27px;
+	width:2%;
+}
+
+.section table.control-grid > tbody > tr:nth-child(even){
+	background-color:#F5F5F5;
+}
+.section table.control-grid > tbody  > tr:nth-child(odd){
+	background-color:#ECECEC;
+}
+.section table.control-grid > tbody  > tr{
+	*background-color:expression((this.sectionRowIndex % 2 == 0) ? "#F5F5F5" : "#ECECEC");
+}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active{
+	background: none repeat scroll 0 0 #E0EDF6;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited{
+	color:#1F92FF;
+	font-weight: bold;
+}
+.page{
+	margin:5px;
+	padding:5px;
+	background: none repeat scroll 0 0 #F5F5F5;
+	border: 1px solid #E3E3E3;
+}
+
+
+.repeatable-row table.control-grid > tbody  > tr:nth-child(even){
+	background-color:#F2F2F2;
+	border: 1px solid #CCCCCC;
+}
+.repeatable-row table.control-grid > tbody  > tr:nth-child(odd){
+	background-color:#E6E6E6;
+	border: 1px solid #CCCCCC;
+}
+.repeatable-row table.control-grid >tbody > tr{
+	*background-color:expression((this.sectionRowIndex % 2 == 0) ? "#F5F5F5" : "#ECECEC");
+	border: 1px solid #CCCCCC;
+}
+.table_header {
+    background: none repeat scroll 0 0 transparent;
+    color: #3D3039;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 5px 5px 0;
+    text-align: left;
+}
+
+.table_header td{
+	padding: 5px 10px;
+}
+.edit-page-property .ui-tabs .ui-tabs-nav .ui-state-default{
+	height:20px;
+	padding: 3px 15px 0;
+}
+.repeatable-row table.control-grid .control .control-input-span div.normal-indicator{
+	padding:0;
+}
+.repeatable-remove-row > div{
+	margin-top: 10px;
+}
+#previewPanel .page-tab {
+    display: block;
+    left: 2%;
+    position: absolute;
+    width: 96%;
+}
+#previewPanel .page-tab {
+    background: none repeat scroll 0 0 #908989;
+    border-bottom: 1px solid #BBBBBB;
+    border-top: 1px solid #DDDDDD;
+    height: 30px;
+    margin-top: 1px;
+}
+#previewPanel .page-tab ul li {
+    display: inline-block;
+    margin: 0;
+}
+.sopform-buttons button{
+	float:left;
+}
+.runtimePanel .header {
+    background: url("../../images/general/ctr-col-hd-bg.png") repeat-x scroll 0 0 #263646;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    float: left;
+    height: 40px;
+}
+.runtimePanel .header h2 {
+    color: #FFFFFF;
+    float: left;
+    font-size: 1.75em;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 0 #000033;
+	padding: 8px 0 0 10px;
+    width: auto;
+}
+.runtimePanelContent .content{
+	padding: 15px;
+	background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #B6C5D8;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 1px 2px #CCCCCC;
+}
+.runtimePanelContent{
+	clear:both;
+}
+.runtimePanel{
+	margin-top:12px;
+}
+.action-content{
+	margin:5px;
+}
+.action-content button{
+    width: 110px;
+}
+.commentList li{
+	list-style: decimal;
+}
+#submit_comment_button{
+	margin-left:20px;
+}
+.button-disable{
+	background: url("../../images/general/search-reset-bg.png") repeat-x scroll 0 0 #515D64;
+    border: 1px solid #9DA3A7;
+    border-radius: 5px 5px 5px 5px;
+    color: #CCCCCC;
+    font-style: inherit;
+    font-weight: bold;
+    text-shadow: 0 1px 0 #333333;
+}
+.button-disable:hover{
+	background: url("../../images/general/search-reset-bg.png") repeat-x scroll 0 0 #515D64;
+}
+.edit-page-property {
+	width: 430px;
+}
+#acl-visibility-property-stages > div,#acl-editability-property-stages > div, #sources_options_default_div{
+	margin:0 0 2px 132px;
+}
+
+/* for IE, the font seems strange. add background to fix it. */
+.form-tools ul li span {
+    background-color: #dceaf5\9;
+}
+.control-caption-horizontal .label-control{
+	float:none;
+}
+#validationOptionDiv fieldset .page-edit-label{
+	width:90px;
+}
+
+.onecolumn .header h2.master-form-name {
+    margin-bottom: 0px;
+    height: 25px;
+}
+#sla-tracking-widget{
+	text-align:left;
+}
+.toggle-button input {
+	display:inline;
+	clip: rect(1px, 1px, 1px, 1px);
+    position: absolute;
+	cliptop:1px;
+	clipright:1px;
+	clipbottom:1px;
+	clipleft:1px;
+}
+.aggregate-row input{
+	width:180px;
+}
+.sla-sum-milestns-icon{
+	background: url("../../images/forms/sla-circ-icn.png") no-repeat scroll 0 0 transparent;
+	height: 16px;
+    width: 19px;
+}
+.sla-sum-milestns-container:hover{
+	background: url("../../images/forms/sla-circ-icn.png") no-repeat scroll 0 0 transparent;
+}
+.sla-summary-milestones{
+	top:-3px;
+}
+
+#forwardPanel .runtimePanelContent table td{
+	padding:2px;
+}
+
+.section > table{
+	margin:5px;
+}
+.section .section{
+	margin:0;
+}
+.section .control-grid{
+	width:99%;
+}
+.section .control-grid.control-set-font {
+	width: 100%;
+}
+
+.sla-milestone .sla-milestone-state{
+	width:18px;
+	height:18px;
+	background-image:none;
+}
+.error_placements{
+	margin-left: 10px;
+}
+
+.control .control-input-span  input[type="password"] {
+	width: 80%;
+	max-width: 180px;
+}
+
+.control .control-input-span input[type="text"], .control .control-input-span textarea {
+	width: 80%;
+	max-width: 200px;
+}
+.control .control-input-span select {
+	width: 85%;
+	max-width: 210px;
+	*width: 210px;
+}
+#helpDialog{
+	padding:3px 5px;
+}
+.help-dialog .ui-dialog-content {
+    background-color: #D7E5F0;
+}
+.help-dialog  .ui-dialog-titlebar-close{
+	*height: 17px;
+	right:1px;
+}
+.control-input-span{
+	float:left;
+}
+.control-mask{
+	clear:both;
+}
+
+/*fixed bug8270*/
+.richtextbox .cke_skin_v2 .cke_wrapper, .richtextbox .cke_skin_v2{
+	display:inline;
+}
+.richtextbox .cke_editor{
+	display:inline;
+	width:645px;
+}
+.richtextbox .cke_editor tr td{
+	width:645px;
+}
+.richtextbox .error_placements{
+	vertical-align: bottom;
+}
+
+.action-button button {
+	min-width: 90px;
+	margin: 5px;
+	float: left;
+}
+
+.action-button button.left{
+	float:left;
+}
+
+.action-button button.right{
+	float:right;
+}
+
+#custom_content_div{
+	margin: 10px;
+}
+
+.repeatable-section-item:nth-child(2n+1){
+    background-color: #e6e6e6;
+    border: 1px solid #e6e6e6;
+}
+.repeatable-section-item:nth-child(2n){
+    background-color: #f2f2f2;
+    border: 1px solid #e6e6e6;
+}
+.repeatable-section, .repeatable-row, .section {
+	margin-bottom: 15px;
+}
+.control-set-alignment.control-label-span {
+	width: 90%;
+}
+
+.control-set-alignment.control-input-span {
+	width: 90%;
+}
+
+.control-caption-horizontal .control-set-alignment.control-label-span {
+	width: 48%;
+}
+
+.control-caption-horizontal .control-set-alignment.control-input-span {
+	width: 48%;
+}
+
+.repeatable-row.control-caption-horizontal .control-set-alignment.control-label-span {
+	width: 90%;
+}
+
+.repeatable-row.control-caption-horizontal .control-set-alignment.control-input-span {
+	width: 90%;
+}
+
+.control-set-alignment.control-input-span.control-button-wrapper {
+	text-align: center;
+	width: 90%;
+}
+
+/* Add for repeatable row's responsive css*/
+.control-grid {
+    margin-bottom: 3px;
+}
+
+.page-edit-link {
+    cursor: pointer;
+    float: right;
+    text-decoration: underline;
+}
+
+.page-edit-link a {
+    color: #00f;
+}
+
+.hide-arrow .arrow-prev, .hide-arrow .arrow-nxt{
+	display: none;
+}
+
+#formPanel .hide-arrow .page-tab{
+	left: 0;
+	width: 100%;
+}
