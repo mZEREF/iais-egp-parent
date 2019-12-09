@@ -20,7 +20,8 @@ import java.util.List;
 @FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
         fallback = OrganizationClientFallback.class)
 public interface OrganizationClient {
-    @RequestMapping(value = "/iais-orguser/users-by-ids",method = RequestMethod.POST)
+    @RequestMapping(value = "/iais-orguser/users-by-ids",method = RequestMethod.POST,produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(@RequestBody List<String> ids);
 
     @RequestMapping(path = "/iais-task/super/{workGroupId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
