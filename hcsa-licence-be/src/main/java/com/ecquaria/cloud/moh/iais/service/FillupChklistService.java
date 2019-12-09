@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
 /**
  * @author Guyin
@@ -37,4 +38,5 @@ public interface FillupChklistService {
 
     void saveDto(InspectionFillCheckListDto dto);
     ApplicationViewDto getAppViewDto(String taskId);
+    TaskDto getTaskDtoById(String taskId);
 }

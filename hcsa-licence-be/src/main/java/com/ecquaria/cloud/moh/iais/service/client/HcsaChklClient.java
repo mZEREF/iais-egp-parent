@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -65,4 +66,10 @@ public interface HcsaChklClient {
 
     @GetMapping(path = "/iais-hcsa-checklist/config/results/{svcCode}/{svcType}", produces = { MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<ChecklistQuestionDto>> getcheckListQuestionDtoList(@PathVariable(value = "svcCode") String svcCode, @PathVariable(value = "svcType") String svcType);
+
+    @GetMapping(path = "/iais-hcsa-checklist/self-desc/RegulationDtoById/{id}", produces = { MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<HcsaChklSvcRegulationDto> getRegulationDtoById(@PathVariable(value = "id") String svcCode);
+
+
+
 }

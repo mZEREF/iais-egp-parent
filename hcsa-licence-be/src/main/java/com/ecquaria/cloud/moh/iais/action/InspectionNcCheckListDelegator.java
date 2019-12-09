@@ -1,27 +1,40 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
+import com.ecquaria.cloudfeign.FeignException;
 import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +49,14 @@ public class InspectionNcCheckListDelegator {
     FillupChklistService fillupChklistService;
     @Autowired
     InsepctionNcCheckListService insepctionNcCheckListService;
+    @Autowired
+    TaskService taskService;
+    @Autowired
+    AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
+    @Autowired
+
+
+    private ApplicationViewService applicationViewService;
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -59,7 +80,10 @@ public class InspectionNcCheckListDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
         List<AppPremisesPreInspectionNcItemDto> itemDtoList = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremPreCklDto.getAppPremCorrId());
         insepectionNcCheckListDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
-        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
+        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto("7102C311-D10D-EA11-BE7D-000C29F371DC");
+        TaskDto  taskDto = fillupChklistService.getTaskDtoById("7102C311-D10D-EA11-BE7D-000C29F371DC");
+        //TaskDto taskDto = RestApiUtil.getByPathParam("hcsa-config:8879/iais-task/{taskId}",taskId,TaskDto.class);
+        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",insepectionNcCheckListDto);
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
     }
@@ -93,8 +117,73 @@ public class InspectionNcCheckListDelegator {
         Log.info("=======>>>>>doSubmitStep>>>>>>>>>>>>>>>>doSubmitRequest");
         HttpServletRequest request = bpc.request;
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
+        ApplicationViewDto appViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
+
         insepctionNcCheckListService.submit(icDto);
+        try {
+            routingTask(bpc, HcsaConsts.ROUTING_STAGE_INS, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
+        }catch (Exception e){
+
+        }
     }
+
+    public void routingTask(BaseProcessClass bpc) throws FeignException {
+
+    }
+
+    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus ) throws FeignException {
+        //completedTask
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        taskDto =  completedTask(taskDto);
+        //add history for this stage complate
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+        //updateApplicaiton
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        updateApplicaiton(applicationDto,appStatus);
+        applicationViewDto.setApplicationDto(applicationDto);
+        // send the task
+        if(!StringUtil.isEmpty(stageId)){
+            taskService.routingTask(applicationDto,stageId);
+            //add history for next stage start
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,null);
+        }
+    }
+
+    private TaskDto completedTask(TaskDto taskDto){
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setSlaRemainInDays(remainDays(taskDto));
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return taskService.updateTask(taskDto);
+    }
+
+    private int remainDays(TaskDto taskDto){
+        int result = 0;
+        //todo: wait count kpi
+        String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
+        log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
+        return  result;
+    }
+    private ApplicationDto updateApplicaiton(ApplicationDto applicationDto,String appStatus){
+        applicationDto.setStatus(appStatus);
+        return applicationViewService.updateApplicaiton(applicationDto);
+    }
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                         String stageId, String internalRemarks){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        return appPremisesRoutingHistoryDto;
+    }
+
 
     public InspectionFillCheckListDto getDataFromPage(HttpServletRequest request){
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
