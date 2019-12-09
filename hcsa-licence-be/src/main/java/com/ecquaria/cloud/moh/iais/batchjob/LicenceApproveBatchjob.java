@@ -72,6 +72,7 @@ public class LicenceApproveBatchjob {
     private ApplicationGroupService applicationGroupService;
 
     private Map<String,Integer> hciCodeVersion = new HashMap();
+    private Map<String,Integer> keyPersonnelVersion = new HashMap<>();
 
     public void doBatchJob(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is start ..."));
@@ -125,7 +126,7 @@ public class LicenceApproveBatchjob {
         //else{ rollback step1}
         //todo: step2 save licence to Fe DB
          //if(step2) success  completed
-        //else{roll beck step1 and step 2}
+        //else{roll back step1 and step 2}
 
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
     }
@@ -273,7 +274,7 @@ public class LicenceApproveBatchjob {
                         errorMessage = "There is not the AppSvcPersonnel for this applicaiton -->: "+applicationListDto.getApplicationDto().getApplicationNo();
                         break;
                     }
-                    List<PersonnelsDto> personnelsDto1s = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos);
+                    List<PersonnelsDto> personnelsDto1s = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
                     if(personnelsDtos == null){
                         errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationListDto.getApplicationDto().getApplicationNo();
                         break;
@@ -405,7 +406,7 @@ public class LicenceApproveBatchjob {
                     errorMessage = "There is not the AppSvcPersonnel for this applicaiton -->: "+applicationDto.getApplicationNo();
                     break;
                 }
-                List<PersonnelsDto> personnelsDtos = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos);
+                List<PersonnelsDto> personnelsDtos = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
                 if(personnelsDtos == null){
                     errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationDto.getApplicationNo();
                     break;
@@ -537,7 +538,8 @@ public class LicenceApproveBatchjob {
         return isPostInspNeeded;
     }
     private List<PersonnelsDto> getPersonnelsDto(List<AppGrpPersonnelDto> appGrpPersonnelDtos,List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos,
-                                                 List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos){
+                                                 List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos,
+                                                 String organizationId){
         List<PersonnelsDto> personnelsDtos = new ArrayList<>();
         for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto : appSvcKeyPersonnelDtos){
             PersonnelsDto personnelsDto = new PersonnelsDto();
@@ -548,12 +550,12 @@ public class LicenceApproveBatchjob {
                 return  null;
             }
             KeyPersonnelDto keyPersonnelDto = MiscUtil.transferEntityDto(appGrpPersonnelDto,KeyPersonnelDto.class);
-            //todo:controller the psersonnel version
-            keyPersonnelDto.setVersion(1);
+            //:controller the psersonnel version
+            keyPersonnelDto.setVersion(getKeyPersonnelVersion(keyPersonnelDto.getIdNo(),organizationId));
             //todo: controller status
             keyPersonnelDto.setStatus("active");
-            //todo: controller the Organization
-            keyPersonnelDto.setOrganizationId("29ABCF6D-770B-EA11-BE7D-000C29F371DC");
+            //: controller the Organization
+            keyPersonnelDto.setOrganizationId(organizationId);
             personnelsDto.setKeyPersonnelDto(keyPersonnelDto);
             //create AppGrpPersonnelExtDto
             String appGrpPsnExtId = appSvcKeyPersonnelDto.getAppGrpPsnExtId();
@@ -573,6 +575,21 @@ public class LicenceApproveBatchjob {
         return  personnelsDtos;
     }
 
+    private Integer getKeyPersonnelVersion(String idNo,String orgId){
+
+        Integer result = 1;
+        Integer version = keyPersonnelVersion.get(idNo+orgId);
+        if(version==null){
+            KeyPersonnelDto keyPersonnelDto = licenceService.getLatestVersionKeyPersonnelByIdNoAndOrgId(idNo,orgId);
+            if(keyPersonnelDto!= null){
+                result = keyPersonnelDto.getVersion()+1;
+            }
+        }else{
+            result = version+1;
+        }
+        keyPersonnelVersion.put(idNo+orgId,result);
+        return result;
+    }
     private AppGrpPersonnelExtDto getAppGrpPersonnelExtDtoById(List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos ,String appGrpPsnExtId){
         AppGrpPersonnelExtDto result = null;
         if(appGrpPersonnelExtDtos == null || appGrpPersonnelExtDtos.size() == 0 || StringUtil.isEmpty(appGrpPsnExtId)){
