@@ -1,4 +1,4 @@
-/*! MOH-IAIS 30-08-2019 */
+/*! MOH-IAIS 13-09-2019 */
 
 @charset "UTF-8";
 html {
@@ -690,6 +690,37 @@ header .container .sg-gov-logo a img {
 .navigation .nav.nav-tabs.nav-menu li.active a:hover {
   color: #333333;
 }
+.navigation .nav.nav-tabs.nav-menu > li:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: #BFBFBF;
+  bottom: -5px;
+  left: 0;
+}
+.navigation .nav.nav-tabs.nav-menu li a span:after {
+  left: 50%;
+  margin-left: -50%;
+  bottom: -15px;
+}
+.navigation .nav.nav-tabs.nav-menu li.active a span:after {
+  width: 100%;
+}
+.navigation .nav.nav-tabs.nav-menu li.dropdown:hover a.dropdown-toggle {
+  background-color: #025B87;
+  color: white;
+}
+.navigation .nav.nav-tabs.nav-menu li.dropdown:hover a.dropdown-toggle:after {
+  color: #fff;
+  content: "";
+}
+.navigation .nav.nav-tabs.nav-menu li.dropdown:hover a.dropdown-toggle + .dropdown-menu {
+  display: block;
+}
+.navigation .nav.nav-tabs.nav-menu a.dropdown-toggle + .dropdown-menu li a {
+  color: #fff;
+}
 @media only screen and (max-width : 1200px) {
   .navigation {
     position: fixed;
@@ -782,6 +813,9 @@ header .container .sg-gov-logo a img {
   }
   .navigation .nav.nav-tabs.nav-menu > li.dropdown.open a.dropdown-toggle:after {
     color: #989898;
+  }
+  .navigation .nav.nav-tabs.nav-menu > li:after {
+    content: none;
   }
   .navigation.open {
     -webkit-transform: translateX(0);
@@ -2397,6 +2431,27 @@ span.error-msg {
   top: 25px;
 }
 
+#tabApplication .form-inline .form-group, #tabApplication .form-inline .form-group.large {
+  width: 22%;
+}
+#tabApplication .form-inline .form-group:first-child {
+  width: 28%;
+}
+#tabApplication .tab-search .search-wrap {
+  width: 230px;
+}
+@media only screen and (max-width: 767px) {
+  #tabApplication .form-inline .form-group {
+    width: 45%;
+  }
+  #tabApplication .form-inline .form-group.large {
+    width: 85%;
+  }
+  #tabApplication .form-inline .form-group:first-child {
+    width: 85%;
+  }
+}
+
 .tab-gp ul.nav.nav-tabs {
   border: 0;
   border-radius: 14px;
@@ -3589,6 +3644,8 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 .dashboard-gp .dashboard-tile-item .dashboard-tile.txt-only .dashboard-txt {
   color: white;
   width: 100%;
+  line-height: 53px;
+  font-weight: 600;
 }
 .dashboard-gp .dashboard-tile-item:not(:last-child) {
   margin-right: 30px;
@@ -3618,6 +3675,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   .dashboard-gp .dashboard-tile-item .dashboard-tile .dashboard-txt {
     width: 100%;
     font-size: 1.8rem;
+    line-height: 26px !important;
   }
   .dashboard-gp .dashboard-tile-item:not(:last-child) {
     margin-right: 0;
@@ -3644,7 +3702,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     font-size: 2rem;
   }
   .dashboard-gp .dashboard-tile-item .dashboard-tile.txt-only .dashboard-txt {
-    width: 66%;
+    width: 80%;
   }
 }
 @media only screen and (min-width : 993px) and (max-width : 1200px) {
@@ -3664,7 +3722,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     width: calc(100% - 60px);
   }
   .dashboard-gp .dashboard-tile-item .dashboard-tile.txt-only .dashboard-txt {
-    width: 47%;
+    width: 70%;
   }
 }
 
@@ -4666,6 +4724,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 .canvasContent #formPanel .form-tab-panel .formgap .radioselect {
   font-size: 16px;
   padding: 0 15px;
+  margin-top: 14px;
 }
 .canvasContent #formPanel .form-tab-panel .formgap .radioselect tr {
   display: inline-block;
@@ -4676,9 +4735,6 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 }
 .canvasContent #formPanel .form-tab-panel .formgap .radioselect tr:last-child .control-item-container {
   margin-right: 0;
-}
-.canvasContent #formPanel .form-tab-panel .formgap .radioselect tr + tr {
-  margin-top: -30px;
 }
 .canvasContent #formPanel .form-tab-panel .formgap .radioselect input {
   position: absolute;
@@ -4712,7 +4768,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   margin-top: 0;
   position: absolute;
   left: 0;
-  top: 18px;
+  top: 4px;
   background: #efefef;
   background: -moz-linear-gradient(left, #efefef 0%, white 100%);
   background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
@@ -4933,7 +4989,7 @@ table select.form-control.control-input {
   padding-left: 30px;
   min-width: 16px;
   min-height: 22px;
-  line-height: 22px;
+  line-height: 22px !important;
   font-family: "Open Sans", sans-serif;
   color: #333333;
   font-size: 1.6rem;
@@ -4975,7 +5031,7 @@ table select.form-control.control-input {
   margin-top: 0;
   position: absolute;
   left: 0;
-  top: 3px;
+  top: 4px;
   background: #efefef;
   /* Old browsers */
   background: -moz-linear-gradient(left, #efefef 0%, white 100%);
