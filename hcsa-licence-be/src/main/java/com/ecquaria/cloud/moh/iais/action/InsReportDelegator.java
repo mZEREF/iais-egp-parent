@@ -75,8 +75,9 @@ public class InsReportDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         //String appNo = "AN1911136061-01";
-        InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo);
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
+        String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo);
         SelectOption so1 = new SelectOption("Reject", "Reject");
         SelectOption so2 = new SelectOption("1Y", "1year");
         SelectOption so3 = new SelectOption("2Y", "2year");
