@@ -140,7 +140,9 @@ public class HcsaApplicationDelegator {
              ) {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
-
+           if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
+               routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
+           }
 //        if("AO3".equals(applicationViewDto.getCurrentStatus())){
 //            routingStage.put("APST000","RollBack");
 //            routingStage.put("APST002","Pending Approval");
