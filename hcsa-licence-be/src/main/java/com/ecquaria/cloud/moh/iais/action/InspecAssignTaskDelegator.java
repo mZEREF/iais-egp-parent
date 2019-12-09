@@ -58,9 +58,10 @@ public class InspecAssignTaskDelegator {
     private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
     @Autowired
-    private InspecAssignTaskDelegator(InspectionAssignTaskService inspectionAssignTaskService, AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient){
+    private InspecAssignTaskDelegator(InspectionAssignTaskService inspectionAssignTaskService, ApplicationViewService applicationViewService, AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient){
         this.inspectionAssignTaskService = inspectionAssignTaskService;
         this.appPremisesRoutingHistoryClient = appPremisesRoutingHistoryClient;
+        this.applicationViewService = applicationViewService;
     }
 
     /**
