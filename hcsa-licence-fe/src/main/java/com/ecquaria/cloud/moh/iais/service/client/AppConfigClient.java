@@ -76,7 +76,7 @@ public interface AppConfigClient {
     @RequestMapping(path = "/iais-hcsa-risk/RiskResult",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<RiskResultDto>> getRiskResult(@RequestBody List<RiskAcceptiionDto> riskAcceptiionDtoList);
 
-    @RequestMapping(path = "/iais-hcsa-fee/new-fee",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/iais-hcsa-fee/calculate-fee",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeeDto> newFee(@RequestBody @Required List<LicenceFeeDto> dto);
 
     @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}",method = RequestMethod.GET)

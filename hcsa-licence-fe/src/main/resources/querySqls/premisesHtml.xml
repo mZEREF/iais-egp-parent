@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="premises">
+    <sql key="premisesHtml" cached="no" remarks="generate Governance Officer Html">
+        <![CDATA[
+<div class="row premContent" id="mainPrem">
+    <div class="col-xs-12">
+        <div class="form-horizontal">
+            <div class="form-group premisesTypeDiv" id="(0)premisesType">
+                <input class="premTypeValue" type="hidden" name="(0)premType" value=""/>
+                <label class="col-xs-12 col-md-4 control-label" for="(0)premisesType">What is your premises type?</label>
+                (1)
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-4"></div>
+                <div class="col-xs-6 col-md-5">
+                    <span class="error-msg"></span>
+                 </div>
+            </div>
+            <div class="form-group premiseOnSiteSelect hidden">
+                <label class="col-xs-12 col-md-4 control-label">Add or select a premises from the list</label>
+                <div class=" col-xs-11 col-sm-7 col-md-5">
+                (2)
+                </div>
+                <span class="error-msg"></span>
+            </div>
+
+            <div class="form-group premiseConSelect hidden">
+                <label class="col-xs-12 col-md-4 control-label">Add or select a premises from the list</label>
+                <div class=" col-xs-11 col-sm-7 col-md-5">
+                    (3)
+                </div>
+                <span class="error-msg"></span>
+            </div>
+            <div class="clear"></div>
+            </div>
+
+
+            <div class="prem-summary hidden">
+                <h3 class="without-header-line">Premises Summary</h3>
+                <p class="premise-address-gp"> <span class="premise-type"><strong>On-site: </strong></span><span class="premise-address"></span></p>
+                <p class="vehicle-txt hidden"><strong>Vehicle No:</strong> <span class="vehicle-info"></span></p>
+            </div>
+
+
+            <div class="new-premise-form-on-site hidden">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-xs-11 col-md-4 control-label">Name of premises</label>
+                        <div class="col-sm-7 col-md-6 col-xs-10">
+                            <input type="text" id="sitePremiseName" name="(0)hciName" value="" maxlength="100" autocomplete="off">
+                            <span class="error-msg"></span>
+                        </div>
+                    <div class="clear"></div></div>
+                    <div class="form-group postalCodeDiv">
+                        <label class="col-xs-12 col-md-4 control-label">Postal Code</label>
+                        <div class="col-sm-7 col-md-6 col-xs-10">
+                            <div class="form-group">
+                                <div class="col-sm-7 col-md-6 col-xs-10">
+                                    <input type="text" class="sitePostalCode id="sitePostalCode" name="(0)postalCode" value="" maxlength="6" autocomplete="off">
+                                </div>
+                                <div class="col-xs-7 col-sm-6 col-md-6">
+                                    <p><a class="retrieveAddr" >Retrieve your address</a></p>
+                                </div>
+                            <div class="clear"></div></div>
+                            <span  class="postalCodeMsg error-msg"></span>
+                        </div>
+                    <div class="clear"></div></div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Address Type</label>
+                        <div class=" col-xs-7 col-sm-4 col-md-3">
+                            (4)
+                        </div>
+                    <div class="clear"></div></div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Block / House No.</label>
+                        <div class="col-sm-4 col-md-2 col-xs-5">
+                            <input type="text" class="siteBlockNo" id="siteBlockNo" name="(0)blkNo" value="" maxlength="10" autocomplete="off">
+                            <span class="error-msg"></span>
+                        </div>
+                    <div class="clear"></div></div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
+                        <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
+                            <input type="text" id="siteFloorNo" name="(0)floorNo" maxlength="3" autocomplete="off">
+                            <p class="small-txt">(Optional)</p>
+                            <span class="error-msg"></span>
+                        </div>
+                    <div class="clear"></div></div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
+                        <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
+                            <input type="text" id="siteUnitNo" name="(0)unitNo" maxlength="5" autocomplete="off">
+                            <p class="small-txt">(Optional)</p>
+                            <span class="error-msg"></span>
+                        </div>
+                    <div class="clear"></div></div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Building Name</label>
+                        <div class="col-sm-7 col-md-6 col-xs-10 input-with-label">
+                            <input type="text" class="siteBuildingName" id="siteBuildingName" name="(0)buildingName" value="" maxlength="45" autocomplete="off">
+                            <p class="small-txt">(Optional)</p>
+                            <span class="error-msg"></span>
+                        </div>
+                    <div class="clear"></div></div>
+
+                    <div class="form-group">
+                        <label class="col-xs-10 col-md-4 control-label">Street Name</label>
+                        <div class="col-sm-7 col-md-5 col-xs-10">
+                            <input type="text" class="siteStreetName" id="siteStreetName" name="(0)streetName" value="" maxlength="32" autocomplete="off">
+                            <span class="error-msg"></span>
+                        </div>
+                    <div class="clear"></div></div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true">i</a></label>
+                        <div class="col-xs-9 col-sm-5 col-md-4">
+                            <input id="siteSafefyNo" name="(0)siteSafefyNo" type="text" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dtp_input1" class="col-md-2 control-label">DateTime Picking</label>
+                        <div class="input-group date form_datetime col-md-5" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                            <input class="form-control" size="16" type="text" value="" readonly="">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        <input type="hidden" id="dtp_input1" value=""><br>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Office Telephone No</label>
+                        <div class=" col-xs-7 col-sm-4 col-md-3">
+                            <input type="text" name="offTelNo" maxlength="8" autocomplete="off">
+                        </div>
+                    <div class="clear"></div></div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Are you co-locating with another licensee?</label>
+                        <div class=" col-xs-7 col-sm-4 col-md-3">
+
+                        </div>
+                    <div class="clear"></div></div>
+
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">
+                            Operating Hours (Start)
+                        </label>
+                        <div class="col-xs-9 col-sm-5 col-md-4">
+                            <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+                            :
+                            <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">
+                            Operating Hours (End)
+                        </label>
+                        <div class="col-xs-9 col-sm-5 col-md-4">
+                            <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+                            :
+                            <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
+                        <div class=" col-xs-7 col-sm-4 col-md-3">
+                            <input type="text" class="date_picker form-control" id="-91269707603400" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
+                        </div>
+                    <div class="clear"></div></div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">
+                            Public Holidays Operating Hours (Start)
+                        </label>
+                        <div class="col-xs-9 col-sm-5 col-md-4">
+                            <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+                            :
+                            <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">
+                            Public Holidays Operating Hours (End)
+                        </label>
+                        <div class="col-xs-9 col-sm-5 col-md-4">
+                            <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+                            :
+                            <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+                        </div>
+                    </div>
+                </div>
+            </div>
+                                        <div class="new-premise-form-conveyance hidden">
+                                            <div class="form-horizontal">
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Vehicle No.</label>
+                                                    <div class="col-sm-7 col-md-6 col-xs-10">
+                                                        <input type="text" id="vehicleNo" name="(0)conveyanceVehicleNo" maxlength="null" autocomplete="off">
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Vehicle Owner's Name</label>
+                                                    <div class=" col-xs-4 col-sm-2 col-md-2">
+                                                        <select id="vehicleOwnerNameSalutation" name="(0)conveyanceSalutation" aria-label="vehicleOwnerNameSalutation" style="display: none;">
+                                                            <option>Mr</option>
+                                                            <option>Mrs</option>
+                                                            <option>Ms</option>
+                                                            <option>Mam</option>
+                                                        </select><div class="nice-select" tabindex="0"><span class="current">Mr</span><ul class="list mCustomScrollbar _mCS_5 mCS_no_scrollbar"><div id="mCSB_5" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" tabindex="0" style="max-height: none;"><div id="mCSB_5_container" class="mCSB_container mCS_y_hidden mCS_no_scrollbar_y" style="position:relative; top:0; left:0;" dir="ltr"><li data-value="Mr" class="option selected">Mr</li><li data-value="Mrs" class="option">Mrs</li><li data-value="Ms" class="option">Ms</li><li data-value="Mam" class="option">Mam</li></div><div id="mCSB_5_scrollbar_vertical" class="mCSB_scrollTools mCSB_5_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: none;"><div class="mCSB_draggerContainer"><div id="mCSB_5_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; top: 0px;"><div class="mCSB_dragger_bar" style="line-height: 30px;"></div></div><div class="mCSB_draggerRail"></div></div></div></div></ul></div>
+                                                    </div>
+                                                    <div class=" col-xs-7 col-sm-4 col-md-5">
+                                                        <input type="text" id="vehicleOwnerName" name="(0)conveyanceVehicleOwnerName" maxlength="null" autocomplete="off">
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="col-sm-7 col-md-6 col-xs-10">
+                                                <div class="form-group">
+                                                    <div class="col-sm-7 col-md-6 col-xs-10">
+                                                        <input type="text" class="sitePostalCode id="sitePostalCode" name="(0)postalCode" value="" maxlength="6" autocomplete="off">
+                                                    </div>
+                                                    <div class="col-xs-7 col-sm-6 col-md-6">
+                                                        <p><a class="retrieveAddr" >Retrieve your address</a></p>
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <span  class="postalCodeMsg error-msg"></span>
+                                            </div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Address Type</label>
+                                                    <div class=" col-xs-7 col-sm-4 col-md-3">
+                                                        (5)
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Block / House No.</label>
+                                                    <div class="col-sm-4 col-md-2 col-xs-5">
+                                                        <input type="text" id="conveyanceBlockNo" name="(0)conveyanceBlockNo" maxlength="null" autocomplete="off">
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
+                                                    <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
+                                                        <input type="text" id="conveyanceFloorNo" name="(0)conveyanceFloorNo" maxlength="null" autocomplete="off">
+                                                        <p class="small-txt">(Optional)</p>
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
+                                                    <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
+                                                        <input type="text" id="conveyanceUnitNo" name="(0)conveyanceUnitNo" maxlength="null" autocomplete="off">
+                                                        <p class="small-txt">(Optional)</p>
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-10 col-md-4 control-label">Street Name</label>
+                                                    <div class="col-sm-7 col-md-5 col-xs-10">
+                                                        <input type="text" id="conveyanceStreetName" name="(0)conveyanceStreetName" maxlength="null" autocomplete="off">
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Building Name </label>
+                                                    <div class=" col-xs-11 col-sm-7 col-md-6 input-with-label">
+                                                        <input type="text" id="conveyanceBuildingName" name="(0)conveyanceBuildingName" maxlength="null" autocomplete="off">
+                                                        <p class="small-txt">(Optional)</p>
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Email Address </label>
+                                                    <div class=" col-xs-9 col-sm-5 col-sm-4">
+                                                        <input type="text" id="conveyanceEmail" name="(0)conveyanceEmail" maxlength="null" autocomplete="off">
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Mobile number </label>
+                                                    <div class=" col-xs-7 col-sm-4 col-md-3">
+                                                        <input type="text" id="conveyanceMobile" name="conveyanceMobile" maxlength="null" autocomplete="off">
+                                                    </div>
+                                                <div class="clear"></div></div>
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">
+                                                        Operating Hours (Start)
+                                                    </label>
+                                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                                        <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+                                                        :
+                                                        <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">
+                                                        Operating Hours (End)
+                                                    </label>
+                                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                                        <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+                                                        :
+                                                        <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
+                                                    <div class=" col-xs-7 col-sm-4 col-md-3">
+
+                                                    </div>
+                                                <div class="clear"></div></div>
+
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">
+                                                        Public Holidays Operating Hours (Start)
+                                                    </label>
+                                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                                        <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+                                                        :
+                                                        <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-xs-12 col-md-4 control-label">
+                                                        Public Holidays Operating Hours (End)
+                                                    </label>
+                                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                                        <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+                                                        :
+                                                        <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+        ]]>
+    </sql>
+</sqls>
