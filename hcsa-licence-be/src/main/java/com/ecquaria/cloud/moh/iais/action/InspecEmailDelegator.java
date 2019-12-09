@@ -12,10 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -103,6 +101,10 @@ public class InspecEmailDelegator {
         }
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
+        String content=ParamUtil.getString(request,"messageContent");
+        if(content.isEmpty()){
+            mesContext=content;
+        }
         inspectionEmailTemplateDto.setMessageContent(mesContext);
 
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, ApplicationConsts.APPLICATION_TYPE_RENEWAL});
@@ -182,62 +184,5 @@ public class InspecEmailDelegator {
         inspEmailService.recallEmailTemplate(id);
     }
 
-//    public void preCheckList(BaseProcessClass bpc) {
-//
-//        log.info("=======>>>>>preCheckList>>>>>>>>>>>>>>>>emailRequest");
-//    }
-//    public void checkListNext(BaseProcessClass bpc) {
-//        log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");
-//        HttpServletRequest request = bpc.request;
-//    }
-//    public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
-//        log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
-//        HttpServletRequest request = bpc.request;
-//        String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-//        String appNo = "AN1911136061-01";
-//        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
-//        String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
-//        ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
-//        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-//        inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
-//        inspectionEmailTemplateDto.setApplicantName("li cen");
-//        inspectionEmailTemplateDto.setApplicationNumber(appNo);
-//        inspectionEmailTemplateDto.setHciCode("HCI123");
-//        inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
-//        inspectionEmailTemplateDto.setServiceName("cosmetic surgery");
-//        inspectionEmailTemplateDto.setSn("No");
-//        inspectionEmailTemplateDto.setChecklistItem("checklistItem");
-//        inspectionEmailTemplateDto.setRegulationClause("regulationClause");
-//        inspectionEmailTemplateDto.setRemarks("no remarks");
-//        inspectionEmailTemplateDto.setBestPractices("GOOD");
-//
-//        Map<String,Object> map=new HashMap<>();
-//        map.put("APPLICANT_NAME",inspectionEmailTemplateDto.getApplicantName());
-//        map.put("APPLICATION_NUMBER",inspectionEmailTemplateDto.getApplicationNumber());
-//        map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
-//        map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
-//        map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
-//        if(inspectionEmailTemplateDto.getSn().equals("No")){
-//            StringBuilder stringBuilder=new StringBuilder();
-//            stringBuilder.append("<tr><td>"+inspectionEmailTemplateDto.getSn());
-//            stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getChecklistItem());
-//            stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getRegulationClause());
-//            stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getRemarks());
-//            stringBuilder.append("</td><tr>");
-//            map.put("NC_DETAILS",stringBuilder.toString());
-//        }
-//        if(inspectionEmailTemplateDto.getBestPractices()!=null){
-//            map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
-//        }
-//        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-//        String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
-//        inspectionEmailTemplateDto.setMessageContent(mesContext);
-//        ParamUtil.setSessionAttr(request,"mesContext", mesContext);
-//        ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
-//        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
-//    }
-//    public void emailView(BaseProcessClass bpc) {
-//        log.info("=======>>>>>emailView>>>>>>>>>>>>>>>>emailRequest");
-//    }
 
 }

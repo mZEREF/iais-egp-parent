@@ -58,7 +58,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewEmailPage" stageIndicator="" x="1060" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewEmailPage" stageIndicator="" x="890" y="0">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -89,13 +89,16 @@
    <position>{(750,240)(780,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/PreviewEmailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreviewEmail" style="oblique">
-   <position>{(910,120)(1080,120)}</position>
+   <position>{(910,120)(910,20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doRecallEmail" linkstyle="Direct" name="" sourceName="/Pages/WebPage/RecallEmailPage" style="oblique">
    <position>{(780,360)(570,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRecallEmail" style="oblique">
    <position>{(570,310)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreviewEmailPage" style="oblique">
+   <position>{(910,20)(270,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
