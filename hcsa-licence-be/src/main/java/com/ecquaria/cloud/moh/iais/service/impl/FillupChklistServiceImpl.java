@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
@@ -29,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     private ApplicationClient applicationClient;
 
     @Autowired
+    private HcsaConfigClient hcsaConfigClient;
+
+    @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Override
     public SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam) {
@@ -79,7 +84,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public InspectionFillCheckListDto getInspectionFillCheckListDto(String taskId,String svcCode,String svcType) {
-        List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList("BLB","Inspection").getEntity();
+
         Map<String,Object> paramMap= new HashMap<> ();
         paramMap.put("svcCode",svcCode);
         paramMap.put("svcType",svcType);
@@ -92,10 +97,14 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         TaskDto taskDto = taskService.getTaskById(taskId);
         List<AppPremisesCorrelationDto> appCorrDtolist = null;
         String appPremCorrId = null;
+        String serviceCode = null;
         if(taskDto!=null){
             String refNo = taskDto.getRefNo();
             //ApplicationViewDto appDto = RestApiUtil.getByPathParam("hcsa-config:8883/iais-application/application/{AppNo}",refNo, ApplicationViewDto.class);
             ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
+            String serviceId = appDto.getServiceId();
+            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+            serviceCode = svcDto.getSvcCode();
             String appId = appDto.getId();
             appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
             //appCorrDtolist = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-application/application/correlations/{appid}",appId,AppPremisesCorrelationDto.class);
@@ -104,6 +113,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 appPremCorrId = appCorrDtolist.get(0).getId();
             }
         }
+        List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
         InspectionFillCheckListDto infillCheckListDto = new InspectionFillCheckListDto();
         if(cDtoList!=null && !cDtoList.isEmpty()){
             List<InspectionCheckQuestionDto> cqDtoList = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectC
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 
 import java.util.List;
 
@@ -18,6 +19,6 @@ public interface InsepctionNcCheckListService {
     List<AppPremisesPreInspectionNcItemDto> getNcItemDtoByAppCorrId(String appCorrId);
     AppPremisesRecommendationDto getAppRecomDtoByAppCorrId(String appCorrId,String type);
     void submit(InspectionFillCheckListDto infillDto);
-
+    List<NcAnswerDto> getNcAnswerDtoList(String configId, String appPremCorrId);
 
 }

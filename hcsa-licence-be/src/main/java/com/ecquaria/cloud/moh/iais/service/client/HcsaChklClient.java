@@ -19,7 +19,10 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -39,8 +42,8 @@ public interface HcsaChklClient {
     @PostMapping(path = "/iais-hcsa-checklist/item/items-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ChecklistItemDto>>  listChklItemByItemId(List<String> itemIds);
 
-    @GetMapping(path = "/iais-hcsa-checklist/item/{id}")
-    FeignResponseEntity<ChecklistItemDto> getChklItemById(String id);
+    @GetMapping(path = "/iais-hcsa-checklist/item/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ChecklistItemDto> getChklItemById(@PathVariable(value = "id") String id);
 
     @PostMapping(path = "/iais-hcsa-checklist/item", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveChklItem(ChecklistItemDto itemDto);
@@ -68,9 +71,6 @@ public interface HcsaChklClient {
 
     @GetMapping(path = "/iais-hcsa-checklist/self-desc/RegulationDtoById/{id}", produces = { MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<HcsaChklSvcRegulationDto> getRegulationDtoById(@PathVariable(value = "id") String svcCode);
-
-
-
 
     @PostMapping(path = "/iais-hcsa-service/hcsa-service-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceByIds(@RequestBody List<String> serviceId);

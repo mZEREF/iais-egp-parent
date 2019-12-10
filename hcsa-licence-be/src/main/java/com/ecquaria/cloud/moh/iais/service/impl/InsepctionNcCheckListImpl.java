@@ -298,7 +298,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         ncDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return ncDto;
     }
-
+    @Override
     public List<NcAnswerDto> getNcAnswerDtoList(String configId,String appPremCorrId){
         List<NcAnswerDto> ncAnswerDtoList = new ArrayList<>();
         AppPremisesPreInspectChklDto appPremisesPreInspectChklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();

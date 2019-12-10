@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -13,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,13 +43,13 @@ public class InsRepServiceImpl implements InsRepService {
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appNo).getEntity();
         List<String> list = new ArrayList<>();
         list.add(appInsRepDto.getServiceId());
-        List<HcsaServiceDto> entity = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+        //List<HcsaServiceDto> entity = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
         String svcName = "";
         String svcCode = "";
-        for(HcsaServiceDto hcsaServiceDto : entity){
+        /*for(HcsaServiceDto hcsaServiceDto : entity){
              svcName = hcsaServiceDto.getSvcName();
              svcCode = hcsaServiceDto.getSvcCode();
-        }
+        }*/
 
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
