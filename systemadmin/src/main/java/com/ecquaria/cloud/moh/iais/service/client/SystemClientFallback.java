@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
-
 public class SystemClientFallback {
 
     public FeignResponseEntity<SearchResult<SystemParameterQueryDto>> doQuery(SearchParam searchParam){
