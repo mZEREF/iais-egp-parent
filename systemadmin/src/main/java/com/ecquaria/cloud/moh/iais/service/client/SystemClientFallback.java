@@ -13,11 +13,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
-import com.ecquaria.cloud.moh.iais.entity.MessageCode;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 public class SystemClientFallback {
 
@@ -50,13 +48,6 @@ public class SystemClientFallback {
     }
 
     public FeignResponseEntity<SearchResult<MessageQueryDto>> queryMessage(SearchParam searchParam){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    public FeignResponseEntity<SearchResult<MessageCode>> queryAllMsg(SearchParam searchParam){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
