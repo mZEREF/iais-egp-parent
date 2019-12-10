@@ -11,10 +11,11 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
+
 public class INTRANET___MohCheckListNc___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="inspectionNcCheckListDelegator";
-
 	public void start_OnStepProcess_0() throws Exception {
 	// 		start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
@@ -39,5 +40,4 @@ public class INTRANET___MohCheckListNc___1 extends BaseProcessClass {
 	// 		doSubmit->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doSubmit", this);
 	}
-
 }

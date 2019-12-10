@@ -1,11 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
@@ -21,16 +18,6 @@ public interface FillupChklistService {
      * @param searchParam
      * @return
      */
-    SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam);
-
-
-    /**
-     * list checklist item by SearchParam
-     * backend method: listChecklistItem
-     * @param searchParam
-     * @return
-     */
-    SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam);
 
     InspectionFillCheckListDto getInspectionFillCheckListDto(String taskId,String svcCode,String svcType);
 
@@ -39,4 +26,7 @@ public interface FillupChklistService {
     void saveDto(InspectionFillCheckListDto dto);
     ApplicationViewDto getAppViewDto(String taskId);
     TaskDto getTaskDtoById(String taskId);
+    ChecklistConfigDto getcommonCheckListDto(String configType,String module);
+    void saveCommonDto(ChecklistConfigDto commonCheckListDto,String appPremCorrId);
+    InspectionFillCheckListDto transferToInspectionCheckListDto(ChecklistConfigDto commonCheckListDto,String appPremCorrId);
 }

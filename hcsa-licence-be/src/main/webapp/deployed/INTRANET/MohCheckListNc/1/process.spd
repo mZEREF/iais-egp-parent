@@ -76,13 +76,13 @@
    <position>{(570,120)(700,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(700,120)(860,120)}</position>
+   <position>{(700,120)(850,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/confirm" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(860,120)(1000,120)}</position>
+   <position>{(850,120)(1000,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/pre" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(860,120)(341,26)(340,120)}</position>
+   <position>{(850,120)(341,26)(340,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/pre" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(700,120)(341,46)(340,120)}</position>
@@ -101,20 +101,20 @@
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/pre" componentIfTrue="/Pages/WebPage/confirm" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="840" y="100">
+  <Condition componentIfFalse="/Pages/WebPage/confirm" componentIfTrue="/Steps/AutomaticStep/pre" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="830" y="100">
    <Description/>
   </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="680" y="100">
    <Description/>
-   <SwitchCase component="/Conditions/Condition/Cond1" value="&quot;back&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/pre" value="&quot;next&quot;"/>
+   <SwitchCase component="/Conditions/Condition/Cond1" value="&quot;next&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/pre" value="&quot;back&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="" name="Switch2" x="1100" y="100">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1100" y="100">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/doSubmit" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/pre" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="&quot;submit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/pre" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
