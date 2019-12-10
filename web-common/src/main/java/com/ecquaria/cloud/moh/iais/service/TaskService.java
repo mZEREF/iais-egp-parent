@@ -43,4 +43,13 @@ public interface TaskService {
      * @Descripation: According to the group Id, get the work pool
      */
     List<TaskDto> getCommPoolByGroupWordId(String workGroupId);
+    
+    /**
+      * @author: shicheng
+      * @Date 2019/12/9
+      * @Param: 
+      * @return: 
+      * @Descripation: 
+      */
+    int remainDays(TaskDto taskDto);
 }
