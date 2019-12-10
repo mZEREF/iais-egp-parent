@@ -10,10 +10,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +38,8 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Autowired
     private HcsaChklClient hcsaChklClient;
+    @Autowired
+    private InsepctionNcCheckListService insepctionNcCheckListService;
 
     @Override
     public InspectionReportDto getInsRepDto(String appNo) {
@@ -59,7 +61,6 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setPrincipalOfficer(appInsRepDto.getPrincipalOfficer());
         inspectionReportDto.setSubsumedService(appInsRepDto.getSubsumedService());
-
 
 
         inspectionReportDto.setInspectionDate(new Date());
