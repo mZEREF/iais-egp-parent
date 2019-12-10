@@ -11,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
  */
 public interface InsRepService {
 
-    InspectionReportDto getInsRepDto (String appNo);
+    InspectionReportDto getInsRepDto (String appNo,ApplicationViewDto applicationViewDto);
     Boolean saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     ApplicationViewDto getApplicationViewDto (String appNo);
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);

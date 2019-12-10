@@ -1,8 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
+import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,8 +12,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PaymentServiceImpl implements PaymentService {
+
+    @Autowired
+    private PaymentClient paymentClient;
+
     @Override
     public void savePayment(PaymentDto paymentDto) {
-        RestApiUtil.save("iais-payment:8881/payment/tradingReply",paymentDto);
+        paymentClient.saveHcsaPayment(paymentDto);
     }
 }
