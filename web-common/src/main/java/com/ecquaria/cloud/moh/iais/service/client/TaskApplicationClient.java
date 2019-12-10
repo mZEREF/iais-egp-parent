@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author suocheng
  * @date 12/4/2019
  */
-@FeignClient(name = "iais-application", configuration = FeignConfiguration.class,
+@FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = TaskApplicationClientFallback.class)
 public interface TaskApplicationClient {
     @GetMapping(path = "/iais-apppremisescorrelation-be/AppPremisesCorrelations/{appGropId}",

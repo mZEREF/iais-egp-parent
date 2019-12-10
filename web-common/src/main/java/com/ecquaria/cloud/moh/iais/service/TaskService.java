@@ -25,7 +25,7 @@ public interface TaskService {
     TaskDto getTaskById(String taskId);
     //rounting Task
      void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stage) throws FeignException;
-     void routingTask(ApplicationDto applicationDto, String statgId) throws FeignException;
+     TaskDto routingTask(ApplicationDto applicationDto, String statgId) throws FeignException;
      //get users
     List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status);
     //get Task Score

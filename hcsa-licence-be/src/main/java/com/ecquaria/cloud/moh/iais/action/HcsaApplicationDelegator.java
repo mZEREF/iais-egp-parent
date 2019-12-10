@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -9,12 +10,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -22,19 +28,19 @@ import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import com.google.inject.internal.util.$ObjectArrays;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -60,6 +66,9 @@ public class HcsaApplicationDelegator {
 
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
+
+    @Autowired
+    private BroadcastService broadcastService;
 
     public void routingTask(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
@@ -330,10 +339,80 @@ public class HcsaApplicationDelegator {
     }
 
 
+    /**
+     * StartStep: broadcast
+     *
+     * @param bpc
+     * @throws
+     */
+    public void broadcast(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do broadcast start ...."));
+        //get the user for this applicationNo
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+          List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = appPremisesRoutingHistoryService.
+                  getAppPremisesRoutingHistoryDtosByAppId(applicationDto.getId());
+        List<String> userIds = getUserIds(appPremisesRoutingHistoryDtos);
+        if(userIds != null && userIds.size() > 0){
+            BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+            BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+            //create workgroup
+            WorkingGroupDto workingGroupDto = new WorkingGroupDto();
+            workingGroupDto.setGroupName(applicationDto.getApplicationNo());
+            workingGroupDto.setGroupDomain(AppConsts.DOMAIN_TEMPORARY);
+            broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
+            //add this user to this workgroup
+            List<UserGroupCorrelationDto> userGroupCorrelationDtoList = new ArrayList<>();
+            for(String id : userIds) {
+                UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                userGroupCorrelationDto.setUserId(id);
+                userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                userGroupCorrelationDtoList.add(userGroupCorrelationDto);
+            }
+            broadcastOrganizationDto.setUserGroupCorrelationDtoList(userGroupCorrelationDtoList);
+
+            //complated this task and create the history
+            TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+            taskDto =  completedTask(taskDto);
+            broadcastOrganizationDto.setComplateTask(taskDto);
+            String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+            String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),
+                    applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision);
+            broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+            //update application status
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST);
+            broadcastApplicationDto.setApplicationDto(applicationDto);
+            //create the new task and create the history
+            TaskDto taskDtoNew = TaskUtil.getTaskDto(taskDto.getTaskKey(),TaskConsts.TASK_TYPE_MAIN_FLOW, applicationDto.getApplicationNo(),null,
+                    null,null,0, IaisEGPHelper.getCurrentAuditTrailDto());
+            broadcastOrganizationDto.setCreateTask(taskDtoNew);
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),
+                    taskDto.getTaskKey(), taskDto.getWkGrpId(),null,null);
+            broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+            //save the broadcast
+            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto);
+            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto);
+
+        }
+
+        log.debug(StringUtil.changeForLog("the do broadcast end ...."));
+    }
 
 
 
+    private List<String> getUserIds(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos){
+        Set<String> set = new HashSet<>();
+        if(appPremisesRoutingHistoryDtos == null || appPremisesRoutingHistoryDtos.size() ==0){
+           return  null;
+        }
+        for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto :appPremisesRoutingHistoryDtos ){
+            set.add(appPremisesRoutingHistoryDto.getId());
+        }
+        return  new ArrayList(set);
 
+
+    }
 
     //***************************************
     //private methods
@@ -343,25 +422,30 @@ public class HcsaApplicationDelegator {
         //completedTask
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         taskDto =  completedTask(taskDto);
+        taskDto = taskService.updateTask(taskDto);
         //add history for this stage complate
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks,processDecision);
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),
+                applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         //updateApplicaiton
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         updateApplicaiton(applicationDto,appStatus);
         applicationViewDto.setApplicationDto(applicationDto);
         // send the task
         if(!StringUtil.isEmpty(stageId)){
-            taskService.routingTask(applicationDto,stageId);
+            taskDto = taskService.routingTask(applicationDto,stageId);
             //add history for next stage start
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,null,null);
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,
+                    taskDto.getWkGrpId(),null,null);
+            appPremisesRoutingHistoryDtoNew = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDtoNew);
         }
     }
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-                                                                         String stageId, String internalRemarks,String processDecision){
+    private AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                         String stageId,String wrkGrpId, String internalRemarks,String processDecision){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRoutingHistoryDto.setStageId(stageId);
@@ -369,8 +453,8 @@ public class HcsaApplicationDelegator {
         appPremisesRoutingHistoryDto.setProcessDecision(processDecision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
     private int remainDays(TaskDto taskDto){
@@ -387,7 +471,7 @@ public class HcsaApplicationDelegator {
         taskDto.setSlaDateCompleted(new Date());
         taskDto.setSlaRemainInDays(remainDays(taskDto));
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return taskService.updateTask(taskDto);
+        return taskDto;
     }
     private ApplicationDto updateApplicaiton(ApplicationDto applicationDto,String appStatus){
         applicationDto.setStatus(appStatus);
@@ -396,16 +480,6 @@ public class HcsaApplicationDelegator {
 
 
 
-    /**
-     * StartStep: broadcast
-     *
-     * @param bpc
-     * @throws
-     */
-    public void broadcast(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do broadcast start ...."));
 
-        log.debug(StringUtil.changeForLog("the do broadcast end ...."));
-    }
 
 }
