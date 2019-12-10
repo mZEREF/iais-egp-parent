@@ -22,7 +22,7 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Override
     public SearchResult<MasterCodeQueryDto> doQuery(SearchParam param) {
-        return  RestApiUtil.query("system-admin-service:8886/iais-mastercode/results", param);
+        return  RestApiUtil.query("system-admin-service:8886/iais-mastercode/masterCode-param", param);
     }
 
     @Override
