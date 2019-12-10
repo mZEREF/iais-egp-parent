@@ -10,11 +10,6 @@ import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.sz.commons.util.FileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,6 +23,10 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -36,20 +35,14 @@ import java.util.zip.ZipOutputStream;
 @Service
 @Slf4j
 public class UploadFileServiceImpl implements UploadFileService {
-    @Value("iais.syncFileTracking.download")
+    @Value("${iais.syncFileTracking.shared.path}")
+    private String sharedPath;
     private String download;
-
-    @Value("iais.syncFileTracking.fileName")
     private String fileName;
-
-    @Value("iais.syncFileTracking.fileFormat")
-    private String fileFormat;
-
-    @Value("iais.syncFileTracking.backups")
+    private String fileFormat = ".text";
     private String backups;
 
     private Boolean flag=true;
-
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.secretKey}")
@@ -64,6 +57,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public Boolean saveFile(String  str) {
+        fileName = "folder";
+        download = sharedPath + "folder";
+        backups = sharedPath + "backups";
         FileOutputStream fileOutputStream = null;
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
         File file=new File(download+ File.separator+s+fileFormat);

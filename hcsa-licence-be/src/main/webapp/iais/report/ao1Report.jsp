@@ -8,7 +8,8 @@
 <%
     String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
-        <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+        <form method="post" id="reportForm" action=<%=process.runtime.continueURL()%>>
+            <input type="hidden" name="action_type" value="">
             <div class="tab-pane" id="tabInspection" role="tabpanel">
                 <div class="alert alert-info" role="alert">
                     <p><span><strong>Section A (HCI Details)</strong></span></p>
@@ -235,7 +236,7 @@
                                     </td>
                                     <td class="col-xs-8">
                                         <textarea name="remarks">
-                                            <p>${insRepDto.remarks}</p>
+<%--                                            <p>${insRepDto.remarks}</p>--%>
                                         </textarea>
                                     </td>
                                 </tr>
@@ -272,9 +273,23 @@
                     </div>
                 </div>
             </div>
-            <button type="submit">approve</button>
-            <button type="submit">back</button>
+            <button type="submit" onclick="doSubmit()">approve</button>
+            <button type="submit" onclick="doBack()">back</button>
         </form>
 
+<script type="text/javascript">
+    function doBack() {
+        submit('back');
+    }
 
+    function doSubmit() {
+        submit('approve');
+    }
+    function submit(action){
+        $("[name='action_type']").val(action);
+        var mainPoolForm = document.getElementById('reportForm');
+        mainPoolForm.submit();
+
+    }
+</script>
 

@@ -6,10 +6,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -20,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +50,9 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
+
+    @Autowired
+    private HcsaChklClient hcsaChklClient;
     @Override
     public InspectionFillCheckListDto getNcCheckList(InspectionFillCheckListDto infillDto, AppPremisesPreInspectChklDto appPremDto, List<AppPremisesPreInspectionNcItemDto> itemDtoList, AppPremisesRecommendationDto appPremisesRecommendationDto) {
         List<InspectionCheckQuestionDto> fillCheckList = infillDto.getCheckList();
@@ -201,6 +208,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         saveInspectionCheckListDto(infillDto);
     }
 
+
     public void saveInspectionCheckListDto(InspectionFillCheckListDto dto) {
         List<InspectionCheckQuestionDto> icqDtoList = dto.getCheckList();
         List<InspectionCheckListAnswerDto> answerDtoList = new ArrayList<>();
@@ -216,15 +224,17 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         String answerJson = JsonUtil.parseToJson(answerDtoList);
         String appPremCorrId = icqDtoList.get(0).getAppPreCorreId();
         String configId = icqDtoList.get(0).getConfigId();
-        AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
+        //AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
+        AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
         appDto.setAnswer(answerJson);
         appDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
         appDto.setAppPremCorrId(appPremCorrId);
-        appDto.setVersion(1 + "");
+        appDto.setVersion(1 + appDto.getVersion());
         appDto.setChkLstConfId(configId);
         appDto.setStatus("CMSTAT001");
         appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
+        AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId,"tcu").getEntity();
+        //AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
         appPreRecommentdationDto.setAppPremCorreId(appPremCorrId);
         appPreRecommentdationDto.setRecomType("tcu");
         Date tcuDate = null;
@@ -241,14 +251,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         appPreRecommentdationDto.setRemarks(dto.getTcuRemark());
         appPreRecommentdationDto.setStatus("CMSTAT001");
         appPreRecommentdationDto.setRecomType("tcu");
-        appPreRecommentdationDto.setVersion(1);
+        appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
         appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         try {
             //RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinschkl-be/AppPremissChkl",appDto,AppPremisesPreInspectChklDto.class);
             fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
             //RestApiUtil.postGetObject("hcsa-config:8883/application-be/RescomDtoStorage",appPreRecommentdationDto,AppPremisesRecommendationDto.class);
             fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
-            AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDto(dto);
+            AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDto(dto,appPremCorrId);
             //appPremPreInspectionNcDto = RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinsnc-be/AppPremNcResult",appPremPreInspectionNcDto,AppPremPreInspectionNcDto.class);
             appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(dto, appPremPreInspectionNcDto);
@@ -279,13 +289,47 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         return ncItemDtoList;
     }
 
-    public AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(InspectionFillCheckListDto dto) {
-        AppPremPreInspectionNcDto ncDto = new AppPremPreInspectionNcDto();
+    public AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(InspectionFillCheckListDto dto,String appPremCorrId) {
+        AppPremPreInspectionNcDto ncDto =  fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
         ncDto.setStatus("CMSTAT001");
         ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
-        ncDto.setVersion(1 + "");
+        ncDto.setVersion(1 + ncDto.getVersion());
         ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
         ncDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return ncDto;
     }
+
+    public List<NcAnswerDto> getNcAnswerDtoList(String configId,String appPremCorrId){
+        List<NcAnswerDto> ncAnswerDtoList = new ArrayList<>();
+        AppPremisesPreInspectChklDto appPremisesPreInspectChklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
+        String answerStr = appPremisesPreInspectChklDto.getAnswer();
+        List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answerStr, InspectionCheckListAnswerDto.class);
+        NcAnswerDto ncAnswerDto = null;
+        for(InspectionCheckListAnswerDto temp:answerDtoList){
+            ncAnswerDto = new NcAnswerDto();
+            ncAnswerDto.setItemId(temp.getItemId());
+            ncAnswerDto.setRemark(temp.getRemark());
+            ncAnswerDtoList.add(ncAnswerDto);
+        }
+        if(ncAnswerDtoList!=null &&!ncAnswerDtoList.isEmpty()){
+            for(NcAnswerDto temp:ncAnswerDtoList){
+
+                getFillNcAnswerDto(temp);
+            }
+        }
+        return ncAnswerDtoList;
+    }
+
+    public void getFillNcAnswerDto(NcAnswerDto ncAnswerDto){
+        String itemId = ncAnswerDto.getItemId();
+        ChecklistItemDto cDto = hcsaChklClient.getChklItemById(itemId).getEntity();
+        ncAnswerDto.setItemQuestion(cDto.getChecklistItem());
+        HcsaChklSvcRegulationDto regDto = hcsaChklClient.getRegulationDtoById(cDto.getRegulationId()).getEntity();
+        ncAnswerDto.setCaluseNo(regDto.getClauseNo());
+        ncAnswerDto.setClause(regDto.getClause());
+        //todo:adhoc
+    }
+
+
+
 }

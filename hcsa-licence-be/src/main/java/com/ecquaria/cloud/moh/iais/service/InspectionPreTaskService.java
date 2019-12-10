@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
 import java.util.List;
 
@@ -13,11 +14,11 @@ public interface InspectionPreTaskService {
     /**
       * @author: shicheng
       * @Date 2019/12/9
-      * @Param: taskId
+      * @Param: taskDto
       * @return: String
       * @Descripation: get Application Status By Task Id
       */
-    String getAppStatusByTaskId(String taskId);
+    String getAppStatusByTaskId(TaskDto taskDto);
 
     /**
       * @author: shicheng

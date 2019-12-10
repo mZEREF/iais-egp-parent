@@ -76,6 +76,14 @@
             var relm=/^[8|9][0-9]{7}$/;
             var relt=/^[6][0-9]{7}$/;
             var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+            var idType= $('#selectType').val();
+            var idNo=$('#idType-idNo').val();
+            $.getJSON("${pageContext.request.contextPath}/sg-number-validator",{"idType":idType,"idNumber":idNo},function (rel) {
+                $('#error-msg-idType').html(rel.errorM);
+                if(rel.errorM!=null){
+                    flag=false;
+                }
+            });
             if(!relm.test($('#mobileNo').val())){
                 $('#mobileNo+span').removeAttr('style');
                 $('#mobileNo').attr('class','error');
@@ -90,6 +98,16 @@
                 $('#telephone+span').removeAttr('style');
                 $('#telephone').attr('class','error');
                 flag=false;
+            }
+
+                 var crName= $('#cr-po-name').val();
+            if(crName==""){
+                $('#cr-po-name+span').removeAttr('style');
+                $('#cr-po-name').attr('class','error');
+                flag=false;
+             }else if(!crName==""){
+                $('#cr-po-name+span').attr('style','display: none');
+                $('#cr-po-name').attr('class',' form-control control-input control-set-font control-font-normal');
             }
             if(!flag){
                 return;

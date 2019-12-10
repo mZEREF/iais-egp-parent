@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(value = "eicgate", url="${iais.intra.gateway.url}", configuration = {FeignMultipartConfig.class},
         fallback = ComSystemAdminClientFallback.class)
 public interface EicGatewayClient {
-    @PostMapping(value = "/iais-intranet/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveFile(@RequestBody ProcessFileTrackDto processFileTrackDto,
                                          @RequestHeader("date") String date,
                                          @RequestHeader("authorization") String authorization);

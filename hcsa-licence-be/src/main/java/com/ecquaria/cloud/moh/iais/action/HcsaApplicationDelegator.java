@@ -29,9 +29,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.inject.internal.util.$ObjectArrays;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -92,12 +95,20 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void prepareData(BaseProcessClass bpc){
+    public void prepareData(BaseProcessClass bpc) throws Exception{
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
        String  taskId = ParamUtil.getString(bpc.request,"taskId");
         //String taskId="12848A70-820B-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
+//        String loginID=(String) ParamUtil.getSessionAttr(bpc.request,"loginID");
+//        if(!(loginID.equals(taskDto.getUserId()))){
+//            throw new Exception();
+//        }
+//        if(TaskConsts.TASK_STATUS_COMPLETED.equals(taskDto.getTaskStatus())){
+//            throw new Exception();
+//        }
+
         String appNo = taskDto.getRefNo();
 //        get routing stage dropdown send to page.
         ApplicationViewDto applicationViewDto = applicationViewService.searchByAppNo(appNo);
@@ -129,7 +140,9 @@ public class HcsaApplicationDelegator {
              ) {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
-
+           if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
+               routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
+           }
 //        if("AO3".equals(applicationViewDto.getCurrentStatus())){
 //            routingStage.put("APST000","RollBack");
 //            routingStage.put("APST002","Pending Approval");
@@ -334,7 +347,8 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks,processDecision);
         //updateApplicaiton
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         updateApplicaiton(applicationDto,appStatus);
@@ -343,15 +357,16 @@ public class HcsaApplicationDelegator {
         if(!StringUtil.isEmpty(stageId)){
             taskService.routingTask(applicationDto,stageId);
             //add history for next stage start
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,null);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,null,null);
         }
     }
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-                                                                         String stageId, String internalRemarks){
+                                                                         String stageId, String internalRemarks,String processDecision){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setProcessDecision(processDecision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -378,4 +393,19 @@ public class HcsaApplicationDelegator {
         applicationDto.setStatus(appStatus);
         return applicationViewService.updateApplicaiton(applicationDto);
     }
+
+
+
+    /**
+     * StartStep: broadcast
+     *
+     * @param bpc
+     * @throws
+     */
+    public void broadcast(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do broadcast start ...."));
+
+        log.debug(StringUtil.changeForLog("the do broadcast end ...."));
+    }
+
 }

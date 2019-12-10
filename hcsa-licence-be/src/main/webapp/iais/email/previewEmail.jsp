@@ -38,5 +38,5 @@
 </div>
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="submit" class="search btn" value="Back">
+    <input type="submit" class="back" value="Back">
 </form>

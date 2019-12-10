@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionReportAO" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step1" x="40" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionReportInit" x="140" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionReportInit_OnStepProcess_0" name="inspectionReportInit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportPre" x="300" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorReportPre_OnStepProcess_0" name="inspectorReportPre_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Roback" x="290" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="roback_OnStepProcess_0" name="roback_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Approve" x="610" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportAction" x="430" y="170">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorReportAction_OnStepProcess_0" name="inspectorReportAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AOReportPage" stageIndicator="" x="470" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="290" y="580">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="620" y="580">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionReportInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
+   <position>{(60,120)(160,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionReportInit" style="rectanular">
+   <position>{(160,120)(320,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AOReportPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorReportPre" style="rectanular">
+   <position>{(320,120)(490,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AOReportPage" style="oblique">
+   <position>{(490,120)(450,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Roback" style="oblique">
+   <position>{(310,430)(310,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Approve" style="oblique">
+   <position>{(630,430)(640,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Page2" style="oblique">
+   <position>{(310,600)(480,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Page1" style="oblique">
+   <position>{(640,600)(480,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/action" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorReportAction" style="rectanular">
+   <position>{(450,190)(470,290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Roback" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
+   <position>{(470,290)(310,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Approve" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
+   <position>{(470,290)(630,430)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Approve" executor="" icon="" leftOperand="action_type" name="action" x="450" y="270">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Roback" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="460" y="580">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

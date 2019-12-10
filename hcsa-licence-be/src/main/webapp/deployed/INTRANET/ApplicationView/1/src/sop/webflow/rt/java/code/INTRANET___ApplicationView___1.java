@@ -11,12 +11,13 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
+
 
 public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 
 	private static final String DELEGATOR ="hcsaApplicationDelegator";
-
 	public void prepareData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
@@ -25,6 +26,7 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 	// 		ASO->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "rontingTaskToASO", this);
 	}
+
 
 	public void iNS_OnStepProcess_0() throws Exception {
 	// 		INS->OnStepProcess
@@ -66,19 +68,35 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "approve", this);
 	}
 
+
+
+
 	public void dMS_OnStepProcess_0() throws Exception {
 	// 		DMS->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "routeToDMS", this);
 	}
+
+
+
+
 
 	public void routeBack_OnStepProcess_0() throws Exception {
 	// 		RouteBack->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "routeBack", this);
 	}
 
+
+
+
+
 	public void internalEnquiry_OnStepProcess_0() throws Exception {
 	// 		InternalEnquiry->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "internalEnquiry", this);
+	}
+
+	public void broadcast_OnStepProcess_0() throws Exception {
+	// 		Broadcast->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "broadcast", this);
 	}
 
 

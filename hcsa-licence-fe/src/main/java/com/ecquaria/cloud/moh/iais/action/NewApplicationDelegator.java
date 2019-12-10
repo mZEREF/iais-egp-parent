@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -859,8 +860,16 @@ public class NewApplicationDelegator {
                 String mobileNo = poDto.getMobileNo();
                 String officeTelNo = poDto.getOfficeTelNo();
                 String emailAddr = poDto.getEmailAddr();
+                String idNo = poDto.getIdNo();
+                if(!StringUtil.isEmpty(idNo)){
+                    boolean b = SgNoValidator.validateFin(idNo);
+                    boolean b1 = SgNoValidator.validateNric(idNo);
+                    if(!(b||b1)){
+                        oneErrorMap.put("NRIC/FIN","Please key in a valid NRIC/FIN");
+                    }
+                }
                 if(!StringUtil.isEmpty(mobileNo)){
-                    if (!mobileNo.startsWith("8") && !mobileNo.startsWith("9")) {
+                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         oneErrorMap.put("mobileNo", "Please key in a valid mobile number");
                     }
                 }
@@ -870,7 +879,7 @@ public class NewApplicationDelegator {
                     }
                 }
                 if(!StringUtil.isEmpty(officeTelNo)) {
-                    if (!officeTelNo.startsWith("6")) {
+                    if (!officeTelNo.matches("^[6][0-9]{7}$")) {
                         oneErrorMap.put("officeTelNo", "Please key in a valid phone number");
                     }
                 }

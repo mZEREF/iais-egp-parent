@@ -1,1 +1,1 @@
-<%@include file="/iais/report/inspectionReportSuccess.jsp"%>
+<h1>SUCCESS TO AO1 !!!!</h1>

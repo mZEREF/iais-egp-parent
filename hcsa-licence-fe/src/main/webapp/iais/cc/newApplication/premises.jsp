@@ -39,17 +39,25 @@
                           <input class="premTypeValue" type="hidden" name="${premIndexNo}premType" value="${appGrpPremisesDto.premisesType}"/>
                           <c:forEach var="premisesType" items="${premisesType}">
                             <div class="col-xs-6 col-md-2">
-                              <div class="form-check">
-                                <input class="form-check-input premTypeRadio ${premisesType}"  type="radio" name="${status.index}premType" value = "${premisesType}" aria-invalid="false">
-                                <label class="form-check-label" ><span class="check-circle"></span>
-                                  <c:if test="${premisesType == onSite}">
-                                    <c:out value="On-site" />
+                                <div class="form-check">
+                                  <c:if test="${appGrpPremisesDto.premisesType==premisesType}">
+                                    <input class="form-check-input premTypeRadio ${premisesType}"  type="radio" name="premType${status.index}" checked="checked" value = "${premisesType}"  aria-invalid="false">
+
                                   </c:if>
-                                  <c:if test="${premisesType == conv}">
-                                    <c:out value="Conveyance" />
+                                  <c:if test="${appGrpPremisesDto.premisesType!=premisesType}">
+                                    <input class="form-check-input premTypeRadio ${premisesType}"  type="radio" name="premType${status.index}" value = "${premisesType}" aria-invalid="false">
+
                                   </c:if>
-                                </label>
-                              </div>
+                                  <label class="form-check-label" ><span class="check-circle"></span>
+                                    <c:if test="${premisesType == onSite}">
+                                      <c:out value="On-site" />
+                                    </c:if>
+                                    <c:if test="${premisesType == conv}">
+                                      <c:out value="Conveyance" />
+                                    </c:if>
+                                  </label>
+                                </div>
+
                             </div>
                           </c:forEach>
                         </div>
@@ -357,8 +365,43 @@
         $('.prem-summary').addClass('hidden');
 
         $('.table-condensed').css("background-color","#d9edf7");
-         //premisesSelectChange();
 
+          if($('.premTypeValue').val()!=""){
+              var checkedType = $('.premTypeRadio').val();
+              $premSelect = $('.premTypeRadio').closest('div.premContent');
+              $premSelctDivEle = $('.premTypeRadio').closest('div.premisesTypeDiv');
+              if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==checkedType){
+                  $premSelect.find('.premiseOnSiteSelect').removeClass('hidden');
+                  $premSelect.find('.premiseConSelect').addClass('hidden');
+                  $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                  $premSelctDivEle.find('.premTypeValue').val(checkedType);
+              }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
+                  $premSelect.find('.premiseConSelect').removeClass('hidden');
+                  $premSelect.find('.premiseOnSiteSelect').addClass('hidden');
+                  $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+                  $premSelctDivEle.find('.premTypeValue').val(checkedType);
+              }
+          }
+
+        if($('.premSelect').val()!=""){
+            var premSelectVal = $('.premSelect').val();
+            $premSelect = $('.premSelect').closest('div.premContent');
+            var thisId = $('.premSelect').attr('id');
+            if("newPremise" == premSelectVal){
+                $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
+                $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                if("premOnsiteSel" == thisId){
+                    $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
+                    $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                }else if ("premConSel" == thisId) {
+                    $premSelect.find('.new-premise-form-conveyance').removeClass('hidden');
+                    $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+                }
+            }else if("-1" == newPremise){
+                $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+            }
+        }
         // $('.ONSITE[name="prem0premType"]').attr("checked","checked");
 
         <%--<c:forEach var="appGrpPremises" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">

@@ -486,7 +486,7 @@ public class LicenceApproveBatchjob {
                 break;
             }
             LicPremisesScopeDto licPremisesScopeDto = new LicPremisesScopeDto();
-            licPremisesScopeDto.setIsSubsumedType(appSvcPremisesScopeDto.getIsSubsumedType());
+            licPremisesScopeDto.setSubsumedType(appSvcPremisesScopeDto.isSubsumedType());
             licPremisesScopeDto.setScopeName(appSvcPremisesScopeDto.getScopeName());
             premisesGroupDto.setLicPremisesScopeDto(licPremisesScopeDto);
             //create LicPremisesScopeAllocationDto

@@ -9,7 +9,7 @@
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportPre" x="440" y="170">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportPre" x="410" y="170">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -23,7 +23,7 @@
     <JavaCode defClass="" executor="" methodName="inspectionReportInit_OnStepProcess_0" name="inspectionReportInit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportSave" x="860" y="180">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportSave" x="640" y="350">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -32,13 +32,13 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorReportPage" stageIndicator="" x="620" y="170">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorReportPage" stageIndicator="" x="370" y="350">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Success" stageIndicator="" x="880" y="360">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Success" stageIndicator="" x="590" y="170">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -51,16 +51,16 @@
    <position>{(70,190)(260,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/InspectorReportPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorReportPre" style="oblique">
-   <position>{(460,190)(640,190)}</position>
+   <position>{(430,190)(390,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionReportInit" style="rectanular">
-   <position>{(260,190)(460,190)}</position>
+   <position>{(260,190)(430,190)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportSave" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectorReportPage" style="rectanular">
-   <position>{(640,190)(880,200)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportSave" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InspectorReportPage" style="oblique">
+   <position>{(390,370)(660,370)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Success" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorReportSave" style="rectanular">
-   <position>{(880,200)(900,380)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/Success" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorReportSave" style="oblique">
+   <position>{(660,370)(610,190)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

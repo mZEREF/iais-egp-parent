@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,8 @@ import java.util.Map;
 public class FillupChklistServiceImpl implements FillupChklistService {
     @Autowired
     private HcsaChklClient hcsaChklClient;
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @Autowired
     private TaskService taskService;
@@ -289,5 +292,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
         ncDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return ncDto;
+    }
+    @Override
+    public TaskDto getTaskDtoById(String taskId){
+       return organizationClient.getTaskById(taskId).getEntity();
     }
 }

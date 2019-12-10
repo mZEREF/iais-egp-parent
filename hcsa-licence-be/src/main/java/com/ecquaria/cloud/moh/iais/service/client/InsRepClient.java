@@ -26,4 +26,5 @@ public interface InsRepClient {
     @RequestMapping(path = "/application-number-grp-premiese/{appNo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> getAppInsRepDto(@PathVariable("appNo") String appNo);
 
+
 }
