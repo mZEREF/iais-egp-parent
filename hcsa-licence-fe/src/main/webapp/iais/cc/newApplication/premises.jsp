@@ -37,6 +37,7 @@
                         <div class="form-group premisesTypeDiv" id="${premIndexNo}premisesType">
                           <label class="col-xs-12 col-md-4 control-label" for="${premIndexNo}premisesType">What is your premises type?</label>
                           <input class="premTypeValue" type="hidden" name="${premIndexNo}premType" value="${appGrpPremisesDto.premisesType}"/>
+                          <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
                           <c:forEach var="premisesType" items="${premisesType}">
                             <div class="col-xs-6 col-md-2">
                                 <div class="form-check">
@@ -68,14 +69,28 @@
                         <iais:row cssClass="premiseOnSiteSelect hidden">
                           <iais:field value="Add or select a premises from the list" width="12"/>
                           <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
-                            <iais:select cssClass="premSelect" id="premOnsiteSel" name="${premIndexNo}premOnSiteSelect"  options="premisesSelect" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                              <c:choose>
+                                <c:when test="${appGrpPremisesDto.premisesType == onSite}">
+                                  <iais:select cssClass="premSelect" id="premOnsiteSel" name="${premIndexNo}premOnSiteSelect"  options="premisesSelect" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                </c:when>
+                                <c:otherwise>
+                                  <iais:select cssClass="premSelect" id="premOnsiteSel" name="${premIndexNo}premOnSiteSelect"  options="premisesSelect" value=""></iais:select>
+                                </c:otherwise>
+                              </c:choose>
                             <span class="error-msg"><c:out value="${errMsg.premisesSelect}"></c:out></span>
                           </iais:value>
                         </iais:row>
                         <iais:row cssClass="premiseConSelect hidden">
                           <iais:field value="Add or select a premises from the list" width="12"/>
                           <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
-                            <iais:select cssClass="premSelect" id="premConSel" name="${premIndexNo}premConSelect"  options="conveyancePremSel" value=""></iais:select>
+                            <c:choose>
+                              <c:when test="${appGrpPremisesDto.premisesType == conv}">
+                                <iais:select cssClass="premSelect" id="premConSel" name="${premIndexNo}premConSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                              </c:when>
+                              <c:otherwise>
+                                <iais:select cssClass="premSelect" id="premConSel" name="${premIndexNo}premConSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                              </c:otherwise>
+                            </c:choose>
                             <span class="error-msg"><c:out value="${errMsg.premisesSelect}"></c:out></span>
                           </iais:value>
                         </iais:row>
@@ -224,7 +239,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="new-premise-form-conveyance hidden">
+                      <div class="new-premise-form-conv hidden">
                         <div class="form-horizontal">
                           <iais:row>
                             <iais:field value="Vehicle No." width="12"/>
@@ -359,49 +374,77 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+        var checkedType = "";
 
         $('.prem-summary').addClass('hidden');
 
         $('.table-condensed').css("background-color","#d9edf7");
 
-          if($('.premTypeValue').val()!=""){
-              var checkedType = $('.premTypeValue').val();
+
+        $('.premTypeValue').each(function (k,v) {
+            checkedType = $(this).val();
+            $premCountEle = $(this).closest('div.premContent');
+            if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==checkedType){
+                $premCountEle.find('.premiseOnSiteSelect').removeClass('hidden');
+                $premCountEle.find('.premiseConSelect').addClass('hidden');
+                $premCountEle.find('.new-premise-form-conv').addClass('hidden');
+                var premSelValue =  $premCountEle.find('.premiseOnSiteSelect .premSelect').val();
+                //alert("premSelValue:"+premSelValue);
+                if(premSelValue !=null && premSelValue != ""){
+                    $premCountEle.find('.new-premise-form-on-site').removeClass('hidden');
+                }
+            }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
+                $premCountEle.find('.premiseConSelect').removeClass('hidden');
+                $premCountEle.find('.premiseOnSiteSelect').addClass('hidden');
+                $premCountEle.find('.new-premise-form-on-site').addClass('hidden');
+                var premSelValue =  $premCountEle.find('.premiseConSelect .premSelect').val();
+                if(premSelValue !=null && premSelValue != ""){
+                    $premCountEle.find('.new-premise-form-conv').removeClass('hidden');
+                }
+            }
+        });
+
+
+
+         /* if($('.premTypeValue').val()!=""){
+              checkedType = $('.premTypeValue').val();
               $premSelect = $('.premTypeRadio').closest('div.premContent');
               $premSelctDivEle = $('.premTypeRadio').closest('div.premisesTypeDiv');
               if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==checkedType){
                   $premSelect.find('.premiseOnSiteSelect').removeClass('hidden');
                   $premSelect.find('.premiseConSelect').addClass('hidden');
-                  $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-                  alert(1);
+                  $premSelect.find('.new-premise-form-conv').addClass('hidden');
               }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
-                  alert(2);
-                  $premSelect.find('.premiseConSelect').removeClass('hidden');
                   $premSelect.find('.premiseOnSiteSelect').addClass('hidden');
-                  $premSelect.find('.new-premise-form-conveyance').removeClass('hidden');
                   $premSelect.find('.new-premise-form-on-site').addClass('hidden');
-
+                  $premSelect.find('.new-premise-form-conv').removeClass('hidden');
+                  $premSelect.find('.premiseConSelect').removeClass('hidden');
               }
           }
 
-        if($('.premSelect').val()!=""){
-            var premSelectVal = $('.premSelect').val();
-            $premSelect = $('.premSelect').closest('div.premContent');
-            var thisId = $('.premSelect').attr('id');
+
+
+        if($('.premSelValue').val()!=""){
+            var premSelectVal = $('.premSelValue').val();
+            alert("checkType:"+ checkedType);
+            alert("premSelectVal:"+premSelectVal);
+            $premSelect = $('.premSelValue').closest('div.premContent');
             if("newPremise" == premSelectVal){
                 $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-                if("premOnsiteSel" == thisId){
+                $premSelect.find('.new-premise-form-conv').addClass('hidden');
+                if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>' == checkedType){
                     $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                    $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-                }else if ("premConSel" == thisId) {
-                    $premSelect.find('.new-premise-form-conveyance').removeClass('hidden');
+                    $premSelect.find('.new-premise-form-conv').addClass('hidden');
+                }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
+                    $premSelect.find('.new-premise-form-conv').removeClass('hidden');
                     $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 }
             }else if("-1" == premSelectVal){
-                $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
             }
-        }
+
+        }*/
 
         premType();
 
@@ -438,7 +481,7 @@
             if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==checkedType){
                 $premSelect.find('.premiseOnSiteSelect').removeClass('hidden');
                 $premSelect.find('.premiseConSelect').addClass('hidden');
-                $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
             }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
                 $premSelect.find('.premiseConSelect').removeClass('hidden');
@@ -458,16 +501,16 @@
             var thisId = $(this).attr('id');
             if("newPremise" == premSelectVal){
                 $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 if("premOnsiteSel" == thisId){
                     $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                    $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                    $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 }else if ("premConSel" == thisId) {
-                    $premSelect.find('.new-premise-form-conveyance').removeClass('hidden');
+                    $premSelect.find('.new-premise-form-conv').removeClass('hidden');
                     $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 }
             }else if("-1" == premSelectVal){
-                $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
             }
 

@@ -69,13 +69,13 @@
                                         </div>
                                     </c:forEach>
                                     <!--prem -->
-                                    <c:forEach var="prem" items="${appGrpPremisesList}">
+                                    <c:forEach var="prem" items="${appGrpPremisesList}" varStatus="premStatus">
                                         <c:forEach var="premDoc" items="${premHcsaSvcDocConfigDto}">
                                             <c:set var="premKey" value="prem${premDoc.id}${prem.hciName}" />
                                             <c:set var="primaryDoc" value="${docMap.get(premKey)}"/>
                                             <c:set var="premDelFlag" value="prem${premDoc.id}${prem.hciName}flag"/>
                                             <div class="document-upload-list">
-                                                <h3>${premDoc.docTitle}</h3>
+                                                <h3>premises${premStatus.index+1}: ${premDoc.docTitle}</h3>
                                                 <div class="file-upload-gp">
                                                     <input class="hidden delFlag" type="hidden" name="${premDelFlag}" value="N"/>
                                                     <span  >${primaryDoc.docName}</span>

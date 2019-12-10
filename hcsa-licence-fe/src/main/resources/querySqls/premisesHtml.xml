@@ -175,7 +175,7 @@
           </div>
         </div>
       </div>
-      <div class="new-premise-form-conveyance hidden">
+      <div class="new-premise-form-conv hidden">
         <div class="form-horizontal">
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Vehicle No.</label>

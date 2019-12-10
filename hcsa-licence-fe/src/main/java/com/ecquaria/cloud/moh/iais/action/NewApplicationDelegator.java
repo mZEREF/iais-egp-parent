@@ -655,7 +655,7 @@ public class NewApplicationDelegator {
         }
         Map<String,String> conAddrTypesAttr = new HashMap<>();
         conAddrTypesAttr.put("id", "siteAddressType");
-        conAddrTypesAttr.put("name", premIndexNo+"conAddrType");
+        conAddrTypesAttr.put("name", premIndexNo+"conveyanceAddrType");
         conAddrTypesAttr.put("style", "display: none;");
         String conAddrTypeSelect = HtmlElementHelper.generateSelect(conAddrTypesAttr,conAddrTypeOpt,null,null,-1,false);
         String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
