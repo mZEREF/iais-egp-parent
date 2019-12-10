@@ -641,6 +641,7 @@ public class NewApplicationDelegator {
         for(SelectOption addrType:addrTypes){
             addrTypeOpt.put(addrType.getValue(), addrType.getText());
         }
+
         Map<String,String> addrTypesAttr = new HashMap<>();
         addrTypesAttr.put("id", "siteAddressType");
         addrTypesAttr.put("name", premIndexNo+"addrType");

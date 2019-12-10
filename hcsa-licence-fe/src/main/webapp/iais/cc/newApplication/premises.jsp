@@ -402,58 +402,6 @@
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
             }
         }
-        // $('.ONSITE[name="prem0premType"]').attr("checked","checked");
-
-        <%--<c:forEach var="appGrpPremises" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
-        <c:set var="premIndexNo2" value="prem${status.index}"/>
-        <c:if test="${!empty appGrpPremises.premisesType }">
-        console.log('not null');
-            if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'== '${appGrpPremises.premisesType}'){
-                console.log('on site');
-                $('input.ONSITE[name="${premIndexNo2}premType"]').attr("checked","checked");
-
-                $premSelect.find('.premiseOnSiteSelect').removeClass('hidden');
-                if
-                //$premSelect.find('.premiseConSelect').addClass('hidden');
-                $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-
-                var premSelect = function(){
-                    $('.premSelect').change(function () {
-                        var premSelectVal = $(this).val();
-                        $premSelect = $(this).closest('div.premContent');
-                        var thisId = $(this).attr('id');
-                        if("newPremise" == premSelectVal){
-                            $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                            $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-                            if("premOnsiteSel" == thisId){
-                                $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                                $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-                            }else if ("premConSel" == thisId) {
-                                $premSelect.find('.new-premise-form-conveyance').removeClass('hidden');
-                                $premSelect.find('.new-premise-form-on-site').addClass('hidden');
-                            }
-                        }else if("-1" == newPremise){
-                            $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-                            $premSelect.find('.new-premise-form-on-site').addClass('hidden');
-                        }
-
-
-                    });
-                }
-
-                //$('.premiseLocationSelect').removeClass('hidden');
-            }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>'==premisesTypeValue){
-                $('input.premTypeRadio.CONVEYANCE[name="name"]').attr("checked","checked");
-                /*$('.CONVEYANCE').attr("checked","checked");
-                $('#premise_conveyance').attr("checked","checked");
-                $('#premise_onsite').removeAttr("checked");
-                $('.premiseLocationSelect').removeClass('hidden');
-                $('.premises-summary, .new-premise-form-on-site, .new-premise-form-conveyance, .vehicleSelectForm').addClass('hidden');*/
-            }
-        </c:if>
-        </c:forEach>--%>
-
-
 
         premType();
 
