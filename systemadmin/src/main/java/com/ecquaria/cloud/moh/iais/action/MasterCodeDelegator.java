@@ -264,12 +264,10 @@ public class MasterCodeDelegator {
 
     private void getValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request){
         String masterCodeKey = ParamUtil.getString(request,MasterCodeConstants.MASTERCODE_KEY);
-        String rowguid = ParamUtil.getString(request,"rowguid");
         String codeCategory = ParamUtil.getString(request,"code_category");
         String codeValue = ParamUtil.getString(request,MasterCodeConstants.CRUD_VALUE);
         int status = ParamUtil.getInt(request,MasterCodeConstants.STATUS);
         masterCodeDto.setMasterCodeKey(masterCodeKey);
-        masterCodeDto.setRowguid(rowguid);
         masterCodeDto.setCodeCategory(codeCategory);
         masterCodeDto.setCodeValue(codeValue);
         masterCodeDto.setStatus(status);

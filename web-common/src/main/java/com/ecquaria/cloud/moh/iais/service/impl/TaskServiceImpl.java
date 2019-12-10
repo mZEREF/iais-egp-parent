@@ -17,12 +17,14 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -215,6 +217,15 @@ public class TaskServiceImpl implements TaskService {
 //        map.put("workGroupId", workGroupId);
 //        return RestApiUtil.getListByReqParam(RestApiUrlConsts.TASK_COMMON_POOL_BY_WORKGPID,map,TaskDto.class);
         return taskOrganizationClient.getCommPoolTaskByWorkGroupId(workGroupId).getEntity();
+    }
+
+    @Override
+    public int remainDays(TaskDto taskDto) {
+        int result = 0;
+        //todo: wait count kpi
+        String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
+        log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
+        return  result;
     }
 
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){

@@ -25,7 +25,7 @@ public class MasterCodeDtoTest {
         masterCodeDto.getCodeDescription();
         masterCodeDto.getStatus();
         masterCodeDto.getMasterCodeKey();
-        masterCodeDto.getRowguid();
+
 
 
         masterCodeDto.setMasterCodeKey(null);
@@ -34,7 +34,6 @@ public class MasterCodeDtoTest {
         masterCodeDto.setMasterCodeId(0);
         masterCodeDto.setStatus(0);
         masterCodeDto.setCodeDescription(null);
-        masterCodeDto.setRowguid(null);
         assertNotNull(masterCodeDto);
     }
 }

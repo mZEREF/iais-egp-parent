@@ -3,7 +3,6 @@
     <sql key = "masterCodeQuery" remarks = "query MasterCode sql">
         <![CDATA[
             SELECT mc.master_code_id,
-                   mc.rowguid,
                    mc.master_code_key,
                    mc.code_category,
                    mc.code_value,
@@ -21,7 +20,6 @@
     <sql key = "findMasterCodeByRowguid" remarks = "Find MasterCode By Rowguid">
         <![CDATA[
             SELECT mc.master_code_id,
-                   mc.rowguid,
                    mc.master_code_key,
                    mc.code_category,
                    mc.code_value,
@@ -30,7 +28,6 @@
             FROM CM_MASTER_CODE AS mc
             WHERE 1=1
             <#if master_code_id??> AND CHARINDEX(:master_code_id, mc.master_code_id) >0</#if>
-            <#if rowguid??> AND mc.rowguid = :rowguid</#if>
             <#if master_code_id??> AND mc.master_code_id = :master_code_id</#if>
         ]]>
     </sql>

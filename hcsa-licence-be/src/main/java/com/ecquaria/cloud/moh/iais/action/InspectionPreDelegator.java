@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -127,10 +128,11 @@ public class InspectionPreDelegator {
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             String preInspecRemarks = ParamUtil.getString(bpc.request,"preInspecRemarks");
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks);
-            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
             applicationViewDto.setApplicationDto(applicationDto1);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
-
+            taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
+            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
             taskService.updateTask(taskDto);
         }
     }
