@@ -1,8 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -36,9 +34,9 @@ public class AppPremisesRoutingHistoryServiceImpl implements AppPremisesRoutingH
         return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysById(appId).getEntity();
     }
 
-//    @Override
-//    public List<AppPremisesRoutingHistoryDto> createHistorys(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList) {
-//        return RestApiUtil.save(RestApiUrlConsts.APPLICATION_HISTORYS,appPremisesRoutingHistoryDtoList,List.class);
-//    }
+    @Override
+    public List<AppPremisesRoutingHistoryDto> createHistorys(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList) {
+        return appPremisesRoutingHistoryClient.createAppPremisesRoutingHistorys(appPremisesRoutingHistoryDtoList).getEntity();
+    }
 
 }
