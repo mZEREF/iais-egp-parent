@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -78,13 +79,26 @@ public class InsRepServiceImpl implements InsRepService {
         List<ChecklistQuestionDto> inspection = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
         String configId = inspection.get(0).getConfigId();
         List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
-       List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
+        List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
+        List<ReportNcRectifiedDto> listReportNcRectifiedDto = new ArrayList<>();
+        List<String> ncItemId = new ArrayList<>();
         for (NcAnswerDto ncAnswerDto :ncAnswerDtoList){
             ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
             reportNcRegulationDto.setNc(ncAnswerDto.getItemId());
             reportNcRegulationDto.setRegulation(ncAnswerDto.getItemQuestion());
             listReportNcRegulationDto.add(reportNcRegulationDto);
+            ncItemId.add(ncAnswerDto.getItemId());
         }
+        //ReportNcRectifiedDto
+        List<Boolean> ncRectified = insRepClient.isRectified(ncItemId).getEntity();
+
+        for (int i = 0; i < ncRectified.size(); i++) {
+            ReportNcRectifiedDto reportNcRectifiedDto = new ReportNcRectifiedDto();
+            reportNcRectifiedDto.setNc(ncItemId.get(i));
+            reportNcRectifiedDto.setRectified(ncRectified.get(i));
+            listReportNcRectifiedDto.add(reportNcRectifiedDto);
+        }
+
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         inspectionReportDto.setHciName(appInsRepDto.getHciName());
@@ -92,7 +106,8 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setPrincipalOfficer(appInsRepDto.getPrincipalOfficer());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
         inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
-
+        inspectionReportDto.setNcRectification(listReportNcRectifiedDto);
+        
 
 
 
