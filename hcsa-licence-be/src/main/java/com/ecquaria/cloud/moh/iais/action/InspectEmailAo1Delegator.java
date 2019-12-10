@@ -152,57 +152,59 @@ public class InspectEmailAo1Delegator {
         log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");
 
         HttpServletRequest request = bpc.request;
-        String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-        String taskId="47512333-7A16-EA11-BE7D-000C29F371DC";
-        TaskDto taskDto = taskService.getTaskById(taskId);
-        String appNo = taskDto.getRefNo();
-        //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();
-        String licenseeName="lichen";
-        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
-        String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-        inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
-        inspectionEmailTemplateDto.setApplicantName(licenseeName);
-        inspectionEmailTemplateDto.setApplicationNumber(appNo);
-        inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
-        inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
-        HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
-        inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
+        {
+            String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
+            String taskId="47512333-7A16-EA11-BE7D-000C29F371DC";
+            TaskDto taskDto = taskService.getTaskById(taskId);
+            String appNo = taskDto.getRefNo();
+            //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();
+            String licenseeName="lichen";
+            ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
+            String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
+            InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
+            inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
+            inspectionEmailTemplateDto.setApplicantName(licenseeName);
+            inspectionEmailTemplateDto.setApplicationNumber(appNo);
+            inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
+            inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
+            HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
+            inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
 
-        String configId=inspEmailService.getcheckListQuestionDtoList(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcType()).get(1).getConfigId();
-        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
-        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
-        inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
+            String configId=inspEmailService.getcheckListQuestionDtoList(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcType()).get(1).getConfigId();
+            List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
+            AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
+            inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
 
-        Map<String,Object> map=new HashMap<>();
-        map.put("APPLICANT_NAME",inspectionEmailTemplateDto.getApplicantName());
-        map.put("APPLICATION_NUMBER",inspectionEmailTemplateDto.getApplicationNumber());
-        map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
-        map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
-        map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
-        if(!ncAnswerDtos.isEmpty()){
-            StringBuilder stringBuilder=new StringBuilder();
-            for (NcAnswerDto ncAnswerDto:ncAnswerDtos
-            ) {
-                stringBuilder.append("<tr><td>"+ncAnswerDto.getItemId());
-                stringBuilder.append("</td><td>"+ncAnswerDto.getItemQuestion());
-                stringBuilder.append("</td><td>"+ncAnswerDto.getClause());
-                stringBuilder.append("</td><td>"+ncAnswerDto.getRemark());
-                stringBuilder.append("</td><tr>");
+            Map<String,Object> map=new HashMap<>();
+            map.put("APPLICANT_NAME",inspectionEmailTemplateDto.getApplicantName());
+            map.put("APPLICATION_NUMBER",inspectionEmailTemplateDto.getApplicationNumber());
+            map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
+            map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
+            map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
+            if(!ncAnswerDtos.isEmpty()){
+                StringBuilder stringBuilder=new StringBuilder();
+                for (NcAnswerDto ncAnswerDto:ncAnswerDtos
+                ) {
+                    stringBuilder.append("<tr><td>"+ncAnswerDto.getItemId());
+                    stringBuilder.append("</td><td>"+ncAnswerDto.getItemQuestion());
+                    stringBuilder.append("</td><td>"+ncAnswerDto.getClause());
+                    stringBuilder.append("</td><td>"+ncAnswerDto.getRemark());
+                    stringBuilder.append("</td><tr>");
+                }
+                map.put("NC_DETAILS",stringBuilder.toString());
             }
-            map.put("NC_DETAILS",stringBuilder.toString());
+            if(inspectionEmailTemplateDto.getBestPractices()!=null){
+                map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
+            }
+            map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+            String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
+            inspectionEmailTemplateDto.setMessageContent(mesContext);
+            String draftEmailId= (String) ParamUtil.getSessionAttr(request,"draftEmailId");
+            inspectionEmailTemplateDto.setId(draftEmailId);
+            inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+            ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
+            ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
         }
-        if(inspectionEmailTemplateDto.getBestPractices()!=null){
-            map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
-        }
-        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-        String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
-        inspectionEmailTemplateDto.setMessageContent(mesContext);
-        String draftEmailId= (String) ParamUtil.getSessionAttr(request,"draftEmailId");
-        inspectionEmailTemplateDto.setId(draftEmailId);
-        inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
-        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
     }
     public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");

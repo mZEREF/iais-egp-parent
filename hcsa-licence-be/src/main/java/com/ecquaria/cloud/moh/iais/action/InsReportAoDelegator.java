@@ -14,9 +14,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.impl.AppPremisesRoutingInspectionHistoryServiceImpl;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -42,7 +42,7 @@ public class InsReportAoDelegator {
     private TaskService taskService;
 
     @Autowired
-    private AppPremisesRoutingInspectionHistoryServiceImpl appPremisesRoutingInspectionHistoryService;
+    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
 
 
     public void start(BaseProcessClass bpc) {
@@ -63,8 +63,8 @@ public class InsReportAoDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         //String appNo = "AN1911136061-01";
-        InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo);
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
+        InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo,applicationViewDto);
         SelectOption so1 = new SelectOption("Reject", "Reject");
         SelectOption so2 = new SelectOption("1Y", "1year");
         SelectOption so3 = new SelectOption("2Y", "2year");
@@ -203,7 +203,7 @@ public class InsReportAoDelegator {
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesRoutingHistoryDto = appPremisesRoutingInspectionHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
 }

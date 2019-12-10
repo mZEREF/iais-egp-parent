@@ -1,8 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import java.util.List;
@@ -24,12 +22,12 @@ public class ApplicationGroupServiceImpl implements ApplicationGroupService {
     private ApplicationClient applicationClient;
     @Override
     public ApplicationGroupDto getApplicationGroupDtoById(String appGroupId) {
-        return RestApiUtil.getByPathParam(RestApiUrlConsts.APPLICATION_GROUP_GROUPID,appGroupId,ApplicationGroupDto.class);
+        return applicationClient.getAppById(appGroupId).getEntity();
     }
 
     @Override
     public ApplicationGroupDto updateApplicationGroup(ApplicationGroupDto applicationGroupDto) {
-        return RestApiUtil.update(RestApiUrlConsts.IAIS_APPLICATION_GROUP_BE,applicationGroupDto,ApplicationGroupDto.class);
+        return applicationClient.updateApplication(applicationGroupDto).getEntity();
     }
 
     @Override

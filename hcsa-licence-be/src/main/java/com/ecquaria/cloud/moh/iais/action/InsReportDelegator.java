@@ -1,11 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -16,26 +12,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.impl.AppPremisesRoutingInspectionHistoryServiceImpl;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author weilu
@@ -54,7 +44,7 @@ public class InsReportDelegator {
     private TaskService taskService;
 
     @Autowired
-    private AppPremisesRoutingInspectionHistoryServiceImpl appPremisesRoutingInspectionHistoryService;
+    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
 
 
     public void start(BaseProcessClass bpc) {
@@ -74,10 +64,8 @@ public class InsReportDelegator {
         String taskId = "47512333-7A16-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
-        //String appNo = "AN1911136061-01";
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
-        String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-        InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo);
+        InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo,applicationViewDto);
         SelectOption so1 = new SelectOption("Reject", "Reject");
         SelectOption so2 = new SelectOption("1Y", "1year");
         SelectOption so3 = new SelectOption("2Y", "2year");
@@ -194,7 +182,7 @@ public class InsReportDelegator {
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesRoutingHistoryDto = appPremisesRoutingInspectionHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
 }

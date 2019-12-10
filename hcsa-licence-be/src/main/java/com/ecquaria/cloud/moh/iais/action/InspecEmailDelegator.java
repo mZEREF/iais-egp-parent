@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -54,7 +55,7 @@ public class InspecEmailDelegator {
     ApplicationViewService applicationViewService;
 
     @Autowired
-    InsepctionNcCheckListImpl insepctionNcCheckListService;
+    InsepctionNcCheckListService insepctionNcCheckListService;
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");

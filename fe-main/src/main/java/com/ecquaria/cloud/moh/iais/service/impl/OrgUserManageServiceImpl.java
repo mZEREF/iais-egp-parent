@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +14,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void saveOrgManage(OrgUserDto orgUserDto) {
         System.err.println("**** OrgUserDto  ****");
-        RestApiUtil.save(URL, orgUserDto,OrgUserDto.class);
+//        RestApiUtil.save(URL, orgUserDto,OrgUserDto.class);
     }
 }

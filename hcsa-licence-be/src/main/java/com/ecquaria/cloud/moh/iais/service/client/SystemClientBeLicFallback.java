@@ -10,7 +10,7 @@ import java.util.Map;
  * @author Wenkang
  * @date 2019/11/28 10:28
  */
-public class SystemClientFallback {
+public class SystemClientBeLicFallback {
     FeignResponseEntity<Boolean> isFileExistence( Map<String,String> map){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

@@ -8,6 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 public interface MasterCodeService {
     SearchResult<MasterCodeQueryDto> doQuery(SearchParam param);
     void saveMasterCode(MasterCodeDto masterCode);
-    void deleteMasterCodeById(Long id);
+    void deleteMasterCodeById(String id);
     MasterCodeDto findMasterCodeByRowguid(String rowguid);
 }

@@ -1,16 +1,14 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
 import com.ecquaria.cloud.moh.iais.service.impl.PostCodeServiceImpl;
+import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.mockito.mockpolicies.Slf4jMockPolicy;
 import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -19,11 +17,9 @@ import org.powermock.reflect.Whitebox;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.IOException;
-
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({PostCodeDelegator.class,RestApiUtil.class})
+@PrepareForTest({PostCodeDelegator.class})
 public class PostCodeControllerTest {
     @InjectMocks
     private PostCodeDelegator postCodeController;
@@ -36,8 +32,6 @@ public class PostCodeControllerTest {
     @Before
     public void setup() throws IllegalAccessException, NoSuchFieldException {
         baseProcessClass.request = request;
-        PowerMockito.mockStatic(RestApiUtil.class);
-        PowerMockito.when(RestApiUtil.save(Mockito.anyString(),Mockito.anyList())).thenReturn(true);
         Whitebox.setInternalState(postCodeController,"streetsPath",
                 Thread.currentThread().getContextClassLoader().getResource("").getPath() + "file/STREETS.TXT");
         Whitebox.setInternalState(postCodeController,"postCodePath",

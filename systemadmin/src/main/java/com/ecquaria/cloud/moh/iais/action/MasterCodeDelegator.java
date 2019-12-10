@@ -198,7 +198,7 @@ public class MasterCodeDelegator {
         logAboutStart("doDelete");
         String id = ParamUtil.getString(bpc.request,MasterCodeConstants.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(id)){
-            masterCodeService.deleteMasterCodeById(Long.valueOf(id));
+            masterCodeService.deleteMasterCodeById(id);
         }
     }
 

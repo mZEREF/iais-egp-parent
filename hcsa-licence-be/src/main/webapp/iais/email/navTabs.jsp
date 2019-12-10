@@ -14,9 +14,9 @@
                                                 data-toggle="tab">Payment</a></li>
     <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
                                                 data-toggle="tab">Inspection</a></li>
-    <li class="incomplete" role="presentation"><a href="#tabCheckList" aria-controls="CheckList" role="tab"
+    <li class="incomplete" role="presentation"><a id="checkList" aria-controls="CheckList" role="tab"
                                                   data-toggle="tab">CheckList</a></li>
-    <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
+    <li class="complete" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
                                                 data-toggle="tab">Processing</a></li>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm">
@@ -34,6 +34,26 @@
 
 
 <script type="text/javascript">
+    $(document).ready(function() {
+
+        $('#checkList').click(function(){
+            submit('checkList',null,null);
+        });
+        $('#processing').click(function(){
+            submit('emailView',null,null);
+        });
+    });
+
+    function submit(action,value,additional){
+        $("[name='crud_action_type']").val(action);
+        $("[name='crud_action_type_form_page']").val('laboratoryDisciplines');
+        $("[name='crud_action_value']").val(value);
+        $("[name='crud_action_additional']").val(additional);
+        var mainForm = document.getElementById('mainForm');
+        mainForm.submit();
+    }
+
+
     function doPreview(){
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }

@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.sample.OrgUserAccountSampleDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -50,7 +49,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({OrgUserAccountSampleDelegator.class,CrudHelper.class,WebValidationHelper.class,
-         MiscUtil.class,ParamUtil.class,RestApiUtil.class,
+         MiscUtil.class,ParamUtil.class,
         QueryHelp.class})
 public class OrgUserAccountDelegatorTest {
     @InjectMocks
@@ -68,9 +67,6 @@ public class OrgUserAccountDelegatorTest {
     @Before
     public void setup(){
         bpc.request=request;
-        PowerMockito.mockStatic(RestApiUtil.class);
-        when(RestApiUtil.query(Mockito.anyString(),Mockito.anyObject())).thenReturn(searchResult);
-        when(RestApiUtil.getByReqParam(Mockito.anyString(),Mockito.anyObject(),Mockito.anyObject())).thenReturn(orgUserAccountDto);
         PowerMockito.mockStatic(QueryHelp.class);
         PowerMockito.mockStatic(CrudHelper.class);
         PowerMockito.mockStatic(WebValidationHelper.class);

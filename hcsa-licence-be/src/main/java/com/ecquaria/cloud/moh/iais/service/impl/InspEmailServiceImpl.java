@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class InspEmailServiceImpl implements InspEmailService {
     private InsEmailClient insEmailClient;
 
     @Autowired
-    private SystemClient systemClient;
+    private SystemBeLicClient systemClient;
 
     @Autowired
     private ApplicationClient applicationClient;

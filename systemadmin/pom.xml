@@ -59,7 +59,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>systemadmin</finalName>
+        <finalName>system-admin-web</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

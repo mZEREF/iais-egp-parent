@@ -1,67 +1,61 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-/*
- *author: yichen
- *date time:12/5/2019 8:09 PM
- *description:
- */
-
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
-public class SystemClientFallback {
+/**
+ * @Author: Hc
+ * @Program: iais-egp
+ * @Create: 2019-12-10 15:17
+ **/
+public class MasterCodeClientFallback implements MasterCodeClient{
 
-    public FeignResponseEntity<SearchResult<SystemParameterQueryDto>> doQuery(SearchParam searchParam){
+    @Override
+    public FeignResponseEntity<SearchResult<MasterCodeQueryDto>> doQuery(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<SystemParameterDto> getParameterByRowguid(String rowguid){
+    @Override
+    public FeignResponseEntity<MasterCodeDto> getMasterCodeByMskey(String masterCodeKey) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<String> saveSystemParameter(SystemParameterDto dto){
+    @Override
+    public FeignResponseEntity<Void> saveMasterCode(MasterCodeDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<String> saveMessage(MessageDto messageDto){
+    @Override
+    public FeignResponseEntity<Void> delMasterCode(String did) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<SearchResult<MessageQueryDto>> queryMessage(SearchParam searchParam){
+    @Override
+    public FeignResponseEntity<Void> updateMasterCode(MasterCodeDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<SystemParameterDto> getMessageByRowguid(String id){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-
-    public FeignResponseEntity<SearchResult<AuditTrailQueryDto>> listAuditTrailDto(SearchParam searchParam){
+    @Override
+    public FeignResponseEntity<MasterCodeDto> getMasterCodeById(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

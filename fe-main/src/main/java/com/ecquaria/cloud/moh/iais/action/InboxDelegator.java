@@ -15,9 +15,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -41,15 +38,6 @@ public class InboxDelegator {
 
     @Autowired
     private InboxService inboxService;
-
-    @Autowired
-    private InboxClient inboxServiceClient;
-
-    @Autowired
-    private AppInboxClient appInboxClient;
-
-    @Autowired
-    private LicenceInboxClient licenceInboxClient;
 
     @Autowired
     private InboxDelegator(InboxService inboxService){
@@ -87,7 +75,7 @@ public class InboxDelegator {
         inboxParameter.setSortField("id");
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request, true,inboxParameter);
         QueryHelp.setMainSql("interInboxQuery","inboxQuery",inboxParam);
-        SearchResult inboxResult = inboxServiceClient.searchInbox(inboxParam).getEntity();
+        SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
 
         if(!StringUtil.isEmpty(inboxResult)){
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);

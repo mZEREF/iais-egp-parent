@@ -2,18 +2,23 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,9 +47,25 @@ public class InsRepServiceImpl implements InsRepService {
     private InsepctionNcCheckListService insepctionNcCheckListService;
 
     @Override
-    public InspectionReportDto getInsRepDto(String appNo) {
+    public InspectionReportDto getInsRepDto(String appNo,ApplicationViewDto applicationViewDto) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appNo).getEntity();
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String appId = applicationDto.getId();
+        String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        String appGrpId = applicationDto.getAppGrpId();
+        String appTypeCode = insRepClient.getAppType(appId).getEntity();
+        ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
+        String licenseeId = applicationGroupDto.getLicenseeId();
+        Integer isPre = applicationGroupDto.getIsPreInspection();
+        String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
+        String reasonForVisit="";
+        if(isPre==1){
+            reasonForVisit = "Pre-licensing inspection for"+appType+" Application";
+        }else {
+            reasonForVisit = "Post-licensing inspection for"+appType+" Application";
+        }
+
         List<String> list = new ArrayList<>();
         list.add(appInsRepDto.getServiceId());
         List<HcsaServiceDto> entity = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
@@ -54,13 +75,28 @@ public class InsRepServiceImpl implements InsRepService {
              svcName = hcsaServiceDto.getSvcName();
              svcCode = hcsaServiceDto.getSvcCode();
         }
-
+        List<ChecklistQuestionDto> inspection = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
+        String configId = inspection.get(0).getConfigId();
+        List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
+       List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
+        for (NcAnswerDto ncAnswerDto :ncAnswerDtoList){
+            ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
+            reportNcRegulationDto.setNc(ncAnswerDto.getItemId());
+            reportNcRegulationDto.setRegulation(ncAnswerDto.getItemQuestion());
+            listReportNcRegulationDto.add(reportNcRegulationDto);
+        }
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         inspectionReportDto.setHciName(appInsRepDto.getHciName());
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setPrincipalOfficer(appInsRepDto.getPrincipalOfficer());
-        inspectionReportDto.setSubsumedService(appInsRepDto.getSubsumedService());
+        inspectionReportDto.setReasonForVisit(reasonForVisit);
+        inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
+
+
+
+
+
 
 
         inspectionReportDto.setInspectionDate(new Date());
@@ -68,7 +104,6 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setStatus("Full Compliance");
         inspectionReportDto.setBestPractice("best practice!!!!");
         inspectionReportDto.setMarkedForAudit(true);
-        inspectionReportDto.setNcRegulation(ncRegulation());
         inspectionReportDto.setInspectOffices("inspector officer");
         inspectionReportDto.setInspectorRemark("inspection Remark");
         inspectionReportDto.setTaskRemarks("taskRemake");
