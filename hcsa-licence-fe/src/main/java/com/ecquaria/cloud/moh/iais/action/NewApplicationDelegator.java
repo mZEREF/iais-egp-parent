@@ -436,7 +436,7 @@ public class NewApplicationDelegator {
                 appGrp.setId(appGrpId);
                 appGrp.setPmtRefNo("AN1911136061");
                 appGrp.setPmtStatus(pmtStatus);
-                RestApiUtil.update(RestApiUrlConsts.UPDATE_APPLICATION_GROUP, appGrp, String.class);
+                serviceConfigService.updatePaymentStatus(appGrp);
             }
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
@@ -598,7 +598,7 @@ public class NewApplicationDelegator {
         for(String type:premType){
             premTypeBuffer.append("<div class=\"col-xs-6 col-md-2\">")
                     .append("<div class=\"form-check\">")
-                    .append("<input class=\"form-check-input premTypeRadio\"  type=\"radio\" name=\""+currentLength+"premType\" value = "+type+" aria-invalid=\"false\">");
+                    .append("<input class=\"form-check-input premTypeRadio\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
                 premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site</label>");
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
@@ -641,13 +641,12 @@ public class NewApplicationDelegator {
         for(SelectOption addrType:addrTypes){
             addrTypeOpt.put(addrType.getValue(), addrType.getText());
         }
-
         Map<String,String> addrTypesAttr = new HashMap<>();
         addrTypesAttr.put("id", "siteAddressType");
         addrTypesAttr.put("name", premIndexNo+"addrType");
         addrTypesAttr.put("style", "display: none;");
         String addrTypeSelect = HtmlElementHelper.generateSelect(addrTypesAttr,addrTypeOpt,null,null,-1,false);
-        String addrTypeSelectStr = generateDropDownHtml(addrTypeSelect, MasterCodeUtil.CATE_ID_ADDRESS_TYPE, FIRESTOPTION);
+        String addrTypeSelectStr = generateDropDownHtml(addrTypesAttr, addrTypes, FIRESTOPTION);
 
         //Address Type conveyance
         List<SelectOption> conAddrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
@@ -661,7 +660,7 @@ public class NewApplicationDelegator {
         conAddrTypesAttr.put("name", premIndexNo+"conAddrType");
         conAddrTypesAttr.put("style", "display: none;");
         String conAddrTypeSelect = HtmlElementHelper.generateSelect(conAddrTypesAttr,conAddrTypeOpt,null,null,-1,false);
-        String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypeSelect, MasterCodeUtil.CATE_ID_ADDRESS_TYPE, FIRESTOPTION);
+        String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
 
         sql = sql.replace("(0)", premIndexNo);
         sql = sql.replace("(1)", premTypeBuffer.toString());

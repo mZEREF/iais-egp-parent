@@ -248,7 +248,7 @@
                           <iais:row>
                             <iais:field value="Address Type" width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:select name="${premIndexNo}conveyanceAddrType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type" value="${appGrpPremisesDto.addrType}"></iais:select>
+                              <iais:select name="${premIndexNo}conveyanceAddrType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type" value="${appGrpPremisesDto.conveyanceAddressType}"></iais:select>
                               <span  class="postalCodeMsg error-msg"><c:out value="${errMsg.conveyanceAddressType}"></c:out></span>
                             </iais:value>
                           </iais:row>
@@ -397,7 +397,7 @@
                     $premSelect.find('.new-premise-form-conveyance').removeClass('hidden');
                     $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 }
-            }else if("-1" == newPremise){
+            }else if("-1" == premSelectVal){
                 $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
             }

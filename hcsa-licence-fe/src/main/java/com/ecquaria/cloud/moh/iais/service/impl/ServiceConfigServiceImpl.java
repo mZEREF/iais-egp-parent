@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -42,6 +44,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private AppConfigClient appConfigClient;
     @Autowired
     private SystemAdminClient systemAdminClient;
+    @Autowired
+    private ApplicationClient applicationClient;
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
 
@@ -131,5 +135,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public byte[] downloadFile(String fileRepoId) {
         return fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
+    }
+
+    @Override
+    public void updatePaymentStatus(ApplicationGroupDto appGrp) {
+        applicationClient.doUpDate(appGrp);
     }
 }

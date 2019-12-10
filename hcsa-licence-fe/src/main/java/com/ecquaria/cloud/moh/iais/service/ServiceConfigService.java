@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
@@ -32,5 +33,6 @@ public interface ServiceConfigService {
     List<HcsaSvcPersonnelDto> getGOSelectInfo(String serviceId, String psnType);
     AppSvcCgoDto loadGovernanceOfficerByCgoId(String cgoId);
     byte[] downloadFile(String fileRepoId);
+    void updatePaymentStatus(ApplicationGroupDto appGrp);
 
 }
