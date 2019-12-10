@@ -213,6 +213,7 @@ public class InspecAssignTaskDelegator {
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppNo(inspecTaskCreAndAssDto.getApplicationNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        inspectionAssignTaskService.createTaskStatus(applicationDto);
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);

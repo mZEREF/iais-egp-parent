@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -96,4 +97,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: search ApplicationViewDto By Application No
       */
     ApplicationViewDto searchByAppNo(String applicationNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/10
+      * @Param: applicationDto
+      * @return: void
+      * @Descripation: create Task Status
+      */
+    void createTaskStatus(ApplicationDto applicationDto);
 }

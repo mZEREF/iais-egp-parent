@@ -2,15 +2,18 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -20,6 +23,8 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -56,6 +61,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Autowired
     private ApplicationClient applicationClient;
+
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
+
+    @Autowired
+    private AppInspectionStatusClient appInspectionStatusClient;
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {
@@ -212,6 +223,17 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public ApplicationViewDto searchByAppNo(String applicationNo) {
         return applicationClient.getAppViewByNo(applicationNo).getEntity();
+    }
+
+    @Override
+    public void createTaskStatus(ApplicationDto applicationDto) {
+        List<AppPremisesCorrelationDto> appPremCorrDtoList = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
+        List<AppInspectionStatusDto> appInspectionStatusDtos = new ArrayList<>();
+        AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
+        appInspectionStatusDto.setAppPremCorreId(appPremCorrDtoList.get(0).getId());
+        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+        appInspectionStatusDtos.add(appInspectionStatusDto);
+        appInspectionStatusClient.create(appInspectionStatusDtos);
     }
 
     private void createTaskByInspectorList(List<SelectOption> inspectorCheckList, List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
