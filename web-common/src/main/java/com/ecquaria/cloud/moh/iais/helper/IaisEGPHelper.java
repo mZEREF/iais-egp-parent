@@ -17,25 +17,21 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.egp.api.EGPHelper;
-import java.io.Serializable;
+import lombok.extern.slf4j.Slf4j;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import lombok.extern.slf4j.Slf4j;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
 
 @Slf4j
 public final class IaisEGPHelper extends EGPHelper {
@@ -95,19 +91,6 @@ public final class IaisEGPHelper extends EGPHelper {
 
         return dto;
     }
-    /**
-     * @description: get the PostCodeDto by the postalCode
-     *
-     * @author: suocheng on 8/23/2019 4:27 PM
-     * @param: [postalCode]
-     * @return: com.ecquaria.cloud.moh.iais.dto.PostCodeDto
-     */
-    public static PostCodeDto getPostCodeByCode(String postalCode) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("searchField", "postalCode");
-        map.put("filterValue", postalCode);
-        return RestApiUtil.getByReqParam("postcodes", map, PostCodeDto.class);
-    }
 
     /**
      * use by delegator to clear session attr, prefix of param need use 'Param_'
@@ -156,20 +139,6 @@ public final class IaisEGPHelper extends EGPHelper {
             log.info("getSearchParam ===>>>> " + e.getMessage());
         }
         return searchParam;
-    }
-
-    /**
-     * Get the record by primary key
-     * @param serviceName
-     * @param primaryKey
-     * @param clz
-     * @param <T>
-     * @return
-     */
-    public static <T> T getRecordByPrimaryKey(String serviceName, String primaryKey, Class<? extends Serializable> clz){
-        Map<String, Object> paramMapper = new HashMap<>();
-        paramMapper.put("id", primaryKey);
-        return (T) RestApiUtil.getByReqParam(serviceName + "/{id}", paramMapper, clz);
     }
 
     /**

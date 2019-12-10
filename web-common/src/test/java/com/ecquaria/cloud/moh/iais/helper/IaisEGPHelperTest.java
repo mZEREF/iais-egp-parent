@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,7 +48,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({IaisEGPHelper.class, MiscUtil.class, ParamUtil.class, RestApiUtil.class})
+@PrepareForTest({IaisEGPHelper.class, MiscUtil.class, ParamUtil.class})
 @PowerMockIgnore("javax.management.*")
 public class IaisEGPHelperTest {
 
@@ -89,14 +88,6 @@ public class IaisEGPHelperTest {
         String path = IaisEGPHelper.getRootPath();
         assertNotNull(path);
     }
-
-    @Test
-    public void testGetPostCodeByCode(){
-        PowerMockito.mockStatic(RestApiUtil.class);
-        IaisEGPHelper.getPostCodeByCode("ts");
-        Assert.assertTrue(true);
-    }
-
 
     @Test
     public void testGetSearchParam(){
@@ -163,14 +154,6 @@ public class IaisEGPHelperTest {
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
         FilterParameter filterParameter = null;
         assertNotNull(IaisEGPHelper.getSearchParam(mockHttpServletRequest, true, filterParameter));
-    }
-
-    @Test
-    public void testGetReocrdByRowguid(){
-        PowerMockito.mockStatic(RestApiUtil.class);
-        when(RestApiUtil.getByPathParam("test", "dsadasd", null)).thenReturn(null);
-        IaisEGPHelper.getRecordByPrimaryKey("test", "dsadasd", null);
-        Assert.assertTrue(true);
     }
 
     @Test

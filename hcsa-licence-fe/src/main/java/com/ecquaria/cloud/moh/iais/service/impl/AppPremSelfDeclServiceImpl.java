@@ -6,7 +6,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  *description:
  */
 
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
@@ -15,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -54,15 +52,14 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             String svcName = hcsa.getSvcName();
 
             //may be has list
-            //String configId = appConfigClient.getSelfDeclConfigIdBySvcCode(svcCode).getEntity();
-            String configId = RestApiUtil.getByPathParam(RestApiUrlConsts.HCSA_CONFIG + "/iais-hcsa-checklist/config/id/{svcCode}", svcCode, String.class);
+            String configId = appConfigClient.getSelfDeclConfigIdBySvcCode(svcCode).getEntity();
             confList.add(configId);
 
             List<PremCheckItem> premCheckItems = loadPremChecklistItem(configId, false);
 
            // List<AppGrpPremisesDto> premisesDto = RestApiUtil.getListByPathParam(RestApiUrlConsts.IAIS_APPLICATION + "/application/app-group-premises-results/{appid}", appId, AppGrpPremisesDto.class);
             Map<String, List<PremCheckItem>> premAnswerMap = new HashMap<>(16);
-            List<AppPremisesCorrelationDto>  correlations = RestApiUtil.getListByPathParam("iais-application:8883/iais-application/application/correlations/{appid}", appId, AppPremisesCorrelationDto.class);
+            List<AppPremisesCorrelationDto>  correlations = applicationClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto correlation : correlations){
                 String correId = correlation.getId();
                 selfDecl.setPremAnswerMap(premAnswerMap);
@@ -93,7 +90,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Override
     public void saveSelfDecl(List<SelfDecl> selfDeclList) {
-        RestApiUtil.save(RestApiUrlConsts.IAIS_APPLICATION + "/self-decl", selfDeclList);
+        applicationClient.saveSelfDecl(selfDeclList);
     }
 
     private SelfDecl overlayCommon(List<String> premIdList){
