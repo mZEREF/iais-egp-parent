@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -37,7 +36,7 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MasterCodeDelegator.class, CrudHelper.class,
         SpringContextHelper.class, MiscUtil.class, AuditTrailDto.class,
-        ParamUtil.class, WebValidationHelper.class, ValidationResult.class, IaisEGPHelper.class, QueryHelp.class, RestApiUtil.class})
+        ParamUtil.class, WebValidationHelper.class, ValidationResult.class, IaisEGPHelper.class, QueryHelp.class})
 public class MasterCodeDelegatorTest {
 
     @Mock
@@ -70,7 +69,6 @@ public class MasterCodeDelegatorTest {
         PowerMockito.mockStatic(MiscUtil.class);
         PowerMockito.mockStatic(IaisEGPHelper.class);
         PowerMockito.mockStatic(QueryHelp.class);
-        PowerMockito.mockStatic(RestApiUtil.class);
         when(MiscUtil.getCurrentRequest()).thenReturn(request);
     }
     @Test

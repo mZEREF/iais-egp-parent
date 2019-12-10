@@ -14,7 +14,6 @@
 package com.ecquaria.cloud.moh.iais.initializer;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.sql.SqlMapLoader;
@@ -38,9 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
 
 /**
  * AppInitializerTest
@@ -50,8 +48,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({AppInitializer.class, MasterCodeUtil.class, QueryHelp.class,
-        RestApiUtil.class})
+@PrepareForTest({AppInitializer.class, MasterCodeUtil.class, QueryHelp.class})
 @SuppressStaticInitializationFor("com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil")
 @PowerMockIgnore("javax.management.*")
 public class AppInitializerTest {
@@ -68,7 +65,6 @@ public class AppInitializerTest {
     public void setup() throws Exception {
         PowerMockito.whenNew(SqlMapLoader.class).withNoArguments().thenReturn(sml);
         PowerMockito.mockStatic(QueryHelp.class);
-        PowerMockito.mockStatic(RestApiUtil.class);
     }
 
     @Test
@@ -88,7 +84,6 @@ public class AppInitializerTest {
         sr.setRows(list);
         sr.setRowCount(1);
         doNothing().when(sml, "loadSqlMap");
-        when(RestApiUtil.query(anyString(), anyObject())).thenReturn(sr);
         PowerMockito.mockStatic(MasterCodeUtil.class);
         doNothing().when(MasterCodeUtil.class, "refreshCache");
         init.contextInitialized(sce);
