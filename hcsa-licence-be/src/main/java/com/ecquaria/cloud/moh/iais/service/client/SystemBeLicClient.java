@@ -19,8 +19,8 @@ import java.util.Map;
  * @date 2019/11/28 10:28
  */
 @FeignClient(name = "system-admin", configuration = FeignConfiguration.class,
-        fallback = SystemClientFallback.class)
-public interface SystemClient {
+        fallback = SystemClientBeLicFallback.class)
+public interface SystemBeLicClient {
     @RequestMapping(path = "/file-existence",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> isFileExistence(@RequestBody Map<String,String> map);
     @RequestMapping(path = "/hcl-code/{serviceCode}",method = RequestMethod.GET)
