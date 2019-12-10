@@ -59,10 +59,10 @@ public class InsReportAoDelegator {
 
     public void AoReportPre(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>prepareReportData");
-        String taskId = "48512333-7A16-EA11-BE7D-000C29F371DC";
+        String taskId = "A600624A-AB15-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
-        //String appNo = taskDto.getRefNo();
-        String appNo = "AN1911136061-01";
+        String appNo = taskDto.getRefNo();
+        //String appNo = "AN1911136061-01";
         InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo);
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
         SelectOption so1 = new SelectOption("Reject", "Reject");
