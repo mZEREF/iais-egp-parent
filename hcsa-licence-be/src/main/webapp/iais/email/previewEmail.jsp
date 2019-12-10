@@ -28,7 +28,7 @@
     <%=process.runtime.getCurrentComponentName()%>
 
 </webui:setAttribute>
-
+<webui:setLayout name="iais-intranet"/>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     String webroot=IaisEGPConstant.FE_CSS_ROOT;

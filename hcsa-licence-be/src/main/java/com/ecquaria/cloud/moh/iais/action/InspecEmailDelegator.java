@@ -7,8 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -18,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.impl.InsepctionNcCheckListImpl;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +53,9 @@ public class InspecEmailDelegator {
     @Autowired
     ApplicationViewService applicationViewService;
 
+    @Autowired
+    InsepctionNcCheckListImpl insepctionNcCheckListService;
+
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
     }
@@ -58,7 +64,7 @@ public class InspecEmailDelegator {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-        String taskId="47512333-7A16-EA11-BE7D-000C29F371DC";
+        String taskId="7102C311-D10D-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();
@@ -73,11 +79,11 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
         HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-        inspectionEmailTemplateDto.setSn("No");
-        inspectionEmailTemplateDto.setChecklistItem("checklistItem");
-        inspectionEmailTemplateDto.setRegulationClause("regulationClause");
-        inspectionEmailTemplateDto.setRemarks("no remarks");
-        inspectionEmailTemplateDto.setBestPractices("GOOD");
+
+        String configId=inspEmailService.getcheckListQuestionDtoList(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcType()).get(1).getConfigId();
+        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
+        AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
+        inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
 
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",inspectionEmailTemplateDto.getApplicantName());
@@ -85,13 +91,16 @@ public class InspecEmailDelegator {
         map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
         map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
         map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
-        if(inspectionEmailTemplateDto.getSn().equals("No")){
+        if(!ncAnswerDtos.isEmpty()){
             StringBuilder stringBuilder=new StringBuilder();
-            stringBuilder.append("<tr><td>"+inspectionEmailTemplateDto.getSn());
-            stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getChecklistItem());
-            stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getRegulationClause());
-            stringBuilder.append("</td><td>"+inspectionEmailTemplateDto.getRemarks());
-            stringBuilder.append("</td><tr>");
+            for (NcAnswerDto ncAnswerDto:ncAnswerDtos
+                 ) {
+                stringBuilder.append("<tr><td>"+ncAnswerDto.getItemId());
+                stringBuilder.append("</td><td>"+ncAnswerDto.getItemQuestion());
+                stringBuilder.append("</td><td>"+ncAnswerDto.getClause());
+                stringBuilder.append("</td><td>"+ncAnswerDto.getRemark());
+                stringBuilder.append("</td><tr>");
+            }
             map.put("NC_DETAILS",stringBuilder.toString());
         }
         if(inspectionEmailTemplateDto.getBestPractices()!=null){

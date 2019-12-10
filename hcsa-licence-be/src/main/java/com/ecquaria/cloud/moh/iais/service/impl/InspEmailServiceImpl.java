@@ -1,14 +1,18 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * InspEmailServiceImpl
@@ -26,6 +30,8 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Autowired
     private ApplicationClient applicationClient;
+    @Autowired
+    private HcsaChklClient hcsaChklClient;
 
     @Override
     public String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
@@ -56,6 +62,8 @@ public class InspEmailServiceImpl implements InspEmailService {
     public ApplicationDto getApplicationDtoByAppPremCorrId(String appPremCorrId) {
         return insEmailClient.getApplicationDtoByAppPremCorrId(appPremCorrId).getEntity();
     }
-
-
+    @Override
+    public List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode,String svcType){
+        return hcsaChklClient.getcheckListQuestionDtoList(svcCode,"Inspection").getEntity();
+    }
 }
