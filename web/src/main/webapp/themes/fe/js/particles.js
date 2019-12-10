@@ -1500,14 +1500,10 @@ window.particlesJS = function(tag_id, params){
         pJS_tag.removeChild(exist_canvas[0]);
       }
     }
-  }
 
+    /* create canvas element */
+    var canvas_el = document.createElement('canvas');
 
-
-
-  /* create canvas element */
-  var canvas_el = document.createElement('canvas');
-  if (canvas_el != null) {
     canvas_el.className = pJS_canvas_class;
 
     /* set size canvas */
