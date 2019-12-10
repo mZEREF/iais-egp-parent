@@ -19,14 +19,14 @@
         <div class="form-group premiseOnSiteSelect hidden">
           <label class="col-xs-12 col-md-4 control-label">Add or select a premises from the list</label>
           <div class=" col-xs-11 col-sm-7 col-md-5">
-            <select name="(0)premOnSiteSelect" id="premOnsiteSel" class="premSelect" style="display: none;"><option value="-1">Select One</option><option value="newPremise" selected="">Add a new premises</option></select><div class="nice-select premSelect" tabindex="0"><span class="current">Select One</span><ul class="list mCustomScrollbar _mCS_1 mCS_no_scrollbar"><div id="mCSB_1" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" style="max-height: none;" tabindex="0"><div id="mCSB_1_container" class="mCSB_container mCS_y_hidden mCS_no_scrollbar_y" style="position:relative; top:0; left:0;" dir="ltr"><li data-value="-1" class="option">Select One</li><li data-value="newPremise" class="option selected">Add a new premises</li></div><div id="mCSB_1_scrollbar_vertical" class="mCSB_scrollTools mCSB_1_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: none;"><div class="mCSB_draggerContainer"><div id="mCSB_1_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; top: 0px;"><div class="mCSB_dragger_bar" style="line-height: 30px;"></div></div><div class="mCSB_draggerRail"></div></div></div></div></ul></div><div style="color:#b94a48" class="help-inline-block"><span id="error_(0)premOnSiteSelect" name="emsErrorMsg"></span></div>
+            (2)
             <span class="error-msg"></span>
           </div>
         <div class="clear"></div></div>
         <div class="form-group premiseConSelect hidden">
           <label class="col-xs-12 col-md-4 control-label">Add or select a premises from the list</label>
           <div class=" col-xs-11 col-sm-7 col-md-5">
-            <select name="(0)premConSelect" id="premConSel" class="premSelect" style="display: none;"><option value="-1">Select One</option><option value="newPremise">Add a new premises</option></select><div class="nice-select premSelect" tabindex="0"><span class="current">Select One</span><ul class="list mCustomScrollbar _mCS_2 mCS_no_scrollbar"><div id="mCSB_2" class="mCustomScrollBox mCS-light mCSB_vertical mCSB_inside" tabindex="0" style="max-height: none;"><div id="mCSB_2_container" class="mCSB_container mCS_y_hidden mCS_no_scrollbar_y" style="position:relative; top:0; left:0;" dir="ltr"><li data-value="-1" class="option focus">Select One</li><li data-value="newPremise" class="option selected">Add a new premises</li></div><div id="mCSB_2_scrollbar_vertical" class="mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical" style="display: none;"><div class="mCSB_draggerContainer"><div id="mCSB_2_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 30px; top: 0px; height: 0px;"><div class="mCSB_dragger_bar" style="line-height: 30px;"></div></div><div class="mCSB_draggerRail"></div></div></div></div></ul></div><div style="color:#b94a48" class="help-inline-block"><span id="error_(0)premConSelect" name="emsErrorMsg"></span></div>
+            (3)
             <span class="error-msg"></span>
           </div>
         <div class="clear"></div></div>

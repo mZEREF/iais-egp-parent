@@ -31,5 +31,6 @@ public interface ServiceConfigService {
     List<HcsaSvcSubtypeOrSubsumedDto> loadLaboratoryDisciplines(String serviceId);
     List<HcsaSvcPersonnelDto> getGOSelectInfo(String serviceId, String psnType);
     AppSvcCgoDto loadGovernanceOfficerByCgoId(String cgoId);
+    byte[] downloadFile(String fileRepoId);
 
 }

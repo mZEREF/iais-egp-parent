@@ -128,7 +128,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         return null;
     }
 
-
-
-
+    @Override
+    public byte[] downloadFile(String fileRepoId) {
+        return fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
+    }
 }

@@ -59,20 +59,19 @@
                                                                         </h2>
                                                                     </div>
                                                                     <div class="pop-up">
-                                                                        <div class="pop-up-body"><%--
+                                                                        <div class="pop-up-body">
                                                                             <c:forEach var="appGrpPrimaryDocDto" items="${AppSubmissionDto.appGrpPrimaryDocDtos}">
                                                                                 <div class="content-body fileUploadContainer">
                                                                                     <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
-                                                                                    <span class="fileType" style="display:none">Docment1</span><span class="fileFilter"
-                                                                                                                                                     style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
-
+                                                                                    <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
                                                                                     <div class="control col-sm-5">
-                                                                                        <div class="fileList"><span class="filename server-site" id="130"><a title="Download"
-                                                                                                                                                             href="#">${appGrpPrimaryDocDto.docName}</a> (${appGrpPrimaryDocDto.docSize} KB)</span></div>
+                                  <input type="hidden"  name="fileRepo" value="<c:out value="${appGrpPrimaryDocDto.fileRepoId}" />" />
+                                                                                        <iais:mask name="" value=""/>
+                                                                                        <div class="fileList"><span class="filename server-site" id="130"><a title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a> (${appGrpPrimaryDocDto.docSize} KB)</span></div>
                                                                                     </div>
                                                                                 </div>
                                                                             </c:forEach>
-                                                                        --%></div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -142,6 +141,31 @@
             submit('payment','doSubmit',null);
         });
 
+        donwload();
     });
+
+    var donwload = function () {
+        $('.downloadFile').click(function () {
+            alert(123);
+            $fileEle = $(this).closest('div.fileUploadContainer');
+            var fileRepo = $fileEle.find('input[name="fileRepo"]').val();
+            alert(fileRepo);
+            var data = {
+                'fileRepo':fileRepo
+            };
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/file-repo',
+                'dataType':'json',
+                'data':data,
+                'type':'GET',
+                'success':function (data) {
+                    console.log(data);
+                },
+                'error':function () {
+                }
+            });
+
+        });
+    }
 
 </script>

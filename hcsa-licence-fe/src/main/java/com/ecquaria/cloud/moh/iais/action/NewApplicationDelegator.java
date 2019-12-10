@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -30,6 +29,8 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,6 +40,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -260,14 +262,14 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, appGrpPremisesDto);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, (Serializable) appGrpPremisesDtoList);
 
-       /* Map<String, Map<String,String>> errorMap = doValidatePremiss(bpc);
+        Map<String, Map<String,String>> errorMap = doValidatePremiss(bpc);
         for(Map<String,String> value:errorMap.values()){
             if(value.size()>0){
                 ParamUtil.setRequestAttr(bpc.request, ERRORMAP_PREMISES, errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
                 return;
             }
-        }*/
+        }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
@@ -464,7 +466,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doSubmit(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
+        /*log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         //do validate
        // Map<String, Map<String, String>> validateResult = doValidate(bpc);
         //save the app and appGroup
@@ -488,7 +490,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         //get wrokgroup
-        log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
+        log.debug(StringUtil.changeForLog("the do doSubmit end ...."));*/
     }
 
 
@@ -595,7 +597,7 @@ public class NewApplicationDelegator {
         for(String type:premType){
             premTypeBuffer.append("<div class=\"col-xs-6 col-md-2\">")
                     .append("<div class=\"form-check\">")
-                    .append("<input class=\"form-check-input premTypeRadio\"  type=\"radio\" name=\"premType\" value = "+type+" aria-invalid=\"false\">");
+                    .append("<input class=\"form-check-input premTypeRadio\"  type=\"radio\" name=\""+currentLength+"premType\" value = "+type+" aria-invalid=\"false\">");
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
                 premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site</label>");
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
@@ -616,7 +618,7 @@ public class NewApplicationDelegator {
         premisesOnSiteAttr.put("id", "premOnsiteSel");
         premisesOnSiteAttr.put("name", premIndexNo+"premOnSiteSelect");
         premisesOnSiteAttr.put("style", "display: none;");
-        String premOnSiteSelectStr = HtmlElementHelper.generateSelect(premisesOnSiteAttr,premisesOnsiteOpt,null,null,-1,false);
+        String premOnSiteSelectStr = generateDropDownHtml(premisesOnSiteAttr, premisesOnSite, null);
 
         //premiseSelect -- conveyance
         List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
@@ -627,9 +629,9 @@ public class NewApplicationDelegator {
         Map<String,String> premisesConvAttr = new HashMap<>();
         premisesConvAttr.put("class", "premSelect");
         premisesConvAttr.put("id", "premConSel");
-        premisesConvAttr.put("name", premIndexNo+"premOnSiteSelect");
+        premisesConvAttr.put("name", premIndexNo+"premConSelect");
         premisesConvAttr.put("style", "display: none;");
-        String premConvSelectStr = HtmlElementHelper.generateSelect(premisesConvAttr,premisesConvOpt,null,null,-1,false);
+        String premConvSelectStr = generateDropDownHtml(premisesConvAttr, premisesConv, null);
 
         //Address Type on-site
         List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
@@ -670,6 +672,16 @@ public class NewApplicationDelegator {
         return sql;
     }
 
+
+
+    @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) {
+        String fileRepo = ParamUtil.getString(request, "fileRepo");
+        byte[] fileData =serviceConfigService.downloadFile(fileRepo);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("attachment", "testFielName");
+        headers.setContentType( MediaType.APPLICATION_OCTET_STREAM);
+    }
 
 
     /**
@@ -762,7 +774,7 @@ public class NewApplicationDelegator {
                     errorMap.put("premisesSelect", "Please select the premises from");
                 } else if ("newPremise".equals(premisesSelect)) {
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
-                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto, AppServicesConsts.VALIDATE_PROFILES_CREATE + "," + AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
+                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
                         if (validationResult.isHasErrors()) {
                             errorMap = validationResult.retrieveAll();
                         }
@@ -793,7 +805,7 @@ public class NewApplicationDelegator {
                             }
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto, AppServicesConsts.VALIDATE_PROFILES_CREATE + "," + AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
+                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto, AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
                         if (validationResult.isHasErrors()) {
                             errorMap = validationResult.retrieveAll();
                         }
@@ -1078,24 +1090,38 @@ public class NewApplicationDelegator {
         return sBuffer.toString();
     }
 
-    /*public String generateDropDownHtml(String baseDropDown,List<SelectOption> selectOptionList, String firestOption){
+    public String generateDropDownHtml(Map<String,String> premisesOnSiteAttr,List<SelectOption> selectOptionList, String firestOption){
         StringBuffer sBuffer = new StringBuffer();
-        sBuffer.append(baseDropDown)
-                .append("<div class=\"nice-select input-large\" tabindex=\"0\">")
-                .append("<span class=\"current\">"+firestOption+"</span>")
-                .append("<ul class=\"list mCustomScrollbar _mCS_3 mCS_no_scrollbar\">")
-                .append("<div id=\"mCSB_3\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
-                .append("<div id=\"mCSB_3_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">")
-                .append("<li data-value=\"-1\" class=\"option selected\">"+firestOption+"</li>");
-        List<SelectOption> selectOptionList= MasterCodeUtil.retrieveOptionsByCate(category);
+        sBuffer.append("<select ");
+        for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
+            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+        }
+        sBuffer.append(" >");
+        for(SelectOption sp:selectOptionList){
+            sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+        }
+        sBuffer.append("</select>");
+        sBuffer.append("<div class=\"nice-select premSelect\" tabindex=\"0\">");
+        if(StringUtil.isEmpty(firestOption)){
+            sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
+        }else {
+            sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
+        }
+        sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
+                .append("<div id=\"mCSB_2\" class=\"mCustomScrollBox mCS-light mCSB_vertical mCSB_inside\" tabindex=\"0\" style=\"max-height: none;\">")
+                .append("<div id=\"mCSB_2_container\" class=\"mCSB_container mCS_y_hidden mCS_no_scrollbar_y\" style=\"position:relative; top:0; left:0;\" dir=\"ltr\">");
+        if(!StringUtil.isEmpty(firestOption)){
+            sBuffer.append("<li data-value=\"-1\" class=\"option selected\">"+firestOption+"</li>");
+        }
         for(SelectOption kv:selectOptionList){
             sBuffer.append(" <li data-value="+kv.getValue()+" class=\"option\">"+kv.getText()+"</li>");
         }
         sBuffer.append("</div>")
-                .append("<div id=\"mCSB_3_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_3_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
+                .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")
                 .append("<div class=\"mCSB_draggerContainer\">")
-                .append(" <div id=\"mCSB_3_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px;\">")
-                .append(" <div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\"></div>")
+                .append("<div id=\"mCSB_2_dragger_vertical\" class=\"mCSB_dragger\" style=\"position: absolute; min-height: 30px; top: 0px; height: 0px;\">")
+                .append("<div class=\"mCSB_dragger_bar\" style=\"line-height: 30px;\">")
+                .append("</div>")
                 .append("</div>")
                 .append("<div class=\"mCSB_draggerRail\"></div>")
                 .append("</div>")
@@ -1104,7 +1130,7 @@ public class NewApplicationDelegator {
                 .append("</ul>")
                 .append("</div>");
         return sBuffer.toString();
-    }*/
+    }
 
 }
 

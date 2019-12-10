@@ -40,7 +40,7 @@
                           <c:forEach var="premisesType" items="${premisesType}">
                             <div class="col-xs-6 col-md-2">
                               <div class="form-check">
-                                <input class="form-check-input premTypeRadio ${premisesType}"  type="radio" name="premType" value = "${premisesType}" aria-invalid="false">
+                                <input class="form-check-input premTypeRadio ${premisesType}"  type="radio" name="${status.index}premType" value = "${premisesType}" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>
                                   <c:if test="${premisesType == onSite}">
                                     <c:out value="On-site" />
@@ -357,7 +357,7 @@
         $('.prem-summary').addClass('hidden');
 
         $('.table-condensed').css("background-color","#d9edf7");
-        // premisesSelectChange();
+         //premisesSelectChange();
 
         // $('.ONSITE[name="prem0premType"]').attr("checked","checked");
 
