@@ -1,6 +1,6 @@
 FROM 192.168.7.88/ecq/tomcat:9.0.21-adoptopenjdk8-alpine3.10
 
-COPY target/fe-main.war /usr/local/tomcat/webapps/fe-main.war
+COPY target/fe-main-web.war /usr/local/tomcat/webapps/fe-main-web.war
 
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY docker/server.xml /usr/local/tomcat/conf/server.xml
