@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
@@ -106,4 +107,22 @@ public interface InspectionAssignTaskService {
       * @Descripation: create Task Status
       */
     void createTaskStatus(ApplicationDto applicationDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/10
+      * @Param: internalRemarks, taskKey, status, appPremisesCorrelationId
+      * @return:
+      * @Descripation:
+      */
+    AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String status, String taskKey, String internalRemarks);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/10
+      * @Param: commPools, inspecTaskCreAndAssDto, internalRemarks
+      * @return: void
+      * @Descripation: routing Task By CommonPool
+      */
+    void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks);
 }
