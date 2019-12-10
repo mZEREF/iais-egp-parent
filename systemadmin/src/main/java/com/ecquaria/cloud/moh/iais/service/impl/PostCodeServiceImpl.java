@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,6 @@ public class PostCodeServiceImpl implements PostCodeService {
 
     @Override
     public void createAll(List<PostCodeDto> list) {
-        RestApiUtil.save("postcodes",list);
+        //RestApiUtil.save("postcodes",list);
     }
 }
