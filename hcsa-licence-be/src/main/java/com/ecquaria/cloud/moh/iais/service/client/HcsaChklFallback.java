@@ -131,6 +131,15 @@ public class HcsaChklFallback {
         return entity;
     }
 
+    FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(String svcCode,
+                                                                        String type,
+                                                                        String module){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfigByParams(String type,String module){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
