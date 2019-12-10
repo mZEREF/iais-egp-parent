@@ -132,7 +132,7 @@ public class MasterCodeDelegatorTest {
     @Test
     public void testdoDelete(){
         request.addParameter("crud_action_value","0");
-        PowerMockito.doNothing().when(masterCodeService).deleteMasterCodeById(Mockito.anyLong());
+        PowerMockito.doNothing().when(masterCodeService).deleteMasterCodeById(Mockito.anyString());
 //        masterCodeDelegator.doDelete(bpc);
         Assert.assertTrue(true);
     }
