@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -34,7 +33,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({QueryHelp.class, ParamUtil.class,RestApiUtil.class, MiscUtil.class, IaisEGPHelper.class,
+@PrepareForTest({QueryHelp.class, ParamUtil.class, MiscUtil.class, IaisEGPHelper.class,
         WebValidationHelper.class})
 public class SystemParameterDelegatorTest {
     @InjectMocks
@@ -66,7 +65,6 @@ public class SystemParameterDelegatorTest {
         PowerMockito.mockStatic(MiscUtil.class);
         PowerMockito.mockStatic(IaisEGPHelper.class);
         PowerMockito.mockStatic(QueryHelp.class);
-        PowerMockito.mockStatic(RestApiUtil.class);
         when(MiscUtil.getCurrentRequest()).thenReturn(request);
     }
 
