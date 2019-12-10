@@ -8,11 +8,9 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface AdhocChecklistService {
 
     List<ChecklistConfigDto> getInspectionChecklist(ApplicationDto application);
