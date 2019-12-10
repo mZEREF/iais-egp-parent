@@ -99,6 +99,16 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "broadcast", this);
 	}
 
+	public void step1_OnStepProcess_0() throws Exception {
+	// 		doDocument->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doDocument", this);
+	}
+
+	public void bROADCAST_REPLY_OnStepProcess_0() throws Exception {
+	// 		BROADCAST_REPLY->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "broadcastReply", this);
+	}
+
 
 
 

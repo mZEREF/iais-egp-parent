@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+<<<<<<< HEAD
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -152,6 +153,14 @@ public class HcsaApplicationDelegator {
            if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
                routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
            }
+
+           //TODO:change historycode
+
+
+
+
+
+
 //        if("AO3".equals(applicationViewDto.getCurrentStatus())){
 //            routingStage.put("APST000","RollBack");
 //            routingStage.put("APST002","Pending Approval");
@@ -481,5 +490,33 @@ public class HcsaApplicationDelegator {
 
 
 
+
+
+    /**
+     * StartStep: broadcastReply
+     *
+     * @param bpc
+     * @throws
+     */
+    public void broadcastReply(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do broadcastReply start ...."));
+
+        log.debug(StringUtil.changeForLog("the do broadcastReply end ...."));
+    }
+
+    /**
+     * StartStep: doDocument
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doDocument(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do doDocument start ...."));
+
+
+
+
+        log.debug(StringUtil.changeForLog("the do doDocument end ...."));
+    }
 
 }
