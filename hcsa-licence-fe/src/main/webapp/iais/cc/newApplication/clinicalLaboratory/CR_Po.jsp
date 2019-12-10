@@ -48,6 +48,7 @@
                     <div class=" form-group form-horizontal formgap">
                       <div class="col-sm-3 control-label formtext ">
                         <label  class="control-label control-set-font control-font-label">Name</label>
+                        <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-2">
                         <select name="salutation" class="form-control control-input control-set-font control-font-normal">
@@ -58,7 +59,8 @@
                         </select>
                       </div>
                       <div class="col-sm-4">
-                        <input name="name" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input name="name" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal"  size="30">
+                        <span class="error-msg" style="display: none">cannot be blank!</span>
                       </div>
                     </div>
                   </div>
@@ -68,6 +70,7 @@
                     <div class=" form-group form-horizontal formgap">
                       <div class="col-sm-3 control-label formtext ">
                         <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">ID No.
+                          <span class="mandatory">*</span>
                         </label>
                       </div>
                       <div class="col-sm-2">
@@ -90,6 +93,7 @@
                     <div class=" form-group form-horizontal formgap">
                       <div class="col-sm-3 control-label formtext ">
                         <label  class="control-label control-set-font control-font-label">Designation</label>
+                        <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-2">
                         <select name="designation" class="form-control control-input control-set-font control-font-normal">
@@ -107,6 +111,7 @@
                     <div class=" form-group form-horizontal formgap">
                       <div class="col-sm-3 control-label formtext ">
                         <label  class="control-label control-set-font control-font-label">Mobile No.</label>
+                        <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
                         <input name="mobileNo" type="text"  id="mobileNo" class="form-control control-input control-set-font control-font-normal" value="" size="30">
@@ -120,6 +125,7 @@
                     <div class=" form-group form-horizontal formgap">
                       <div class="col-sm-3 control-label formtext ">
                         <label  class="control-label control-set-font control-font-label">Office Telephone.</label>
+                        <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
                         <input name="telephone" type="text"  id="telephone" class="form-control control-input control-set-font control-font-normal" value="" size="30">
@@ -133,6 +139,7 @@
                     <div class=" form-group form-horizontal formgap">
                       <div class="col-sm-3 control-label formtext ">
                         <label  class="control-label control-set-font control-font-label">Email Address</label>
+                        <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
                         <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="" size="30">
@@ -188,47 +195,6 @@
     $('#cgoSelect').change(function () {
         var selectVal = $(this).val();
         $('.principalOfficers').removeClass('hidden');
-    });
-
-    $('#mobileNo').blur(function () {
-        var rel=/^[8|9][0-9]{7}$/;
-            if(!rel.test($('#mobileNo').val())){
-                $('#mobileNo+span').removeAttr('style');
-                $('#mobileNo').attr('class','error');
-            }else {
-                $('#mobileNo+span').attr('style','display: none');
-                $('#mobileNo').attr('class',' form-control control-input control-set-font control-font-normal');
-            }
-        }
-    );
-
-    $('#idType-idNo').blur(function () {
-       var idType= $('#selectType').val();
-       var idNo=$('#idType-idNo').val();
-        $.getJSON("${pageContext.request.contextPath}/sg-number-validator",{"idType":idType,"idNumber":idNo},function (rel) {
-          $('#error-msg-idType').html(rel.errorM);
-        });
-    });
-  
-    $('#emailAdress').blur(function(){
-        var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-        if(!rel.test($('#emailAdress').val())){
-            $('#emailAdress+span').removeAttr('style');
-            $('#emailAdress').attr('class','error');
-        }else {
-            $('#emailAdress+span').attr('style','display: none');
-            $('#emailAdress').attr('class',' form-control control-input control-set-font control-font-normal');
-        }
-    });
-    $('#telephone').blur(function () {
-        var rel=/^[6][0-9]{7}$/;
-        if(!rel.test($('#telephone').val())){
-            $('#telephone+span').removeAttr('style');
-            $('#telephone').attr('class','error');
-        }else {
-            $('#telephone+span').attr('style','display: none');
-            $('#telephone').attr('class',' form-control control-input control-set-font control-font-normal');
-        }
     });
 
 

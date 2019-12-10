@@ -36,7 +36,7 @@ public class NewApplicationAjaxController {
                 sumList.add(every);
             }
         }
-        for(String every:subList){
+        for(String every:sumList){
             String[] split = every.split(";");
             if(split.length==3){
                 idList.add(split[0]);
@@ -46,14 +46,19 @@ public class NewApplicationAjaxController {
         }
         if(idList.isEmpty()&&!parentId.isEmpty()){
             map.put("errorM","error massage!");
+            return map;
+        }
+        if(!subList.isEmpty()){
+            boolean recursion1 = recursion(subList);
+            if(!recursion1){
+                map.put("errorM","error massage!");
+                return map;
+            }
         }
         boolean recursion = recursion(parentId);
         if(!recursion){
             map.put("errorM","error massage!");
-        }
-        boolean recursion1 = recursion(sumList);
-        if(!recursion1){
-            map.put("errorM","error massage!");
+            return map;
         }
         return map;
     }

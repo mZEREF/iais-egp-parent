@@ -90,7 +90,7 @@
 
             });
 
-           /* submitForms('governanceOfficers',null,null,controlFormLi);*/
+            submitForms('governanceOfficers',null,null,controlFormLi);
         });
 
     });

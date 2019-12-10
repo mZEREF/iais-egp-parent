@@ -35,21 +35,14 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class UploadFileServiceImpl implements UploadFileService {
-    @Value("iais.syncFileTracking.download")
+    @Value("${iais.syncFileTracking.shared.path}")
+    private String sharedPath;
     private String download;
-
-    @Value("iais.syncFileTracking.fileName")
     private String fileName;
-
-    @Value("iais.syncFileTracking.fileFormat")
-    private String fileFormat;
-
-    @Value("iais.syncFileTracking.backups")
+    private String fileFormat = ".text";
     private String backups;
 
     private Boolean flag=true;
-    @Value("${iais.syncFileTracking.url}")
-    private String syncFileTrackUrl;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.secretKey}")
@@ -64,6 +57,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public Boolean saveFile(String  str) {
+        fileName = "folder";
+        download = sharedPath + "folder";
+        backups = sharedPath + "backups";
         FileOutputStream fileOutputStream = null;
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
         File file=new File(download+ File.separator+s+fileFormat);
