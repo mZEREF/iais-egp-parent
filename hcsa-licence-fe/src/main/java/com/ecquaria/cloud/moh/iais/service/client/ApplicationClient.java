@@ -59,6 +59,6 @@ public interface ApplicationClient  {
     @PutMapping(path="/iais-application/app-grp")
     FeignResponseEntity<String> doUpDate(@RequestBody ApplicationGroupDto applicationGroupDto);
 
-    @GetMapping(value = "/iais-application/submission-id")
+    @GetMapping(value = "/iais-submission/submission-id")
     FeignResponseEntity<String> getSubmissionId();
 }
