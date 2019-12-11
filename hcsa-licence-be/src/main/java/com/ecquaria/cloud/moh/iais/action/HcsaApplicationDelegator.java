@@ -270,7 +270,7 @@ public class HcsaApplicationDelegator {
                 ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
         if(isAllSubmit){
             // send the task to Ao3
-           taskService.routingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO3);
+           taskService.routingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO3,IaisEGPHelper.getCurrentAuditTrailDto());
         }
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }

@@ -26,7 +26,7 @@ public interface AppPremisesRoutingHistoryClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesRoutingHistoryDto> createAppPremisesRoutingHistory(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto);
 
-    @GetMapping(path = "/iais-application-history/appPremisesRoutingHistorys/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-application-history/appPremisesRoutingHistorys/{appId}")
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysById(@PathVariable("appId") String appId) ;
 
     @PostMapping(value = "/iais-application-history/historys",consumes = MediaType.APPLICATION_JSON_VALUE)

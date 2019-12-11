@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -24,7 +25,7 @@ public interface TaskService {
     //get Task
     TaskDto getTaskById(String taskId);
     //rounting Task
-     void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stage) throws FeignException;
+     void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stage, AuditTrailDto auditTrailDto) throws FeignException;
      TaskDto routingTask(ApplicationDto applicationDto, String statgId) throws FeignException;
      //get users
     List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status);

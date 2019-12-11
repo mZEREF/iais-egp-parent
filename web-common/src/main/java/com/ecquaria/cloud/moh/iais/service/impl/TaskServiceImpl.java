@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -17,14 +18,13 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * TaskServiceImpl
@@ -125,7 +125,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId) throws FeignException {
+    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,AuditTrailDto auditTrailDto) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
         if(applicationDtos != null && applicationDtos.size() > 0){
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
@@ -143,14 +143,14 @@ public class TaskServiceImpl implements TaskService {
                     TaskDto taskDto = TaskUtil.getUserTaskDto(stageId,
                             applicationDto.getApplicationNo(),workGroupId,
                             taskScoreDto.getUserId(),score,
-                            applicationDto.getAuditTrailDto());
+                            auditTrailDto);
                     taskDtos.add(taskDto);
                     //create history
                     String appPremisesCorrelationId = getAppPremisesCorrelationId(appPremisesCorrelationDtos,applicationDto.getId());
                     log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationId));
                     AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
                             createAppPremisesRoutingHistory(appPremisesCorrelationId,applicationDto.getStatus(),
-                            stageId,null );
+                            stageId,null,auditTrailDto.getMohUserGuid());
                     appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                 }
                 this.createTasks(taskDtos);
@@ -291,13 +291,13 @@ public class TaskServiceImpl implements TaskService {
         return  result;
     }
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-                                                                         String stageId, String internalRemarks){
+                                                                         String stageId, String internalRemarks,String actionBy){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby(actionBy);
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return appPremisesRoutingHistoryDto;
     }

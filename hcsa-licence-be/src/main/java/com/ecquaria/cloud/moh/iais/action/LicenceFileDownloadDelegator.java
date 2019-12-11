@@ -42,7 +42,7 @@ public class LicenceFileDownloadDelegator {
             for(ApplicationDto applicationDto:applicationDtos){
                 applicationDto.setAuditTrailDto(intranet);
             }
-            taskService.routingTaskOneUserForSubmisison(applicationDtos,HcsaConsts.ROUTING_STAGE_ASO);
+            taskService.routingTaskOneUserForSubmisison(applicationDtos,HcsaConsts.ROUTING_STAGE_ASO,intranet);
         }
 
     }
