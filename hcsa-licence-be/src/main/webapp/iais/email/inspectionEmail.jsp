@@ -45,7 +45,7 @@
                         </div>
 
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabInfo" role="tabpanel">
+                            <div class="tab-pane" id="tabInfo" role="tabpanel">
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
@@ -680,7 +680,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                            <div class="tab-pane active" id="tabProcessing" role="tabpanel">
                                     <%@ include file="email.jsp" %>
                             </div>
 

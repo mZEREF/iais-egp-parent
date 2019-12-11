@@ -35,7 +35,13 @@
 %>
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <br><br><br><br><br><br>
-    <p>    Send a success
-    </p>
+    <div class="main-content">
+        <div class="container">
+            <div class="row center">
+                <h3>Send a success !!!</h3>
+            </div>
+        </div>
+    </div>
+
 <input type="submit" class="search btn" value="recall">
 </form>

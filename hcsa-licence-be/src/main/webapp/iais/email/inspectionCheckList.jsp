@@ -17,7 +17,7 @@
 
                         <%@ include file="./navTabs.jsp" %>
                         <div class="tab-content">
-                            <div class="tab-pane" id="tabCheckList" role="tabpanel">
+                            <div class="tab-pane active" id="tabCheckList" role="tabpanel">
                                 <div class="alert alert-info" role="alert">
                                     <strong>
                                         <h4>Processing Status Update</h4>
@@ -234,10 +234,3 @@
         </div>
     </div>
 </form>
-<script type="text/javascript">
-    // $(document).ready(function() {
-    //     $('#tabCheckList').ready(function () {
-    //         this.aria.expanded().val(true);
-    //     })
-    // });
-</script>

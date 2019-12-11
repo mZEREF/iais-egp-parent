@@ -152,7 +152,8 @@ public class InspectEmailAo1Delegator {
         log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");
 
         HttpServletRequest request = bpc.request;
-        if(false)
+        ParamUtil.setRequestAttr(request,"isValid", "Y");
+        if(true)
         {
             String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
             String taskId="47512333-7A16-EA11-BE7D-000C29F371DC";

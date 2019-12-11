@@ -166,7 +166,7 @@
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/preCheckList" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="700" y="130">
+  <Condition componentIfFalse="/Steps/AutomaticStep/preCheckList" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="700" y="130">
    <Description/>
   </Condition>
  </Conditions>

@@ -25,7 +25,7 @@
                                                 data-toggle="tab">Payment</a></li>
     <li id="inspectionli" class="complete" role="presentation"><a id="inspection" aria-controls="tabInspection" role="tab"
                                                 data-toggle="tab">Inspection</a></li>
-    <li id="checkListli" class="incomplete" role="presentation"><a id="checkList" aria-controls="CheckList" role="tab"
+    <li id="checkListli" class="complete" role="presentation"><a id="checkList" aria-controls="tabCheckList" role="tab"
                                                   data-toggle="tab">CheckList</a></li>
     <li id="emailViewli" class="complete" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
                                                 data-toggle="tab">Processing</a></li>
@@ -83,6 +83,5 @@
         }
 
     }
-
 
 </script>
