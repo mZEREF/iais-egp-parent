@@ -74,6 +74,10 @@ public class InspectionSearchDelegator {
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
+        ParamUtil.setSessionAttr(bpc.request, "workGroupIds", null);
+        ParamUtil.setSessionAttr(bpc.request, "appTypeOption", null);
+        ParamUtil.setSessionAttr(bpc.request, "appStatusOption", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectorOption", null);
     }
 
     /**
@@ -87,19 +91,17 @@ public class InspectionSearchDelegator {
         SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "supTaskSearchParam");
         SearchResult<InspecTaskCreAndAssDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchResult");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption();
         //get Inspector Option
-        List<SelectOption> inspectorOption = getInspectorOptionByLogin(loginContext);
+        List<SelectOption> inspectorOption = inspectionService.getInspectorOptionByLogin(loginContext, workGroupIds);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
         ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setSessionAttr(bpc.request, "inspectorOption", (Serializable) inspectorOption);
-    }
-
-    private List<SelectOption> getInspectorOptionByLogin(LoginContext loginContext) {
-        return null;
+        ParamUtil.setSessionAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
     }
 
     /**
@@ -138,41 +140,45 @@ public class InspectionSearchDelegator {
             applicationNo_list = new String[]{SystemParameterConstants.PARAM_FALSE};
         }
         String applicationStr = SqlHelper.constructInCondition("T1.APPLICATION_NO",applicationNo_list.length);
-        searchParam.addParam("applicationNo_list",applicationStr);
+        searchParam.addParam("applicationNo_list", applicationStr);
         for (int i = 0; i<applicationNo_list.length; i++ ) {
-            searchParam.addFilter("T1.APPLICATION_NO"+i,applicationNo_list[i]);
-        }
-        if(!StringUtil.isEmpty(application_no)){
-            searchParam.addFilter("application_no",application_no,true);
+            searchParam.addFilter("T1.APPLICATION_NO"+i, applicationNo_list[i]);
         }
 
-        if(!(StringUtil.isEmpty(inspectorValue))) {
-            String[] appNoStrs=inspectorValue.split(",");
-            String appNoStr = SqlHelper.constructInCondition("T5.APPLICATION_NO",appNoStrs.length);
-            searchParam.addParam("appNo_list",appNoStr);
-            for (int i = 0; i < appNoStrs.length; i++) {
-                searchParam.addFilter("T5.APPLICATION_NO"+i,appNoStrs[i]);
-            }
+        if(!StringUtil.isEmpty(application_no)){
+            searchParam.addFilter("application_no", application_no,true);
         }
+        String[] appNoStrs;
+        if(!(StringUtil.isEmpty(inspectorValue))) {
+            appNoStrs = inspectorValue.split(",");
+        } else {
+            appNoStrs = new String[]{SystemParameterConstants.PARAM_FALSE};
+        }
+        String appNoStr = SqlHelper.constructInCondition("T5.APPLICATION_NO", appNoStrs.length);
+        searchParam.addParam("appNo_list",appNoStr);
+        for (int i = 0; i < appNoStrs.length; i++) {
+            searchParam.addFilter("T5.APPLICATION_NO"+i, appNoStrs[i]);
+        }
+
         if(!StringUtil.isEmpty(application_type)){
-            searchParam.addFilter("application_type",application_type,true);
+            searchParam.addFilter("application_type", application_type,true);
         }
         if(!StringUtil.isEmpty(application_status)){
-            searchParam.addFilter("application_status",application_status,true);
+            searchParam.addFilter("application_status", application_status,true);
         }
         if(!StringUtil.isEmpty(hci_code)){
-            searchParam.addFilter("hci_code",hci_code,true);
+            searchParam.addFilter("hci_code", hci_code,true);
         }
         if(!StringUtil.isEmpty(hci_name)){
-            searchParam.addFilter("hci_name",hci_name,true);
+            searchParam.addFilter("hci_name", hci_name,true);
         }
         if(!StringUtil.isEmpty(hci_address)){
-            searchParam.addFilter("blk_no",hci_address,true);
-            searchParam.addFilter("floor_no",hci_address,true);
-            searchParam.addFilter("unit_no",hci_address,true);
-            searchParam.addFilter("street_name",hci_address,true);
-            searchParam.addFilter("building_name",hci_address,true);
-            searchParam.addFilter("postal_code",hci_address,true);
+            searchParam.addFilter("blk_no", hci_address,true);
+            searchParam.addFilter("floor_no", hci_address,true);
+            searchParam.addFilter("unit_no", hci_address,true);
+            searchParam.addFilter("street_name", hci_address,true);
+            searchParam.addFilter("building_name", hci_address,true);
+            searchParam.addFilter("postal_code", hci_address,true);
         }
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);

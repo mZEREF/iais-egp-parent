@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
 
@@ -108,4 +109,22 @@ public interface InspectionService {
       * @Descripation: routing Task By Pool
       */
     void routingTaskByPool(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/11
+      * @Param: loginContext
+      * @return: List<SelectOption>
+      * @Descripation: get Inspector Option By Login
+      */
+    List<SelectOption> getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/11
+      * @Param: loginContext
+      * @return: List<String>
+      * @Descripation: get Work Group Ids By Login
+      */
+    List<String> getWorkGroupIdsByLogin(LoginContext loginContext);
 }

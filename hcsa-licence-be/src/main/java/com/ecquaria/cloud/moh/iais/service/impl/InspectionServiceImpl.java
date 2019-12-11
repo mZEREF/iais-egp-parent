@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -16,8 +17,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -133,6 +137,60 @@ public class InspectionServiceImpl implements InspectionService {
         //create history, update application, update/create inspection status
         assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
 
+    }
+
+    @Override
+    public List<String> getWorkGroupIdsByLogin(LoginContext loginContext) {
+        List<String> workGroupIdList = new ArrayList<>();
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
+        for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
+            if(ugcDto.getIsLeadForGroup() == 1){
+                workGroupIdList.add(ugcDto.getGroupId());
+            }
+        }
+        return workGroupIdList;
+    }
+
+    @Override
+    public List<SelectOption> getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds) {
+        List<SelectOption> inspectorOption = new ArrayList<>();
+        if(workGroupIds == null || workGroupIds.size() <= 0){
+            return null;
+        }
+        List<String> userIdList = new ArrayList<>();
+        for(String workId:workGroupIds){
+            List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            userIdList = getUserIdList(orgUserDtoList, userIdList);
+        }
+        for(String userId:userIdList){
+            List<TaskDto> taskDtoList = organizationClient.getTasksByUserId(userId).getEntity();
+            OrgUserDto orgUserDto =organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
+            String value = "";
+            if(taskDtoList != null && taskDtoList.size() > 0){
+                value = getOptionValue(taskDtoList);
+            }
+            SelectOption so = new SelectOption(value, orgUserDto.getUserName());
+            inspectorOption.add(so);
+        }
+        return inspectorOption;
+    }
+
+    private String getOptionValue(List<TaskDto> taskDtoList) {
+        String value = taskDtoList.get(0).getRefNo();
+        taskDtoList.remove(0);
+        if(taskDtoList != null && taskDtoList.size() > 0) {
+            for (TaskDto tDto : taskDtoList) {
+                value = value + "," + tDto.getRefNo();
+            }
+        }
+        return value;
+    }
+
+    private List<String> getUserIdList(List<OrgUserDto> orgUserDtoList, List<String> userIdList) {
+        for(OrgUserDto oDto:orgUserDtoList){
+            userIdList.add(oDto.getId());
+        }
+        return userIdList;
     }
 
     @Override
