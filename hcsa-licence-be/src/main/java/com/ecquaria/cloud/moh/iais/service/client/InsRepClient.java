@@ -29,8 +29,8 @@ public interface InsRepClient {
     @GetMapping(value = "/iais-inspection-report/app-type/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getAppType (@PathVariable("appId") String appId);
 
-    @GetMapping(value = "/iais-inspection-report/is-pre/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ApplicationGroupDto>getApplicationGroupDto (@PathVariable("appId") String appId);
+    @GetMapping(value = "/iais-inspection-report/is-pre/{appGrpId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationGroupDto>getApplicationGroupDto (@PathVariable("appGrpId") String appId);
 
     @PostMapping(value = "/iais-inspection-report/is-rectified" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<Boolean>>isRectified (@RequestBody List<String> itemId);

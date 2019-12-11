@@ -196,7 +196,30 @@
                                         <p>Non-Compliances:</p>
                                     </td>
                                     <td class="col-xs-8">
-                                        <p>${insRepDto.ncRegulation}</p>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>SN</th>
+                                                <th>Checklist Item</th>
+                                                <th>Regulation Clause</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach items="${insRepDto.ncRegulation}" var="ncRegulations" varStatus="status">
+                                                <tr>
+                                                    <td>
+                                                        <p><c:out value="${status.count}"></c:out></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${ncRegulations.nc}"></c:out></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${ncRegulations.regulation}"></c:out></p>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
                                     </td>
                                 </tr>
                                 <tr>
@@ -226,7 +249,30 @@
                                         <p>Rectified:</p>
                                     </td>
                                     <td class="col-xs-8">
-                                        <p>${insRepDto.status}</p>
+<%--                                        <table class="table">--%>
+<%--                                            <thead>--%>
+<%--                                            <tr>--%>
+<%--                                                <th>SN</th>--%>
+<%--                                                <th>Checklist Item</th>--%>
+<%--                                                <th>Rectified?</th>--%>
+<%--                                            </tr>--%>
+<%--                                            </thead>--%>
+<%--                                            <tbody>--%>
+<%--                                            <c:forEach items="${insRepDto.ncRectification}" var="ncRectification" varStatus="status">--%>
+<%--                                                <tr>--%>
+<%--                                                    <td>--%>
+<%--                                                        <p><c:out value="${status.count}"></c:out></p>--%>
+<%--                                                    </td>--%>
+<%--                                                    <td>--%>
+<%--                                                        <p><c:out value="${ncRectification.nc}"></c:out></p>--%>
+<%--                                                    </td>--%>
+<%--                                                    <td>--%>
+<%--                                                        <p><c:out value="${ncRectification.rectified}"></c:out></p>--%>
+<%--                                                    </td>--%>
+<%--                                                </tr>--%>
+<%--                                            </c:forEach>--%>
+<%--                                            </tbody>--%>
+<%--                                        </table>--%>
                                     </td>
                                 </tr>
                                 <tr>

@@ -28,7 +28,7 @@ public class PaymentDelegator {
     public void savePayment(BaseProcessClass bpc) throws IOException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>payment");
         HttpServletRequest request = bpc.request;
-        bpc.response.sendRedirect("https://192.168.6.113/hcsaapplication/eservice/INTERNET/MohNewApplication/1/doPayment?result=success");
+        bpc.response.sendRedirect("https://192.168.6.113/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success");
         String result = request.getParameter("result");
         PaymentDto paymentDto = new PaymentDto();
         String am = request.getParameter("amount");

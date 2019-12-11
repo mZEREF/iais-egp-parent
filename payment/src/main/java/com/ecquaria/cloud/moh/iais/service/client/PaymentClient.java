@@ -19,10 +19,10 @@ import java.util.List;
         fallback = PaymentClientFallBack.class)
 public interface PaymentClient {
 
-    @PostMapping(value = "/tradingReply",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-payment/tradingReply",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentDto>saveHcsaPayment(@RequestBody PaymentDto paymentDto);
 
-    @PostMapping(value = "/duringThePayment" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-payment/duringThePayment" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> saveHcsaPaymentResquset(@RequestBody PaymentRequestDto paymentReqDto);
 
     @PostMapping(value = "/isTxnRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
