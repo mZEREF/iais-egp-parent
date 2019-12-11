@@ -399,6 +399,7 @@ public class HcsaApplicationDelegator {
             WorkingGroupDto workingGroupDto = new WorkingGroupDto();
             workingGroupDto.setGroupName(applicationDto.getApplicationNo());
             workingGroupDto.setGroupDomain(AppConsts.DOMAIN_TEMPORARY);
+            workingGroupDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
             //add this user to this workgroup
             List<UserGroupCorrelationDto> userGroupCorrelationDtoList = new ArrayList<>();
@@ -559,6 +560,7 @@ public class HcsaApplicationDelegator {
                     List<TaskDto> taskDtos = new ArrayList<>();
                     taskDtos.add(taskDto);
                     taskDtos = taskService.createTasks(taskDtos);
+                    //
                 }else{
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
