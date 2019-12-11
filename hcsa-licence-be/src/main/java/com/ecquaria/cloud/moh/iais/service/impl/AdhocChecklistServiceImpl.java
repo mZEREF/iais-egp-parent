@@ -64,7 +64,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         correlation.stream().forEach(corre -> {
             String correId = corre.getId();
             List<AppSvcPremisesScopeDto> premScope = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
-            premScope.stream().filter(scope -> !scope.isSubsumedType())
+            premScope.stream().filter(AppSvcPremisesScopeDto::isSubsumedType)
                     .forEach(scope -> {
                         String subTypeId = scope.getScopeName();
                         HcsaServiceSubTypeDto subType = hcsaConfigClient.getHcsaServiceSubTypeById(subTypeId).getEntity();

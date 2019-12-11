@@ -32,7 +32,7 @@
 </style>
 
 <c:choose>
-  <c:when test="${empty inspectionChecklist}">
+  <c:when test="${empty inspectionChecklistAttr}">
     <tr>
       <td colspan="6">
         No Record!!
@@ -55,7 +55,7 @@
             <div class="center-content">
               <div class="intranet-content">
 
-                <c:forEach var = "item" items="${inspectionChecklist}" varStatus="status">
+                <c:forEach var = "item" items="${inspectionChecklistAttr}" varStatus="status">
                     <c:if test="${item.common eq true}">
                       <div class="bg-title">
                         <h2>General Regulation</h2>
@@ -121,7 +121,48 @@
                     </c:forEach>
                 </c:forEach>
 
-                <!----------------------->
+
+              <!-- Adhoc item goes here -->
+
+                <p>
+                  <div class="panel panel-default">
+                    <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
+                      <div class="panel-body">
+                        <div class="panel-main-content">
+                          <div class="preview-info">
+                              <p>Section: &nbsp;<b>Adhoc Section</b></p>
+
+                              <table class="table">
+                                <thead>
+                                <tr>
+                                  <th>Checklist Item</th>
+                                  <th>Answer Type</th>
+                                  <th>Risk Level</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var = "adhocItem" items = "${adhocCheckListAttr.allAdhocItem}" varStatus="status">
+                                  <tr>
+                                    <td>
+                                      <p>${adhocItem.question}</p>
+                                    </td>
+                                    <td>
+                                      <p>${adhocItem.answerType}</p>
+                                    </td>
+                                    <td>
+                                      <p>${adhocItem.riskLvl}</p>
+                                    </td>
+                                  </tr>
+                                </c:forEach>
+                                </tbody>
+                              </table>
+                              </div>
+                              </div>
+                              </div>
+                              </div>
+                              </div>
+                              </p>
+                              <!----------------------->
               </div>
               <div class="application-tab-footer">
                 <div class="row">

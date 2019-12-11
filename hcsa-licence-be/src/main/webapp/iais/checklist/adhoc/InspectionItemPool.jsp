@@ -99,8 +99,8 @@
 
                           <br><br><br>
                           <div class="text-right text-center-mobile">
-                                <a  name="custom"  class="btn btn-primary custom">Custom Adhoc Item</a>
-                                <a  class="btn btn-primary addToSection">Add to Adhoc Section</a>
+                                <a  id="customAdhocItembtnId"  class="btn btn-primary custom">Custom Adhoc Item</a>
+                                <a  id="adhocSectionbtnId" class="btn btn-primary addToSection">Add to Adhoc Section</a>
                           </div>
                         </div>
 
@@ -133,23 +133,13 @@
 </form>
 
 <script>
-   /* $('#custom').click = function () {
-        SOP.Crud.cfxSubmit("mainForm", "customItem");
-    }*/
-   $(function () {
-       console.log("----->");
-   })
-    $('#custom').click(function () {
+    "use strict";
+    customAdhocItembtnId.onclick = function(){
         SOP.Crud.cfxSubmit("mainForm", "customItem");
     }
 
-    $('a.addToSection').onclick = function () {
+    adhocSectionbtnId.onclick = function(){
         SOP.Crud.cfxSubmit("mainForm", "appendToTail");
     }
 
-
-
-    function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm","doCancel");
-    }
 </script>

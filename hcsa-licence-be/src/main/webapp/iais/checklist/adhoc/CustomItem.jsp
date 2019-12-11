@@ -25,6 +25,16 @@
   .col-md-3 {
     width: 50%;
   }
+
+ .alert {
+   padding: 15px;
+   border: 1px solid #d6e9c6;
+   border-radius: 4px;
+   color: #3c763d;
+   background-color: #dff0d8;
+ }
+
+
 </style>
 
 
@@ -33,47 +43,16 @@
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
-  <input type="hidden" name="itemId" value="<iais:mask name="itemId" value="${itemRequestAttr.itemId}"/><%--don't remove--%>">
-
+  <br><br><br>
   <div class="main-content">
     <div class="container">
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="form-horizontal">
-
-          <div class="form-group">
-            <div class="col-xs-5 col-md-3">
-              <iais:field value="Regulation Clause Number" required="true"></iais:field>
-              <div class="col-xs-5 col-md-3">
-                <iais:select name="regulationClauseNo"  options="clauseSelect" firstOption="Select Clause Number"  value="${itemRequestAttr.regulationClauseNo}"></iais:select>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-xs-5 col-md-3">
-              <iais:field value="Regulation" required="true"></iais:field>
-              <div class="col-xs-5 col-md-3">
-                <input type="text" name="regulationClause"  value="${itemRequestAttr.regulationClause}" />
-              </div>
-            </div>
-          </div>
-
-
           <div class="form-group">
             <div class="col-xs-5 col-md-3">
               <iais:field value="Checklist Item" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
-                <input type="text" name="checklistItem" value="${itemRequestAttr.checklistItem}" />
-              </div>
-            </div>
-          </div>
-
-
-          <div class="form-group">
-            <div class="col-xs-5 col-md-3">
-              <iais:field value="Status" required="true"></iais:field>
-              <div class="col-xs-5 col-md-3">
-                <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status" value="${itemRequestAttr.status}"></iais:select>
+                <input type="text" name="checklistItem" value="" />
               </div>
             </div>
           </div>
@@ -82,17 +61,16 @@
             <div class="col-xs-5 col-md-3">
               <iais:field value="Risk Level" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
-                <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Select Risk Level" value="${itemRequestAttr.riskLevel}"></iais:select>
+                <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Select Risk Level" value=""></iais:select>
               </div>
             </div>
           </div>
-
 
           <div class="form-group">
             <div class="col-xs-5 col-md-3">
               <iais:field value="Answer Type" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
-                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Select Answer Type" value="${itemRequestAttr.answerType}"></iais:select>
+                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Select Answer Type" value=""></iais:select>
               </div>
             </div>
           </div>
@@ -102,14 +80,7 @@
         <p><a class="back" onclick="doCancel();"><i class="fa fa-angle-left" ></i> Back</a></p>
       </div>
       <div class="text-right text-center-mobile">
-        <c:choose>
-          <c:when test="${btnTag eq 'SubmitButton'}">
-            <a class="btn btn-primary next" onclick="javascript:doSubmit();">Submit</a>
-          </c:when>
-          <c:when test="${btnTag eq 'UpdateButton'}">
-            <a class="btn btn-primary next" onclick="javascript:doSubmit();">Update</a>
-          </c:when>
-        </c:choose>
+            <a class="btn btn-primary appendClass " id = "appendBtnId">Append</a>
       </div>
     </div>
 
@@ -120,13 +91,29 @@
 </>
 
 
-<script type="text/javascript">
-    function doSubmit(){
-        SOP.Crud.cfxSubmit("mainForm", "saveChecklistItem");
+<script>
+    "use strict";
+    appendBtnId.onclick = function(){
+        var question = $('[name="checklistItem"]').val();
+        var riskLvl = $('[name="riskLevel"]').val();
+        var answerType = $('[name="answerType"]').val();
+        if (question == null || question ==""){
+            return;
+        }
+
+        if (riskLvl == null || riskLvl ==""){
+            return;
+        }
+
+        if (answerType == null || answerType ==""){
+            return;
+        }
+
+
+
+        SOP.Crud.cfxSubmit("mainForm", "doAppend");
     }
 
-    function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm", "doCancel");
-    }
+
 
 </script>
