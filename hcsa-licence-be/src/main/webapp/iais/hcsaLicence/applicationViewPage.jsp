@@ -487,142 +487,25 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <p>Tan Ah Ming (S1234567D)</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Submission</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mr Tan</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Admin Screen</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Verified</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Ms Lim</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Professional Screening</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Verified</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mrs Sim</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Inspection</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Inspection Conducted</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Recommend for Approval</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mr Ong</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Approval Officer 1</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
+                                                <c:forEach items="${applicationViewDto.appPremisesRoutingHistoryDtoList}" var="appPremisesRoutingHistoryDto">
+                                                    <tr>
+                                                        <td>
+                                                            <p><c:out value="${appPremisesRoutingHistoryDto.actionby}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appPremisesRoutingHistoryDto.workingGroup}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appPremisesRoutingHistoryDto.appStatus}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appPremisesRoutingHistoryDto.internalRemarks}"></c:out></p>
+                                                        </td>
+                                                        <td>
+                                                            <p><c:out value="${appPremisesRoutingHistoryDto.updatedDt}"></c:out></p>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
                                                 </tbody>
                                             </table>
                                         </div>

@@ -64,7 +64,7 @@ public interface HcsaChklClient {
     FeignResponseEntity<List<String>> listServiceName();
 
     @GetMapping(path = "/iais-hcsa-checklist/config/{id}")
-    FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(String configId);
+    FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(@PathVariable(value = "id") String configId);
 
     @GetMapping(path = "/iais-hcsa-checklist/config/results/{svcCode}/{svcType}", produces = { MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<ChecklistQuestionDto>> getcheckListQuestionDtoList(@PathVariable(value = "svcCode") String svcCode, @PathVariable(value = "svcType") String svcType);
@@ -75,15 +75,19 @@ public interface HcsaChklClient {
     @PostMapping(path = "/iais-hcsa-service/hcsa-service-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceByIds(@RequestBody List<String> serviceId);
 
-    @GetMapping(value = {"/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}",
-                        "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/{subTypeName}"})
+    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}")
+    FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(@PathVariable("svcCode")String svcCode,
+                                @PathVariable("type")String type,
+                                @PathVariable("module") String module);
+
+    @GetMapping(value = "/iais-hcsa-checklist/config/results-max-version/{svcCode}/{type}/{module}/{subTypeName}")
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(@PathVariable("svcCode")String svcCode,
                                 @PathVariable("type")String type,
                                 @PathVariable("module") String module,
                                 @PathVariable(value = "subTypeName", required = false) String subTypeName);
 
 
-    @GetMapping(value = {"/iais-hcsa-checklistconfig/results-common-max-version/{type}/{module}"})
+    @GetMapping(value = {"/iais-hcsa-checklist/config/results-common-max-version/{type}/{module}"})
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfigByParams(@PathVariable("type")String type,
                                                                               @PathVariable("module") String module);
 }

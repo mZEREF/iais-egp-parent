@@ -162,7 +162,7 @@
                             </iais:value>
                           </iais:row>
                           <iais:row>
-                            <iais:field value="Street Name" width="10"/>
+                            <iais:field value="Street Name " width="10"/>
                             <iais:value width="10">
                               <iais:input cssClass="siteStreetName" maxLength="32" type="text" name="${premIndexNo}streetName" id="siteStreetName" value="${appGrpPremisesDto.streetName}"></iais:input>
                               <span class="error-msg"><c:out value="${errMsg.streetName}"></c:out></span>
@@ -181,9 +181,10 @@
                             </iais:value>
                           </iais:row>
                           <iais:row>
-                            <iais:field value="Office Telephone No" width="12"/>
+                            <iais:field value="Office Telephone No " width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:input type="text" name="${premIndexNo}offTelNo" maxLength="8" value="" />
+                              <iais:input type="text" name="${premIndexNo}offTelNo" maxLength="8" value="" id="onsitOffice" />
+                              <span class="error-msg"><c:out value="${errMsg.officeTel}"></c:out></span>
                             </iais:value>
                           </iais:row>
                           <iais:row>
@@ -195,20 +196,24 @@
                             <label class="col-xs-12 col-md-4 control-label">
                               Operating Hours (Start)
                             </label>
+
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(HH)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="onsiteStartHH"/>(HH)
                               :
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(MM)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="onsiteStartMM"/>(MM)
+                              <span class="error-msg"></span>
                             </div>
                           </div>
                           <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">
                               Operating Hours (End)
                             </label>
+
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(HH)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="onsiteEndHH"/>(HH)
                               :
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(MM)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="onsiteEndMM"/>(MM)
+                              <span class="error-msg"></span>
                             </div>
                           </div>
                           <iais:row>
@@ -245,14 +250,14 @@
                             <iais:field value="Vehicle No." width="12"/>
                             <iais:value width="11">
                               <iais:input maxLength="10" type="text" name="${premIndexNo}conveyanceVehicleNo" id="vehicleNo" value="${appGrpPremisesDto.conveyanceVehicleNo}"></iais:input>
-                              <span  class="postalCodeMsg error-msg"><c:out value="${errMsg.conveyancePostalCode}"></c:out></span>
+                              <span  class="error-msg"><c:out value="${errMsg.conveyancePostalCode}"></c:out></span>
                             </iais:value>
                           </iais:row>
                           <iais:row cssClass="postalCodeDiv">
                             <iais:field value="Postal Code" width="12"/>
                             <iais:value width="5">
                               <iais:input maxLength="6" cssClass="sitePostalCode" type="text" name="${premIndexNo}conveyancePostalCode" id="conveyancePostalCode" value="${appGrpPremisesDto.conveyancePostalCode}"></iais:input>
-                              <span  class="postalCodeMsg error-msg"><c:out value="${errMsg.postalCode}"></c:out></span>
+                              <span  class="error-msg"><c:out value="${errMsg.postalCode}"></c:out></span>
                             </iais:value>
                             <div class="col-xs-7 col-sm-6 col-md-4">
                               <p><a class="retrieveAddr" id="conveyance">Retrieve your address</a></p>
@@ -289,10 +294,10 @@
                             </iais:value>
                           </iais:row>
                           <iais:row>
-                            <iais:field value="Street Name" width="10"/>
+                            <iais:field value="Street Name " width="10"/>
                             <iais:value width="10">
                               <iais:input maxLength="32" cssClass="conveyanceStreetName" type="text" name="${premIndexNo}conveyanceStreetName" id="conveyanceStreetName" value="${appGrpPremisesDto.conveyanceStreetName}"></iais:input>
-                              <span  class="postalCodeMsg error-msg"><c:out value="${errMsg.conveyanceStreetName}"></c:out></span>
+                              <span  class="postalCodeMsg error-msg"><c:out value="${errMsg.stressName}"></c:out></span>
                             </iais:value>
                           </iais:row>
                           <iais:row>
@@ -308,19 +313,22 @@
                               Operating Hours (Start)
                             </label>
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(HH)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="conStartHH"/>(HH)
                               :
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(MM)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="conStartMM"/>(MM)
+                              <span class="postalCodeMsg error-msg"></span>
                             </div>
-                          </div>
+
+                        </div>
                           <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">
                               Operating Hours (End)
                             </label>
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(HH)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="conEndHH"/>(HH)
                               :
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(MM)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="conEndMM"/>(MM)
+                              <span class="postalCodeMsg error-msg"></span>
                             </div>
                           </div>
                           <iais:row>
@@ -406,45 +414,29 @@
 
 
 
-         /* if($('.premTypeValue').val()!=""){
-              checkedType = $('.premTypeValue').val();
-              $premSelect = $('.premTypeRadio').closest('div.premContent');
-              $premSelctDivEle = $('.premTypeRadio').closest('div.premisesTypeDiv');
-              if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==checkedType){
-                  $premSelect.find('.premiseOnSiteSelect').removeClass('hidden');
-                  $premSelect.find('.premiseConSelect').addClass('hidden');
-                  $premSelect.find('.new-premise-form-conv').addClass('hidden');
-              }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
-                  $premSelect.find('.premiseOnSiteSelect').addClass('hidden');
+          if($('.premSelect').val()!=""){
+              var premSelectVal = $('.premSelect').val();
+              $premSelect = $('.premSelect').closest('div.premContent');
+              var thisId = $('.premSelect').attr('id');
+              if("newPremise" == premSelectVal){
+                   /* $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
+                    $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                    if("premOnsiteSel" == thisId){
+                        $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
+                        $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
+                    }else if ("premConSel" == thisId) {
+                        $premSelect.find('.new-premise-form-conveyance').removeClass('hidden');
+                        $premSelect.find('.new-premise-form-on-site').addClass('hidden');
+                    }*/
+              }/*else if("-1" == premSelectVal){
+                  $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
                   $premSelect.find('.new-premise-form-on-site').addClass('hidden');
-                  $premSelect.find('.new-premise-form-conv').removeClass('hidden');
-                  $premSelect.find('.premiseConSelect').removeClass('hidden');
-              }
+              }*/
           }
 
 
 
-        if($('.premSelValue').val()!=""){
-            var premSelectVal = $('.premSelValue').val();
-            alert("checkType:"+ checkedType);
-            alert("premSelectVal:"+premSelectVal);
-            $premSelect = $('.premSelValue').closest('div.premContent');
-            if("newPremise" == premSelectVal){
-                $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                $premSelect.find('.new-premise-form-conv').addClass('hidden');
-                if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>' == checkedType){
-                    $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                    $premSelect.find('.new-premise-form-conv').addClass('hidden');
-                }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
-                    $premSelect.find('.new-premise-form-conv').removeClass('hidden');
-                    $premSelect.find('.new-premise-form-on-site').addClass('hidden');
-                }
-            }else if("-1" == premSelectVal){
-                $premSelect.find('.new-premise-form-conv').addClass('hidden');
-                $premSelect.find('.new-premise-form-on-site').addClass('hidden');
-            }
 
-        }*/
 
         premType();
 
@@ -454,6 +446,82 @@
 
         //Binding method
         $('.premiseId').click(function(){
+            var aBoolean=true;
+           $('.premTypeRadio:checked').each(function () {
+               if(this.value=="ONSITE"){
+               var postalCode=   $('#sitePostalCode').val();
+                   var re=new RegExp('^[0-9]*$');
+                   var errMsg = "";
+                   if(""== postalCode ){
+                       errMsg = 'the postal code could not be null';
+                   }else if(postalCode.length != 6){
+                       errMsg = 'the postal code length must be 6';
+                   }else if(!re.test(postalCode)){
+                       errMsg = 'the postal code must be numbers';
+                   }
+                   if("" != errMsg){
+                       $('#sitePostalCode+span').html(errMsg);
+                       aBoolean=false;
+                   }
+                  $('#siteAddressType').val();
+                var siteStreetName=  $('#siteStreetName').val();
+                  if(siteStreetName==""){
+                    $('#siteStreetName+span').html("cannot be blank!");
+                      aBoolean=false;
+                  }
+                  var rel=/^[6][0-9]{7}$/;
+                  if($('#onsitOffice').val()==""){
+                      $('#onsitOffice+span').html("cannot be blank!");
+                      aBoolean=false;
+                  } else if(!rel.test($('#onsitOffice').val())){
+                      $('#onsitOffice+span').html("Please key in a valid phone number!");
+                      aBoolean=false;
+                  }
+
+                 if($('#onsiteStartHH').val()==""|| $('#onsiteStartMM').val()==""){
+                     $('#onsiteStartMM+span').html("cannot be blank!");
+                     aBoolean=false;
+                 }
+                  if($('#onsiteEndHH').val()==""||$('#onsiteEndMM').val()==""){
+                      $('#onsiteEndMM+span').html("cannot be blank!");
+                      aBoolean=false;
+                  }
+               }else if(this.value=="CONVEYANCE"){
+                var  postalCodes= $('#conveyancePostalCode').val();
+                   var re=new RegExp('^[0-9]*$');
+                   var errMsg = "";
+                   if(""== postalCodes ){
+                       errMsg = 'the postal code could not be null';
+                   }else if(postalCodes.length != 6){
+                       errMsg = 'the postal code length must be 6';
+                   }else if(!re.test(postalCodes)){
+                       errMsg = 'the postal code must be numbers';
+                   }
+                   if("" != errMsg){
+                       $('#conveyancePostalCode+span').html(errMsg);
+                       aBoolean=false;
+                   }
+                  $("#siteAddressType").val();
+                  if($('#conveyanceStreetName').val()==""){
+                      $('#conveyanceStreetName+span').html("cannot be blank!");
+                      aBoolean=false;
+                  }
+                  if($('#conStartHH').val()==""||$('#conStartMM').val()==""){
+                      $('#conStartMM+span').html("cannot be blank!");
+                      aBoolean=false;
+                  }
+                  if($('#conEndHH').val()==""||$('#conEndMM').val()==""){
+                      $('#conEndMM+span').html("cannot be blank!");
+                      aBoolean=false;
+                  }
+
+               }
+
+            });
+            if(!aBoolean){
+                return;
+            }
+
             submit('documents',null,null);
         });
         $('.premiseSaveDraft').click(function(){
@@ -627,7 +695,9 @@ var retrieveAddr = function(){
         minView:2
     });
 
-
+    var postalCode=  function () {
+        $('.premTypeRadio').attr("checked");
+      }
 
 
 

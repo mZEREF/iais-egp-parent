@@ -4,18 +4,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 /**
  * @Author: jiahao
@@ -29,9 +28,10 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         String url = RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.HCSA_CONFIG_SERVICE+"/all-service";
         Map<String,Object> map = new HashMap();
         map.put("test","add");
-        List<HcsaServiceDto> serviceDtoList =  RestApiUtil.getListByReqParam(url,map,HcsaServiceDto.class);
+        //List<HcsaServiceDto> serviceDtoList =  RestApiUtil.getListByReqParam(url,map,HcsaServiceDto.class);
         Map<String,Object> mapTwo = new HashMap();
-        RiskFinancialShowDto showDto = RestApiUtil.postGetObject("hcsa-config:8878/iais-hcsa-risk/FinancialShow",serviceDtoList,RiskFinancialShowDto.class);
+        //RiskFinancialShowDto showDto = RestApiUtil.postGetObject("hcsa-config:8878/iais-hcsa-risk/FinancialShow",serviceDtoList,RiskFinancialShowDto.class);
+        RiskFinancialShowDto showDto = new RiskFinancialShowDto();
         for(HcsaRiskFinanceMatrixDto temp:showDto.getFinanceList()){
             if(!StringUtil.isEmpty(temp.getId())){
                 temp.setInEffectiveEndDate(temp.getBaseInEffectiveEndDate());
@@ -70,10 +70,10 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         }
         //call api to save
         if(saveList!= null && !saveList.isEmpty()){
-            RestApiUtil.postGetObject("hcsa-config:8878/iais-hcsa-risk/FinanceMatrixMemoryStorage",saveList,HcsaRiskFinanceMatrixDto.class);
+            //RestApiUtil.postGetObject("hcsa-config:8878/iais-hcsa-risk/FinanceMatrixMemoryStorage",saveList,HcsaRiskFinanceMatrixDto.class);
         }
         if(updateList!=null&&!updateList.isEmpty()){
-            RestApiUtil.update("hcsa-config:8878/iais-hcsa-risk/FinanceMatrixMemoryUpdating",updateList,HcsaRiskFinanceMatrixDto.class);
+            //RestApiUtil.update("hcsa-config:8878/iais-hcsa-risk/FinanceMatrixMemoryUpdating",updateList,HcsaRiskFinanceMatrixDto.class);
         }
     }
     public boolean isNeedUpdatePreviouds(HcsaRiskFinanceMatrixDto dto,boolean isIn){

@@ -21,7 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,22 +52,16 @@ import java.util.zip.ZipFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-    @Value("iais.syncFileTracking.download")
-    private    String download;
 
-    @Value("iais.syncFileTracking.backups")
-    private     String backups;
-
-    @Value("iais.syncFileTracking.fileFormat")
-    private     String fileFormat;
-
-    @Value("iais.syncFileTracking.compressPath")
-    private     String compressPath;
+    private    String download="D:/compress/folder";
+    private     String backups="D:/backups/";
+    private     String fileFormat=".text";
+    private     String compressPath="D:/compress";
 
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
-    private SystemClient systemClient;
+    private SystemBeLicClient systemClient;
     @Override
                 public void compress(){
         if(new File(backups).isDirectory()){

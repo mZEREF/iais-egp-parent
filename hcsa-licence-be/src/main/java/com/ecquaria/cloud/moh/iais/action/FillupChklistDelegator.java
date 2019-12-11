@@ -6,6 +6,7 @@ import com.ecquaria.cloud.client.task.TaskService;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -65,6 +66,9 @@ public class FillupChklistDelegator {
         String serviceCode ="BLB";
         String serviceType = "Inspection";
         InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceCode,serviceType);
+        ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
+        InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
+        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
 
     }
@@ -121,8 +125,10 @@ public class FillupChklistDelegator {
      */
     public void submitInspection(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        ChecklistConfigDto commonCheckListDto = (ChecklistConfigDto)ParamUtil.getSessionAttr(request,"commonCheckListDto");
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
         fillupChklistService.saveDto(icDto);
+        fillupChklistService.saveCommonDto(commonCheckListDto,icDto.getCheckList().get(0).getAppPreCorreId());
     }
 
     public InspectionFillCheckListDto getDataFromPage(HttpServletRequest request){

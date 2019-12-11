@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,15 +38,16 @@ public class AdhocChecklistDelegator {
 
     public void initialize(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String taskId = (String) ParamUtil.getRequestAttr(request, "taskId");
+        //String taskId = (String) ParamUtil.getRequestAttr(request, "taskId");
+        String taskId = "7102C311-D10D-EA11-BE7D-000C29F371DC";
         TaskDto task = taskService.getTaskById(taskId);
         Optional.ofNullable(task).ifPresent(t -> {
                 String appNo = t.getRefNo();
                 ApplicationDto application = applicationViewService.getApplicaitonByAppNo(appNo);
                 List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(application);
-
                 log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
 
+                ParamUtil.setSessionAttr(request, "inspectionChecklist", (Serializable) inspectionChecklist);
            }
         );
     }

@@ -74,7 +74,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             }
         }
         infillDto.setBestPractice(appPremisesRecommendationDto.getBestPractice());
-        infillDto.setTuc(appPremisesRecommendationDto.getRecomInDate() + "");
+        infillDto.setTuc(Formatter.formatDate(appPremisesRecommendationDto.getRecomInDate()));
         for (InspectionCheckQuestionDto temp : ncCheckList) {
             if (itemDtoList != null && !itemDtoList.isEmpty()) {
                 for (AppPremisesPreInspectionNcItemDto item : itemDtoList) {
@@ -227,9 +227,10 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         //AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
         AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
         appDto.setAnswer(answerJson);
+        appDto.setId(null);
         appDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
         appDto.setAppPremCorrId(appPremCorrId);
-        appDto.setVersion(1 + appDto.getVersion());
+        appDto.setVersion(1 + Integer.parseInt(appDto.getVersion())+"");
         appDto.setChkLstConfId(configId);
         appDto.setStatus("CMSTAT001");
         appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -246,6 +247,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         if (tcuDate != null) {
             appPreRecommentdationDto.setRecomInDate(tcuDate);
         }
+        appPreRecommentdationDto.setId(null);
         appPreRecommentdationDto.setAppPremCorreId(appPremCorrId);
         appPreRecommentdationDto.setBestPractice(dto.getBestPractice());
         appPreRecommentdationDto.setRemarks(dto.getTcuRemark());
@@ -292,8 +294,9 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     public AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(InspectionFillCheckListDto dto,String appPremCorrId) {
         AppPremPreInspectionNcDto ncDto =  fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
         ncDto.setStatus("CMSTAT001");
+        ncDto.setId(null);
         ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
-        ncDto.setVersion(1 + ncDto.getVersion());
+        ncDto.setVersion(1 + Integer.parseInt(ncDto.getVersion())+"");
         ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
         ncDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return ncDto;

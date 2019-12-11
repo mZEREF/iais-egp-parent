@@ -1,25 +1,24 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * LicenceServiceImpl
@@ -34,9 +33,12 @@ public class LicenceServiceImpl implements LicenceService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
-    private SystemClient systemClient;
+    private SystemBeLicClient systemClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
     @Override
     public List<ApplicationLicenceDto> getCanGenerateApplications(int day) {
         Map<String,Object> param = new HashMap<>();
@@ -78,10 +80,8 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public AppPremisesRecommendationDto getTcu(String appPremCorrecId) {
-        Map<String,Object> param = new HashMap<>();
-        param.put("appPremId",appPremCorrecId);
-        param.put("recomType",InspectionConstants.RECOM_TYPE_TCU);
-        return RestApiUtil.getByReqParam(RestApiUrlConsts.APPLICATION_BE_RESCOMDTO,param,AppPremisesRecommendationDto.class);
+        return fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrecId,
+                InspectionConstants.RECOM_TYPE_TCU).getEntity();
     }
     @Override
     public PremisesDto getLatestVersionPremisesByHciCode(String hciCode) {

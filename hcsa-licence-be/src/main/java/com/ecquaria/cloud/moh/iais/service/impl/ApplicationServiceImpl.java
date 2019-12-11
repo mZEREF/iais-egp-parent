@@ -1,12 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,9 +20,14 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ApplicationServiceImpl implements ApplicationService {
+    @Autowired
+    private ApplicationClient applicationClient;
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
+
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
-        return RestApiUtil.getListByPathParam(RestApiUrlConsts.APPLICATION_APPLICATIONS_APPGROUPID,appGroupId,ApplicationDto.class);
+        return applicationClient.getGroupAppsByNo(appGroupId).getEntity();
     }
 
     @Override
@@ -40,8 +47,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         return result;
     }
 
-//    @Override
-//    public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId) {
-//        return RestApiUtil.getListByPathParam(RestApiUrlConsts.APPLICATION_APPPREMISESCORRELATIONS_APPGROPID,appGroupId,AppPremisesCorrelationDto.class);
-//    }
+    @Override
+    public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId) {
+        return appPremisesCorrClient.getGroupAppsByNo(appGroupId).getEntity();
+    }
 }

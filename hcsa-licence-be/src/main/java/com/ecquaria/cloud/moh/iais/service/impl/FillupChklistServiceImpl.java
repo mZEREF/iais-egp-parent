@@ -1,8 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -11,8 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
@@ -22,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.RestApiUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -62,15 +59,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-    @Override
-    public SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam) {
-        return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.CHECKLIST_CONFIG_RESULTS, searchParam);
-    }
-
-    @Override
-    public SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam) {
-        return RestApiUtil.query(RestApiUrlConsts.HCSA_CONFIG +  RestApiUrlConsts.CHECKLIST_ITEM_RESULTS, searchParam);
-    }
     @Override
     public ApplicationViewDto getAppViewDto(String taskId){
         if(StringUtil.isEmpty(taskId)){
@@ -306,5 +294,41 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public TaskDto getTaskDtoById(String taskId){
        return organizationClient.getTaskById(taskId).getEntity();
+    }
+
+    @Override
+    public ChecklistConfigDto getcommonCheckListDto(String configType, String module) {
+        ChecklistConfigDto commonckDto = hcsaChklClient.getMaxVersionCommonConfigByParams(configType,module).getEntity();
+        return commonckDto ;
+    }
+
+    @Override
+    public void saveCommonDto(ChecklistConfigDto commonCheckListDto,String appPremCorrId) {
+
+    }
+
+    @Override
+    public InspectionFillCheckListDto transferToInspectionCheckListDto(ChecklistConfigDto commonCheckListDto, String appPremCorrId) {
+        InspectionFillCheckListDto dto = new InspectionFillCheckListDto();
+        List<ChecklistSectionDto> sectionDtos = commonCheckListDto.getSectionDtos();
+        List<InspectionCheckQuestionDto> checkList = new ArrayList<>();
+        InspectionCheckQuestionDto inquest = null;
+        if(sectionDtos!=null && !sectionDtos.isEmpty()){
+            for(ChecklistSectionDto temp:sectionDtos){
+                for(ChecklistItemDto item: temp.getChecklistItemDtos()){
+                    inquest= new InspectionCheckQuestionDto();
+                    inquest.setItemId(item.getItemId());
+                    inquest.setAppPreCorreId(appPremCorrId);
+                    inquest.setSectionName(temp.getSection());
+                    inquest.setConfigId(temp.getConfigId());
+                    inquest.setRegClauseNo(item.getRegulationClauseNo());
+                    inquest.setRegClause(item.getRegulationClause());
+                    inquest.setChecklistItem(item.getChecklistItem());
+                    checkList.add(inquest);
+                }
+            }
+        }
+        dto.setCheckList(checkList);
+        return dto;
     }
 }
