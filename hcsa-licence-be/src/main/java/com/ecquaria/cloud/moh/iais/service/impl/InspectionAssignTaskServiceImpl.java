@@ -200,21 +200,29 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
+    public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto,
+                                        ApplicationViewDto applicationViewDto, String internalRemarks, TaskDto taskDto) {
         try {
             List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             for(TaskDto td:commPools) {
                 if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
                     td.setUserId(inspectorCheckList.get(0).getValue());
                     td.setDateAssigned(new Date());
                     updateTask(td);
                     inspectorCheckList.remove(0);
+                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+                    ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                    applicationViewDto.setApplicationDto(applicationDto1);
+                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
+                    if(inspectorCheckList != null && inspectorCheckList.size() > 0){
+                        createTaskByInspectorList(inspectorCheckList, commPools, inspecTaskCreAndAssDto);
+                        for(int i = 0; i < inspectorCheckList.size(); i++){
+                            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
+                        }
+                    }
                 }
             }
-            if(inspectorCheckList != null && inspectorCheckList.size() > 0){
-                createTaskByInspectorList(inspectorCheckList, commPools, inspecTaskCreAndAssDto);
-            }
-
         } catch (Exception e){
             log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);
             throw e;
@@ -262,15 +270,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks) {
-        assignTaskForInspectors(commPools, inspecTaskCreAndAssDto);
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
         ApplicationViewDto applicationViewDto = searchByAppNo(inspecTaskCreAndAssDto.getApplicationNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         createTaskStatus(applicationDto);
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
-        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
-        applicationViewDto.setApplicationDto(applicationDto1);
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
+        assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto);
     }
 
     private ApplicationDto updateApplication(ApplicationDto applicationDto, String appStatus) {

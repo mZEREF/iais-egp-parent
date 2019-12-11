@@ -3,6 +3,8 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
@@ -82,11 +84,12 @@ public interface InspectionService {
     /**
       * @author: shicheng
       * @Date 2019/12/4
-      * @Param: inspectionTaskPoolListDto, commPools
+      * @Param: inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto
       * @return: void
       * @Descripation: Assign Task For Inspectors
       */
-    void assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools);
+    void assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools,
+                                 String internalRemarks, ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto);
 
     /**
      * @author: shicheng
@@ -96,4 +99,13 @@ public interface InspectionService {
      * @Descripation: get HcsaServiceDto By Service Id
      */
     HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/11
+      * @Param: inspectionTaskPoolListDto, internalRemarks, commPools
+      * @return: void
+      * @Descripation: routing Task By Pool
+      */
+    void routingTaskByPool(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks);
 }
