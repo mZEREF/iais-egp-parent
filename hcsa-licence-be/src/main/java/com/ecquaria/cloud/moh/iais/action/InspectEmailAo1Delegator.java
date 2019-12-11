@@ -152,6 +152,7 @@ public class InspectEmailAo1Delegator {
         log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");
 
         HttpServletRequest request = bpc.request;
+        if(false)
         {
             String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
             String taskId="47512333-7A16-EA11-BE7D-000C29F371DC";
@@ -169,9 +170,8 @@ public class InspectEmailAo1Delegator {
             inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
             HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
             inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-
             String configId=inspEmailService.getcheckListQuestionDtoList(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcType()).get(1).getConfigId();
-            List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
+            List<NcAnswerDto>  ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
             AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
             inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
 
@@ -205,6 +205,7 @@ public class InspectEmailAo1Delegator {
             ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
             ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
         }
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
     }
     public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");

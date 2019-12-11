@@ -2,12 +2,13 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<br><br><br><br><br>
 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 <input type="hidden" name="crud_action_type" value="">
 <input type="hidden" name="crud_action_value" value="">
 <input type="hidden" name="crud_action_additional" value="">
 <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-    <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
+    <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab" >Info</a></li>
     <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                 data-toggle="tab">Documents</a></li>
     <li class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"

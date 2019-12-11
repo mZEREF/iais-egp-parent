@@ -84,6 +84,10 @@
     </div>
 </form>
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#processing').aria.expanded().value=true;
+    });
+
     function doPreview(){
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }

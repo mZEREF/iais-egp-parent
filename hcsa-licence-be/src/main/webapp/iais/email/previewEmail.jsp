@@ -33,6 +33,8 @@
 <%
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
+<br><br><br><br><br>
+
 <div class="col-sm-5">
     <p><textarea name="messageContent" cols="80" rows="25" class="wenbenkuang" id="htmlEditroArea" title="content" readonly >${content}</textarea></p>
 </div>
