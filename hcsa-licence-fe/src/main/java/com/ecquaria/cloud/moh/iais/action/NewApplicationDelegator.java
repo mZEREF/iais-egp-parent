@@ -777,6 +777,19 @@ public class NewApplicationDelegator {
                         if (validationResult.isHasErrors()) {
                             errorMap = validationResult.retrieveAll();
                         }
+
+                        String offTelNo = appGrpPremisesDto.getOffTelNo();
+                        if(StringUtil.isEmpty(offTelNo)){
+                            errorMap.put("officeTel","cannot be blank!");
+                        }
+                        boolean matches = offTelNo.matches("^[6][0-9]{7}$");
+                        if(!matches) {
+                            errorMap.put("officeTel","Please key in a valid phone number!");
+                        }
+                        String streetName = appGrpPremisesDto.getStreetName();
+                        if(StringUtil.isEmpty(streetName)){
+                            errorMap.put("stressName","cannot be blank!");
+                        }
                         //do by wenkang
                         String addrType = appGrpPremisesDto.getAddrType();
                         if(StringUtil.isEmpty(addrType)){
@@ -808,7 +821,12 @@ public class NewApplicationDelegator {
                         if (validationResult.isHasErrors()) {
                             errorMap = validationResult.retrieveAll();
                         }
+                        String streetName = appGrpPremisesDto.getStreetName();
+                        if(StringUtil.isEmpty(streetName)){
+                            errorMap.put("stressName","cannot be blank!");
+                        }
                         String addrType = appGrpPremisesDto.getConveyanceAddressType();
+
                         if(StringUtil.isEmpty(addrType)){
                             errorMap.put("conveyanceAddressType", "can not is null");
                         }else {

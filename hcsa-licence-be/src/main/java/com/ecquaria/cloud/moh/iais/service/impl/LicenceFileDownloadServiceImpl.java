@@ -52,17 +52,11 @@ import java.util.zip.ZipFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-    @Value("iais.syncFileTracking.download")
-    private    String download;
 
-    @Value("iais.syncFileTracking.backups")
-    private     String backups;
-
-    @Value("iais.syncFileTracking.fileFormat")
-    private     String fileFormat;
-
-    @Value("iais.syncFileTracking.compressPath")
-    private     String compressPath;
+    private    String download="D:/compress/folder";
+    private     String backups="D:/backups/";
+    private     String fileFormat=".text";
+    private     String compressPath="D:/compress";
 
     @Autowired
     private ApplicationClient applicationClient;
