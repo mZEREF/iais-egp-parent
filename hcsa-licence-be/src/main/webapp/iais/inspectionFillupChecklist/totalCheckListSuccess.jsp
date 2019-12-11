@@ -19,11 +19,11 @@
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
+                            <li class="complete" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
-                                                                        data-toggle="tab">Success Page</a></li>
+                            <li class="active" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
+                                                                        data-toggle="tab">Success page</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -36,7 +36,7 @@
                         </div>
 
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabInfo" role="tabpanel">
+                            <div class="tab-pane" id="tabInfo" role="tabpanel">
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
@@ -191,11 +191,52 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="tabPayment" role="tabpanel">
+                            <div class="tab-pane active" id="tabPayment" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
                                 </strong></div>
                                 <div class="row">
                                     <div class="col-xs-12">
+                                        <h3>Common</h3>
+                                        <div class="table-gp">
+                                            <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
+                                                <br/>
+                                                <h4><c:out value="${section.sectionName}"></c:out></h4>
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Regulation Clause Number</th>
+                                                        <th>Item</th>
+                                                        <th>Yes</th>
+                                                        <th>No</th>
+                                                        <th>N/A</th>
+                                                        <th>Remark</th>
+                                                        <th>Rectified</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                                                        <tr>
+                                                            <td class="row_no">${(status.index + 1) }</td>
+                                                            <td>${item.incqDto.regClauseNo}</td>
+                                                            <td>${item.incqDto.checklistItem}</td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxYes" type="radio"  disabled <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNo" type="radio" disabled  <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNa" type="radio" disabled <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxRemark" disabled type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
+                                                            <td> <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> <c:if test="${item.incqDto.rectified == false}">hidden </c:if> value="rec" disabled/></td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </c:forEach>
+                                        </div>
+
+
+
+
+
+                                        <h3>General</h3>
                                         <div class="table-gp">
                                             <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
                                                 <br/>
@@ -210,6 +251,7 @@
                                                         <th>No</th>
                                                         <th>N/A</th>
                                                         <th>Remark</th>
+                                                        <th>Rectified</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -221,28 +263,30 @@
                                                             <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxYes" type="radio"  disabled <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
                                                             <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNo" type="radio" disabled  <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" /></td>
                                                             <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" type="radio" disabled <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
-                                                            <td> <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec" disabled/></td>
+
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" disabled type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
+                                                            <td> <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> <c:if test="${item.incqDto.rectified == false}">hidden </c:if> value="rec" disabled/></td>
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>
                                                 </table>
                                             </c:forEach>
-                                            <div class="col-xs-12">
-                                                <div class="input-group">
-                                                    <div class="ax_default text_area">
-                                                        <h4>Best Practice</h4>
-                                                        <textarea cols="70" rows="7" disabled name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
-                                                    </div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <div class="input-group">
+                                                <div class="ax_default text_area">
+                                                    <h4>Best Practice</h4>
+                                                    <textarea cols="70" rows="7" disabled name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
                                                 </div>
-                                                <div class="input-group">
-                                                    <div class="ax_default text_area">
-                                                        <h4>TCU Date</h4> &nbsp;<c:out value="${fillCheckListDto.tuc}"/>&nbsp;<br>
-                                                    </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <div class="ax_default text_area">
+                                                    <h4>TCU Date</h4> &nbsp;<c:out value="${fillCheckListDto.tuc}"/>&nbsp;<br>
                                                 </div>
-                                                <div class="input-group">
-                                                    <div class="ax_default text_area">
-                                                        <h4>Remark</h4> <textarea cols="70" rows="7" disabled name="tcuRemark" id="tcuRemark"><c:out value="${fillCheckListDto.tcuRemark}"></c:out></textarea>
-                                                    </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <div class="ax_default text_area">
+                                                    <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" disabled id="tcuRemark"><c:out value="${fillCheckListDto.tcuRemark}"></c:out></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -258,5 +302,4 @@
 </form>
 
 <script type="text/javascript">
-
 </script>

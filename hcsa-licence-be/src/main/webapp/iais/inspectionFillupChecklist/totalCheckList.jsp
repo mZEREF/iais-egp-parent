@@ -200,7 +200,7 @@
 
                                         <div class="table-gp">
                                             <h3>Common</h3>
-                                            <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
+                                            <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
                                                 <br/>
                                                 <h4><c:out value="${section.sectionName}"></c:out></h4>
                                                 <table class="table">
@@ -223,15 +223,15 @@
                                                             <td>${item.incqDto.regClauseNo}</td>
                                                             <td>${item.incqDto.checklistItem}</td>
                                                             <c:set value = "${item.incqDto.sectionName}${item.incqDto.itemId}" var = "ckkId"/>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
                                                             <td>
-                                                                <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" />
+                                                                <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" />
                                                             </td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxRemark" type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
                                                             <td>
-                                                                <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>ck" <c:if test="${item.incqDto.rectified == false}">hidden</c:if>>
-                                                                    <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
+                                                                <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comck" <c:if test="${item.incqDto.rectified == false}">hidden</c:if>>
+                                                                    <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -282,7 +282,7 @@
                                                     </tbody>
                                                 </table>
                                             </c:forEach>
-                                        </div>gg
+                                        </div>
                                         <div class="col-xs-12">
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
@@ -297,7 +297,7 @@
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                    <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark"><c:out value="${fillCheckListDto.tcuRemark}"></c:out></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -333,13 +333,20 @@
     function showCheckBox(str){
         var name = str;
         var divId = str+'ck';
-        var divck =document.getElementById(divId);
+        var comId = str+'comck'
+        var comdivck =document.getElementById(divId);
+        var divck =document.getElementById(comId);
         $("#"+divId).show();
+        $("#"+comId).show();
     }
     function hideCheckBox(str){
         var name = str;
         var divId = str+'ck';
+        var comdivId = str+'comck';
         var divck =document.getElementById(divId);
+        var comdivck =document.getElementById(comdivId);
         $("#"+divId).hide();
+        $("#"+comdivId).hide();
+
     }
 </script>

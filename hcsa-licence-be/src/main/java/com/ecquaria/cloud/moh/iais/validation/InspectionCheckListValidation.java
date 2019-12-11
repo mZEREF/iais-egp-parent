@@ -40,12 +40,12 @@ public class InspectionCheckListValidation implements CustomizeValidator {
     }
 
     public void commonVad(HttpServletRequest request,Map<String, String> errMap){
-        InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"comcDto");
+        InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
         List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
         if(cqDtoList!=null && !cqDtoList.isEmpty()){
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(temp.getSectionName()+temp.getItemId(),"Answer is mandaroty.");
+                    errMap.put(temp.getSectionName()+temp.getItemId()+"com","Answer is mandaroty.");
                 }
             }
         }else{

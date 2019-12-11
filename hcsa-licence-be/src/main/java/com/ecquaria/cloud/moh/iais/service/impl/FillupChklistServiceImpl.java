@@ -303,8 +303,21 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    public void saveCommonDto(ChecklistConfigDto commonCheckListDto,String appPremCorrId) {
-
+    public void merge(InspectionFillCheckListDto comDto, InspectionFillCheckListDto icDto) {
+        List<InspectionCheckQuestionDto> comDtoList = comDto.getCheckList();
+        List<InspectionCheckQuestionDto> icDtoList = icDto.getCheckList();
+        List<InspectionCheckQuestionDto> mergeList = new ArrayList<>();
+        if(icDtoList!=null && !icDtoList.isEmpty()){
+            for(InspectionCheckQuestionDto temp:icDtoList){
+                mergeList.add(temp);
+            }
+        }
+        if(comDtoList!=null && !comDtoList.isEmpty()){
+            for(InspectionCheckQuestionDto temp:comDtoList){
+                mergeList.add(temp);
+            }
+        }
+        icDto.setCheckList(mergeList);
     }
 
     @Override
