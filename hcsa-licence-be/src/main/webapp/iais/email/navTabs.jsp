@@ -1,23 +1,33 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<br><br><br><br><br>
+<%
+    String action = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+    if(StringUtil.isEmpty(action)){
+        action = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+    }
+%>
+<br><br><br>
 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
 <input type="hidden" name="crud_action_type" value="">
 <input type="hidden" name="crud_action_value" value="">
 <input type="hidden" name="crud_action_additional" value="">
+<input type="hidden" id = "controlLi" value="<%=action%>">
 <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-    <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab" >Info</a></li>
-    <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
+    <li id="infoli" class="active" role="presentation"><a id="info" aria-controls="tabInfo" role="tab" data-toggle="tab" >Info</a></li>
+    <li id="documentsli" class="complete" role="presentation"><a id="documents" aria-controls="tabDocuments" role="tab"
                                                 data-toggle="tab">Documents</a></li>
-    <li class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
+    <li id="paymentli" class="complete" role="presentation"><a id="payment" aria-controls="tabPayment" role="tab"
                                                 data-toggle="tab">Payment</a></li>
-    <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
+    <li id="inspectionli" class="complete" role="presentation"><a id="inspection" aria-controls="tabInspection" role="tab"
                                                 data-toggle="tab">Inspection</a></li>
-    <li class="incomplete" role="presentation"><a id="checkList" aria-controls="CheckList" role="tab"
+    <li id="checkListli" class="incomplete" role="presentation"><a id="checkList" aria-controls="CheckList" role="tab"
                                                   data-toggle="tab">CheckList</a></li>
-    <li class="complete" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
+    <li id="emailViewli" class="complete" role="presentation"><a id="processing" aria-controls="tabProcessing" role="tab"
                                                 data-toggle="tab">Processing</a></li>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm">
@@ -36,7 +46,8 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-
+        var controlLi = $('#controlLi').val();
+        $('#'+controlLi+'li').addClass('active');
         $('#checkList').click(function(){
             submit('checkList',null,null);
         });

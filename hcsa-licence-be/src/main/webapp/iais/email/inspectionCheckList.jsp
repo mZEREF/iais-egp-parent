@@ -235,7 +235,9 @@
     </div>
 </form>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('#checkList').aria.expanded().value=true
-    });
+    // $(document).ready(function() {
+    //     $('#tabCheckList').ready(function () {
+    //         this.aria.expanded().val(true);
+    //     })
+    // });
 </script>

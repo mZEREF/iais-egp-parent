@@ -7,7 +7,6 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<br><br><br><br><br>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
@@ -18,6 +17,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
+                        <br><br><br>
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                             <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"

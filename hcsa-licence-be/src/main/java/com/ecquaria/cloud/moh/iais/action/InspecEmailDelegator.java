@@ -92,10 +92,10 @@ public class InspecEmailDelegator {
         map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
         map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
         if(!ncAnswerDtos.isEmpty()){
-            StringBuilder stringBuilder=new StringBuilder();
+            StringBuilder stringBuilder=new StringBuilder();int i=0;
             for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                  ) {
-                stringBuilder.append("<tr><td>"+ncAnswerDto.getItemId());
+                stringBuilder.append("<tr><td>"+ ++i);
                 stringBuilder.append("</td><td>"+ncAnswerDto.getItemQuestion());
                 stringBuilder.append("</td><td>"+ncAnswerDto.getClause());
                 stringBuilder.append("</td><td>"+ncAnswerDto.getRemark());

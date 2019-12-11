@@ -33,12 +33,12 @@
 <%
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
-<br><br><br><br><br>
 
-<div class="col-sm-5">
-    <p><textarea name="messageContent" cols="80" rows="25" class="wenbenkuang" id="htmlEditroArea" title="content" readonly >${content}</textarea></p>
-</div>
+
+
 <form method="post" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="submit" class="back" value="Back">
+    <br><br><br><br><br><br>
+    <p> &nbsp&nbsp&nbsp&nbsp<textarea name="messageContent" cols="80" rows="25" class="wenbenkuang" id="htmlEditroArea" title="content" readonly >${content}</textarea></p>
+
+    <input type="submit" class="backspace-icon" value="Back">
 </form>

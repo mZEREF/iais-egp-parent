@@ -17,7 +17,7 @@
 
                         <%@ include file="./navTabs.jsp" %>
                         <div class="tab-content">
-                            <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                            <div class="tab-pane" id="tabProcessing" role="tabpanel" >
                                 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
                                 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/jquery-3.4.1.min.js"></script>
                                 <jsp:useBean id="insEmailDto" scope="session" type="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto"/>
@@ -84,9 +84,11 @@
     </div>
 </form>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('#processing').aria.expanded().value=true;
-    });
+    // $(document).ready(function() {
+    //     $('#tabProcessing').ready(function () {
+    //         this.aria.expanded().val(true);
+    //     })
+    // });
 
     function doPreview(){
         SOP.Crud.cfxSubmit("mainForm", "preview");
