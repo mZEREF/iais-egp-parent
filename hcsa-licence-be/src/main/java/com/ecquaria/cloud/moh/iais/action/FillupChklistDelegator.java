@@ -140,7 +140,7 @@ public class FillupChklistDelegator {
             String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrad");
             String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comremark");
             String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrec");
-            if(!StringUtil.isEmpty(rectified)){
+            if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
                 temp.setRectified(true);
             }else{
                 temp.setRectified(false);
@@ -160,7 +160,7 @@ public class FillupChklistDelegator {
             String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rad");
             String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"remark");
             String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rec");
-            if(!StringUtil.isEmpty(rectified)){
+            if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
                 temp.setRectified(true);
             }else{
                 temp.setRectified(false);

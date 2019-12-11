@@ -268,7 +268,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         List<InspectionCheckQuestionDto> insqDtoList =  dto.getCheckList();
         List<AppPremisesPreInspectionNcItemDto> ncItemDtoList = new ArrayList<>();
         for(InspectionCheckQuestionDto temp:insqDtoList){
-            AppPremisesPreInspectionNcItemDto ncItemDto = null;
+            if("No".equals(temp.getChkanswer())){
+                AppPremisesPreInspectionNcItemDto ncItemDto = null;
                 ncItemDto = new AppPremisesPreInspectionNcItemDto();
                 ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 ncItemDto.setItemId(temp.getItemId());
@@ -278,7 +279,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 }else{
                     ncItemDto.setIsRecitfied(0);
                 }
-            ncItemDtoList.add(ncItemDto);
+                ncItemDtoList.add(ncItemDto);
+            }
         }
         return ncItemDtoList;
     }
