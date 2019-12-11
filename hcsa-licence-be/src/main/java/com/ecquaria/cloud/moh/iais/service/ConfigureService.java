@@ -22,13 +22,13 @@ public interface ConfigureService {
 
     /**
      *
-     * backend method: listStage
+     * backend method: serviceInStage
      */
     List<HcsaSvcStageWorkloadDto> serviceInStage(String stageCode);
 
     /**
      *
-     * backend method: listStage
+     * backend method: saveStage
      */
-     boolean saveStage(Map<String , List<HcsaSvcSpecificStageWorkloadDto>> map );
+    void saveStage(Map<String , List<HcsaSvcSpecificStageWorkloadDto>> map );
 }
