@@ -64,7 +64,7 @@ public interface HcsaChklClient {
     FeignResponseEntity<List<String>> listServiceName();
 
     @GetMapping(path = "/iais-hcsa-checklist/config/{id}")
-    FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(String configId);
+    FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(@PathVariable(value = "id") String configId);
 
     @GetMapping(path = "/iais-hcsa-checklist/config/results/{svcCode}/{svcType}", produces = { MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<ChecklistQuestionDto>> getcheckListQuestionDtoList(@PathVariable(value = "svcCode") String svcCode, @PathVariable(value = "svcType") String svcType);
