@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -282,7 +283,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     public List<AppPremisesPreInspectionNcItemDto> getAppPremisesPreInspectionNcItemDto(InspectionFillCheckListDto dto, AppPremPreInspectionNcDto ncDto) {
         List<InspectionCheckQuestionDto> insqDtoList = dto.getCheckList();
-        List<AppPremisesPreInspectionNcItemDto> ncItemDtoList = new ArrayList<>();
+        List<AppPremisesPreInspectionNcItemDto> ncItemDtoList =  fillUpCheckListGetAppClient.getAppNcItemByAppCorrId(ncDto.getId()).getEntity();
         for (InspectionCheckQuestionDto temp : insqDtoList) {
             AppPremisesPreInspectionNcItemDto ncItemDto = null;
             ncItemDto = new AppPremisesPreInspectionNcItemDto();
@@ -317,8 +318,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             String answerStr = appPremisesPreInspectChklDto.getAnswer();
             List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answerStr, InspectionCheckListAnswerDto.class);
             NcAnswerDto ncAnswerDto = null;
-            if(answerDtoList!=null &&answerDtoList.isEmpty()){
-
+            if(answerDtoList!=null &&!answerDtoList.isEmpty()){
                 for(InspectionCheckListAnswerDto temp:answerDtoList){
                     ncAnswerDto = new NcAnswerDto();
                     ncAnswerDto.setItemId(temp.getItemId());
@@ -348,9 +348,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public void updateTaskStatus(ApplicationDto applicationDto,String appPremCorrId) {
-        List<AppPremisesCorrelationDto> appPremCorrDtoList = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
-        List<AppInspectionStatusDto> appInspectionStatusDtos = new ArrayList<>();
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorrId).getEntity();
+        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 }
