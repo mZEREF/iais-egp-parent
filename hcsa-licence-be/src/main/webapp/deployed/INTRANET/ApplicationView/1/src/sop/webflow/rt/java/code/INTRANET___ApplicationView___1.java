@@ -68,26 +68,15 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "approve", this);
 	}
 
-
-
-
 	public void dMS_OnStepProcess_0() throws Exception {
 	// 		DMS->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "routeToDMS", this);
 	}
 
-
-
-
-
 	public void routeBack_OnStepProcess_0() throws Exception {
 	// 		RouteBack->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "routeBack", this);
 	}
-
-
-
-
 
 	public void internalEnquiry_OnStepProcess_0() throws Exception {
 	// 		InternalEnquiry->OnStepProcess
@@ -107,6 +96,31 @@ public class INTRANET___ApplicationView___1 extends BaseProcessClass {
 	public void bROADCAST_REPLY_OnStepProcess_0() throws Exception {
 	// 		BROADCAST_REPLY->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "broadcastReply", this);
+	}
+
+	public void support_OnStepProcess_0() throws Exception {
+	// 		Support->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "support", this);
+	}
+
+	public void verified_OnStepProcess_0() throws Exception {
+	// 		Verified->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "verified", this);
+	}
+
+	public void reject_OnStepProcess_0() throws Exception {
+	// 		Reject->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "reject", this);
+	}
+
+	public void requestForInformation_OnStepProcess_0() throws Exception {
+	// 		RequestForInformation->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "requestForInformation", this);
+	}
+
+	public void lienceStartDate_OnStepProcess_0() throws Exception {
+	// 		LienceStartDate->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "lienceStartDate", this);
 	}
 
 

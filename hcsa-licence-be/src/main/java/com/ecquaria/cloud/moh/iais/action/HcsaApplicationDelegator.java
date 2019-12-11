@@ -139,36 +139,52 @@ public class HcsaApplicationDelegator {
              ) {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
-           if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
-               routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
-           }
-
-           //TODO:change historycode
 
 
 
+        //History
 
+        List<String> actionByList=new ArrayList<>();
+        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
+             ) {
+            String actionBy=appPremisesRoutingHistoryDto.getActionby();
+            actionByList.add(actionBy);
+        }
+        List<OrgUserDto> actionByRealNameList=applicationViewService.getUserNameById(actionByList);
+        for (int i = 0; i <applicationViewDto.getAppPremisesRoutingHistoryDtoList().size(); i++) {
+            for (int j = 0; j <actionByRealNameList.size() ; j++) {
+                if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(actionByRealNameList.get(j).getId())){
+                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(actionByRealNameList.get(j).getUserName());
+                }
+            }
+            String statusUpdate=MasterCodeUtil.getCodeDesc(applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getAppStatus());
+            applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setAppStatus(statusUpdate);
+            applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup(applicationViewDto.getApplicationNoOverAll());
+        }
 
-
-//        if("AO3".equals(applicationViewDto.getCurrentStatus())){
-//            routingStage.put("APST000","RollBack");
-//            routingStage.put("APST002","Pending Approval");
-//            routingStage.put("APST006","Reject");
-//            routingStage.put("APST0013","Internal Enquiry");
-//            routingStage.put("APST0014","Route To DMS");
-//        }else if("AO2".equals(applicationViewDto.getCurrentStatus())
-//                ||"AO1".equals(applicationViewDto.getCurrentStatus())){
-//            routingStage.put("APST006","Reject");
-//            routingStage.put("APST000","RollBack");
-//            routingStage.put("APST0015","Support");
-//        }else if("PSO".equals(applicationViewDto.getCurrentStatus())){
-//            routingStage.put("APST0016","Verified");
-//            routingStage.put("APST0017","Request For Information");
-//        }else if("ASO".equals(applicationViewDto.getCurrentStatus())) {
-//            routingStage.put("APST0016", "Verified");
-//            routingStage.put( "APST0017","Request For Information");
-//            routingStage.put("APST0018", "Licence Start Date");
-//        }
+        //add special stages
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
+        }
+        if(ApplicationConsts.PROCESSING_DECISION_Level_3_Approval.equals(applicationViewDto.getCurrentStatus())){
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROLL_BACK,"RollBack");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Pending Approval");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_INTERNAL_ENQUIRY,"Internal Enquiry");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
+        }else if(ApplicationConsts.PROCESSING_DECISION_Level_2_Approval.equals(applicationViewDto.getCurrentStatus())
+                ||ApplicationConsts.PROCESSING_DECISION_Level_1_Approval.equals(applicationViewDto.getCurrentStatus())){
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROLL_BACK,"RollBack");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_SUPPORT,"Support");
+        }else if(ApplicationConsts.PROCESSING_DECISION_PROFESSIONAL_SCREENING_STAGE.equals(applicationViewDto.getCurrentStatus())){
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED,"Verified");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+        }else if(ApplicationConsts.PROCESSING_DECISION_ADMIN_SCREENING_STAGE.equals(applicationViewDto.getCurrentStatus())) {
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
+        }
         applicationViewDto.setRoutingStage(routingStage);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
@@ -332,10 +348,22 @@ public class HcsaApplicationDelegator {
      */
     public void internalEnquiry(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do internalEnquiry start ...."));
-
+        //TODO:internalEnquiry
         log.debug(StringUtil.changeForLog("the do internalEnquiry end ...."));
     }
 
+
+    /**
+     * StartStep: support
+     *
+     * @param bpc
+     * @throws
+     */
+    public void support(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do support start ...."));
+        //TODO:support
+        log.debug(StringUtil.changeForLog("the do support end ...."));
+    }
 
     /**
      * StartStep: broadcast
@@ -489,9 +517,60 @@ public class HcsaApplicationDelegator {
      */
     public void broadcastReply(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do broadcastReply start ...."));
-
+        //TODO:broadcastReply
         log.debug(StringUtil.changeForLog("the do broadcastReply end ...."));
     }
+
+
+    /**
+     * StartStep: verified
+     *
+     * @param bpc
+     * @throws
+     */
+    public void verified(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do verified start ...."));
+        //TODO:verified
+        log.debug(StringUtil.changeForLog("the do verified end ...."));
+    }
+
+
+    /**
+     * StartStep: reject
+     *
+     * @param bpc
+     * @throws
+     */
+    public void reject(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do reject start ...."));
+        //TODO:reject
+        log.debug(StringUtil.changeForLog("the do reject end ...."));
+    }
+
+    /**
+     * StartStep: requestForInformation
+     *
+     * @param bpc
+     * @throws
+     */
+    public void requestForInformation(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do requestForInformation start ...."));
+        //TODO:requestForInformation
+        log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
+    }
+
+    /**
+     * StartStep: lienceStartDate
+     *
+     * @param bpc
+     * @throws
+     */
+    public void lienceStartDate(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do lienceStartDate start ...."));
+        //TODO:lienceStartDate
+        log.debug(StringUtil.changeForLog("the do lienceStartDate end ...."));
+    }
+
 
     /**
      * StartStep: doDocument
@@ -501,7 +580,7 @@ public class HcsaApplicationDelegator {
      */
     public void doDocument(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doDocument start ...."));
-
+        //TODO:save file
 
 
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="16" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="17" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="doStart" x="310" y="-20">
@@ -114,6 +114,41 @@
     <JavaCode defClass="" executor="" methodName="bROADCAST_REPLY_OnStepProcess_0" name="bROADCAST_REPLY_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Support" x="770" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="support_OnStepProcess_0" name="support_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Verified" x="820" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="verified_OnStepProcess_0" name="verified_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Reject" x="860" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="reject_OnStepProcess_0" name="reject_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="RequestForInformation" x="900" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="requestForInformation_OnStepProcess_0" name="requestForInformation_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="LienceStartDate" x="1000" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="lienceStartDate_OnStepProcess_0" name="lienceStartDate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewPage" stageIndicator="" x="310" y="140">
@@ -223,10 +258,40 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/BROADCAST_REPLY" style="oblique">
    <position>{(700,560)(330,690)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Support" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(330,460)(790,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Support" style="oblique">
+   <position>{(790,560)(330,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Verified" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(330,460)(840,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Verified" style="oblique">
+   <position>{(840,560)(330,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Reject" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(330,460)(880,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Reject" style="oblique">
+   <position>{(880,560)(330,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/RequestForInformation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(330,460)(920,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/RequestForInformation" style="oblique">
+   <position>{(920,560)(330,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/LienceStartDate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(330,460)(1020,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/LienceStartDate" style="oblique">
+   <position>{(1020,560)(330,690)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Approve" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="310" y="440">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="310" y="440">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/ASO" value="&quot;ASO&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PSO" value="&quot;PSO&quot;"/>
@@ -234,13 +299,18 @@
    <SwitchCase component="/Steps/AutomaticStep/AO1" value="&quot;AO1&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/AO2" value="&quot;AO2&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/AO3" value="&quot;AO3&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Approve" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/DMS" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/RouteBack" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/InternalEnquiry" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;APPROVAL&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/DMS" value="&quot;ROUTE TO DMS&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/RouteBack" value="&quot;ROLLBACK&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InternalEnquiry" value="&quot;INTERNAL ENQUIRY&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareData" value=""/>
    <SwitchCase component="/Steps/AutomaticStep/Broadcast" value="&quot;PROCAO3001&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/BROADCAST_REPLY" value="&quot;PROCAO3002&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Support" value="&quot;SUPPORT&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Verified" value="&quot;VERIFIED&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Reject" value="&quot;REJECT&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/RequestForInformation" value="&quot;REQUEST FOR INFORMATION&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/LienceStartDate" value="&quot;LICENCE START DATE&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
