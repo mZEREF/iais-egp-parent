@@ -25,7 +25,7 @@
         </td>
         <td>
             <div class="col-sm-9">
-                <p><textarea name="messageContent" cols="80" rows="23" class="wenbenkuang" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
+                <p><textarea name="messageContent" cols="110" rows="40" class="wenbenkuang" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
             </div>
         </td>
     </tr>

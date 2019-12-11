@@ -1,12 +1,16 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -17,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.impl.InsepctionNcCheckListImpl;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +34,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ValidateEmailDelegator
+ * InspectReviseNcEmailDelegator
  *
  * @author junyu
- * @date 2019/12/3
+ * @date 2019/12/11
  */
-@Delegator("validateEmailDelegator")
+@Delegator("InspectReviseNcEmailDelegator")
 @Slf4j
-public class InspectEmailAo1Delegator {
+public class InspectReviseNcEmailDelegator {
     @Autowired
     InspEmailService inspEmailService;
     @Autowired
@@ -111,8 +116,8 @@ public class InspectEmailAo1Delegator {
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
             ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
         }
-        if (decision.equals(InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT)){
-            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        if (decision.equals(InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW)){
+            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
         }
         else {
@@ -148,7 +153,59 @@ public class InspectEmailAo1Delegator {
 
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,"isValid", "Y");
+        if(true)
+        {
+            String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
+            String taskId="47512333-7A16-EA11-BE7D-000C29F371DC";
+            TaskDto taskDto = taskService.getTaskById(taskId);
+            String appNo = taskDto.getRefNo();
+            //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();
+            String licenseeName="lichen";
+            ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
+            String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
+            InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
+            inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
+            inspectionEmailTemplateDto.setApplicantName(licenseeName);
+            inspectionEmailTemplateDto.setApplicationNumber(appNo);
+            inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
+            inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
+            HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
+            inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
+            String configId=inspEmailService.getcheckListQuestionDtoList(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcType()).get(1).getConfigId();
+            List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
+            AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
+            inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
 
+            Map<String,Object> map=new HashMap<>();
+            map.put("APPLICANT_NAME",inspectionEmailTemplateDto.getApplicantName());
+            map.put("APPLICATION_NUMBER",inspectionEmailTemplateDto.getApplicationNumber());
+            map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
+            map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
+            map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
+            if(!ncAnswerDtos.isEmpty()){
+                StringBuilder stringBuilder=new StringBuilder();int i=0;
+                for (NcAnswerDto ncAnswerDto:ncAnswerDtos
+                ) {
+                    stringBuilder.append("<tr><td>"+ ++i);
+                    stringBuilder.append("</td><td>"+ncAnswerDto.getItemQuestion());
+                    stringBuilder.append("</td><td>"+ncAnswerDto.getClause());
+                    stringBuilder.append("</td><td>"+ncAnswerDto.getRemark());
+                    stringBuilder.append("</td></tr>");
+                }
+                map.put("NC_DETAILS",stringBuilder.toString());
+            }
+            if(inspectionEmailTemplateDto.getBestPractices()!=null){
+                map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
+            }
+            map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+            String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
+            inspectionEmailTemplateDto.setMessageContent(mesContext);
+            String draftEmailId= (String) ParamUtil.getSessionAttr(request,"draftEmailId");
+            inspectionEmailTemplateDto.setId(draftEmailId);
+            inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+            ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
+            ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
+        }
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
     }
     public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
@@ -164,7 +221,7 @@ public class InspectEmailAo1Delegator {
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
         String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT});
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());

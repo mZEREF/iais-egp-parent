@@ -99,7 +99,7 @@ public class InspecEmailDelegator {
                 stringBuilder.append("</td><td>"+ncAnswerDto.getItemQuestion());
                 stringBuilder.append("</td><td>"+ncAnswerDto.getClause());
                 stringBuilder.append("</td><td>"+ncAnswerDto.getRemark());
-                stringBuilder.append("</td><tr>");
+                stringBuilder.append("</td></tr>");
             }
             map.put("NC_DETAILS",stringBuilder.toString());
         }
@@ -120,9 +120,8 @@ public class InspecEmailDelegator {
         ParamUtil.setSessionAttr(request,"mesContext", mesContext);
         ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
-
-
     }
+
     public void emailSubmitStep(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,"insEmailDto");
