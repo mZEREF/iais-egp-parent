@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.base.SeqGuidDao;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
@@ -23,13 +22,12 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.submission.client.model.SubmitReq;
 import com.ecquaria.submission.client.model.SubmitResp;
 import com.ecquaria.submission.client.wrapper.SubmissionClient;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.Process;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * AppSubmisionServiceImpl
@@ -47,8 +45,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private ApplicationClient applicationClient;
     @Autowired
     private AppConfigClient appConfigClient;
-    @Autowired
-    private SeqGuidDao seqGuidDao;
 
     @Override
     public int hashCode() {
@@ -167,7 +163,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         //prepare request parameters
         appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
         SubmitReq req = new SubmitReq();
-        req.setSubmissionId(seqGuidDao.generateIds(1));
+        req.setSubmissionId(applicationClient.getSubmissionId().getEntity());
         req.setProject(process.getCurrentProject());
         req.setProcess(process.getCurrentProcessName());
         req.setStep(process.getCurrentComponentName());

@@ -27,53 +27,61 @@ public class ApplicationClientFallback {
          HttpHeaders headers = new HttpHeaders();
          entity.setHeaders(headers);
          return entity;
-     }
+    }
 
-     public FeignResponseEntity<String> savedFileName(String fileName){
+    public FeignResponseEntity<String> savedFileName(String fileName){
          FeignResponseEntity entity = new FeignResponseEntity<>();
          HttpHeaders headers = new HttpHeaders();
          entity.setHeaders(headers);
          return entity;
-     }
-
-     public FeignResponseEntity<List<ApplicationDto>>  listApplicationByGroupId(String groupId){
-         FeignResponseEntity entity = new FeignResponseEntity<>();
-         HttpHeaders headers = new HttpHeaders();
-         entity.setHeaders(headers);
-         return entity;
-     }
-    FeignResponseEntity<AppSubmissionDto>  draftNumberGet( String draftNumber){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-    FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto){
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
     }
 
-    FeignResponseEntity<String>  getServiceIdByCode(@PathVariable(name = "code")String svcCode){
+    public FeignResponseEntity<List<ApplicationDto>>  listApplicationByGroupId(String groupId){
+     FeignResponseEntity entity = new FeignResponseEntity<>();
+     HttpHeaders headers = new HttpHeaders();
+     entity.setHeaders(headers);
+     return entity;
+    }
+
+    public FeignResponseEntity<AppSubmissionDto>  draftNumberGet( String draftNumber){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId){
+    public FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<String> doUpDate(@RequestBody ApplicationGroupDto applicationGroupDto){
+    public FeignResponseEntity<String>  getServiceIdByCode(@PathVariable(name = "code")String svcCode){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
+    public FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<String> doUpDate(@RequestBody ApplicationGroupDto applicationGroupDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<String> getSubmissionId() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
