@@ -6,8 +6,9 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * TaskHcsaConfigClient
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "hcsa-config", configuration = FeignConfiguration.class,
         fallback = TaskHcsaConfigClientFallback.class)
 public interface TaskHcsaConfigClient {
-    @PostMapping(path = "/hcsa-routing/work-group",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/hcsa-routing/work-group",method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>> getWrkGrp(@RequestBody List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDto);
+
 }
