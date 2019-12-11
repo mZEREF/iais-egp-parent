@@ -781,14 +781,14 @@ public class NewApplicationDelegator {
                         }
 
                         String offTelNo = appGrpPremisesDto.getOffTelNo();
-                       /* if(StringUtil.isEmpty(offTelNo)){
+                        if(StringUtil.isEmpty(offTelNo)){
                             errorMap.put("officeTel","cannot be blank!");
                         }else {
                             boolean matches = offTelNo.matches("^[6][0-9]{7}$");
                             if(!matches) {
                                 errorMap.put("officeTel","Please key in a valid phone number!");
                             }
-                        }*/
+                        }
 
                         String streetName = appGrpPremisesDto.getStreetName();
                         if(StringUtil.isEmpty(streetName)){
@@ -825,9 +825,9 @@ public class NewApplicationDelegator {
                         if (validationResult.isHasErrors()) {
                             errorMap = validationResult.retrieveAll();
                         }
-                        String streetName = appGrpPremisesDto.getStreetName();
-                        if(StringUtil.isEmpty(streetName)){
-                            errorMap.put("stressName","cannot be blank!");
+                        String cStreetName = appGrpPremisesDto.getConveyanceStreetName();
+                        if(StringUtil.isEmpty(cStreetName)){
+                            errorMap.put("cStreetName","cannot be blank!");
                         }
                         String addrType = appGrpPremisesDto.getConveyanceAddressType();
 
@@ -957,6 +957,7 @@ public class NewApplicationDelegator {
                 String siteAddressType = ParamUtil.getString(request, premisesIndexNo+"siteAddressType");
                 String siteSafefyNo = ParamUtil.getString(request, premisesIndexNo+"siteSafefyNo");
                 String addrType = ParamUtil.getString(request, premisesIndexNo+"addrType");
+                String offTelNo= ParamUtil.getString(request,premisesIndexNo+"offTelNo");
                 String fireSafetyCertIssuedDate  = ParamUtil.getString(request, premisesIndexNo+"fireSafetyCertIssuedDate");
                 appGrpPremisesDto.setPremisesSelect(premisesSelect);
                 appGrpPremisesDto.setHciName(hciName);
@@ -969,6 +970,7 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setSiteSafefyNo(siteAddressType);
                 appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
                 appGrpPremisesDto.setAddrType(addrType);
+                appGrpPremisesDto.setOffTelNo(offTelNo);
                 //add index for dto refer
                 appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
 

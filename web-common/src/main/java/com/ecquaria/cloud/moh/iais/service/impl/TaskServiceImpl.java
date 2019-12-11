@@ -139,7 +139,7 @@ public class TaskServiceImpl implements TaskService {
                     log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationId));
                     AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
                             createAppPremisesRoutingHistory(appPremisesCorrelationId,applicationDto.getStatus(),
-                            stageId,null,auditTrailDto.getMohUserGuid());
+                            stageId,null,auditTrailDto);
                     appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                 }
                 this.createTasks(taskDtos);
@@ -280,14 +280,14 @@ public class TaskServiceImpl implements TaskService {
         return  result;
     }
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-                                                                         String stageId, String internalRemarks,String actionBy){
+                                                                         String stageId, String internalRemarks,AuditTrailDto auditTrailDto){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(actionBy);
-        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto.setActionby(auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
     }
 
