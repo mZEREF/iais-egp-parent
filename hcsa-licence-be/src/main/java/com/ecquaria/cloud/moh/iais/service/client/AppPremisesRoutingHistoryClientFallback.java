@@ -24,6 +24,12 @@ public class AppPremisesRoutingHistoryClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+    public FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppIdAndStageId(String appId,String stageId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
     public FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> createAppPremisesRoutingHistorys(
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos) {

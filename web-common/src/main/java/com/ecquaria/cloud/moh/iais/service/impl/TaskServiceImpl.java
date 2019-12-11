@@ -47,43 +47,32 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
-       // return RestApiUtil.save( RestApiUrlConsts.IAIS_TASK,taskDtos,List.class);
         return taskOrganizationClient.createTask(taskDtos).getEntity();
     }
 
     @Override
     public TaskDto updateTask(TaskDto taskDto) {
-        //return RestApiUtil.update(RestApiUrlConsts.IAIS_TASK,taskDto,TaskDto.class);
         return taskOrganizationClient.updateTask(taskDto).getEntity();
     }
 
     @Override
     public List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos) {
-        //return RestApiUtil.postGetList(RestApiUrlConsts.GET_HCSA_WORK_GROUP,hcsaSvcStageWorkingGroupDtos,HcsaSvcStageWorkingGroupDto.class);
         return taskHcsaConfigClient.getWrkGrp(hcsaSvcStageWorkingGroupDtos).getEntity();
     }
 
     @Override
     public TaskDto getTaskById(String taskId) {
-        //return RestApiUtil.getByPathParam(RestApiUrlConsts.TASK_TASKID,taskId,TaskDto.class);
         return taskOrganizationClient.getTaskById(taskId).getEntity();
     }
 
 
     @Override
     public List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status) {
-//        Map<String,Object> params = new HashMap<>();
-//        params.put("workGroupId",workGroupId);
-//        params.put("status",status);
-//        return RestApiUtil.getListByReqParam(RestApiUrlConsts.USER_WORKGROUPID_STATUS,params,OrgUserDto.class);
         return taskOrganizationClient.getUsersByWorkGroupName(workGroupId,status).getEntity();
     }
 
     @Override
     public List<TaskDto> getTaskDtoScoresByWorkGroupId(String workGroupId) {
-//        Map<String,Object> params = new HashMap<>();
-//        params.put("workGroupId",workGroupId);
-//        return RestApiUtil.getListByReqParam(RestApiUrlConsts.TASKSCORES_WORKGROUPNAME,params,TaskDto.class);
         return taskOrganizationClient.getTaskScores(workGroupId).getEntity();
     }
 

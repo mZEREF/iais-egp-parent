@@ -6,9 +6,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,9 +24,13 @@ public interface AppPremisesRoutingHistoryClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesRoutingHistoryDto> createAppPremisesRoutingHistory(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto);
 
-    @GetMapping(path = "/iais-application-history/appPremisesRoutingHistorys/{appId}")
-    FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysById(@PathVariable("appId") String appId) ;
+    @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistorys/{appId}" ,method = RequestMethod.GET)
+    FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysByAppId(@PathVariable("appId") String appId);
 
-    @PostMapping(value = "/iais-application-history/historys",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistory/{appId}/{stageId}" ,method = RequestMethod.GET)
+    FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppIdAndStageId(@PathVariable("appId") String appId,
+                                                                                                     @PathVariable("stageId") String stageId);
+
+    @RequestMapping(value = "/iais-application-history/historys",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> createAppPremisesRoutingHistorys(@RequestBody List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos);
 }

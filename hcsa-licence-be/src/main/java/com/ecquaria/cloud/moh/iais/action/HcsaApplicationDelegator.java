@@ -18,20 +18,31 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.BroadcastService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -165,6 +176,8 @@ public class HcsaApplicationDelegator {
         //add special stages
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
+        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }
         if(ApplicationConsts.PROCESSING_DECISION_Level_3_Approval.equals(applicationViewDto.getCurrentStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROLL_BACK,"RollBack");
@@ -426,98 +439,16 @@ public class HcsaApplicationDelegator {
     }
 
 
-
-    private List<String> getUserIds(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos){
-        Set<String> set = new HashSet<>();
-        if(appPremisesRoutingHistoryDtos == null || appPremisesRoutingHistoryDtos.size() ==0){
-           return  null;
-        }
-        for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto :appPremisesRoutingHistoryDtos ){
-            set.add(appPremisesRoutingHistoryDto.getId());
-        }
-        return  new ArrayList(set);
-
-
-    }
-
-    //***************************************
-    //private methods
-    //*************************************
-
-    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus ) throws FeignException {
-        //completedTask
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        taskDto =  completedTask(taskDto);
-        taskDto = taskService.updateTask(taskDto);
-        //add history for this stage complate
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
-        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),
-                applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision);
-        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
-        //updateApplicaiton
-        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        updateApplicaiton(applicationDto,appStatus);
-        applicationViewDto.setApplicationDto(applicationDto);
-        // send the task
-        if(!StringUtil.isEmpty(stageId)){
-            taskDto = taskService.routingTask(applicationDto,stageId);
-            //add history for next stage start
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,
-                    taskDto.getWkGrpId(),null,null);
-            appPremisesRoutingHistoryDtoNew = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDtoNew);
-        }
-    }
-    private AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-                                                                         String stageId,String wrkGrpId, String internalRemarks,String processDecision){
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
-        appPremisesRoutingHistoryDto.setStageId(stageId);
-        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
-        appPremisesRoutingHistoryDto.setProcessDecision(processDecision);
-        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-        appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);
-        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return appPremisesRoutingHistoryDto;
-    }
-    private int remainDays(TaskDto taskDto){
-       int result = 0;
-       //todo: wait count kpi
-       String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
-      log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
-      return  result;
-    }
-
-
-    private TaskDto completedTask(TaskDto taskDto){
-        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-        taskDto.setSlaDateCompleted(new Date());
-        taskDto.setSlaRemainInDays(remainDays(taskDto));
-        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return taskDto;
-    }
-    private ApplicationDto updateApplicaiton(ApplicationDto applicationDto,String appStatus){
-        applicationDto.setStatus(appStatus);
-        return applicationViewService.updateApplicaiton(applicationDto);
-    }
-
-
-
-
-
-
     /**
      * StartStep: broadcastReply
      *
      * @param bpc
      * @throws
      */
-    public void broadcastReply(BaseProcessClass bpc) {
+    public void broadcastReply(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do broadcastReply start ...."));
-        //TODO:broadcastReply
+
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
         log.debug(StringUtil.changeForLog("the do broadcastReply end ...."));
     }
 
@@ -587,4 +518,102 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
 
+
+
+    //***************************************
+    //private methods
+    //*************************************
+
+    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus ) throws FeignException {
+        //completedTask
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        taskDto =  completedTask(taskDto);
+        taskDto = taskService.updateTask(taskDto);
+        //add history for this stage complate
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),
+                applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        //updateApplicaiton
+        String oldStatus = applicationDto.getStatus();
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        updateApplicaiton(applicationDto,appStatus);
+        applicationViewDto.setApplicationDto(applicationDto);
+        // send the task
+        if(!StringUtil.isEmpty(stageId)){
+            //For the BROADCAST Rely
+            if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(oldStatus)){
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1 = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(
+                        applicationViewDto.getAppPremisesCorrelationId(),stageId
+                );
+                if(appPremisesRoutingHistoryDto1 != null){
+                    taskDto = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
+                            applicationDto.getApplicationNo(),appPremisesRoutingHistoryDto1.getWrkGrpId(),
+                            appPremisesRoutingHistoryDto1.getActionby(),new Date(),0,
+                            IaisEGPHelper.getCurrentAuditTrailDto());
+                    List<TaskDto> taskDtos = new ArrayList<>();
+                    taskDtos.add(taskDto);
+                    taskDtos = taskService.createTasks(taskDtos);
+                }else{
+                    new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
+                }
+
+            }else{
+                taskDto = taskService.routingTask(applicationDto,stageId);
+            }
+            //add history for next stage start
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,
+                    taskDto.getWkGrpId(),null,null);
+            appPremisesRoutingHistoryDtoNew = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDtoNew);
+        }
+    }
+    private AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                         String stageId,String wrkGrpId, String internalRemarks,String processDecision){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setProcessDecision(processDecision);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return appPremisesRoutingHistoryDto;
+    }
+    private int remainDays(TaskDto taskDto){
+       int result = 0;
+       //todo: wait count kpi
+       String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
+      log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
+      return  result;
+    }
+
+
+    private TaskDto completedTask(TaskDto taskDto){
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setSlaRemainInDays(remainDays(taskDto));
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return taskDto;
+    }
+    private ApplicationDto updateApplicaiton(ApplicationDto applicationDto,String appStatus){
+        applicationDto.setStatus(appStatus);
+        return applicationViewService.updateApplicaiton(applicationDto);
+    }
+
+    private List<String> getUserIds(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos){
+        Set<String> set = new HashSet<>();
+        if(appPremisesRoutingHistoryDtos == null || appPremisesRoutingHistoryDtos.size() ==0){
+            return  null;
+        }
+        for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto :appPremisesRoutingHistoryDtos ){
+            set.add(appPremisesRoutingHistoryDto.getId());
+        }
+        return  new ArrayList(set);
+
+
+    }
 }
