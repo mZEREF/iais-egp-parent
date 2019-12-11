@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -431,8 +432,9 @@ public class NewApplicationDelegator {
                 //default online payment
                 String pmtStatus = MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                appGrp.setId(appGrpId);
-                appGrp.setPmtRefNo("AN1911136061");
+                //appGrp.setId(appGrpId);
+                appGrp.setId("DCB99B5E-0618-EA11-BE78-000C29D29DB0");
+                appGrp.setPmtRefNo("AN1911136062");
                 appGrp.setPmtStatus(pmtStatus);
                 serviceConfigService.updatePaymentStatus(appGrp);
             }
@@ -465,7 +467,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void doSubmit(BaseProcessClass bpc) throws IOException {
-        /*log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
+        log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         //do validate
        // Map<String, Map<String, String>> validateResult = doValidate(bpc);
         //save the app and appGroup
@@ -489,7 +491,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         //get wrokgroup
-        log.debug(StringUtil.changeForLog("the do doSubmit end ...."));*/
+        log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }
 
 
