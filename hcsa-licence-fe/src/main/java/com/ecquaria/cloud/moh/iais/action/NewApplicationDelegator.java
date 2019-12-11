@@ -781,13 +781,15 @@ public class NewApplicationDelegator {
                         }
 
                         String offTelNo = appGrpPremisesDto.getOffTelNo();
-                        if(StringUtil.isEmpty(offTelNo)){
+                       /* if(StringUtil.isEmpty(offTelNo)){
                             errorMap.put("officeTel","cannot be blank!");
-                        }
-                        boolean matches = offTelNo.matches("^[6][0-9]{7}$");
-                        if(!matches) {
-                            errorMap.put("officeTel","Please key in a valid phone number!");
-                        }
+                        }else {
+                            boolean matches = offTelNo.matches("^[6][0-9]{7}$");
+                            if(!matches) {
+                                errorMap.put("officeTel","Please key in a valid phone number!");
+                            }
+                        }*/
+
                         String streetName = appGrpPremisesDto.getStreetName();
                         if(StringUtil.isEmpty(streetName)){
                             errorMap.put("stressName","cannot be blank!");

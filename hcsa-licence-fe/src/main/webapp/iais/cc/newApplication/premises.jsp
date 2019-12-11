@@ -183,7 +183,7 @@
                           <iais:row>
                             <iais:field value="Office Telephone No " width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:input type="text" name="${premIndexNo}offTelNo" maxLength="8" value="" id="onsitOffice" />
+                              <iais:input type="text" name="${premIndexNo}offTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" />
                               <span class="error-msg"><c:out value="${errMsg.officeTel}"></c:out></span>
                             </iais:value>
                           </iais:row>
