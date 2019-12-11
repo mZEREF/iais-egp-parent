@@ -20,7 +20,7 @@ import java.util.List;
  * @Author: jiahao
  * @Date: 2019/11/29 16:17
  */
-@FeignClient(name = "HCSA-APPLICATION", configuration = FeignConfiguration.class,
+@FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = FillUpCheckListGetAppClientFallBack.class)
 public interface FillUpCheckListGetAppClient {
     @GetMapping(path = "/iais-application-be/application/correlations/{appid}", produces = { MediaType.APPLICATION_JSON_VALUE })

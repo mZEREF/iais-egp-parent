@@ -18,7 +18,7 @@ import java.util.List;
  * @author Shicheng
  * @date 2019/12/10 16:52
  **/
-@FeignClient(name = "HCSA-APPLICATION", configuration = FeignConfiguration.class,
+@FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = AppInspectionStatusClientFallback.class)
 public interface AppInspectionStatusClient {
     @RequestMapping(path = "/iais-AppInspecStatus/search-status-swo/{status}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,

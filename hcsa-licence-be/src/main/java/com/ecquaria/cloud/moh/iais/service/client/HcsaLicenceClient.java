@@ -18,7 +18,7 @@ import java.util.List;
  * @author Wenkang
  * @date 2019/12/4 16:02
  */
-@FeignClient(name = "HCSA-LICENCE", configuration = FeignConfiguration.class,
+@FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class,
         fallback = HcsaLicenceClientFallback.class)
 public interface HcsaLicenceClient {
     @RequestMapping(path = "/hcsa-licence/hci-code-licence-number/{hciCode}",method = RequestMethod.GET)

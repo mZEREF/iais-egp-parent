@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author Shicheng
  * @date 2019/11/26 10:33
  **/
-@FeignClient(name = "HCSA-APPLICATION", configuration = FeignConfiguration.class,
+@FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = InspectionTaskClientFallback.class)
 public interface InspectionTaskClient {
     @RequestMapping(path = "/iais-inspection/one-of-inspection/{applicationNo}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },

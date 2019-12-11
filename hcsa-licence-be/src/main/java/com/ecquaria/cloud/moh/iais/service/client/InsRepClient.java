@@ -16,7 +16,7 @@ import java.util.List;
  * @author weilu
  * @date 2019/11/29 15:44
  */
-@FeignClient(name = "HCSA-APPLICATION", configuration = {FeignConfiguration.class},
+@FeignClient(name = "hcsa-application", configuration = {FeignConfiguration.class},
         fallback = InsRepClientFallback.class)
 public interface InsRepClient {
 

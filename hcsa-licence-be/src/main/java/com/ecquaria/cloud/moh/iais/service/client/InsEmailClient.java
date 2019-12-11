@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author junyu
  * @date 2019/12/2
  */
-@FeignClient(name = "HCSA-APPLICATION", configuration = {FeignConfiguration.class},
+@FeignClient(name = "hcsa-application", configuration = {FeignConfiguration.class},
         fallback = InsEmailClientFallBack.class)
 public interface InsEmailClient {
 
