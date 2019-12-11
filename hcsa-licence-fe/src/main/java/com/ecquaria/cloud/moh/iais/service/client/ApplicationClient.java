@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Wenkang
  * @date 2019/11/26 14:28
  */
-@FeignClient(name = "HCSA-APPLICATION", configuration = FeignConfiguration.class,
+@FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = ApplicationClientFallback.class)
 public interface ApplicationClient  {
     @GetMapping(path = "/iais-application/all-file")
