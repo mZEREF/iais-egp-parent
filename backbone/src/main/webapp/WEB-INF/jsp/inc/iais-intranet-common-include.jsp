@@ -10,6 +10,8 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 
+<%@ include file="/WEB-INF/jsp/inc/iaisscript.jsp" %>
+
 <link href="<%=webroot%>css/bootstrap.min.css" rel="stylesheet">
 <link href="<%=webroot%>css/custom.css" rel="stylesheet">
 <link href="<%=webroot%>css/responsiveindex.css" rel="stylesheet">
@@ -17,9 +19,14 @@
 <link href="<%=webroot%>css/nice-select.css" rel="stylesheet">
 <link href="<%=webroot%>css/swiper.css" rel="stylesheet">
 <link href="<%=webroot%>css/jquery.mCustomScrollbar.css" rel="stylesheet">
+<%--
+<link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker.min.css" rel="stylesheet">
+<link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker.standalone.min.css" rel="stylesheet">
+--%>
+<link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.min.css" rel="stylesheet">
+<link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.standalone.min.css" rel="stylesheet">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_intranet_style.css">
 
-<script src="<%=webRootCommon%>js/jquery-3.4.1.min.js"></script>
 <script src="<%=webroot%>js/bootstrap.min.js"></script>
 <script src="<%=webroot%>js/particles.js"></script>
 <script src="<%=webroot%>js/app.js"></script>
@@ -35,5 +42,12 @@
 <script src="<%=webroot%>js/cpl_app.js"></script>
 <script src="<%=webroot%>js/cpl_custom_form_script.js"></script>
 
-<%@ include file="/WEB-INF/jsp/inc/iaisscript.jsp" %>
 
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.date_picker').datepicker({
+            format:"yyyy-mm-dd"
+        });
+    });
+</script>
