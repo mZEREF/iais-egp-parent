@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.cloudfeign.FeignException;
@@ -55,7 +56,8 @@ public class InspectionNcCheckListDelegator {
     @Autowired
     AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
-
+    InspectionAssignTaskService inspectionAssignTaskService;
+    @Autowired
 
     private ApplicationViewService applicationViewService;
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
@@ -145,9 +147,12 @@ public class InspectionNcCheckListDelegator {
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
         //updateApplicaiton
+        String appPremCorrId = applicationViewDto.getAppPremisesCorrelationId();
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         updateApplicaiton(applicationDto,appStatus);
         applicationViewDto.setApplicationDto(applicationDto);
+        //ikiinspectionAssignTaskService.createTaskStatus(applicationDto);
+        insepctionNcCheckListService.updateTaskStatus(applicationDto,appPremCorrId);
         // send the task
         if(!StringUtil.isEmpty(stageId)){
             taskService.routingTask(applicationDto,stageId);

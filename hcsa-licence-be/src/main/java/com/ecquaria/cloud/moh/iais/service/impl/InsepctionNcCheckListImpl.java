@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
@@ -21,6 +22,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
@@ -50,9 +53,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
     private HcsaChklClient hcsaChklClient;
+
+    @Autowired
+    private AppInspectionStatusClient appInspectionStatusClient;
     @Override
     public InspectionFillCheckListDto getNcCheckList(InspectionFillCheckListDto infillDto, AppPremisesPreInspectChklDto appPremDto, List<AppPremisesPreInspectionNcItemDto> itemDtoList, AppPremisesRecommendationDto appPremisesRecommendationDto) {
         List<InspectionCheckQuestionDto> fillCheckList = infillDto.getCheckList();
@@ -305,21 +313,26 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     public List<NcAnswerDto> getNcAnswerDtoList(String configId,String appPremCorrId){
         List<NcAnswerDto> ncAnswerDtoList = new ArrayList<>();
         AppPremisesPreInspectChklDto appPremisesPreInspectChklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
-        String answerStr = appPremisesPreInspectChklDto.getAnswer();
-        List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answerStr, InspectionCheckListAnswerDto.class);
-        NcAnswerDto ncAnswerDto = null;
-        for(InspectionCheckListAnswerDto temp:answerDtoList){
-            ncAnswerDto = new NcAnswerDto();
-            ncAnswerDto.setItemId(temp.getItemId());
-            ncAnswerDto.setRemark(temp.getRemark());
-            ncAnswerDtoList.add(ncAnswerDto);
-        }
-        if(ncAnswerDtoList!=null &&!ncAnswerDtoList.isEmpty()){
-            for(NcAnswerDto temp:ncAnswerDtoList){
+        if(appPremisesPreInspectChklDto!=null){
+            String answerStr = appPremisesPreInspectChklDto.getAnswer();
+            List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answerStr, InspectionCheckListAnswerDto.class);
+            NcAnswerDto ncAnswerDto = null;
+            if(answerDtoList!=null &&answerDtoList.isEmpty()){
 
-                getFillNcAnswerDto(temp);
+                for(InspectionCheckListAnswerDto temp:answerDtoList){
+                    ncAnswerDto = new NcAnswerDto();
+                    ncAnswerDto.setItemId(temp.getItemId());
+                    ncAnswerDto.setRemark(temp.getRemark());
+                    ncAnswerDtoList.add(ncAnswerDto);
+                }
+                if(ncAnswerDtoList!=null &&!ncAnswerDtoList.isEmpty()){
+                    for(NcAnswerDto temp:ncAnswerDtoList){
+                        getFillNcAnswerDto(temp);
+                    }
+                }
             }
         }
+
         return ncAnswerDtoList;
     }
 
@@ -330,9 +343,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         HcsaChklSvcRegulationDto regDto = hcsaChklClient.getRegulationDtoById(cDto.getRegulationId()).getEntity();
         ncAnswerDto.setCaluseNo(regDto.getClauseNo());
         ncAnswerDto.setClause(regDto.getClause());
-        //todo:adhoc
+        //todo:adhoc and common
     }
 
-
-
+    @Override
+    public void updateTaskStatus(ApplicationDto applicationDto,String appPremCorrId) {
+        List<AppPremisesCorrelationDto> appPremCorrDtoList = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
+        List<AppInspectionStatusDto> appInspectionStatusDtos = new ArrayList<>();
+        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorrId).getEntity();
+        appInspectionStatusClient.update(appInspectionStatusDto);
+    }
 }
