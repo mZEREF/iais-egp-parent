@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * InspEmailServiceImpl
@@ -65,5 +67,10 @@ public class InspEmailServiceImpl implements InspEmailService {
     @Override
     public List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode,String svcType){
         return hcsaChklClient.getcheckListQuestionDtoList(svcCode,"Inspection").getEntity();
+    }
+
+    @Override
+    public Map<String, String > SendAndSaveEmail(EmailDto emailDto){
+        return insEmailClient.SendAndSaveEmail(emailDto).getEntity();
     }
 }

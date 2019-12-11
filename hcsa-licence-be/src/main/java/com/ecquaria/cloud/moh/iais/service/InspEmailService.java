@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -22,4 +24,5 @@ public interface InspEmailService {
     InspectionEmailTemplateDto loadingEmailTemplate(String id);
     ApplicationDto getApplicationDtoByAppPremCorrId(String appPremCorrId);
     public List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode, String svcType);
+    Map<String, String > SendAndSaveEmail(EmailDto emailDto);
 }

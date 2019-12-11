@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Map;
 
 /**
  * InsEmailClient
@@ -33,4 +36,8 @@ public interface InsEmailClient {
 
     @GetMapping(value = "/applicationDto/{appPremCorrId}",  consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppPremCorrId(@PathVariable("appPremCorrId") String appPremCorrId);
+
+    @PostMapping(path = "/emails",  consumes =  MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, String >> SendAndSaveEmail(@RequestBody EmailDto email);
+
 }
