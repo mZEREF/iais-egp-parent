@@ -558,7 +558,7 @@ public class HcsaApplicationDelegator {
                     taskDtos.add(taskDto);
                     taskDtos = taskService.createTasks(taskDtos);
                 }else{
-                    new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
+                    throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
 
             }else{
