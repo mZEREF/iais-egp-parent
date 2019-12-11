@@ -199,6 +199,7 @@
                                     <div class="col-xs-12">
 
                                         <div class="table-gp">
+                                            <h3>Common</h3>
                                             <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
                                                 <br/>
                                                 <h4><c:out value="${section.sectionName}"></c:out></h4>
@@ -238,39 +239,82 @@
                                                     </tbody>
                                                 </table>
                                             </c:forEach>
-                                            <div class="col-xs-12">
-                                                <div class="input-group">
-                                                    <div class="ax_default text_area">
-                                                        <h4>Best Practice</h4>
-                                                        <textarea cols="70" rows="7" name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group">
-                                                    <div class="ax_default text_area">
-                                                        <h4>TCU Date</h4> &nbsp;<iais:datePicker id = "tuc" name = "tuc" value="${fillCheckListDto.tuc}"></iais:datePicker><br>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group">
-                                                    <div class="ax_default text_area">
-                                                        <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div align="right">
-                                                <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
-                                                    Next
-                                                </button>
-                                            </div>
-                                            <iais:error>
-                                                <c:if test = "${not empty errorMap}">
-                                                    <div class="error">
-                                                        <c:forEach items="${errorMap}" var="map">
-                                                            ${map.key}  ${map.value} <br/>
-                                                        </c:forEach>
-                                                    </div>
-                                                </c:if>
-                                            </iais:error>
                                         </div>
+
+                                        <div class="table-gp">
+                                            <h3>General</h3>
+                                            <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
+                                                <br/>
+                                                <h4><c:out value="${section.sectionName}"></c:out></h4>
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Regulation Clause Number</th>
+                                                        <th>Item</th>
+                                                        <th>Yes</th>
+                                                        <th>No</th>
+                                                        <th>N/A</th>
+                                                        <th>Remark</th>
+                                                        <th>Rectified</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                                                        <tr>
+                                                            <td class="row_no">${(status.index + 1) }</td>
+                                                            <td>${item.incqDto.regClauseNo}</td>
+                                                            <td>${item.incqDto.checklistItem}</td>
+                                                            <c:set value = "${item.incqDto.sectionName}${item.incqDto.itemId}" var = "ckkId"/>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
+                                                            <td>
+                                                                <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" />
+                                                            </td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
+                                                            <td>
+                                                                <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>ck" <c:if test="${item.incqDto.rectified == false}">hidden</c:if>>
+                                                                    <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </c:forEach>
+                                        </div>gg
+                                        <div class="col-xs-12">
+                                            <div class="input-group">
+                                                <div class="ax_default text_area">
+                                                    <h4>Best Practice</h4>
+                                                    <textarea cols="70" rows="7" name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <div class="ax_default text_area">
+                                                    <h4>TCU Date</h4> &nbsp;<iais:datePicker id = "tuc" name = "tuc" value="${fillCheckListDto.tuc}"></iais:datePicker><br>
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <div class="ax_default text_area">
+                                                    <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div align="right">
+                                            <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
+                                                Next
+                                            </button>
+                                        </div>
+                                        <iais:error>
+                                            <c:if test = "${not empty errorMap}">
+                                                <div class="error">
+                                                    <c:forEach items="${errorMap}" var="map">
+                                                        ${map.key}  ${map.value} <br/>
+                                                    </c:forEach>
+                                                </div>
+                                            </c:if>
+                                        </iais:error>
                                     </div>
                                 </div>
                             </div>

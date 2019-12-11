@@ -198,7 +198,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         AppPremPreInspectionNcDto ncDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appCorrId).getEntity();
         String ncId = ncDto.getId();
         //List<AppPremisesPreInspectionNcItemDto> ncItemDtoList = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-apppreinsncitem-be/AppPremNcItemByNcId{ncId}", ncId, AppPremisesPreInspectionNcItemDto.class);
-        List<AppPremisesPreInspectionNcItemDto> ncItemDtoList = fillUpCheckListGetAppClient.getAppNcItemByAppCorrId(ncId).getEntity();
+        List<AppPremisesPreInspectionNcItemDto> ncItemDtoList = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
         return ncItemDtoList;
     }
 
@@ -273,7 +273,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             //appPremPreInspectionNcDto = RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinsnc-be/AppPremNcResult",appPremPreInspectionNcDto,AppPremPreInspectionNcDto.class);
             appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(dto, appPremPreInspectionNcDto);
-            //RestApiUtil.postGetList("hcsa-config:8883/iais-apppreinsncitem-be/AppPremNcItemResult",appPremisesPreInspectionNcItemDtoList,AppPremisesPreInspectionNcItemDto.class);
             fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtoList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -283,7 +282,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     public List<AppPremisesPreInspectionNcItemDto> getAppPremisesPreInspectionNcItemDto(InspectionFillCheckListDto dto, AppPremPreInspectionNcDto ncDto) {
         List<InspectionCheckQuestionDto> insqDtoList = dto.getCheckList();
-        List<AppPremisesPreInspectionNcItemDto> ncItemDtoList =  fillUpCheckListGetAppClient.getAppNcItemByAppCorrId(ncDto.getId()).getEntity();
+        List<AppPremisesPreInspectionNcItemDto> ncItemDtoList =  new ArrayList<>();
         for (InspectionCheckQuestionDto temp : insqDtoList) {
             AppPremisesPreInspectionNcItemDto ncItemDto = null;
             ncItemDto = new AppPremisesPreInspectionNcItemDto();

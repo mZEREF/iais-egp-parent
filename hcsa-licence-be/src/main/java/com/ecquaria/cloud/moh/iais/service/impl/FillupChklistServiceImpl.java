@@ -329,6 +329,18 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }
         }
         dto.setCheckList(checkList);
+        if(checkList!=null && !checkList.isEmpty()){
+            List<InspectionCheckQuestionDto> cqDtoList = new ArrayList<>();
+            for(ChecklistQuestionDto temp:checkList){
+                InspectionCheckQuestionDto inspectionCheckQuestionDto = null;
+                inspectionCheckQuestionDto = transferQuestionDtotoInDto(temp);
+                inspectionCheckQuestionDto.setAppPreCorreId(appPremCorrId);
+                cqDtoList.add(inspectionCheckQuestionDto);
+            }
+            dto.setCheckList(checkList);
+            fillInspectionFillCheckListDto(dto);
+            return dto;
+        }
         return dto;
     }
 }

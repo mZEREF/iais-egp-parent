@@ -35,8 +35,22 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             errMap.put("allList","Please fill in checkList.");
         }
         tcuVad(icDto,errMap);
-
+        commonVad(request,errMap);
         return errMap;
+    }
+
+    public void commonVad(HttpServletRequest request,Map<String, String> errMap){
+        InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"comcDto");
+        List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
+        if(cqDtoList!=null && !cqDtoList.isEmpty()){
+            for(InspectionCheckQuestionDto temp:cqDtoList){
+                if(StringUtil.isEmpty(temp.getChkanswer())){
+                    errMap.put(temp.getSectionName()+temp.getItemId(),"Answer is mandaroty.");
+                }
+            }
+        }else{
+            errMap.put("allList","Please fill in checkList.");
+        }
     }
     public void tcuVad(InspectionFillCheckListDto icDto,Map<String, String> errMap){
         try {

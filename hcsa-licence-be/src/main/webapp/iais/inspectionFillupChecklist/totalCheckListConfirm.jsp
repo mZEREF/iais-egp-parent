@@ -246,9 +246,14 @@
                                                 </div>
                                                 <div class="input-group">
                                                     <div class="ax_default text_area">
-                                                        <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" disabled id="tcuRemark"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                        <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" disabled id="tcuRemark"><c:out value="${fillCheckListDto.tcuRemark}"></c:out></textarea>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div align="left">
+                                                <button type="button" class="btn btn-primary" onclick="javascript: doBack();">
+                                                    Back
+                                                </button>
                                             </div>
                                             <div align="right">
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">

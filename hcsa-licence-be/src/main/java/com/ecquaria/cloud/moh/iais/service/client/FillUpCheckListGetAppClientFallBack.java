@@ -80,7 +80,7 @@ public class FillUpCheckListGetAppClientFallBack implements  FillUpCheckListGetA
     }
 
     @Override
-    public FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getAppNcItemByAppCorrId(String ncId) {
+    public FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getAppNcItemByNcId(String ncId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

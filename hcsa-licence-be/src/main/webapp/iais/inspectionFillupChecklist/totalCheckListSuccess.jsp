@@ -241,7 +241,7 @@
                                                 </div>
                                                 <div class="input-group">
                                                     <div class="ax_default text_area">
-                                                        <h4>Remark</h4> <textarea cols="70" rows="7" disabled name="tcuRemark" id="tcuRemark"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                        <h4>Remark</h4> <textarea cols="70" rows="7" disabled name="tcuRemark" id="tcuRemark"><c:out value="${fillCheckListDto.tcuRemark}"></c:out></textarea>
                                                     </div>
                                                 </div>
                                             </div>

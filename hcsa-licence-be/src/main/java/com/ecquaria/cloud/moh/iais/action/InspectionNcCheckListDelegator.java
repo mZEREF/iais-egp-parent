@@ -1,8 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -69,8 +67,6 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void init(BaseProcessClass bpc){
-
-
         Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
@@ -127,7 +123,7 @@ public class InspectionNcCheckListDelegator {
 
         insepctionNcCheckListService.submit(icDto);
         try {
-            routingTask(bpc, HcsaConsts.ROUTING_STAGE_INS, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
+            //routingTask(bpc, HcsaConsts.ROUTING_STAGE_INS, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
         }catch (Exception e){
 
         }
@@ -201,7 +197,7 @@ public class InspectionNcCheckListDelegator {
             String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rad");
             String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"remark");
             String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rec");
-            if(!StringUtil.isEmpty(rectified)){
+            if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
                 temp.setRectified(true);
             }else{
                 temp.setRectified(false);
@@ -218,7 +214,4 @@ public class InspectionNcCheckListDelegator {
         fillupChklistService.fillInspectionFillCheckListDto(cDto);
         return cDto;
     }
-
-
-
 }

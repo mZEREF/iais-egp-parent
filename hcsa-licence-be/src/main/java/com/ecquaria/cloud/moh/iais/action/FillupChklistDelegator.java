@@ -66,11 +66,11 @@ public class FillupChklistDelegator {
         String serviceCode ="BLB";
         String serviceType = "Inspection";
         InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceCode,serviceType);
-        //ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
-        //InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
-        //ParamUtil.setSessionAttr(request,"commonDto",commonDto);
-        ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
+        ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
+        InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
 
+        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
+        ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
     }
     /**
      * AutoStep: AssignedInspectionTask
@@ -100,8 +100,10 @@ public class FillupChklistDelegator {
     public void inspectionChecklist(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         InspectionFillCheckListDto cDto = getDataFromPage(request);
+        InspectionFillCheckListDto comcDto= getCommonDataFromPage(request);
         InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
         ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
+        ParamUtil.setSessionAttr(request,"comcDto",cDto);
         Map<String, String> errMap = InspectionCheckListValidation.validate(request);
         List<SelectOption> isTcuOption = new ArrayList<>();
         SelectOption op = new SelectOption("Yes","Yes");
@@ -130,6 +132,25 @@ public class FillupChklistDelegator {
         fillupChklistService.saveDto(icDto);
         fillupChklistService.saveCommonDto(commonCheckListDto,icDto.getCheckList().get(0).getAppPreCorreId());
     }
+    public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
+        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
+        List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
+        for(InspectionCheckQuestionDto temp:checkListDtoList){
+            String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrad");
+            String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comremark");
+            String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrec");
+            if(!StringUtil.isEmpty(rectified)){
+                temp.setRectified(true);
+            }else{
+                temp.setRectified(false);
+            }
+            temp.setChkanswer(answer);
+            temp.setRemark(remark);
+        }
+        return cDto;
+    }
+
+
 
     public InspectionFillCheckListDto getDataFromPage(HttpServletRequest request){
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");

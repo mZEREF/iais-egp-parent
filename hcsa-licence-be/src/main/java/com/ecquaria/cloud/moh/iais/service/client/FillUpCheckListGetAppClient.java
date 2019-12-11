@@ -56,7 +56,7 @@ public interface FillUpCheckListGetAppClient {
 
     @GetMapping(path = "/iais-apppreinsncitem-be/AppPremNcItemByNcId{ncId}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
-    FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getAppNcItemByAppCorrId(@PathVariable(value ="ncId" ) String ncId);
+    FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getAppNcItemByNcId(@PathVariable(value ="ncId" ) String ncId);
 
 
 }
