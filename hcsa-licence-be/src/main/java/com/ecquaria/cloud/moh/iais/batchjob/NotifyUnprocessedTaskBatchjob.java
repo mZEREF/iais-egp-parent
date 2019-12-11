@@ -52,7 +52,7 @@ public class NotifyUnprocessedTaskBatchjob {
         ) {
             //todo jugde email sent
             receipts.clear();
-            templateHtml.replace("OFFICER_NAME",item.getName());
+//            templateHtml.replace("OFFICER_NAME",item.getName());
             email.setReqRefNum(REQ_REF_NUM);
             receipts.add(item.getEmailAddr());
             email.setContent(templateHtml);
@@ -66,7 +66,7 @@ public class NotifyUnprocessedTaskBatchjob {
         ) {
             //todo jugde email sent
             receipts.clear();
-            templateHtml.replace("OFFICER_NAME",item.getName());
+//            templateHtml.replace("OFFICER_NAME",item.getName());
             email.setReqRefNum(REQ_REF_NUM);
             receipts.add(item.getEmailAddr());
             email.setContent(templateHtml);
