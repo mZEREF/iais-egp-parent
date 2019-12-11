@@ -412,32 +412,6 @@
             }
         });
 
-
-
-          if($('.premSelect').val()!=""){
-              var premSelectVal = $('.premSelect').val();
-              $premSelect = $('.premSelect').closest('div.premContent');
-              var thisId = $('.premSelect').attr('id');
-              if("newPremise" == premSelectVal){
-                   /* $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                    $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-                    if("premOnsiteSel" == thisId){
-                        $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
-                        $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-                    }else if ("premConSel" == thisId) {
-                        $premSelect.find('.new-premise-form-conveyance').removeClass('hidden');
-                        $premSelect.find('.new-premise-form-on-site').addClass('hidden');
-                    }*/
-              }/*else if("-1" == premSelectVal){
-                  $premSelect.find('.new-premise-form-conveyance').addClass('hidden');
-                  $premSelect.find('.new-premise-form-on-site').addClass('hidden');
-              }*/
-          }
-
-
-
-
-
         premType();
 
         premSelect();
@@ -669,37 +643,6 @@ var retrieveAddr = function(){
             }
         });
     });
-
-
-    $('.fireIssuedDate').datetimepicker({
-        format:"yyyy-mm-dd",
-        weekStart: 0,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        forceParse: 0,
-        showMeridian: 1,
-        //0=>min , 1=>hour , 2=>day , 3=>mon
-        minView:2
-    });
-
-    $('.form_datetime').datetimepicker({
-        format:"yyyy-mm-dd",
-        weekStart: 0,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        forceParse: 0,
-        showMeridian: 1,
-        //0=>min , 1=>hour , 2=>day , 3=>mon
-        minView:2
-    });
-
-    var postalCode=  function () {
-        $('.premTypeRadio').attr("checked");
-      }
-
-
 
 </script>
 
