@@ -430,6 +430,8 @@ public class HcsaApplicationDelegator {
                     taskDto.getTaskKey(), taskDto.getWkGrpId(),null,null);
             broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             //save the broadcast
+            broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto);
             broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto);
 

@@ -24,13 +24,13 @@ public interface AppPremisesRoutingHistoryClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesRoutingHistoryDto> createAppPremisesRoutingHistory(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto);
 
-    @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistorys/{appId}" ,method = RequestMethod.GET)
+    @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistorys/{appId}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysByAppId(@PathVariable("appId") String appId);
 
-    @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistory/{appId}/{stageId}" ,method = RequestMethod.GET)
+    @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistory/{appId}/{stageId}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppIdAndStageId(@PathVariable("appId") String appId,
                                                                                                      @PathVariable("stageId") String stageId);
 
-    @RequestMapping(value = "/iais-application-history/historys",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/iais-application-history/historys",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> createAppPremisesRoutingHistorys(@RequestBody List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos);
 }
