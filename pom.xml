@@ -40,6 +40,7 @@
         <module>fe-main</module>
         <module>hcsa-licence-be</module>
         <module>payment</module>
+        <module>be-main</module>
     </modules>
     <dependencyManagement>
         <dependencies>
