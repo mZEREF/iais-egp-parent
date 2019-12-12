@@ -429,13 +429,11 @@ public class NewApplicationDelegator {
                 AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
                 String appGrpId = appSubmissionDto.getAppGrpId();
                 //String pmtRefNo = bpc.request.getParameter("pmtRefNo");
-                //default online payment
-                String pmtStatus = MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                //appGrp.setId(appGrpId);
-                appGrp.setId("DCB99B5E-0618-EA11-BE78-000C29D29DB0");
+                appGrp.setId(appGrpId);
+                //appGrp.setId("DCB99B5E-0618-EA11-BE78-000C29D29DB0");
                 appGrp.setPmtRefNo("AN1911136062");
-                appGrp.setPmtStatus(pmtStatus);
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
             }
         }
