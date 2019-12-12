@@ -149,7 +149,7 @@ public class AdhocChecklistDelegator {
     }
 
     /**
-     * AutoStep: validateAdhocData
+     * AutoStep: doBack
      *
      * @param bpc
      * @throws
@@ -157,6 +157,17 @@ public class AdhocChecklistDelegator {
     public void doBack(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
+    }
+
+    /**
+     * AutoStep: doCancel
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doCancel(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "Y");
     }
 
     /**
@@ -296,6 +307,13 @@ public class AdhocChecklistDelegator {
      */
     public void customItem(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+
+        String action = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        if (!"customItem".equals(action)){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "Y");
+            return;
+        }
+
         String question = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM);
         String answerType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE);
         String riskLevel = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_RISK_LEVEL);

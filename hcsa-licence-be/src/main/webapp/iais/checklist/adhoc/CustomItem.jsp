@@ -84,10 +84,10 @@
         </div>
       </div>
       <div class="col-xs-12 col-sm-6">
-        <p><a class="back" onclick="doCancel();"><i class="fa fa-angle-left" ></i> Back</a></p>
+        <p><a class="back" onclick="doBack();"><i class="fa fa-angle-left" ></i> Back</a></p>
       </div>
       <div class="text-right text-center-mobile">
-            <a class="btn btn-primary appendClass " id = "appendBtnId">Append</a>
+            <a class="btn btn-primary appendClass " id = "appendBtnId">Custom</a>
       </div>
     </div>
 
@@ -118,9 +118,12 @@
 
 
 
-        SOP.Crud.cfxSubmit("mainForm", "doAppend");
+        SOP.Crud.cfxSubmit("mainForm", "customItem");
     }
-
+  
+    function doBack() {
+        SOP.Crud.cfxSubmit("mainForm", "doBack");
+    }
 
 
 </script>

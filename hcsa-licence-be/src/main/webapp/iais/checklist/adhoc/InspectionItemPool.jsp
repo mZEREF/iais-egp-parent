@@ -143,7 +143,7 @@
     }
 
     function doCancel(){
-        SOP.Crud.cfxSubmit("mainForm", "appendToTail");
+        SOP.Crud.cfxSubmit("mainForm", "doCancel");
     }
 
 </script>
