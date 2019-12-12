@@ -2,7 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
+<script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -44,7 +46,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <p><textarea name="messageContent" cols="80" rows="23" class="wenbenkuang" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
+                                                <p><textarea name="messageContent" cols="110" rows="40" class="wenbenkuang" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
                                             </div>
                                         </td>
                                     </tr>
@@ -56,7 +58,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <select id="decision-email" name="decision">
+                                                <select id="decision-validate-email" name="decision">
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
                                                     </c:forEach>
@@ -66,14 +68,14 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <div class="text-right text-center-mobile">
+                                <p class="text-right text-center-mobile">
                                     <iais:action>
                                         <button type="button" class="search btn" onclick="javascript:doSend();">Submit</button>
                                     </iais:action>
                                     <iais:action>
                                         <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
                                     </iais:action>
-                                </div>
+                                </p>
                             </div>
 
                         </div>

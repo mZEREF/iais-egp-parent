@@ -95,7 +95,7 @@ public class InspectEmailAo1Delegator {
         if(!"send".equals(currentAction)){
             return;
         }
-        String decision=ParamUtil.getRequestString(request,"decision");
+        String decision=ParamUtil.getString(request,"decision");
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
@@ -158,7 +158,7 @@ public class InspectEmailAo1Delegator {
         if(!"preEmailView".equals(currentAction)){
             return;
         }
-        String taskId="48512333-7A16-EA11-BE7D-000C29F371DC";
+        String taskId="7102C311-D10D-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);

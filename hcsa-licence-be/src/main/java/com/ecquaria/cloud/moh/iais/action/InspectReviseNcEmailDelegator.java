@@ -100,7 +100,7 @@ public class InspectReviseNcEmailDelegator {
         if(!"send".equals(currentAction)){
             return;
         }
-        String decision=ParamUtil.getRequestString(request,"decision");
+        String decision=ParamUtil.getString(request,"decision");
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
@@ -156,7 +156,7 @@ public class InspectReviseNcEmailDelegator {
         if(true)
         {
             String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-            String taskId="47512333-7A16-EA11-BE7D-000C29F371DC";
+            String taskId="7102C311-D10D-EA11-BE7D-000C29F371DC";
             TaskDto taskDto = taskService.getTaskById(taskId);
             String appNo = taskDto.getRefNo();
             //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();

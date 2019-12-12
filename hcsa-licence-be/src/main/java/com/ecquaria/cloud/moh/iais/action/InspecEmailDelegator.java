@@ -151,7 +151,7 @@ public class InspecEmailDelegator {
         if(!"send".equals(currentAction)){
             return;
         }
-        String decision=ParamUtil.getRequestString(request,"decision");
+        String decision=ParamUtil.getString(request,"decision");
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
