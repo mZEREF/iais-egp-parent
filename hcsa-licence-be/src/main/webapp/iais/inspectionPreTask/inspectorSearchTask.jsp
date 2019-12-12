@@ -72,9 +72,11 @@
                         <div onload="inspectorSearchTask_optionNameAuto(${inspectorValue})">
                           <select name = "inspectorSearchTask_inspectorName" id="inspectorSearchTask_inspectorName" onclick="javascript:doInspectorSearchTaskSelect()">
                             <option value="-">Please select</option>
-                            <c:forEach var="inspector" items="${inspectorOption.rows}">
-                              <option value="<iais:mask name="inspectorName" value="${inspector.value}"/>"><c:out value="${inspector.text}"/></option>
-                            </c:forEach>
+                            <c:if test="${inspectorOption != null}">
+                              <c:forEach var="inspector" items="${inspectorOption.rows}">
+                                <option value="<iais:mask name="inspectorName" value="${inspector.value}"/>"><c:out value="${inspector.text}"/></option>
+                              </c:forEach>
+                            </c:if>
                           </select>
                         </div>
                       </iais:value>
