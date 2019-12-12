@@ -126,12 +126,14 @@ public class AdhocChecklistDelegator {
     public void saveAdhocItem(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
-        AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocConfigObj(request);
-        adhocCheckListConifgDto.setPremCorreId(adhocChecklistService.getCurrentCorreId());
-        adhocCheckListConifgDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        adhocCheckListConifgDto.setVersion(1);
-        adhocCheckListConifgDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
+        AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
+        if (adhocCheckListConifgDto != null){
+            adhocCheckListConifgDto.setPremCorreId(adhocChecklistService.getCurrentCorreId());
+            adhocCheckListConifgDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            adhocCheckListConifgDto.setVersion(1);
+            adhocCheckListConifgDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
+        }
     }
 
 
@@ -172,8 +174,11 @@ public class AdhocChecklistDelegator {
         List<AdhocChecklistItemDto> allAdhocItem = adhocConfigObj.getAllAdhocItem();
         allAdhocItem.removeIf(adhocItem -> adhocItem.getQuestion().equals(value));
 
-        ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocConfigObj);
-
+        if(allAdhocItem.size() == 0){
+            ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
+        }else {
+            ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocConfigObj);
+        }
     }
 
     private Boolean addToCapacity(List<ChecklistItemDto> selectItemList) {

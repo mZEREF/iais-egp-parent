@@ -100,8 +100,7 @@
             </c:forEach>
             </c:forEach>
 
-
-            <c:if test="${adhocCheckListAttr != null}">
+            <c:if test="${!empty adhocCheckListAttr}">
               <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
                   <div class="panel-heading"  role="tab">
@@ -115,6 +114,7 @@
                           <th>Checklist Item</th>
                           <th>Answer Type</th>
                           <th>Risk Level</th>
+                          <th>Actionl</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -128,6 +128,10 @@
                             </td>
                             <td>
                               <p>${adhocItem.riskLvl}</p>
+                            </td>
+
+                            <td>
+                              <button id="removeAdhocItemId" value="${adhocItem.question}" type="button">Remove</button>
                             </td>
                           </tr>
                         </c:forEach>
@@ -170,6 +174,11 @@
 
   nextAdhocItemBtn.onclick = function(){
       SOP.Crud.cfxSubmit("mainForm", "saveAdhocItem");
+  }
+
+  removeAdhocItemId.onclick = function () {
+      var content = $("#removeAdhocItemId").val();
+      SOP.Crud.cfxSubmit("mainForm", "removeAdhocItem", content);
   }
 
 </script>
