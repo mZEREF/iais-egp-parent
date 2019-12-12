@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -100,14 +101,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(StringUtil.isEmpty(applicationNo)){
             applicationNo = SystemParameterConstants.PARAM_FALSE;
         }
-        String workGrpId;
-        String status;
         List<OrgUserDto> orgUserDtos = new ArrayList<>();
         for(TaskDto tDto:commPools){
             if(applicationNo.equals(tDto.getRefNo())){
-                workGrpId = tDto.getWkGrpId();
-                status = tDto.getTaskStatus();
-                orgUserDtos =  organizationClient.getUsersByWorkGroupName(workGrpId, status).getEntity();
+                orgUserDtos =  organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), tDto.getTaskStatus()).getEntity();
             }
         }
 
@@ -127,7 +124,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssDto.setInspectionType(applicationGroupDto.getIsPreInspection());
         inspecTaskCreAndAssDto.setSubmitDt(applicationGroupDto.getSubmitDt());
         //set inspector checkbox list
-        setInspectorByOrgUserDto(inspecTaskCreAndAssDto, orgUserDtos);
+        setInspectorByOrgUserDto(inspecTaskCreAndAssDto, orgUserDtos, loginContext);
         setInspectorLeadName(inspecTaskCreAndAssDto, orgUserDtos, loginContext);
         return inspecTaskCreAndAssDto;
     }
@@ -141,21 +138,43 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
     }
 
-    private void setInspectorByOrgUserDto(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos) {
+    private void setInspectorByOrgUserDto(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, LoginContext loginContext) {
         if(orgUserDtos == null || orgUserDtos.size() <= 0){
             inspecTaskCreAndAssDto.setInspector(null);
             return;
         }
         List<SelectOption> inspectorList = new ArrayList<>();
-        for(OrgUserDto oDto:orgUserDtos){
-            for(String role:oDto.getUserRoles()){
-                if("inspector".equals(role)){
-                    SelectOption inspector = new SelectOption(oDto.getId(), oDto.getUserName());
-                    inspectorList.add(inspector);
+        Set<String> roles = loginContext.getRoleIds();
+        List<String> roleList = new ArrayList<>(roles);
+        if(roleList.contains("inspectorLead")){
+            addInspector(inspectorList, orgUserDtos, loginContext, roleList);
+        } else {
+            for(OrgUserDto oDto:orgUserDtos){
+                if(oDto.getId().equals(loginContext.getUserId())){
+                    SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                    inspectorList.add(so);
                 }
             }
         }
         inspecTaskCreAndAssDto.setInspector(inspectorList);
+    }
+
+    private void addInspector(List<SelectOption> inspectorList, List<OrgUserDto> orgUserDtos, LoginContext loginContext, List<String> roleList) {
+        String flag = AppConsts.FALSE;
+        if(roleList.contains("inspector")){
+            flag = AppConsts.TRUE;
+        }
+        for(OrgUserDto oDto:orgUserDtos){
+            if(!(oDto.getId().equals(loginContext.getUserId()))){
+                SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                inspectorList.add(so);
+            } else {
+                if(AppConsts.TRUE.equals(flag)){
+                    SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                    inspectorList.add(so);
+                }
+            }
+        }
     }
 
     @Override

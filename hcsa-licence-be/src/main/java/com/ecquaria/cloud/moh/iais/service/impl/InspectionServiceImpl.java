@@ -158,10 +158,8 @@ public class InspectionServiceImpl implements InspectionService {
         String flag = AppConsts.FALSE;
         Set<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
-        for(String role:roleList){
-            if("inspector".equals(role)){
-                flag = AppConsts.TRUE;
-            }
+        if(roleList.contains("inspector")){
+            flag = AppConsts.TRUE;
         }
         for(OrgUserDto oDto:orgUserDtoList){
             if(!(oDto.getId().equals(loginContext.getUserId()))){

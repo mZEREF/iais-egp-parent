@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -27,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -227,6 +230,7 @@ public class InspecAssignTaskDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String sub_date = ParamUtil.getRequestString(bpc.request, "sub_date");
+        String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
         setMapTaskId(bpc, commPools);
         String[] applicationNo_list = inspectionAssignTaskService.getApplicationNoListByPool(commPools);
@@ -251,7 +255,20 @@ public class InspecAssignTaskDelegator {
             searchParam.addFilter("hci_name",hci_name,true);
         }
         if(!StringUtil.isEmpty(sub_date)){
-            searchParam.addFilter("sub_date",sub_date,true);
+            try {
+                Date sub_date2 = Formatter.parseDate(sub_date);
+                searchParam.addFilter("sub_date",sub_date2,true);
+            } catch (ParseException p){
+                log.debug(StringUtil.changeForLog("the sub_date2 Invalid Date ...."), p);
+            }
+        }
+        if(!StringUtil.isEmpty(hci_address)){
+            searchParam.addFilter("blk_no", hci_address,true);
+            searchParam.addFilter("floor_no", hci_address,true);
+            searchParam.addFilter("unit_no", hci_address,true);
+            searchParam.addFilter("street_name", hci_address,true);
+            searchParam.addFilter("building_name", hci_address,true);
+            searchParam.addFilter("postal_code", hci_address,true);
         }
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
