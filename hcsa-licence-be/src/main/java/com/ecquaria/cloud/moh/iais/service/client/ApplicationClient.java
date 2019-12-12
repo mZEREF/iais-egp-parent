@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
-import com.ecquaria.cloud.moh.iais.config.FeignExceptionConfiguration;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -66,4 +65,9 @@ public interface ApplicationClient {
 
     @PostMapping(value = "/iais-adhoc-checklist-conifg/adhoc-items", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveAdhocChecklist(@RequestBody AdhocCheckListConifgDto adhocConfigDto);
+
+    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhocchecklistbyappremid/{appremId}")
+    FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAdhocByAppPremCorrId(@PathVariable(name = "appremId") String appremId);
+
+
 }
