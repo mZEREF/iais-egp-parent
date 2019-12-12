@@ -408,13 +408,15 @@ public class HcsaApplicationDelegator {
 
             //add this user to this workgroup
             List<UserGroupCorrelationDto> userGroupCorrelationDtoList = broadcastOrganizationDto.getUserGroupCorrelationDtoList();
-            if(broadcastOrganizationDto.getWorkingGroupDto()!= null && userGroupCorrelationDtoList.size() > 0){
+            if(broadcastOrganizationDto.getWorkingGroupDto()!= null && userGroupCorrelationDtoList != null && userGroupCorrelationDtoList.size() > 0){
                 userGroupCorrelationDtoList =changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtoList,AppConsts.COMMON_STATUS_ACTIVE);
             }else{
+                userGroupCorrelationDtoList = new ArrayList<>();
                 for(String id : userIds) {
                     UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
                     userGroupCorrelationDto.setUserId(id);
                     userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    userGroupCorrelationDto.setIsLeadForGroup(Integer.parseInt(AppConsts.NO));
                     userGroupCorrelationDtoList.add(userGroupCorrelationDto);
                 }
             }
@@ -557,7 +559,7 @@ public class HcsaApplicationDelegator {
             //For the BROADCAST Rely
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(oldStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1 = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(
-                        applicationViewDto.getAppPremisesCorrelationId(),stageId
+                        applicationDto.getId(),stageId
                 );
                 if(appPremisesRoutingHistoryDto1 != null){
                     taskDto = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
@@ -646,7 +648,7 @@ public class HcsaApplicationDelegator {
             return  null;
         }
         for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto :appPremisesRoutingHistoryDtos ){
-            set.add(appPremisesRoutingHistoryDto.getId());
+            set.add(appPremisesRoutingHistoryDto.getActionby());
         }
         return  new ArrayList(set);
 

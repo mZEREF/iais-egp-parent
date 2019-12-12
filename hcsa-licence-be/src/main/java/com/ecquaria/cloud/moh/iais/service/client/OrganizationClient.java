@@ -57,7 +57,7 @@ public interface OrganizationClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupCorreByUserId(@PathVariable(value = "userId") String userId);
 
-    @RequestMapping(path = "/{groupName}/{groupDomain}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(path = "/iais-broadcast/{groupName}/{groupDomain}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<BroadcastOrganizationDto> getBroadcastOrganizationDto(@PathVariable(name = "groupName") String groupName,
                                                                               @PathVariable(name = "groupDomain") String groupDomain);
 
