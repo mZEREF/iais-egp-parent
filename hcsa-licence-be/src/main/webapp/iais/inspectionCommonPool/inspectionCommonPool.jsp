@@ -51,9 +51,15 @@
                       </iais:value>
                     </iais:row>
                     <iais:row>
-                      <iais:field value="HCI Name / Address"/>
+                      <iais:field value="HCI Name"/>
                       <iais:value width="18">
                         <input type="text" name="hci_name" value="${cPoolSearchParam.filters['hci_name']}" />
+                      </iais:value>
+                    </iais:row>
+                    <iais:row>
+                      <iais:field value="HCI Address"/>
+                      <iais:value width="18">
+                        <input type="text" name="hci_address" value="${cPoolSearchParam.filters['blk_no']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
@@ -85,6 +91,7 @@
               <table class="table">
                 <thead>
                   <tr align="center">
+                    <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
@@ -98,7 +105,7 @@
                     <c:when test="${empty cPoolSearchResult.rows}">
                       <tr>
                         <td colspan="6">
-                          <iais:message key="ACK00001" escape="true"></iais:message>
+                          <iais:message key="Null!" escape="true"></iais:message>
                           <!--No Record!!-->
                         </td>
                       </tr>
@@ -106,6 +113,7 @@
                     <c:otherwise>
                       <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
                         <tr>
+                          <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
                           <td><c:out value="${pool.applicationNo}"/></td>
                           <td><c:out value="${pool.applicationType}"/></td>
                           <td><c:out value="${pool.hciCode}"/></td>
