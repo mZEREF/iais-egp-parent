@@ -322,10 +322,12 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             NcAnswerDto ncAnswerDto = null;
             if(answerDtoList!=null &&!answerDtoList.isEmpty()){
                 for(InspectionCheckListAnswerDto temp:answerDtoList){
-                    ncAnswerDto = new NcAnswerDto();
-                    ncAnswerDto.setItemId(temp.getItemId());
-                    ncAnswerDto.setRemark(temp.getRemark());
-                    ncAnswerDtoList.add(ncAnswerDto);
+                    if("No".equals(temp.getAnswer())){
+                        ncAnswerDto = new NcAnswerDto();
+                        ncAnswerDto.setItemId(temp.getItemId());
+                        ncAnswerDto.setRemark(temp.getRemark());
+                        ncAnswerDtoList.add(ncAnswerDto);
+                    }
                 }
                 if(ncAnswerDtoList!=null &&!ncAnswerDtoList.isEmpty()){
                     for(NcAnswerDto temp:ncAnswerDtoList){
