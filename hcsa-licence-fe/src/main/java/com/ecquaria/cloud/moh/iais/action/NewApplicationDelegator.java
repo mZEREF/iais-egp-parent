@@ -688,8 +688,63 @@ public class NewApplicationDelegator {
      * @return
      * @description: for the page validate call.
      */
-    public AppSubmissionDto getValueFromPage(HttpServletRequest request) {
-        return (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
+    public AppGrpPremisesDto getValueFromPage(HttpServletRequest request) {
+        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+        String premisesIndexNo = "prem"+ 0;
+        String premisesType = ParamUtil.getString(request, premisesIndexNo+"premType");
+        appGrpPremisesDto.setPremisesType(premisesType);
+        appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
+            String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premOnSiteSelect");
+            String hciName = ParamUtil.getString(request, premisesIndexNo+"hciName");
+            String postalCode = ParamUtil.getString(request,  premisesIndexNo+"postalCode");
+            String blkNo = ParamUtil.getString(request, premisesIndexNo+"blkNo");
+            String streetName = ParamUtil.getString(request, premisesIndexNo+"streetName");
+            String floorNo = ParamUtil.getString(request, premisesIndexNo+"floorNo");
+            String unitNo = ParamUtil.getString(request, premisesIndexNo+"unitNo");
+            String buildingName = ParamUtil.getString(request, premisesIndexNo+"buildingName");
+            String siteAddressType = ParamUtil.getString(request, premisesIndexNo+"siteAddressType");
+            String siteSafefyNo = ParamUtil.getString(request, premisesIndexNo+"siteSafefyNo");
+            String addrType = ParamUtil.getString(request, premisesIndexNo+"addrType");
+            String offTelNo= ParamUtil.getString(request,premisesIndexNo+"offTelNo");
+            String fireSafetyCertIssuedDate  = ParamUtil.getString(request, premisesIndexNo+"fireSafetyCertIssuedDate");
+            appGrpPremisesDto.setPremisesSelect(premisesSelect);
+            appGrpPremisesDto.setHciName(hciName);
+            appGrpPremisesDto.setPostalCode(postalCode);
+            appGrpPremisesDto.setBlkNo(blkNo);
+            appGrpPremisesDto.setStreetName(streetName);
+            appGrpPremisesDto.setFloorNo(floorNo);
+            appGrpPremisesDto.setUnitNo(unitNo);
+            appGrpPremisesDto.setBuildingName(buildingName);
+            appGrpPremisesDto.setSiteSafefyNo(siteAddressType);
+            appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
+            appGrpPremisesDto.setAddrType(addrType);
+            appGrpPremisesDto.setOffTelNo(offTelNo);
+            //add index for dto refer
+            appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
+
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
+            String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premConSelect");
+            String vehicleNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceVehicleNo");
+            String postalCode = ParamUtil.getString(request,  premisesIndexNo+"conveyancePostalCode");
+            String blkNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceBlockNo");
+            String streetName = ParamUtil.getString(request, premisesIndexNo+"conveyanceStreetName");
+            String floorNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceFloorNo");
+            String unitNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceUnitNo");
+            String buildingName = ParamUtil.getString(request, premisesIndexNo+"conveyanceBuildingName");
+            String siteAddressType = ParamUtil.getString(request, premisesIndexNo+"conveyanceAddrType");
+            appGrpPremisesDto.setPremisesSelect(premisesSelect);
+            appGrpPremisesDto.setConveyanceVehicleNo(vehicleNo);
+            appGrpPremisesDto.setConveyancePostalCode(postalCode);
+            appGrpPremisesDto.setConveyanceBlockNo(blkNo);
+            appGrpPremisesDto.setConveyanceStreetName(streetName);
+            appGrpPremisesDto.setConveyanceFloorNo(floorNo);
+            appGrpPremisesDto.setConveyanceUnitNo(unitNo);
+            appGrpPremisesDto.setConveyanceBuildingName(buildingName);
+            appGrpPremisesDto.setConveyanceAddressType(siteAddressType);
+        }
+
+        return appGrpPremisesDto;
     }
 
     //=============================================================================
@@ -934,7 +989,7 @@ public class NewApplicationDelegator {
      * @param: request
      * @return: AppGrpPremisesDto
      */
-    private List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
+    public List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
         List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
         Integer count = (Integer) ParamUtil.getSessionAttr(request, "IndexNoCount");
         for(int i =0 ; i<=count;i++){

@@ -10,6 +10,12 @@
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
+  <%--Validation fields Start--%>
+  <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
+  <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto"/>
+  <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+  <%--Validation fields End--%>
   <div class="main-content">
     <div class="container">
       <div class="row">
@@ -58,7 +64,7 @@
                                     </c:if>
                                   </label>
                                 </div>
-                              <span class="error-msg"></span>
+                              <span id="error_premisesType" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                           </c:forEach>
                         </div>
@@ -426,166 +432,12 @@
 
         //Binding method
         $('.premiseId').click(function(){
-            var aBoolean=true;
-            if( $('.premTypeRadio:checked').length==0){
-                  $('.form-check+span').html("Select at least one");
-
-            }else {
-                $('.form-check+span').html("");
+            doValidation();
+            if (getErrorMsg()) {
+                dismissWaiting();
+            } else {
+                submit('documents',null,null);
             }
-            if($('.premiseOnSiteSelect').val()==""){
-                $('.premiseOnSiteSelect>span').html("");
-            }else {
-
-                $('.premiseOnSiteSelect>span').html("");
-            }
-
-           $('.premTypeRadio:checked').each(function (index,e) {
-               if(this.value=="ONSITE"){
-                   $.each($('.onsiteStartHH'),function () {
-                    var onsiteStart=  $(this).val();
-                       $.each($('.onsiteStartMM'),function () {
-                          if($(this).val()==""||onsiteStart==""){
-                             $(this).next("span").html("cannot be blank!");
-                              aBoolean=false;
-                          }else {
-                              $(this).next("span").html("");
-                          }
-                       });
-                   });
-                    $.each($('.onsiteEndHH'),function () {
-                       var onsiteEnd=   $(this).val();
-                       $.each($('.onsiteEndMM'),function () {
-                          if($(this).val()==""||onsiteEnd==""){
-                              $(this).next("span").html("cannot be blank!");
-                              aBoolean=false;
-                          }else {
-                              $(this).next("span").html("");
-                          }
-
-                       });
-                    });
-                   var re=new RegExp('^[0-9]*$');
-                   var errMsg = "";
-                   $.each($('.sitePostalCode'),function () {
-                       if( $(this).val()=="" ){
-                           $(this).next("span").html("the postal code could not be null");
-
-                       }else if($(this).val().length != 6){
-                           $(this).next("span").html("the postal code length must be 6");
-
-                       }else if(!re.test($(this).val())){
-                           $(this).next("span").html("the postal code must be numbers");
-
-                       } else {
-                           $(this).next("span").html("");
-                       }
-                   });
-
-                    $.each($('.siteAddressType'),function () {
-                      if($(this).val()==""){
-                          $(this).next("span").html("cannot be blank!");
-
-                      }else {
-                          $(this).next("span").html("");
-                      }
-                    });
-
-                      $.each($('.siteStreetName'),function () {
-                         if($(this).val()==""){
-                             $(this).next('span').html("cannot be blank!");
-                             aBoolean=false;
-                         }if($(this).val()!="") {
-                             $(this).next('span').html("");
-                         }
-                      });
-                  var rel=/^[6][0-9]{7}$/;
-                    $.each($('.onsitOffice'),function () {
-                        if($(this).val()==""){
-                            $(this).next('span').html("cannot be blank!");
-                            aBoolean=false;
-                        }else {
-                            if(!rel.test($(this).val())){
-                                $(this).next('span').html("Please key in a valid phone number!");
-                                aBoolean=false;
-                            }else {
-                                $(this).next('span').html("");
-                            }
-                        }
-                    });
-               }
-               else if(this.value=="CONVEYANCE"){
-                   $.each($('.conStartHH'),function () {
-                      var conStart=  $(this).val();
-                      $.each($('.conStartMM'),function () {
-                          if(conStart==""||$(this).val()==""){
-                              $(this).next("span").html("cannot be blank!");
-                              aBoolean=false;
-                          }else {
-                              $(this).next("span").html("");
-                          }
-
-                      });
-                   });
-                   $.each($('.conEndHH'),function () {
-                    var conEnd=  $(this).val();
-                    $.each($('.conEndMM'),function () {
-                      if(conEnd==""||$(this).val()==""){
-                          $(this).next("span").html("cannot be blank!");
-                          aBoolean=false;
-                      }
-                      else {
-                          $(this).next("span").html("cannot be blank!");
-                      }
-
-                    });
-
-                   });
-
-                   var re=new RegExp('^[0-9]*$');
-                   $('.conveyancePostalCode').each(function () {
-                       if($(this).val()==""){
-                           $(this).next("span").html("the postal code could not be null");
-
-                       }else if($(this).val().length!=6){
-                           $(this).next("span").html("the postal code length must be 6");
-
-                       }else if(re.test( $(this).val())){
-                           $(this).next("span").html("the postal code must be numbers");
-
-                       }else {
-                           $(this).next("span").html("");
-                       }
-                   });
-
-                  $(".conveyanceAddressType").val();
-                  $.each($('.conveyanceAddressType'),function () {
-                      if($(this).val()==""){
-                          $(this).next("span").html("cannot be blank!");
-
-                      }else {
-                          $(this).next("span").html("");
-
-                      }
-                  });
-                   $.each($('.conveyanceStreetName'),function () {
-                       if($(this).val()==""){
-                         $(this).next("span").html("cannot be blank!");
-                           aBoolean=false;
-                       } if($(this).val()!="") {
-                           $(this).next("span").html("") ;
-                       }
-                   });
-
-
-               }
-
-            });
-            if(!aBoolean){
-              return;
-            }
-
-            submit('documents',null,null);
         });
         $('.premiseSaveDraft').click(function(){
             submit('premises','saveDraft',null);
