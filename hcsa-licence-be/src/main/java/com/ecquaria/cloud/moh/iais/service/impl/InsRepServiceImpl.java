@@ -95,7 +95,7 @@ public class InsRepServiceImpl implements InsRepService {
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = new ArrayList<>();
         //add ReportNcRegulationDto and add ncItemId
         List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
-        if(ncAnswerDtoList!=null && ncAnswerDtoList.size()>=0){
+        if(ncAnswerDtoList!=null && !ncAnswerDtoList.isEmpty()){
             for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
                 ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                 reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
