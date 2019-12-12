@@ -319,9 +319,9 @@
                               Operating Hours (Start)
                             </label>
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="" maxlength="2" style="width: 60px" id="conStartHH"/>(HH)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="conStartHH" class="conStartHH"/>(HH)
                               :
-                              <input type="text" value="" maxlength="2" style="width: 60px" id="conStartMM"/>(MM)
+                              <input type="text" value="" maxlength="2" style="width: 60px" id="conStartMM" class="conStartMM"/>(MM)
                               <span class="postalCodeMsg error-msg"></span>
                             </div>
 
@@ -513,12 +513,35 @@
                             }
                         }
                     });
-                    $.each($('.onsiteStartHH'),function () {
-
-                    });
-                 
                }
                else if(this.value=="CONVEYANCE"){
+                   $.each($('.conStartHH'),function () {
+                      var conStart=  $(this).val();
+                      $.each($('.conStartMM'),function () {
+                          if(conStart==""||$(this).val()==""){
+                              $(this).next("span").html("cannot be blank!");
+                              aBoolean=false;
+                          }else {
+                              $(this).next("span").html("");
+                          }
+
+                      });
+                   });
+                   $.each($('.conEndHH'),function () {
+                    var conEnd=  $(this).val();
+                    $.each($('.conEndMM'),function () {
+                      if(conEnd==""||$(this).val()==""){
+                          $(this).next("span").html("cannot be blank!");
+                          aBoolean=false;
+                      }
+                      else {
+                          $(this).next("span").html("cannot be blank!");
+                      }
+
+                    });
+
+                   });
+
                    var re=new RegExp('^[0-9]*$');
                    $('.conveyancePostalCode').each(function () {
                        if($(this).val()==""){
