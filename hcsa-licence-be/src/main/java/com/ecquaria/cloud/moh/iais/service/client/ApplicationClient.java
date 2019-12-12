@@ -31,7 +31,7 @@ import java.util.List;
  * @author suocheng
  * @date 11/26/2019
  */
-@FeignClient(name = "hcsa-application", configuration = {FeignConfiguration.class, FeignExceptionConfiguration.class},
+@FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = ApplicationClientFallback.class)
 public interface ApplicationClient {
     @RequestMapping(path = "/iais-application-be/applicationview/{appNo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
