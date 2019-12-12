@@ -228,6 +228,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
                     td.setUserId(inspectorCheckList.get(0).getValue());
                     td.setDateAssigned(new Date());
+                    td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     updateTask(td);
                     inspectorCheckList.remove(0);
                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
@@ -269,6 +270,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
         appInspectionStatusDto.setAppPremCorreId(appPremCorrDtoList.get(0).getId());
         appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appInspectionStatusDtos.add(appInspectionStatusDto);
         appInspectionStatusClient.create(appInspectionStatusDtos);
     }
@@ -298,6 +300,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     private ApplicationDto updateApplication(ApplicationDto applicationDto, String appStatus) {
         applicationDto.setStatus(appStatus);
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return applicationViewService.updateApplicaiton(applicationDto);
     }
 
@@ -319,6 +322,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     td.setId(null);
                     td.setUserId(so.getValue());
                     td.setDateAssigned(new Date());
+                    td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     taskDtoList.add(td);
                 }
             }

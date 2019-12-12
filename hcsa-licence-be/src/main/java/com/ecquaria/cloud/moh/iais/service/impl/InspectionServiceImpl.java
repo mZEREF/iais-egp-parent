@@ -228,6 +228,7 @@ public class InspectionServiceImpl implements InspectionService {
                     if(StringUtil.isEmpty(td.getUserId())){
                         td.setUserId(inspectorCheckList.get(0).getValue());
                         td.setDateAssigned(new Date());
+                        td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         updateTask(td);
                         inspectorCheckList.remove(0);
                         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
@@ -243,6 +244,7 @@ public class InspectionServiceImpl implements InspectionService {
                         }
                     } else {
                         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                        td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         updateTask(td);
                         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
                         if(inspectorCheckList != null && inspectorCheckList.size() > 0){
@@ -254,8 +256,6 @@ public class InspectionServiceImpl implements InspectionService {
                     }
                 }
             }
-
-
         } catch (Exception e){
             log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);
             throw e;
@@ -268,6 +268,7 @@ public class InspectionServiceImpl implements InspectionService {
         AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
         appInspectionStatusDto.setAppPremCorreId(appPremCorrDtoList.get(0).getId());
         appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appInspectionStatusDtos.add(appInspectionStatusDto);
         appInspectionStatusClient.create(appInspectionStatusDtos);
     }
@@ -284,6 +285,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     private ApplicationDto  updateApplication(ApplicationDto applicationDto, String appStatus) {
         applicationDto.setStatus(appStatus);
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return applicationViewService.updateApplicaiton(applicationDto);
     }
 
@@ -377,6 +379,7 @@ public class InspectionServiceImpl implements InspectionService {
                     td.setId("");
                     td.setUserId(so.getValue());
                     td.setDateAssigned(new Date());
+                    td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     taskDtoList.add(td);
                 }
             }
