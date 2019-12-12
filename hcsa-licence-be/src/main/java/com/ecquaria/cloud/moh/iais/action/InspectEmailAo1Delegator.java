@@ -5,13 +5,20 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -51,6 +58,9 @@ public class InspectEmailAo1Delegator {
     @Autowired
     InsepctionNcCheckListImpl insepctionNcCheckListService;
 
+
+    @Autowired
+    FillupChklistService fillupChklistService;
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
@@ -138,10 +148,28 @@ public class InspectEmailAo1Delegator {
 
         log.info("=======>>>>>preCheckList>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"checkList".equals(currentAction)){
-            return;
-        }
+        String taskId = ParamUtil.getString(request,"TaskId");
+        String serviceCode ="BLB";
+        String serviceType = "Inspection";
+        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceCode,serviceType);
+        String configId = cDto.getCheckList().get(0).getConfigId();
+        AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,configId);
+        InspectionFillCheckListDto insepectionNcCheckListDto = null;
+        String appPremCorrId = appPremPreCklDto.getAppPremCorrId();
+        List<NcAnswerDto> acDto = insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
+        List<AppPremisesPreInspectionNcItemDto> itemDtoList = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremPreCklDto.getAppPremCorrId());
+        insepectionNcCheckListDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
+        ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
+        InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
+        insepctionNcCheckListService.getCommonDto(commonDto,appPremPreCklDto,itemDtoList);
+
+        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto("7102C311-D10D-EA11-BE7D-000C29F371DC");
+        TaskDto  taskDto = fillupChklistService.getTaskDtoById("7102C311-D10D-EA11-BE7D-000C29F371DC");
+        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
+        ParamUtil.setSessionAttr(request,"fillCheckListDto",insepectionNcCheckListDto);
+        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
+        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
     }
     public void checkListNext(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");

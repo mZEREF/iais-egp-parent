@@ -449,204 +449,80 @@
                                         <h4>Processing Status Update</h4>
                                     </strong>
                                 </div>
-                                <form method="post" action=<%=process.runtime.continueURL()%>>
-                                    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table">
-                                                    <tr>
-                                                        <td class="col-xs-4"><p>Current Status:</p></td>
-                                                        <td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><p>Internal Remarks:</p></td>
-                                                        <td>
-                                                            <div class="input-group">
-                                                                <div class="ax_default text_area">
-                                                                    <textarea name="internalRemarks" cols="70" rows="7"></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <p>Processing Decision:</p>
-                                                        </td>
-                                                        <td>
-                                                            <select name="nextStage" >
-                                                                <c:forEach items="${applicationViewDto.routingStage}" var="routingStageMap">
-                                                                    <option  value="${routingStageMap.key}">${routingStageMap.value}</option>
-                                                                </c:forEach>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <div align="center">
-                                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                                </div>
-                                                <div>&nbsp;</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <div class="alert alert-info" role="alert">
-                                    <strong>
-                                        <h4>Processing History</h4>
-                                    </strong>
-                                </div>
                                 <div class="row">
                                     <div class="col-xs-12">
+                                        <h3>Common</h3>
                                         <div class="table-gp">
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>Username</th>
-                                                    <th>Working Group</th>
-                                                    <th>Status Update</th>
-                                                    <th>Remarks</th>
-                                                    <th>Last Updated</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <p>Tan Ah Ming (S1234567D)</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Submission</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mr Tan</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Admin Screen</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Verified</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Ms Lim</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Professional Screening</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Verified</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mrs Sim</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Inspection</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p></p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Inspection Conducted</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Recommend for Approval</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <p>Mr Ong</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Internet User</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Pending Approval Officer 1</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>-</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>16-Oct-2018 01:20:13 PM</p>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                            <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
+                                                <br/>
+                                                <h4><c:out value="${section.sectionName}"></c:out></h4>
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Regulation Clause Number</th>
+                                                        <th>Item</th>
+                                                        <th>Yes</th>
+                                                        <th>No</th>
+                                                        <th>N/A</th>
+                                                        <th>Remark</th>
+                                                        <th>Rectified</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                                                        <tr>
+                                                            <td class="row_no">${(status.index + 1) }</td>
+                                                            <td>${item.incqDto.regClauseNo}</td>
+                                                            <td>${item.incqDto.checklistItem}</td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxYes" type="radio"  disabled <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNo" type="radio" disabled  <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNa" type="radio" disabled <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxRemark" disabled type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
+                                                            <td> <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> <c:if test="${item.incqDto.chkanswer != 'No'}">hidden </c:if> value="rec" disabled/></td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </c:forEach>
+                                        </div>
+
+
+                                        <h3>General</h3>
+                                        <div class="table-gp">
+                                            <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
+                                                <br/>
+                                                <h4><c:out value="${section.sectionName}"></c:out></h4>
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Regulation Clause Number</th>
+                                                        <th>Item</th>
+                                                        <th>Yes</th>
+                                                        <th>No</th>
+                                                        <th>N/A</th>
+                                                        <th>Remark</th>
+                                                        <th>Rectified</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                                                        <tr>
+                                                            <td class="row_no">${(status.index + 1) }</td>
+                                                            <td>${item.incqDto.regClauseNo}</td>
+                                                            <td>${item.incqDto.checklistItem}</td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxYes" type="radio"  disabled <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNo" type="radio" disabled  <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" /></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" type="radio" disabled <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" disabled type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
+                                                            <td> <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> <c:if test="${item.incqDto.chkanswer != 'No'}">hidden </c:if> value="rec" disabled/></td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </c:forEach>
                                         </div>
                                     </div>
                                 </div>
