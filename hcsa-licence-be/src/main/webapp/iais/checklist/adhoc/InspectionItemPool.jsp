@@ -15,13 +15,6 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<style>
-  .form-check-gp{
-    width: 50%;
-    float:left;
-  }
-
-</style>
 
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
@@ -32,7 +25,7 @@
   <input type="hidden" name="currentValidateId" value="">
 
 
-
+  <br><br><br>
 
   <div class="main-content">
     <div class="container">
@@ -41,6 +34,13 @@
 
         <div class="tab-content">
           <div class="row">
+            <c:if test = "${not empty errorMap}">
+              <div class="error">
+                <c:forEach items="${errorMap}" var="map">
+                  ${map.value} <br/>
+                </c:forEach>
+              </div>
+            </c:if>
             <div class="col-xs-12">
               <div class="components">
                 <h2 class="component-title">Item &amp; Pool</h2>
@@ -96,8 +96,8 @@
                             <li><a href="#">3</a></li>
                             <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right"></i></span></a></li>
                           </ul>
-
                           <br><br><br>
+                          <p><a class="back" onclick="doCancel();"><i class="fa fa-angle-left" ></i> Back</a></p>
                           <div class="text-right text-center-mobile">
                                 <a  id="customAdhocItembtnId"  class="btn btn-primary custom">Custom Adhoc Item</a>
                                 <a  id="adhocSectionbtnId" class="btn btn-primary addToSection">Add to Adhoc Section</a>
@@ -139,6 +139,10 @@
     }
 
     adhocSectionbtnId.onclick = function(){
+        SOP.Crud.cfxSubmit("mainForm", "appendToTail");
+    }
+
+    function doCancel(){
         SOP.Crud.cfxSubmit("mainForm", "appendToTail");
     }
 

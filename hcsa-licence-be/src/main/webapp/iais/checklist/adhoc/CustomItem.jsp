@@ -46,6 +46,13 @@
   <br><br><br>
   <div class="main-content">
     <div class="container">
+      <c:if test = "${not empty errorMap}">
+        <div class="error">
+          <c:forEach items="${errorMap}" var="map">
+            ${map.value} <br/>
+          </c:forEach>
+        </div>
+      </c:if>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="form-horizontal">
           <div class="form-group">

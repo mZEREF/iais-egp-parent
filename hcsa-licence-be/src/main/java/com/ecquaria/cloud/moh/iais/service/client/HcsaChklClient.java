@@ -86,7 +86,6 @@ public interface HcsaChklClient {
                                 @PathVariable("module") String module,
                                 @PathVariable(value = "subTypeName", required = false) String subTypeName);
 
-
     @GetMapping(value = {"/iais-hcsa-checklist/config/results-common-max-version/{type}/{module}"})
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfigByParams(@PathVariable("type")String type,
                                                                               @PathVariable("module") String module);

@@ -16,20 +16,6 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<style>
-  .form-check-gp{
-    width: 50%;
-    float:left;
-  }
-
-  .form-inline .form-group {
-    width: 30%;
-    margin-bottom: 25px;
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-</style>
 
 <c:choose>
   <c:when test="${empty inspectionChecklistAttr}">
@@ -41,145 +27,138 @@
   </c:when>
   <c:otherwise>
 
-    <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-      <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-      <input type="hidden" name="crud_action_type" value="">
-      <input type="hidden" name="crud_action_value" value="">
-      <input type="hidden" name="crud_action_additional" value="">
-      <div class="main-content">
-        <div class="container">
+<form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
+  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <input type="hidden" name="crud_action_type" value="">
+  <input type="hidden" name="crud_action_value" value="">
+  <input type="hidden" name="crud_action_additional" value="">
 
-          <br><br>
+  <div class="main-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="center-content">
+            <c:forEach var = "item" items="${inspectionChecklistAttr}" varStatus="status">
+              <c:if test="${item.common eq true}">
+                <div class="bg-title">
+                  <h2>General Regulation</h2>
+                </div>
+              </c:if>
 
-          <div class="col-lg-12 col-xs-12">
-            <div class="center-content">
-              <div class="intranet-content">
+              <c:if test="${item.common eq false}">
+                <c:choose>
+                  <c:when test="${empty item.svcSubType}">
+                    <h2>${item.svcCode}</h2>
+                  </c:when>
+                  <c:otherwise>
+                    <h2>${item.svcCode} | ${item.svcSubType}</h2>
+                  </c:otherwise>
+                </c:choose>
+              </c:if>
 
-                <c:forEach var = "item" items="${inspectionChecklistAttr}" varStatus="status">
-                    <c:if test="${item.common eq true}">
-                      <div class="bg-title">
-                        <h2>General Regulation</h2>
-                      </div>
-                    </c:if>
-
-                    <c:if test="${item.common eq false}">
-                      <c:choose>
-                        <c:when test="${empty item.svcSubType}">
-                          <h2>${item.svcCode}</h2>
-                        </c:when>
-                        <c:otherwise>
-                          <h2>${item.svcCode} | ${item.svcSubType}</h2>
-                        </c:otherwise>
-                      </c:choose>
-                    </c:if>
-
-                    <!-- Content goes here -->
-                    <c:forEach var = "sec" items="${item.sectionDtos}">
-                      <p>
-                        <div class="panel panel-default">
-                          <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
-                            <div class="panel-body">
-                              <div class="panel-main-content">
-                                <div class="preview-info">
-                                  <p>Section: &nbsp;<b>${sec.section}</b></p>
-                                  <p>Description: &nbsp;${sec.description}</p>
-
-                                    <table class="table">
-                                      <thead>
-                                      <tr>
-                                        <th>Regulation Clause Number</th>
-                                        <th>Regulations</th>
-                                        <th>Checklist Item</th>
-                                        <th>Risk Level</th>
-                                      </tr>
-                                      </thead>
-                                      <tbody>
-                                        <c:forEach var = "chklitem" items = "${sec.checklistItemDtos}" varStatus="status">
-                                          <tr>
-                                            <td>
-                                              <p>${chklitem.regulationClauseNo}</p>
-                                            </td>
-                                            <td>
-                                              <p>${chklitem.regulationClause}</p>
-                                            </td>
-                                            <td>
-                                              <p>${chklitem.checklistItem}</p>
-                                            </td>
-                                            <td>
-                                              <p>${chklitem.riskLevel}</p>
-                                            </td>
-                                          </tr>
-                                        </c:forEach>
-                                      </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      </p>
-                    </c:forEach>
-                </c:forEach>
-
-
-              <!-- Adhoc item goes here -->
-
-                <p>
-                  <div class="panel panel-default">
-                    <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
-                      <div class="panel-body">
-                        <div class="panel-main-content">
-                          <div class="preview-info">
-                              <p>Section: &nbsp;<b>Adhoc Section</b></p>
-
-                              <table class="table">
-                                <thead>
-                                <tr>
-                                  <th>Checklist Item</th>
-                                  <th>Answer Type</th>
-                                  <th>Risk Level</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var = "adhocItem" items = "${adhocCheckListAttr.allAdhocItem}" varStatus="status">
-                                  <tr>
-                                    <td>
-                                      <p>${adhocItem.question}</p>
-                                    </td>
-                                    <td>
-                                      <p>${adhocItem.answerType}</p>
-                                    </td>
-                                    <td>
-                                      <p>${adhocItem.riskLvl}</p>
-                                    </td>
-                                  </tr>
-                                </c:forEach>
-                                </tbody>
-                              </table>
-                              </div>
-                              </div>
-                              </div>
-                              </div>
-                              </div>
-                              </p>
-                              <!----------------------->
-              </div>
-              <div class="application-tab-footer">
-                <div class="row">
-                  <div class="col-xs-12 col-sm-12">
-                    <div class="text-right text-center-mobile">
-                      <a id = "addAdhocItemBtn" class="btn btn-primary" href="#">Add Adhoc Item</a>
-                      <a id = "nextAdhocItemBtn" class="btn btn-primary" href="#">Next</a>
-                    </div>
+            <c:forEach var = "sec" items="${item.sectionDtos}">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="panel panel-default">
+                <div class="panel-heading" id="headingPremise" role="tab">
+                  <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">${sec.section}</a></h4>
+                </div>
+                <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
+                  <div class="panel-body">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>Regulation Clause Number</th>
+                        <th>Regulations</th>
+                        <th>Checklist Item</th>
+                        <th>Risk Level</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <c:forEach var = "chklitem" items = "${sec.checklistItemDtos}" varStatus="status">
+                        <tr>
+                          <td>
+                            <p>${chklitem.regulationClauseNo}</p>
+                          </td>
+                          <td>
+                            <p>${chklitem.regulationClause}</p>
+                          </td>
+                          <td>
+                            <p>${chklitem.checklistItem}</p>
+                          </td>
+                          <td>
+                            <p>${chklitem.riskLevel}</p>
+                          </td>
+                        </tr>
+                      </c:forEach>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
+            </c:forEach>
+            </c:forEach>
+
+
+            <c:if test="${adhocCheckListAttr != null}">
+              <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                  <div class="panel-heading"  role="tab">
+                    <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Adhoc Item</a></h4>
+                  </div>
+                  <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
+                    <div class="panel-body">
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th>Checklist Item</th>
+                          <th>Answer Type</th>
+                          <th>Risk Level</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var = "adhocItem" items = "${adhocCheckListAttr.allAdhocItem}" varStatus="status">
+                          <tr>
+                            <td>
+                              <p>${adhocItem.question}</p>
+                            </td>
+                            <td>
+                              <p>${adhocItem.answerType}</p>
+                            </td>
+                            <td>
+                              <p>${adhocItem.riskLvl}</p>
+                            </td>
+                          </tr>
+                        </c:forEach>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </c:if>
+
+          </div>
+        </div>
+        <div class="application-tab-footer">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12">
+              <div class="text-right text-center-mobile">
+                <a id = "addAdhocItemBtn" class="btn btn-primary" href="#">Add Adhoc Item</a>
+                <a id = "nextAdhocItemBtn" class="btn btn-primary" href="#">Next</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </form>
+
+
+    </div>
+  </div>
+
+
+</form>
   </c:otherwise>
 </c:choose>
 
