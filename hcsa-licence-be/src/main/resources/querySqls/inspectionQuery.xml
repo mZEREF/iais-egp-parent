@@ -17,7 +17,7 @@
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if sub_date??> and T5.SUBMIT_DT = :sub_date</#if>
+            <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
             <#if blk_no??> and charindex(:blk_no, T5.BLK_NO) >0 </#if>
             <#if floor_no??> and charindex(:floor_no, T5.FLOOR_NO) >0 </#if>
             <#if unit_no??> and charindex(:unit_no, T5.UNIT_NO) >0 </#if>
