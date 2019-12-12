@@ -182,16 +182,17 @@ public class InspectEmailAo1Delegator {
     public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"preEmailView".equals(currentAction)){
-            return;
-        }
+//        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+//        if(!"preEmailView".equals(currentAction)){
+//            return;
+//        }
         String taskId="7102C311-D10D-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
         String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
+
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT});
 
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);

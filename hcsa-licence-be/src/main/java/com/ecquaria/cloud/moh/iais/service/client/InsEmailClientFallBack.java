@@ -12,7 +12,7 @@ import org.springframework.http.HttpHeaders;
  * @date 2019/12/2
  */
 public class InsEmailClientFallBack {
-    FeignResponseEntity<ApplicationViewDto> getAppViewByNo( String appNo){
+    FeignResponseEntity<ApplicationViewDto> getApplicationDtoByAppPremCorrId( String appPremCorrId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -30,7 +30,7 @@ public class InsEmailClientFallBack {
         entity.setHeaders(headers);
         return entity;
     }
-    public FeignResponseEntity<InspectionEmailTemplateDto> getInsertEmail( String appPremCorrId){
+    public FeignResponseEntity<InspectionEmailTemplateDto> getInspectionEmail( String appPremCorrId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
