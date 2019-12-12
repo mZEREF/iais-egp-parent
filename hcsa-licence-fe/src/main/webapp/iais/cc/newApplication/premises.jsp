@@ -48,6 +48,7 @@
                                   <c:if test="${appGrpPremisesDto.premisesType==premisesType}">
                                     <input class="form-check-input premTypeRadio ${premisesType}"  type="radio" name="premType${status.index}" checked="checked" value = "${premisesType}"  aria-invalid="false">
                                   </c:if>
+
                                   <label class="form-check-label" ><span class="check-circle"></span>
                                     <c:if test="${premisesType == onSite}">
                                       <c:out value="On-site" />
@@ -57,7 +58,7 @@
                                     </c:if>
                                   </label>
                                 </div>
-
+                              <span class="error-msg"></span>
                             </div>
                           </c:forEach>
                         </div>
@@ -68,6 +69,7 @@
                           </div>
                         </div>
                         <iais:row cssClass="premiseOnSiteSelect hidden">
+                          <span class="error-msg"></span>
                           <iais:field value="Add or select a premises from the list" width="12"/>
                           <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
                               <c:choose>
@@ -81,6 +83,7 @@
                             <span class="error-msg"><c:out value="${errMsg.premisesSelect}"></c:out></span>
                           </iais:value>
                         </iais:row>
+
                         <iais:row cssClass="premiseConSelect hidden">
                           <iais:field value="Add or select a premises from the list" width="12"/>
                           <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
@@ -426,39 +429,70 @@
             var aBoolean=true;
 
             if( $('.premTypeRadio:checked').length==0){
+                  $('.form-check+span').html("Select at least one");
 
-                aBoolean=false;
+            }else {
+                $('.form-check+span').html("");
             }
+            if($('.premiseOnSiteSelect').val()==""){
+                $('.premiseOnSiteSelect>span').html("");
+            }else {
+
+                $('.premiseOnSiteSelect>span').html("");
+            }
+
            $('.premTypeRadio:checked').each(function (index,e) {
                if(this.value=="ONSITE"){
+                   $.each($('.onsiteStartHH'),function () {
+                    var onsiteStart=  $(this).val();
+                       $.each($('.onsiteStartMM'),function () {
+                          if($(this).val()==""||onsiteStart==""){
+                             $(this).next("span").html("cannot be blank!");
+                              aBoolean=false;
+                          }else {
+                              $(this).next("span").html("");
+                          }
+                       });
+                   });
+                    $.each($('.onsiteEndHH'),function () {
+                       var onsiteEnd=   $(this).val();
+                       $.each($('.onsiteEndMM'),function () {
+                          if($(this).val()==""||onsiteEnd==""){
+                              $(this).next("span").html("cannot be blank!");
+                              aBoolean=false;
+                          }else {
+                              $(this).next("span").html("");
+                          }
+
+                       });
+                    });
                    var re=new RegExp('^[0-9]*$');
                    var errMsg = "";
                    $.each($('.sitePostalCode'),function () {
                        if( $(this).val()=="" ){
                            $(this).next("span").html("the postal code could not be null");
-                           aBoolean=false;
+
                        }else if($(this).val().length != 6){
                            $(this).next("span").html("the postal code length must be 6");
-                           aBoolean=false;
+
                        }else if(!re.test($(this).val())){
                            $(this).next("span").html("the postal code must be numbers");
-                           aBoolean=false;
+
                        } else {
                            $(this).next("span").html("");
                        }
                    });
 
                     $.each($('.siteAddressType'),function () {
-
                       if($(this).val()==""){
                           $(this).next("span").html("cannot be blank!");
-                          aBoolean=false;
+
                       }else {
                           $(this).next("span").html("");
                       }
                     });
 
-                      $.each($('.siteStreetName'),function (i,n) {
+                      $.each($('.siteStreetName'),function () {
                          if($(this).val()==""){
                              $(this).next('span').html("cannot be blank!");
                              aBoolean=false;
@@ -474,6 +508,7 @@
                         }else {
                             if(!rel.test($(this).val())){
                                 $(this).next('span').html("Please key in a valid phone number!");
+                                aBoolean=false;
                             }else {
                                 $(this).next('span').html("");
                             }
@@ -489,13 +524,13 @@
                    $('.conveyancePostalCode').each(function () {
                        if($(this).val()==""){
                            $(this).next("span").html("the postal code could not be null");
-                           aBoolean=false;
+
                        }else if($(this).val().length!=6){
                            $(this).next("span").html("the postal code length must be 6");
-                           aBoolean=false;
+
                        }else if(re.test( $(this).val())){
                            $(this).next("span").html("the postal code must be numbers");
-                           aBoolean=false;
+
                        }else {
                            $(this).next("span").html("");
                        }
@@ -505,7 +540,7 @@
                   $.each($('.conveyanceAddressType'),function () {
                       if($(this).val()==""){
                           $(this).next("span").html("cannot be blank!");
-                          aBoolean=false;
+
                       }else {
                           $(this).next("span").html("");
 
@@ -514,7 +549,7 @@
                    $.each($('.conveyanceStreetName'),function () {
                        if($(this).val()==""){
                          $(this).next("span").html("cannot be blank!");
-                           aBoolean=false;
+
                        } if($(this).val()!="") {
                            $(this).next("span").html("") ;
                        }
