@@ -108,7 +108,8 @@
     })*/
 
     $('#proceed').click(function () {
-        location.href= 'https://192.168.6.60/payment/eservice/INTERNET/PaymentRequest?amount=1760&payMethod=Credit&reqNo=AN1911136061';
+        location.href= '${pageContext.request.contextPath}/payment-web/eservice/INTERNET/PaymentRequest?amount=1760&payMethod=Credit&reqNo=AN191211000150-01';
+        //location.href= 'https://192.168.6.60/payment/eservice/INTERNET/PaymentRequest?amount=1760&payMethod=Credit&reqNo=AN191211000150-01';
     });
 </script>
 
