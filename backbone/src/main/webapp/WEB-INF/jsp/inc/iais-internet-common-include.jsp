@@ -26,23 +26,27 @@
 <link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
 
 
-<script src="<%=webroot%>js/bootstrap.min.js"></script>
-<script src="<%=webroot%>js/particles.js"></script>
-<script src="<%=webroot%>js/app.js"></script>
-<script src="<%=webroot%>js/lib/stats.js"></script>
-<script src="<%=webroot%>js/scrollup.js"></script>
-<script src="<%=webroot%>js/anchor.js"></script>
-<script src="<%=webroot%>js/mynav.js"></script>
-<script src="<%=webroot%>js/navbarscroll.js"></script>
-<script src="<%=webroot%>js/dropdown.js"></script>
-<script src="<%=webroot%>js/jquery.nice-select.js"></script>
-<script src="<%=webroot%>js/swiper.js"></script>
-<script src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
-<script src="<%=webroot%>js/cpl_app.js"></script>
-<script src="<%=webroot%>js/cpl_custom_form_script.js"></script>
-<script src="<%=webRootCommon%>js/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/particles.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/app.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/lib/stats.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/scrollup.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/anchor.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/mynav.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/navbarscroll.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/dropdown.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/jquery.nice-select.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/swiper.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/jquery.mCustomScrollbar.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/cpl_app.js"></script>
+<script type="text/javascript" src="<%=webroot%>js/cpl_custom_form_script.js"></script>
+<script type="text/javascript" src="<%=webRootCommon%>js/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="<%=webRootCommon%>js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="<%=webRootCommon%>js/utils.js"></script>
+iais/cc/newApplication
 
 <script type="text/javascript">
+    var BASE_CONTEXT_PATH = '<%=request.getContextPath()%>';
     $(document).ready(function(){
         $('.date_picker').datepicker({
             format:"dd/mm/yyyy"
