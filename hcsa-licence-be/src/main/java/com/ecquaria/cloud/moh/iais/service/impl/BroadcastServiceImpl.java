@@ -31,4 +31,9 @@ public class BroadcastServiceImpl implements BroadcastService {
     public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto) {
         return applicationClient.createBroadcast(broadcastApplicationDto).getEntity();
     }
+
+    @Override
+    public BroadcastOrganizationDto getBroadcastOrganizationDto(String groupName, String groupDomain) {
+        return organizationClient.getBroadcastOrganizationDto(groupName,groupDomain).getEntity();
+    }
 }

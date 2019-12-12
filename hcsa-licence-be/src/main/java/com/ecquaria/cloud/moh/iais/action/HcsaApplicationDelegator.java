@@ -393,21 +393,30 @@ public class HcsaApplicationDelegator {
                   getAppPremisesRoutingHistoryDtosByAppId(applicationDto.getId());
         List<String> userIds = getUserIds(appPremisesRoutingHistoryDtos);
         if(userIds != null && userIds.size() > 0){
-            BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+            BroadcastOrganizationDto broadcastOrganizationDto = broadcastService.getBroadcastOrganizationDto(
+                    applicationDto.getApplicationNo(),AppConsts.DOMAIN_TEMPORARY);
             BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
             //create workgroup
-            WorkingGroupDto workingGroupDto = new WorkingGroupDto();
-            workingGroupDto.setGroupName(applicationDto.getApplicationNo());
-            workingGroupDto.setGroupDomain(AppConsts.DOMAIN_TEMPORARY);
+            WorkingGroupDto workingGroupDto = broadcastOrganizationDto.getWorkingGroupDto();
+            if(workingGroupDto ==  null){
+                workingGroupDto = new WorkingGroupDto();
+                workingGroupDto.setGroupName(applicationDto.getApplicationNo());
+                workingGroupDto.setGroupDomain(AppConsts.DOMAIN_TEMPORARY);
+            }
             workingGroupDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
+
             //add this user to this workgroup
-            List<UserGroupCorrelationDto> userGroupCorrelationDtoList = new ArrayList<>();
-            for(String id : userIds) {
-                UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
-                userGroupCorrelationDto.setUserId(id);
-                userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                userGroupCorrelationDtoList.add(userGroupCorrelationDto);
+            List<UserGroupCorrelationDto> userGroupCorrelationDtoList = broadcastOrganizationDto.getUserGroupCorrelationDtoList();
+            if(broadcastOrganizationDto.getWorkingGroupDto()!= null && userGroupCorrelationDtoList.size() > 0){
+                userGroupCorrelationDtoList =changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtoList,AppConsts.COMMON_STATUS_ACTIVE);
+            }else{
+                for(String id : userIds) {
+                    UserGroupCorrelationDto userGroupCorrelationDto = new UserGroupCorrelationDto();
+                    userGroupCorrelationDto.setUserId(id);
+                    userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    userGroupCorrelationDtoList.add(userGroupCorrelationDto);
+                }
             }
             broadcastOrganizationDto.setUserGroupCorrelationDtoList(userGroupCorrelationDtoList);
 
@@ -435,7 +444,6 @@ public class HcsaApplicationDelegator {
             broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto);
             broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto);
-
         }
 
         log.debug(StringUtil.changeForLog("the do broadcast end ...."));
@@ -450,7 +458,6 @@ public class HcsaApplicationDelegator {
      */
     public void broadcastReply(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do broadcastReply start ...."));
-
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
         log.debug(StringUtil.changeForLog("the do broadcastReply end ...."));
     }
@@ -560,7 +567,16 @@ public class HcsaApplicationDelegator {
                     List<TaskDto> taskDtos = new ArrayList<>();
                     taskDtos.add(taskDto);
                     taskDtos = taskService.createTasks(taskDtos);
-                    //
+                    //delete workgroup
+                    BroadcastOrganizationDto broadcastOrganizationDto = broadcastService.getBroadcastOrganizationDto(
+                            applicationDto.getApplicationNo(),AppConsts.DOMAIN_TEMPORARY);
+                    WorkingGroupDto workingGroupDto = broadcastOrganizationDto.getWorkingGroupDto();
+                    changeStatusWrokGroup(workingGroupDto,AppConsts.COMMON_STATUS_DELETED);
+                    List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto.getUserGroupCorrelationDtoList();
+                    userGroupCorrelationDtos = changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtos,AppConsts.COMMON_STATUS_DELETED);
+                    broadcastOrganizationDto.setUserGroupCorrelationDtoList(userGroupCorrelationDtos);
+                    broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    broadcastOrganizationDto =  broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto);
                 }else{
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
@@ -573,6 +589,22 @@ public class HcsaApplicationDelegator {
                     taskDto.getWkGrpId(),null,null);
             appPremisesRoutingHistoryDtoNew = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDtoNew);
         }
+    }
+    private List<UserGroupCorrelationDto> changeStatusUserGroupCorrelationDtos(List<UserGroupCorrelationDto> userGroupCorrelationDtos,String status){
+        List<UserGroupCorrelationDto> result = new ArrayList<>();
+        if(userGroupCorrelationDtos!= null && userGroupCorrelationDtos.size() >0){
+            for (UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos){
+                userGroupCorrelationDto.setStatus(status);
+                result.add(userGroupCorrelationDto);
+            }
+        }
+        return  result;
+    }
+    private WorkingGroupDto changeStatusWrokGroup(WorkingGroupDto workingGroupDto,String staus){
+        if(workingGroupDto!= null && !StringUtil.isEmpty(staus)){
+            workingGroupDto.setStatus(staus);
+        }
+       return workingGroupDto;
     }
     private AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
                                                                          String stageId,String wrkGrpId, String internalRemarks,String processDecision){

@@ -6,9 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationD
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 
 /**
  * @author Wenkang
@@ -71,6 +70,12 @@ public class OrganizationClientFallback {
     }
 
     public FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(String userId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+    public FeignResponseEntity<BroadcastOrganizationDto> getBroadcastOrganizationDto(String groupName,String groupDomain){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

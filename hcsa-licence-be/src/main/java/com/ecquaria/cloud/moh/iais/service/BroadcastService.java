@@ -13,5 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganization
 public interface BroadcastService {
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto);
     public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto);
+    public BroadcastOrganizationDto getBroadcastOrganizationDto(String groupName, String groupDomain);
 
 }
