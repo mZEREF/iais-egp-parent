@@ -22,27 +22,20 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -145,13 +138,10 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setCurrentStatus(status);
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         Map<String,String> routingStage=new HashMap<>();
-
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList
              ) {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
-
-
 
         //History
 
@@ -179,21 +169,21 @@ public class HcsaApplicationDelegator {
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }
-        if(ApplicationConsts.PROCESSING_DECISION_Level_3_Approval.equals(applicationViewDto.getCurrentStatus())){
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROLL_BACK,"RollBack");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Pending Approval");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_INTERNAL_ENQUIRY,"Internal Enquiry");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
-        }else if(ApplicationConsts.PROCESSING_DECISION_Level_2_Approval.equals(applicationViewDto.getCurrentStatus())
-                ||ApplicationConsts.PROCESSING_DECISION_Level_1_Approval.equals(applicationViewDto.getCurrentStatus())){
+        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(applicationViewDto.getApplicationDto().getStatus())
+                ||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROLL_BACK,"RollBack");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_SUPPORT,"Support");
-        }else if(ApplicationConsts.PROCESSING_DECISION_PROFESSIONAL_SCREENING_STAGE.equals(applicationViewDto.getCurrentStatus())){
+        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED,"Verified");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
-        }else if(ApplicationConsts.PROCESSING_DECISION_ADMIN_SCREENING_STAGE.equals(applicationViewDto.getCurrentStatus())) {
+        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())) {
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
@@ -524,6 +514,18 @@ public class HcsaApplicationDelegator {
     public void doDocument(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doDocument start ...."));
         //TODO:save file
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
+
+
+
+
+
+
 
 
 
