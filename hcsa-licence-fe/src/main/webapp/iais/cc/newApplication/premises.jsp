@@ -2,15 +2,14 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%
-    //handle to the Engine APIs
-    sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+  //handle to the Engine APIs
+  sop.webflow.rt.api.BaseProcessClass process =
+          (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-  <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
+  <%@ include file="/include/formHidden.jsp" %>
   <%--Validation fields Start--%>
   <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
   <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto"/>
