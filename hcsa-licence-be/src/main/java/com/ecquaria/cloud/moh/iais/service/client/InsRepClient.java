@@ -3,6 +3,8 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -34,4 +36,9 @@ public interface InsRepClient {
 
     @PostMapping(value = "/iais-inspection-report/is-rectified" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<Boolean>>isRectified (@RequestBody List<String> itemId);
+
+    @GetMapping(value = "/iais-inspection-report/recommendationDto/{appPremCorreId}/{type}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesRecommendationDto>getRecommendationDto(@PathVariable("appPremCorreId") String appPremCorreId,
+                                                                          @PathVariable("type") String type);
+
 }

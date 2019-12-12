@@ -72,4 +72,11 @@ public class HcsaConfigClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfig(Map<String,String> docMap){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

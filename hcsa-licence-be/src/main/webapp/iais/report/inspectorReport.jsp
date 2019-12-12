@@ -159,7 +159,48 @@
                                         <p>Checklist Used:</p>
                                     </td>
                                     <td class="col-xs-8">
-                                        <p>wqeqweqwe</p>
+
+
+                                        <!-- Content goes here -->
+                                        <c:forEach var = "sec" items="${insRepDto.otherCheckList.sectionDtos}">
+                                        <p>
+                                            <div class="panel panel-default">
+                                                <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
+                                                    <div class="panel-body">
+                                                        <div class="panel-main-content">
+                                                            <div class="preview-info">
+                                        <p>Section: &nbsp;<b>${sec.section}</b></p>
+                                        <p>Description: &nbsp;${sec.description}</p>
+
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>Regulation Clause Number</th>
+                                                <th>Regulations</th>
+                                                <th>Checklist Item</th>
+                                                <th>Risk Level</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var = "chklitem" items = "${sec.checklistItemDtos}" varStatus="status">
+                                                <tr>
+                                                    <td>
+                                                        <p>${chklitem.regulationClauseNo}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>${chklitem.regulationClause}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>${chklitem.checklistItem}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>${chklitem.riskLevel}</p>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
+            </c:forEach>
                                     </td>
                                 </tr>
                             </table>
@@ -249,30 +290,30 @@
                                         <p>Rectified:</p>
                                     </td>
                                     <td class="col-xs-8">
-<%--                                        <table class="table">--%>
-<%--                                            <thead>--%>
-<%--                                            <tr>--%>
-<%--                                                <th>SN</th>--%>
-<%--                                                <th>Checklist Item</th>--%>
-<%--                                                <th>Rectified?</th>--%>
-<%--                                            </tr>--%>
-<%--                                            </thead>--%>
-<%--                                            <tbody>--%>
-<%--                                            <c:forEach items="${insRepDto.ncRectification}" var="ncRectification" varStatus="status">--%>
-<%--                                                <tr>--%>
-<%--                                                    <td>--%>
-<%--                                                        <p><c:out value="${status.count}"></c:out></p>--%>
-<%--                                                    </td>--%>
-<%--                                                    <td>--%>
-<%--                                                        <p><c:out value="${ncRectification.nc}"></c:out></p>--%>
-<%--                                                    </td>--%>
-<%--                                                    <td>--%>
-<%--                                                        <p><c:out value="${ncRectification.rectified}"></c:out></p>--%>
-<%--                                                    </td>--%>
-<%--                                                </tr>--%>
-<%--                                            </c:forEach>--%>
-<%--                                            </tbody>--%>
-<%--                                        </table>--%>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>SN</th>
+                                                <th>Checklist Item</th>
+                                                <th>Rectified?</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach items="${insRepDto.ncRectification}" var="ncRectification" varStatus="status">
+                                                <tr>
+                                                    <td>
+                                                        <p><c:out value="${status.count}"></c:out></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${ncRectification.nc}"></c:out></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><c:out value="${ncRectification.rectified}"></c:out></p>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
                                     </td>
                                 </tr>
                                 <tr>
@@ -302,7 +343,7 @@
                                     </td>
                                     <td class="col-xs-8">
                                         <div class="col-xs-12 col-md-4">
-                                            <select class="active" id="select4" name="recommendation">
+                                            <select class="table-select" id="select4" name="recommendation">
                                                 <option>Select an option</option>
                                                 <option value="recommendation">Reject</option>
                                                 <option value="1">1</option>
