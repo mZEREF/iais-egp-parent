@@ -28,4 +28,13 @@ public interface InspectionPreTaskService {
       * @Descripation: get Processing Decision Option
       */
     List<SelectOption> getProcessDecOption();
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/12
+      * @Param: taskDto, preInspecRemarks
+      * @return: void
+      * @Descripation: routing Task
+      */
+    void routingTask(TaskDto taskDto, String preInspecRemarks);
 }
