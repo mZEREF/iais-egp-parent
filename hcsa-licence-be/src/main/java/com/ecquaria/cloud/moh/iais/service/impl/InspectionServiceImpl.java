@@ -152,6 +152,33 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
+    public InspectionTaskPoolListDto inputInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, LoginContext loginContext) {
+        List<SelectOption> inspectorOption = new ArrayList<>();
+        List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(inspectionTaskPoolListDto.getWorkGroupId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        String flag = AppConsts.FALSE;
+        Set<String> roles = loginContext.getRoleIds();
+        List<String> roleList = new ArrayList<>(roles);
+        for(String role:roleList){
+            if("inspector".equals(role)){
+                flag = AppConsts.TRUE;
+            }
+        }
+        for(OrgUserDto oDto:orgUserDtoList){
+            if(!(oDto.getId().equals(loginContext.getUserId()))){
+                SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                inspectorOption.add(so);
+            } else {
+                if(AppConsts.TRUE.equals(flag)){
+                    SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                    inspectorOption.add(so);
+                }
+            }
+        }
+        inspectionTaskPoolListDto.setInspectorOption(inspectorOption);
+        return inspectionTaskPoolListDto;
+    }
+
+    @Override
     public List<SelectOption> getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds) {
         List<SelectOption> inspectorOption = new ArrayList<>();
         if(workGroupIds == null || workGroupIds.size() <= 0){
@@ -165,7 +192,7 @@ public class InspectionServiceImpl implements InspectionService {
         for(String userId:userIdList){
             List<TaskDto> taskDtoList = organizationClient.getTasksByUserId(userId).getEntity();
             OrgUserDto orgUserDto =organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
-            String value = "";
+            String value = "0";
             if(taskDtoList != null && taskDtoList.size() > 0){
                 value = getOptionValue(taskDtoList);
             }
@@ -281,7 +308,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools) {
+    public SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools, LoginContext loginContext) {
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = new ArrayList<>();
         if(commPools == null || commPools.size() <= 0){
             return null;
@@ -290,11 +317,27 @@ public class InspectionServiceImpl implements InspectionService {
             InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
             inspectionTaskPoolListDto.setApplicationNo(tDto.getRefNo());
             inspectionTaskPoolListDto.setTaskId(tDto.getId());
-            inspectionTaskPoolListDto.setInspector(StringUtil.isEmpty(tDto.getUserId())?tDto.getUserId():"");
+            if(StringUtil.isEmpty(tDto.getUserId())){
+                inspectionTaskPoolListDto.setInspectorName("");
+            } else {
+                inspectionTaskPoolListDto.setInspector(tDto.getUserId());
+                OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(tDto.getUserId()).getEntity();
+                inspectionTaskPoolListDto.setInspectorName(orgUserDto.getUserName());
+            }
             inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
             inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
         }
-        for(InspectionSubPoolQueryDto iDto: searchResult.getRows()){
+        OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(loginContext.getUserId()).getEntity();
+        inspectionTaskPoolListDtoList = inputOtherData(searchResult.getRows(), inspectionTaskPoolListDtoList, orgUserDto);
+
+        SearchResult<InspectionTaskPoolListDto> searchResult2 = new SearchResult<>();
+        searchResult2.setRows(inspectionTaskPoolListDtoList);
+        searchResult2.setRowCount(inspectionTaskPoolListDtoList.size());
+        return searchResult2;
+    }
+
+    private List<InspectionTaskPoolListDto> inputOtherData(List<InspectionSubPoolQueryDto> rows, List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList, OrgUserDto orgUserDto) {
+        for(InspectionSubPoolQueryDto iDto: rows){
             for(InspectionTaskPoolListDto itplDto:inspectionTaskPoolListDtoList){
                 if((iDto.getApplicationNo()).equals(itplDto.getApplicationNo())){
                     itplDto.setServiceId(iDto.getServiceId());
@@ -310,13 +353,11 @@ public class InspectionServiceImpl implements InspectionService {
                     itplDto.setInspectionTypeName(iDto.getInspectionType() == 0? "Post":"Pre");
                     itplDto.setServiceEndDate(hcsaServiceDto.getEndDate());
                     itplDto.setInspectionDate(new Date());
+                    itplDto.setInspectorLead(orgUserDto.getUserName());
                 }
             }
         }
-        SearchResult<InspectionTaskPoolListDto> searchResult2 = new SearchResult<>();
-        searchResult2.setRows(inspectionTaskPoolListDtoList);
-        searchResult2.setRowCount(inspectionTaskPoolListDtoList.size());
-        return searchResult2;
+        return inspectionTaskPoolListDtoList;
     }
 
     @Override

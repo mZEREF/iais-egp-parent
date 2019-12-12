@@ -67,11 +67,11 @@ public interface InspectionService {
     /**
       * @author: shicheng
       * @Date 2019/12/3
-      * @Param: searchResult commPools
-      * @return: SearchResult<InspectionSubPoolQueryDto>, List<TaskDto>
+      * @Param: searchResult, commPools, loginContext
+      * @return: SearchResult<InspectionSubPoolQueryDto>
       * @Descripation: get Other Data For SearchResult
       */
-    SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools);
+    SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools, LoginContext loginContext);
 
     /**
       * @author: shicheng
@@ -127,4 +127,13 @@ public interface InspectionService {
       * @Descripation: get Work Group Ids By Login
       */
     List<String> getWorkGroupIdsByLogin(LoginContext loginContext);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/12
+      * @Param: inspectionTaskPoolListDto, loginContext
+      * @return: InspectionTaskPoolListDto
+      * @Descripation: input Inspector Option
+      */
+    InspectionTaskPoolListDto inputInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, LoginContext loginContext);
 }
