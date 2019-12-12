@@ -18,12 +18,12 @@
 <input type="hidden" name="crud_action_additional" value="">
 <input type="hidden" id = "controlLi" value="<%=action%>">
 <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-    <li id="infoli" class="active" role="presentation"><a id="info" aria-controls="tabInfo" role="tab" data-toggle="tab" >Info</a></li>
-    <li id="documentsli" class="complete" role="presentation"><a id="documents" aria-controls="tabDocuments" role="tab"
+    <li id="infoli" class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab" >Info</a></li>
+    <li id="documentsli" class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                 data-toggle="tab">Documents</a></li>
-    <li id="paymentli" class="complete" role="presentation"><a id="payment" aria-controls="tabPayment" role="tab"
+    <li id="paymentli" class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
                                                 data-toggle="tab">Payment</a></li>
-    <li id="inspectionli" class="complete" role="presentation"><a id="inspection" aria-controls="tabInspection" role="tab"
+    <li id="inspectionli" class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
                                                 data-toggle="tab">Inspection</a></li>
     <li id="checkListli" class="complete" role="presentation"><a id="checkList" aria-controls="tabCheckList" role="tab"
                                                   data-toggle="tab">CheckList</a></li>
