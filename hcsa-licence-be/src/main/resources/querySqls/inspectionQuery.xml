@@ -3,18 +3,27 @@
     <sql key = "assignInspector" remarks = "AO Assign Task For Inspector">
         <![CDATA[
             SELECT T5.ID, T5.APPLICATION_NO, T5.APP_TYPE, T5.STATUS, T5.HCI_CODE, T5.HCI_NAME, T5.SUBMIT_DT FROM
-            (SELECT T1.ID, T1.APPLICATION_NO, T1.APP_TYPE, T1.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT FROM APPLICATION T1
-            JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
-            JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
-            JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
-            WHERE 1 = 1
-            <#if applicationNo_list??> and ${applicationNo_list} </#if>) T5
+            (SELECT T1.ID, T1.APPLICATION_NO, T1.APP_TYPE, T1.STATUS, T3.HCI_CODE, T3.HCI_NAME, T4.SUBMIT_DT,
+             T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME, T3.POSTAL_CODE
+             FROM APPLICATION T1
+             JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+             WHERE 1 = 1
+             <#if applicationNo_list??> and ${applicationNo_list} </#if>
+            ) T5
             WHERE 1 = 1
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
             <#if sub_date??> and T5.SUBMIT_DT = :sub_date</#if>
+            <#if blk_no??> and charindex(:blk_no, T5.BLK_NO) >0 </#if>
+            <#if floor_no??> and charindex(:floor_no, T5.FLOOR_NO) >0 </#if>
+            <#if unit_no??> and charindex(:unit_no, T5.UNIT_NO) >0 </#if>
+            <#if street_name??> and charindex(:street_name, T5.STREET_NAME) >0 </#if>
+            <#if building_name??> and charindex(:building_name, T5.BUILDING_NAME) >0 </#if>
+            <#if postal_code??> and charindex(:postal_code, T5.POSTAL_CODE) >0 </#if>
         ]]>
     </sql>
 
