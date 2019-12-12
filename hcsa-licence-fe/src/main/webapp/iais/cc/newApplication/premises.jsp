@@ -427,7 +427,6 @@
         //Binding method
         $('.premiseId').click(function(){
             var aBoolean=true;
-
             if( $('.premTypeRadio:checked').length==0){
                   $('.form-check+span').html("Select at least one");
 
@@ -549,7 +548,7 @@
                    $.each($('.conveyanceStreetName'),function () {
                        if($(this).val()==""){
                          $(this).next("span").html("cannot be blank!");
-
+                           aBoolean=false;
                        } if($(this).val()!="") {
                            $(this).next("span").html("") ;
                        }

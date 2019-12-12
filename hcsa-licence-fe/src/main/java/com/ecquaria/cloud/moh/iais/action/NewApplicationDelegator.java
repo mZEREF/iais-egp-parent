@@ -1068,7 +1068,7 @@ public class NewApplicationDelegator {
                 keyName = "prem"+appGrpPrimaryDocDto.getSvcComDocId()+appGrpPrimaryDocDto.getPremisessName();
             }
             long length = appGrpPrimaryDocDto.getRealDocSize();
-            if(length>1024*1024){
+            if(length>4*1024*1024){
                 errorMap.put(keyName,"File size is too large!");
                 continue;
             }
