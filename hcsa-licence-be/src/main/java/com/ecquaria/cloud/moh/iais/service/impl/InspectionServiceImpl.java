@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -158,7 +159,7 @@ public class InspectionServiceImpl implements InspectionService {
         String flag = AppConsts.FALSE;
         Set<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
-        if(roleList.contains("inspector")){
+        if(roleList.contains(RoleConsts.USER_ROLE_INSPECTIOR)){
             flag = AppConsts.TRUE;
         }
         for(OrgUserDto oDto:orgUserDtoList){
@@ -190,7 +191,7 @@ public class InspectionServiceImpl implements InspectionService {
         for(String userId:userIdList){
             List<TaskDto> taskDtoList = organizationClient.getTasksByUserId(userId).getEntity();
             OrgUserDto orgUserDto =organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
-            String value = "0";
+            String value = AppConsts.NO;
             if(taskDtoList != null && taskDtoList.size() > 0){
                 value = getOptionValue(taskDtoList);
             }

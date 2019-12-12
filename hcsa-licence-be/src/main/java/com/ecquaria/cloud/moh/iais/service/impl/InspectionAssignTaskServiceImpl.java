@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -146,7 +147,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<SelectOption> inspectorList = new ArrayList<>();
         Set<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
-        if(roleList.contains("inspectorLead")){
+        if(roleList.contains(RoleConsts.USER_ROLE_INSPECTION_LEAD)){
             addInspector(inspectorList, orgUserDtos, loginContext, roleList);
         } else {
             for(OrgUserDto oDto:orgUserDtos){
@@ -161,7 +162,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     private void addInspector(List<SelectOption> inspectorList, List<OrgUserDto> orgUserDtos, LoginContext loginContext, List<String> roleList) {
         String flag = AppConsts.FALSE;
-        if(roleList.contains("inspector")){
+        if(roleList.contains(RoleConsts.USER_ROLE_INSPECTIOR)){
             flag = AppConsts.TRUE;
         }
         for(OrgUserDto oDto:orgUserDtos){
