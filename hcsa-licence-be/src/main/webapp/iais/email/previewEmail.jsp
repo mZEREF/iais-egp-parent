@@ -1,6 +1,9 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
+<script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
 <%
     /*
       You can customize this default file:
@@ -38,7 +41,7 @@
 
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <br><br><br><br><br><br>
-    <p> &nbsp&nbsp&nbsp&nbsp<textarea name="messageContent" cols="80" rows="25" class="wenbenkuang" id="htmlEditroArea" title="content" readonly >${content}</textarea></p>
+    <p> &nbsp&nbsp&nbsp&nbsp<textarea name="messageContent" cols=110" rows="40" class="wenbenkuang" id="htmlEditroArea" title="content" readonly >${content}</textarea></p>
 
     <input type="submit" class="backspace-icon" value="Back">
 </form>
