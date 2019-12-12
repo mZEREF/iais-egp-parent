@@ -100,10 +100,10 @@ public class FillupChklistDelegator {
     public void inspectionChecklist(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         InspectionFillCheckListDto cDto = getDataFromPage(request);
-        InspectionFillCheckListDto comcDto= getCommonDataFromPage(request);
+        InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
         InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
         ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
-        ParamUtil.setSessionAttr(request,"commonDto",cDto);
+        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         Map<String, String> errMap = InspectionCheckListValidation.validate(request);
         List<SelectOption> isTcuOption = new ArrayList<>();
         SelectOption op = new SelectOption("Yes","Yes");

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
@@ -82,11 +83,15 @@ public class InspectionNcCheckListDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
         List<AppPremisesPreInspectionNcItemDto> itemDtoList = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremPreCklDto.getAppPremCorrId());
         insepectionNcCheckListDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
+        ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
+        InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
+        insepctionNcCheckListService.getCommonDto(commonDto,appPremPreCklDto,itemDtoList);
+
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto("7102C311-D10D-EA11-BE7D-000C29F371DC");
         TaskDto  taskDto = fillupChklistService.getTaskDtoById("7102C311-D10D-EA11-BE7D-000C29F371DC");
-        //TaskDto taskDto = RestApiUtil.getByPathParam("hcsa-config:8879/iais-task/{taskId}",taskId,TaskDto.class);
         ParamUtil.setSessionAttr(request,"taskDto",taskDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",insepectionNcCheckListDto);
+        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
     }
 
@@ -98,8 +103,10 @@ public class InspectionNcCheckListDelegator {
         Log.info("=======>>>>>doNextStep>>>>>>>>>>>>>>>>doNextRequest");
         HttpServletRequest request = bpc.request;
         InspectionFillCheckListDto cDto = getDataFromPage(request);
-        InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
+        InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
+        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
+        InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
         Map<String, String> errMap = InspectionCheckListValidation.validate(request);
         List<SelectOption> isTcuOption = new ArrayList<>();
         SelectOption op = new SelectOption("Yes","Yes");
@@ -119,8 +126,9 @@ public class InspectionNcCheckListDelegator {
         Log.info("=======>>>>>doSubmitStep>>>>>>>>>>>>>>>>doSubmitRequest");
         HttpServletRequest request = bpc.request;
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
+        InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
+        fillupChklistService.merge(comDto,icDto);
         ApplicationViewDto appViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
-
         insepctionNcCheckListService.submit(icDto);
         try {
             //routingTask(bpc, HcsaConsts.ROUTING_STAGE_INS, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
@@ -188,7 +196,24 @@ public class InspectionNcCheckListDelegator {
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
-
+    public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
+        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
+        List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
+        for(InspectionCheckQuestionDto temp:checkListDtoList){
+            String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrad");
+            String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comremark");
+            String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrec");
+            if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
+                temp.setRectified(true);
+            }else{
+                temp.setRectified(false);
+            }
+            temp.setChkanswer(answer);
+            temp.setRemark(remark);
+        }
+        fillupChklistService.fillInspectionFillCheckListDto(cDto);
+        return cDto;
+    }
 
     public InspectionFillCheckListDto getDataFromPage(HttpServletRequest request){
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");

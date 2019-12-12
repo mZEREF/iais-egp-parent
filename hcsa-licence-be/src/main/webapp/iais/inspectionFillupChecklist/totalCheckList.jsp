@@ -230,7 +230,7 @@
                                                             <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
                                                             <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxRemark" type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
                                                             <td>
-                                                                <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comck" <c:if test="${item.incqDto.rectified == false}">hidden</c:if>>
+                                                                <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comck" <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                                                     <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                 </div>
                                                             </td>
@@ -273,7 +273,7 @@
                                                             <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
                                                             <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
                                                             <td>
-                                                                <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>ck" <c:if test="${item.incqDto.rectified == false}">hidden</c:if>>
+                                                                <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>ck" <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                                                     <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                 </div>
                                                             </td>

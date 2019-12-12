@@ -22,4 +22,5 @@ public interface InsepctionNcCheckListService {
     void submit(InspectionFillCheckListDto infillDto);
     List<NcAnswerDto> getNcAnswerDtoList(String configId, String appPremCorrId);
     void updateTaskStatus(ApplicationDto applicationDto,String appPremCorrId);
+    void getCommonDto(InspectionFillCheckListDto commonDto, AppPremisesPreInspectChklDto appPremPreCklDto, List<AppPremisesPreInspectionNcItemDto> itemDtoList);
 }

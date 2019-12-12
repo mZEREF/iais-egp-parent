@@ -29,4 +29,5 @@ public interface FillupChklistService {
     ChecklistConfigDto getcommonCheckListDto(String configType,String module);
     InspectionFillCheckListDto transferToInspectionCheckListDto(ChecklistConfigDto commonCheckListDto,String appPremCorrId);
     void merge(InspectionFillCheckListDto comDto,InspectionFillCheckListDto icDto);
+
 }

@@ -84,6 +84,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
         infillDto.setBestPractice(appPremisesRecommendationDto.getBestPractice());
         infillDto.setTuc(Formatter.formatDate(appPremisesRecommendationDto.getRecomInDate()));
+        infillDto.setTcuRemark(appPremisesRecommendationDto.getRemarks());
         for (InspectionCheckQuestionDto temp : ncCheckList) {
             if (itemDtoList != null && !itemDtoList.isEmpty()) {
                 for (AppPremisesPreInspectionNcItemDto item : itemDtoList) {
@@ -284,17 +285,19 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         List<InspectionCheckQuestionDto> insqDtoList = dto.getCheckList();
         List<AppPremisesPreInspectionNcItemDto> ncItemDtoList =  new ArrayList<>();
         for (InspectionCheckQuestionDto temp : insqDtoList) {
-            AppPremisesPreInspectionNcItemDto ncItemDto = null;
-            ncItemDto = new AppPremisesPreInspectionNcItemDto();
-            ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            ncItemDto.setItemId(temp.getItemId());
-            ncItemDto.setPreNcId(ncDto.getId());
-            if (temp.isRectified()) {
-                ncItemDto.setIsRecitfied(1);
-            } else {
-                ncItemDto.setIsRecitfied(0);
+            if("No".equals(temp.getChkanswer())){
+                AppPremisesPreInspectionNcItemDto ncItemDto = null;
+                ncItemDto = new AppPremisesPreInspectionNcItemDto();
+                ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                ncItemDto.setItemId(temp.getItemId());
+                ncItemDto.setPreNcId(ncDto.getId());
+                if (temp.isRectified()) {
+                    ncItemDto.setIsRecitfied(1);
+                } else {
+                    ncItemDto.setIsRecitfied(0);
+                }
+                ncItemDtoList.add(ncItemDto);
             }
-            ncItemDtoList.add(ncItemDto);
         }
         return ncItemDtoList;
     }
@@ -350,5 +353,43 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorrId).getEntity();
         appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
         appInspectionStatusClient.update(appInspectionStatusDto);
+    }
+
+    @Override
+    public void getCommonDto(InspectionFillCheckListDto commonDto, AppPremisesPreInspectChklDto appPremDto, List<AppPremisesPreInspectionNcItemDto> itemDtoList) {
+        List<InspectionCheckQuestionDto> fillCheckList = commonDto.getCheckList();
+        List<InspectionCheckQuestionDto> ncCheckList = new ArrayList<>();
+        InspectionCheckQuestionDto ncCheck = null;
+        String answer = appPremDto.getAnswer();
+        List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answer, InspectionCheckListAnswerDto.class);
+        if (fillCheckList != null && !fillCheckList.isEmpty()) {
+            for (InspectionCheckQuestionDto temp : fillCheckList) {
+                for (int i = 0; i < answerDtoList.size(); i++) {
+                    if (temp.getItemId().equals(answerDtoList.get(i).getItemId()) &&
+                            temp.getSectionName().equals(answerDtoList.get(i).getSectionName())) {
+                        //&&"No".equals(answerDtoList.get(i).getAnswer())){
+                        temp.setChkanswer(answerDtoList.get(i).getAnswer());
+                        temp.setRemark(answerDtoList.get(i).getRemark());
+                        ncCheckList.add(temp);
+                    }
+                }
+            }
+        }
+        for (InspectionCheckQuestionDto temp : ncCheckList) {
+            if (itemDtoList != null && !itemDtoList.isEmpty()) {
+                for (AppPremisesPreInspectionNcItemDto item : itemDtoList) {
+                    if (item.getItemId().equals(temp.getItemId())) {
+                        if (item.getIsRecitfied() == 0) {
+                            temp.setRectified(false);
+                        } else {
+                            temp.setRectified(true);
+                        }
+
+                    }
+                }
+            }
+        }
+        commonDto.setCheckList(ncCheckList);
+        fillInspectionFillCheckListDto(commonDto);
     }
 }
