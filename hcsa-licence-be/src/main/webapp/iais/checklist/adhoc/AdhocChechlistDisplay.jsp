@@ -169,7 +169,7 @@
                   <div class="col-xs-12 col-sm-12">
                     <div class="text-right text-center-mobile">
                       <a id = "addAdhocItemBtn" class="btn btn-primary" href="#">Add Adhoc Item</a>
-                      <a class="btn btn-primary" href="#">Next</a>
+                      <a id = "nextAdhocItemBtn" class="btn btn-primary" href="#">Next</a>
                     </div>
                   </div>
                 </div>
@@ -187,6 +187,10 @@
   "use strict"
   addAdhocItemBtn.onclick = function(){
     SOP.Crud.cfxSubmit("mainForm", "receiveItemPool");
+  }
+
+  nextAdhocItemBtn.onclick = function(){
+      SOP.Crud.cfxSubmit("mainForm", "saveAdhocItem");
   }
 
 </script>

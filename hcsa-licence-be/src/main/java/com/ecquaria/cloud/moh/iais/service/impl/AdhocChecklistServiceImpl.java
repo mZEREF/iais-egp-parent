@@ -6,6 +6,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  *description:
  */
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -40,6 +41,8 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
     @Autowired
     private HcsaChklClient hcsaChklClient;
 
+    private String relationCorreId;
+
     @Override
     public List<ChecklistConfigDto> getInspectionChecklist(ApplicationDto application) {
         String appId = application.getId();
@@ -63,6 +66,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
         correlation.stream().forEach(corre -> {
             String correId = corre.getId();
+            setRelationCorreId(correId);
             List<AppSvcPremisesScopeDto> premScope = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
             premScope.stream().filter(AppSvcPremisesScopeDto::isSubsumedType)
                     .forEach(scope -> {
@@ -76,5 +80,23 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
                     });
         });
         return inspChecklist;
+    }
+
+    @Override
+    public void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig) {
+        applicationClient.saveAdhocChecklist(adhocConfig);
+    }
+
+    public String getRelationCorreId() {
+        return relationCorreId;
+    }
+
+    public void setRelationCorreId(String relationCorreId) {
+        this.relationCorreId = relationCorreId;
+    }
+
+    @Override
+    public String getCurrentCorreId(){
+        return getRelationCorreId();
     }
 }
