@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @author Jinhua
  * @date 2019/12/3 9:41
  */
-@FeignClient(name = "system-admin", configuration = FeignConfiguration.class,
+@FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
         fallback = ComSystemAdminClientFallback.class)
 public interface ComSystemAdminClient {
     @GetMapping(value = "/iais-orguser/users-by-loginId/{user_id}")
