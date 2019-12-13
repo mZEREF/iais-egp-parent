@@ -125,8 +125,8 @@ public class HtmlElementHelper {
             html.append("<span style=\"color:#c00;\">*</span>");
         }
         if (!AppConsts.FALSE.equals(attributes.get("needErrorSpan"))) {
-            html.append("<div style=\"color:#b94a48\" class=\"help-inline-block\"><span id=\"error_").append(attributes.get("name")).append("\"");
-            html.append(" name=\"emsErrorMsg\"></span></div>");
+            html.append("<span id=\"error_").append(attributes.get("name")).append("\"");
+            html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
         }
         if (AppConsts.TRUE.equals(attributes.get("needMask"))) {
             String name = attributes.get("name");
