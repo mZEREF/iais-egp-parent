@@ -45,7 +45,7 @@ function clearErrorMsg(){
 }
 
 function doValidationParse(data){
-    if(data != "[]"){
+    if(data != null && data != "[]" && data != ''){
         $("#iaisErrorFlag").val("BLOCK");
         var results = jQuery.parseJSON(data);
 
