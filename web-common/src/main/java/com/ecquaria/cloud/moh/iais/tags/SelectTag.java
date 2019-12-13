@@ -140,8 +140,8 @@ public class SelectTag extends DivTagSupport {
 
         html.append("</select>");
         if (needErrorSpan) {
-            html.append("<div style=\"color:#b94a48\" class=\"help-inline-block\"><span id=\"error_").append(name).append("\"");
-            html.append(" name=\"emsErrorMsg\"></span></div>");
+            html.append("<span id=\"error_").append(name).append("\"");
+            html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
         }
     }
 
