@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -11,11 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -30,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -73,9 +69,6 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
-
-    @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
@@ -236,7 +229,7 @@ public class InspectionServiceImpl implements InspectionService {
                         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                         applicationViewDto.setApplicationDto(applicationDto1);
                         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
-                        createTaskStatus(applicationDto);
+                        appInspectionStatusClient.createAppInspectionStatusByAppDto(applicationDto);
                         if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                             inspectionTaskPoolListDto(inspectorCheckList, commPools, inspectionTaskPoolListDto);
                             for(int i = 0; i < inspectorCheckList.size(); i++){
@@ -261,17 +254,6 @@ public class InspectionServiceImpl implements InspectionService {
             log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);
             throw e;
         }
-    }
-
-    public void createTaskStatus(ApplicationDto applicationDto) {
-        List<AppPremisesCorrelationDto> appPremCorrDtoList = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
-        List<AppInspectionStatusDto> appInspectionStatusDtos = new ArrayList<>();
-        AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
-        appInspectionStatusDto.setAppPremCorreId(appPremCorrDtoList.get(0).getId());
-        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
-        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appInspectionStatusDtos.add(appInspectionStatusDto);
-        appInspectionStatusClient.create(appInspectionStatusDtos);
     }
 
     private TaskDto getTaskDtoByPool(List<TaskDto> commPools, InspectionTaskPoolListDto inspectionTaskPoolListDto) {

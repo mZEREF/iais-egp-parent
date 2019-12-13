@@ -67,9 +67,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     private ApplicationClient applicationClient;
 
     @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
-
-    @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
 
     @Autowired
