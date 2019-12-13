@@ -38,7 +38,7 @@
                                                 <div class="application-service-steps">
                                                     <div class="clinical-governance-officer">
                                                         <h2>Service-related Documents</h2>
-                                                        <jsp:include page="/iais/cc/newApplication/clinicalLaboratory/CR_Doc.jsp" />
+                                                        <%@include file="CR_Doc.jsp"%>
                                                     </div>
                                                 </div>
                                             </div>

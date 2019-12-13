@@ -1,32 +1,28 @@
+
+<c:forEach var="docConfig" items="${serviceDocConfigDto}">
 <div class="row">
   <div class="col-xs-12">
-    <h2>[Sample Document]</h2>
+    <h2>${docConfig.docTitle}</h2>
   </div>
   <div class="col-xs-12">
-    <p>[description of the document/instruction for retrieving the document]</p>
+    <p>${docConfig.docDesc}</p>
   </div>
   <div class="col-xs-12">
-    <%--<div class="updateContent col-xs-12 hidden">
-      &lt;%&ndash;<input type="text" value="sample.pdf"/>&nbsp;&nbsp;&nbsp;&nbsp;
-      <input type="text" value="(3.2MB)"/>&ndash;%&gt;
-      <label>sample.pdf</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>(3.2MB)</label>
-    </div>--%>
     <div class="text-center col-xs-12">
       <div class="document-upload-list">
         <div class="file-upload-gp">
           <div class="fileContent col-xs-12 hidden">
             <input type="hidden" name="docConfig" value="ddfb8b26-f449-44e8-b847-657f341fa1d6;0"/>
-            <span class="fileName">11</span>&nbsp;&nbsp;&nbsp;&nbsp;
-            (<span class="fileSize">3.2</span>MB)
+            <span class="fileName"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <%--(<span class="fileSize"></span>MB)--%>
           </div>
-          <input class="selectedFile" id="selectedFile" name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+          <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
         </div>
       </div>
     </div>
   </div>
-
 </div>
-
+</c:forEach>
 <script>
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");

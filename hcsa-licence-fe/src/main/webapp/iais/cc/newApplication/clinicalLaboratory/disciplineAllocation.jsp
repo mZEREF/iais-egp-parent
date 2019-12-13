@@ -49,6 +49,7 @@
                                   <th>Clinical Governance Officers</th>
                                 </tr>
                                 </thead>
+
                                 <c:forEach var="premisesAndChkLst" items="${PremisesAndChkLst}" >
                                   <c:set value="${premisesAndChkLst.premisesIndexNo}" var="premisesIndexNo"/>
                                   <tbody>
