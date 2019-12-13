@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQuer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -34,9 +35,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -283,34 +286,45 @@ public class HcsaChklConfigDelegator {
         String type = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
         String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
+        String eftStartDate = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE);
+        String eftEndDate = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE);
 
-        boolean isCommon = judgeConfigIsCommon(common);
+        try {
+            Date starteDate = Formatter.parseDate(eftStartDate);
+            Date endDate = Formatter.parseDate(eftEndDate);
+            boolean isCommon = judgeConfigIsCommon(common);
 
-        ChecklistConfigDto configDto;
-        String operationType = (String) ParamUtil.getSessionAttr(request, "operationType");
-        if (!StringUtils.isEmpty(operationType) && HcsaChecklistConstants.ACTION_EDIT.equals(operationType)){
-            configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-            configDto.setModule(type);
-            configDto.setType(type);
-        }else {
-            configDto = new ChecklistConfigDto();
-            configDto.setCommon(isCommon);
-            configDto.setType(type);
-            configDto.setSvcName(svcName);
-            configDto.setModule(type);
-            configDto.setSvcSubType(svcSubType);
-        }
+            ChecklistConfigDto configDto;
+            String operationType = (String) ParamUtil.getSessionAttr(request, "operationType");
+            if (!StringUtils.isEmpty(operationType) && HcsaChecklistConstants.ACTION_EDIT.equals(operationType)){
+                configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
+                configDto.setModule(type);
+                configDto.setType(type);
+            }else {
+                configDto = new ChecklistConfigDto();
+                configDto.setCommon(isCommon);
+                configDto.setType(type);
+                configDto.setSvcName(svcName);
+                configDto.setModule(type);
+                configDto.setSvcSubType(svcSubType);
+            }
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, "create");
-        if(validationResult != null && validationResult.isHasErrors()){
-            Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
-        }else {
-            configDto.setType(MasterCodeUtil.getCodeDesc(type));
-            configDto.setModule(MasterCodeUtil.getCodeDesc(module));
-            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, "create");
+            if(validationResult != null && validationResult.isHasErrors()){
+                Map<String,String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            }else {
+                configDto.setType(MasterCodeUtil.getCodeDesc(type));
+                configDto.setModule(MasterCodeUtil.getCodeDesc(module));
+                configDto.setEftStartDate(starteDate);
+                configDto.setEftEndDate(endDate);
+                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            }
+
+        } catch (ParseException e) {
+            throw new IaisRuntimeException(e.getMessage());
         }
 
     }
@@ -525,10 +539,13 @@ public class HcsaChklConfigDelegator {
             }
 
             List<ChecklistItemDto> checklistItemDtos = sec.getChecklistItemDtos();
-            for (ChecklistItemDto item : checklistItemDtos){
-                String itemOrder = ParamUtil.getString(request, item.getItemId());
-                item.setSectionItemOrder(Integer.valueOf(itemOrder));
+            if (checklistItemDtos != null && !checklistItemDtos.isEmpty()){
+                for (ChecklistItemDto item : checklistItemDtos){
+                    String itemOrder = ParamUtil.getString(request, item.getItemId());
+                    item.setSectionItemOrder(Integer.valueOf(itemOrder));
+                }
             }
+
         }
     }
 

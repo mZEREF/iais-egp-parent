@@ -30,7 +30,7 @@ import java.util.List;
         fallback = HcsaChklFallback.class)
 public interface HcsaChklClient {
 
-    @PostMapping(path = "/iais-hcsa-checklist/config/{id}")
+    @PostMapping(path = "/iais-hcsa-checklist/config")
     FeignResponseEntity<String> inActiveConfig(String confId);
 
     @PostMapping(path = "/iais-hcsa-checklist/config/results", consumes = MediaType.APPLICATION_JSON_VALUE)

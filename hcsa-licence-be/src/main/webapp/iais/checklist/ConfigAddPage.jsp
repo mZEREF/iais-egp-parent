@@ -32,6 +32,7 @@
   <div class="main-content">
     <div class="container">
 
+      <br><br><br>
         <c:if test = "${not empty errorMap}">
           <div class="error">
             <c:forEach items="${errorMap}" var="map">
@@ -82,7 +83,13 @@
           </div>
 
 
+          <div class="col-xs-12">
+            Effective Start Date <iais:datePicker name = "eftStartDate" value=""></iais:datePicker>
+          </div>
 
+          <div class="col-xs-12">
+            Effective End Date <iais:datePicker name = "eftEndDate" value=""></iais:datePicker>
+          </div>
 
         </div>
 
