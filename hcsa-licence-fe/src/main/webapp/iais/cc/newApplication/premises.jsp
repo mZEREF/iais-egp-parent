@@ -10,6 +10,7 @@
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
+
   <%--Validation fields Start--%>
   <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
   <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto"/>
@@ -85,7 +86,7 @@
                                   <iais:select cssClass="premSelect" id="premOnsiteSel" name="${premIndexNo}premOnSiteSelect"  options="premisesSelect" value=""></iais:select>
                                 </c:otherwise>
                               </c:choose>
-                            <span class="error-msg"><c:out value="${errMsg.premisesSelect}"></c:out></span>
+                            <span id="error_premisesType" name="iaisErrorMsg" class="error-msg"><c:out value="${errMsg.premisesSelect}"></c:out></span>
                           </iais:value>
                         </iais:row>
 
@@ -115,7 +116,7 @@
                             <iais:field value="Name of premises" width="11"/>
                             <iais:value width="11">
                               <iais:input maxLength="100" type="text" name="${premIndexNo}hciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
-                              <span class="error-msg"><c:out value="${errMsg.hciName}"></c:out></span>
+                              <span id="error_hciName" name="iaisErrorMsg" class="error-msg"><c:out value="${errMsg.hciName}"></c:out></span>
                             </iais:value>
                           </iais:row>
                           <iais:row cssClass="postalCodeDiv">
@@ -389,6 +390,8 @@
       </div>
     </div>
   </div>
+  <%--Validation Field--%>
+  <%@ include file="/include/validation.jsp" %>
 </form>
 <script type="text/javascript">
 
