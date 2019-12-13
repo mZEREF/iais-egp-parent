@@ -21,6 +21,7 @@
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainReviewForm" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="inspectorPreType" value="">
     <input type="hidden" id="taskId" name="taskId" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
@@ -85,6 +86,7 @@
     }
 
     function doInspectionPreTaskBack() {
+        $("#actionValue").val('back');
         submit('back');
     }
 

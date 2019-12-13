@@ -21,7 +21,7 @@
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainAssignForm" action=<%=process.runtime.continueURL()%>>
-
+    <%@ include file="/include/formHidden.jsp" %>
   </form>
 </div>
 
