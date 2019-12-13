@@ -27,10 +27,9 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import com.sun.net.httpserver.HttpContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -674,12 +673,19 @@ public class NewApplicationDelegator {
 
 
     @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
-    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) {
-        String fileRepo = ParamUtil.getString(request, "fileRepo");
-        byte[] fileData =serviceConfigService.downloadFile(fileRepo);
-        HttpHeaders headers = new HttpHeaders();
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response, HttpContext context) throws IOException {
+        String fileRepoId = ParamUtil.getString(request, "fileRepoId");
+        fileRepoId = "6093871C-F81C-EA11-BE78-000C29D29DB0";
+        byte[] fileData =serviceConfigService.downloadFile(fileRepoId);
+        /*HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", "testFielName");
-        headers.setContentType( MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentType( MediaType.APPLICATION_OCTET_STREAM);*/
+        /*response.setContentType("multipart/form-data");
+        response.setHeader("Content-Disposition", "attachment;fileName="+"a.pdf");
+        ServletOutputStream out = response.getOutputStream();
+        out.write(fileData);
+        out.close();
+        out.flush();*/
     }
 
 
