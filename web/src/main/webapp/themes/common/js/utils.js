@@ -39,6 +39,7 @@ function formatHTMLEnCode(s1){
 }
 
 function clearErrorMsg(){
+    $("#iaisErrorFlag").val("");
     $("span[name='iaisErrorMsg']").each(function(){
         $(this).html("");
     });
