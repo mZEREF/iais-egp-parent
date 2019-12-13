@@ -45,9 +45,10 @@
 
 
 <script type="text/javascript">
+    var BASE_CONTEXT_PATH = '<%=request.getContextPath()%>';
     $(document).ready(function(){
         $('.date_picker').datepicker({
-            format:"yyyy-mm-dd"
+            format:"dd/mm/yyyy"
         });
     });
 </script>
