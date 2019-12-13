@@ -277,7 +277,19 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
-
+              <c:forEach var="svcDoc" items="${serviceDocConfigDto}" varStatus="status">
+                <div class="panel panel-default">
+                  <div class="panel-heading " id="headingServiceInfo" role="tab">
+                    <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information -- ${svcDoc.svcName}</a></h4>
+                  </div>
+                  <div class="panel-collapse collapse in" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">
+                    <div class="panel-body">
+                      <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                      <iframe  class="elemClass-1561088919456" title="" src="${pageContext.request.contextPath}/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form_value=prepareView&svcId=${svcDoc.id}" id="elemId-${status.index}"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
+                    </div>
+                  </div>
+                </div>
+              </c:forEach>
             </div>
           </div>
         </div>

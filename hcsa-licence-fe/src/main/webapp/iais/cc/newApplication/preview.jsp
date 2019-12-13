@@ -60,14 +60,12 @@
                                                                     </div>
                                                                     <div class="pop-up">
                                                                         <div class="pop-up-body">
-                                                                            <c:forEach var="appGrpPrimaryDocDto" items="${AppSubmissionDto.appGrpPrimaryDocDtos}">
+                                                                            <c:forEach var="appGrpPrimaryDocDto" items="${AppSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
                                                                                 <div class="content-body fileUploadContainer">
                                                                                     <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
                                                                                     <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
                                                                                     <div class="control col-sm-5">
-                                  <input type="hidden"  name="fileRepo" value="<c:out value="${appGrpPrimaryDocDto.fileRepoId}" />" />
-
-                                                                                        <div class="fileList"><span class="filename server-site" id="130"><a title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a> (${appGrpPrimaryDocDto.docSize} KB)</span></div>
+                                                                                      <div class="fileList"><span class="filename server-site" id="130"><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a> (${appGrpPrimaryDocDto.docSize} KB)</span></div>
                                                                                     </div>
                                                                                 </div>
                                                                             </c:forEach>
@@ -146,33 +144,5 @@
 
 
 
-    /*var donwload = function () {
-        $('.downloadFile').click(function () {
-            var url = '<%--${pageContext.request.contextPath}--%>/file-repo';
-            var xhr = new XMLHttpRequest();
-            xhr.
-
-
-           /!* alert(123);
-            $fileEle = $(this).closest('div.fileUploadContainer');
-            var fileRepo = $fileEle.find('input[name="fileRepo"]').val();
-            alert(fileRepo);
-            var data = {
-                'fileRepo':fileRepo
-            };
-            $.ajax({
-                'url':'${pageContext.request.contextPath}/file-repo',
-                'dataType':'json',
-                'data':data,
-                'type':'GET',
-                'success':function (data) {
-                    console.log(data);
-                },
-                'error':function () {
-                }
-            });*!/
-
-        });
-    }*/
 
 </script>
