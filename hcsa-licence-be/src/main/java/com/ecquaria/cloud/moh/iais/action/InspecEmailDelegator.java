@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -48,8 +47,7 @@ public class InspecEmailDelegator {
     InspectionService inspectionService;
     @Autowired
     private TaskService taskService;
-    @Autowired
-    InsRepService insRepService;
+
     @Autowired
     ApplicationViewService applicationViewService;
 
@@ -67,7 +65,7 @@ public class InspecEmailDelegator {
         String taskId="7102C311-D10D-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
-        //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();
+        String licenseeId=inspEmailService.getAppInsRepDto(appNo).getLicenseeId();
         String licenseeName="lichen";
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
         String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();

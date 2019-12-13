@@ -12,7 +12,7 @@
     }
 %>
 <br><br><br>
-<input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+<%@ include file="/include/formHidden.jsp" %>
 <input type="hidden" name="crud_action_type" value="">
 <input type="hidden" name="crud_action_value" value="">
 <input type="hidden" name="crud_action_additional" value="">
