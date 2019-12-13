@@ -104,18 +104,17 @@ public class WebValidationHelper {
      */
     public static String generateJsonStr(Map<String, String> errorMsg) {
         if (!errorMsg.isEmpty()) {
-            StringBuilder sb = new StringBuilder("[");
+            StringBuilder sb = new StringBuilder("{");
             for (Map.Entry<String, String> ent : errorMsg.entrySet()) {
-                sb.append("{\"");
                 sb.append(ent.getKey()).append("\" : \"");
                 String value = ent.getValue();
                 value = value.replaceAll("\"", "&quot;");
                 value = value.replaceAll("'", "&apos;");
-                sb.append(value).append("\"},");
+                sb.append(value).append("\",");
             }
-            return sb.substring(0, sb.length() - 1) + "]";
+            return sb.substring(0, sb.length() - 1) + "}";
         } else {
-            return "[]";
+            return "";
         }
     }
 
