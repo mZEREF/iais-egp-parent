@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -11,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -29,6 +27,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -153,20 +152,13 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAction(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAction start ...."));
-        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
-        String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
-        if(nameValue == null || nameValue.length < 0) {
-            inspecTaskCreAndAssDto.setInspectorCheck(null);
-        } else {
-            List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
-            inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
-        }
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = getValueFromPage(bpc);
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto,"create");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, DemoConstants.ERRORMAP, errorMap);
+                ParamUtil.setRequestAttr(bpc.request, "errorMap_premises", errorMap);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
@@ -175,6 +167,18 @@ public class InspecAssignTaskDelegator {
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         }
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+    }
+
+    public InspecTaskCreAndAssDto getValueFromPage(BaseProcessClass bpc) {
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
+        if(nameValue == null || nameValue.length < 0) {
+            inspecTaskCreAndAssDto.setInspectorCheck(null);
+        } else {
+            List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
+            inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
+        }
+        return inspecTaskCreAndAssDto;
     }
 
     /**
@@ -221,7 +225,7 @@ public class InspecAssignTaskDelegator {
      * @param bpc
      * @throws
      */
-    public void inspectionAllotTaskInspectorSearch(BaseProcessClass bpc){
+    public void inspectionAllotTaskInspectorSearch(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSearch start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -229,7 +233,7 @@ public class InspecAssignTaskDelegator {
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
-        String sub_date = ParamUtil.getRequestString(bpc.request, "sub_date");
+        String sub_date2 = ParamUtil.getRequestString(bpc.request, "sub_date");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
         setMapTaskId(bpc, commPools);
@@ -254,13 +258,12 @@ public class InspecAssignTaskDelegator {
         if(!StringUtil.isEmpty(hci_name)){
             searchParam.addFilter("hci_name",hci_name,true);
         }
-        if(!StringUtil.isEmpty(sub_date)){
-            try {
-                Date sub_date2 = Formatter.parseDate(sub_date);
-                searchParam.addFilter("sub_date",sub_date2,true);
-            } catch (ParseException p){
-                log.debug(StringUtil.changeForLog("the sub_date2 Invalid Date ...."), p);
-            }
+        if(!StringUtil.isEmpty(sub_date2)){
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date sub_date1 = sdf.parse(sub_date2);
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+            String sub_date = sdf2.format(sub_date1);
+            searchParam.addFilter("sub_date",sub_date,true);
         }
         if(!StringUtil.isEmpty(hci_address)){
             searchParam.addFilter("blk_no", hci_address,true);
