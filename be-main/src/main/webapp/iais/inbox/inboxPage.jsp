@@ -13,7 +13,7 @@
 %>
 
 <form method="post" id="mainSupForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="SearchSwitchType" value="">
     <input type="hidden" id="taskId" name="taskId" value="">
     <input type="hidden" id="inspector_name" name="inspector_name" value="">
@@ -22,6 +22,7 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <br><br><br><br>
                     <h3>
                         <span>Search Criteria</span>
                     </h3>

@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -47,7 +46,7 @@ public class BankedInboxDelegator {
 
     public void searchInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchInit start ...."));
-        AccessUtil.initLoginUserInfo(bpc.request);
+        //AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
@@ -68,8 +67,8 @@ public class BankedInboxDelegator {
         SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "supTaskSearchParam");
         SearchResult<InspecTaskCreAndAssDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchResult");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
-        //List<String> workGroupIds =new ArrayList<>();
+        //List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
+        List<String> workGroupIds =new ArrayList<>();
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption();
         //get Inspector Option

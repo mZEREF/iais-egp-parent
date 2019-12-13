@@ -3,12 +3,14 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,8 @@ public class InspEmailServiceImpl implements InspEmailService {
     private ApplicationClient applicationClient;
     @Autowired
     private HcsaChklClient hcsaChklClient;
+    @Autowired
+    InsRepClient insRepClient;
 
     @Override
     public String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
@@ -67,6 +71,10 @@ public class InspEmailServiceImpl implements InspEmailService {
     @Override
     public List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode,String svcType){
         return hcsaChklClient.getcheckListQuestionDtoList(svcCode,"Inspection").getEntity();
+    }
+    @Override
+    public AppInsRepDto getAppInsRepDto(String appNo){
+        return insRepClient.getAppInsRepDto(appNo).getEntity();
     }
 
     @Override
