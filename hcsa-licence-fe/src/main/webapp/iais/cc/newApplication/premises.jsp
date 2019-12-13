@@ -188,7 +188,7 @@
                           <iais:row>
                             <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:datePicker cssClass="fireIssuedDate" />
+                              <iais:datePicker cssClass="fireIssuedDate" name="${premIndexNo}fireSafetyCertIssuedDate" />
                             </iais:value>
                           </iais:row>
                           <iais:row>
@@ -532,9 +532,7 @@ var retrieveAddr = function(){
             'data':data,
             'type':'GET',
             'success':function (data) {
-                console.log(data);
                 if(data == null){
-                    console.log("data is null");
                     $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
                     return;
                 }

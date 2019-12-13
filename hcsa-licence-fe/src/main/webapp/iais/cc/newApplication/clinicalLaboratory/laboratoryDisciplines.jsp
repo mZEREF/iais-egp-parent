@@ -39,9 +39,7 @@
                                                 <div class="application-service-steps">
                                                     <div class="laboratory-disciplines">
                                                         <h2>Laboratory Disciplines</h2>
-                                                        <p>Please select the service disciplines you would like to apply at your premises.</p>
-                                                        <span class="error-msg" style="display: none">Select at least one</span>
-                                                        <jsp:include page="/iais/cc/newApplication/clinicalLaboratory/CR_Discipline.jsp" />
+                                                        <%@include file="CR_Discipline.jsp"%>
                                                     </div>
                                                 </div>
                                             </div>
@@ -76,7 +74,7 @@
             submitForms('laboratoryDisciplines','saveDraft',null,'clinical');
         });
         $('#laboratoryDisciplinesNext').click(function(){
-            var controlFormLi = $('#controlFormLi').val();
+          /*  var controlFormLi = $('#controlFormLi').val();
            var aBoolean= $("input[name='control--runtime--1']:checked").length>0;
            if(!aBoolean){
                 $('.laboratory-disciplines>span').removeAttr('style');
@@ -88,8 +86,8 @@
             $.post("${pageContext.request.contextPath}/request-check-error",$('#mainForm').serialize(),function (resulet){
 
 
-            });
-
+            });*/
+            var controlFormLi = $('#controlFormLi').val();
             submitForms('governanceOfficers',null,null,controlFormLi);
         });
 

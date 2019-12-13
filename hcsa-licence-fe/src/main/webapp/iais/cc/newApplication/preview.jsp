@@ -30,7 +30,7 @@
                                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                                 <c:set var="appGrpPremisesDto" value="${AppSubmissionDto.appGrpPremisesDto}"></c:set>
                                                 <div class="panel panel-default">
-                                                    <div class="panel-heading completed" id="headingPremise" role="tab">
+                                                    <div class="panel-heading" id="headingPremise" role="tab">
                                                         <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Premises</a></h4>
                                                     </div>
                                                     <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
@@ -46,7 +46,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="panel panel-default">
-                                                    <div class="panel-heading completed" id="headingOne" role="tab">
+                                                    <div class="panel-heading" id="headingOne" role="tab">
                                                         <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Primary Documents</a></h4>
                                                     </div>
                                                     <div class="panel-collapse collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
@@ -66,7 +66,7 @@
                                                                                     <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
                                                                                     <div class="control col-sm-5">
                                   <input type="hidden"  name="fileRepo" value="<c:out value="${appGrpPrimaryDocDto.fileRepoId}" />" />
-                                                                                        <iais:mask name="" value=""/>
+
                                                                                         <div class="fileList"><span class="filename server-site" id="130"><a title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a> (${appGrpPrimaryDocDto.docSize} KB)</span></div>
                                                                                     </div>
                                                                                 </div>
@@ -80,13 +80,13 @@
                                                 </div>
                                                 <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status">
                                                     <div class="panel panel-default">
-                                                        <div class="panel-heading incompleted" id="headingServiceInfo" role="tab">
+                                                        <div class="panel-heading " id="headingServiceInfo" role="tab">
                                                             <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information -- ${hcsaServiceDto.svcName}</a></h4>
                                                         </div>
                                                         <div class="panel-collapse collapse in" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">
                                                             <div class="panel-body">
                                                                 <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
-                                                                <iframe  class="elemClass-1561088919456" title="" src="/hcsaapplication/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form_value=prepareView&svcId=${hcsaServiceDto.id}" id="elemId-${status.index}"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
+                                                                <iframe  class="elemClass-1561088919456" title="" src="${pageContext.request.contextPath}/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form_value=prepareView&svcId=${hcsaServiceDto.id}" id="elemId-${status.index}"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
                                                             </div>
                                                         </div>
                                                     </div>
@@ -144,9 +144,16 @@
         donwload();
     });
 
-    var donwload = function () {
+
+
+    /*var donwload = function () {
         $('.downloadFile').click(function () {
-            alert(123);
+            var url = '<%--${pageContext.request.contextPath}--%>/file-repo';
+            var xhr = new XMLHttpRequest();
+            xhr.
+
+
+           /!* alert(123);
             $fileEle = $(this).closest('div.fileUploadContainer');
             var fileRepo = $fileEle.find('input[name="fileRepo"]').val();
             alert(fileRepo);
@@ -163,9 +170,9 @@
                 },
                 'error':function () {
                 }
-            });
+            });*!/
 
         });
-    }
+    }*/
 
 </script>

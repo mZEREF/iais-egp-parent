@@ -1,4 +1,6 @@
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
+  <p>Please select the service disciplines you would like to apply at your premises${status.index+1}.</p>
+  <span class="error-msg" style="display: none">Select at least one</span>
 <div class="wrapper">
   <div class="form-inner-content editableMode">
     <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
@@ -23,13 +25,14 @@
                         <!--one -->
                         <tr>
                           <td>
-                            <div class="control-item-container parent-form-check" data-parent="${levelOneList.code}" >
-                              <input type="checkbox" id="control--${levelOne.index}--${levelOne.index}"
-                                     name="control--runtime--1" class="control-input"
-                                     value="<c:out value="${levelOneList.id};${levelOneList.type};${levelOneList.name };${levelOneList.parentId}" />">
-                              <label  for="control--${levelOne.index}--${levelOne.index}" data-code="<c:out value="${levelOneList.code}" />" class="control-label control-set-font control-font-normal">
-                                <span class="check-square"></span>${levelOneList.name}
+                            <div class="control-item-container parent-form-check" data-parent="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelOne.index}${levelOneList.code}" />" >
+                              <input type="checkbox" id="<c:out value="control--${levelOne.index}--${levelOne.index}" />"
+                                     name="<c:out value="${appGrpPremisesDto.premisesIndexNo}control--runtime--1" />" class="control-input"
+                                     value="<c:out value="${levelOne.index}${levelOneList.name}" />">
+                              <label  for="<c:out value="control--${levelOne.index}--${levelOne.index}" />" data-code="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelOne.index}${levelOneList.code}" />" class="control-label control-set-font control-font-normal" />
+                              <span class="check-square"></span><c:out value="${levelOneList.name}" />
                               </label>
+                              <input type="hidden" name="<c:out value="${levelOne.index}${levelOneList.name}" />" value="<iais:mask name="${levelOne.index}${levelOneList.name}" value="${levelOneList.id}"/>"/>
                             </div>
                           </td>
                         </tr>
@@ -38,13 +41,14 @@
                             <!--two -->
                             <tr>
                               <td>
-                                <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="${levelTwoList.code}" data-child="${levelOneList.code}" >
-                                  <input type="checkbox" id="control--${levelTwo.begin}--${levelTwo.index}"
-                                         name="control--runtime--1" class="control-input"
-                                         value="<c:out value="${levelTwoList.id};${levelTwoList.type};${levelTwoList.name };${levelTwoList.parentId}" />">
-                                  <label  for="control--${levelTwo.index}--${levelTwo.index}" class="control-label control-set-font control-font-normal">
-                                    <span class="check-square"></span>${levelTwoList.name}
+                                <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelTwo.index}${levelTwoList.code}"/>" data-child="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelOne.index}${levelOneList.code}"/>" >
+                                  <input type="checkbox" id="<c:out value="control--${levelTwo.begin}--${levelTwo.index}"/>"
+                                         name="<c:out value="${appGrpPremisesDto.premisesIndexNo}control--runtime--1"/>" class="control-input"
+                                         value="<c:out value="${levelTwo.index}${levelTwoList.name}" />">
+                                  <label  for="<c:out value="control--${levelTwo.index}--${levelTwo.index}"/>" class="control-label control-set-font control-font-normal" />
+                                    <span class="check-square"></span><c:out value="${levelTwoList.name}"/>
                                   </label>
+                                  <input type="hidden" name="<c:out value="${levelTwo.index}${levelTwoList.name}"/>" value="<iais:mask name="${levelTwo.index}${levelTwoList.name}" value="${levelTwoList.id}"/>"/>
                                 </div>
                               </td>
                             </tr>
@@ -53,13 +57,14 @@
                               <c:forEach var="levelThreeList" items="${levelTwoList.list}" varStatus="levelThree">
                                 <tr>
                                   <td>
-                                    <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="${levelThreeList.code}" data-child="${levelTwoList.code}" >
-                                      <input type="checkbox" id="control--${levelThree.index}--${levelThree.index}"
-                                             name="control--runtime--1" class="control-input"
-                                             value="<c:out value="${levelThreeList.id};${levelThreeList.type};${levelThreeList.name };${levelThreeList.parentId}" />">
-                                      <label  for="control--${levelThree.index}--${levelThree.index}" class="control-label control-set-font control-font-normal">
-                                        <span class="check-square"></span>${levelThreeList.name}
+                                    <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelThree.index}${levelThreeList.code}"/>" data-child="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelTwo.index}${levelTwoList.code}"/>" >
+                                      <input type="checkbox" id="<c:out value="control--${levelThree.index}--${levelThree.index}"/>"
+                                             name="<c:out value="${appGrpPremisesDto.premisesIndexNo}control--runtime--1"/>" class="control-input"
+                                             value="<c:out value="${levelThree.index}${levelThreeList.name}"/>">
+                                      <label  for="<c:out value="control--${levelThree.index}--${levelThree.index}"/>" class="control-label control-set-font control-font-normal">
+                                        <span class="check-square"></span><c:out value="${levelThreeList.name}"/>
                                       </label>
+                                      <input type="hidden" name="<c:out value="${levelThree.index}${levelThreeList.name}"/>" value="<iais:mask name="${levelThree.index}${levelThreeList.name}" value="${levelThreeList.id}"/>"/>
                                     </div>
                                   </td>
                                 </tr>
@@ -81,20 +86,15 @@
       </div>
       <input type="hidden" name="OWASP_CSRFTOKEN" value="8OG4-EKVV-5RSW-YM8P-C5DX-N6DE-WQSU-0K8N"></form>
   </div>
-
 </div>
-
+  <br/>
+</c:forEach>
 <script>
     $(document).ready(function () {
-        var testCode = $('#testCode').val();
-        //console.log($(".control-font-normal").data('data-code'));
-        /*if("HST"==testCode){
-          $(".control-font-normal").data('data-code').each(function (k,v) {
-              console.log(k);
-              console.log(v);
-          });
-        }*/
-
-
+        <%--<c:forEach var="checkedItem" items="${reloadLaboratoryDisciplines}">
+        //$('input:checkbox').prop('checked',true);
+        var className = '${checkedItem}';
+        $('input:checkbox[class="'+className+'"]').attr("checked","checked");
+        </c:forEach>--%>
     });
 </script>
