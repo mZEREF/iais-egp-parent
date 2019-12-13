@@ -14,7 +14,7 @@
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainConfirmForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="inspectionPoolType" value="">
 
     <iais:body >

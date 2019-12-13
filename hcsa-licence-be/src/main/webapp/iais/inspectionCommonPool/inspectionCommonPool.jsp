@@ -16,7 +16,7 @@
 
 
 <form method="post" id="mainPoolForm" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="inspectionPoolType" value="">
   <input type="hidden" id="applicationNo" name="applicationNo" value="">
 
