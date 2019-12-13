@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -253,6 +255,11 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareDocuments(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareDocuments start ...."));
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
+        if(hcsaSvcDocDtos != null && !hcsaSvcDocDtos.isEmpty()){
+            ParamUtil.setSessionAttr(bpc.request, "serviceDocConfigDto", (Serializable) hcsaSvcDocDtos);
+        }
 
         log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
@@ -356,6 +363,7 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcDto =getAppSvcRelatedInfo(bpc.request,currentSvcId);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        String [] test = ParamUtil.getStrings(bpc.request, "prem1control--runtime--1");
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
             String name = appGrpPremisesDto.getPremisesIndexNo()+"control--runtime--1";
             String [] checkList = ParamUtil.getStrings(bpc.request, name);
@@ -389,10 +397,9 @@ public class ClinicalLaboratoryDelegator {
                 appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
                 appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
                 appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
-                currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
-                setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
             }
-
+            currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
         }
 
         ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadCheckedList);
@@ -611,42 +618,36 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,formTab);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "jump");
 
-        List<MultipartFile> files = null;
-        for (Iterator<String> en = mulReq.getFileNames(); en.hasNext(); ) {
-            String name = en.next();
-            files = mulReq.getFiles(name);
-        }
-        String [] docConfig = mulReq.getParameterValues("docConfig");
-        int count =0;
-        if(files != null && docConfig !=null){
-            for(MultipartFile file:files){
-                if(!StringUtil.isEmpty(file.getOriginalFilename())){
-                    String[] config = docConfig[count].split(";");
-                    appSvcDocDto = new AppSvcDocDto();
-                    appSvcDocDto.setSvcDocId(config[0]);
-                    appSvcDocDto.setDocName(file.getOriginalFilename());
-                    long size = file.getSize()/1024;
-                    appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
-                    String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-                    appSvcDocDto.setFileRepoId(fileRepoGuid);
-                    //wait api change to get fileRepoId
-                    appSvcDocDtoList.add(appSvcDocDto);
+        List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, "serviceDocConfigDto");
+
+        CommonsMultipartFile file = null;
+        if(svcDocConfigDtos != null && !svcDocConfigDtos.isEmpty()){
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfigDtos){
+                String docConfigId = hcsaSvcDocConfigDto.getId();
+                String fileName = docConfigId + "selectedFile";
+                file = (CommonsMultipartFile) mulReq.getFile(fileName);
+                if(file != null && file.getSize() != 0) {
+                    if (!StringUtil.isEmpty(file.getOriginalFilename())) {
+                        file.getFileItem().setFieldName("selectedFile");
+                        appSvcDocDto = new AppSvcDocDto();
+                        appSvcDocDto.setSvcDocId(docConfigId);
+                        appSvcDocDto.setDocName(file.getOriginalFilename());
+                        long size = file.getSize()/1024;
+                        appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+                        String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
+                        appSvcDocDto.setFileRepoId(fileRepoGuid);
+                        //wait api change to get fileRepoId
+                        appSvcDocDtoList.add(appSvcDocDto);
+                    }
                 }
             }
         }
-
         Map<String,AppSvcRelatedInfoDto> appSvcRelatedInfoMap = (Map<String, AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request, APPSVCRELATEDINFOMAP);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoMap.get(currentSvcId);
         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoList);
         appSvcRelatedInfoMap.put(currentSvcId, appSvcRelatedInfoDto);
         ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFOMAP, (Serializable) appSvcRelatedInfoMap);
-        //AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
-        /*List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList =new ArrayList<>();
-        appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
-        appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);*/
-        //ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
-        //ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doDocuments end ...."));
     }
 
@@ -926,6 +927,12 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         return specialtySelectList;
+    }
+
+    private void xxx(){
+
+
+
     }
 
 }

@@ -15,6 +15,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -22,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HtmlElementHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -36,13 +39,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -180,7 +188,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareDocuments start ...."));
 
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
+        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
         if (hcsaSvcDocDtos != null) {
             List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigDto = new ArrayList<>();
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigDto = new ArrayList<>();
@@ -249,6 +257,8 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doPremises start ...."));
         //gen dto
         //
+        String test = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+        String str = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
 
@@ -286,6 +296,8 @@ public class NewApplicationDelegator {
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
+        String test = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+        String ttt = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
 
@@ -673,16 +685,19 @@ public class NewApplicationDelegator {
 
 
     @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
-    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response, HttpContext context) throws IOException {
-        String fileRepoId = ParamUtil.getString(request, "fileRepoId");
-        fileRepoId = "6093871C-F81C-EA11-BE78-000C29D29DB0";
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
+        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
+        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
         byte[] fileData =serviceConfigService.downloadFile(fileRepoId);
-        /*HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", "testFielName");
-        headers.setContentType( MediaType.APPLICATION_OCTET_STREAM);*/
-        /*response.setContentType("multipart/form-data");
-        response.setHeader("Content-Disposition", "attachment;fileName="+"a.pdf");
-        ServletOutputStream out = response.getOutputStream();
+        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+        response.addHeader("Content-Length", "" + fileData.length);
+        response.setContentType("application/x-octet-stream");
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(fileData);
+        ops.close();
+        ops.flush();
+        /*OutputStream out = response.getOutputStream();
         out.write(fileData);
         out.close();
         out.flush();*/
@@ -1017,7 +1032,9 @@ public class NewApplicationDelegator {
                 String siteSafefyNo = ParamUtil.getString(request, premisesIndexNo+"siteSafefyNo");
                 String addrType = ParamUtil.getString(request, premisesIndexNo+"addrType");
                 String offTelNo= ParamUtil.getString(request,premisesIndexNo+"offTelNo");
-                String fireSafetyCertIssuedDate  = ParamUtil.getString(request, premisesIndexNo+"fireSafetyCertIssuedDate");
+                String scdfRefNo = ParamUtil.getString(request, premisesIndexNo+"siteSafefyNo");
+                String fireSafetyCertIssuedDateStr  = ParamUtil.getString(request, premisesIndexNo+"fireSafetyCertIssuedDate");
+                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr, "dd/mm/yyyy");
                 appGrpPremisesDto.setPremisesSelect(premisesSelect);
                 appGrpPremisesDto.setHciName(hciName);
                 appGrpPremisesDto.setPostalCode(postalCode);
@@ -1030,6 +1047,8 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
                 appGrpPremisesDto.setAddrType(addrType);
                 appGrpPremisesDto.setOffTelNo(offTelNo);
+                appGrpPremisesDto.setScdfRefNo(scdfRefNo);
+                appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
                 //add index for dto refer
                 appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
 
