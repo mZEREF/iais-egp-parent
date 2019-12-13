@@ -53,6 +53,9 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
 
+    public InsRepServiceImpl() {
+    }
+
 
     @Override
     public InspectionReportDto getInsRepDto(String appNo, ApplicationViewDto applicationViewDto) {
@@ -151,6 +154,7 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setReportedBy("weilu");
         inspectionReportDto.setReportNoteBy("jinhua");
         inspectionReportDto.setInspectedBy(inspects());
+        inspectionReportDto.setRiskRecommendation(recommTime);
         return inspectionReportDto;
     }
 
