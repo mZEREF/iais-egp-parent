@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
@@ -114,6 +115,27 @@ public class ApplicationClientFallback {
     }
 
     public FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAdhocByAppPremCorrId(AdhocCheckListConifgDto adhocConfigDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<AdhocCheckListConifgDto> saveAppAdhocConfig(AdhocCheckListConifgDto adhocConfigDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<AdhocCheckListConifgDto> getAdhocConfigByAppPremCorrId(AdhocCheckListConifgDto adhocConfigDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocItems(AdhocCheckListConifgDto adhocConfigDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -283,6 +283,49 @@
                                                 </table>
                                             </c:forEach>
                                         </div>
+
+                                        <div class="table-gp">
+                                            <h3>Adhoc</h3>
+                                                <br/>
+                                                <h4></h4>
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Regulation Clause Number</th>
+                                                        <th>Item</th>
+                                                        <th>Yes</th>
+                                                        <th>No</th>
+                                                        <th>N/A</th>
+                                                        <th>Remark</th>
+                                                        <th>Rectified</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
+                                                        <tr>
+                                                            <td class="row_no">${(status.index + 1) }</td>
+                                                            <td></td>
+                                                            <td><c:out value="${item.question}"/></td>
+                                                            <c:set value = "${item.id}" var = "ckkId"/>
+                                                            <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.answer eq'Yes'}">checked</c:if> value="Yes" /></td>
+                                                            <td>
+                                                                <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.answer eq'No'}">checked</c:if> value="No" />
+                                                            </td>
+                                                            <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.answer eq'N/A'}">checked</c:if> value="N/A" /></td>
+                                                            <td><input name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" type="text" value="<c:out value="${item.remark}"/>" /></td>
+                                                            <td>
+                                                                <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.answer != 'No'}">hidden</c:if>>
+                                                                    <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                        </div>
+
+
                                         <div class="col-xs-12">
                                             <div class="input-group">
                                                 <div class="ax_default text_area">

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
@@ -29,5 +30,6 @@ public interface FillupChklistService {
     ChecklistConfigDto getcommonCheckListDto(String configType,String module);
     InspectionFillCheckListDto transferToInspectionCheckListDto(ChecklistConfigDto commonCheckListDto,String appPremCorrId);
     void merge(InspectionFillCheckListDto comDto,InspectionFillCheckListDto icDto);
-
+    AdCheckListShowDto getAdhoc(String appremCorrId);
+    void saveAdhocDto(AdCheckListShowDto showDto,String appPremId);
 }

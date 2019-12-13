@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConsta
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -68,7 +70,8 @@ public class FillupChklistDelegator {
         InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceCode,serviceType);
         ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
         InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
-
+        AdCheckListShowDto adchklDto = fillupChklistService.getAdhoc(cDto.getCheckList().get(0).getAppPreCorreId());
+        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
         ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
     }
@@ -101,7 +104,9 @@ public class FillupChklistDelegator {
         HttpServletRequest request = bpc.request;
         InspectionFillCheckListDto cDto = getDataFromPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
+        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
         InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
+        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
         ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         Map<String, String> errMap = InspectionCheckListValidation.validate(request);
@@ -129,9 +134,10 @@ public class FillupChklistDelegator {
         HttpServletRequest request = bpc.request;
         InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
-        InspectionFillCheckListDto adhocDto = new InspectionFillCheckListDto();
+        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
         fillupChklistService.merge(comDto,icDto);
         fillupChklistService.saveDto(icDto);
+        fillupChklistService.saveAdhocDto(showDto,icDto.getCheckList().get(0).getAppPreCorreId());
     }
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
@@ -177,5 +183,24 @@ public class FillupChklistDelegator {
         fillupChklistService.fillInspectionFillCheckListDto(cDto);
         return cDto;
     }
-
+    public AdCheckListShowDto getAdhocDtoFromPage(HttpServletRequest request){
+        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
+        if(itemDtoList!=null && !itemDtoList.isEmpty()){
+            for(AdhocNcCheckItemDto temp:itemDtoList){
+                String answer = ParamUtil.getString(request,temp.getId()+"adhocrad");
+                String remark = ParamUtil.getString(request,temp.getId()+"adhocremark");
+                String rec = ParamUtil.getString(request,temp.getId()+"adhocrec");
+                temp.setAnswer(answer);
+                temp.setRemark(remark);
+                if("No".equals(answer)&&!StringUtil.isEmpty(rec)){
+                    temp.setRectified(true);
+                }else{
+                    temp.setRectified(false);
+                }
+            }
+        }
+        showDto.setAdItemList(itemDtoList);
+        return showDto;
+    }
 }

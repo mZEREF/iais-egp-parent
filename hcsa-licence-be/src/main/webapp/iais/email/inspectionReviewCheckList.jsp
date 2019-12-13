@@ -1,40 +1,21 @@
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
+
 <%
-    //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
-                        <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li class="complete" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
-                            <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
-                                                                        data-toggle="tab">Documents</a></li>
-                            <li class="active" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
-                                                                        data-toggle="tab">Comfirm page</a></li>
-                        </ul>
-                        <div class="tab-nav-mobile visible-xs visible-sm">
-                            <div class="swiper-wrapper" role="tablist">
-                                <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></div>
-                                <div class="swiper-slide"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a></div>
-                                <div class="swiper-slide"><a href="#tabPayment" aria-controls="tabPayment" role="tab" data-toggle="tab">Payment</a></div>
-                            </div>
-                            <div class="swiper-button-prev"></div>
-                            <div class="swiper-button-next"></div>
-                        </div>
 
+                        <%@ include file="./navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane" id="tabInfo" role="tabpanel">
 
@@ -68,7 +49,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Current Status</td>
-                                                        <td>${applicationViewDto.applicationDto.status}</td>
+                                                        <td>${applicationViewDto.currentStatus}</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -116,7 +97,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><b>
                                     <h4>Supporting Document</h4>
@@ -192,9 +172,283 @@
                                 </div>
 
                             </div>
-                            <div class="tab-pane active" id="tabPayment" role="tabpanel">
+                            <div class="tab-pane" id="tabPayment" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
+                                    <h4>Payment Details</h4>
                                 </strong></div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Payment</th>
+                                                    <th>Amount</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Reference No.</th>
+                                                    <th>Payment Type</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <p>New Licence Application</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>S$400.00</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>12-Dec-2018</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>success</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>TRANS-201812000013</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>Credit Card</p>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tabInspection" role="tabpanel">
+                                <div class="alert alert-info" role="alert">
+                                    <strong>
+                                        <h4>Inspection Findings</h4>
+                                    </strong>
+                                </div>
+                                <div class="text ">
+                                    <p><span><strong>Part I: Inspection Checklist</strong></span></p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th class="col-xs-2"><span>Checklist</span></th>
+                                                    <th class="col-xs-10"><span>Interviewed</span></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <p>Radiological Service</p>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Angiography</p>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Mammography</p>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="text ">
+                                                <p><span><strong>Part II: Findings</strong></span></p>
+                                            </div>
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Licence Type</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>Radiological Service</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Findings/Remarks</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>The clinic offers in-house laboratory services</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Others</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>Refer to ack. no. 180911007711 for x-ray laboratory licence (ultrasound only). At the time of
+                                                            inspection, LIA Br was still awaiting clarification on the deputy manager's qualifications and was
+                                                            unable to complete the inspection of the ultrasound facility as the sonographer / radiographer and
+                                                            radiologist were not on-site. The ultrasound room, N2 licence (N2/06421/001) and preventive maintenance
+                                                            records for the ultrasound machine were in place. The ultrasound procedure is limited to abdominal area
+                                                            only</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Status</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>Full Compliance</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div class="text ">
+                                                <p><span><strong>Part III: Inspectors</strong></span></p>
+                                            </div>
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Inspected By</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>Jenny</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Other Inspection Officer</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div class="text ">
+                                                <p><span><strong>Part IV: Report</strong></span></p>
+                                            </div>
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Reported By</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>Jenny</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Report Noted By</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>Steven</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    <strong>
+                                        <h4>Recommendations</h4>
+                                    </strong>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Recommendation</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>2 Years</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Other Remarks</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    <strong>
+                                        <h4>Follow up actions</h4>
+                                    </strong>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Follow up actions</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Other</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Rectification</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <p>Other</p>
+                                                    </td>
+                                                    <td>
+                                                        <p>-</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-info" role="alert">
+                                    <strong>
+                                        <h4>Rectification</h4>
+                                    </strong>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-gp">
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="col-xs-2">
+                                                        <p>Rectifications</p>
+                                                    </td>
+                                                    <td class="col-xs-10">
+                                                        <p>N.A</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane active" id="tabCheckList" role="tabpanel">
+                                <div class="alert alert-info" role="alert">
+                                    <strong>
+                                        <h4>Processing Status Update</h4>
+                                    </strong>
+                                </div>
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <h3>Common</h3>
@@ -234,9 +488,6 @@
                                         </div>
 
 
-
-
-
                                         <h3>General</h3>
                                         <div class="table-gp">
                                             <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
@@ -273,81 +524,11 @@
                                                 </table>
                                             </c:forEach>
                                         </div>
-
-
-                                        <div class="table-gp">
-                                            <h3>Adhoc</h3>
-                                            <br/>
-                                            <h4></h4>
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>No.</th>
-                                                    <th>Regulation Clause Number</th>
-                                                    <th>Item</th>
-                                                    <th>Yes</th>
-                                                    <th>No</th>
-                                                    <th>N/A</th>
-                                                    <th>Remark</th>
-                                                    <th>Rectified</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
-                                                    <tr>
-                                                        <td class="row_no">${(status.index + 1) }</td>
-                                                        <td></td>
-                                                        <td><c:out value="${item.question}"/></td>
-                                                        <c:set value = "${item.id}" var = "ckkId"/>
-                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.answer eq'Yes'}">checked</c:if> value="Yes" disabled /></td>
-                                                        <td>
-                                                            <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.answer eq'No'}">checked</c:if> value="No" disabled/>
-                                                        </td>
-                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.answer eq'N/A'}">checked</c:if> value="N/A" disabled/></td>
-                                                        <td><input name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" type="text" value="<c:out value="${item.remark}"/>" disabled /></td>
-                                                        <td>
-                                                            <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.answer != 'No'}">hidden</c:if>>
-                                                                <input name="<c:out value="${item.id}"/>rec" id="<c:out value="${item.id}"/>rec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec" disabled/>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-
-                                        <div class="col-xs-12">
-                                            <div class="input-group">
-                                                <div class="ax_default text_area">
-                                                    <h4>Best Practice</h4>
-                                                    <textarea cols="70" rows="7" disabled name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="input-group">
-                                                <div class="ax_default text_area">
-                                                    <h4>TCU Date</h4> &nbsp;<c:out value="${fillCheckListDto.tuc}"/>&nbsp;<br>
-                                                </div>
-                                            </div>
-                                            <div class="input-group">
-                                                <div class="ax_default text_area">
-                                                    <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" disabled id="tcuRemark"><c:out value="${fillCheckListDto.tcuRemark}"></c:out></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div align="left">
-                                            <button type="button" class="btn btn-primary" onclick="javascript: doBack();">
-                                                Back
-                                            </button>
-                                        </div>
-                                        <div align="right">
-                                            <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
-                                                Submit
-                                            </button>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+
                         </div>
                     </div>
                 </div>
@@ -355,12 +536,3 @@
         </div>
     </div>
 </form>
-
-<script type="text/javascript">
-    function doBack(){
-        SOP.Crud.cfxSubmit("mainForm", "back");
-    }
-    function doSubmit(){
-        SOP.Crud.cfxSubmit("mainForm", "submit");
-    }
-</script>

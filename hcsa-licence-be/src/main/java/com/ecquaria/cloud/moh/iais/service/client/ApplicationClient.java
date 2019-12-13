@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
@@ -66,8 +67,20 @@ public interface ApplicationClient {
     @PostMapping(value = "/iais-adhoc-checklist-conifg/adhoc-items", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveAdhocChecklist(@RequestBody AdhocCheckListConifgDto adhocConfigDto);
 
-    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhocchecklistbyappremid/{appremId}")
-    FeignResponseEntity<List<AppSvcPremisesScopeDto>> getAdhocByAppPremCorrId(@PathVariable(name = "appremId") String appremId);
+    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhocchecklistbyappremid/{appremId}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AdhocChecklistItemDto>> getAdhocByAppPremCorrId(@PathVariable(name = "appremId") String appremId);
+
+    @PostMapping(path = "/iais-adhoc-checklist-conifg/singleconfig",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AdhocCheckListConifgDto> saveAppAdhocConfig(@RequestBody AdhocCheckListConifgDto adhocCheckListConifgDto);
+
+
+    @GetMapping(value = "/iais-adhoc-checklist-conifg/adhoccheckconfigbyappremid/{premId}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AdhocCheckListConifgDto> getAdhocConfigByAppPremCorrId(@PathVariable(name = "premId") String appremId);
+
+    @PostMapping(path = "/iais-adhoc-checklist-conifg/itemstorage",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocItems(@RequestBody List<AdhocChecklistItemDto> itemDtoList);
 
 
 }

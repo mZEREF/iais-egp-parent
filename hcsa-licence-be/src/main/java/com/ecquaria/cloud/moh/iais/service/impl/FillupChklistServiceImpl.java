@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -12,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
@@ -59,6 +63,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
     @Override
     public ApplicationViewDto getAppViewDto(String taskId){
         if(StringUtil.isEmpty(taskId)){
@@ -249,15 +254,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         appPreRecommentdationDto.setVersion(1);
         appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         try {
-            //RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinschkl-be/AppPremissChkl",appDto,AppPremisesPreInspectChklDto.class);
             fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
-            //RestApiUtil.postGetObject("hcsa-config:8883/application-be/RescomDtoStorage",appPreRecommentdationDto,AppPremisesRecommendationDto.class);
             fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
             AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDto(dto);
-            //appPremPreInspectionNcDto = RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinsnc-be/AppPremNcResult",appPremPreInspectionNcDto,AppPremPreInspectionNcDto.class);
             appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(dto,appPremPreInspectionNcDto);
-            //RestApiUtil.postGetList("hcsa-config:8883/iais-apppreinsncitem-be/AppPremNcItemResult",appPremisesPreInspectionNcItemDtoList,AppPremisesPreInspectionNcItemDto.class);
             fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtoList);
         }catch (Exception e){
             e.printStackTrace();
@@ -358,5 +359,46 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
         return dto;
     }
+    @Override
+    public AdCheckListShowDto getAdhoc(String appremCorrId){
+        List<AdhocChecklistItemDto> adhocItemList = applicationClient.getAdhocByAppPremCorrId(appremCorrId).getEntity();
+        AdCheckListShowDto adShowDto = new AdCheckListShowDto();
+        List<AdhocNcCheckItemDto> adhocNcCheckItemDtoList = new ArrayList<>();
+        if(adhocItemList!=null&&!adhocItemList.isEmpty()){
+            AdhocNcCheckItemDto addto = null;
+            for(AdhocChecklistItemDto temp:adhocItemList){
+                addto = transfertoadNcItemDto(temp);
+                adhocNcCheckItemDtoList.add(addto);
+            }
+            adShowDto.setAdItemList(adhocNcCheckItemDtoList);
+        }
+        return adShowDto;
+    }
 
+    public AdhocNcCheckItemDto transfertoadNcItemDto(AdhocChecklistItemDto dto){
+        AdhocNcCheckItemDto adto  = new AdhocNcCheckItemDto();
+        adto.setId(dto.getId());
+        adto.setAnswerType(dto.getAnswerType());
+        adto.setNonCompliant(dto.getNonCompliant());
+        adto.setOrder(dto.getOrder());
+        adto.setQuestion(dto.getQuestion());
+        adto.setRectified(dto.getRectified());
+        adto.setRiskLvl(dto.getRiskLvl());
+        return adto;
+    }
+    @Override
+    public void saveAdhocDto(AdCheckListShowDto showDto,String appPremId){
+        List<AdhocNcCheckItemDto>  itemDtoList = showDto.getAdItemList();
+        List<AdhocChecklistItemDto> saveItemDtoList = new ArrayList<>();
+        AdhocCheckListConifgDto dto = applicationClient.getAdhocConfigByAppPremCorrId(appPremId).getEntity();
+        if(itemDtoList!=null && !itemDtoList.isEmpty()){
+            dto.setVersion(dto.getVersion()+1);
+            dto = applicationClient.saveAppAdhocConfig(dto).getEntity();
+            for(AdhocNcCheckItemDto temp:itemDtoList){
+                temp.setAdhocConfId(dto.getId());
+                temp.setId(null);
+            }
+            applicationClient.saveAdhocItems(saveItemDtoList).getEntity();
+        }
+    }
 }

@@ -266,12 +266,9 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
         appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         try {
-            //RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinschkl-be/AppPremissChkl",appDto,AppPremisesPreInspectChklDto.class);
             fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
-            //RestApiUtil.postGetObject("hcsa-config:8883/application-be/RescomDtoStorage",appPreRecommentdationDto,AppPremisesRecommendationDto.class);
             fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
             AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDto(dto,appPremCorrId);
-            //appPremPreInspectionNcDto = RestApiUtil.postGetObject("hcsa-config:8883/iais-apppreinsnc-be/AppPremNcResult",appPremPreInspectionNcDto,AppPremPreInspectionNcDto.class);
             appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(dto, appPremPreInspectionNcDto);
             fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtoList);

@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -36,6 +38,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         }
         tcuVad(icDto,errMap);
         commonVad(request,errMap);
+        ahocVad(request,errMap);
         return errMap;
     }
 
@@ -52,6 +55,17 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             errMap.put("allList","Please fill in checkList.");
         }
     }
+    public void ahocVad(HttpServletRequest request,Map<String, String> errMap){
+        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
+        if(itemDtoList!=null && !itemDtoList.isEmpty()){
+            for(AdhocNcCheckItemDto temp:itemDtoList){
+                if(StringUtil.isEmpty(temp.getAnswer())){
+                    errMap.put(temp.getId()+"com","Answer is mandaroty.");
+                }
+            }
+        }
+    }
     public void tcuVad(InspectionFillCheckListDto icDto,Map<String, String> errMap){
         try {
             String dateStr = icDto.getTuc();
@@ -60,7 +74,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             }
         }catch (Exception e){
             e.printStackTrace();
-            errMap.put("allList","Please fill in checkList.");
+            errMap.put("allList","Date Format Error.");
         }
     }
 
