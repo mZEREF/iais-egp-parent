@@ -20,17 +20,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -75,7 +76,6 @@ public class AdhocChecklistDelegator {
         ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, null);
         ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
 
-        this.questionCapacity = null;
     }
 
     /**
@@ -145,7 +145,7 @@ public class AdhocChecklistDelegator {
      */
     public void validateAdhocData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "Y");
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
     /**
@@ -167,7 +167,7 @@ public class AdhocChecklistDelegator {
      */
     public void doCancel(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "Y");
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
     /**
@@ -185,39 +185,11 @@ public class AdhocChecklistDelegator {
         List<AdhocChecklistItemDto> allAdhocItem = adhocConfigObj.getAllAdhocItem();
         allAdhocItem.removeIf(adhocItem -> adhocItem.getQuestion().equals(value));
 
-        if(allAdhocItem.size() == 0){
+        if(allAdhocItem.isEmpty()){
             ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
         }else {
             ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocConfigObj);
         }
-    }
-
-    private Boolean addToCapacity(List<ChecklistItemDto> selectItemList) {
-        boolean hasSampleItem = false;
-        for (ChecklistItemDto item : selectItemList) {
-            hasSampleItem = hasSampleItem(item.getChecklistItem());
-            if (hasSampleItem == true) {
-                break;
-            }
-        }
-
-        return hasSampleItem;
-    }
-
-
-    private Boolean hasSampleItem(String question) {
-        boolean exist = false;
-        if (this.questionCapacity == null) {
-            this.questionCapacity = new HashSet<>();
-        }
-
-        if (questionCapacity.contains(question)) {
-            exist = true;
-        } else {
-            this.questionCapacity.add(question);
-        }
-
-        return exist;
     }
 
     /**
@@ -263,12 +235,14 @@ public class AdhocChecklistDelegator {
         List<ChecklistItemDto> selectItemList = hcsaChklService.listChklItemByItemId(Arrays.asList(checkBoxItemId));
         AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocConfigObj(request);
         List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
-        boolean hasSampleItem = addToCapacity(selectItemList);
-        if (hasSampleItem) {
-            Map<String, String> errorMap = new HashMap<>(1);
-            errorMap.put("sampleItem", "Cannot add sample item to adhoc section!");
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
+
+        ParamUtil.setRequestAttr(request, "selectItemList", selectItemList);
+
+        ValidationResult validationResult = WebValidationHelper.validateProperty(selectItemList, "customAdhocAdd");
+        if (validationResult.isHasErrors()){
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         } else {
             AdhocChecklistItemDto adhocItem = new AdhocChecklistItemDto();
             selectItemList.stream().forEach(selectItem -> {
@@ -282,9 +256,36 @@ public class AdhocChecklistDelegator {
                 allAdhocItem.add(adhocItem);
             });
             ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "Y");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
 
+    }
+
+    private Boolean addToCapacity(List<ChecklistItemDto> selectItemList) {
+        boolean hasSampleItem = false;
+        for (ChecklistItemDto item : selectItemList) {
+            hasSampleItem = hasSampleItem(item.getChecklistItem());
+            if (hasSampleItem == true) {
+                break;
+            }
+        }
+
+        return hasSampleItem;
+    }
+
+    private Boolean hasSampleItem(String question) {
+        boolean exist = false;
+        if (this.questionCapacity == null) {
+            this.questionCapacity = new HashSet<>();
+        }
+
+        if (questionCapacity.contains(question)) {
+            exist = true;
+        } else {
+            this.questionCapacity.add(question);
+        }
+
+        return exist;
     }
 
     private AdhocCheckListConifgDto getAdhocConfigObj(HttpServletRequest request) {
@@ -310,7 +311,7 @@ public class AdhocChecklistDelegator {
 
         String action = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if (!"customItem".equals(action)){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "Y");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             return;
         }
 
@@ -318,30 +319,27 @@ public class AdhocChecklistDelegator {
         String answerType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE);
         String riskLevel = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_RISK_LEVEL);
 
-        Map<String, String> errorMap = new HashMap<>(3);
-        if (StringUtils.isEmpty(question)) {
-            errorMap.put("question", "please input Question");
-        }
+        ChecklistItemDto customDto = new ChecklistItemDto();
+        customDto.setChecklistItem(question);
+        customDto.setAnswerType(answerType);
+        customDto.setRiskLevel(riskLevel);
 
-        if (StringUtils.isEmpty(answerType)) {
-            errorMap.put("question", "please select answer type");
-        }
-
-        if (StringUtils.isEmpty(riskLevel)) {
-            errorMap.put("question", "please select risk level");
-        }
-
-        if (errorMap.size() > 0) {
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, customDto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(customDto, "customAdd");
+        if(validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            return;
         }
 
         if (hasSampleItem(question)) {
-            errorMap.put("question", "cannot add sample item to adhoc section!");
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
+            Map<String, String> errorMap = new HashMap<>(1);
+            errorMap.put("checklistItem", "cannot add sample item to adhoc section!");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         } else {
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "Y");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocConfigObj(request);
             List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
 
@@ -354,7 +352,7 @@ public class AdhocChecklistDelegator {
             adhocCheckListConifgDto.setAllAdhocItem(allAdhocItem);
 
             ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
-        }
+       }
 
     }
 }
