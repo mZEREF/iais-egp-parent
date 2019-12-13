@@ -65,7 +65,7 @@ public class ValidationAjaxController {
                     // validation end.
                 }
 
-                return generateJsonStr(errorMsg);
+                return WebValidationHelper.generateJsonStr(errorMsg);
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -75,20 +75,5 @@ public class ValidationAjaxController {
         return null;
     }
 
-    private String generateJsonStr(Map<String, String> errorMsg) {
-        if (!errorMsg.isEmpty()) {
-            StringBuilder sb = new StringBuilder("[");
-            for (Map.Entry<String, String> ent : errorMsg.entrySet()) {
-                sb.append("{\"");
-                sb.append(ent.getKey()).append("\" : \"");
-                String value = ent.getValue();
-                value = value.replaceAll("\"", "&quot;");
-                value = value.replaceAll("'", "&apos;");
-                sb.append(value).append("\"},");
-            }
-            return sb.substring(0, sb.length() - 1) + "]";
-        } else {
-            return "[]";
-        }
-    }
+
 }
