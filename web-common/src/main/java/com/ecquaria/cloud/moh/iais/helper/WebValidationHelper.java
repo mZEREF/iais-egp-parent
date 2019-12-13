@@ -95,6 +95,30 @@ public class WebValidationHelper {
         return rslt;
     }
 
+    /**
+     * @description: Generate Jason String for display
+     *
+     * @author: Jinhua on 2019/12/13 12:11
+     * @param: [errorMsg]
+     * @return: java.lang.String
+     */
+    public static String generateJsonStr(Map<String, String> errorMsg) {
+        if (!errorMsg.isEmpty()) {
+            StringBuilder sb = new StringBuilder("[");
+            for (Map.Entry<String, String> ent : errorMsg.entrySet()) {
+                sb.append("{\"");
+                sb.append(ent.getKey()).append("\" : \"");
+                String value = ent.getValue();
+                value = value.replaceAll("\"", "&quot;");
+                value = value.replaceAll("'", "&apos;");
+                sb.append(value).append("\"},");
+            }
+            return sb.substring(0, sb.length() - 1) + "]";
+        } else {
+            return "[]";
+        }
+    }
+
     private static void saveAuditTrail(ValidationResult result) {
         if (!result.isHasErrors()) {
             return;
@@ -120,4 +144,5 @@ public class WebValidationHelper {
         }
         dto.setValidationFail(null);
     }
+
 }
