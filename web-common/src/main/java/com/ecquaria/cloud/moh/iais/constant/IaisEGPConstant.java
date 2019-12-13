@@ -23,6 +23,7 @@ public class IaisEGPConstant {
     public static final String ISVALID                             = "isValid";
     public static final String SUCCESSMAP                          = "successMap";
     public static final String ERRORMAP                            = "errorMap";
+    public static final String ERRORMSG                            = "errorMsg";
     public static final String YES                                 = "Y";
     public static final String NO                                  = "N";
 
