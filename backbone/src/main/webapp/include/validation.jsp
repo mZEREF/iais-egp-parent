@@ -5,8 +5,5 @@
         String errorMsg = (String) request.getAttribute("errorMsg");
         %>
         doValidationParse(<%=errorMsg%>);
-        <%
-        }
-        %>
     }
 </script>
