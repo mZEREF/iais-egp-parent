@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -37,4 +38,7 @@ public interface AppInspectionStatusClient {
 
     @PutMapping(path = "/iais-AppInspecStatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppInspectionStatusDto> update(@RequestBody AppInspectionStatusDto appInspecStatusDto);
+
+    @PostMapping(path = "/iais-AppInspecStatus/create-status", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppInspectionStatusDto> createAppInspectionStatusByAppDto(@RequestBody ApplicationDto applicationDto);
 }
