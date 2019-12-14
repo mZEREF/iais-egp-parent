@@ -6,7 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <c:forEach var="selfDesc" items="${selfDeclQueryAttr}" varStatus="status">
-  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa${tabIndex}aaaaaaaaaaaaaaaaaaaa
     <c:if test="${tabIndex == null && selfDesc.common == true}">
       <c:forEach var="answerMap" items="${selfDesc.premAnswerMap}">
         <c:forEach items="${answerMap.value}" var="list"><br>
