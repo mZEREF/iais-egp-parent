@@ -19,7 +19,7 @@ public class InputTag extends DivTagSupport{
     private String value;
     private String autocomplete;
     private String maxLength;
-
+    private boolean needErrorSpan;
 
     public InputTag() {
         super();
@@ -35,6 +35,7 @@ public class InputTag extends DivTagSupport{
         value = null;
         autocomplete = "off";
         maxLength = null;
+        needErrorSpan = true;
     }
 
     @Override
@@ -70,6 +71,10 @@ public class InputTag extends DivTagSupport{
         }
         if(!StringUtil.isEmpty(autocomplete)){
             html.append(" autocomplete=\"").append(autocomplete).append("\"");
+        }
+        if (needErrorSpan) {
+            html.append("<span id=\"error_").append(name).append("\"");
+            html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
         }
         html.append(">");
 
