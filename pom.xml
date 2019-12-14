@@ -144,7 +144,7 @@
             <dependency>
                 <groupId>com.ecquaria.submission.client</groupId>
                 <artifactId>submissionclient</artifactId>
-                <version>0.2</version>
+                <version>0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.poi</groupId>
