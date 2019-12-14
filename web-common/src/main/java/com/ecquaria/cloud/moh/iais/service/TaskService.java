@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloudfeign.FeignException;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ public interface TaskService {
     //get Task
     TaskDto getTaskById(String taskId);
     public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId) throws FeignException;
+    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId, AuditTrailDto auditTrailDto) throws FeignException;
     //rounting Task
      void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stage, AuditTrailDto auditTrailDto) throws FeignException;
      TaskDto routingTask(ApplicationDto applicationDto, String statgId) throws FeignException;

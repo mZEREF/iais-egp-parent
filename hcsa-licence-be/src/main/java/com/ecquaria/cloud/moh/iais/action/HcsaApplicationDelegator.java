@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -40,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -288,16 +288,7 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToAO3(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
-        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
-                ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-        if(isAllSubmit){
-            // send the task to Ao3
-           taskService.routingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO3,IaisEGPHelper.getCurrentAuditTrailDto());
-        }
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
     }
 
@@ -588,15 +579,29 @@ public class HcsaApplicationDelegator {
                 }else{
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
-
+            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+                boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                if(isAllSubmit){
+                    // send the task to Ao3
+                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,
+                            HcsaConsts.ROUTING_STAGE_AO3,IaisEGPHelper.getCurrentAuditTrailDto());
+                    List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                    broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                    broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+                }
             }else{
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
             }
             //add history for next stage start
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,
-                    taskDto.getWkGrpId(),null,null);
-            broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+            if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,
+                        taskDto.getWkGrpId(),null,null);
+                broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+            }
         }
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -636,8 +641,8 @@ public class HcsaApplicationDelegator {
     private int remainDays(TaskDto taskDto){
        int result = 0;
        //todo: wait count kpi
-       String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
-      log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
+      // String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
+     // log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
       return  result;
     }
 

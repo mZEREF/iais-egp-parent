@@ -12,21 +12,21 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -130,8 +130,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,AuditTrailDto auditTrailDto) throws FeignException {
-        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
+    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId, AuditTrailDto auditTrailDto) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison start ...."));
+        TaskHistoryDto result = new TaskHistoryDto();
         if(applicationDtos != null && applicationDtos.size() > 0){
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
             hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
@@ -155,16 +156,33 @@ public class TaskServiceImpl implements TaskService {
                     log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationId));
                     AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
                             createAppPremisesRoutingHistory(appPremisesCorrelationId,applicationDto.getStatus(),
-                            stageId,null,auditTrailDto);
+                                    stageId,null,auditTrailDto);
                     appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                 }
-                this.createTasks(taskDtos);
-                this.createHistorys(appPremisesRoutingHistoryDtos);
+                result.setTaskDtoList(taskDtos);
+                result.setAppPremisesRoutingHistoryDtos(appPremisesRoutingHistoryDtos);
             }else{
                 log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
             }
         }else{
             log.error(StringUtil.changeForLog("The applicationDtos is null"));
+        }
+
+        log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison end ...."));
+        return  result;
+    }
+
+    @Override
+    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,AuditTrailDto auditTrailDto) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
+        TaskHistoryDto taskHistoryDto = getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,auditTrailDto);
+        List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+        if(taskDtos!=null && taskDtos.size() >0 && appPremisesRoutingHistoryDtos !=null && appPremisesRoutingHistoryDtos.size()>0){
+            this.createTasks(taskDtos);
+            this.createHistorys(appPremisesRoutingHistoryDtos);
+        }else {
+            log.error(StringUtil.changeForLog("The taksDto is null !!!"));
         }
 
         log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison end ...."));
