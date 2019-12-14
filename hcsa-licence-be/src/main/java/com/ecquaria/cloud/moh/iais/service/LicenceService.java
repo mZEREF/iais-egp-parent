@@ -25,6 +25,6 @@ public interface LicenceService {
     public KeyPersonnelDto getLatestVersionKeyPersonnelByIdNoAndOrgId(String idNo,String orgId);
 
     public List<LicenceGroupDto> createSuperLicDto(List<LicenceGroupDto> licenceGroupDtos);
-
+    public List<LicenceGroupDto> createFESuperLicDto(List<LicenceGroupDto> licenceGroupDtos);
 
 }

@@ -121,10 +121,12 @@ public class LicenceApproveBatchjob {
            if(success.size() > 0){
                success = updateStatusToGenerated(success);
                success = applicationGroupService.updateApplicationGroups(success);
+               //step2 save licence to Fe DB
+               licenceGroupDtos =licenceService.createFESuperLicDto(licenceGroupDtos);
            }
         //todo:send the email to admin for fail Data.
         //else{ rollback step1}
-        //todo: step2 save licence to Fe DB
+        //step2 save licence to Fe DB
          //if(step2) success  completed
         //else{roll back step1 and step 2}
 
