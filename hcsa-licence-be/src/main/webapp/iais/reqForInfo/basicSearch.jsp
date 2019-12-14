@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -13,60 +14,53 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <div class="main-content">
-        <div id="base" class="">
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <div class="center-content">
+                    <iais:section title="" id = "supPoolList">
+                        <div class="bg-title">
+                            <h2>Basic Search Criteria</h2>
+                        </div>
+                        <iais:row>
+                            <iais:value width="18">
+                                <label>
+                                    <input type="text" name="search_no"  />
+                                </label>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:value width="18">
+                                <input type="radio" name="select_search" value="application" />Application No
+                            </iais:value>
+                            <iais:value width="18">
+                                <input type="radio" name="select_search" value="licence" />Licence No
+                            </iais:value>
+                        </iais:row>
 
-            <!-- Unnamed (Rectangle) -->
-            <div id="u2637" class="ax_default label">
-                <div id="u2637_div" class=""></div>
-                <div id="u2637_text" class="text ">
-                    <p><span>&nbsp; Basic Search Criteria</span></p>
+                        <iais:action style="text-align:center;">
+                            <button type="button" class="search btn" onclick="javascript:doSearch();">Advanced Search</button>
+                            <button type="button" class="search btn" onclick="javascript:doClear();">Clear</button>
+                        </iais:action>
+                    </iais:section>
+
                 </div>
             </div>
-
-            <!-- Unnamed (Text Field) -->
-            <div id="u2638" class="ax_default text_field">
-                <input id="u2638_input" type="text" value=""/>
-            </div>
-
-
-
-            <!-- Unnamed (Radio Button) -->
-            <div id="u2641" class="ax_default radio_button">
-                <label for="u2641_input" style="position: absolute; left: 0px;">
-                    <div id="u2641_text" class="text ">
-                        <p><span>Application No</span></p>
-                    </div>
-                </label>
-                <input id="u2641_input" type="radio" value="radio" name="u2641"/>
-            </div>
-
-            <!-- Unnamed (Radio Button) -->
-            <div id="u2642" class="ax_default radio_button">
-                <label for="u2642_input" style="position: absolute; left: 0px;">
-                    <div id="u2642_text" class="text ">
-                        <p><span>Licence No</span></p>
-                    </div>
-                </label>
-                <input id="u2642_input" type="radio" value="radio" name="u2642"/>
-            </div>
-
-
-            <!-- Unnamed (Rectangle) -->
-            <div id="u2644" class="ax_default primary_button">
-                <div id="u2644_div" class=""></div>
-                <div id="u2644_text" class="text ">
-                    <p><span>Clear</span></p>
-                </div>
-            </div>
-
-            <!-- Unnamed (Rectangle) -->
-            <div id="u2645" class="ax_default primary_button">
-                <div id="u2645_div" class=""></div>
-                <div id="u2645_text" class="text ">
-                    <p><span>Advanced Search</span></p>
-                </div>
-            </div>
-
         </div>
     </div>
 </form>
+<script type="text/javascript">
+
+
+    function doClear(){
+    }
+
+    function doSearch(){
+        var radios=document.getElementsByName("select_search");
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                SOP.Crud.cfxSubmit("mainForm", radios[i].value);
+                break;
+            }
+        }
+    }
+</script>

@@ -1,8 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * RequestForInformationDelegator
@@ -31,6 +35,10 @@ public class RequestForInformationDelegator {
 
     public void doBasicSearch(BaseProcessClass bpc) {
         log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
+
         // 		doBasicSearch->OnStepProcess
     }
 
