@@ -114,7 +114,6 @@
                                 <iais:sortableHeader needSort="false" field="Status" value="Application Status"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Inspector"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Inspection Lead"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                             </tr>
                             </thead>
                             <tbody>
@@ -141,7 +140,6 @@
                                             <td><c:out value="${pool.applicationStatus}"/></td>
                                             <td><c:out value="${pool.inspector}"/></td>
                                             <td><c:out value="${pool.inspectorLead}"/></td>
-                                            <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectorSearchTaskAssign('<iais:mask name="taskId" value="${pool.taskId}"/>');">Assign</button></td>
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>

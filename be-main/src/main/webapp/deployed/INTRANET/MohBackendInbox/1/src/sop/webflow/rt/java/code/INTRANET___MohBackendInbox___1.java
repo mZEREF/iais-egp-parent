@@ -11,10 +11,11 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___MohBackedInbox___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bankedInboxDelegator";
+public class INTRANET___MohBackendInbox___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="backendInboxDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this); 

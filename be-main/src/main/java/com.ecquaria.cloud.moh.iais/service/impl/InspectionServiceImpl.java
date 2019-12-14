@@ -103,9 +103,9 @@ public class InspectionServiceImpl implements InspectionService {
         List<String> workGroupIdList = new ArrayList<>();
         List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
         for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
-            if(ugcDto.getIsLeadForGroup() == 1){
+            //if(ugcDto.getIsLeadForGroup() == 1){
                 workGroupIdList.add(ugcDto.getGroupId());
-            }
+            //}
         }
         return workGroupIdList;
     }
