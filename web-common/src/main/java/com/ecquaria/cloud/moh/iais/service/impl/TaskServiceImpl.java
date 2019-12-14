@@ -67,6 +67,41 @@ public class TaskServiceImpl implements TaskService {
         return taskOrganizationClient.getTaskById(taskId).getEntity();
     }
 
+    @Override
+    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
+        TaskDto result = null;
+        if(applicationDto == null  || StringUtil.isEmpty(statgId)){
+            log.error(StringUtil.changeForLog("The applicationDto or stageId is null"));
+            return result;
+        }
+        List<ApplicationDto> applicationDtos = new ArrayList<>();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,statgId);
+        hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
+            String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
+            TaskDto taskScoreDto =new TaskDto();
+            Date assignDate = new Date();
+            if(SystemParameterConstants.COMMON_POOL.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
+                assignDate = null;
+            }else{
+                taskScoreDto = getUserIdForWorkGroup(workGroupId);
+            }
+
+            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
+                    statgId,applicationDto.getApplicationType());
+            result = TaskUtil.getTaskDto(statgId,TaskConsts.TASK_TYPE_MAIN_FLOW,
+                    applicationDto.getApplicationNo(),workGroupId,
+                    taskScoreDto.getUserId(),assignDate,score,
+                    IaisEGPHelper.getCurrentAuditTrailDto());
+        }else{
+            log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
+        }
+        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
+        return result;
+    }
+
 
     @Override
     public List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status) {
@@ -86,31 +121,10 @@ public class TaskServiceImpl implements TaskService {
             log.error(StringUtil.changeForLog("The applicationDto or stageId is null"));
             return result;
         }
-        List<ApplicationDto> applicationDtos = new ArrayList<>();
-        applicationDtos.add(applicationDto);
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
-        hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-        if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
-            String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
-            TaskDto taskScoreDto =new TaskDto();
-            Date assignDate = new Date();
-            if(SystemParameterConstants.COMMON_POOL.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
-                assignDate = null;
-            }else{
-                taskScoreDto = getUserIdForWorkGroup(workGroupId);
-            }
-            List<TaskDto> taskDtos = new ArrayList<>();
-            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
-                    stageId,applicationDto.getApplicationType());
-             result = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
-                    applicationDto.getApplicationNo(),workGroupId,
-                    taskScoreDto.getUserId(),assignDate,score,
-                    IaisEGPHelper.getCurrentAuditTrailDto());
-            taskDtos.add(result);
-            this.createTasks(taskDtos);
-        }else{
-            log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
-        }
+        List<TaskDto> taskDtos = new ArrayList<>();
+        result = this.getRoutingTask(applicationDto,stageId);
+        taskDtos.add(result);
+        this.createTasks(taskDtos);
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         return result;
     }
@@ -194,20 +208,15 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId) {
-        //return RestApiUtil.getListByPathParam(RestApiUrlConsts.APPLICATION_APPPREMISESCORRELATIONS_APPGROPID,appGroupId,AppPremisesCorrelationDto.class);
         return taskApplicationClient.getGroupAppsByNo(appGroupId).getEntity();
     }
     @Override
     public List<AppPremisesRoutingHistoryDto> createHistorys(List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList) {
-        //return RestApiUtil.save(RestApiUrlConsts.APPLICATION_HISTORYS,appPremisesRoutingHistoryDtoList,List.class);
         return taskApplicationClient.createAppPremisesRoutingHistorys(appPremisesRoutingHistoryDtoList).getEntity();
     }
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(String workGroupId) {
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("workGroupId", workGroupId);
-//        return RestApiUtil.getListByReqParam(RestApiUrlConsts.TASK_COMMON_POOL_BY_WORKGPID,map,TaskDto.class);
         return taskOrganizationClient.getCommPoolTaskByWorkGroupId(workGroupId).getEntity();
     }
 

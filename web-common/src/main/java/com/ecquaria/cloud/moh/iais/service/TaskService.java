@@ -25,6 +25,7 @@ public interface TaskService {
     List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos);
     //get Task
     TaskDto getTaskById(String taskId);
+    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId) throws FeignException;
     //rounting Task
      void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stage, AuditTrailDto auditTrailDto) throws FeignException;
      TaskDto routingTask(ApplicationDto applicationDto, String statgId) throws FeignException;

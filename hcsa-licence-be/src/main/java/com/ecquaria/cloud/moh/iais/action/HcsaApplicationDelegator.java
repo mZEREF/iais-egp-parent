@@ -22,20 +22,27 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.BroadcastService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -145,19 +152,19 @@ public class HcsaApplicationDelegator {
 
         //History
 
-        List<String> actionByList=new ArrayList<>();
-        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
-             ) {
-            String actionBy=appPremisesRoutingHistoryDto.getActionby();
-            actionByList.add(actionBy);
-        }
-        List<OrgUserDto> actionByRealNameList=applicationViewService.getUserNameById(actionByList);
+//        List<String> actionByList=new ArrayList<>();
+//        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
+//             ) {
+//            String actionBy=appPremisesRoutingHistoryDto.getActionby();
+//            actionByList.add(actionBy);
+//        }
+//        List<OrgUserDto> actionByRealNameList=applicationViewService.getUserNameById(actionByList);
         for (int i = 0; i <applicationViewDto.getAppPremisesRoutingHistoryDtoList().size(); i++) {
-            for (int j = 0; j <actionByRealNameList.size() ; j++) {
-                if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(actionByRealNameList.get(j).getId())){
-                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(actionByRealNameList.get(j).getUserName());
-                }
-            }
+//            for (int j = 0; j <actionByRealNameList.size() ; j++) {
+//                if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(actionByRealNameList.get(j).getId())){
+//                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(actionByRealNameList.get(j).getUserName());
+//                }
+//            }
             String statusUpdate=MasterCodeUtil.getCodeDesc(applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getAppStatus());
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setAppStatus(statusUpdate);
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup(applicationViewDto.getApplicationNoOverAll());
@@ -513,20 +520,14 @@ public class HcsaApplicationDelegator {
      */
     public void doDocument(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doDocument start ...."));
-        //TODO:save file
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
-
-
-
-
-
-
-
+//        //TODO:save file
+//        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+//        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+//        String dcrudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+//        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+//
+//        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+//        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
 
 
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
@@ -539,23 +540,26 @@ public class HcsaApplicationDelegator {
     //*************************************
 
     private void routingTask(BaseProcessClass bpc,String stageId,String appStatus ) throws FeignException {
-        //completedTask
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
-        taskDto =  completedTask(taskDto);
-        taskDto = taskService.updateTask(taskDto);
-        //add history for this stage complate
+
+        //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+        BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+
+        //complated this task and create the history
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        taskDto =  completedTask(taskDto);
+        broadcastOrganizationDto.setComplateTask(taskDto);
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),
                 applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision);
-        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
-        //updateApplicaiton
+        broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+        //update application status
         String oldStatus = applicationDto.getStatus();
-        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        updateApplicaiton(applicationDto,appStatus);
-        applicationViewDto.setApplicationDto(applicationDto);
+        applicationDto.setStatus(appStatus);
+        broadcastApplicationDto.setApplicationDto(applicationDto);
         // send the task
         if(!StringUtil.isEmpty(stageId)){
             //For the BROADCAST Rely
@@ -563,36 +567,42 @@ public class HcsaApplicationDelegator {
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1 = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(
                         applicationDto.getId(),stageId
                 );
+                log.debug(StringUtil.changeForLog("The appId is-->;"+ applicationDto.getId()));
+                log.debug(StringUtil.changeForLog("The stageId is-->;"+ stageId));
                 if(appPremisesRoutingHistoryDto1 != null){
-                    taskDto = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
+                    TaskDto newTaskDto = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
                             applicationDto.getApplicationNo(),appPremisesRoutingHistoryDto1.getWrkGrpId(),
                             appPremisesRoutingHistoryDto1.getActionby(),new Date(),0,
                             IaisEGPHelper.getCurrentAuditTrailDto());
-                    List<TaskDto> taskDtos = new ArrayList<>();
-                    taskDtos.add(taskDto);
-                    taskDtos = taskService.createTasks(taskDtos);
+                    broadcastOrganizationDto.setCreateTask(newTaskDto);
                     //delete workgroup
-                    BroadcastOrganizationDto broadcastOrganizationDto = broadcastService.getBroadcastOrganizationDto(
+                    BroadcastOrganizationDto broadcastOrganizationDto1 = broadcastService.getBroadcastOrganizationDto(
                             applicationDto.getApplicationNo(),AppConsts.DOMAIN_TEMPORARY);
-                    WorkingGroupDto workingGroupDto = broadcastOrganizationDto.getWorkingGroupDto();
-                    changeStatusWrokGroup(workingGroupDto,AppConsts.COMMON_STATUS_DELETED);
-                    List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto.getUserGroupCorrelationDtoList();
+
+                    WorkingGroupDto workingGroupDto = broadcastOrganizationDto1.getWorkingGroupDto();
+                    workingGroupDto = changeStatusWrokGroup(workingGroupDto,AppConsts.COMMON_STATUS_DELETED);
+                    broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
+                    List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto1.getUserGroupCorrelationDtoList();
                     userGroupCorrelationDtos = changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtos,AppConsts.COMMON_STATUS_DELETED);
                     broadcastOrganizationDto.setUserGroupCorrelationDtoList(userGroupCorrelationDtos);
-                    broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    broadcastOrganizationDto =  broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto);
                 }else{
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
 
             }else{
-                taskDto = taskService.routingTask(applicationDto,stageId);
+                TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId);
+                broadcastOrganizationDto.setCreateTask(newTaskDto);
             }
             //add history for next stage start
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,
                     taskDto.getWkGrpId(),null,null);
-            appPremisesRoutingHistoryDtoNew = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDtoNew);
+            broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
         }
+        //save the broadcast
+        broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto);
+        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto);
     }
     private List<UserGroupCorrelationDto> changeStatusUserGroupCorrelationDtos(List<UserGroupCorrelationDto> userGroupCorrelationDtos,String status){
         List<UserGroupCorrelationDto> result = new ArrayList<>();
