@@ -7,9 +7,10 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+<form method="post" id="mainForm"  action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
+    <input type="hidden" name="crud_action_value" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -51,11 +52,11 @@
                                         <tbody>
                                         <tr>
                                             <td class="col-xs-6" align="right">Application No. (Overall)</td>
-                                            <td class="col-xs-6">${applicationViewDto.applicationDto.applicationNo}</td>
+                                            <td class="col-xs-6">${applicationViewDto.applicationNoOverAll}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Application No.</td>
-                                            <td>${applicationViewDto.applicationNoOverAll}</td>
+                                            <td>${applicationViewDto.applicationDto.applicationNo}</td>
                                         </tr>
                                         <tr>
                                             <td align="right">Application Type</td>
@@ -184,8 +185,14 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr>
-                                                    <td colspan="6" align="center">
+                                                    <td colspan="5" align="center">
                                                         <p>No record found.</p>
+                                                    </td>
+                                                    <td>
+                                                        <div class="file-upload-gp">
+                                                            <input id="selectedFile1" type="file" style="display: none;">
+                                                            <a class="btn btn-file-upload btn-secondary">Upload</a>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -438,7 +445,7 @@
                                                     <td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p></td>
                                                 </tr>
                                                 <tr>
-                                                    <td><p>Internal Remarks(*):</p></td>
+                                                    <td><span>Internal Remarks(</span><span style="color: red">*</span><span>):</span></td>
                                                     <td>
                                                         <div class="input-group">
                                                             <div class="ax_default text_area">
@@ -449,10 +456,11 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <p>Processing Decision:</p>
+                                                        <span>Processing Decision(</span><span style="color: red">*</span><span>):</span></span>
                                                     </td>
                                                     <td>
-                                                        <select name="nextStage" >
+                                                        <select name="nextStage" class="table-select">
+                                                            <option>---select---</option>
                                                             <c:forEach items="${applicationViewDto.routingStage}" var="routingStageMap">
                                                                 <option  value="${routingStageMap.key}">${routingStageMap.value}</option>
                                                           </c:forEach>
@@ -529,9 +537,10 @@
             $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>")
             return false;
         }else{
-            var nextStage=$("[name='nextStage']").val();
-            console.log(nextStage);
+            var nextStage = $("[name='nextStage']").val();
+            console.log("---*>"+nextStage);
             $("[name='crud_action_type']").val(nextStage);
+            var test= $("[name='crud_action_type']").val();
             return true;
         }
 

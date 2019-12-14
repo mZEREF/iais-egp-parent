@@ -1,12 +1,11 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ecquaria
-  Date: 2019/12/3
-  Time: 16:20
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%
+    //handle to the Engine APIs
+    sop.webflow.rt.api.BaseProcessClass process =
+            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+%>
 <webui:setLayout name="iais-intranet"/>
 
-<h1>Success</h1>>
+<h1>Success</h1>
 
