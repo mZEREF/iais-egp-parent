@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="7" minorVersion="0" name="MohAdhocChecklist" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="initialize" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="initialize_OnStepProcess_0" name="initialize_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="receiveItemPool" x="500" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="receiveItemPool_OnStepProcess_0" name="receiveItemPool_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="removeAdhocItem" x="680" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="removeAdhocItem_OnStepProcess_0" name="removeAdhocItem_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doBack" x="820" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doBack_OnStepProcess_0" name="doBack_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="getNextStep" x="550" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="getNextStep_OnStepProcess_0" name="getNextStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="validateAdhocData" x="910" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="validateAdhocData_OnStepProcess_0" name="validateAdhocData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Step4" x="1030" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="customItem" x="350" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="customItem_OnStepProcess_0" name="customItem_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="appendToTail" x="500" y="600">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="appendToTail_OnStepProcess_0" name="appendToTail_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="saveAdhocItem" x="1010" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="saveAdhocItem_OnStepProcess_0" name="saveAdhocItem_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doCancel" x="590" y="600">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doCancel_OnStepProcess_0" name="doCancel_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AdhocChechlistDisplay" stageIndicator="" x="360" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionItemPool" stageIndicator="" x="490" y="360">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CustomItem" stageIndicator="" x="350" y="480">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initialize" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
+   <position>{(120,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AdhocChechlistDisplay" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/initialize" style="oblique">
+   <position>{(270,120)(380,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/getNextStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AdhocChechlistDisplay" style="oblique">
+   <position>{(380,120)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/getNextStep" style="oblique">
+   <position>{(570,120)(780,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/receiveItemPool" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(780,120)(520,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/removeAdhocItem" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(780,120)(700,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doBack" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(780,120)(840,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/validateAdhocData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(780,120)(930,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionItemPool" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/receiveItemPool" style="oblique">
+   <position>{(520,260)(510,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CustomItem" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(540,500)(370,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InspectionItemPool" style="oblique">
+   <position>{(510,380)(540,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/customItem" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CustomItem" style="oblique">
+   <position>{(370,500)(370,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/appendToTail" style="oblique">
+   <position>{(520,620)(540,720)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/receiveItemPool" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(540,720)(663,720)(661,268)(520,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(540,720)(740,840)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/removeAdhocItem" style="oblique">
+   <position>{(700,270)(740,840)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doBack" style="oblique">
+   <position>{(840,270)(840,560)(1050,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/validateAdhocData" style="oblique">
+   <position>{(930,260)(1050,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveAdhocItem" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(1050,260)(1030,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/saveAdhocItem" style="oblique">
+   <position>{(1030,390)(1050,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(1050,260)(1050,10)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AdhocChechlistDisplay" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge2" style="oblique">
+   <position>{(1050,10)(416,12)(380,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/customItem" style="oblique">
+   <position>{(370,380)(380,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(740,840)(270,840)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge4" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge3" style="oblique">
+   <position>{(270,840)(270,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge4" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
+   <position>{(380,260)(270,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initialize" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge4" style="oblique">
+   <position>{(270,260)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(540,500)(610,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/appendToTail" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(540,500)(520,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCancel" style="oblique">
+   <position>{(610,620)(540,720)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CustomItem" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(380,260)(482,258)(370,500)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/receiveItemPool" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="520" y="700">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Merges/Merge/Merge2" componentIfTrue="/Steps/AutomaticStep/saveAdhocItem" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="1030" y="240">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/CustomItem" componentIfTrue="/Merges/Merge/Merge4" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="360" y="240">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="760" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/receiveItemPool" value="&quot;receiveItemPool&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/removeAdhocItem" value="&quot;removeAdhocItem&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doBack" value="&quot;doBack&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/validateAdhocData" value="&quot;saveAdhocItem&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="520" y="480">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/CustomItem" value="&quot;customItem&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doCancel" value="&quot;doCancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/appendToTail" value="&quot;appendToTail&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="720" y="820">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1030" y="-10">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge3" type="Or" x="250" y="820">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge4" type="Or" x="250" y="240">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
