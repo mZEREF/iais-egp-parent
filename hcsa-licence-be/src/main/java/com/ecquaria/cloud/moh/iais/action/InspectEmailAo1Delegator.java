@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
@@ -11,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
@@ -31,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.impl.InsepctionNcCheckListImpl;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
-import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,55 +207,6 @@ public class InspectEmailAo1Delegator {
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errMap);
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
-            String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-            String taskId="7102C311-D10D-EA11-BE7D-000C29F371DC";
-            TaskDto taskDto = taskService.getTaskById(taskId);
-            String appNo = taskDto.getRefNo();
-            //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();
-            String licenseeName="lichen";
-            ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
-            String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
-            InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-            inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
-            inspectionEmailTemplateDto.setApplicantName(licenseeName);
-            inspectionEmailTemplateDto.setApplicationNumber(appNo);
-            inspectionEmailTemplateDto.setHciCode(applicationViewDto.getHciCode());
-            inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
-            HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
-            inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-            List<NcAnswerDto> ncAnswerDtos=ncDtoList;
-            AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
-            inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
-
-            Map<String,Object> map=new HashMap<>();
-            map.put("APPLICANT_NAME",inspectionEmailTemplateDto.getApplicantName());
-            map.put("APPLICATION_NUMBER",inspectionEmailTemplateDto.getApplicationNumber());
-            map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
-            map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
-            map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
-            if(!ncAnswerDtos.isEmpty()){
-                StringBuilder stringBuilder=new StringBuilder();int i=0;
-                for (NcAnswerDto ncAnswerDto:ncAnswerDtos
-                ) {
-                    stringBuilder.append("<tr><td>"+ ++i);
-                    stringBuilder.append("</td><td>"+ncAnswerDto.getItemQuestion());
-                    stringBuilder.append("</td><td>"+ncAnswerDto.getClause());
-                    stringBuilder.append("</td><td>"+ncAnswerDto.getRemark());
-                    stringBuilder.append("</td></tr>");
-                }
-                map.put("NC_DETAILS",stringBuilder.toString());
-            }
-            if(inspectionEmailTemplateDto.getBestPractices()!=null){
-                map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
-            }
-            map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-            String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);
-            inspectionEmailTemplateDto.setMessageContent(mesContext);
-            String draftEmailId= (String) ParamUtil.getSessionAttr(request,"draftEmailId");
-            inspectionEmailTemplateDto.setId(draftEmailId);
-            inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
-            ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
-            ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
         }
     }
     public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
