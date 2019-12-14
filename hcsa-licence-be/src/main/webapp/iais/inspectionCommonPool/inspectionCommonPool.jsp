@@ -19,7 +19,11 @@
   <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="inspectionPoolType" value="">
   <input type="hidden" id="applicationNo" name="applicationNo" value="">
-
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
   <iais:body >
     <div class="container">
       <div class="col-xs-12">
@@ -104,9 +108,8 @@
                   <c:choose>
                     <c:when test="${empty cPoolSearchResult.rows}">
                       <tr>
-                        <td colspan="6">
-                          <iais:message key="Null!" escape="true"></iais:message>
-                          <!--No Record!!-->
+                        <td colspan="7">
+                          <iais:message key="ACK018" escape="true"></iais:message>
                         </td>
                       </tr>
                     </c:when>
@@ -142,10 +145,11 @@
 
     function doInspectionCommonPoolClear() {
         $('input[name="application_no"]').val("");
+        $("#application_type option:first").val("");
         $("#application_type option:first").prop("selected", 'selected');
-        $("#application_status option:first").prop("selected", 'selected');
         $('input[name="hci_code"]').val("");
         $('input[name="hci_name"]').val("");
+        $('input[name="hci_address"]').val("");
         $('input[name="service_name"]').val("");
         $('input[name="sub_date"]').val("");
     }

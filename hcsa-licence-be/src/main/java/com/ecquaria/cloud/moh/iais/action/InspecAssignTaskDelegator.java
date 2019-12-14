@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -12,14 +13,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQue
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,15 +130,20 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         String applicationNo = ParamUtil.getMaskedString(bpc.request,"applicationNo");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!StringUtil.isEmpty(applicationNo) && !(AppConsts.NO.equals(applicationNo))){
             List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
             Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
-            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             String taskId = map.get(applicationNo);
             inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo, commPools, loginContext);
             inspecTaskCreAndAssDto.setTaskId(taskId);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+        }
+        if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_INSPECTIOR)){
+            ParamUtil.setRequestAttr(bpc.request,"isInspector",AppConsts.TRUE);
+        } else {
+            ParamUtil.setRequestAttr(bpc.request,"isInspector",AppConsts.FALSE);
         }
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
@@ -152,27 +156,25 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorAction(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAction start ...."));
-        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = getValueFromPage(bpc);
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspecTaskCreAndAssDto,"create");
-            if (validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, "errorMap_premises", errorMap);
-                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-            } else {
+            if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_INSPECTIOR)){
+                inspecTaskCreAndAssDto = getValueFromPage(bpc);
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
-        }else{
-            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+        } else {
+            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.FALSE);
         }
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
     }
 
     public InspecTaskCreAndAssDto getValueFromPage(BaseProcessClass bpc) {
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
-        String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
-        if(nameValue == null || nameValue.length < 0) {
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String[] nameValue = new String[]{loginContext.getUserId()};
+        if(nameValue == null || nameValue.length <= 0) {
             inspecTaskCreAndAssDto.setInspectorCheck(null);
         } else {
             List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
@@ -227,7 +229,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorSearch(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorSearch start ...."));
-        SearchParam searchParam = getSearchParam(bpc);
+        SearchParam searchParam = getSearchParam(bpc, true);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
