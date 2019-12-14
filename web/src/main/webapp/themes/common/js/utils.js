@@ -46,19 +46,20 @@ function clearErrorMsg(){
 }
 
 function doValidationParse(data){
-    if(data != null && JSON.stringify(obj) != '{}' && data != ''){
+    if(data != null && data != "[]" && data != ''){
         $("#iaisErrorFlag").val("BLOCK");
-        for (var key in data) {
-            // check if the property/key is defined in the object itself, not in parent
-            if (data.hasOwnProperty(key)) {
+        var results = JSON.parse(data);
+
+        for(var i= 0 ; i< results.length ; i ++){
+            for(var key in results[i]){
                 var error_key="error_" + key.replace(/\./g,'\\.');
                 if (document.getElementById(error_key)) {
                     $("#"+error_key).show();
                     if (error_key == 'error_topErrorDiv'
                         || error_key.indexOf('noEscapeXml') > 0) {
-                        document.getElementById(error_key).innerHTML = data[key];
+                        document.getElementById(error_key).innerHTML = results[i][key];
                     } else {
-                        document.getElementById(error_key).innerHTML = formatHTMLEnCode(data[key]);
+                        document.getElementById(error_key).innerHTML = formatHTMLEnCode(results[i][key]);
                     }
                 }
             }
