@@ -104,7 +104,7 @@ public class WebValidationHelper {
      */
     public static String generateJsonStr(Map<String, String> errorMsg) {
         if (!errorMsg.isEmpty()) {
-            StringBuilder sb = new StringBuilder("{");
+            StringBuilder sb = new StringBuilder("{\"");
             for (Map.Entry<String, String> ent : errorMsg.entrySet()) {
                 sb.append(ent.getKey()).append("\" : \"");
                 String value = ent.getValue();
