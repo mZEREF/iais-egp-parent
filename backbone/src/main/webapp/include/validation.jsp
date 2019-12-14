@@ -6,7 +6,7 @@
         String errorMsg = (String) request.getAttribute("errorMsg");
         if (!StringUtils.isEmpty(errorMsg)) {
         %>
-        doValidationParse(<%=errorMsg%>);
+        doValidationParse('<%=errorMsg%>');
         <%
         }
         %>
