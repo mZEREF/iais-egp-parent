@@ -73,10 +73,7 @@ public class InputTag extends DivTagSupport{
             html.append(" autocomplete=\"").append(autocomplete).append("\"");
         }
         html.append(">");
-        if (needErrorSpan) {
-            html.append("<span id=\"error_").append(name).append("\"");
-            html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
-        }
+
 
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
@@ -89,7 +86,13 @@ public class InputTag extends DivTagSupport{
     @Override
     public int doEndTag() throws JspException {
         try {
-            pageContext.getOut().print("</input>");
+            StringBuilder html = new StringBuilder("</input>");
+            if (needErrorSpan) {
+                html.append("<span id=\"error_").append(name).append("\"");
+                html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
+            }
+            pageContext.getOut().print(html.toString());
+
         } catch (Exception ex) {
             throw new JspTagException("ValueTag: " + ex.getMessage());
         }
