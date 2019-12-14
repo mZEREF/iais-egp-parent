@@ -28,15 +28,19 @@
   <c:otherwise>
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
 
+  <br><br><br>
   <div class="main-content">
     <div class="container">
+      <br><br>
+      <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
       <div class="row">
         <div class="col-xs-12">
+
           <div class="center-content">
             <c:forEach var = "item" items="${inspectionChecklistAttr}" varStatus="status">
               <c:if test="${item.common eq true}">
@@ -165,7 +169,7 @@
 </form>
   </c:otherwise>
 </c:choose>
-
+<%@include file="/include/validation.jsp"%>
 <script>
   "use strict"
   addAdhocItemBtn.onclick = function(){

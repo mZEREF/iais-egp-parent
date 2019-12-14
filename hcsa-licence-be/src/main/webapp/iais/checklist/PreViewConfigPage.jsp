@@ -15,96 +15,96 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<style>
-  .btn.btn-primary {
-    font-size: 1.6rem;
-    font-weight: 700;
-    background: #F2B227;
-    border: 1px solid #F2B227;
-    color: black;
-    padding: 5px 10px;
-    text-transform: uppercase;
-    border-radius: 30px;
-  }
-
-  .panel-default {
-    border-color: #dddddd;
-  }
-
-  .black_overlay{
-    display: none;
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    z-index:1001;
-    -moz-opacity: 0.8;
-    opacity:.80;
-    filter: alpha(opacity=88);
-  }
-  .white_content {
-    display: none;
-    position: absolute;
-    top: 25%;
-    left: 25%;
-    width: 55%;
-    height: 55%;
-    padding: 20px;
-    border: 10px solid orange;
-    background-color: white;
-    z-index:1002;
-    overflow: auto;
-  }
-
-</style>
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
-  <input type="hidden" name="currentValidateId" value="">
+  <br><br><br>
 
-  <div class="main-content">
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="instruction-content center-content">
-            <h2>PreView Config Page</h2>
-            <div class="form-horizontal">
-              <div class="form-group">
-                <div class="col-xs-12">
-                  <td>
-                    <%--<label>
-                      Common  &nbsp; <input class="form-check-input" id="commmon" type="radio" name="common" aria-invalid="false" value="General Regulation"> ${configSessionAttr.common}
-                    </label>--%>
-                  </td>
-                </div>
-              </div>
-            <div class="application-tab-footer">
-              <div class="row">
-                <div class="col-xs-12 col-sm-6">
-                  <p><a class="back" href="#"><i class="fa fa-angle-left"></i> Back</a></p>
-                </div>
-                <div class="col-xs-12 col-sm-6">
-                  <div class="text-right text-center-mobile">
-                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: submitConfig();">Submit</a>
+    <div class="main-content">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="center-content">
+                <c:if test="${configSessionAttr.common eq true}">
+                  <div class="bg-title">
+                    <h2>General Regulation</h2>
+                  </div>
+                </c:if>
 
+                <c:if test="${configSessionAttr.common eq false}">
+                  <c:choose>
+                    <c:when test="${empty item.svcSubType}">
+                      <h2>${configSessionAttr.svcCode}</h2>
+                    </c:when>
+                    <c:otherwise>
+                      <h2>${configSessionAttr.svcCode} | ${configSessionAttr.svcSubType}</h2>
+                    </c:otherwise>
+                  </c:choose>
+                </c:if>
+
+
+              <c:forEach var = "sec" items = "${configSessionAttr.sectionDtos}" varStatus="status">
+              <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                  <div class="panel-heading" id="headingPremise" role="tab">
+                    <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">${sec.section}</a></h4>
+                  </div>
+                  <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
+                    <div class="panel-body">
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th>Regulation Clause Number</th>
+                          <th>Regulations</th>
+                          <th>Checklist Item</th>
+                          <th>Risk Level</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var = "chklitem" items = "${sec.checklistItemDtos}" varStatus="status">
+                          <tr>
+                            <td>
+                              <p>${chklitem.regulationClauseNo}</p>
+                            </td>
+                            <td>
+                              <p>${chklitem.regulationClause}</p>
+                            </td>
+                            <td>
+                              <p>${chklitem.checklistItem}</p>
+                            </td>
+                            <td>
+                              <p>${chklitem.riskLevel}</p>
+                            </td>
+                          </tr>
+                        </c:forEach>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
+              </c:forEach>
+
+            </div>
+
+            <div class="application-tab-footer">
+              <td>
+                <div class="text-right text-center-mobile">
+                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: submitConfig();">Submit</a>
+                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doBack();">Back</a>
+
+                </div>
+
+              </td>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 </>
-
-</div>
-
 
 <script type="text/javascript">
     function submitConfig() {
@@ -112,6 +112,6 @@
     }
 
     function doBack(){
-        SOP.Crud.cfxSubmit("mainForm","backLastPage");
+        SOP.Crud.cfxSubmit("mainForm","doBack");
     }
 </script>

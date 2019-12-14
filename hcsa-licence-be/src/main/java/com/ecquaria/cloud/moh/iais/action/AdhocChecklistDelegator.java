@@ -253,6 +253,8 @@ public class AdhocChecklistDelegator {
         if (checkBoxItemId == null || checkBoxItemId.length == 0) {
             Map<String, String> errorMap = new HashMap<>(1);
             errorMap.put("checklistItem", "please select item!");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
 

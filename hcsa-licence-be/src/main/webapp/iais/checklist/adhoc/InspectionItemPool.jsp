@@ -18,32 +18,26 @@
 
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
   <input type="hidden" name="currentValidateId" value="">
 
-
   <br><br><br>
 
   <div class="main-content">
     <div class="container">
+
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="form-horizontal">
-
         <div class="tab-content">
           <div class="row">
-            <c:if test = "${not empty errorMap}">
-              <div class="error">
-                <c:forEach items="${errorMap}" var="map">
-                  ${map.value} <br/>
-                </c:forEach>
-              </div>
-            </c:if>
+
             <div class="col-xs-12">
               <div class="components">
                 <h2 class="component-title">Item &amp; Pool</h2>
+                <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
                 <div class="table-gp">
                   <table class="table">
                     <thead>
@@ -131,7 +125,7 @@
 
 
 </form>
-
+<%@include file="/include/validation.jsp"%>
 <script>
     "use strict";
     customAdhocItembtnId.onclick = function(){

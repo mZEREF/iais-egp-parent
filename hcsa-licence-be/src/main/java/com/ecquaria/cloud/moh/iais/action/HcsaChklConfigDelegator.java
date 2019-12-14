@@ -124,7 +124,7 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if (HcsaChecklistConstants.BACK_LAST_PAGE_BUTTON.equals(currentAction)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             return;
         }
 
@@ -139,7 +139,7 @@ public class HcsaChklConfigDelegator {
             Map<String,String> errorMap = new HashMap<>(1);
             errorMap.put("sectionName","section name can not same");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
 
@@ -168,7 +168,7 @@ public class HcsaChklConfigDelegator {
             }
 
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }catch (NullPointerException e){
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
@@ -262,11 +262,6 @@ public class HcsaChklConfigDelegator {
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
     }
 
-
-    private Boolean judgeConfigIsCommon(String var){
-        return true;
-    }
-
     /**
      * @AutoStep: addConfigNextAction
      * @param:
@@ -277,7 +272,7 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if ("backLastPage".equals(currentAction)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             return;
         }
 
@@ -292,7 +287,6 @@ public class HcsaChklConfigDelegator {
         try {
             Date starteDate = Formatter.parseDate(eftStartDate);
             Date endDate = Formatter.parseDate(eftEndDate);
-            boolean isCommon = judgeConfigIsCommon(common);
 
             ChecklistConfigDto configDto;
             String operationType = (String) ParamUtil.getSessionAttr(request, "operationType");
@@ -302,7 +296,10 @@ public class HcsaChklConfigDelegator {
                 configDto.setType(type);
             }else {
                 configDto = new ChecklistConfigDto();
-                configDto.setCommon(isCommon);
+                if (common != null){
+                    configDto.setCommon(true);
+                }
+
                 configDto.setType(type);
                 configDto.setSvcName(svcName);
                 configDto.setModule(type);
@@ -312,15 +309,15 @@ public class HcsaChklConfigDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, "create");
             if(validationResult != null && validationResult.isHasErrors()){
                 Map<String,String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }else {
                 configDto.setType(MasterCodeUtil.getCodeDesc(type));
                 configDto.setModule(MasterCodeUtil.getCodeDesc(module));
                 configDto.setEftStartDate(starteDate);
                 configDto.setEftEndDate(endDate);
                 ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             }
 
         } catch (ParseException e) {
@@ -420,11 +417,11 @@ public class HcsaChklConfigDelegator {
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else {
             configDto.setType(MasterCodeUtil.getCodeDesc(type));
             configDto.setModule(MasterCodeUtil.getCodeDesc(module));
-            generateOrderIndex(request, configDto);
+            generateOrderIndex(request, configDto.getSectionDtos());
             hcsaChklService.submitConfig(configDto);
         }
     }
@@ -526,8 +523,7 @@ public class HcsaChklConfigDelegator {
         }
     }
 
-    private void generateOrderIndex(HttpServletRequest request, ChecklistConfigDto configDto){
-        List<ChecklistSectionDto> sectionDtos = configDto.getSectionDtos();
+    private void generateOrderIndex(HttpServletRequest request, List<ChecklistSectionDto> sectionDtos){
         for (ChecklistSectionDto sec : sectionDtos){
             String section = sec.getSection();
             String orderStr = ParamUtil.getString(request, section);
@@ -559,9 +555,17 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
 
         ChecklistConfigDto preViewConfig = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
-        generateOrderIndex(request, preViewConfig);
+        if (preViewConfig.getSectionDtos() == null || preViewConfig.getSectionDtos().isEmpty()){
+            Map<String,String> errorMap = new HashMap<>(1);
+            errorMap.put("configErrorMsg", "Please add the required information.");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+        }else {
+            generateOrderIndex(request, preViewConfig.getSectionDtos());
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConfig);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }
 
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConfig);
     }
 
 

@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepare" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="switchAction" x="550" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="switchAction_OnStepProcess_0" name="switchAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareAddConfig" x="600" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareAddConfig_OnStepProcess_0" name="prepareAddConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="loadEditData" x="720" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="loadEditData_OnStepProcess_0" name="loadEditData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="deleteRecord" x="820" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="deleteRecord_OnStepProcess_0" name="deleteRecord_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="910" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="addConfigNextAction" x="650" y="580">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="addConfigNextAction_OnStepProcess_0" name="addConfigNextAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareConfigSectionInfo" x="540" y="680">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareConfigSectionInfo_OnStepProcess_0" name="prepareConfigSectionInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preViewConfig" x="850" y="940">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preViewConfig_OnStepProcess_0" name="preViewConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="submitConfig" x="1010" y="1270">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submitConfig_OnStepProcess_0" name="submitConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="addSectionItem" x="1040" y="760">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="addSectionItem_OnStepProcess_0" name="addSectionItem_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="routeToItemProcess" x="740" y="950">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="routeToItemProcess_OnStepProcess_0" name="routeToItemProcess_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="invokeChecklistItem" processname="MohChecklistItem" project="INTRANET" version="-1" x="670" y="1010">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="addChecklistItemNextAction" x="530" y="1100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="addChecklistItemNextAction_OnStepProcess_0" name="addChecklistItemNextAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="removeSectionItem" x="550" y="980">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="removeSectionItem_OnStepProcess_0" name="removeSectionItem_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="removeSection" x="480" y="970">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="removeSection_OnStepProcess_0" name="removeSection_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigDataPage" stageIndicator="" x="380" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigAddPage" stageIndicator="" x="660" y="410">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigSectionAddPage" stageIndicator="" x="550" y="830">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AddSectionItemPage" stageIndicator="" x="1030" y="830">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreViewConfigPage" stageIndicator="" x="970" y="1080">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SuccessPage" stageIndicator="" x="1190" y="1260">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
+   <position>{(120,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigDataPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepare" style="rectanular">
+   <position>{(270,120)(400,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/switchAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ConfigDataPage" style="oblique">
+   <position>{(400,120)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/switchAction" style="rectanular">
+   <position>{(570,120)(730,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAddConfig" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(620,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/loadEditData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(740,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/deleteRecord" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(840,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(930,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareAddConfig" style="oblique">
+   <position>{(620,220)(700,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/loadEditData" style="oblique">
+   <position>{(740,220)(700,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigAddPage" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(700,320)(680,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ConfigAddPage" style="oblique">
+   <position>{(680,430)(700,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(700,510)(270,509)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addConfigNextAction" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(700,510)(670,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/addConfigNextAction" style="oblique">
+   <position>{(670,600)(610,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfigSectionInfo" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(610,600)(560,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigAddPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(610,600)(680,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigSectionAddPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareConfigSectionInfo" style="oblique">
+   <position>{(560,700)(570,850)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ConfigSectionAddPage" style="oblique">
+   <position>{(570,850)(880,850)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AddSectionItemPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(880,850)(1050,850)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preViewConfig" style="oblique">
+   <position>{(870,960)(850,1100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewConfig" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(880,850)(870,960)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PreViewConfigPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(850,1100)(990,1100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreViewConfigPage" style="oblique">
+   <position>{(990,1100)(790,1290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/submitConfig" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(790,1290)(1030,1290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/submitConfig" style="oblique">
+   <position>{(1030,1290)(1210,1280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SuccessPage" style="oblique">
+   <position>{(1210,1280)(1410,1280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/deleteRecord" style="rectanular">
+   <position>{(840,220)(1410,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doSearch" style="rectanular">
+   <position>{(930,220)(1410,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge3" style="oblique">
+   <position>{(1410,310)(1410,1280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addSectionItem" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AddSectionItemPage" style="oblique">
+   <position>{(1050,850)(1060,780)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/addSectionItem" style="oblique">
+   <position>{(1060,780)(1080,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge4" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge2" style="rectanular">
+   <position>{(1410,1280)(1410,1410)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge4" style="rectanular">
+   <position>{(1410,1410)(270,1411)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge5" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
+   <position>{(1080,700)(1260,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AddSectionItemPage" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge5" style="rectanular">
+   <position>{(1260,700)(1050,850)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfigSectionInfo" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
+   <position>{(1080,700)(560,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/invokeChecklistItem" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/routeToItemProcess" style="oblique">
+   <position>{(760,970)(690,1030)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addChecklistItemNextAction" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/invokeChecklistItem" style="oblique">
+   <position>{(690,1030)(550,1120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/removeSectionItem" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(880,850)(570,1000)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/removeSection" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(880,850)(500,990)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge6" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/addChecklistItemNextAction" style="oblique">
+   <position>{(550,1120)(380,1140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge6" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/removeSection" style="oblique">
+   <position>{(500,990)(380,1140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge6" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/removeSectionItem" style="oblique">
+   <position>{(570,1000)(380,1140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfigSectionInfo" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge6" style="rectanular">
+   <position>{(380,1140)(560,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/routeToItemProcess" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(880,850)(760,970)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigAddPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(880,850)(680,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge7" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(850,1100)(550,1290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge7" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
+   <position>{(790,1290)(550,1290)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge6" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge7" style="oblique">
+   <position>{(550,1290)(379,1297)(380,1140)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Pages/WebPage/ConfigAddPage" componentIfTrue="/Steps/AutomaticStep/prepareConfigSectionInfo" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="590" y="580">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Merges/Merge/Merge7" componentIfTrue="/Pages/WebPage/PreViewConfigPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="830" y="1080">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Merges/Merge/Merge5" componentIfTrue="/Steps/AutomaticStep/prepareConfigSectionInfo" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="1060" y="680">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="710" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareAddConfig" value="&quot;prepareAddConfig&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/loadEditData" value="&quot;loadEditData&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/deleteRecord" value="&quot;deleteRecord&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="680" y="490">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;backLastPage&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/addConfigNextAction" value="&quot;nextPage&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="860" y="830">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/AddSectionItemPage" value="&quot;addSectionItem&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preViewConfig" value="&quot;preViewConfig&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/removeSectionItem" value="&quot;removeSectionItem&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/removeSection" value="&quot;removeSection&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/routeToItemProcess" value="&quot;routeToItemProcess&quot;"/>
+   <SwitchCase component="/Pages/WebPage/ConfigAddPage" value="&quot;backLastPage&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="770" y="1270">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/submitConfig" value="&quot;submitConfig&quot;"/>
+   <SwitchCase component="/Merges/Merge/Merge7" value="&quot;doBack&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="680" y="300">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1390" y="1260">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge3" type="Or" x="1390" y="290">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge4" type="Or" x="1390" y="1390">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge5" type="Or" x="1240" y="680">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge6" type="Or" x="360" y="1120">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge7" type="Or" x="530" y="1270">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

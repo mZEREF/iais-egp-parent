@@ -61,7 +61,7 @@
 </style>
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
@@ -70,6 +70,7 @@
   <div class="main-content">
     <div class="container">
       <div class="row">
+        <span id="error_configErrorMsg" name="iaisErrorMsg" class="error-msg"></span>
         <div class="col-xs-12">
         <c:choose>
           <c:when test="${operationType == 'doEdit'}">
@@ -180,7 +181,7 @@
 
   </div>
 
-
+<%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function addSectionItem() {
         SOP.Crud.cfxSubmit("mainForm","addSectionItem");

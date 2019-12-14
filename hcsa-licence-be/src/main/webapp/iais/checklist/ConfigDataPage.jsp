@@ -30,13 +30,14 @@
 
 </style>
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
   <div class="main-content">
     <div class="container">
       <div class="form-horizontal">
+        <span id="error_configCustomValidation" name="iaisErrorMsg" class="error-msg"></span>
         <div class="form-group">
           <div class="col-xs-12">
             <td>
@@ -59,7 +60,6 @@
        </div>
       </div>
 
-
       <div class="form-horizontal">
         <div class="form-group">
           <div class="col-xs-12">
@@ -81,8 +81,6 @@
         </div>
 
       </div>
-
-
 
       <div class="components">
         <h2 class="component-title">Search &amp; Result</h2>
@@ -163,7 +161,7 @@
 </form>
 
 
-
+<%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
   function doSearch(){
     SOP.Crud.cfxSubmit("mainForm", "doSearch");

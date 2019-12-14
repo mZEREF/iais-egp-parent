@@ -46,13 +46,6 @@
   <br><br><br>
   <div class="main-content">
     <div class="container">
-      <c:if test = "${not empty errorMap}">
-        <div class="error">
-          <c:forEach items="${errorMap}" var="map">
-            ${map.value} <br/>
-          </c:forEach>
-        </div>
-      </c:if>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="form-horizontal">
           <div class="form-group">
@@ -61,8 +54,9 @@
               <iais:field value="Checklist Item" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
                 <input type="text" name="checklistItem" value="" />
+                <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
               </div>
-              <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
+
             </div>
           </div>
 
@@ -71,8 +65,9 @@
               <iais:field value="Risk Level" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
                 <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Select Risk Level" value=""></iais:select>
+                <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
               </div>
-              <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
+
             </div>
           </div>
 
@@ -81,8 +76,9 @@
               <iais:field value="Answer Type" required="true"></iais:field>
               <div class="col-xs-5 col-md-3">
                 <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Select Answer Type" value=""></iais:select>
+                <span id="error_answerType" name="iaisErrorMsg" class="error-msg"></span>
               </div>
-              <span id="error_answerType" name="iaisErrorMsg" class="error-msg"></span>
+
             </div>
           </div>
         </div>
@@ -109,16 +105,12 @@
         if (getErrorMsg()) {
             dismissWaiting();
         } else {
-            submit('documents',null,null);
+            SOP.Crud.cfxSubmit("mainForm", "customItem");
         }
-
-        SOP.Crud.cfxSubmit("mainForm", "customItem");
     }
   
     function doBack() {
         SOP.Crud.cfxSubmit("mainForm", "doBack");
     }
-
-
 
 </script>

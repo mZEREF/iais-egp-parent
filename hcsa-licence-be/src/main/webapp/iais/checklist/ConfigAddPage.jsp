@@ -24,7 +24,7 @@
 </style>
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
@@ -33,13 +33,10 @@
     <div class="container">
 
       <br><br><br>
-        <c:if test = "${not empty errorMap}">
-          <div class="error">
-            <c:forEach items="${errorMap}" var="map">
-                ${map.value} <br/>
-            </c:forEach>
+
+          <div>
+            <span id="error_configCustomValidation" name="iaisErrorMsg" class="error-msg"></span>
           </div>
-        </c:if>
 
       <div class="form-horizontal">
         <div class="form-group">
@@ -62,8 +59,10 @@
               </c:if>
             </c:when>
             <c:otherwise>
-              Common  &nbsp; <input class="form-check-input"  id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
-
+              <div class="col-xs-12">
+                Common  &nbsp; <input class="form-check-input"  id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
+              </div>
+              <br><br>
               <div class="col-xs-12">
                 Service Name <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name"></iais:select>
               </div>
@@ -113,7 +112,7 @@
 
 </>
 
-
+<%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
 
     function doNext() {
