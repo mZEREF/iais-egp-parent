@@ -9,7 +9,11 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <%@ include file="/include/formHidden.jsp" %>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
+    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -48,7 +52,7 @@
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6"><a class="back" id="principalOfficersBack"><em class="fa fa-angle-left"></em> Back</a></div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group"><a class="btn btn-secondary" id = "principalOfficersSaveDraft">Save as Draft</a><a class="next btn btn-primary" id="principalOfficersNext" data-goto="clinical-governance-officer">Next</a></div>
+                                            <div class="button-group"><a class="btn btn-secondary" id = "principalOfficersSaveDraft">Save as Draft</a><a class="next btn btn-primary" id="principalOfficersNext" >Next</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -59,6 +63,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" name="pageCon" value="prinOffice" >
 </form>
 
 <script type="text/javascript">
@@ -72,48 +77,15 @@
             // submitForms('governanceOfficers','saveDraft',null,'clinical');
         });
         $('#principalOfficersNext').click(function(){
-            var flag=true;
-            var relm=/^[8|9][0-9]{7}$/;
-            var relt=/^[6][0-9]{7}$/;
-            var rel=/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-            var idType= $('#selectType').val();
-            var idNo=$('#idType-idNo').val();
-            $.getJSON("${pageContext.request.contextPath}/sg-number-validator",{"idType":idType,"idNumber":idNo},function (rel) {
-                $('#error-msg-idType').html(rel.errorM);
-                if(rel.errorM!=null){
-                    flag=false;
-                }
-            });
-            if(!relm.test($('#mobileNo').val())){
-                $('#mobileNo+span').removeAttr('style');
-                $('#mobileNo').attr('class','error');
-                flag=false;
-            }
-            if(!rel.test($('#emailAdress').val())){
-                $('#emailAdress+span').removeAttr('style');
-                $('#emailAdress').attr('class','error');
-                flag=false;
-            }
-            if(!relt.test($('#telephone').val())){
-                $('#telephone+span').removeAttr('style');
-                $('#telephone').attr('class','error');
-                flag=false;
+            doValidation();
+            if(getErrorMsg()){
+                dismissWaiting();
+            }else {
+                var controlFormLi = $('#controlFormLi').val();
+                submitForms('documents',null,null,controlFormLi);
             }
 
-                 var crName= $('#cr-po-name').val();
-            if(crName==""){
-                $('#cr-po-name+span').removeAttr('style');
-                $('#cr-po-name').attr('class','error');
-                flag=false;
-             }else if(!crName==""){
-                $('#cr-po-name+span').attr('style','display: none');
-                $('#cr-po-name').attr('class',' form-control control-input control-set-font control-font-normal');
-            }
-            if(!flag){
-                return;
-            }
-            var controlFormLi = $('#controlFormLi').val();
-            submitForms('documents',null,null,controlFormLi);
+
         });
 
     });

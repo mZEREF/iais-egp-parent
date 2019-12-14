@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,4 +97,12 @@ public class NewApplicationAjaxController {
 
         return map;
     };
+    @GetMapping(value = "/validate-premises")
+    @ResponseBody
+    public Map<String,Map<String,String>> errorMap(HttpServletRequest request){
+        Map<String,Map<String,String>> maps=new HashMap<>();
+        NewApplicationDelegator applicationDelegator=new NewApplicationDelegator();
+        List<AppGrpPremisesDto> appGrpPremisesDtos = applicationDelegator.genAppGrpPremisesDtoList(request);
+        return maps;
+    }
 }

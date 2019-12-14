@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HtmlElementHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -51,6 +52,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -271,14 +273,14 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, appGrpPremisesDto);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, (Serializable) appGrpPremisesDtoList);
 
-        Map<String, Map<String,String>> errorMap = doValidatePremiss(bpc);
-        for(Map<String,String> value:errorMap.values()){
-            if(value.size()>0){
-                ParamUtil.setRequestAttr(bpc.request, ERRORMAP_PREMISES, errorMap);
+        Map<String, String> errorMap = doValidatePremiss(bpc);
+
+            if(errorMap.size()>0){
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
                 return;
             }
-        }
+
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
@@ -709,64 +711,19 @@ public class NewApplicationDelegator {
      * @return
      * @description: for the page validate call.
      */
-    public AppGrpPremisesDto getValueFromPage(HttpServletRequest request) {
-        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-        String premisesIndexNo = "prem"+ 0;
-        String premisesType = ParamUtil.getString(request, premisesIndexNo+"premType");
-        appGrpPremisesDto.setPremisesType(premisesType);
-        appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
-        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
-            String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premOnSiteSelect");
-            String hciName = ParamUtil.getString(request, premisesIndexNo+"hciName");
-            String postalCode = ParamUtil.getString(request,  premisesIndexNo+"postalCode");
-            String blkNo = ParamUtil.getString(request, premisesIndexNo+"blkNo");
-            String streetName = ParamUtil.getString(request, premisesIndexNo+"streetName");
-            String floorNo = ParamUtil.getString(request, premisesIndexNo+"floorNo");
-            String unitNo = ParamUtil.getString(request, premisesIndexNo+"unitNo");
-            String buildingName = ParamUtil.getString(request, premisesIndexNo+"buildingName");
-            String siteAddressType = ParamUtil.getString(request, premisesIndexNo+"siteAddressType");
-            String siteSafefyNo = ParamUtil.getString(request, premisesIndexNo+"siteSafefyNo");
-            String addrType = ParamUtil.getString(request, premisesIndexNo+"addrType");
-            String offTelNo= ParamUtil.getString(request,premisesIndexNo+"offTelNo");
-            String fireSafetyCertIssuedDate  = ParamUtil.getString(request, premisesIndexNo+"fireSafetyCertIssuedDate");
-            appGrpPremisesDto.setPremisesSelect(premisesSelect);
-            appGrpPremisesDto.setHciName(hciName);
-            appGrpPremisesDto.setPostalCode(postalCode);
-            appGrpPremisesDto.setBlkNo(blkNo);
-            appGrpPremisesDto.setStreetName(streetName);
-            appGrpPremisesDto.setFloorNo(floorNo);
-            appGrpPremisesDto.setUnitNo(unitNo);
-            appGrpPremisesDto.setBuildingName(buildingName);
-            appGrpPremisesDto.setSiteSafefyNo(siteAddressType);
-            appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
-            appGrpPremisesDto.setAddrType(addrType);
-            appGrpPremisesDto.setOffTelNo(offTelNo);
-            //add index for dto refer
-            appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
+    public ApplicationValidateDto getValueFromPage(HttpServletRequest request) {
+        ApplicationValidateDto dto = new ApplicationValidateDto();
+        Enumeration<String> attributeNames = request.getSession().getAttributeNames();
+        String pageCon = request.getParameter("pageCon");
 
-        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
-            String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premConSelect");
-            String vehicleNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceVehicleNo");
-            String postalCode = ParamUtil.getString(request,  premisesIndexNo+"conveyancePostalCode");
-            String blkNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceBlockNo");
-            String streetName = ParamUtil.getString(request, premisesIndexNo+"conveyanceStreetName");
-            String floorNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceFloorNo");
-            String unitNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceUnitNo");
-            String buildingName = ParamUtil.getString(request, premisesIndexNo+"conveyanceBuildingName");
-            String siteAddressType = ParamUtil.getString(request, premisesIndexNo+"conveyanceAddrType");
-            appGrpPremisesDto.setPremisesSelect(premisesSelect);
-            appGrpPremisesDto.setConveyanceVehicleNo(vehicleNo);
-            appGrpPremisesDto.setConveyancePostalCode(postalCode);
-            appGrpPremisesDto.setConveyanceBlockNo(blkNo);
-            appGrpPremisesDto.setConveyanceStreetName(streetName);
-            appGrpPremisesDto.setConveyanceFloorNo(floorNo);
-            appGrpPremisesDto.setConveyanceUnitNo(unitNo);
-            appGrpPremisesDto.setConveyanceBuildingName(buildingName);
-            appGrpPremisesDto.setConveyanceAddressType(siteAddressType);
-        }
-
-        return appGrpPremisesDto;
+        List<AppGrpPremisesDto> list = genAppGrpPremisesDtoList(request);
+        ParamUtil.setRequestAttr(request, "valPremiseList", list);
+       /* List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto =
+                (List<AppSvcPrincipalOfficersDto>)ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
+        ParamUtil.setRequestAttr(request,"prinOffice",appSvcPrincipalOfficersDto);*/
+        return dto;
     }
+
 
     //=============================================================================
     //private method
@@ -833,93 +790,103 @@ public class NewApplicationDelegator {
         return reuslt;
     }*/
 
-    private Map<String, Map<String,String>> doValidatePremiss(BaseProcessClass bpc) {
+    private Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
         //do validate one premiss
-        Map<String,Map<String,String>> errorMaps = new HashMap<>();
+
+        Map<String, String> errorMap = new HashMap<>();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = (List<AppGrpPremisesDto>) ParamUtil.getSessionAttr(bpc.request, APPGRPPREMISESLIST);
-        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-            Map<String, String> errorMap = new HashMap<>();
-            String premiseType = appGrpPremisesDto.getPremisesType();
+        for(int i=0;i<appGrpPremisesDtoList.size();i++){
+
+            String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
-                errorMap.put("premisesType", "Please select the premises Type");
+                errorMap.put("premisesType"+i, "Please select the premises Type");
             }else {
-                String premisesSelect = appGrpPremisesDto.getPremisesSelect();
+                String premisesSelect = appGrpPremisesDtoList.get(i).getPremisesSelect();
                 if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
-                    errorMap.put("premisesSelect", "Please select the premises from");
+                    errorMap.put("premisesSelect"+i, "Please select the premises from");
                 } else if ("newPremise".equals(premisesSelect)) {
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
-                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto,AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
+                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDtoList.get(i),AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
                         if (validationResult.isHasErrors()) {
                             errorMap = validationResult.retrieveAll();
                         }
 
-                        String offTelNo = appGrpPremisesDto.getOffTelNo();
+                        String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
                         if(StringUtil.isEmpty(offTelNo)){
-                            errorMap.put("officeTel","cannot be blank!");
+                            errorMap.put("offTelNo"+i,"cannot be blank!");
                         }else {
                             boolean matches = offTelNo.matches("^[6][0-9]{7}$");
                             if(!matches) {
-                                errorMap.put("officeTel","Please key in a valid phone number!");
+                                errorMap.put("offTelNo"+i,"Please key in a valid phone number!");
                             }
                         }
 
-                        String streetName = appGrpPremisesDto.getStreetName();
+                        String streetName = appGrpPremisesDtoList.get(i).getStreetName();
                         if(StringUtil.isEmpty(streetName)){
-                            errorMap.put("stressName","cannot be blank!");
+                            errorMap.put("streetName"+i,"cannot be blank!");
                         }
                         //do by wenkang
-                        String addrType = appGrpPremisesDto.getAddrType();
+                        String addrType = appGrpPremisesDtoList.get(i).getAddrType();
                         if(StringUtil.isEmpty(addrType)){
-                            errorMap.put("addrType", "can not is null");
+                            errorMap.put("addrType"+i, "can not is null");
                         }else {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
-                                boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getFloorNo());
-                                boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getBlkNo());
-                                boolean empty2 = StringUtil.isEmpty(appGrpPremisesDto.getUnitNo());
+                                boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getFloorNo());
+                                boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getBlkNo());
+                                boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getUnitNo());
                                 if (empty) {
-                                    errorMap.put("floorNo", "can not is null");
+                                    errorMap.put("floorNo"+i, "can not is null");
                                 }
                                 if (empty1) {
-                                    errorMap.put("blkNo", "can not is null");
+                                    errorMap.put("blkNo"+i, "can not is null");
                                 }
                                 if (empty2) {
-                                    errorMap.put("unitNo", "can not is null");
+                                    errorMap.put("unitNo"+i, "can not is null");
                                 }
                             }
                         }
-                        String postalCode = appGrpPremisesDto.getPostalCode();
+                        String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
-                            if (!postalCode.matches("^[0-9]*$")) {
-                                errorMap.put("postalCode", "the postal code must be numbers ");
+                            if (!postalCode.matches("^[0-9]{6}$")) {
+                                errorMap.put("conveyancePostalCode"+i, "Please only key in numbers");
                             }
+                        }else {
+                            errorMap.put("conveyancePostalCode"+i, "can not is null");
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDto, AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
+                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDtoList.get(i), AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
                         if (validationResult.isHasErrors()) {
                             errorMap = validationResult.retrieveAll();
                         }
-                        String cStreetName = appGrpPremisesDto.getConveyanceStreetName();
-                        if(StringUtil.isEmpty(cStreetName)){
-                            errorMap.put("cStreetName","cannot be blank!");
+                        String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
+                        if(StringUtil.isEmpty(conveyanceVehicleNo)){
+                            errorMap.put("conveyanceVehicleNo"+i,"cannot be blank");
+                        }else {
+
                         }
-                        String addrType = appGrpPremisesDto.getConveyanceAddressType();
+                        String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
+
+                        if(StringUtil.isEmpty(cStreetName)){
+                            errorMap.put("cStreetName"+i,"cannot be blank!");
+                        }
+                        String addrType = appGrpPremisesDtoList.get(i).getConveyanceAddressType();
 
                         if(StringUtil.isEmpty(addrType)){
-                            errorMap.put("conveyanceAddressType", "can not is null");
+                            errorMap.put("conveyanceAddressType"+i, "can not is null");
                         }else {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
-                                boolean empty = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceFloorNo());
-                                boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceBlockNo());
-                                boolean empty2 = StringUtil.isEmpty(appGrpPremisesDto.getConveyanceUnitNo());
+                                boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceFloorNo());
+                                boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceBlockNo());
+                                boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
                                 if (empty) {
-                                    errorMap.put("conveyanceFloorNo", "can not is null");
+                                    errorMap.put("conveyanceFloorNo"+i, "can not is null");
                                 }
                                 if (empty1) {
-                                    errorMap.put("conveyanceBlockNo", "can not is null");
+                                    errorMap.put("conveyanceBlockNos"+i, "can not is null");
                                 }
                                 if (empty2) {
-                                    errorMap.put("conveyanceUnitNo", "can not is null");
+                                    errorMap.put("conveyanceUnitNo"+i, "can not is null");
                                 }
                             }
                         }
@@ -929,19 +896,20 @@ public class NewApplicationDelegator {
 
                 }
             }
-            errorMaps.put(appGrpPremisesDto.getPremisesIndexNo(), errorMap);
+
         }
         log.debug(StringUtil.changeForLog("the do doValidatePremiss end ...."));
-        return errorMaps;
+
+        return errorMap;
     }
 
 
-    public static Map<String, Map<String, String>> doValidatePo(HttpServletRequest request) {
+    public static Map<String,  String> doValidatePo(HttpServletRequest request) {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
-        Map<String, Map<String, String>> errorMap = new HashMap<>();
-        Map<String, String> oneErrorMap = null;
+
+        Map<String, String> oneErrorMap = new HashMap<>();
         for (AppSvcPrincipalOfficersDto poDto : appSvcPrincipalOfficersDto) {
-            oneErrorMap = new HashMap<>();
+
             String assignSelect = poDto.getAssignSelect();
             if (StringUtil.isEmpty(assignSelect)) {
                 oneErrorMap.put("assignSelect", "assignSelect can not null");
@@ -949,41 +917,61 @@ public class NewApplicationDelegator {
                 ValidationResult validationResult = WebValidationHelper.validateProperty(appSvcPrincipalOfficersDto, AppServicesConsts.VALIDATE_PROFILES_CREATE);
                 if (validationResult.isHasErrors()) {
                     oneErrorMap = validationResult.retrieveAll();
+                    //todo change
+                    ParamUtil.setRequestAttr(request,"error",WebValidationHelper.generateJsonStr(oneErrorMap));
                 }
                 //do by wenkang
                 String mobileNo = poDto.getMobileNo();
                 String officeTelNo = poDto.getOfficeTelNo();
                 String emailAddr = poDto.getEmailAddr();
                 String idNo = poDto.getIdNo();
+                String name = poDto.getName();
+                String salutation = poDto.getSalutation();
+                String designation = poDto.getDesignation();
+                if(StringUtil.isEmpty(name)){
+                    oneErrorMap.put("name","cannot be blank");
+                }
+                if(StringUtil.isEmpty(salutation)){
+                    oneErrorMap.put("salutation","cannot be blank");
+                }
+                if(StringUtil.isEmpty(designation)){
+                    oneErrorMap.put("designation","cannot be blank");
+                }
                 if(!StringUtil.isEmpty(idNo)){
                     boolean b = SgNoValidator.validateFin(idNo);
                     boolean b1 = SgNoValidator.validateNric(idNo);
                     if(!(b||b1)){
-                        oneErrorMap.put("NRIC/FIN","Please key in a valid NRIC/FIN");
+                        oneErrorMap.put("NRICFIN","Please key in a valid NRIC/FIN");
                     }
+                }else {
+                    oneErrorMap.put("NRICFIN","cannot be blank");
                 }
                 if(!StringUtil.isEmpty(mobileNo)){
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         oneErrorMap.put("mobileNo", "Please key in a valid mobile number");
                     }
+                }else {
+                    oneErrorMap.put("mobileNo", "cannot be blank");
                 }
                 if(!StringUtil.isEmpty(emailAddr)) {
                     if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                         oneErrorMap.put("emailAddr", "Please key in a valid email address");
                     }
+                }else {
+                    oneErrorMap.put("emailAddr", "cannot be blank");
                 }
                 if(!StringUtil.isEmpty(officeTelNo)) {
                     if (!officeTelNo.matches("^[6][0-9]{7}$")) {
                         oneErrorMap.put("officeTelNo", "Please key in a valid phone number");
                     }
+                }else {
+                    oneErrorMap.put("officeTelNo", "cannot be blank");
                 }
             }
-            if(oneErrorMap.size()>0){
-                errorMap.put("po1", oneErrorMap);
-            }
+
 
         }
-        return errorMap;
+        return oneErrorMap;
     }
 
     private Map<String,String> doValidatePremissCgo(BaseProcessClass bpc){
@@ -1075,8 +1063,6 @@ public class NewApplicationDelegator {
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
 
-
-
         return  appGrpPremisesDtoList;
     }
 
@@ -1154,7 +1140,7 @@ public class NewApplicationDelegator {
             String name = appGrpPrimaryDocDto.getDocName();
             String substring = name.substring(name.lastIndexOf(".")+1);
             for(String fileType: AppServicesConsts.FILE_TYPE){
-                if(fileType.equals(substring)){
+                if(fileType.equalsIgnoreCase(substring)){
                     flag=true;
                 }
             }

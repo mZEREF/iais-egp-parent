@@ -10,6 +10,7 @@
 <div class="row">
   <div class="col-xs-12">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
       <div class="panel panel-default">
         <div class="panel-heading completed" id="headingPrincipal" role="tab">
           <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
@@ -60,7 +61,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="name" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal"  size="30">
-                        <span class="error-msg" style="display: none">cannot be blank!</span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_name"></span>
                       </div>
                     </div>
                   </div>
@@ -83,7 +84,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input id="idType-idNo" name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                        <span class="error-msg" id="error-msg-idType"></span>
+                        <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                       </div>
                     </div>
                   </div>
@@ -115,7 +116,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="mobileNo" type="text"  id="mobileNo" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                        <span class="error-msg" style="display: none">Please key in a valid mobile number</span>
+                        <span class="error-msg"  name="iaisErrorMsg" id="error_mobileNo"></span>
                       </div>
                     </div>
                   </div>
@@ -129,7 +130,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="telephone" type="text"  id="telephone" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                        <span class="error-msg" style="display: none">Please key in a valid phone number</span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_officeTelNo" ></span>
                       </div>
                     </div>
                   </div>
@@ -143,7 +144,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                        <span class="error-msg" style="display: none">Please key in a valid email address</span>
+                        <span class="error-msg" >${error.emailAddr}</span>
                       </div>
                     </div>
                   </div>

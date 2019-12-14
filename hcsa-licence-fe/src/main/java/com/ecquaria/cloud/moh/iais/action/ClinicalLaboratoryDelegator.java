@@ -574,10 +574,11 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = new ArrayList<>();
         appSvcPrincipalOfficersDtoList.add(appSvcPrincipalOfficersDto);
         ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
-        Map<String,Map<String,String>> map = NewApplicationDelegator.doValidatePo(bpc.request);
+        Map<String,String> map = NewApplicationDelegator.doValidatePo(bpc.request);
         if(map.size() >0 ){
             //ParamUtil.setSessionAttr(bpc.request, "", );
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "principalOfficers");
+            ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(map));
         }
 
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
