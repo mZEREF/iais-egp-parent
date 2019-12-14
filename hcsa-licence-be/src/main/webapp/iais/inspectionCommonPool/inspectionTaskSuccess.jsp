@@ -64,20 +64,6 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
-                        <iais:field value="Inspection Lead"/>
-                        <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.inspectionLead}"/></label>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Inspector"/>
-                        <iais:value width="10">
-                          <c:forEach items="${inspecTaskCreAndAssDto.inspectorCheck}" var="name">
-                            <label><c:out value="${name.text}"/></label>
-                          </c:forEach>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
                         <iais:field value="Inspection Type"/>
                         <iais:value width="7">
                           <label><c:out value="${inspecTaskCreAndAssDto.InspectionTypeName}"/></label>
