@@ -33,7 +33,7 @@ public class PostCodeDelegator {
         Map<String,String> buildingMap =initbuildingMap();
         List<PostCodeDto> list = convert(streetMap,buildingMap);
         if(!list.isEmpty()){
-            postCodeService.createAll(list);
+//            postCodeService.createAll(list);
         }
         bpc.request.setAttribute("success","success");
     }

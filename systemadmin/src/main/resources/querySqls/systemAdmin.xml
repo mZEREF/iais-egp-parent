@@ -2,33 +2,52 @@
 <sqls catalog="systemAdmin">
     <sql key = "masterCodeQuery" remarks = "query MasterCode sql">
         <![CDATA[
-            SELECT mc.master_code_id,
-                   mc.master_code_key,
-                   mc.code_category,
-                   mc.code_value,
-                   mc.code_description,
-                   mc.status
-            FROM CM_MASTER_CODE AS mc
+            SELECT master_code_id,
+                   master_code_key,
+                   (SELECT category_description FROM cm_master_code_category where code_category = mc.code_category) as code_category,
+                   code_value,
+                   code_description,
+                   remarks,
+                   status,
+                   effective_from,
+                   effective_to,
+                   version
+            FROM CM_MASTER_CODE as mc
             WHERE 1=1
             <#if master_code_id??> AND CHARINDEX(:master_code_id, mc.master_code_id) >0</#if>
-            <#if master_code_key??> AND mc.master_code_key = :master_code_key</#if>
-            <#if code_value??> AND mc.code_value = :code_value</#if>
-            <#if master_code_id??> AND mc.master_code_id = :master_code_id</#if>
+            <#if codeCategory??> AND mc.code_category = :codeCategory</#if>
+            <#if codeDescription??> AND mc.code_description = :codeDescription</#if>
+            <#if esd??> AND mc.effective_from > :esd</#if>
+            <#if eed??> AND mc.effective_to < :eed</#if>
+            <#if codeStatus??> AND mc.status = :codeStatus</#if>
         ]]>
     </sql>
 
-    <sql key = "findMasterCodeByRowguid" remarks = "Find MasterCode By Rowguid">
+    <sql key = "findMasterCodeByDescription" remarks = "Find MasterCode By Description">
         <![CDATA[
-            SELECT mc.master_code_id,
-                   mc.master_code_key,
-                   mc.code_category,
-                   mc.code_value,
-                   mc.code_description,
-                   mc.status
-            FROM CM_MASTER_CODE AS mc
-            WHERE 1=1
+            SELECT
+                master_code_id,
+                master_code_key,
+                (SELECT category_description FROM cm_master_code_category where code_category = t1.code_category) as code_category,
+                code_value,
+                code_description,
+                remarks,
+                status,
+                effective_from,
+                effective_to,
+                version,
+            FROM
+                cm_master_code as t1
+            WHERE code_category =
+                (
+                    SELECT
+                        code_category
+                     FROM
+                        cm_master_code_category AS cmcc
+                     WHERE 1=1
+                        <#if categoryDescription??> AND cmcc.category_description = :categoryDescription</#if>
+                )
             <#if master_code_id??> AND CHARINDEX(:master_code_id, mc.master_code_id) >0</#if>
-            <#if master_code_id??> AND mc.master_code_id = :master_code_id</#if>
         ]]>
     </sql>
 

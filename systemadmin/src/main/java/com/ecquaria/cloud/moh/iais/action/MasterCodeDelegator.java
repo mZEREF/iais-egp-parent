@@ -7,22 +7,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +39,7 @@ public class MasterCodeDelegator {
     @Autowired
     private MasterCodeDelegator(FilterParameter filterParameter, MasterCodeService masterCodeService){
         this.filterParameter = filterParameter;
+
         this.masterCodeService = masterCodeService;
     }
 
@@ -68,18 +66,21 @@ public class MasterCodeDelegator {
     public void prepareData(BaseProcessClass bpc){
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
-        preSelectOption(request);
-
         filterParameter.setClz(MasterCodeQueryDto.class);
         filterParameter.setSearchAttr(MasterCodeConstants.SEARCH_PARAM);
         filterParameter.setResultAttr(MasterCodeConstants.SEARCH_RESULT);
         filterParameter.setSortField(MasterCodeConstants.MASTERCODE_ID);
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        QueryHelp.setMainSql("systemAdmin", "masterCodeQuery",searchParam);
 
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
+        QueryHelp.setMainSql("systemAdmin", "masterCodeQuery",searchParam);
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
-        ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, searchParam);
-        ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, searchResult);
+
+        if(!StringUtil.isEmpty(searchResult)){
+            ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, searchParam);
+            ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, searchResult);
+
+            ParamUtil.setRequestAttr(request,"pageCount", searchResult.getPageCount(searchParam.getPageSize()));
+        }
     }
 
     /**
@@ -89,7 +90,8 @@ public class MasterCodeDelegator {
      */
     public void prepareSwitch(BaseProcessClass bpc){
         logAboutStart("prepareSwitch");
-        ParamUtil.getString(bpc.request, MasterCodeConstants.CRUD_ACTION_TYPE);
+        String type = ParamUtil.getString(bpc.request, MasterCodeConstants.CRUD_ACTION_TYPE);
+        logAboutStart(type);
     }
 
     /**
@@ -102,14 +104,7 @@ public class MasterCodeDelegator {
         logAboutStart("prepareCreate");
         HttpServletRequest request = bpc.request;
         String masterCodeId = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
-        ParamUtil.setRequestAttr(request, "masterCodeId", masterCodeId);
-        List statusSelect = new ArrayList<SelectOption>();
-        SelectOption sp1 = new SelectOption("pending",MasterCodeConstants.PENDING);
-        statusSelect.add(sp1);
-        SelectOption sp2 = new SelectOption("procing",MasterCodeConstants.PROCING);
-        statusSelect.add(sp2);
-        ParamUtil.setRequestAttr(request,"statusSelect",statusSelect);
-        ParamUtil.setRequestAttr(request, MasterCodeConstants.MASTERCODE_USER_ACCOUNT_TILE,"Master Code Create");
+
     }
 
     /**
@@ -121,17 +116,11 @@ public class MasterCodeDelegator {
     public void prepareEdit(BaseProcessClass bpc){
         logAboutStart("prepareEdit");
         HttpServletRequest request = bpc.request;
-        preSelectOption(request);
-        String rowguid = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
-        MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByRowguid(rowguid);
-        ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
-        ParamUtil.setRequestAttr(request, MasterCodeConstants.MASTERCODE_USER_ACCOUNT_TILE,"MasterCode Edit");
-        List statusSelect = new ArrayList<SelectOption>();
-        SelectOption sp1 = new SelectOption("pending",MasterCodeConstants.PENDING);
-        statusSelect.add(sp1);
-        SelectOption sp2 = new SelectOption("procing",MasterCodeConstants.PROCING);
-        statusSelect.add(sp2);
-        ParamUtil.setRequestAttr(request, "statusSelect",statusSelect);
+        String masterCodeId = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
+        if (!masterCodeId.isEmpty()){
+            MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
+            ParamUtil.setRequestAttr(request,MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
+        }
     }
 
     /**
@@ -140,26 +129,35 @@ public class MasterCodeDelegator {
      * @param bpc
      * @throws
      */
-    public void doSearch(BaseProcessClass bpc){
+    public void doSearch(BaseProcessClass bpc) throws ParseException {
         logAboutStart("doSearch");
         HttpServletRequest request = bpc.request;
-        SearchParam param = IaisEGPHelper.getSearchParam(request, true,filterParameter);
-        String masterCodeKey = ParamUtil.getString(request, MasterCodeConstants.MASTERCODE_KEY);
-        String codeValue = ParamUtil.getString(request,MasterCodeConstants.CRUD_VALUE);
-        String[] status = ParamUtil.getStrings(request,MasterCodeConstants.STATUS);
-        if(!StringUtil.isEmpty(masterCodeKey)){
-            param.addFilter(MasterCodeConstants.MASTERCODE_KEY,masterCodeKey,true);
+        String categoryDescription = ParamUtil.getString(request, "codeCategory");
+        String codeDescription = ParamUtil.getString(request, "codeDescription");
+        String codeStartDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "esd")),
+                "yyyy-MM-dd");
+        String codeEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "eed")),
+                "yyyy-MM-dd");
+        String codeStatus = ParamUtil.getString(request, "codeStatus");
+        Map<String,Object> masterCodeMap = new HashMap<>();
+
+        if (!StringUtil.isEmpty(categoryDescription)){
+            String codeCategory = masterCodeService.findMasterCodeByDescription(categoryDescription);
+            masterCodeMap.put("codeCategory",codeCategory);
         }
-        if(!StringUtil.isEmpty(codeValue)){
-            param.addFilter(MasterCodeConstants.CRUD_VALUE,codeValue,true);
+        if(!StringUtil.isEmpty(codeStatus)){
+            masterCodeMap.put("codeStatus",codeStatus);
         }
-        if(status != null && status.length>0){
-            String statusStr = SqlHelper.constructInCondition("mc.STATUS",status.length);
-            param.addParam(MasterCodeConstants.STATUS,statusStr);
-            for (int i = 0 ; i<status.length; i++ ) {
-                param.addFilter("mc.STATUS"+i,status[i]);
-            }
+        if(!StringUtil.isEmpty(codeDescription)){
+            masterCodeMap.put("codeDescription",codeDescription);
         }
+        if (!StringUtil.isEmpty(codeStartDate)){
+            masterCodeMap.put("esd",codeStartDate);
+        }
+        if (!StringUtil.isEmpty(codeEndDate)){
+            masterCodeMap.put("eed",codeEndDate);
+        }
+        filterParameter.setFilters(masterCodeMap);
     }
 
     /**
@@ -184,8 +182,8 @@ public class MasterCodeDelegator {
     public void doPaging(BaseProcessClass bpc){
         logAboutStart("doPaging");
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
+        int pageNo = ParamUtil.getInt(bpc.request,MasterCodeConstants.CRUD_ACTION_VALUE);
+        filterParameter.setPageNo(pageNo);
     }
 
     /**
@@ -212,23 +210,11 @@ public class MasterCodeDelegator {
         logAboutStart("doCreate");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, MasterCodeConstants.CRUD_ACTION_TYPE);
+        String value = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
         if("save".equals(type)){
-            int masterCodeId = ParamUtil.getInt(request,MasterCodeConstants.CRUD_ACTION_VALUE);
-            MasterCodeDto masterCodeDto = new MasterCodeDto();
-            getValueFromPage(masterCodeDto, request);
-            masterCodeDto.setMasterCodeId(masterCodeId);
-            ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
-            ValidationResult validationResult = ValidationUtils.validateProperty(masterCodeDto,"create");
-            if (validationResult.isHasErrors()){
-                Map<String,String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(request,MasterCodeConstants.ERRORMAP,errorMap);
-                ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.NO);
-            }else{
-                masterCodeService.saveMasterCode(masterCodeDto);
+            if (value != null){
                 ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.YES);
             }
-        }else{
-            ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.YES);
         }
     }
 
@@ -266,7 +252,7 @@ public class MasterCodeDelegator {
         String masterCodeKey = ParamUtil.getString(request,MasterCodeConstants.MASTERCODE_KEY);
         String codeCategory = ParamUtil.getString(request,"code_category");
         String codeValue = ParamUtil.getString(request,MasterCodeConstants.CRUD_VALUE);
-        int status = ParamUtil.getInt(request,MasterCodeConstants.STATUS);
+        String status = ParamUtil.getString(request,MasterCodeConstants.STATUS);
         masterCodeDto.setMasterCodeKey(masterCodeKey);
         masterCodeDto.setCodeCategory(codeCategory);
         masterCodeDto.setCodeValue(codeValue);
@@ -287,7 +273,7 @@ public class MasterCodeDelegator {
     }
 
     private void logAboutStart(String methodName){
-        log.debug("**** The"+methodName+"Start ****");
+        log.debug("**** The  "+methodName+"  Start ****");
 
     }
 }

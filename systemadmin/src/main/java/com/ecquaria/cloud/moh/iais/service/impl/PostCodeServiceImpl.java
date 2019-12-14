@@ -14,8 +14,6 @@ import java.util.List;
 @Transactional
 public class PostCodeServiceImpl implements PostCodeService {
 
-    private SOPProjectService RestApiUtil;
-
     @Override
     public void createAll(List<PostCodeDto> list) {
         //RestApiUtil.save("postcodes",list);

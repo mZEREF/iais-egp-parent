@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 
 /**
@@ -38,8 +39,13 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     }
 
     @Override
-    public MasterCodeDto findMasterCodeByRowguid(String id) {
+    public MasterCodeDto findMasterCodeByMcId(String id) {
         return masterCodeClient.getMasterCodeById(id).getEntity();
+    }
+
+    @Override
+    public String findMasterCodeByDescription(String description) {
+        return masterCodeClient.getMasterCodeByDescription(description).getEntity();
     }
 
 }

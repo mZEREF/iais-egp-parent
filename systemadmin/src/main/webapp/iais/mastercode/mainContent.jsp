@@ -1,88 +1,106 @@
 <div class="main-content">
-    <div class="container">
-        <div class="component-gp">
-            <%@ include file="doSearchBody.jsp" %>
-        </div>
+    <form class="form-horizontal" method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
+        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+        <input type="hidden" name="crud_action_type" value="">
+        <input type="hidden" name="crud_action_value" value="">
         <div class="row">
-            <div class="col-xs-10">
-                <div class="row">
-                    <div class="col-xs-10">
-                        <div class="table-gp">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Code Category</th>
-                                    <th>Code Description</th>
-                                    <th>Filter</th>
-                                    <th>Sequence</th>
-                                    <th>Effective Start Date</th>
-                                    <th>Effective End Date</th>
-                                    <th>Status</th>
-                                    <th>Version</th>
-                                    <th>Expected Results</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                        <p><a href="#">Licence Approval</a></p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                        <p><a href="#">Licence Approval</a></p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                        <p><a href="#">Licence Approval</a></p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Message Type</p>
-                                        <p>Approval</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Ref. No.</p>
-                                        <p>M2018-11-02</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Date</p>
-                                        <p>14 Feb 2019, 11:28</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Date</p>
-                                        <p>14 Feb 2019, 11:28</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Message Type</p>
-                                        <p>Approval</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Message Type</p>
-                                        <p>Approval</p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Message Type</p>
-                                        <p>Approval</p>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <div class="table-footnote">
-                                <div class="row">
-                                    <div class="col-xs-6 col-md-4">
-                                        <p class="count">6 out of 25</p>
-                                    </div>
-                                    <div class="col-xs-6 col-md-8 text-right">
-                                        <div class="nav">
-                                            <ul class="pagination">
-                                                <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-chevron-left"></i></span></a></li>
-                                                <li class="active"><a href="#">1</a></li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right"></i></span></a></li>
-                                            </ul>
-                                        </div>
+            <div class="col-lg-12 col-xs-12">
+                <div class="center-content">
+                    <div class="intranet-content">
+                        <div class="bg-title">
+                            <h2>Master Code View</h2>
+                        </div>
+                        <%@ include file="doSearchBody.jsp" %>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Code Category</th>
+                                <th>Code Value</th>
+                                <th>Code Description</th>
+                                <th>Sequence</th>
+                                <th>Status</th>
+                                <th>Effective Start Date</th>
+                                <th>Effective End Date</th>
+                                <th>Remarks</th>
+                                <th>Version</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:choose>
+                                <c:when test="${empty MasterCodeSearchResult.rows}">
+                                    <tr>
+                                        <td colspan="12">
+                                            No Record!!
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="masterCodeResult" items="${MasterCodeSearchResult.rows}" varStatus="status">
+                                        <tr onclick="doEdit('${masterCodeResult.masterCodeId}')">
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">No.</p>
+                                                <p>#${(MasterCodeSearchParam.pageNo - 1) * 10 + status.index + 1}</p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Code Category</p>
+                                                <p><a href="#">${masterCodeResult.codeCategory}</a></p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Code Value</p>
+                                                <p>${masterCodeResult.codeValue}</p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Code Description</p>
+                                                <p>${masterCodeResult.codeDescription}</p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Sequence</p>
+                                                <p>${masterCodeResult.codeDescription}</p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Status</p>
+                                                <p>${masterCodeResult.status}</p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Effective Start
+                                                    Date</p>
+                                                <p><fmt:formatDate value="${masterCodeResult.effectiveStartDate}"
+                                                                   pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Effective End Date</p>
+                                                <p><fmt:formatDate value="${masterCodeResult.effectiveEndDate}"
+                                                                   pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Remarks</p>
+                                                <p>${masterCodeResult.remarks}</p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Version</p>
+                                                <p>${masterCodeResult.version}</p>
+                                            </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Action</p>
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+                            </tbody>
+                        </table>
+                        <div class="table-footnote">
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <p class="count">${MasterCodeSearchResult.rowCount} out of ${MasterCodeSearchParam.pageNo}</p>
+                                </div>
+                                <div class="col-xs-6 col-md-8 text-right">
+                                    <div class="nav">
+                                        <ul class="pagination">
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -91,6 +109,5 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </form>
 </div>
