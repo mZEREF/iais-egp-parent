@@ -129,6 +129,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorAssign(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
         String applicationNo = ParamUtil.getMaskedString(bpc.request,"applicationNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!StringUtil.isEmpty(applicationNo) && !(AppConsts.NO.equals(applicationNo))){
@@ -146,6 +147,7 @@ public class InspecAssignTaskDelegator {
             ParamUtil.setRequestAttr(bpc.request,"isInspector",AppConsts.FALSE);
         }
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", searchResult);
     }
 
     /**
@@ -157,17 +159,23 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorAction(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAction start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
+        SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
             if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_INSPECTIOR)){
                 inspecTaskCreAndAssDto = getValueFromPage(bpc);
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.FALSE);
             }
+        } else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)){
+            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else {
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.FALSE);
         }
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
+        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", searchResult);
     }
 
     public InspecTaskCreAndAssDto getValueFromPage(BaseProcessClass bpc) {

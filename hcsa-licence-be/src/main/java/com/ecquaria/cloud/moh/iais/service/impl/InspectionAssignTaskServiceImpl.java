@@ -98,7 +98,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<OrgUserDto> orgUserDtos = new ArrayList<>();
         for(TaskDto tDto:commPools){
             if(applicationNo.equals(tDto.getRefNo())){
-                orgUserDtos =  organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), tDto.getTaskStatus()).getEntity();
+                orgUserDtos =  organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             }
         }
 
