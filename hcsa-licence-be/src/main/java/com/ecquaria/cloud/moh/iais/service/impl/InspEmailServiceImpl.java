@@ -5,7 +5,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
@@ -15,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -80,5 +86,55 @@ public class InspEmailServiceImpl implements InspEmailService {
     @Override
     public Map<String, String > SendAndSaveEmail(EmailDto emailDto){
         return insEmailClient.SendAndSaveEmail(emailDto).getEntity();
+    }
+
+    @Override
+    public List<NcAnswerDto> getNcAnswerDtoList(InspectionFillCheckListDto cDto, InspectionFillCheckListDto commonDto, AdCheckListShowDto adchklDto, List<NcAnswerDto> acDtoList) {
+        List<NcAnswerDto> ncList = new ArrayList<>();
+        List<InspectionCheckQuestionDto> genCheckList = cDto.getCheckList();
+        List<InspectionCheckQuestionDto> comCheckList = commonDto.getCheckList();
+        List<AdhocNcCheckItemDto> adhocItemList = adchklDto.getAdItemList();
+        NcAnswerDto ncDto = null;
+        if(genCheckList!=null && !genCheckList.isEmpty()){
+            for(InspectionCheckQuestionDto temp:genCheckList){
+               if("No".equals(temp.getChkanswer())){
+                   //ncDto.setItemId(temp.getItemId());
+                   ncDto = new NcAnswerDto();
+                   ncDto.setCaluseNo(temp.getRegClauseNo());
+                   ncDto.setClause(temp.getRegClause());
+                   ncDto.setRemark(temp.getRemark());
+                   ncDto.setItemQuestion(temp.getChecklistItem());
+                   ncList.add(ncDto);
+               }
+            }
+        }
+        if(comCheckList!=null && !comCheckList.isEmpty() ){
+            for(InspectionCheckQuestionDto temp:comCheckList){
+                if("No".equals(temp.getChkanswer())){
+                    //ncDto.setItemId(temp.getItemId());
+                    ncDto = new NcAnswerDto();
+                    ncDto.setCaluseNo(temp.getRegClauseNo());
+                    ncDto.setClause(temp.getRegClause());
+                    ncDto.setRemark(temp.getRemark());
+                    ncDto.setItemQuestion(temp.getChecklistItem());
+                    ncList.add(ncDto);
+                }
+            }
+        }
+        getAdhocNcItem(adhocItemList,ncList);
+        return ncList;
+    }
+    public void getAdhocNcItem(List<AdhocNcCheckItemDto> adhocItemList,List<NcAnswerDto> ncList){
+        if(adhocItemList!=null && !adhocItemList.isEmpty()){
+            NcAnswerDto ncDto = null;
+            for(AdhocNcCheckItemDto temp:adhocItemList){
+                if("No".equals(temp.getAdAnswer())) {
+                    ncDto = new NcAnswerDto();
+                    ncDto.setRemark(temp.getRemark());
+                    ncDto.setItemQuestion(temp.getQuestion());
+                    ncList.add(ncDto);
+                }
+            }
+        }
     }
 }

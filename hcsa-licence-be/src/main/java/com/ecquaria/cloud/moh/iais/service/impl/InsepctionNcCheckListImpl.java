@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -9,6 +11,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
@@ -21,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
@@ -48,6 +54,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private FillupChklistService fillupChklistService;
     @Autowired
     private ApplicationClient applicationClient;
 
@@ -214,10 +222,34 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     @Override
-    public void submit(InspectionFillCheckListDto infillDto) {
+    public void submit(InspectionFillCheckListDto infillDto,AdCheckListShowDto showDto) {
         saveInspectionCheckListDto(infillDto);
+        saveAdhocDto(showDto,infillDto.getCheckList().get(0).getAppPreCorreId());
     }
 
+    public void saveAdhocDto(AdCheckListShowDto showDto,String appPremId){
+        List<AdhocNcCheckItemDto>  itemDtoList = showDto.getAdItemList();
+        List<AdhocChecklistItemDto> saveItemDtoList = new ArrayList<>();
+        AdhocCheckListConifgDto dto = applicationClient.getAdhocConfigByAppPremCorrId(appPremId).getEntity();
+        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        if(itemDtoList!=null && !itemDtoList.isEmpty()){
+            dto.setVersion(dto.getVersion()+1);
+            dto.setId(null);
+            dto = applicationClient.saveAppAdhocConfig(dto).getEntity();
+            for(AdhocNcCheckItemDto temp:itemDtoList){
+                temp.setAdhocConfId(dto.getId());
+                temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                temp.setId(null);
+                AdhocAnswerDto adhocAnswerDto = new AdhocAnswerDto();
+                adhocAnswerDto.setRemark(temp.getRemark());
+                adhocAnswerDto.setAnswer(temp.getAdAnswer());
+                String saveAnswer = JsonUtil.parseToJson(adhocAnswerDto);
+                temp.setAnswer(saveAnswer);
+                saveItemDtoList.add(temp);
+            }
+            applicationClient.saveAdhocItems(saveItemDtoList).getEntity();
+        }
+    }
 
     public void saveInspectionCheckListDto(InspectionFillCheckListDto dto) {
         List<InspectionCheckQuestionDto> icqDtoList = dto.getCheckList();
@@ -333,10 +365,25 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 }
             }
         }
-
+        //adhoc
+        getAdhocNcItem(appPremCorrId,ncAnswerDtoList);
         return ncAnswerDtoList;
+
     }
 
+    public void getAdhocNcItem(String appPremId ,List<NcAnswerDto> ncAnswerDtoList){
+        AdCheckListShowDto adchklDto =getAdhocCheckListDto(appPremId);
+        NcAnswerDto ncDto = null;
+        List<AdhocNcCheckItemDto> adItemList = adchklDto.getAdItemList();
+        if(adItemList!=null && !adItemList.isEmpty()){
+            for(AdhocNcCheckItemDto temp:adItemList){
+                ncDto = new NcAnswerDto();
+                ncDto.setClause(temp.getQuestion());
+                ncDto.setRemark(temp.getRemark());
+                ncAnswerDtoList.add(ncDto);
+            }
+        }
+    }
     public void getFillNcAnswerDto(NcAnswerDto ncAnswerDto){
         String itemId = ncAnswerDto.getItemId();
         ChecklistItemDto cDto = hcsaChklClient.getChklItemById(itemId).getEntity();
@@ -390,5 +437,20 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
         commonDto.setCheckList(ncCheckList);
         fillInspectionFillCheckListDto(commonDto);
+    }
+
+    @Override
+    public AdCheckListShowDto getAdhocCheckListDto(String appPremCorrId) {
+        AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(appPremCorrId);
+        List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
+        if(adItemList!=null && !adItemList.isEmpty()){
+            for(AdhocNcCheckItemDto temp:adItemList){
+                String answerStr = temp.getAnswer();
+                AdhocAnswerDto answerDto = JsonUtil.parseToObject(answerStr,AdhocAnswerDto.class);
+                temp.setAdAnswer(answerDto.getAnswer());
+                temp.setRemark(answerDto.getRemark());
+            }
+        }
+        return adCheckListShowDto;
     }
 }

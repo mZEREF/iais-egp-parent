@@ -136,8 +136,8 @@ public class FillupChklistDelegator {
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
         AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
         fillupChklistService.merge(comDto,icDto);
-        fillupChklistService.saveDto(icDto);
         fillupChklistService.saveAdhocDto(showDto,icDto.getCheckList().get(0).getAppPreCorreId());
+        fillupChklistService.saveDto(icDto);
     }
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
@@ -191,7 +191,7 @@ public class FillupChklistDelegator {
                 String answer = ParamUtil.getString(request,temp.getId()+"adhocrad");
                 String remark = ParamUtil.getString(request,temp.getId()+"adhocremark");
                 String rec = ParamUtil.getString(request,temp.getId()+"adhocrec");
-                temp.setAnswer(answer);
+                temp.setAdAnswer(answer);
                 temp.setRemark(remark);
                 if("No".equals(answer)&&!StringUtil.isEmpty(rec)){
                     temp.setRectified(true);

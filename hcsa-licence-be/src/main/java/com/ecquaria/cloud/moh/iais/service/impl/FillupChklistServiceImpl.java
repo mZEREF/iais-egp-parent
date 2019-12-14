@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
@@ -378,6 +379,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public AdhocNcCheckItemDto transfertoadNcItemDto(AdhocChecklistItemDto dto){
         AdhocNcCheckItemDto adto  = new AdhocNcCheckItemDto();
         adto.setId(dto.getId());
+        adto.setAnswer(dto.getAnswer());
         adto.setAnswerType(dto.getAnswerType());
         adto.setNonCompliant(dto.getNonCompliant());
         adto.setOrder(dto.getOrder());
@@ -391,12 +393,21 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         List<AdhocNcCheckItemDto>  itemDtoList = showDto.getAdItemList();
         List<AdhocChecklistItemDto> saveItemDtoList = new ArrayList<>();
         AdhocCheckListConifgDto dto = applicationClient.getAdhocConfigByAppPremCorrId(appPremId).getEntity();
+        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         if(itemDtoList!=null && !itemDtoList.isEmpty()){
             dto.setVersion(dto.getVersion()+1);
+            dto.setId(null);
             dto = applicationClient.saveAppAdhocConfig(dto).getEntity();
             for(AdhocNcCheckItemDto temp:itemDtoList){
                 temp.setAdhocConfId(dto.getId());
+                temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 temp.setId(null);
+                AdhocAnswerDto adhocAnswerDto = new AdhocAnswerDto();
+                adhocAnswerDto.setRemark(temp.getRemark());
+                adhocAnswerDto.setAnswer(temp.getAdAnswer());
+                String saveAnswer = JsonUtil.parseToJson(adhocAnswerDto);
+                temp.setAnswer(saveAnswer);
+                saveItemDtoList.add(temp);
             }
             applicationClient.saveAdhocItems(saveItemDtoList).getEntity();
         }

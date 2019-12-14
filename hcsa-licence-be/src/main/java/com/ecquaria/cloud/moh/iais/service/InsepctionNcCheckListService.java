@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectC
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 
@@ -19,8 +20,9 @@ public interface InsepctionNcCheckListService {
     AppPremisesPreInspectChklDto getAppPremChklDtoByTaskId(String taskId,String configId);
     List<AppPremisesPreInspectionNcItemDto> getNcItemDtoByAppCorrId(String appCorrId);
     AppPremisesRecommendationDto getAppRecomDtoByAppCorrId(String appCorrId,String type);
-    void submit(InspectionFillCheckListDto infillDto);
+    void submit(InspectionFillCheckListDto infillDto,AdCheckListShowDto showDto);
     List<NcAnswerDto> getNcAnswerDtoList(String configId, String appPremCorrId);
     void updateTaskStatus(ApplicationDto applicationDto,String appPremCorrId);
     void getCommonDto(InspectionFillCheckListDto commonDto, AppPremisesPreInspectChklDto appPremPreCklDto, List<AppPremisesPreInspectionNcItemDto> itemDtoList);
+    AdCheckListShowDto getAdhocCheckListDto(String appPremCorrId);
 }

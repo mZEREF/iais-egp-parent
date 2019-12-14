@@ -61,7 +61,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(itemDtoList!=null && !itemDtoList.isEmpty()){
             for(AdhocNcCheckItemDto temp:itemDtoList){
                 if(StringUtil.isEmpty(temp.getAnswer())){
-                    errMap.put(temp.getId()+"com","Answer is mandaroty.");
+                    errMap.put(temp.getId()+"adhoc","Answer is mandaroty.");
                 }
             }
         }
