@@ -15,6 +15,11 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainConfirmForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <input type="hidden" name="InspectionSupSearchSwitchType" value="">
 
     <iais:body >

@@ -15,7 +15,11 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainSuccessForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <iais:body >
       <div class="container">
         <div class="col-xs-12">
