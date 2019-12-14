@@ -1,1 +1,0 @@
-<%@include file = "/iais/checklist/ConfigSectionAddPage.jsp"%>
