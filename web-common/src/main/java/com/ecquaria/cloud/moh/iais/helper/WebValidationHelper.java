@@ -13,19 +13,20 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * WebValidationHelper
@@ -137,8 +138,9 @@ public class WebValidationHelper {
         List<AuditTrailDto> dtoList = new ArrayList<>();
         dtoList.add(dto);
         dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
+        SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
         try {
-            AuditLogUtil.callWithEventDriven(dtoList);
+            AuditLogUtil.callWithEventDriven(dtoList, client);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

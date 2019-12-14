@@ -19,9 +19,9 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.submission.client.model.SubmitReq;
-import com.ecquaria.submission.client.model.SubmitResp;
-import com.ecquaria.submission.client.wrapper.SubmissionClient;
+import com.ecquaria.cloud.submission.client.model.SubmitReq;
+import com.ecquaria.cloud.submission.client.model.SubmitResp;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +41,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     String draftUrl =  RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION_DRAFT;
     String submission = RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION;
 
+    @Autowired
+    private SubmissionClient client;
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -159,7 +161,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
    }
 
     private  void eventBus(AppSubmissionDto appSubmissionDto, Process process){
-        SubmissionClient client = new SubmissionClient();
         //prepare request parameters
         appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
         SubmitReq req = new SubmitReq();

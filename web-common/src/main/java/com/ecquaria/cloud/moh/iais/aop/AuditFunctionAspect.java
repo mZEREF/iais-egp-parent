@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -34,12 +35,15 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 @Slf4j
 public class AuditFunctionAspect {
+    @Autowired
+    private SubmissionClient client;
 
     @Pointcut("@annotation(com.ecquaria.cloud.moh.iais.common.annotation.LogInfo)")
     public void auditFunction() {
@@ -137,7 +141,7 @@ public class AuditFunctionAspect {
         List<AuditTrailDto> dtoList = new ArrayList<>();
         dtoList.add(dto);
         try {
-            AuditLogUtil.callWithEventDriven(dtoList);
+            AuditLogUtil.callWithEventDriven(dtoList, client);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

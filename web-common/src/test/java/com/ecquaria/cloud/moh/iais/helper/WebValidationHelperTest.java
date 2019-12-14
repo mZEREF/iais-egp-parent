@@ -13,9 +13,15 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +34,10 @@ import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.context.ApplicationContext;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * WebValidationHelperTest
@@ -42,12 +47,15 @@ import java.util.Map;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({WebValidationHelper.class, ValidationUtils.class, AuditTrailDto.class})
+@PrepareForTest({WebValidationHelper.class, ValidationUtils.class, SubmissionClient.class,
+        ApplicationContext.class, AuditTrailDto.class, SpringContextHelper.class})
 @PowerMockIgnore("javax.management.*")
 public class WebValidationHelperTest {
 
     @Mock
     private ValidationResult validationResult;
+    @Mock
+    private SubmissionClient client;
 
     @Before
     public void setup() {
@@ -73,6 +81,10 @@ public class WebValidationHelperTest {
         PowerMockito.when(validationResult.isHasErrors()).thenReturn(true);
         PowerMockito.when(validationResult.retrieveAll()).thenReturn(errorMap);
         AuditTrailDto dto = new AuditTrailDto();
+        PowerMockito.mockStatic(SpringContextHelper.class);
+        ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
+        when(SpringContextHelper.getContext()).thenReturn(context);
+        doReturn(client).when(context).getBean(SubmissionClient.class);
         PowerMockito.when(AuditTrailDto.getThreadDto()).thenReturn(dto);
         WebValidationHelper.validateEntity(new Object());
         Assert.assertTrue(true);

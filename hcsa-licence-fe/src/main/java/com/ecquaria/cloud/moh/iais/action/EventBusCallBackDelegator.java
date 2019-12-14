@@ -6,13 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.submission.client.model.ServiceStatus;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
-import com.ecquaria.submission.client.model.ServiceStatus;
-import com.ecquaria.submission.client.wrapper.SubmissionClient;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 /**
  * EventBusCallBackDelegator
@@ -23,6 +24,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator(value = "eventBusCallBackDelegator")
 @Slf4j
 public class EventBusCallBackDelegator {
+    @Autowired
+    private SubmissionClient client;
+
     /**
      * StartStep: Start
      *
@@ -38,7 +42,6 @@ public class EventBusCallBackDelegator {
         if (!isLeagal) {
             throw new IaisRuntimeException("Visit without Token!!");
         }
-        SubmissionClient client = new SubmissionClient();
         String operation = ParamUtil.getString(request, "operation");
         Map<String, List<ServiceStatus>> map = client.getSubmissionStatus(AppConsts.REST_PROTOCOL_TYPE
                         + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
