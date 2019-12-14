@@ -46,7 +46,7 @@ function clearErrorMsg(){
 }
 
 function doValidationParse(data){
-    if(data != null && data != "[]" && data != ''){
+    if(data != null && JSON.stringify(obj) != '{}' && data != ''){
         $("#iaisErrorFlag").val("BLOCK");
         for (var key in data) {
             // check if the property/key is defined in the object itself, not in parent
