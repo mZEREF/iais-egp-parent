@@ -78,7 +78,7 @@
                           <div class="col-sm-5">
                             <div class="">
                               <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
-                              <span class="error-msg"><c:out value="${errorMap.assignSelect}"></c:out></span>
+                              <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect${status.index}"></span>
                             </div>
                           </div>
                         </div>
@@ -140,7 +140,7 @@
                                   </div>
                                   <div class="col-sm-5">
                                     <iais:select  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Select Salution"></iais:select>
-                                    <span class="error-msg"><c:out value="${errorMap.salutation}"></c:out></span>
+                                    <span class="error-msg" name="iaisErrorMsg" id="error_salutation${status.index}"></span>
                                   </div>
                                 </div>
                               </div>
@@ -160,7 +160,7 @@
                                   <div class="col-sm-5">
                                     <div class="">
                                       <iais:input maxLength="66" type="text" name="name" value="${currentCgo.name}"></iais:input>
-                                      <span class="error-msg"><c:out value="${errorMap.name}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -179,7 +179,7 @@
                                   <div class="col-sm-5">
                                     <div class="">
                                       <iais:select  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
-                                      <span class="error-msg"><c:out value="${errorMap.idType}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_idTyp${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -200,7 +200,7 @@
                                   <div class="col-sm-5">
                                     <div class="">
                                       <iais:input maxLength="9" type="text" name="idNo" value="${currentCgo.idNo}"></iais:input>
-                                      <span class="error-msg"><c:out value="${errorMap.idNo}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMSg" id="error_idNo${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -219,7 +219,7 @@
                                   <div class="col-sm-5">
                                     <div class="">
                                       <iais:select name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Select Designation"></iais:select>
-                                      <span class="error-msg"><c:out value="${errorMap.designation}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -259,7 +259,7 @@
                                   <div class="col-sm-5">
                                     <div class="professionRegoType">
                                       <iais:select name="professionRegoType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionRegoType}" firstOption="Select professionRegoType"></iais:select>
-                                      <span class="error-msg"><c:out value="${errorMap.professionRegoType}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoType${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -280,7 +280,7 @@
                                   <div class="col-sm-5">
                                     <div class="">
                                       <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.professionRegoNo}"></iais:input>
-                                      <span class="error-msg"><c:out value="${errorMap.professionRegoNo}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -306,7 +306,7 @@
                                           <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" size="30">
                                         </c:otherwise>
                                       </c:choose>
-                                      <span class="error-msg"><c:out value="${errorMap.speciality}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_specialtyOther${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -325,7 +325,7 @@
                                   <div class="col-sm-5">
                                     <div class="">
                                       <iais:input maxLength="100" type="text" name="qualification" value="${currentCgo.qualification}"></iais:input>
-                                      <span class="error-msg"><c:out value="${errorMap.qualification}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"><c:out value="${errorMap.qualification}"></c:out></span>
                                     </div>
                                   </div>
                                 </div>
@@ -344,7 +344,7 @@
                                   <div class="col-sm-5">
                                     <div class="">
                                       <iais:input maxLength="8" type="text" name="mobileNo" value="${currentCgo.mobileNo}"></iais:input>
-                                      <span class="error-msg"><c:out value="${errorMap.mobileNo}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -363,7 +363,7 @@
                                   <div class="col-sm-4">
                                     <div class="">
                                       <iais:input maxLength="66" type="text" name="emailAddress" value="${currentCgo.emailAddr}"></iais:input>
-                                      <span class="error-msg"><c:out value="${errorMap.emailAddr}"></c:out></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>

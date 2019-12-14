@@ -19,8 +19,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.ClinicalOfficerValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
@@ -473,14 +475,14 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
         //do validate
-        List<Map<String,String>> errList = doValidateGovernanceOfficers(bpc.request);
-        for(Map<String,String> errMap:errList){
-            if(errMap.size() > 0){
-                ParamUtil.setSessionAttr(bpc.request, ERRORMAP_GOVERNANCEOFFICERS, (Serializable) errList);
+       Map<String,String> errList = doValidateGovernanceOfficers(bpc.request);
+
+            if(!errList.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "governanceOfficers");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errList));
                 return;
             }
-        }
+
 
         //save into sub-svc dto
         /*AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDto(bpc.request);
@@ -575,10 +577,11 @@ public class ClinicalLaboratoryDelegator {
         appSvcPrincipalOfficersDtoList.add(appSvcPrincipalOfficersDto);
         ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
         Map<String,String> map = NewApplicationDelegator.doValidatePo(bpc.request);
-        if(map.size() >0 ){
+        if(!map.isEmpty()){
             //ParamUtil.setSessionAttr(bpc.request, "", );
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "principalOfficers");
             ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(map));
+            return;
         }
 
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
@@ -791,7 +794,7 @@ public class ClinicalLaboratoryDelegator {
 
     private AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(HttpServletRequest request){
         AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
-        String assignSelect = ParamUtil.getString(request, "deputySelect");
+        String assignSelect = ParamUtil.getString(request, "assign");
         String deputySelect = ParamUtil.getString(request, "deputySelect");
         String salutation = ParamUtil.getString(request, "salutation");
         String name = ParamUtil.getString(request, "name");
@@ -799,11 +802,14 @@ public class ClinicalLaboratoryDelegator {
         String idNo = ParamUtil.getString(request, "idNo");
         String designation = ParamUtil.getString(request, "designation");
         String mobileNo = ParamUtil.getString(request, "mobileNo");
+        String officeTelNo = ParamUtil.getString(request, "officeTelNo");
         String emailAddress = ParamUtil.getString(request, "emailAddress");
+
         dto.setAssignSelect(assignSelect);
         dto.setDeputyPrincipalOfficer(deputySelect);
         dto.setSalutation(salutation);
         dto.setName(name);
+        dto.setOfficeTelNo(officeTelNo);
         dto.setDesignation(designation);
         dto.setMobileNo(mobileNo);
         dto.setEmailAddr(emailAddress);
@@ -829,64 +835,100 @@ public class ClinicalLaboratoryDelegator {
         return appSubmissionDto;
     }
 
-    private List<Map<String,String>> doValidateGovernanceOfficers(HttpServletRequest request){
+    private Map<String,String> doValidateGovernanceOfficers(HttpServletRequest request){
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
         if(appSvcCgoList == null){
             return null;
         }
-        List<Map<String,String>> errList = new ArrayList<>();
-        Map<String,String> errMap = null;
-        for(AppSvcCgoDto appSvcCgoDto:appSvcCgoList){
-            errMap = new HashMap<>();
-            String assignSelect = appSvcCgoDto.getAssignSelect();
+
+        Map<String,String> errMap = new HashMap<>();
+        for(int i=0;i<appSvcCgoList.size();i++ ){
+            String assignSelect = appSvcCgoList.get(i).getAssignSelect();
             if("-1".equals(assignSelect)){
-                errMap.put("assignSelect", "not selected assign Clinical Governance Officer");
+                errMap.put("assignSelect"+i, "not selected assign Clinical Governance Officer");
             }else {
-                ValidationResult validationResult = WebValidationHelper.validateProperty(appSvcCgoDto, AppServicesConsts.VALIDATE_PROFILES_CREATE);
-                if (validationResult.isHasErrors()) {
-                    errMap = validationResult.retrieveAll();
-                }
-                String idTyp = appSvcCgoDto.getIdType();
+                String idTyp = appSvcCgoList.get(i).getIdType();
                 if(StringUtil.isEmpty(idTyp)){
-                    errMap.put("idTyp", "can not null");
-                }else{
-
+                    errMap.put("idTyp"+i, "Select at least on");
                 }
-                String idNo = appSvcCgoDto.getIdNo();
+                String salutation = appSvcCgoList.get(i).getSalutation();
+                if(StringUtil.isEmpty(salutation)){
+                    errMap.put("salutation"+i,"cannot be blank");
+                }
+                String speciality = appSvcCgoList.get(i).getSpeciality();
+                if(StringUtil.isEmpty(speciality)){
+                    errMap.put("speciality"+i,"Select at least on");
+                }
+                String professionRegoType = appSvcCgoList.get(i).getProfessionRegoType();
+                if(StringUtil.isEmpty(professionRegoType)){
+                    errMap.put("professionRegoType"+i,"Select at least on");
+                }
+                String designation = appSvcCgoList.get(i).getDesignation();
+                if(StringUtil.isEmpty(designation)){
+                    errMap.put("designation"+i,"cannot be blank");
+                }
+                String professionRegoNo = appSvcCgoList.get(i).getProfessionRegoNo();
+                if(StringUtil.isEmpty(professionRegoNo)){
+                    errMap.put("professionRegoNo"+i,"cannot be blank");
+                }
+                String idNo = appSvcCgoList.get(i).getIdNo();
+                //to do
+                if(StringUtil.isEmpty(idNo)){
+                    errMap.put("idNo"+i,"cannot be blank");
+                }else {
+                    boolean b = SgNoValidator.validateFin(idNo);
+                    boolean b1 = SgNoValidator.validateNric(idNo);
+                    if(!(b||b1)){
+                 /*       errMap.put("idNo"+i,"CHKLMD001_ERR005");*/
+                    }
+                }
                 //to do
 
-                //to do
-
-                String qualification = appSvcCgoDto.getQualification();
+                String qualification = appSvcCgoList.get(i).getQualification();
                 if (!StringUtil.isEmpty(qualification)) {
-                    String Specialty = appSvcCgoDto.getSpeciality();
+                    String Specialty = appSvcCgoList.get(i).getSpeciality();
                     if (StringUtil.isEmpty(Specialty)) {
-                        errMap.put("speciality", "Specialty don not select");
+                        errMap.put("speciality"+i, "Specialty don not select");
                     }
 
                 }
-                String specialty = appSvcCgoDto.getSpeciality();
+                String specialty = appSvcCgoList.get(i).getSpeciality();
                 if(StringUtil.isEmpty(specialty)){
-                    errMap.put("specialty", "can not null");
+                    errMap.put("specialty"+i, "can not null");
+                }
+                String name = appSvcCgoList.get(i).getName();
+                if(StringUtil.isEmpty(name)){
+                    errMap.put("name"+i,"cannot be blank");
                 }
 
-                String mobileNo = appSvcCgoDto.getMobileNo();
-                if (!StringUtil.isEmpty(mobileNo)) {
-                    if (!mobileNo.startsWith("8") && !mobileNo.startsWith("9")) {
-                        errMap.put("mobileNo", "Please key in a valid mobile number");
+                String mobileNo = appSvcCgoList.get(i).getMobileNo();
+                if(StringUtil.isEmpty(mobileNo)){
+                    errMap.put("mobileNo"+i, "cannot be blank");
+                }else if (!StringUtil.isEmpty(mobileNo)) {
+                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                        errMap.put("mobileNo"+i, "CHKLMD001_ERR004");
                     }
                 }
-                String emailAddr = appSvcCgoDto.getEmailAddr();
-                if (!StringUtil.isEmpty(emailAddr)) {
+                String emailAddr = appSvcCgoList.get(i).getEmailAddr();
+                if(StringUtil.isEmpty(emailAddr)){
+                    errMap.put("emailAddr"+i, "cannot be blank");
+                }else if (!StringUtil.isEmpty(emailAddr)) {
                     if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                        errMap.put("emailAddr", "Please key in a valid email address");
+                        errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
                     }
                 }
             }
-            errList.add(errMap);
+
         }
-        return errList;
+        return errMap;
     }
+
+
+    public ClinicalOfficerValidateDto getValueFromPage(HttpServletRequest request){
+        ClinicalOfficerValidateDto dto =new ClinicalOfficerValidateDto();
+        return dto;
+    }
+
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId){
         Map<String,AppSvcRelatedInfoDto> map = (Map<String, AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(request, APPSVCRELATEDINFOMAP);

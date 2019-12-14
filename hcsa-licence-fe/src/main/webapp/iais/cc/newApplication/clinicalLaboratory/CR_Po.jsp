@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="row">
   <%--  <div class="col-xs-12 col-md-10">
@@ -15,6 +16,7 @@
         <div class="panel-heading completed" id="headingPrincipal" role="tab">
           <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
         </div>
+        <c:forEach items="${AppSvcPrincipalOfficersDto}" var="appSvcPrincipalOfficersDto">
         <div class="panel-collapse collapse" id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
           <div class="panel-body">
             <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
@@ -60,7 +62,7 @@
                         </select>
                       </div>
                       <div class="col-sm-4">
-                        <input name="name" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal"  size="30">
+                        <input name="name" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.name}"  size="30">
                         <span class="error-msg" name="iaisErrorMsg" id="error_name"></span>
                       </div>
                     </div>
@@ -77,13 +79,18 @@
                       <div class="col-sm-2">
                         <div class="">
                           <select name="idType" class="form-control control-input control-set-font control-font-normal" id="selectType">
+                            <c:if test="${appSvcPrincipalOfficersDto.idType=='nric'}">
+                              <option value="nric" selected="selected">NRIC</option>
+                            </c:if> <c:if test="${appSvcPrincipalOfficersDto.idType=='fin'}">
+                            <option  value="fin" selected="selected">FIN</option>
+                          </c:if>
                             <option value="nric">NRIC</option>
                             <option  value="fin">FIN</option>
                           </select>
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input id="idType-idNo" name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input id="idType-idNo" name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.idNo}" size="30">
                         <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                       </div>
                     </div>
@@ -97,11 +104,23 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-2">
-                        <select name="designation" class="form-control control-input control-set-font control-font-normal">
-                          <option>CEO</option>
-                          <option>CFO</option>
-                          <option>COO</option>
-                          <option>Others</option>
+                        <select name="designation" class="form-control control-input control-set-font control-font-normal">\
+                          <c:if test="${appSvcPrincipalOfficersDto.designation=='ceo'}">
+                            <option value="ceo" selected="selected">CEO</option>
+                          </c:if>
+                          <c:if test="${appSvcPrincipalOfficersDto.designation=='cfo'}">
+                            <option value="ceo" selected="selected">CEO</option>
+                          </c:if>
+                          <c:if test="${appSvcPrincipalOfficersDto.designation=='coo'}">
+                            <option value="coo" selected="selected">COO</option>
+                          </c:if>
+                          <c:if test="${appSvcPrincipalOfficersDto.designation=='others'}">
+                            <option value="others" selected="selected">Others</option>
+                          </c:if>
+                          <option value="ceo">CEO</option>
+                          <option value="cfo">CFO</option>
+                          <option value="coo">COO</option>
+                          <option value="others">Others</option>
                         </select>
                       </div>
                     </div>
@@ -115,7 +134,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="mobileNo" type="text"  id="mobileNo" class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input name="mobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.mobileNo}" size="30">
                         <span class="error-msg"  name="iaisErrorMsg" id="error_mobileNo"></span>
                       </div>
                     </div>
@@ -129,7 +148,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="telephone" type="text"  id="telephone" class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input name="officeTelNo" type="text"  id="officeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.officeTelNo}" size="30">
                         <span class="error-msg" name="iaisErrorMsg" id="error_officeTelNo" ></span>
                       </div>
                     </div>
@@ -143,8 +162,8 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                        <span class="error-msg" >${error.emailAddr}</span>
+                        <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.emailAddr}" size="30">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr" >${error.emailAddr}</span>
                       </div>
                     </div>
                   </div>
@@ -165,6 +184,7 @@
             </div>
           </div>
         </div>
+        </c:forEach>
       </div>
       <div class="panel panel-default">
         <div class="panel-heading completed" id="headingDeputy" role="tab">
@@ -197,6 +217,5 @@
         var selectVal = $(this).val();
         $('.principalOfficers').removeClass('hidden');
     });
-
 
 </script>

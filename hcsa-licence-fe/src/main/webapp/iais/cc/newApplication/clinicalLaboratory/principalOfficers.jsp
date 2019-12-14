@@ -63,6 +63,7 @@
             </div>
         </div>
     </div>
+    <%@ include file="/include/validation.jsp" %>
     <input type="hidden" name="pageCon" value="prinOffice" >
 </form>
 
@@ -77,19 +78,18 @@
             // submitForms('governanceOfficers','saveDraft',null,'clinical');
         });
         $('#principalOfficersNext').click(function(){
-            doValidation();
+         /*   doValidation();
             if(getErrorMsg()){
                 dismissWaiting();
-            }else {
+            }else {*/
                 var controlFormLi = $('#controlFormLi').val();
                 submitForms('documents',null,null,controlFormLi);
-            }
-
+     /*       }
+*/
 
         });
 
     });
-
 </script>
 
 

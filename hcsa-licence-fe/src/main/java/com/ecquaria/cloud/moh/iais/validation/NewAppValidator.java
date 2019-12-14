@@ -26,6 +26,9 @@ public class NewAppValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String,String> map =new HashMap<>();
         List<AppGrpPremisesDto> list  = (List<AppGrpPremisesDto>) ParamUtil.getRequestAttr(request, "valPremiseList");
+        if(list!=null){
+
+
         for(int i=0;i<list.size();i++ ){
             String premisesType = list.get(i).getPremisesType();
             if(!StringUtil.isEmpty(premisesType)){
@@ -42,7 +45,7 @@ public class NewAppValidator implements CustomizeValidator {
                      }
                     String addrType = list.get(i).getAddrType();
                     if(StringUtil.isEmpty(addrType)){
-                        map.put("addrType", "can not is blank");
+                        map.put("addrType"+i, "can not is blank");
                     }else {
                         if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
                             boolean empty = StringUtil.isEmpty(list.get(i).getFloorNo());
@@ -98,12 +101,14 @@ public class NewAppValidator implements CustomizeValidator {
             }
 
         }
-     /*   prinOffice(request,map);*/
+        }
+        prinOffice(request,map);
         return map;
     }
 
     public void prinOffice(HttpServletRequest request,Map map){
         List<AppSvcPrincipalOfficersDto> dto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getRequestAttr(request, "prinOffice");
+        if(dto!=null){
         for(int i=0;i<dto.size();i++){
             String assignSelect = dto.get(i).getAssignSelect();
             if (StringUtil.isEmpty(assignSelect)) {
@@ -156,6 +161,7 @@ public class NewAppValidator implements CustomizeValidator {
                     map.put("officeTelNo", "cannot be blank");
                 }
             }
+        }
         }
     }
 }

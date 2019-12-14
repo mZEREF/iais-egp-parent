@@ -260,7 +260,7 @@
                             <iais:field value="Vehicle No." width="12"/>
                             <iais:value width="11">
                               <iais:input maxLength="10" type="text" name="${premIndexNo}conveyanceVehicleNo" id="vehicleNo" value="${appGrpPremisesDto.conveyanceVehicleNo}"></iais:input>
-                              <span  class="error-msg"  name="iaisErrorMsg" id="error_vehicleNo${status.index}"></span>
+                              <span  class="error-msg"  name="iaisErrorMsg" id="error_conveyanceVehicleNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row cssClass="postalCodeDiv">
@@ -391,6 +391,7 @@
   </div>
   <%--Validation Field--%>
   <%@ include file="/include/validation.jsp" %>
+  <input type="hidden" name="pageCon" value="valPremiseList" >
 </form>
 <script type="text/javascript">
 
@@ -434,11 +435,11 @@
         //Binding method
         $('.premiseId').click(function(){
             doValidation();
-            if (getErrorMsg()) {
+          /*  if (getErrorMsg()) {
                 dismissWaiting();
-            } else {
+            } else {*/
                 submit('documents',null,null);
-            }
+         /*   }*/
         });
         $('.premiseSaveDraft').click(function(){
             submit('premises','saveDraft',null);

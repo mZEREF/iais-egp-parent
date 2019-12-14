@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
@@ -100,7 +101,7 @@ public class NewApplicationDelegator {
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         //wait to delete one premises
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, null);
-
+        ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",null);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, null);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCDTO, null);
         //for loading the draft by appId
@@ -713,17 +714,23 @@ public class NewApplicationDelegator {
      */
     public ApplicationValidateDto getValueFromPage(HttpServletRequest request) {
         ApplicationValidateDto dto = new ApplicationValidateDto();
-      /*  Enumeration<String> attributeNames = request.getSession().getAttributeNames();*/
-       /* String pageCon = request.getParameter("pageCon");
-*/
-        List<AppGrpPremisesDto> list = genAppGrpPremisesDtoList(request);
-        ParamUtil.setRequestAttr(request, "valPremiseList", list);
-       /* List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto =
-                (List<AppSvcPrincipalOfficersDto>)ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
-        ParamUtil.setRequestAttr(request,"prinOffice",appSvcPrincipalOfficersDto);*/
+         String pageCon = request.getParameter("pageCon");
+            chose(request,pageCon);
+
         return dto;
     }
 
+    private void chose(HttpServletRequest request,String type){
+        if("valPremiseList".equals(type)){
+            List<AppGrpPremisesDto> list = genAppGrpPremisesDtoList(request);
+            ParamUtil.setRequestAttr(request, "valPremiseList", list);
+        }if("prinOffice".equals(type)){
+            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto =
+                    (List<AppSvcPrincipalOfficersDto>)ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
+            ParamUtil.setRequestAttr(request,"prinOffice",appSvcPrincipalOfficersDto);
+        }
+
+    }
 
     //=============================================================================
     //private method
@@ -811,14 +818,19 @@ public class NewApplicationDelegator {
                         if (validationResult.isHasErrors()) {
                             errorMap = validationResult.retrieveAll();
                         }
+                        String hciName = appGrpPremisesDtoList.get(i).getHciName();
+                        if(StringUtil.isEmpty(hciName)){
+                            errorMap.put("hciName"+i,"cannot be blank!");
+                        }else {
 
+                        }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
                         if(StringUtil.isEmpty(offTelNo)){
                             errorMap.put("offTelNo"+i,"cannot be blank!");
                         }else {
                             boolean matches = offTelNo.matches("^[6][0-9]{7}$");
                             if(!matches) {
-                                errorMap.put("offTelNo"+i,"Please key in a valid phone number!");
+                                errorMap.put("offTelNo"+i,"CHKLMD001_ERR007");
                             }
                         }
 
@@ -849,10 +861,10 @@ public class NewApplicationDelegator {
                         String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
                             if (!postalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("conveyancePostalCode"+i, "Please only key in numbers");
+                                errorMap.put("postalCode"+i, "CHKLMD001_ERR003");
                             }
                         }else {
-                            errorMap.put("conveyancePostalCode"+i, "can not is null");
+                            errorMap.put("postalCode"+i, "can not is null");
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDtoList.get(i), AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
@@ -863,7 +875,10 @@ public class NewApplicationDelegator {
                         if(StringUtil.isEmpty(conveyanceVehicleNo)){
                             errorMap.put("conveyanceVehicleNo"+i,"cannot be blank");
                         }else {
-
+                            boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
+                            if(!b){
+                                errorMap.put("conveyanceVehicleNo"+i,"CHKLMD001_ERR008");
+                            }
                         }
                         String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
 
@@ -905,29 +920,22 @@ public class NewApplicationDelegator {
 
 
     public static Map<String,  String> doValidatePo(HttpServletRequest request) {
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
-
+        List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
         Map<String, String> oneErrorMap = new HashMap<>();
-        for (AppSvcPrincipalOfficersDto poDto : appSvcPrincipalOfficersDto) {
+        for (int i=0;i< poDto.size();i++) {
 
-            String assignSelect = poDto.getAssignSelect();
+            String assignSelect = poDto.get(i).getAssignSelect();
             if (StringUtil.isEmpty(assignSelect)) {
                 oneErrorMap.put("assignSelect", "assignSelect can not null");
             } else {
-                ValidationResult validationResult = WebValidationHelper.validateProperty(appSvcPrincipalOfficersDto, AppServicesConsts.VALIDATE_PROFILES_CREATE);
-                if (validationResult.isHasErrors()) {
-                    oneErrorMap = validationResult.retrieveAll();
-                    //todo change
-                    ParamUtil.setRequestAttr(request,"error",WebValidationHelper.generateJsonStr(oneErrorMap));
-                }
                 //do by wenkang
-                String mobileNo = poDto.getMobileNo();
-                String officeTelNo = poDto.getOfficeTelNo();
-                String emailAddr = poDto.getEmailAddr();
-                String idNo = poDto.getIdNo();
-                String name = poDto.getName();
-                String salutation = poDto.getSalutation();
-                String designation = poDto.getDesignation();
+                String mobileNo = poDto.get(i).getMobileNo();
+                String officeTelNo = poDto.get(i).getOfficeTelNo();
+                String emailAddr = poDto.get(i).getEmailAddr();
+                String idNo = poDto.get(i).getIdNo();
+                String name = poDto.get(i).getName();
+                String salutation = poDto.get(i).getSalutation();
+                String designation = poDto.get(i).getDesignation();
                 if(StringUtil.isEmpty(name)){
                     oneErrorMap.put("name","cannot be blank");
                 }
@@ -941,28 +949,28 @@ public class NewApplicationDelegator {
                     boolean b = SgNoValidator.validateFin(idNo);
                     boolean b1 = SgNoValidator.validateNric(idNo);
                     if(!(b||b1)){
-                        oneErrorMap.put("NRICFIN","Please key in a valid NRIC/FIN");
+                        oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
                     }
                 }else {
                     oneErrorMap.put("NRICFIN","cannot be blank");
                 }
                 if(!StringUtil.isEmpty(mobileNo)){
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        oneErrorMap.put("mobileNo", "Please key in a valid mobile number");
+                        oneErrorMap.put("mobileNo", "CHKLMD001_ERR004");
                     }
                 }else {
                     oneErrorMap.put("mobileNo", "cannot be blank");
                 }
                 if(!StringUtil.isEmpty(emailAddr)) {
                     if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                        oneErrorMap.put("emailAddr", "Please key in a valid email address");
+                        oneErrorMap.put("emailAddr", "CHKLMD001_ERR006");
                     }
                 }else {
                     oneErrorMap.put("emailAddr", "cannot be blank");
                 }
                 if(!StringUtil.isEmpty(officeTelNo)) {
                     if (!officeTelNo.matches("^[6][0-9]{7}$")) {
-                        oneErrorMap.put("officeTelNo", "Please key in a valid phone number");
+                        oneErrorMap.put("officeTelNo", "CHKLMD001_ERR007");
                     }
                 }else {
                     oneErrorMap.put("officeTelNo", "cannot be blank");
