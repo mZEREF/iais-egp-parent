@@ -248,7 +248,7 @@ public class InspecAssignTaskDelegator {
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
         setMapTaskId(bpc, commPools);
         String[] applicationNo_list = inspectionAssignTaskService.getApplicationNoListByPool(commPools);
-        if(applicationNo_list == null || applicationNo_list.length == 0){
+        if(applicationNo_list == null || applicationNo_list.length <= 0){
             applicationNo_list = new String[]{SystemParameterConstants.PARAM_FALSE};
         }
         String applicationStr = SqlHelper.constructInCondition("T1.APPLICATION_NO",applicationNo_list.length);
