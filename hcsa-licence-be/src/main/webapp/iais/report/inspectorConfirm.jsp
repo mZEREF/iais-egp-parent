@@ -1,14 +1,4 @@
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%
-    //handle to the Engine APIs
-    sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-%>
-<%
-    String webroot = IaisEGPConstant.BE_CSS_ROOT;
-%>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+<form method="post" id="mainForm1" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="confirmAction" value="">
     <div class="tab-pane" id="tabInspection" role="tabpanel">
         <div class="alert alert-info" role="alert">
@@ -325,7 +315,7 @@
                             </td>
                             <div>
                                 <td class="col-xs-4">
-                                    <input name="remarks" type="text" value="${appPremisesRecommendationDto.remarks}">
+                                    ${appPremisesRecommendationDto.remarks}
                                 </td>
                             </div>
                             <td class="col-xs-4">
@@ -350,13 +340,7 @@
                             </td>
                             <td class="col-xs-4">
                                         <span>
-                                               <select  id="select" name="recommendation">
-                                                   <c:forEach items="${insRepDto.riskRecommendations}" var="risk">
-                                                       <option value="${risk}"><c:out value="${risk}"></c:out></option>
-                                                   </c:forEach>
-<%--                                                   <c:if test="${appPremisesRecommendationDto.recomInNumber eq '2'}">selected</c:if>--%>
-                                               </select>
-                                           </p>
+                                            <p>${appPremisesRecommendationDto.recomType}</p>
                                         </span>
                             </td>
                             <td class="col-xs-4"></td>
@@ -366,8 +350,23 @@
             </div>
         </div>
     </div>
-    <button type="submit">confirm</button>
+    <button type="button" onclick="doSubmit()">submit</button>
+    <button type="button" onclick="doBack()">back</button>
 </form>
 
+<script type="text/javascript">
+    function doBack() {
+        submit('back');
+    }
 
+    function doSubmit() {
+        submit('submit');
+    }
+    function submit(action){
+        $("[name='confirmAction']").val(action);
+        var mainPoolForm = document.getElementById('mainForm1');
+        mainPoolForm.submit();
+
+    }
+</script>
 

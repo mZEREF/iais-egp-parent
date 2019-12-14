@@ -53,7 +53,13 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
 
-    public InsRepServiceImpl() {
+    public InsRepServiceImpl(InsRepClient insRepClient, ApplicationClient applicationClient, HcsaChklClient hcsaChklClient, InsepctionNcCheckListService insepctionNcCheckListService, FillUpCheckListGetAppClient fillUpCheckListGetAppClient, HcsaConfigClient hcsaConfigClient) {
+        this.insRepClient = insRepClient;
+        this.applicationClient = applicationClient;
+        this.hcsaChklClient = hcsaChklClient;
+        this.insepctionNcCheckListService = insepctionNcCheckListService;
+        this.fillUpCheckListGetAppClient = fillUpCheckListGetAppClient;
+        this.hcsaConfigClient = hcsaConfigClient;
     }
 
 
@@ -83,57 +89,79 @@ public class InsRepServiceImpl implements InsRepService {
         //serviceId transform serviceCode
         List<String> list = new ArrayList<>();
         list.add(appInsRepDto.getServiceId());
-        List<HcsaServiceDto> entity = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
         String svcName = "";
         String svcCode = "";
-        for (HcsaServiceDto hcsaServiceDto : entity) {
-            svcName = hcsaServiceDto.getSvcName();
-            svcCode = hcsaServiceDto.getSvcCode();
+        if(listHcsaServices!=null && !listHcsaServices.isEmpty()) {
+            for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
+                svcName = hcsaServiceDto.getSvcName();
+                svcCode = hcsaServiceDto.getSvcCode();
+            }
         }
         //get configId
         List<ChecklistQuestionDto> listChecklistQuestionDtos = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
-        String configId = listChecklistQuestionDtos.get(0).getConfigId();
-
         List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = new ArrayList<>();
-        //add ReportNcRegulationDto and add ncItemId
-        List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
-        if(ncAnswerDtoList!=null && !ncAnswerDtoList.isEmpty()){
-            for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
-                ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
-                reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
-                reportNcRegulationDto.setRegulation(ncAnswerDto.getClause());
-                listReportNcRegulationDto.add(reportNcRegulationDto);
-            }
-            inspectionReportDto.setStatus("Partial Compliance");
+        if(listChecklistQuestionDtos!=null && !listChecklistQuestionDtos.isEmpty()){
+            String configId = listChecklistQuestionDtos.get(0).getConfigId();
+            List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
+            if(ncAnswerDtoList!=null && !ncAnswerDtoList.isEmpty()){
+                for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
+                    ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
+                    reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
+                    reportNcRegulationDto.setRegulation(ncAnswerDto.getClause());
+                    listReportNcRegulationDto.add(reportNcRegulationDto);
+                }
+                inspectionReportDto.setStatus("Partial Compliance");
 
-        }else {
-            inspectionReportDto.setStatus("Full Compliance");
+            }else {
+                inspectionReportDto.setStatus("Full Compliance");
+            }
         }
+        //add ReportNcRegulationDto and add ncItemId
 
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationId).getEntity();
-        String ncId = appPremPreInspectionNcDto.getId();
-        List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-        for (AppPremisesPreInspectionNcItemDto preInspNc : listAppPremisesPreInspectionNcItemDtos) {
-            ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
-            ReportNcRectifiedDto reportNcRectifiedDto = new ReportNcRectifiedDto();
-            reportNcRectifiedDto.setNc(cDto.getChecklistItem());
-            reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
-            listReportNcRectifiedDto.add(reportNcRectifiedDto);
+        if(appPremPreInspectionNcDto!=null){
+            String ncId = appPremPreInspectionNcDto.getId();
+            List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
+            if(listAppPremisesPreInspectionNcItemDtos!=null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()){
+                for (AppPremisesPreInspectionNcItemDto preInspNc : listAppPremisesPreInspectionNcItemDtos) {
+                    ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
+                    ReportNcRectifiedDto reportNcRectifiedDto = new ReportNcRectifiedDto();
+                    reportNcRectifiedDto.setNc(cDto.getChecklistItem());
+                    reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
+                    listReportNcRectifiedDto.add(reportNcRectifiedDto);
+                }
+            }
         }
-
         AppPremisesRecommendationDto recommendationDto = insRepClient.getRecommendationDto(appPremisesCorrelationId, "tcu").getEntity();
-        String bestPractice = recommendationDto.getBestPractice();
-        String remarks = recommendationDto.getRemarks();
+        String bestPractice="";
+        String remarks = "";
+        if(recommendationDto!=null){
+            recommendationDto.getBestPractice();
+            recommendationDto.getRemarks();
+        }
+        
         ChecklistConfigDto otherChecklist = hcsaChklClient.getMaxVersionConfigByParams("CLB", "Inspection", "New").getEntity();
+
         RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
         riskAcceptiionDto.setScvCode(svcCode);
         List<RiskAcceptiionDto> listRiskAcceptiionDto = new ArrayList<>();
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
-        String dateType = listRiskResultDto.get(0).getDateType();
-        String count = String.valueOf(listRiskResultDto.get(0).getTimeCount());
-        String recommTime = count+dateType;
+        List<String> riskResult = new ArrayList<>();
+        if(listRiskResultDto!=null && !listRiskResultDto.isEmpty()){
+            for(RiskResultDto riskResultDto :listRiskResultDto){
+                String dateType = riskResultDto.getDateType();
+                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
+                String count = String.valueOf(riskResultDto.getTimeCount());
+                String recommTime = count+codeDesc;
+                riskResult.add(recommTime);
+            }
+        }
+        riskResult.add("1year");
+        riskResult.add("2year");
+        riskResult.add("3year");
 
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
@@ -144,17 +172,19 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
         inspectionReportDto.setNcRectification(listReportNcRectifiedDto);
         inspectionReportDto.setOtherCheckList(otherChecklist);
+
         inspectionReportDto.setInspectionDate(new Date());
         inspectionReportDto.setInspectionTime(new Date());
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setMarkedForAudit(true);
         inspectionReportDto.setInspectOffices("inspector officer");
         inspectionReportDto.setInspectorRemark("inspection Remark");
-        inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setReportedBy("weilu");
         inspectionReportDto.setReportNoteBy("jinhua");
         inspectionReportDto.setInspectedBy(inspects());
-        inspectionReportDto.setRiskRecommendation(recommTime);
+
+        inspectionReportDto.setTaskRemarks(remarks);
+        inspectionReportDto.setRiskRecommendations(riskResult);
         return inspectionReportDto;
     }
 

@@ -26,6 +26,9 @@ public class INTRANET___MohInspectionReport___1 extends BaseProcessClass {
 	public void prepare_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "inspectionReportPre", this);
 	}
+	public void comfirm_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "confirmData", this);
+	}
 	public void inspectorReportSave_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "inspectorReportSave", this);
 	}
