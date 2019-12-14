@@ -15,6 +15,11 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainConfirmForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <iais:body >
       <div class="container">
         <div class="col-xs-12">
@@ -66,7 +71,7 @@
                       <iais:row>
                         <iais:field value="Inspection Type"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.InspectionTypeName}"/></label>
+                          <label><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></label>
                         </iais:value>
                       </iais:row>
                     </iais:section>
