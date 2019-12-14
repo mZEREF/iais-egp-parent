@@ -6,6 +6,16 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-
-<h1>Success</h1>
-
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+                <div class="intranet-content">
+                    <div class="bg-title">
+                        <h2>Success</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
