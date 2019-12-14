@@ -87,9 +87,15 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
-        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "supTaskSearchParam");
+        SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspecTaskCreAndAssDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchResult");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if(searchParam == null){
+            searchParam = new SearchParam(InspecTaskCreAndAssDto.class.getName());
+            searchParam.setPageSize(10);
+            searchParam.setPageNo(1);
+            searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        }
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption();
@@ -101,6 +107,21 @@ public class InspectionSearchDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setSessionAttr(bpc.request, "inspectorOption", (Serializable) inspectorOption);
         ParamUtil.setSessionAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
+    }
+
+    private SearchParam getSearchParam(BaseProcessClass bpc){
+        return getSearchParam(bpc, false);
+    }
+
+    private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchParam");
+        if(searchParam == null || isNew){
+            searchParam = new SearchParam(InspecTaskCreAndAssDto.class.getName());
+            searchParam.setPageSize(10);
+            searchParam.setPageNo(1);
+            searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        }
+        return searchParam;
     }
 
     /**
@@ -122,7 +143,7 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchDoSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
-        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "supTaskSearchParam");
+        SearchParam searchParam = getSearchParam(bpc);
 
         List<String> workGroupIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "workGroupIds");
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
@@ -215,7 +236,7 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPage start ...."));
-        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "SupTaskSearchParam");
+        SearchParam searchParam = getSearchParam(bpc);
         CrudHelper.doPaging(searchParam,bpc.request);
     }
 
@@ -227,7 +248,7 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchQuery1(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
-        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "supTaskSearchParam");
+        SearchParam searchParam = getSearchParam(bpc);
         List<TaskDto> commPools =(List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         QueryHelp.setMainSql("inspectionQuery", "assignInspectorSupper",searchParam);
@@ -258,6 +279,7 @@ public class InspectionSearchDelegator {
         //get inspector Option
         inspectionTaskPoolListDto = inspectionService.inputInspectorOption(inspectionTaskPoolListDto, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
+        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
     }
 
     /**
