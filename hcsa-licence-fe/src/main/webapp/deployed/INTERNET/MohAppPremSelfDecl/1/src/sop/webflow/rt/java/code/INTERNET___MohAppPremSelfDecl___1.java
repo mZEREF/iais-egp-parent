@@ -25,10 +25,6 @@ public class INTERNET___MohAppPremSelfDecl___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "startStep", this);
 	}
 
-	public void initCommonData_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "initCommonData", this);
-	}
-
 	public void saveCommonData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "saveCommonData", this);
 	}

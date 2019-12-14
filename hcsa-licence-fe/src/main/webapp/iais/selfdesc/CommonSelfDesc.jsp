@@ -50,6 +50,7 @@
     </tr>
   </c:when>
   <c:otherwise>
+    <br><br><br><br><br><br>
     <div class = "container">
       <div class="row">
         <div class="col-xs-12">
@@ -116,7 +117,7 @@
           <td>
             <div class="text-right text-center-mobile">
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSave('${requestScope.tabIndex}');">Draft</a>
+              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSave('${tabIndex}');">Draft</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
             </div>
 

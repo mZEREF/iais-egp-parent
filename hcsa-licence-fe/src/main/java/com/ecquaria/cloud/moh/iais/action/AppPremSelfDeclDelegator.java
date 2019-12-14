@@ -45,16 +45,6 @@ public class AppPremSelfDeclDelegator {
         ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", null);
     }
 
-    private void loadTabOption(HttpServletRequest request){
-
-    }
-
-
-
-    private void loadSearchResult(HttpServletRequest request, String configId){
-
-    }
-
     /**
      * AutoStep: initData
      *
@@ -73,17 +63,6 @@ public class AppPremSelfDeclDelegator {
     }
 
     /**
-     * AutoStep: initCommonData
-     *
-     * @param bpc
-     * @throws
-     */
-    public void initCommonData(BaseProcessClass bpc){
-    }
-
-
-
-    /**
      * AutoStep: doSave
      *
      * @param bpc
@@ -92,7 +71,7 @@ public class AppPremSelfDeclDelegator {
     public void doSave(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
-        String currentPage = (String) ParamUtil.getString(request, "crud_action_value");
+        String currentPage = ParamUtil.getString(request, "tabIndex");
 
         List<SelfDecl> selfDeclByGroupId = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
