@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Slf4j
 public class ValidationAjaxController {
     @RequestMapping(value = "/validation.do", method = RequestMethod.POST)
-    public @ResponseBody Map<String, String> doValidation(HttpServletRequest request, HttpServletResponse response) {
+    public @ResponseBody String doValidation(HttpServletRequest request, HttpServletResponse response) {
         String[] contorllerPara = ParamUtil.getStrings(request, "paramController");
         String[] entityPara = ParamUtil.getStrings(request, "valEntity");
         String[] profiles = ParamUtil.getStrings(request,"valProfiles");
@@ -65,13 +65,7 @@ public class ValidationAjaxController {
                     // validation end.
                 }
 
-                //optmize msg
-                errorMsg.forEach((k, v) -> {
-                    v = v.replaceAll("\"", "&quot;");
-                    v = v.replaceAll("'", "&apos;");
-                    errorMsg.put(k, v);
-                });
-                return errorMsg;
+                return WebValidationHelper.generateJsonStr(errorMsg);
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
