@@ -713,9 +713,9 @@ public class NewApplicationDelegator {
      */
     public ApplicationValidateDto getValueFromPage(HttpServletRequest request) {
         ApplicationValidateDto dto = new ApplicationValidateDto();
-        Enumeration<String> attributeNames = request.getSession().getAttributeNames();
-        String pageCon = request.getParameter("pageCon");
-
+      /*  Enumeration<String> attributeNames = request.getSession().getAttributeNames();*/
+       /* String pageCon = request.getParameter("pageCon");
+*/
         List<AppGrpPremisesDto> list = genAppGrpPremisesDtoList(request);
         ParamUtil.setRequestAttr(request, "valPremiseList", list);
        /* List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto =

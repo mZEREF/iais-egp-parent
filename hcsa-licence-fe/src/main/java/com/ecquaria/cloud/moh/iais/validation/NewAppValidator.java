@@ -98,7 +98,7 @@ public class NewAppValidator implements CustomizeValidator {
             }
 
         }
-        prinOffice(request,map);
+     /*   prinOffice(request,map);*/
         return map;
     }
 
