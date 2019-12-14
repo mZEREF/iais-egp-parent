@@ -72,11 +72,11 @@ public class InputTag extends DivTagSupport{
         if(!StringUtil.isEmpty(autocomplete)){
             html.append(" autocomplete=\"").append(autocomplete).append("\"");
         }
+        html.append(">");
         if (needErrorSpan) {
             html.append("<span id=\"error_").append(name).append("\"");
             html.append(" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
         }
-        html.append(">");
 
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
