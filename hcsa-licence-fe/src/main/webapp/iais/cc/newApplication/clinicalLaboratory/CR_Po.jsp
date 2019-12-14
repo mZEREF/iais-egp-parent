@@ -16,9 +16,11 @@
         <div class="panel-heading completed" id="headingPrincipal" role="tab">
           <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
         </div>
-        <c:forEach items="${AppSvcPrincipalOfficersDto}" var="appSvcPrincipalOfficersDto">
+
         <div class="panel-collapse collapse" id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
+
           <div class="panel-body">
+            <c:forEach items="${AppSvcPrincipalOfficersDto}" var="appSvcPrincipalOfficersDto">
             <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
             <div class="panel-main-content">
               <div class="" style="height: auto">
@@ -182,9 +184,9 @@
                 </div>
               </div>
             </div>
+            </c:forEach>
           </div>
         </div>
-        </c:forEach>
       </div>
       <div class="panel panel-default">
         <div class="panel-heading completed" id="headingDeputy" role="tab">
