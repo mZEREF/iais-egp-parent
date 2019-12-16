@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.impl.InsepctionNcCheckListImpl;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import com.esotericsoftware.minlog.Log;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,37 +78,33 @@ public class InspectEmailAo1Delegator {
     FillupChklistService fillupChklistService;
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+
+        Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
+        AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getString(request,"TaskId");
-        if(StringUtil.isEmpty(taskId)){
+        if (StringUtil.isEmpty(taskId)) {
             taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
         }
-        String serviceCode ="BLB";
         String serviceType = "Inspection";
         InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
         String configId = cDto.getCheckList().get(0).getConfigId();
         AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,configId);
         InspectionFillCheckListDto insepectionNcCheckListDto = null;
         String appPremCorrId = appPremPreCklDto.getAppPremCorrId();
-        List<NcAnswerDto> acDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
         AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
         List<AppPremisesPreInspectionNcItemDto> itemDtoList = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremPreCklDto.getAppPremCorrId());
         insepectionNcCheckListDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
         ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
         InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
         insepctionNcCheckListService.getCommonDto(commonDto,appPremPreCklDto,itemDtoList);
-        commonDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
-
-
         ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
+        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",insepectionNcCheckListDto);
         ParamUtil.setSessionAttr(request,"commonDto",commonDto);
-
-        ParamUtil.setSessionAttr(request,"acDto", (Serializable) acDtoList);
-        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
     }

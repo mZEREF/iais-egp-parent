@@ -106,10 +106,6 @@ public class FillupChklistDelegator {
      */
     public void inspectionChecklist(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
-        ///test
-
-        //test
         InspectionFillCheckListDto cDto = getDataFromPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
         AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
