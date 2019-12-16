@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
   //handle to the Engine APIs
@@ -20,6 +21,9 @@
     <br>
     <br>
     <br>
+    <%--<input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.InspectionSearchDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto"/>
+    <input type="hidden" name="valProfiles" id="valProfiles" value="create"/>--%>
     <input type="hidden" name="InspectionSupSearchSwitchType" value="">
     <input type="hidden" name="actionValue" value="">
     <iais:body >
@@ -33,15 +37,6 @@
             <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
               <div class="panel-body">
                 <div class="panel-main-content">
-                  <c:if test = "${not empty errorMap}">
-                    <iais:error>
-                      <div class="error">
-                        <c:forEach items="${errorMap}" var="map">
-                          ${map.key}  ${map.value} <br/>
-                        </c:forEach>
-                      </div>
-                    </iais:error>
-                  </c:if>
                   <iais:section title="" id = "assign_Task">
                     <iais:row>
                       <iais:field value="Application Number"/>
@@ -52,13 +47,13 @@
                     <iais:row>
                       <iais:field value="Application Type"/>
                       <iais:value width="7">
-                        <label><c:out value="${inspectionTaskPoolListDto.applicationType}"/></label>
+                        <label><iais:code code="${inspectionTaskPoolListDto.applicationType}"/></label>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Application Status"/>
                       <iais:value width="7">
-                        <label><c:out value="${inspectionTaskPoolListDto.applicationStatus}"/></label>
+                        <label><iais:code code="${inspectionTaskPoolListDto.applicationStatus}"/></label>
                       </iais:value>
                     </iais:row>
                     <iais:row>
@@ -82,8 +77,7 @@
                     <iais:row>
                       <iais:field value="Submission Date"/>
                       <iais:value width="7">
-                        <%--<iais:datePicker id = "submitDt" name = "submitDt" value="${inspecTaskCreAndAssDto.submitDt}"></iais:datePicker>--%>
-                        <label><c:out value="${inspectionTaskPoolListDto.submitDt}"/></label>
+                        <label><fmt:formatDate value='${inspectionTaskPoolListDto.submitDt}' pattern='dd/MM/yyyy' /></label>
                       </iais:value>
                     </iais:row>
                     <iais:row>
@@ -97,18 +91,19 @@
                       <iais:value width="10">
                         <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
                           <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
-                              <input type="checkbox" name="inspector" value="<c:out value="${name.value}"/>"/><label><c:out value="${name.text}"/></label>
+                              <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"/><label><c:out value="${name.text}"/></label>
                           </c:forEach>
                         </c:if>
                         <c:if test="${inspectionTaskPoolListDto.inspectorCheck != null}">
                           <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
-                            <input type="checkbox" name="inspector" value="<c:out value="${name.value}"/>"
+                            <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"
                               <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="checkName">
                                  <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
                               </c:forEach>
                             /><label><c:out value="${name.text}"/></label>
                           </c:forEach>
                         </c:if>
+                        <br><span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span>
                       </iais:value>
                     </iais:row>
                     <iais:row>
@@ -132,15 +127,24 @@
     </iais:body>
   </form>
 </div>
-<script type="text/javascript">
+
+<%@ include file="/include/validation.jsp" %>
+<script>
     function doInspectionSupAssignTaskBack() {
+        clearErrorMsg();
         $("[name='actionValue']").val('back');
         submit('back');
     }
 
     function doInspectionSupAssignTaskNext() {
-        $("[name='actionValue']").val('confirm');
-        submit('confirm');
+        clearErrorMsg();
+        doValidation();
+        if (getErrorMsg()) {
+            dismissWaiting();
+        } else {
+            $("[name='actionValue']").val('confirm');
+            submit('confirm');
+        }
     }
     function submit(action){
         $("[name='InspectionSupSearchSwitchType']").val(action);

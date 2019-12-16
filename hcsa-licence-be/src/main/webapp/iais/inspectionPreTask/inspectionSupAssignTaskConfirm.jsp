@@ -53,13 +53,13 @@
                       <iais:row>
                         <iais:field value="Application Type"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspectionTaskPoolListDto.applicationType}"/></label>
+                          <label><iais:code code="${inspectionTaskPoolListDto.applicationType}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Application Status"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspectionTaskPoolListDto.applicationStatus}"/></label>
+                          <label><iais:code code="${inspectionTaskPoolListDto.applicationStatus}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
