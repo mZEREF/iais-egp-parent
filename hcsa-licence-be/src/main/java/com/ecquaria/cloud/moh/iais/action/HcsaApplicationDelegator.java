@@ -478,9 +478,10 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void requestForInformation(BaseProcessClass bpc) {
+    public void requestForInformation(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do requestForInformation start ...."));
-        //TODO:requestForInformation
+        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+        //todo:send message to FE user.
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }
 
