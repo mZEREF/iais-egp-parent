@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -508,6 +509,14 @@
                                                             </select>
                                                         </td>
                                                     </tr>
+                                                    <tr id="lienceStartDate" class="hidden">
+                                                        <td>
+                                                            <span>Lience Start Date</span>
+                                                        </td>
+                                                        <td>
+                                                            <iais:datePicker id = "lienceStartDate" name = "tuc" value=""></iais:datePicker>
+                                                        </td>
+                                                    </tr>
                                                 </table>
                                                 <div align="center">
                                                     <button id="submitButton" type="submit" class="btn btn-primary">
@@ -570,7 +579,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -599,10 +607,12 @@
         var selectValue = $("[name='nextStage']").val();
 
         if (selectValue == "VERIFIED") {
-            alert(selectValue);
             $('#verifiedDropdown').removeClass('hidden');
-        } else {
+        }else if(selectValue == "Licence Start Date"){
+            $('#lienceStartDate').removeClass('hidden');
+        }else{
             $('#verifiedDropdown').addClass('hidden');
+            $('#lienceStartDate').addClass('hidden');
         }
     });
 </script>
