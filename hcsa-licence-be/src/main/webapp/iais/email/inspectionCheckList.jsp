@@ -603,9 +603,10 @@
 
                                         <div align="right">
                                             <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
-                                                Next
+                                                Save
                                             </button>
                                         </div>
+                                        <input type="hidden" name = "saveflag" id="saveflag"/>
                                         <iais:error>
                                             <c:if test = "${not empty errorMap}">
                                                 <div class="error">
@@ -615,10 +616,6 @@
                                                 </div>
                                             </c:if>
                                         </iais:error>
-
-
-
-
                                     </div>
                                 </div>
                             </div>
@@ -631,7 +628,8 @@
 </form>
 <script type="text/javascript">
     function doNext(){
-        SOP.Crud.cfxSubmit("mainForm", "next");
+        $("#saveflag").val("save");
+        SOP.Crud.cfxSubmit("mainForm", "checkList");
     }
     function showCheckBox(str){
         var name = str;

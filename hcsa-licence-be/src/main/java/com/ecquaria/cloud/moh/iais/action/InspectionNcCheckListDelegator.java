@@ -32,6 +32,7 @@ import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,13 +69,19 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void init(BaseProcessClass bpc){
+
+
+        insepctionNcCheckListService.getNcAnswerDtoList("B6A93DC1-491E-EA11-BE7D-000C29F371DC","E65F8B2A-EA3C-433B-8605-9864A969FE59");
+
         Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getString(request,"TaskId");
-        String serviceCode ="BLB";
+        if (StringUtil.isEmpty(taskId)) {
+            taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
+        }
         String serviceType = "Inspection";
-        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceCode,serviceType);
+        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
         String configId = cDto.getCheckList().get(0).getConfigId();
         AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,configId);
         InspectionFillCheckListDto insepectionNcCheckListDto = null;
@@ -87,8 +94,8 @@ public class InspectionNcCheckListDelegator {
         InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
         insepctionNcCheckListService.getCommonDto(commonDto,appPremPreCklDto,itemDtoList);
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
-        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto("7102C311-D10D-EA11-BE7D-000C29F371DC");
-        TaskDto  taskDto = fillupChklistService.getTaskDtoById("7102C311-D10D-EA11-BE7D-000C29F371DC");
+        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
+        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
         ParamUtil.setSessionAttr(request,"taskDto",taskDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",insepectionNcCheckListDto);
@@ -124,10 +131,18 @@ public class InspectionNcCheckListDelegator {
         HttpServletRequest request = bpc.request;
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
         InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
-        fillupChklistService.merge(comDto,icDto);
-        ApplicationViewDto appViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        fillupChklistService.merge(comDto,icDto);
         insepctionNcCheckListService.submit(icDto,showDto);
+        ApplicationViewDto appViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
+        AdCheckListShowDto showPageDto = new AdCheckListShowDto();
+        try {
+            showPageDto = (AdCheckListShowDto) CopyUtil.copyMutableObject(showDto);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
         try {
             //routingTask(bpc, HcsaConsts.ROUTING_STAGE_INS, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
         }catch (Exception e){

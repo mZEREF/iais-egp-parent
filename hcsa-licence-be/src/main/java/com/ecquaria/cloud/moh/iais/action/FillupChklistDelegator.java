@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,9 +66,12 @@ public class FillupChklistDelegator {
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getString(request,"TaskId");
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
+        }
         String serviceCode ="BLB";
         String serviceType = "Inspection";
-        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceCode,serviceType);
+        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
         ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
         InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
         AdCheckListShowDto adchklDto = fillupChklistService.getAdhoc(cDto.getCheckList().get(0).getAppPreCorreId());
@@ -102,6 +106,10 @@ public class FillupChklistDelegator {
      */
     public void inspectionChecklist(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+
+        ///test
+
+        //test
         InspectionFillCheckListDto cDto = getDataFromPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
         AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
@@ -135,8 +143,17 @@ public class FillupChklistDelegator {
         InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
         AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
-        fillupChklistService.merge(comDto,icDto);
+
+
+        AdCheckListShowDto showPageDto = new AdCheckListShowDto();
+        try {
+            showPageDto = (AdCheckListShowDto)CopyUtil.copyMutableObject(showDto);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
         fillupChklistService.saveAdhocDto(showDto,icDto.getCheckList().get(0).getAppPreCorreId());
+        fillupChklistService.merge(comDto,icDto);
         fillupChklistService.saveDto(icDto);
     }
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){

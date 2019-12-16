@@ -20,7 +20,7 @@ public interface FillupChklistService {
      * @return
      */
 
-    InspectionFillCheckListDto getInspectionFillCheckListDto(String taskId,String svcCode,String svcType);
+    InspectionFillCheckListDto getInspectionFillCheckListDto(String taskId,String svcType);
 
     InspectionFillCheckListDto fillInspectionFillCheckListDto(InspectionFillCheckListDto dto);
 

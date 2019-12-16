@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,9 +72,12 @@ public class InspectEmailAo1Delegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getString(request,"TaskId");
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
+        }
         String serviceCode ="BLB";
         String serviceType = "Inspection";
-        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceCode,serviceType);
+        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
         String configId = cDto.getCheckList().get(0).getConfigId();
         AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,configId);
         InspectionFillCheckListDto insepectionNcCheckListDto = null;
@@ -86,8 +90,8 @@ public class InspectEmailAo1Delegator {
         InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
         insepctionNcCheckListService.getCommonDto(commonDto,appPremPreCklDto,itemDtoList);
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
-        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto("7102C311-D10D-EA11-BE7D-000C29F371DC");
-        TaskDto  taskDto = fillupChklistService.getTaskDtoById("7102C311-D10D-EA11-BE7D-000C29F371DC");
+        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
+        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
 
 
         ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
@@ -164,11 +168,7 @@ public class InspectEmailAo1Delegator {
 
         }
         String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
-        InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
-        InspectionFillCheckListDto comDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
-        fillupChklistService.merge(comDto,icDto);
-        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
-        insepctionNcCheckListService.submit(icDto,showDto);
+
         ParamUtil.setSessionAttr(request,"templateId",id);
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
 
@@ -207,13 +207,32 @@ public class InspectEmailAo1Delegator {
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errMap);
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
+            String saveFlag = ParamUtil.getString(request,"saveflag");
+            if(!StringUtil.isEmpty(saveFlag)){
+                InspectionFillCheckListDto cPageDto =new InspectionFillCheckListDto();
+                InspectionFillCheckListDto commonPageDto = new InspectionFillCheckListDto();
+                AdCheckListShowDto adchklPageDto = new AdCheckListShowDto();
+                try {
+                    adchklPageDto = (AdCheckListShowDto)CopyUtil.copyMutableObject(adchklDto);
+                    cPageDto = (InspectionFillCheckListDto)CopyUtil.copyMutableObject(cDto);
+                    commonPageDto = (InspectionFillCheckListDto)CopyUtil.copyMutableObject(commonDto);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                fillupChklistService.merge(commonDto,cDto);
+                insepctionNcCheckListService.submit(cDto,adchklDto);
+                ParamUtil.setSessionAttr(request,"adchklDto",adchklPageDto);
+                ParamUtil.setSessionAttr(request,"fillCheckListDto",cPageDto);
+                ParamUtil.setSessionAttr(request,"commonDto",commonPageDto);
+                ParamUtil.setSessionAttr(request,"acDto", (Serializable) acDtoList);
+            }
         }
     }
     public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
 
-        String taskId="7102C311-D10D-EA11-BE7D-000C29F371DC";
+        String taskId="DF1C07EE-191E-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
