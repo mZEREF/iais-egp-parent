@@ -28,7 +28,7 @@ public interface OrganizationClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(@RequestBody List<String> ids);
 
-    @RequestMapping(value = "/iais-orguser/users-by-loginId/{user_id}",method = RequestMethod.POST,produces = { MediaType.APPLICATION_JSON_VALUE },
+    @RequestMapping(value = "/iais-orguser/users-by-loginId/{user_id}",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(@PathVariable(value = "user_id") String user_id);
 
