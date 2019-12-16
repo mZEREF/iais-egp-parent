@@ -83,8 +83,7 @@
                       <iais:row>
                         <iais:field value="Submission Date"/>
                         <iais:value width="7">
-                          <%--<iais:datePicker id = "submitDt" name = "submitDt" value="${inspecTaskCreAndAssDto.submitDt}"></iais:datePicker>--%>
-                          <label><c:out value="${inspectionTaskPoolListDto.submitDt}"/></label>
+                          <label><fmt:formatDate value='${inspectionTaskPoolListDto.submitDt}' pattern='dd/MM/yyyy' /></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
