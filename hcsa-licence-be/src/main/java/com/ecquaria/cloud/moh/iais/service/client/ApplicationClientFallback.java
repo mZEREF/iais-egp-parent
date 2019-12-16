@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDt
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -12,9 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 
 /**
  * ApplicationClientFallback
@@ -136,6 +136,13 @@ public class ApplicationClientFallback {
     }
 
     public FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocItems(AdhocCheckListConifgDto adhocConfigDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<AppSubmissionDto> getAppSubmissionByAppId(String appId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
