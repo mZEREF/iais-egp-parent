@@ -742,13 +742,13 @@ public class NewApplicationDelegator {
     }
 
     private void requestForInformationLoading(BaseProcessClass bpc) {
-        //todo
+        log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         String appId = ParamUtil.getString(bpc.request,"appId");
         if(StringUtil.isEmpty(appId)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppId(appId);
-
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-
+        log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
     }
 
     private void loadingServiceConfig(BaseProcessClass bpc) {
