@@ -40,12 +40,12 @@
                       <iais:row>
                         <iais:field value="Current Status"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspectionPreTaskDto.appStatus}"/></label>
+                          <label><iais:code code="${inspectionPreTaskDto.appStatus}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Remarks"/>
-                        <iais:value width="7">
+                        <iais:value width="300">
                           <textarea id="preInspecRemarks" name="preInspecRemarks" cols="70" rows="7" ><c:out value="inspectionPreTaskDto.reMarks"></c:out></textarea>
                         </iais:value>
                       </iais:row>
