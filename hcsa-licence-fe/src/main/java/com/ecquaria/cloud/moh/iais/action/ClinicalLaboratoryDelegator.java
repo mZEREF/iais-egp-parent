@@ -163,13 +163,15 @@ public class ClinicalLaboratoryDelegator {
             //min and max count
             List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, psnType);
             List<AppSvcCgoDto> appSvcCgoDtoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
-            HcsaSvcPersonnelDto hcsaSvcPersonnelDto  =hcsaSvcPersonnelList.get(0);
-            int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
-            if(appSvcCgoDtoList != null){
-                mandatoryCount = appSvcCgoDtoList.size();
+            if(hcsaSvcPersonnelList != null && hcsaSvcPersonnelList.size()>0){
+                HcsaSvcPersonnelDto hcsaSvcPersonnelDto  = hcsaSvcPersonnelList.get(0);
+                int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+                if(appSvcCgoDtoList != null){
+                    mandatoryCount = appSvcCgoDtoList.size();
+                }
+                ParamUtil.setSessionAttr(bpc.request, "CgoMandatoryCount", mandatoryCount);
+                ParamUtil.setSessionAttr(bpc.request, "HcsaSvcPersonnel", hcsaSvcPersonnelDto);
             }
-            ParamUtil.setSessionAttr(bpc.request, "CgoMandatoryCount", mandatoryCount);
-            ParamUtil.setSessionAttr(bpc.request, "HcsaSvcPersonnel", hcsaSvcPersonnelDto);
         }
         List<SelectOption> cgoSelectList = new ArrayList<>();
         SelectOption sp0 = new SelectOption("-1", "Select Personnel");
@@ -216,21 +218,34 @@ public class ClinicalLaboratoryDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
         List<AppSvcLaboratoryDisciplinesDto> newChkLstDtoList = new ArrayList<>();
-        int chkLstSize = appSvcLaboratoryDisciplinesDtoList.size();
+        for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+                if(appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getConveyanceVehicleNo())){
+                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                }else if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getHciName())){
+                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                }
+            }
+            newChkLstDtoList.add(appSvcLaboratoryDisciplinesDto);
+        }
+       /* int chkLstSize = appSvcLaboratoryDisciplinesDtoList.size();
         for(int i=0;i<chkLstSize;i++){
             AppSvcLaboratoryDisciplinesDto chkLstDto = appSvcLaboratoryDisciplinesDtoList.get(i);
             //need chagne
             String premiseGetAddress = appSubmissionDto.getAppGrpPremisesDtoList().get(0).getAddress();
             chkLstDto.setPremiseGetAddress(premiseGetAddress);
             newChkLstDtoList.add(chkLstDto);
-        }
+        }*/
         ParamUtil.setSessionAttr(bpc.request, "PremisesAndChkLst", (Serializable) newChkLstDtoList);
         List<SelectOption> spList = new ArrayList<>();
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         SelectOption sp = null;
-        for(AppSvcCgoDto cgo:appSvcCgoDtoList){
-            sp = new SelectOption(cgo.getIdNo(), cgo.getName());
-            spList.add(sp);
+        if(appSvcCgoDtoList != null && !appSvcCgoDtoList.isEmpty()){
+            for(AppSvcCgoDto cgo:appSvcCgoDtoList){
+                sp = new SelectOption(cgo.getIdNo(), cgo.getName());
+                spList.add(sp);
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, "CgoSelect", (Serializable) spList);
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation end ...."));
@@ -288,14 +303,21 @@ public class ClinicalLaboratoryDelegator {
         String svcId = ParamUtil.getMaskedString(bpc.request, "svcId");
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, svcId);
         ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
-        //one premises
-        List<AppSvcDisciplineAllocationDto> allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-
+        List<AppSvcDisciplineAllocationDto> allocationDto = null;
+        if(appSvcRelatedInfoDto != null){
+            allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+        }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = getAppSubmissionDto(bpc.request).getAppGrpPremisesDtoList();
         Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = new HashMap<>();
-        List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = new ArrayList<>();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-           String hciName = appGrpPremisesDto.getHciName();
+            List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = new ArrayList<>();
+            String hciName = "";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                hciName = appGrpPremisesDto.getHciName();
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                hciName = appGrpPremisesDto.getConveyanceVehicleNo();
+            }
+
            if(!StringUtil.isEmpty(hciName) && allocationDto !=null && allocationDto.size()>0 ){
                for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:allocationDto){
                    List<AppSvcChckListDto> appSvcChckListDtoList = null;
@@ -357,7 +379,7 @@ public class ClinicalLaboratoryDelegator {
         }*/
         //demo
         List<String> reloadCheckedList = new ArrayList<>();
-        AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = new AppSvcLaboratoryDisciplinesDto();
+        AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = null;
         Map<String,HcsaSvcSubtypeOrSubsumedDto> map = new HashMap<>();
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto");
         turn(hcsaSvcSubtypeOrSubsumedDtos, map);
@@ -365,12 +387,12 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcDto =getAppSvcRelatedInfo(bpc.request,currentSvcId);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        String [] test = ParamUtil.getStrings(bpc.request, "prem1control--runtime--1");
+        Map<String,String> reloadChkLstMap = new HashMap<>();
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = new ArrayList<>();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
             String name = appGrpPremisesDto.getPremisesIndexNo()+"control--runtime--1";
             String [] checkList = ParamUtil.getStrings(bpc.request, name);
             List<AppSvcChckListDto> appSvcChckListDtoList = new ArrayList<>();
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = new ArrayList<>();
             AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
             if(!StringUtil.isEmpty(checkList)){
                 for(String maskName:checkList){
@@ -382,9 +404,9 @@ public class ClinicalLaboratoryDelegator {
                     appSvcChckListDto.setChkLstType(checkInfo.getType());
                     appSvcChckListDto.setChkName(checkInfo.getName());
                     appSvcChckListDtoList.add(appSvcChckListDto);
-                    reloadCheckedList.add(appGrpPremisesDto.getPremisesIndexNo()+checkInfo.getId());
+                    //PremisesIndexNo()+checkCode()+checkParentId()
+                    reloadChkLstMap.put(appGrpPremisesDto.getPremisesIndexNo()+checkInfo.getId(), "checked");
                 }
-
                 String premisesType = appGrpPremisesDto.getPremisesType();
                 String premisesValue = "";
                 if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
@@ -393,6 +415,7 @@ public class ClinicalLaboratoryDelegator {
                     premisesValue = appGrpPremisesDto.getConveyanceVehicleNo();
                 }
                 //else his .....
+                appSvcLaboratoryDisciplinesDto = new AppSvcLaboratoryDisciplinesDto();
                 appSvcLaboratoryDisciplinesDto.setPremiseType(premisesType);
                 appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesValue);
                 appSvcLaboratoryDisciplinesDto.setPremisesIndexNo(appGrpPremisesDto.getPremisesIndexNo());
@@ -400,11 +423,10 @@ public class ClinicalLaboratoryDelegator {
                 appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
                 appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
             }
-            currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
         }
-
-        ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadCheckedList);
+        currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
+        ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
         /*String [] checkListInfo = bpc.request.getParameterValues("control--runtime--1");
         if(StringUtil.isEmpty(checkListInfo)){
             return;
@@ -512,33 +534,39 @@ public class ClinicalLaboratoryDelegator {
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-            String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-            Map<String,AppSvcRelatedInfoDto> appSvcRelatedInfoMap = (Map<String, AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request, APPSVCRELATEDINFOMAP);
-            String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-            AppSvcRelatedInfoDto currentSvcRelatedDto = appSvcRelatedInfoMap.get(currentSvcId);
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = currentSvcRelatedDto.getAppSvcLaboratoryDisciplinesDtoList();
-            List<AppSvcDisciplineAllocationDto> daList = new ArrayList<>();
-            AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = null;
-            //one premises
-            String premisesType = appGrpPremisesDto.getPremisesType();
-            String premisesValue = "";
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
-                premisesValue = appGrpPremisesDto.getHciName();
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
-                premisesValue = appGrpPremisesDto.getConveyanceVehicleNo();
-            }
+        Map<String,String> reloadAllocation = new HashMap<>();
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        List<AppSvcDisciplineAllocationDto> daList = new ArrayList<>();
 
 
-            Map<String,String> reloadAllocation = new HashMap<>();
-            if(appSvcLaboratoryDisciplinesDtoList != null){
-                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
-                    int chkLstSize = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList().size();
-                    for(int i =0 ;i<chkLstSize;i++){
-                        StringBuilder chkAndCgoName = new StringBuilder()
-                                .append(premisesIndexNo)
-                                .append(i);
-                        String [] chkAndCgoValue = ParamUtil.getStrings(bpc.request, chkAndCgoName.toString());
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = currentSvcRelatedDto.getAppSvcLaboratoryDisciplinesDtoList();
+        if(appSvcLaboratoryDisciplinesDtoList != null){
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
+                String premisesType = "";
+                String premisesValue = "";
+                String premisesIndexNo = "";
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+                    if(appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getConveyanceVehicleNo())){
+                        premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                        premisesType = appGrpPremisesDto.getPremisesType();
+                        premisesValue = appGrpPremisesDto.getConveyanceVehicleNo();
+                        break;
+                    }else if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getHciName())){
+                        premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                        premisesType = appGrpPremisesDto.getPremisesType();
+                        premisesValue = appGrpPremisesDto.getHciName();
+                        break;
+                    }
+                }
+                AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = null;
+                int chkLstSize = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList().size();
+                for(int i =0 ;i<chkLstSize;i++){
+                    StringBuilder chkAndCgoName = new StringBuilder()
+                            .append(premisesIndexNo)
+                            .append(i);
+                    String [] chkAndCgoValue = ParamUtil.getStrings(bpc.request, chkAndCgoName.toString());
+                    if(chkAndCgoValue != null && chkAndCgoValue.length>0){
                         appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
                         appSvcDisciplineAllocationDto.setPremiseType(premisesType);
                         appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
@@ -550,16 +578,14 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }
             }
-
-            ParamUtil.setSessionAttr(bpc.request, "ReloadAllocationMap", (Serializable) reloadAllocation);
-
-            //save into sub-svc dto
-            currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
-            //ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFOMAP, currentSvcRelatedDto);
-            //ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
         }
 
+        ParamUtil.setSessionAttr(bpc.request, "ReloadAllocationMap", (Serializable) reloadAllocation);
+        //save into sub-svc dto
+        currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
+        //ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFOMAP, currentSvcRelatedDto);
+        //ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
 
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation end ...."));
     }
@@ -742,6 +768,9 @@ public class ClinicalLaboratoryDelegator {
     private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS,null);
         HcsaSvcPersonnelDto hcsaSvcPersonnelDto  = (HcsaSvcPersonnelDto) ParamUtil.getSessionAttr(request, "HcsaSvcPersonnel");
+        if(hcsaSvcPersonnelDto ==null){
+            return null;
+        }
         int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
         List<AppSvcCgoDto> appSvcCgoDtoList = new ArrayList<>();
         AppSvcCgoDto appSvcCgoDto = null;
@@ -970,12 +999,6 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         return specialtySelectList;
-    }
-
-    private void xxx(){
-
-
-
     }
 
 }

@@ -540,6 +540,9 @@ var retrieveAddr = function(){
                     $premContent.find('.siteBlockNo').val(data.blkHseNo);
                     $premContent.find('.siteStreetName').val(data.streetName);
                     $premContent.find('.siteBuildingName').val(data.buildingName);
+                    $premContent.find('.siteBlockNo').prop('readonly',true);
+                    $premContent.find('.siteStreetName').prop('readonly',true);
+                    $premContent.find('.siteBuildingName').prop('readonly',true);
                 }
 
             },

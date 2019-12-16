@@ -49,7 +49,6 @@
                                   <th>Clinical Governance Officers</th>
                                 </tr>
                                 </thead>
-
                                 <c:forEach var="premisesAndChkLst" items="${PremisesAndChkLst}" >
                                   <c:set value="${premisesAndChkLst.premisesIndexNo}" var="premisesIndexNo"/>
                                   <tbody>
@@ -78,6 +77,7 @@
                                   </c:forEach>
                                   </tbody>
                                 </c:forEach>
+
 
                               </table>
                               <p>Click <a href="#">here</a> to assign a laboratory discipline to multiple clinical governance officers.</p>

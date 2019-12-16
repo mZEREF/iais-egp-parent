@@ -60,6 +60,7 @@
 
               <span class="upload_controls"></span>
               <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
+              <c:if test="${CgoMandatoryCount >0}">
               <c:forEach  begin="0" end="${CgoMandatoryCount-1}"  step="1" varStatus="status" >
                 <c:set value="cgo-${status.index}-" var="cgoIndeNo"/>
                 <c:set value="${GovernanceOfficersList}" var="cgoList"/>
@@ -381,16 +382,18 @@
                   <hr/>
                 </c:if>
               </c:forEach>
-
+              </c:if>
             </div>
           </td>
         </tr>
         <hr/>
+        <c:if test="${CgoMandatoryCount >0}">
         <tr id="addInfo">
           <td>
             <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Clinical Governance Officer</span>
           </td>
         </tr>
+        </c:if>
         </tbody>
       </table>
     </div>

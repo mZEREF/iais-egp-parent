@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -13,18 +14,16 @@
 
   <div class="amended-service-info-gp">
     <h2>LABORATORY DISCIPLINES</h2>
-      <c:forEach var="appGrpPremisesDto" items="${appGrpPremisesDtoList}" varStatus="status">
+    <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
-          <p><span class="preview-title">Premises ${status.index+1}</span>: ${appGrpPremisesDto.address}</p>
+          <p><span class="preview-title">Premises ${status.index+1}</span>: ${appSvcLaboratoryDisciplinesDto.premiseGetAddress}</p>
           <div class="form-check-gp">
             <div class="row">
               <div class="col-xs-12">
-                <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}">
                 <c:forEach var="checkList" items="${appSvcLaboratoryDisciplinesDto.appSvcChckListDtoList}">
                 <div class="form-check active">
                   <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${checkList.chkName}</p>
                 </div>
-                </c:forEach>
                 </c:forEach>
               </div>
             </div>
@@ -147,9 +146,6 @@
       <div class="form-check-gp">
         <div class="row">
           <div class="col-xs-12">
-            <c:forEach var="appGrpPremisesDto" items="${appGrpPremisesDtoList}" varStatus="status">
-              <c:set var="hciName" value="${appGrpPremisesDto.hciName}"/>
-                <input type="hidden" name="premId" value=""/>
                 <table class="table discipline-table">
                   <thead>
                   <tr>
@@ -158,31 +154,33 @@
                     <th>Clinical Governance Officers</th>
                   </tr>
                   </thead>
+                  <c:forEach var="appGrpPrem" items="${appGrpPremisesDtoList}" varStatus="status">
+                    <c:if test="${appGrpPrem.hciName != '' && appGrpPrem.hciName!= null}">
+                      <c:set var="reloadMapValue" value="${appGrpPrem.hciName}"/>
+                    </c:if>
+                    <c:if test="${appGrpPrem.conveyanceVehicleNo != '' && appGrpPrem.conveyanceVehicleNo!= null}">
+                      <c:set var="reloadMapValue" value="${appGrpPrem.conveyanceVehicleNo}"/>
+                    </c:if>
                     <tbody>
-                    <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[hciName]}" varStatus="status">
-                      <%--<c:set value="${premisesIndexNo}${status.index}" var="cgoName"/>--%>
+                    <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}" varStatus="stat">
+                      ${stat.end}
                       <tr>
-                        <c:if test="${status.first}">
-                          <td rowspan="4">
-                            <p class="visible-xs visible-sm table-row-title">${appGrpPremisesDto.address}</p>
-                            <%--<input type="hidden" name="${premisesAndChkLst.premisesIndexNo}" value="${premisesAndChkLst.premisesIndexNo}" />--%>
-                            <%--<p>${appGrpPremisesDto.address} </p>--%>
+                        <c:if test="${stat.first}">
+                          <td rowspan="5">
+                            <p class="visible-xs visible-sm table-row-title">${appGrpPrem.address}</p>
                           </td>
                         </c:if>
                         <td>
-                          <%--<p class="visible-xs visible-sm table-row-title">Laboratory Disciplines</p>--%>
-                          <%--<input type="hidden" name="${cgoName}" value="${chkLst.chkLstConfId}"/>--%>
                           <p>${disciplineAllocation.chkLstName}</p>
                         </td>
                         <td>
-                          <%--<p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>--%>
                           <p>${disciplineAllocation.cgoSelName}</p>
                         </td>
                       </tr>
                     </c:forEach>
                     </tbody>
+                  </c:forEach>
                 </table>
-            </c:forEach>
           </div>
         </div>
       </div>
@@ -270,6 +268,7 @@
       </div>
   </div>
 
+
   <div class="amended-service-info-gp">
     <h2>SERVICE SPECIFIC DOCUMENTS</h2>
       <div class="amend-preview-info">
@@ -277,139 +276,32 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
-              <c:forEach var="svcDoc" items="${serviceDocConfigDto}" varStatus="status">
-                <div class="panel panel-default">
-                  <div class="panel-heading " id="headingServiceInfo" role="tab">
-                    <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information -- ${svcDoc.svcName}</a></h4>
-                  </div>
-                  <div class="panel-collapse collapse in" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">
-                    <div class="panel-body">
-                      <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
-                      <iframe  class="elemClass-1561088919456" title="" src="${pageContext.request.contextPath}/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form_value=prepareView&svcId=${svcDoc.id}" id="elemId-${status.index}"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
-                    </div>
-                  </div>
-                </div>
+              <table class="col-xs-12">
+              <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.appSvcDocDtoLit}" varStatus="status">
+                <tr>
+                  <td>
+                  <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                  <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
+                  </td>
+                </tr>
+                <tr class="col-xs-12">
+                  <td>
+                  <a href="${pageContext.request.contextPath}/file-repo?filerepo=svcFileRo${status.index}&fileRo${status.index}=<iais:mask name="svcfileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>
+                  </td>
+                </tr>
               </c:forEach>
+              </table>
             </div>
           </div>
         </div>
       </div>
   </div>
 
-
-
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-<div id="control--printerFriendly--1" class="section control " style="overflow: visible;"><%--
-    <tr height="1" class="incomplete">
-      <td style="width: 100%;" class="first last">
-        <div class="control-set-font control-font-header section-header">
-          <h2>DisciplineAllocation</h2>
-        </div>
-        <div id="" class="control control-caption-horizontal" style="overflow: visible;">
-          <div class="form-group form-horizontal control-set-alignment formgap">
-            <div class="col-sm-9 control-label formtext">
-              <c:forEach var="allocation" items="${currentPreviewSvcInfo.appSvcDisciplineAllocationDtoList}">
-                <table class="table discipline-table">
-                  <thead>
-                  <tr>
-                    <th>Premises</th>
-                    <th>Laboratory Disciplines</th>
-                    <th>Clinical Governance Officers</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td rowspan="4">
-                      <p>${allocation.premiseVal} </p>
-                    </td>
-                    <td>
-                      <p>Laboratory Disciplines</p>
-                    </td>
-                    <td>
-                      <p>${allocation.idNo}</p>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </c:forEach>
-            </div>
-          </div>
-      </td>
-    </tr>
-
-
-    <tr height="1" class="incomplete">
-      <td style="width: 100%;" class="first last">
-        <div class="control-set-font control-font-header section-header">
-          <h2>SvcPrincipalOfficers</h2>
-        </div>
-        <div id="" class="control control-caption-horizontal" style="overflow: visible;">
-          <div class="form-group form-horizontal control-set-alignment formgap">
-            <div class="col-sm-9 control-label formtext">
-              <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po">
-                <table>
-                  <tr>
-                    <td>${po.salutation}:</td><td>${po.name}</td>
-                  </tr>
-                  <tr>
-                    <td>${po.idType}:</td><td>${po.idNo}</td>
-                  </tr>
-                  <tr>
-                    <td>Designation:</td><td>${po.designation}</td>
-                  </tr>
-                  <tr>
-                    <td>MobileNo:</td><td>${po.mobileNo}</td>
-                  </tr>
-                  <tr>
-                    <td>EmailAddress:</td><td>${po.emailAddr}</td>
-                  </tr>
-                </table>
-              </c:forEach>
-            </div>
-          </div>
-        </div>
-      </td>
-    </tr>
-
-
-    <tr height="1" class="incomplete">
-      <td style="width: 100%;" class="first last">
-        <div class="control-set-font control-font-header section-header">
-          <h2>SvcPrincipalOfficers</h2>
-        </div>
-        <div id="" class="control control-caption-horizontal" style="overflow: visible;">
-          <div class="form-group form-horizontal control-set-alignment formgap">
-            <div class="col-sm-9 control-label formtext">
-              <c:forEach items="${currentPreviewSvcInfo.appSvcDocDtoLit}" var="doc">
-                <table>
-                  <tr>
-                    <td>***doc type***</td>
-                    <td><a id="">${doc.fileName}</a></td>
-                  </tr>
-                </table>
-              </c:forEach>
-            </div>
-          </div>
-        </div>
-      </td>
-    </tr>
-
-    </tbody>
-  </table>
-  <div id="control--printerFriendly--1**errorMsg_section_bottom" class="error_placements"></div>
---%></div>
 
 <script type="text/javascript">
     $(document).ready(function(){

@@ -47,7 +47,11 @@
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-6"><a class="back" id="governanceOfficersBack"><em class="fa fa-angle-left"></em> Back</a></div>
+                                        <div class="col-xs-12 col-sm-6">
+                                            <div class="button-group">
+                                            <p><a id = "docBack" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
+                                            </div>
+                                        </div>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group"><a class="btn btn-secondary" id = "governanceOfficersSaveDraft">Save as Draft</a><a class="next btn btn-primary" id="svcDocumentNext" data-goto="clinical-governance-officer">Next</a></div>
                                         </div>

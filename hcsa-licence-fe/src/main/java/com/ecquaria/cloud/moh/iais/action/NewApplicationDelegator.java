@@ -259,9 +259,6 @@ public class NewApplicationDelegator {
     public void doPremises(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPremises start ...."));
         //gen dto
-        //
-        String test = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
-        String str = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
 
@@ -299,8 +296,6 @@ public class NewApplicationDelegator {
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        String test = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
-        String ttt = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
 
@@ -484,6 +479,11 @@ public class NewApplicationDelegator {
        // Map<String, Map<String, String>> validateResult = doValidate(bpc);
         //save the app and appGroup
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        String draftNo = appSubmissionDto.getDraftNo();
+        if(StringUtil.isEmpty(draftNo)){
+            draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+            appSubmissionDto.setDraftNo(draftNo);
+        }
         //get appGroupNo
         String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
         log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);

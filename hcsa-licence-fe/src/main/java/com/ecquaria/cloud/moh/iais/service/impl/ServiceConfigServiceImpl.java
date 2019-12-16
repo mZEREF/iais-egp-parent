@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -101,8 +102,12 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public List<HcsaSvcDocConfigDto> getAllHcsaSvcDocs(String serviceId) {
         Map<String,String> docMap = new HashMap<>();
-        docMap.put("common", "0");
-        docMap.put("premises", "1");
+        if(StringUtil.isEmpty(serviceId)){
+            docMap.put("common", "0");
+            docMap.put("premises", "1");
+        }else{
+            docMap.put("premises",serviceId);
+        }
         String docMapJson = JsonUtil.parseToJson(docMap);
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos =  appConfigClient.getHcsaSvcDocConfig(docMapJson).getEntity();
         return hcsaSvcDocConfigDtos;

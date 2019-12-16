@@ -28,7 +28,6 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                                                <c:set var="appGrpPremisesDto" value="${AppSubmissionDto.appGrpPremisesDto}"></c:set>
                                                 <div class="panel panel-default">
                                                     <div class="panel-heading" id="headingPremise" role="tab">
                                                         <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Premises</a></h4>
@@ -36,12 +35,17 @@
                                                     <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                                                         <div class="panel-body">
                                                             <p class="text-right"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                                            <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
                                                             <div class="panel-main-content">
                                                                 <div class="preview-info">
-                                                                    <p><strong>Premises</strong></p>
-                                                                    <p>${appGrpPremisesDto.premisesType}: ${appGrpPremisesDto.address}</p>
+                                                                    <p><strong>Premises ${status.index+1}</strong></p>
+                                                                    <p>${appGrpPremDto.premisesType}: ${appGrpPremDto.address}</p>
+                                                                    <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
+                                                                        <p>Vehicle No: ${appGrpPremDto.conveyanceVehicleNo}</p>
+                                                                    </c:if>
                                                                 </div>
                                                             </div>
+                                                            </c:forEach>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -139,7 +143,6 @@
             submit('payment','doSubmit',null);
         });
 
-        donwload();
     });
 
 
