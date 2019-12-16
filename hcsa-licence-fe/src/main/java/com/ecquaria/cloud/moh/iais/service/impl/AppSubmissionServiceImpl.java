@@ -147,7 +147,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
     }
-   private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
+
+    @Override
+    public AppSubmissionDto getAppSubmissionDtoByAppId(String appId) {
+        return null;
+    }
+
+    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
        RiskResultDto result = null;
        if(riskResultDtoList == null || StringUtil.isEmpty(serviceCode)){
         return result;
