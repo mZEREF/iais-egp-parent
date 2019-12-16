@@ -68,7 +68,11 @@ public class InsReportDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
-        InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo, applicationViewDto);
+        InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
+        if(insRepDto==null){
+            insRepDto = insRepService.getInsRepDto(appNo, applicationViewDto);
+        }
+
 //        SelectOption so1 = new SelectOption("Reject", "Reject");
 //        SelectOption so2 = new SelectOption("1Y", "1year");
 //        SelectOption so3 = new SelectOption("2Y", "2year");
@@ -81,30 +85,37 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }
 
-    public void confirmData(BaseProcessClass bpc){
+    public void confirmData(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>confirmData");
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String Remarks = ParamUtil.getRequestString(bpc.request, "remarks");
+
         String recommendation = ParamUtil.getRequestString(bpc.request, "recommendation");
-        String riskRecommendation = ParamUtil.getRequestString(bpc.request, "riskRecommendation");
+        String otherRecommendation = ParamUtil.getRequestString(bpc.request, "otherRecommendation");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRemarks(Remarks);
         appPremisesRecommendationDto.setRecomType("report");
 
-        if ("reject".equals(recommendation)) {
+        if ("Others".equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-            appPremisesRecommendationDto.setRecomDecision("Rejection");
-        }else if(StringUtil.isEmpty(recommendation)){
+            String[] split_number = otherRecommendation.split("\\D");
+            String[] split_unit = otherRecommendation.split("\\d");
+            String unit = split_unit[1];
+            String number = split_number[0];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-            appPremisesRecommendationDto.setRecomType(riskRecommendation);
-            appPremisesRecommendationDto.setRecomDecision("approve");
-        } else {
-//            int i = Integer.parseInt(recommendation);
-//            appPremisesRecommendationDto.setRecomInNumber(i);
+            appPremisesRecommendationDto.setChronoUnit(unit);
+            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
+        }else{
+            String[] split_number = recommendation.split("\\D");
+            String[] split_unit = recommendation.split("\\d");
+            String unit = split_unit[1];
+            String number = split_number[0];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+            appPremisesRecommendationDto.setChronoUnit(unit);
+            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
         }
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
@@ -117,28 +128,31 @@ public class InsReportDelegator {
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        AppPremisesRecommendationDto appPremisesRecommendationDto = (AppPremisesRecommendationDto)ParamUtil.getSessionAttr(bpc.request, "appPremisesRecommendationDto");
+        AppPremisesRecommendationDto appPremisesRecommendationDto = (AppPremisesRecommendationDto) ParamUtil.getSessionAttr(bpc.request, "appPremisesRecommendationDto");
         String Remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, "recommendation");
-        String riskRecommendation = ParamUtil.getRequestString(bpc.request, "riskRecommendation");
+        String otherRecommendation = ParamUtil.getRequestString(bpc.request, "otherRecommendation");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         appPremisesRecommendationDto.setRemarks(Remarks);
         appPremisesRecommendationDto.setRecomType("report");
-
-        if ("reject".equals(recommendation)) {
+        if ("Others".equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-//            appPremisesRecommendationDto.setRecomDecision("Rejection");
+            String[] split_number = otherRecommendation.split("\\D");
+            String[] split_unit = otherRecommendation.split("\\d");
+            String unit = split_unit[1];
+            String number = split_number[0];
+            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+            appPremisesRecommendationDto.setChronoUnit(unit);
+            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
             insRepService.saveRecommendation(appPremisesRecommendationDto);
-        }else if(StringUtil.isEmpty(recommendation)){
+        }else{
+            String[] split_number = recommendation.split("\\D");
+            String[] split_unit = recommendation.split("\\d");
+            String unit = split_unit[1];
+            String number = split_number[0];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-//            appPremisesRecommendationDto.setRecomDecision("approve");
-            appPremisesRecommendationDto.setRecomType(riskRecommendation);
-            insRepService.saveRecommendation(appPremisesRecommendationDto);
-        } else {
-//            int i = Integer.parseInt(recommendation);
-//            appPremisesRecommendationDto.setRecomInNumber(i);
-            appPremisesRecommendationDto.setRecomDecision("change");
-            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+            appPremisesRecommendationDto.setChronoUnit(unit);
+            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
             insRepService.saveRecommendation(appPremisesRecommendationDto);
         }
 
@@ -154,6 +168,7 @@ public class InsReportDelegator {
         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.INSPECTION_STATUS_PENDING_AO_RESULT, taskKey);
 
     }
+
     /**
      * private utils
      */
@@ -199,7 +214,8 @@ public class InsReportDelegator {
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
-    private List<TaskDto> prepareTaskList(TaskDto taskDto){
+
+    private List<TaskDto> prepareTaskList(TaskDto taskDto) {
         List<TaskDto> list = new ArrayList<>();
         taskDto.setId(null);
         taskDto.setUserId("69F8BB01-F70C-EA11-BE7D-000C29F371DC");

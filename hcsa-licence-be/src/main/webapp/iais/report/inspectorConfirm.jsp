@@ -340,7 +340,7 @@
                             </td>
                             <td class="col-xs-4">
                                         <span>
-                                            <p>${appPremisesRecommendationDto.recomType}</p>
+                                            <p>${appPremisesRecommendationDto.recomInNumber}${appPremisesRecommendationDto.chronoUnit}</p>
                                         </span>
                             </td>
                             <td class="col-xs-4"></td>

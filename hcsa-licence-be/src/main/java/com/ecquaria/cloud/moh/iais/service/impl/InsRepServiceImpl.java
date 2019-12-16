@@ -102,22 +102,22 @@ public class InsRepServiceImpl implements InsRepService {
         List<ChecklistQuestionDto> listChecklistQuestionDtos = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
         List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = new ArrayList<>();
-        if(listChecklistQuestionDtos!=null && !listChecklistQuestionDtos.isEmpty()){
-            String configId = listChecklistQuestionDtos.get(0).getConfigId();
-            List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
-            if(ncAnswerDtoList!=null && !ncAnswerDtoList.isEmpty()){
-                for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
-                    ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
-                    reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
-                    reportNcRegulationDto.setRegulation(ncAnswerDto.getClause());
-                    listReportNcRegulationDto.add(reportNcRegulationDto);
-                }
-                inspectionReportDto.setStatus("Partial Compliance");
-
-            }else {
-                inspectionReportDto.setStatus("Full Compliance");
-            }
-        }
+//        if(listChecklistQuestionDtos!=null && !listChecklistQuestionDtos.isEmpty()){
+//            String configId = listChecklistQuestionDtos.get(0).getConfigId();
+//            List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
+//            if(ncAnswerDtoList!=null && !ncAnswerDtoList.isEmpty()){
+//                for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
+//                    ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
+//                    reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
+//                    reportNcRegulationDto.setRegulation(ncAnswerDto.getClause());
+//                    listReportNcRegulationDto.add(reportNcRegulationDto);
+//                }
+//                inspectionReportDto.setStatus("Partial Compliance");
+//
+//            }else {
+//                inspectionReportDto.setStatus("Full Compliance");
+//            }
+//        }
         //add ReportNcRegulationDto and add ncItemId
 
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationId).getEntity();
@@ -159,9 +159,7 @@ public class InsRepServiceImpl implements InsRepService {
                 riskResult.add(recommTime);
             }
         }
-        riskResult.add("1year");
-        riskResult.add("2year");
-        riskResult.add("3year");
+        riskResult.add("Others");
 
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());

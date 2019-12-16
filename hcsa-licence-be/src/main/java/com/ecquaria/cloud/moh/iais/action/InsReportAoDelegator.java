@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -44,6 +45,9 @@ public class InsReportAoDelegator {
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
 
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
 
     public void start(BaseProcessClass bpc) {
 
@@ -64,14 +68,10 @@ public class InsReportAoDelegator {
         String appNo = taskDto.getRefNo();
         //String appNo = "AN1911136061-01";
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
+        String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo,applicationViewDto);
-        SelectOption so1 = new SelectOption("Reject", "Reject");
-        SelectOption so2 = new SelectOption("1Y", "1year");
-        SelectOption so3 = new SelectOption("2Y", "2year");
-        List<SelectOption> inspectionReportTypeOption = new ArrayList<>();
-        inspectionReportTypeOption.add(so1);
-        inspectionReportTypeOption.add(so2);
-        inspectionReportTypeOption.add(so3);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, "report").getEntity();
+        ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
@@ -113,16 +113,28 @@ public class InsReportAoDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         String Remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, "recommendation");
+        String otherRecommendation = ParamUtil.getRequestString(bpc.request, "otherRecommendation");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         appPremisesRecommendationDto.setRemarks(Remarks);
         appPremisesRecommendationDto.setRecomType("report");
-        if("reject".equals(recommendation)){
+        if ("Others".equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+            String[] split_number = otherRecommendation.split("\\D");
+            String[] split_unit = otherRecommendation.split("\\d");
+            String unit = split_unit[1];
+            String number = split_number[0];
+            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+            appPremisesRecommendationDto.setChronoUnit(unit);
+            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
             insRepService.saveRecommendation(appPremisesRecommendationDto);
         }else{
-            int i = Integer.parseInt(recommendation);
-            appPremisesRecommendationDto.setRecomInNumber(i);
+            String[] split_number = recommendation.split("\\D");
+            String[] split_unit = recommendation.split("\\d");
+            String unit = split_unit[1];
+            String number = split_number[0];
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+            appPremisesRecommendationDto.setChronoUnit(unit);
+            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
             insRepService.saveRecommendation(appPremisesRecommendationDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);

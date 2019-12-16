@@ -16,4 +16,5 @@ public interface InsRepService {
     ApplicationViewDto getApplicationViewDto (String appNo);
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
 
+
 }

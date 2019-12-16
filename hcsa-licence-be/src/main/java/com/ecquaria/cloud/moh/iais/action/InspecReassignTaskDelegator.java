@@ -15,12 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +27,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Process: MohInspectionInboxSearch
- *
- * @author Shicheng
- * @date 2019/11/14 18:01
- **/
-@Delegator("inspectionSearchDelegator")
+ * @author weilu
+ * @date 12/16/2019 4:03 PM
+ */
+@Delegator("inspectionReassignTask")
 @Slf4j
-public class InspectionSearchDelegator {
+public class InspecReassignTaskDelegator{
 
     @Autowired
     private InspectionService inspectionService;
 
-    @Autowired
-    private InspectionSearchDelegator(InspectionService inspectionService){
+    public InspecReassignTaskDelegator(InspectionService inspectionService) {
         this.inspectionService = inspectionService;
     }
 
@@ -89,7 +81,9 @@ public class InspectionSearchDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspectionSubPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchResult");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        //get groupId by login id
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
+        //select de option
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption();
         //get Inspector Option
@@ -137,6 +131,7 @@ public class InspectionSearchDelegator {
     public void inspectionSupSearchDoSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
         SearchParam searchParam = getSearchParam(bpc);
+
         List<String> workGroupIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "workGroupIds");
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");

@@ -75,9 +75,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Comfirm" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InspectorReportPage" style="oblique">
    <position>{(260,190)(490,190)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(500,560)(260,360)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportSave" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(500,560)(630,360)}</position>
   </SynchronousLink>
@@ -87,13 +84,16 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ComfirmPage" style="oblique">
    <position>{(480,370)(500,560)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectorReportPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(500,560)(260,190)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/InspectorReportSave" executor="" icon="" leftOperand="confirmAction" name="Switch1" x="480" y="540">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/InspectorReportPre" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectorReportSave" value="&quot;submit&quot;"/>
+   <SwitchCase component="/Pages/WebPage/InspectorReportPage" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

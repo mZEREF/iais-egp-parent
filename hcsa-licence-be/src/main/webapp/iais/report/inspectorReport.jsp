@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     //handle to the Engine APIs
@@ -350,11 +351,13 @@
                             </td>
                             <td class="col-xs-4">
                                         <span>
-                                               <select  id="select" name="recommendation">
+                                               <select  id="select" name="recommendation" onchange="x(this)">
+                                                   <option value="">---Please select---</option>
                                                    <c:forEach items="${insRepDto.riskRecommendations}" var="risk">
                                                        <option value="${risk}"><c:out value="${risk}"></c:out></option>
                                                    </c:forEach>
 <%--                                                   <c:if test="${appPremisesRecommendationDto.recomInNumber eq '2'}">selected</c:if>--%>
+                                                   <input type="text" name="otherRecommendation" id="recom" value="" style="display: none"></input>
                                                </select>
                                            </p>
                                         </span>
@@ -369,5 +372,13 @@
     <button type="submit">confirm</button>
 </form>
 
+<script type="text/javascript">
+    function x(obj) {
+        if(obj.options[obj.selectedIndex].value =="Others")
+            document.getElementById("recom").style.display="";
+        else
+            document.getElementById("recom").style.display="none";
 
+    }
+</script>
 
