@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -14,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -284,21 +284,14 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchValidate(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchValidate start ...."));
-        InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
-        inspectionTaskPoolListDto = getValueFromPage(bpc);
-        String[] nameValue = ParamUtil.getStrings(bpc.request,"inspector");
-        if(nameValue == null || nameValue.length < 0) {
-            inspectionTaskPoolListDto.setInspectorCheck(null);
-        } else {
-            List<SelectOption> inspectorCheckList = inspectionService.getCheckInspector(nameValue, inspectionTaskPoolListDto);
-            inspectionTaskPoolListDto.setInspectorCheck(inspectorCheckList);
-        }
+        InspectionTaskPoolListDto inspectionTaskPoolListDto = getValueFromPage(bpc);
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionTaskPoolListDto,"create");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, DemoConstants.ERRORMAP, errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
@@ -310,9 +303,15 @@ public class InspectionSearchDelegator {
     }
 
     public InspectionTaskPoolListDto getValueFromPage(BaseProcessClass bpc) {
-        InspectionTaskPoolListDto dto = new InspectionTaskPoolListDto();
-
-        return dto;
+        InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
+        String[] nameValue = ParamUtil.getStrings(bpc.request,"inspectorCheck");
+        if(nameValue == null || nameValue.length < 0) {
+            inspectionTaskPoolListDto.setInspectorCheck(null);
+        } else {
+            List<SelectOption> inspectorCheckList = inspectionService.getCheckInspector(nameValue, inspectionTaskPoolListDto);
+            inspectionTaskPoolListDto.setInspectorCheck(inspectorCheckList);
+        }
+        return inspectionTaskPoolListDto;
     }
 
     /**

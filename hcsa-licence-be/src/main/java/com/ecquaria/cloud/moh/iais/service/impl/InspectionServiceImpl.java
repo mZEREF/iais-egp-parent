@@ -372,7 +372,7 @@ public class InspectionServiceImpl implements InspectionService {
         for(SelectOption so : inspectorCheckList) {
             for (TaskDto td : commPools) {
                 if(td.getId().equals(inspectionTaskPoolListDto.getTaskId())){
-                    td.setId("");
+                    td.setId(null);
                     td.setUserId(so.getValue());
                     td.setDateAssigned(new Date());
                     td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
