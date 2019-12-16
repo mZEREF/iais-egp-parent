@@ -101,7 +101,7 @@ public class NewApplicationDelegator {
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         //wait to delete one premises
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, null);
-        ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",null);
+        ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",new ArrayList<>());
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, null);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCDTO, null);
         //for loading the draft by appId
@@ -867,10 +867,7 @@ public class NewApplicationDelegator {
                             errorMap.put("postalCode"+i, "can not is null");
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
-                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDtoList.get(i), AppServicesConsts.VALIDATE_PROFILES_CONVEYANCE);
-                        if (validationResult.isHasErrors()) {
-                            errorMap = validationResult.retrieveAll();
-                        }
+
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
                         if(StringUtil.isEmpty(conveyanceVehicleNo)){
                             errorMap.put("conveyanceVehicleNo"+i,"cannot be blank");
