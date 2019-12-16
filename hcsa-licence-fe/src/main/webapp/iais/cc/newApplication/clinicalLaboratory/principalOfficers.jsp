@@ -41,7 +41,8 @@
                                                 </ul>
                                                 <div class="application-service-steps">
                                                     <div class="clinical-governance-officer">
-                                                        <jsp:include page="/iais/cc/newApplication/clinicalLaboratory/CR_Po.jsp" />
+                                                        <%@include file="CR_Po.jsp"%>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -78,14 +79,13 @@
             // submitForms('governanceOfficers','saveDraft',null,'clinical');
         });
         $('#principalOfficersNext').click(function(){
-         /*   doValidation();
+          /*  doValidation();
             if(getErrorMsg()){
                 dismissWaiting();
             }else {*/
                 var controlFormLi = $('#controlFormLi').val();
                 submitForms('documents',null,null,controlFormLi);
-     /*       }
-*/
+        /*    }*/
 
         });
 

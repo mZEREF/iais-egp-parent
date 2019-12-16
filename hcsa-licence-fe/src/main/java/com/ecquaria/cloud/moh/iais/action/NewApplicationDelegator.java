@@ -94,7 +94,10 @@ public class NewApplicationDelegator {
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         //wait to delete one premises
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, null);
-        ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",new ArrayList<>());
+        List<AppSvcPrincipalOfficersDto> list=new ArrayList<>();
+        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
+        list.add(appSvcPrincipalOfficersDto);
+        ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",(Serializable) list);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, null);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCDTO, null);
 

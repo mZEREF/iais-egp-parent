@@ -434,12 +434,12 @@
 
         //Binding method
         $('.premiseId').click(function(){
-            doValidation();
-          /*  if (getErrorMsg()) {
+         /*   doValidation();
+            if (getErrorMsg()) {
                 dismissWaiting();
             } else {*/
                 submit('documents',null,null);
-         /*   }*/
+          /*  }*/
         });
         $('.premiseSaveDraft').click(function(){
             submit('premises','saveDraft',null);

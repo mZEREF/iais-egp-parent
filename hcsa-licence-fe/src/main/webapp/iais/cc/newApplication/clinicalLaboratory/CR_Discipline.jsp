@@ -1,7 +1,7 @@
 <c:set value="${reloadLaboratoryDisciplines}" var="reloadData"/>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
   <p>Please select the service disciplines you would like to apply at your premises${status.index+1}.</p>
-  <span class="error-msg" style="display: none">Select at least one</span>
+  <span class="error-msg" name="iaisErrorMsg" id="error_checkError"></span>
 <div class="wrapper">
   <div class="form-inner-content editableMode">
     <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
@@ -23,7 +23,7 @@
                     <table class="check-${appGrpPremisesDto.premisesIndexNo}">
                       <tbody>
                       <c:forEach var="levelOneList" items="${HcsaSvcSubtypeOrSubsumedDto}" varStatus="levelOne">
-                        <c:set var="checkIndexNo1" value="${appGrpPremisesDto.premisesIndexNo}${levelOneList.name}${levelOneList.code}${levelOneList.parentId}"/>
+                        <c:set var="checkIndexNo1" value="${appGrpPremisesDto.premisesIndexNo};${levelOneList.name};${levelOneList.code};${levelOneList.parentId}"/>
                         <c:set var="reloadIndexNo1" value="${appGrpPremisesDto.premisesIndexNo}${levelOneList.id}"/>
                         <!--one -->
                         <tr>
@@ -45,7 +45,7 @@
                         </tr>
                         <c:if test="${not empty levelOneList.list}">
                           <c:forEach var="levelTwoList" items="${levelOneList.list}" varStatus="levelTwo">
-                            <c:set var="checkIndexNo2" value="${appGrpPremisesDto.premisesIndexNo}${levelTwoList.name}${levelTwoList.code}${levelTwoList.parentId}"/>
+                            <c:set var="checkIndexNo2" value="${appGrpPremisesDto.premisesIndexNo};${levelTwoList.name};${levelTwoList.code};${levelTwoList.parentId}"/>
                             <c:set var="reloadIndexNo2" value="${appGrpPremisesDto.premisesIndexNo}${levelTwoList.id}"/>
                             <!--two -->
                             <tr>
@@ -68,7 +68,7 @@
                             <c:if test="${not empty levelTwoList.list}">
                               <!--three -->
                               <c:forEach var="levelThreeList" items="${levelTwoList.list}" varStatus="levelThree">
-                                <c:set var="checkIndexNo3" value="${appGrpPremisesDto.premisesIndexNo}${levelThreeList.name}${levelThreeList.code}${levelThreeList.parentId}"/>
+                                <c:set var="checkIndexNo3" value="${appGrpPremisesDto.premisesIndexNo};${levelThreeList.name};${levelThreeList.code};${levelThreeList.parentId}"/>
                                 <c:set var="reloadIndexNo3" value="${appGrpPremisesDto.premisesIndexNo}${levelThreeList.id}"/>
                                 <tr>
                                   <td>
