@@ -21,9 +21,6 @@
     <br>
     <br>
     <br>
-    <%--<input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.InspectionSearchDelegator"/>
-    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto"/>
-    <input type="hidden" name="valProfiles" id="valProfiles" value="create"/>--%>
     <input type="hidden" name="InspectionSupSearchSwitchType" value="">
     <input type="hidden" name="actionValue" value="">
     <iais:body >
