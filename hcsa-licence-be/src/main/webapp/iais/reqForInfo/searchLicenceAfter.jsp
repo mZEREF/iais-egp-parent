@@ -30,20 +30,20 @@
                                             <iais:field value="Licence No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="licence_no"  />
+                                                    <input type="text" name="licence_no" value="${searchNo}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Service Licence Type"/>
                                             <iais:value width="18">
-                                                <iais:select name="service_licence_type" options="appTypeOption" firstOption="Please select"  ></iais:select>
+                                                <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please select" value="${licSvcTypeOption}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Licence Status"/>
                                             <iais:value width="18">
-                                                <iais:select name="licence_status" options="appStatusOption" firstOption="Please select"  ></iais:select>
+                                                <iais:select name="licence_status" options="licStatusOption" firstOption="Please select" value="${licStatusOption}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -59,9 +59,9 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorSearchTaskClear()">Back</button>
-                                            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppSearch()">Search</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppBack()">Back</button>
+                                            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppClear()">Clear</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -138,3 +138,20 @@
 
 
 </form>
+<script type="text/javascript">
+    function doAppSearch(){
+        SOP.Crud.cfxSubmit("mainForm", "preview");
+    }
+    function doAppBack(){
+        SOP.Crud.cfxSubmit("mainForm", "preview");
+    }
+    function doAppClear(){
+        $('input[name="licence_no"]').val("");
+        $("#licence_type option:first").val("");
+        $("#licence_type option:first").prop("selected", 'selected');
+        $("#licence_status option:first").val("");
+        $("#licence_status option:first").prop("selected", 'selected');
+        $('input[name="to_date"]').val("");
+        $('input[name="sub_date"]').val("");
+    }
+</script>

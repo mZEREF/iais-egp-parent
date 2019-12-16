@@ -1,12 +1,16 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * RequestForInformationDelegator
@@ -17,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @Delegator("requestForInformationDelegator")
 public class RequestForInformationDelegator {
+    @Autowired
+    RequestForInformationService requestForInformationService;
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
@@ -37,28 +43,51 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>doBasicSearch>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        String searchNo=ParamUtil.getString(request,"search_no");
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
+        ParamUtil.setSessionAttr(request,"searchNo",searchNo);
 
         // 		doBasicSearch->OnStepProcess
     }
 
     public void preSearchLicence(BaseProcessClass bpc) {
         log.info("=======>>>>>preSearchLicence>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request = bpc.request;
+        List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
+        List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
+        ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
+        ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
         // 		preSearchLicence->OnStepProcess
     }
 
     public void preSearchApplication(BaseProcessClass bpc) {
         log.info("=======>>>>>preSearchApplication>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request = bpc.request;
+        List<SelectOption> appTypeOption = requestForInformationService.getAppTypeOption();
+        List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
+        ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
+        ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
+
         // 		preSearchApplication->OnStepProcess
     }
 
     public void doSearchApplication(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchApplication>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request = bpc.request;
+        List<SelectOption> appTypeOption = requestForInformationService.getAppTypeOption();
+        List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
+        ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
+        ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
         // 		doSearchApplication->OnStepProcess
     }
 
     public void doSearchLicence(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchLicence>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request = bpc.request;
+        List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
+        List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
+        ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
+        ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
         // 		doSearchLicence->OnStepProcess
     }
 

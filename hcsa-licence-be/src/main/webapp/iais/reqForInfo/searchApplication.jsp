@@ -30,20 +30,20 @@
                                             <iais:field value="Application No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="application_no"  />
+                                                    <input type="text" name="application_no" value="${searchNo}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Application Type"/>
                                             <iais:value width="18">
-                                                <iais:select name="application_type" options="appTypeOption" firstOption="Please select" ></iais:select>
+                                                <iais:select name="application_type" options="appTypeOption" firstOption="Please select" value="${appTypeOption}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Application Status"/>
                                             <iais:value width="18">
-                                                <iais:select name="application_status" options="appStatusOption" firstOption="Please select"  ></iais:select>
+                                                <iais:select name="application_status" options="appStatusOption" firstOption="Please select" value="${appStatusOption}" ></iais:select>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -59,9 +59,9 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorSearchTaskSearch()">Search</button>
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorSearchTaskClear()">Back</button>
-                                            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doInspectorSearchTaskClear()">Clear</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppSearch()">Search</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppBack()">Back</button>
+                                            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppClear()">Clear</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -74,3 +74,20 @@
     </iais:body>
 
 </form>
+<script type="text/javascript">
+    function doAppSearch(){
+        SOP.Crud.cfxSubmit("mainForm", "preview");
+    }
+    function doAppBack(){
+        SOP.Crud.cfxSubmit("mainForm", "preview");
+    }
+    function doAppClear(){
+        $('input[name="application_no"]').val("");
+        $("#application_type option:first").val("");
+        $("#application_type option:first").prop("selected", 'selected');
+        $("#application_status option:first").val("");
+        $("#application_status option:first").prop("selected", 'selected');
+        $('input[name="to_date"]').val("");
+        $('input[name="sub_date"]').val("");
+    }
+</script>

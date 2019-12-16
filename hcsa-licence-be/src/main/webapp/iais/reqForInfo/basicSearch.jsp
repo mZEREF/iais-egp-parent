@@ -30,7 +30,7 @@
                         </iais:row>
                         <iais:row>
                             <iais:value width="18">
-                                <input type="radio" name="select_search" value="application" />Application No
+                                <input type="radio" name="select_search" value="application" checked />Application No
                             </iais:value>
                             <iais:value width="18">
                                 <input type="radio" name="select_search" value="licence" />Licence No
@@ -38,7 +38,8 @@
                         </iais:row>
 
                         <iais:action style="text-align:center;">
-                            <button type="button" class="search btn" onclick="javascript:doSearch();">Advanced Search</button>
+                            <button type="button" class="search btn" onclick="javascript:doSearch();">Search</button>
+                            <button type="button" class="search btn" onclick="javascript:doAdvancedSearch();">Advanced Search</button>
                             <button type="button" class="search btn" onclick="javascript:doClear();">Clear</button>
                         </iais:action>
                     </iais:section>
@@ -52,6 +53,7 @@
 
 
     function doClear(){
+        $('input[name="search_no"]').val("");
     }
 
     function doSearch(){
@@ -59,6 +61,15 @@
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
                 SOP.Crud.cfxSubmit("mainForm", radios[i].value);
+                break;
+            }
+        }
+    }
+    function doAdvancedSearch(){
+        var radios=document.getElementsByName("select_search");
+        for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                SOP.Crud.cfxSubmit("mainForm", radios[i].value+"Adv");
                 break;
             }
         }

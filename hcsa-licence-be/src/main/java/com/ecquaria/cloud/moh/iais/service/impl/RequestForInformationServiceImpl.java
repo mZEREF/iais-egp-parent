@@ -1,0 +1,79 @@
+package com.ecquaria.cloud.moh.iais.service.impl;
+
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * RequestForInformationServiceImpl
+ *
+ * @author junyu
+ * @date 2019/12/16
+ */
+@Service
+public class RequestForInformationServiceImpl implements RequestForInformationService {
+    private final String[] appType=new String[]{
+            ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+            ApplicationConsts.APPLICATION_TYPE_RENEWAL,
+            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
+            ApplicationConsts.APPLICATION_TYPE_APPEAL,
+            ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT,
+            ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL
+    };
+    private final String[] appStatus=new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,
+            ApplicationConsts.APPLICATION_STATUS_APPROVED,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,
+            ApplicationConsts.APPLICATION_STATUS_REJECTED,
+            ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,
+            ApplicationConsts.APPLICATION_STATUS_DRAFT,
+            ApplicationConsts.APPLICATION_STATUS_DELETED,
+            ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
+            ApplicationConsts.APPLICATION_STATUS_SUPPORT,
+            ApplicationConsts.APPLICATION_STATUS_VERIFIED,
+            ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_INFORMATION,
+            ApplicationConsts.APPLICATION_STATUS_LICENCE_START_DATE,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW
+    };
+    private final String[] licServiceType=new String[]{
+            ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,
+            ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,
+            ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED
+    };
+    private final String[] licStatus=new String[]{
+            ApplicationConsts.LICENCE_STATUS_ACTIVE,
+            ApplicationConsts.LICENCE_STATUS_IACTIVE,
+            ApplicationConsts.LICENCE_STATUS_EXPIRY
+    };
+
+    @Override
+    public List<SelectOption> getAppTypeOption() {
+        return MasterCodeUtil.retrieveOptionsByCodes(appType);
+    }
+
+    @Override
+    public List<SelectOption> getAppStatusOption() {
+        return  MasterCodeUtil.retrieveOptionsByCodes(appStatus);
+    }
+
+    @Override
+    public List<SelectOption> getLicSvcTypeOption() {
+        return MasterCodeUtil.retrieveOptionsByCodes(licServiceType);
+    }
+
+    @Override
+    public List<SelectOption> getLicStatusOption() {
+        return MasterCodeUtil.retrieveOptionsByCodes(licStatus);
+    }
+}
