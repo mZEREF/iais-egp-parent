@@ -119,7 +119,7 @@
                         <tr>
                           <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
                           <td><c:out value="${pool.applicationNo}"/></td>
-                          <td><c:out value="${pool.applicationType}"/></td>
+                          <td><iais:code code="${pool.applicationType}"/></td>
                           <td><c:out value="${pool.hciCode}"/></td>
                           <td><c:out value="${pool.hciName}"/></td>
                           <td><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></td>
