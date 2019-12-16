@@ -1,6 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%
   //handle to the Engine APIs
@@ -79,7 +80,7 @@
                             <select name = "inspectorSearchTask_inspectorName" id="inspectorSearchTask_inspectorName" onclick="javascript:doInspectorSearchTaskSelect()">
                               <option value="-">Please select</option>
                               <c:if test="${inspectorOption != null}">
-                                <c:forEach var="inspector" items="${inspectorOption.rows}">
+                                <c:forEach var="inspector" items="${inspectorOption}">
                                   <option value="<iais:mask name="inspectorName" value="${inspector.value}"/>"><c:out value="${inspector.text}"/></option>
                                 </c:forEach>
                               </c:if>
@@ -143,8 +144,8 @@
                         <td><c:out value="${pool.hciCode}"/></td>
                         <td><c:out value="${pool.hciName}"/></td>
                         <td><c:out value="${pool.serviceName}"/></td>
-                        <td><c:out value="${pool.serviceEndDate}"/></td>
-                        <td><c:out value="${pool.inspectionDate}"/></td>
+                        <td><fmt:formatDate value='${pool.serviceEndDate}' pattern='dd/MM/yyyy' /></td>
+                        <td><fmt:formatDate value='${pool.inspectionDate}' pattern='dd/MM/yyyy' /></td>
                         <td><c:out value="${pool.applicationStatus}"/></td>
                         <td><c:out value="${pool.inspector}"/></td>
                         <td><c:out value="${pool.inspectorLead}"/></td>
