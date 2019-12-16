@@ -518,7 +518,7 @@
 <script type="text/javascript">
     function doReload(){
         $.ajax({
-            'url':'${pageContext.request.contextPath}/reload-email',
+            'url':'${pageContext.request.contextPath}/reload-nc-email',
             'type':'GET',
             'success':function (data) {
                  $('#htmlEditroArea').val(data.responseText);

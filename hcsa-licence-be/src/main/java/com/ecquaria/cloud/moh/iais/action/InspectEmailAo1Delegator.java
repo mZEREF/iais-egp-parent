@@ -326,7 +326,7 @@ public class InspectEmailAo1Delegator {
         return showDto;
     }
 
-    @RequestMapping(value = "/reload-email", method = RequestMethod.GET)
+    @RequestMapping(value = "/reload-nc-email", method = RequestMethod.GET)
     public @ResponseBody
     String reloadNcEmail(HttpServletRequest request) throws IOException, TemplateException {
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
