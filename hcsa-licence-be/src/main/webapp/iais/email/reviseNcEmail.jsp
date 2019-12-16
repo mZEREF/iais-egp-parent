@@ -1,4 +1,3 @@
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
@@ -521,7 +520,7 @@
             'url':'${pageContext.request.contextPath}/reload-rev-email',
             'type':'GET',
             'success':function (data) {
-                $('#htmlEditroArea').val(data.responseText);
+                $('textarea').val(data);
             }
         });
     }
