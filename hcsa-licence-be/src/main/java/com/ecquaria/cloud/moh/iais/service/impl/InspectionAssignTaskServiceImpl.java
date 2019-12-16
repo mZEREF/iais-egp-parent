@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -223,14 +222,16 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     td.setUserId(inspectorCheckList.get(0).getValue());
                     td.setDateAssigned(new Date());
                     td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    updateTask(td);
+                    inspecTaskCreAndAssDto.setTaskDto(td);
+                    inspecTaskCreAndAssDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    inspecTaskCreAndAssDto.setTaskDtos(commPools);
                     inspectorCheckList.remove(0);
+                    inspectionTaskClient.assignCommonPool(inspecTaskCreAndAssDto);
                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
                     ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                     applicationViewDto.setApplicationDto(applicationDto1);
                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
                     if(inspectorCheckList != null && inspectorCheckList.size() > 0){
-                        createTaskByInspectorList(inspectorCheckList, commPools, inspecTaskCreAndAssDto);
                         for(int i = 0; i < inspectorCheckList.size(); i++){
                             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
                         }
@@ -271,7 +272,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks) {
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
         ApplicationViewDto applicationViewDto = searchByAppNo(inspecTaskCreAndAssDto.getApplicationNo());
@@ -294,30 +294,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             }
         }
         return taskDto;
-    }
-
-    private void createTaskByInspectorList(List<SelectOption> inspectorCheckList, List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        List<TaskDto> taskDtoList = new ArrayList<>();
-        for(SelectOption so : inspectorCheckList) {
-            for (TaskDto td : commPools) {
-                if(td.getId().equals(inspecTaskCreAndAssDto.getTaskId())){
-                    td.setId(null);
-                    td.setUserId(so.getValue());
-                    td.setDateAssigned(new Date());
-                    td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    taskDtoList.add(td);
-                }
-            }
-        }
-        createTask(taskDtoList);
-    }
-
-    private void createTask(List<TaskDto> taskDtoList){
-        taskService.createTasks(taskDtoList);
-    }
-
-    private void updateTask(TaskDto td) {
-        taskService.updateTask(td);
     }
 
     private void getInNameBySelectOption(List<SelectOption> nameList, String s, SelectOption so) {
