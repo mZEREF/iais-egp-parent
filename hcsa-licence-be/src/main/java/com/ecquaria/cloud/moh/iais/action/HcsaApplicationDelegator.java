@@ -26,23 +26,13 @@ import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -150,6 +140,7 @@ public class HcsaApplicationDelegator {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
 
+        applicationViewDto.setVerified(routingStage);
         //History
 
 //        List<String> actionByList=new ArrayList<>();
@@ -187,6 +178,7 @@ public class HcsaApplicationDelegator {
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROLL_BACK,"RollBack");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_SUPPORT,"Support");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED,"Verified");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED,"Verified");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
@@ -194,6 +186,8 @@ public class HcsaApplicationDelegator {
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
+        }else{
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified");
         }
         applicationViewDto.setRoutingStage(routingStage);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
