@@ -502,6 +502,9 @@
                                     <iais:action>
                                         <button type="button" class="search btn" onclick="javascript:doPreview();">Preview</button>
                                     </iais:action>
+                                    <iais:action>
+                                        <button type="button" class="search btn" onclick="javascript:doReload();">Reload</button>
+                                    </iais:action>
                                 </p>
                             </div>
 
@@ -513,7 +516,15 @@
     </div>
 </form>
 <script type="text/javascript">
-
+    function doReload(){
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/reload-email',
+            'type':'GET',
+            'success':function (data) {
+                 $('#htmlEditroArea').val(data.responseText);
+            }
+        });
+    }
 
     function doPreview(){
         SOP.Crud.cfxSubmit("mainForm", "preview");
