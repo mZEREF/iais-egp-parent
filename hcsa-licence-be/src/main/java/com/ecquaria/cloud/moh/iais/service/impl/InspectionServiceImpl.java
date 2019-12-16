@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -181,16 +182,22 @@ public class InspectionServiceImpl implements InspectionService {
             List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             userIdList = getUserIdList(orgUserDtoList, userIdList);
         }
-        for(String userId:userIdList){
-            List<TaskDto> taskDtoList = organizationClient.getTasksByUserId(userId).getEntity();
-            OrgUserDto orgUserDto =organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
-            String value = AppConsts.NO;
-            if(taskDtoList != null && taskDtoList.size() > 0){
-                value = getOptionValue(taskDtoList);
-            }
-            SelectOption so = new SelectOption(value, orgUserDto.getUserName());
-            inspectorOption.add(so);
+        List<OrgUserDto> orgUserDtos = new ArrayList<>();
+        if(userIdList != null && !(userIdList.isEmpty())){
+            orgUserDtos = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
         }
+        if(orgUserDtos != null && !(orgUserDtos.isEmpty())){
+            for(OrgUserDto oDto:orgUserDtos){
+                List<TaskDto> taskDtoList = organizationClient.getTasksByUserId(oDto.getId()).getEntity();
+                String value = AppConsts.NO;
+                if(taskDtoList != null && taskDtoList.size() > 0){
+                    value = getOptionValue(taskDtoList);
+                }
+                SelectOption so = new SelectOption(value, oDto.getUserName());
+                inspectorOption.add(so);
+            }
+        }
+
         return inspectorOption;
     }
 
@@ -286,6 +293,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
+    @SearchTrack(catalog = "inspectionQuery",key = "assignInspectorSupper")
     public SearchResult<InspectionSubPoolQueryDto> getSupPoolByParam(SearchParam searchParam) {
         return inspectionTaskClient.searchInspectionSupPool(searchParam).getEntity();
     }
@@ -304,13 +312,18 @@ public class InspectionServiceImpl implements InspectionService {
                 inspectionTaskPoolListDto.setInspectorName("");
             } else {
                 inspectionTaskPoolListDto.setInspector(tDto.getUserId());
-                OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(tDto.getUserId()).getEntity();
-                inspectionTaskPoolListDto.setInspectorName(orgUserDto.getUserName());
+                List<String> ids = new ArrayList<>();
+                ids.add(tDto.getUserId());
+                List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
+                inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getUserName());
             }
             inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
             inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
         }
-        OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(loginContext.getUserId()).getEntity();
+        List<String> ids = new ArrayList<>();
+        ids.add(loginContext.getUserId());
+        List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
+        OrgUserDto orgUserDto = orgUserDtos.get(0);
         inspectionTaskPoolListDtoList = inputOtherData(searchResult.getRows(), inspectionTaskPoolListDtoList, orgUserDto);
 
         SearchResult<InspectionTaskPoolListDto> searchResult2 = new SearchResult<>();
