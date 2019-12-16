@@ -87,6 +87,7 @@ public class InspectReviseNcEmailDelegator {
         ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
         InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
         insepctionNcCheckListService.getCommonDto(commonDto,appPremPreCklDto,itemDtoList);
+        commonDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);

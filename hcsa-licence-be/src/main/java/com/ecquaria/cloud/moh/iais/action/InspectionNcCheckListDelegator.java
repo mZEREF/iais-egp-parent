@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -69,10 +68,6 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void init(BaseProcessClass bpc){
-
-
-        insepctionNcCheckListService.getNcAnswerDtoList("B6A93DC1-491E-EA11-BE7D-000C29F371DC","E65F8B2A-EA3C-433B-8605-9864A969FE59");
-
         Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
@@ -86,13 +81,13 @@ public class InspectionNcCheckListDelegator {
         AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,configId);
         InspectionFillCheckListDto insepectionNcCheckListDto = null;
         String appPremCorrId = appPremPreCklDto.getAppPremCorrId();
-        List<NcAnswerDto> acDto = insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
         AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
         List<AppPremisesPreInspectionNcItemDto> itemDtoList = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremPreCklDto.getAppPremCorrId());
         insepectionNcCheckListDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
         ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
         InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
         insepctionNcCheckListService.getCommonDto(commonDto,appPremPreCklDto,itemDtoList);
+        commonDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
