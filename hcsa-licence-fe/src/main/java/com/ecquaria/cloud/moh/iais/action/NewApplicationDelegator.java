@@ -459,8 +459,11 @@ public class NewApplicationDelegator {
     public void doSaveDraft(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSaveDraft start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
-        log.debug(StringUtil.changeForLog("the draftNo -->:") + draftNo);
+        if(StringUtil.isEmpty(appSubmissionDto.getDraftNo())){
+            String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+            log.debug(StringUtil.changeForLog("the draftNo -->:") + draftNo);
+            appSubmissionDto.setDraftNo(draftNo);
+        }
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doSaveDraft end ...."));
@@ -740,6 +743,12 @@ public class NewApplicationDelegator {
 
     private void requestForInformationLoading(BaseProcessClass bpc) {
         //todo
+        String appId = ParamUtil.getString(bpc.request,"appId");
+        if(StringUtil.isEmpty(appId)){
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppId(appId);
+
+        }
+
     }
 
     private void loadingServiceConfig(BaseProcessClass bpc) {
