@@ -63,9 +63,9 @@ public interface OrganizationClient {
     FeignResponseEntity<BroadcastOrganizationDto> getBroadcastOrganizationDto(@PathVariable(name = "groupName") String groupName,
                                                                               @PathVariable(name = "groupDomain") String groupDomain);
 
-    @PostMapping(path = "/assign", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/iais-task/assign", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<InspecTaskCreAndAssDto> assignCommonPool(@RequestBody InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
 
-    @PostMapping(path = "/sup-assign", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/iais-task/sup-assign", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<InspectionTaskPoolListDto> assignSupTasks(@RequestBody InspectionTaskPoolListDto inspectionTaskPoolListDto);
 }
