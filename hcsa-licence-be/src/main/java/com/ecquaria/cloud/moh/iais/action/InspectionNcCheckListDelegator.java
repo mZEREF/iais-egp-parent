@@ -66,6 +66,10 @@ public class InspectionNcCheckListDelegator {
 
     public void start(BaseProcessClass bpc){
         Log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,"adchklDto",null);
+        ParamUtil.setSessionAttr(request,"fillCheckListDto",null);
+        ParamUtil.setSessionAttr(request,"commonDto",null);
     }
 
     public void init(BaseProcessClass bpc){

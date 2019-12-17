@@ -16,7 +16,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocSaveAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
@@ -245,7 +249,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 answerDtoList.add(answerDto);
             }
             String answerJson = JsonUtil.parseToJson(answerDtoList);
-            AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
+            //AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
+            AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(dto.getCheckList().get(0).getAppPreCorreId(),dto.getCheckList().get(0).getConfigId()).getEntity();
+            if(appDto==null){
+                appDto = new AppPremisesPreInspectChklDto();
+            }
             appDto.setAnswer(answerJson);
             appDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
             appDto.setAppPremCorrId(appPremCorrId);
@@ -407,5 +415,57 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }
             applicationClient.saveAdhocItems(saveItemDtoList).getEntity();
         }
+    }
+
+    @Override
+    public void saveDraft(InspectionFillCheckListDto icDto, InspectionFillCheckListDto comDto, AdCheckListShowDto adDto) {
+        CheckListDraftDto checkListDraftDto = new CheckListDraftDto();
+        checkListDraftDto.setGeneralDto(icDto);
+        checkListDraftDto.setComDto(comDto);
+        String insDraft =JsonUtil.parseToJson(checkListDraftDto);
+        AppPremInsDraftDto insDraftDto = new AppPremInsDraftDto();
+        insDraftDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        insDraftDto.setAnswer(insDraft);
+        AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(icDto.getCheckList().get(0).getAppPreCorreId(),icDto.getCheckList().get(0).getConfigId()).getEntity();
+        if (appDto == null) {
+            appDto = new AppPremisesPreInspectChklDto();
+            appDto.setVersion(1+"");
+            appDto.setStatus("CMSTAT001");
+            appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appDto.setAppPremCorrId(icDto.getCheckList().get(0).getAppPreCorreId());
+            appDto.setChkLstConfId(icDto.getCheckList().get(0).getConfigId());
+            appDto = fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto).getEntity();
+        }
+        insDraftDto.setPreInsChklId(appDto.getId());
+        List<AdhocNcCheckItemDto> adhocItemList = adDto.getAdItemList();
+        List<AdhocDraftDto> adhocSaveList = new ArrayList<>();
+        if(adhocItemList!=null &&!adhocItemList.isEmpty()){
+            AdhocDraftDto saveDto = null;
+            for(AdhocNcCheckItemDto temp:adhocItemList){
+                saveDto = new AdhocDraftDto();
+                AdhocSaveAnswerDto anwAnswerDto = new AdhocSaveAnswerDto();
+                anwAnswerDto.setAnswer(temp.getAdAnswer());
+                anwAnswerDto.setRemark(temp.getRemark());
+                if(temp.getRectified()){
+                    anwAnswerDto.setIsRec(1);
+                }else{
+                    anwAnswerDto.setIsRec(0);
+                }
+                String answerStr = JsonUtil.parseToJson(anwAnswerDto);
+                saveDto.setAdhocItemId(temp.getId());
+                saveDto.setAnswer(answerStr);
+                saveDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                adhocSaveList.add(saveDto);
+            }
+        }
+        String adhocDraft = JsonUtil.parseToJson(adDto);
+        fillUpCheckListGetAppClient.saveAdhocDraft(adhocSaveList);
+        AppPremisesPreInspectChklDto chklDto = new AppPremisesPreInspectChklDto();
+        chklDto.setChkLstConfId(icDto.getCheckList().get(0).getConfigId());
+        chklDto.setAppPremCorrId(icDto.getCheckList().get(0).getAppPreCorreId());
+        chklDto.setVersion(1+"");
+        chklDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        fillUpCheckListGetAppClient.saveAppInsDraft(insDraftDto);
+
     }
 }

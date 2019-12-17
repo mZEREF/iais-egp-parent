@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectC
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -57,6 +59,19 @@ public interface FillUpCheckListGetAppClient {
     @GetMapping(path = "/iais-apppreinsncitem-be/AppPremNcItemByNcId{ncId}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getAppNcItemByNcId(@PathVariable(value ="ncId" ) String ncId);
+
+    @PostMapping(path = "/iais-application-be/apppreminsdraftresult",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremInsDraftDto> saveAppInsDraft(@RequestBody AppPremInsDraftDto dto);
+
+    @PostMapping(path = "/iais-application-be/adhocdraftresult",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AdhocDraftDto>> saveAdhocDraft(@RequestBody List<AdhocDraftDto> dtoList);
+
+    @GetMapping(path = "/iais-apppreinsncitem-be/adhocdraftbyitemId/{itemId}",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AdhocDraftDto>> getAdhocByItemId(@PathVariable(value ="itemId" ) String itemId);
+
 
 
 }

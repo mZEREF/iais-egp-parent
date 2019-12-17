@@ -32,4 +32,5 @@ public interface FillupChklistService {
     void merge(InspectionFillCheckListDto comDto,InspectionFillCheckListDto icDto);
     AdCheckListShowDto getAdhoc(String appremCorrId);
     void saveAdhocDto(AdCheckListShowDto showDto,String appPremId);
+    void saveDraft(InspectionFillCheckListDto icDto,InspectionFillCheckListDto comDto,AdCheckListShowDto adDto);
 }
