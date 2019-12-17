@@ -3,13 +3,13 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -79,14 +79,19 @@ public class InspectionPreDelegator {
     public void inspectionPreInspectorPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorPre start ...."));
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
+            String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+            if(StringUtil.isEmpty(taskId)){
+                taskId = "93048619-4D1E-EA11-BE7D-000C29F371DC";
+            }
+            taskDto = taskService.getTaskById(taskId);
+            String appStatus = inspectionPreTaskService.getAppStatusByTaskId(taskDto);
+            inspectionPreTaskDto.setAppStatus(appStatus);
+
         }
-        String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
-        TaskDto taskDto = taskService.getTaskById(taskId);
-        String appStatus = inspectionPreTaskService.getAppStatusByTaskId(taskDto);
         List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption();
-        inspectionPreTaskDto.setAppStatus(appStatus);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
@@ -100,6 +105,44 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorStep1(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorStep1 start ...."));
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
+        String preInspecRemarks = ParamUtil.getString(bpc.request,"preInspecRemarks");
+        String processDec = ParamUtil.getRequestString(bpc.request,"selectValue");
+        inspectionPreTaskDto.setReMarks(preInspecRemarks);
+        if(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY.equals(processDec)){
+            inspectionPreTaskDto.setSelectValue(processDec);
+        } else if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(processDec)){
+            inspectionPreTaskDto.setSelectValue(processDec);
+        } else {
+            inspectionPreTaskDto.setSelectValue(null);
+        }
+
+        if(InspectionConstants.SWITCH_ACTION_APPROVE.equals(actionValue)){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"create");
+            if (validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+            }
+        } else if(InspectionConstants.SWITCH_ACTION_ROUTE_BACK.equals(actionValue)){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"back");
+            if (validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+            }
+        }else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue) || InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue)){
+            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+        }
+
+        ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
     }
 
     /**
@@ -110,29 +153,9 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorApprove(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorApprove start ...."));
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
-        String preInspecRemarks = ParamUtil.getString(bpc.request,"preInspecRemarks");
-        inspectionPreTaskDto.setReMarks(preInspecRemarks);
-        if(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY.equals(actionValue)){
-            TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
-            inspectionPreTaskDto.setSelectValue(actionValue);
-            inspectionPreTaskService.routingTask(taskDto, preInspecRemarks);
-        } else {
-            inspectionPreTaskDto.setSelectValue(null);
-        }
-        if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)) || !(InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue))){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"create");
-            if (validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, DemoConstants.ERRORMAP, errorMap);
-                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-            } else {
-                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
-            }
-        }else{
-            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
-        }
+        inspectionPreTaskService.routingTask(taskDto, inspectionPreTaskDto.getReMarks());
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
     }
 
@@ -144,28 +167,8 @@ public class InspectionPreDelegator {
      */
     public void inspectionPreInspectorRouteB(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorRouteB start ...."));
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
-        String preInspecRemarks = ParamUtil.getString(bpc.request,"preInspecRemarks");
-        inspectionPreTaskDto.setReMarks(preInspecRemarks);
-        if(InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(actionValue)){
-            TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
-            inspectionPreTaskDto.setSelectValue(actionValue);
-        } else {
-            inspectionPreTaskDto.setSelectValue(null);
-        }
-        if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)) || !(InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue))){
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"back");
-            if (validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, DemoConstants.ERRORMAP, errorMap);
-                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-            } else {
-                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
-            }
-        }else{
-            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
-        }
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
     }
 }

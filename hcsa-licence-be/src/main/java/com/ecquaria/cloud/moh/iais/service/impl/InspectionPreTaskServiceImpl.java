@@ -69,7 +69,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void routingTask(TaskDto taskDto, String preInspecRemarks) {
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppNo(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
