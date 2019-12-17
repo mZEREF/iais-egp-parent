@@ -62,7 +62,16 @@ public class UploadFileServiceImpl implements UploadFileService {
         backups = sharedPath + "backups";
         FileOutputStream fileOutputStream = null;
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
+        File d=new File(download);
+        File b=new File(backups);
+        if(!d.exists()){
+            d.mkdirs();
+        }
+        if(!b.exists()){
+            b.mkdirs();
+        }
         File file=new File(download+ File.separator+s+fileFormat);
+
         FileOutputStream fileInputStream = null;
         try {
             if(!file.exists()){

@@ -14,7 +14,7 @@
                    version
             FROM CM_MASTER_CODE as mc
             WHERE 1=1
-            <#if master_code_id??> AND CHARINDEX(:master_code_id, mc.master_code_id) >0</#if>
+            <#if id??> AND CHARINDEX(:id, mc.master_code_id) >0</#if>
             <#if codeCategory??> AND mc.code_category = :codeCategory</#if>
             <#if codeDescription??> AND mc.code_description = :codeDescription</#if>
             <#if esd??> AND mc.effective_from > :esd</#if>

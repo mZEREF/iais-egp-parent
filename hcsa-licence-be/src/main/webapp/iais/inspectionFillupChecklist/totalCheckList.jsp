@@ -362,6 +362,11 @@
                                                 Next
                                             </button>
                                         </div>
+                                        <div align="right">
+                                            <button type="button" class="btn btn-primary" onclick="javascript: doSaveDraft();">
+                                                Save Draft
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -371,10 +376,15 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id ="draftFalg"  name="draftFalg">
 </form>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function doNext(){
+        SOP.Crud.cfxSubmit("mainForm", "next");
+    }
+    function doSaveDraft(){
+        $("#draftFalg").val("save");
         SOP.Crud.cfxSubmit("mainForm", "next");
     }
     function showCheckBox(str){

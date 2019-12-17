@@ -9,7 +9,10 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
+  <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
+  <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
+  <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
   <div class="main-content">
     <div class="container">
       <div class="row">
@@ -72,6 +75,7 @@
                                         <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
 
                                         <iais:select name="${cgoName}" firstOption="select cgo"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
                                       </td>
                                     </tr>
                                   </c:forEach>
@@ -103,6 +107,7 @@
       </div>
     </div>
   </div>
+  <%@ include file="/include/validation.jsp" %>
 </form>
 
 <script type="text/javascript">

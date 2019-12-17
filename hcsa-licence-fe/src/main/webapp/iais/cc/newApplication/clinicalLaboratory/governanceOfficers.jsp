@@ -10,8 +10,8 @@
 <%@ include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
-    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ClinicalOfficerValidateDto"/>
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
 
     <div class="main-content">
@@ -63,6 +63,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" value="goveOffice" name="pageCon">
     <%@ include file="/include/validation.jsp" %>
 </form>
 
@@ -76,8 +77,13 @@
             submitForms('governanceOfficers','saveDraft',null,'clinical');
         });
         $('#governanceOfficersNext').click(function(){
+            /*   doValidation();
+           if (getErrorMsg()) {
+               dismissWaiting();
+           } else {*/
             var controlFormLi = $('#controlFormLi').val();
             submitForms('disciplineAllocation',null,null,controlFormLi);
+            /*  }*/
         });
 
     });

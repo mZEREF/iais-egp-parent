@@ -101,6 +101,12 @@
                         </iais:value>
                       </iais:row>
                       <iais:row>
+                        <iais:field value="Reassign Reason"/>
+                        <iais:value width="10">
+                            <label><c:out value="${reassignReason}"/></label>
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
                         <iais:field value="Inspection Type"/>
                         <iais:value width="7">
                           <label><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></label>

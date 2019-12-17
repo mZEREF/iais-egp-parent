@@ -16,9 +16,6 @@
     }
 
     $("#MC_Search").click(function() {
-        var category = $("#category").val();
-        console.log(category);
-        console.log("Start --->");
         submit('doSearch');
     });
 
@@ -27,16 +24,16 @@
         submit('doEdit');
     }
 
+    function doDelete(mcId){
+        $("[name='crud_action_value']").val(mcId);
+        submit('doDelete');
+    }
+
     function doCreate(){
         submit('doCreate');
     }
 
-    function doBack(){
-        $("[name='crud_action_value']").val('Yes');
-        submit('save');
-    }
     $(function () {
-        console.log("--->PageNo:"+${MasterCodeSearchParam.pageNo});
         doPage(${MasterCodeSearchParam.pageNo});
     });
 

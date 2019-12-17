@@ -35,9 +35,9 @@
                       </div>
                       <div class="col-sm-5">
                         <div class="">
-                          <select name="assign" id="cgoSelect" class="form-control control-input control-set-font control-font-normal">
+                          <select name="assignSelect" id="cgoSelect" class="form-control control-input control-set-font control-font-normal">
                             <option>Select Personnel</option>
-                            <option value="newOfficer">I'd like to add a new personnel</option>
+                            <option  <c:if test="${appSvcPrincipalOfficersDto.assignSelect=='newOfficer'}">selected="selected"</c:if> value="newOfficer">I'd like to add a new personnel</option>
                             <option>Deng Jin, XXX675 (NRIC)</option>
                           </select>
                           <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
@@ -57,10 +57,10 @@
                       </div>
                       <div class="col-sm-2">
                         <select name="salutation" class="form-control control-input control-set-font control-font-normal">
-                          <option>Mr</option>
-                          <option>Mrs</option>
-                          <option>Miss</option>
-                          <option>Madam</option>
+                          <option <c:if test="${appSvcPrincipalOfficersDto.salutation=='mr'}"> selected="selected" </c:if> value="mr">Mr</option>
+                          <option <c:if test="${appSvcPrincipalOfficersDto.salutation=='mrs'}"> selected="selected" </c:if>  value="mrs">Mrs</option>
+                          <option <c:if test="${appSvcPrincipalOfficersDto.salutation=='miss'}"> selected="selected" </c:if> value="miss" >Miss</option>
+                          <option <c:if test="${appSvcPrincipalOfficersDto.salutation=='madam'}"> selected="selected" </c:if> value="madam">Madam</option>
                         </select>
                       </div>
                       <div class="col-sm-4">
@@ -81,13 +81,8 @@
                       <div class="col-sm-2">
                         <div class="">
                           <select name="idType" class="form-control control-input control-set-font control-font-normal" id="selectType">
-                            <c:if test="${appSvcPrincipalOfficersDto.idType=='nric'}">
-                              <option value="nric" selected="selected">NRIC</option>
-                            </c:if> <c:if test="${appSvcPrincipalOfficersDto.idType=='fin'}">
-                            <option  value="fin" selected="selected">FIN</option>
-                          </c:if>
-                            <option value="nric">NRIC</option>
-                            <option  value="fin">FIN</option>
+                            <option <c:if test="${appSvcPrincipalOfficersDto.idType=='nric'}"> selected="selected" </c:if> value="nric">NRIC</option>
+                            <option  <c:if test="${appSvcPrincipalOfficersDto.idType=='fin'}"> selected="selected"    </c:if>value="fin">FIN</option>
                           </select>
                         </div>
                       </div>
@@ -106,23 +101,11 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-2">
-                        <select name="designation" class="form-control control-input control-set-font control-font-normal">\
-                          <c:if test="${appSvcPrincipalOfficersDto.designation=='ceo'}">
-                            <option value="ceo" selected="selected">CEO</option>
-                          </c:if>
-                          <c:if test="${appSvcPrincipalOfficersDto.designation=='cfo'}">
-                            <option value="ceo" selected="selected">CEO</option>
-                          </c:if>
-                          <c:if test="${appSvcPrincipalOfficersDto.designation=='coo'}">
-                            <option value="coo" selected="selected">COO</option>
-                          </c:if>
-                          <c:if test="${appSvcPrincipalOfficersDto.designation=='others'}">
-                            <option value="others" selected="selected">Others</option>
-                          </c:if>
-                          <option value="ceo">CEO</option>
-                          <option value="cfo">CFO</option>
-                          <option value="coo">COO</option>
-                          <option value="others">Others</option>
+                        <select name="designation" class="form-control control-input control-set-font control-font-normal">
+                          <option <c:if test="${appSvcPrincipalOfficersDto.designation=='ceo'}" > selected="selected" </c:if> value="ceo">CEO</option>
+                          <option <c:if test="${appSvcPrincipalOfficersDto.designation=='cfo'}">selected="selected"  </c:if>value="cfo">CFO</option>
+                          <option <c:if test="${appSvcPrincipalOfficersDto.designation=='coo'}"> selected="selected" </c:if> value="coo">COO</option>
+                          <option  <c:if test="${appSvcPrincipalOfficersDto.designation=='others'}">selected="selected" </c:if> value="others">Others</option>
                         </select>
                       </div>
                     </div>

@@ -1,6 +1,6 @@
 <div class="main-content">
     <form class="form-horizontal" method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
-        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+        <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <div class="row">
@@ -38,7 +38,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="masterCodeResult" items="${MasterCodeSearchResult.rows}" varStatus="status">
-                                        <tr onclick="doEdit('${masterCodeResult.masterCodeId}')">
+                                        <tr>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">No.</p>
                                                 <p>#${(MasterCodeSearchParam.pageNo - 1) * 10 + status.index + 1}</p>
@@ -84,7 +84,8 @@
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
-                                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                                <button type="button" class="btn btn-default btn-sm" onclick="doEdit('${masterCodeResult.masterCodeId}')">Edit</button>
+                                                <button type="button" class="btn btn-default btn-sm" onclick="doDelete('${masterCodeResult.masterCodeId}')">Delete</button>
                                             </td>
                                         </tr>
                                     </c:forEach>

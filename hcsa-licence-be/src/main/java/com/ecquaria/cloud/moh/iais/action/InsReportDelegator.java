@@ -51,7 +51,6 @@ public class InsReportDelegator {
 
 
     public void start(BaseProcessClass bpc) {
-
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
         AuditTrailHelper.auditFunction("Inspection Report", "Assign Report");
     }
@@ -72,14 +71,6 @@ public class InsReportDelegator {
         if(insRepDto==null){
             insRepDto = insRepService.getInsRepDto(appNo, applicationViewDto);
         }
-
-//        SelectOption so1 = new SelectOption("Reject", "Reject");
-//        SelectOption so2 = new SelectOption("1Y", "1year");
-//        SelectOption so3 = new SelectOption("2Y", "2year");
-//        List<SelectOption> inspectionReportTypeOption = new ArrayList<>();
-//        inspectionReportTypeOption.add(so1);
-//        inspectionReportTypeOption.add(so2);
-//        inspectionReportTypeOption.add(so3);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);

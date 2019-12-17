@@ -59,7 +59,9 @@ public class FillupChklistDelegator {
     public void start(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
-
+        ParamUtil.setSessionAttr(request,"adchklDto",null);
+        ParamUtil.setSessionAttr(request,"fillCheckListDto",null);
+        ParamUtil.setSessionAttr(request,"commonDto",null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);
     }
 
@@ -76,6 +78,9 @@ public class FillupChklistDelegator {
         ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
         InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
         AdCheckListShowDto adchklDto = fillupChklistService.getAdhoc(cDto.getCheckList().get(0).getAppPreCorreId());
+
+
+
         ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
         ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
@@ -128,11 +133,17 @@ public class FillupChklistDelegator {
         isTcuOption.add(op);
         isTcuOption.add(op2);
         ParamUtil.setRequestAttr(request,"isTcuOption",isTcuOption);
-        if(!errMap.isEmpty()){
-            ParamUtil.setRequestAttr(request, "isValid", "N");
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+        String draftFalg = ParamUtil.getString(request,"draftFalg");
+        if(StringUtil.isEmpty(draftFalg)) {
+            if (!errMap.isEmpty()) {
+                ParamUtil.setRequestAttr(request, "isValid", "N");
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+            } else {
+                ParamUtil.setRequestAttr(request, "isValid", "Y");
+            }
         }else{
-            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            fillupChklistService.saveDraft(cDto,commonDto,adchklDto);
+            ParamUtil.setRequestAttr(request, "isValid", "N");
         }
     }
 

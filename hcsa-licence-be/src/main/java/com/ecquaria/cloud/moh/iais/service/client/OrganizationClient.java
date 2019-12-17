@@ -68,4 +68,7 @@ public interface OrganizationClient {
 
     @PostMapping(path = "/iais-task/sup-assign", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<InspectionTaskPoolListDto> assignSupTasks(@RequestBody InspectionTaskPoolListDto inspectionTaskPoolListDto);
+
+    @GetMapping(value = "/iais-task/reassign-task-scores/{workGroupId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>>getReassignTaskByWkId(@PathVariable(name = "workGroupId") String workGroupId);
 }
