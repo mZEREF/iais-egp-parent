@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ClinicalOfficerValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -31,18 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -144,7 +140,6 @@ public class ClinicalLaboratoryDelegator {
                 turn(dto.getList(), allCheckListMap);
             }
         }
-
 
     }
 
@@ -388,6 +383,7 @@ public class ClinicalLaboratoryDelegator {
         AppSvcRelatedInfoDto currentSvcDto =getAppSvcRelatedInfo(bpc.request,currentSvcId);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Map<String,String> reloadChkLstMap = new HashMap<>();
+        Map<String,String> errorMap=new HashMap<>();
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = new ArrayList<>();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
             String name = appGrpPremisesDto.getPremisesIndexNo()+"control--runtime--1";
@@ -403,7 +399,10 @@ public class ClinicalLaboratoryDelegator {
                     appSvcChckListDto.setChkLstConfId(checkInfo.getId());
                     appSvcChckListDto.setChkLstType(checkInfo.getType());
                     appSvcChckListDto.setChkName(checkInfo.getName());
+                    appSvcChckListDto.setParentName(checkInfo.getParentId());
+                    appSvcChckListDto.setChildrenName(checkInfo.getChildrenId());
                     appSvcChckListDtoList.add(appSvcChckListDto);
+
                     //PremisesIndexNo()+checkCode()+checkParentId()
                     reloadChkLstMap.put(appGrpPremisesDto.getPremisesIndexNo()+checkInfo.getId(), "checked");
                 }
@@ -423,6 +422,14 @@ public class ClinicalLaboratoryDelegator {
                 appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
                 appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
             }
+            errorMap = doValidateLaboratory(appSvcChckListDtoList,currentSvcId);
+        }
+
+        if(!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"laboratoryDisciplines");
+            ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
+            return;
         }
         currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
@@ -487,6 +494,53 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
 
+    private Map<String,String> doValidateLaboratory(  List<AppSvcChckListDto>  listDtos,String serviceId  ){
+        Map<String,String> map=new HashMap<>();
+        int count=0;
+
+        if(listDtos.isEmpty()){
+
+        }else {
+            for(int i=0;i<listDtos.size();i++){
+                String parentName = listDtos.get(i).getParentName();
+                if(parentName==null){
+                    count++;
+                    continue;
+                }else  if(listDtos.get(i).isChkLstType()){
+                    if(serviceId.equals(parentName)){
+                        count++;
+                        continue;
+                    }
+                   for(AppSvcChckListDto every :listDtos) {
+                       if(every.getChildrenName()!=null){
+                           if(every.getChildrenName().equals(parentName)){
+                               count++;
+                               break;
+                           }
+                       }
+
+                   }
+                }
+                else if(!listDtos.get(i).isChkLstType()){
+                    for(AppSvcChckListDto every :listDtos) {
+                            if (every.getChkLstConfId().equals(parentName)) {
+                                count++;
+                                break;
+
+                        }
+                    }
+                }
+            }
+
+        }
+        if(count!=listDtos.size()){
+            map.put("checkError","Illegal or not empty operation");
+        }
+
+        return map;
+
+    }
+
     /**
      * StartStep: doGovernanceOfficers
      *
@@ -538,8 +592,6 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         List<AppSvcDisciplineAllocationDto> daList = new ArrayList<>();
-
-
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = currentSvcRelatedDto.getAppSvcLaboratoryDisciplinesDtoList();
         if(appSvcLaboratoryDisciplinesDtoList != null){
             for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
@@ -580,6 +632,7 @@ public class ClinicalLaboratoryDelegator {
             }
         }
 
+
         ParamUtil.setSessionAttr(bpc.request, "ReloadAllocationMap", (Serializable) reloadAllocation);
         //save into sub-svc dto
         currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
@@ -588,6 +641,7 @@ public class ClinicalLaboratoryDelegator {
         //ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
 
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation end ...."));
+
     }
 
     /**
@@ -877,7 +931,7 @@ public class ClinicalLaboratoryDelegator {
                 errMap.put("assignSelect"+i, "not selected assign Clinical Governance Officer");
             }else {
                 String idTyp = appSvcCgoList.get(i).getIdType();
-                if(StringUtil.isEmpty(idTyp)){
+                if("-1".equals(idTyp)){
                     errMap.put("idTyp"+i, "Select at least on");
                 }
                 String salutation = appSvcCgoList.get(i).getSalutation();
@@ -885,7 +939,7 @@ public class ClinicalLaboratoryDelegator {
                     errMap.put("salutation"+i,"cannot be blank");
                 }
                 String speciality = appSvcCgoList.get(i).getSpeciality();
-                if(StringUtil.isEmpty(speciality)){
+                if("-1".equals(speciality)){
                     errMap.put("speciality"+i,"Select at least on");
                 }
                 String professionRegoType = appSvcCgoList.get(i).getProfessionRegoType();
@@ -913,14 +967,11 @@ public class ClinicalLaboratoryDelegator {
                 }
                 //to do
 
-                String qualification = appSvcCgoList.get(i).getQualification();
-                if (!StringUtil.isEmpty(qualification)) {
-                    String Specialty = appSvcCgoList.get(i).getSpeciality();
-                    if (StringUtil.isEmpty(Specialty)) {
-                        errMap.put("speciality"+i, "Specialty don not select");
-                    }
-
+                String Specialty = appSvcCgoList.get(i).getSpeciality();
+                if (StringUtil.isEmpty(Specialty)) {
+                    errMap.put("speciality"+i, "Specialty don not select");
                 }
+
                 String specialty = appSvcCgoList.get(i).getSpeciality();
                 if(StringUtil.isEmpty(specialty)){
                     errMap.put("specialty"+i, "can not null");
@@ -955,8 +1006,23 @@ public class ClinicalLaboratoryDelegator {
 
     public ClinicalOfficerValidateDto getValueFromPage(HttpServletRequest request){
         ClinicalOfficerValidateDto dto =new ClinicalOfficerValidateDto();
+        String goveOffice = request.getParameter("pageCon");
+
         return dto;
     }
+
+    private void chose(HttpServletRequest request,String type){
+        if("goveOffice".equals(type)){
+            List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
+            ParamUtil.setRequestAttr(request,"goveOffice",appSvcCgoList);
+        }
+        if("checkBox".equals(type)){
+            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(request, "HcsaSvcSubtypeOrSubsumedDto");
+            ParamUtil.setRequestAttr(request,"hcsaSvcSubtypeOrSubsumedDtos",hcsaSvcSubtypeOrSubsumedDtos);
+        }
+    }
+
+
 
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId){

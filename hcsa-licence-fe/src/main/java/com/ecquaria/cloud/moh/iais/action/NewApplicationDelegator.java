@@ -847,10 +847,12 @@ public class NewApplicationDelegator {
                     errorMap.put("premisesSelect"+i, "Please select the premises from");
                 } else if ("newPremise".equals(premisesSelect)) {
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
-                        ValidationResult validationResult = WebValidationHelper.validateProperty(appGrpPremisesDtoList.get(i),AppServicesConsts.VALIDATE_PROFILES_ON_SITE);
-                        if (validationResult.isHasErrors()) {
-                            errorMap = validationResult.retrieveAll();
+                        String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
+                        String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();
+                        if(StringUtil.isEmpty(onsiteStartHH)||StringUtil.isEmpty(onsiteStartMM)){
+                            errorMap.put("onsiteStartMM"+i,"cannot be blank");
                         }
+
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
                             errorMap.put("hciName"+i,"cannot be blank!");
@@ -900,6 +902,11 @@ public class NewApplicationDelegator {
                             errorMap.put("postalCode"+i, "can not is null");
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
+                        String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
+                        String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
+                        if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
+                            errorMap.put("conStartMM"+i,"cannot be blank ");
+                        }
 
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
                         if(StringUtil.isEmpty(conveyanceVehicleNo)){
@@ -910,17 +917,25 @@ public class NewApplicationDelegator {
                                 errorMap.put("conveyanceVehicleNo"+i,"CHKLMD001_ERR008");
                             }
                         }
+                        String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
+                        if(StringUtil.isEmpty(conveyancePostalCode)){
+                            errorMap.put("conveyancePostalCode"+i,"cannot be blank ");
+                        }else {
+                            if(!conveyancePostalCode.matches("^[0-9]{6}$")){
+                                errorMap.put("conveyancePostalCode"+i, "CHKLMD001_ERR003");
+                            }
+                        }
+
                         String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
 
                         if(StringUtil.isEmpty(cStreetName)){
-                            errorMap.put("cStreetName"+i,"cannot be blank!");
+                            errorMap.put("conveyanceStreetName"+i,"cannot be blank!");
                         }
-                        String addrType = appGrpPremisesDtoList.get(i).getConveyanceAddressType();
-
-                        if(StringUtil.isEmpty(addrType)){
+                        String conveyanceAddressType = appGrpPremisesDtoList.get(i).getConveyanceAddressType();
+                        if(StringUtil.isEmpty(conveyanceAddressType)){
                             errorMap.put("conveyanceAddressType"+i, "can not is null");
                         }else {
-                            if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
+                            if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(conveyanceAddressType)) {
                                 boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceFloorNo());
                                 boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceBlockNo());
                                 boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
@@ -1059,8 +1074,13 @@ public class NewApplicationDelegator {
                 String addrType = ParamUtil.getString(request, premisesIndexNo+"addrType");
                 String offTelNo= ParamUtil.getString(request,premisesIndexNo+"offTelNo");
                 String scdfRefNo = ParamUtil.getString(request, premisesIndexNo+"siteSafefyNo");
+                String onsiteStartHH = ParamUtil.getString(request, premisesIndexNo + "onsiteStartHH");
+                String onsiteStartMM = ParamUtil.getString(request, premisesIndexNo + "onsiteStartMM");
+
                 String fireSafetyCertIssuedDateStr  = ParamUtil.getString(request, premisesIndexNo+"fireSafetyCertIssuedDate");
                 Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr, "dd/mm/yyyy");
+                appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH);
+                appGrpPremisesDto.setOnsiteStartMM(onsiteStartMM);
                 appGrpPremisesDto.setPremisesSelect(premisesSelect);
                 appGrpPremisesDto.setHciName(hciName);
                 appGrpPremisesDto.setPostalCode(postalCode);
@@ -1088,6 +1108,10 @@ public class NewApplicationDelegator {
                 String unitNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceUnitNo");
                 String buildingName = ParamUtil.getString(request, premisesIndexNo+"conveyanceBuildingName");
                 String siteAddressType = ParamUtil.getString(request, premisesIndexNo+"conveyanceAddrType");
+                String conStartHH = ParamUtil.getString(request, premisesIndexNo + "conStartHH");
+                String conStartMM = ParamUtil.getString(request, premisesIndexNo + "conStartMM");
+                appGrpPremisesDto.setConStartHH(conStartHH);
+                appGrpPremisesDto.setConStartMM(conStartMM);
                 appGrpPremisesDto.setPremisesSelect(premisesSelect);
                 appGrpPremisesDto.setConveyanceVehicleNo(vehicleNo);
                 appGrpPremisesDto.setConveyancePostalCode(postalCode);

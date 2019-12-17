@@ -10,7 +10,11 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <%@ include file="/include/formHidden.jsp" %>
+
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ClinicalOfficerValidateDto"/>
+    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -62,6 +66,8 @@
             </div>
         </div>
     </div>
+    <%@ include file="/include/validation.jsp" %>
+    <input type="hidden" name="pageCon" value="checkBox">
 </form>
 
 <script type="text/javascript">
@@ -82,11 +88,7 @@
            }else {
                $('.laboratory-disciplines>span').attr('style','display: none');
            }
-
-            $.post("${pageContext.request.contextPath}/request-check-error",$('#mainForm').serialize(),function (resulet){
-
-
-            });*/
+                              */
             var controlFormLi = $('#controlFormLi').val();
             submitForms('governanceOfficers',null,null,controlFormLi);
         });

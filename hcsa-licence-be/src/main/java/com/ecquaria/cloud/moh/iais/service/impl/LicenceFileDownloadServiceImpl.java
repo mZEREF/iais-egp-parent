@@ -52,18 +52,20 @@ import java.util.zip.ZipFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-
-    private    String download="D:/compress/folder";
-    private     String backups="D:/backups/";
+    @Value("${iais.syncFileTracking.shared.path}")
+    private    String sharedPath;
+    private     String download;
+    private    String backups;
     private     String fileFormat=".text";
-    private     String compressPath="D:/compress";
+    private     String compressPath;
 
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
     private SystemBeLicClient systemClient;
     @Override
-                public void compress(){
+    public void compress(){
+
         if(new File(backups).isDirectory()){
             File[] files = new File(backups).listFiles();
             for(File fil:files){
@@ -150,7 +152,21 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Override
     public void delete() {
+        download= sharedPath+File.separator+"compress"+File.separator+"folder";
+        backups=sharedPath+File.separator+"backups"+File.separator;
+        compressPath=sharedPath+File.separator+"compress";
         File file =new File(download);
+        File b=new File(backups);
+        File c=new File(compressPath);
+        if(!c.exists()){
+            c.mkdirs();
+        }
+        if(!b.exists()){
+            b.mkdirs();
+        }
+        if(!file.mkdirs()){
+            file.mkdirs();
+        }
         deleteFile(file);
     }
 
