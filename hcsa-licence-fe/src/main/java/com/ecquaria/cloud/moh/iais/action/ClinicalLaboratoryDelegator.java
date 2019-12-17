@@ -585,7 +585,7 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doDisciplineAllocation(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation start ...."));
-
+        Map<String,String > errorMap=new HashMap<>();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Map<String,String> reloadAllocation = new HashMap<>();
@@ -631,8 +631,6 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
-
-
         ParamUtil.setSessionAttr(bpc.request, "ReloadAllocationMap", (Serializable) reloadAllocation);
         //save into sub-svc dto
         currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
@@ -928,36 +926,36 @@ public class ClinicalLaboratoryDelegator {
         for(int i=0;i<appSvcCgoList.size();i++ ){
             String assignSelect = appSvcCgoList.get(i).getAssignSelect();
             if("-1".equals(assignSelect)){
-                errMap.put("assignSelect"+i, "not selected assign Clinical Governance Officer");
+                errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR002");
             }else {
                 String idTyp = appSvcCgoList.get(i).getIdType();
                 if("-1".equals(idTyp)){
-                    errMap.put("idTyp"+i, "Select at least on");
+                    errMap.put("idTyp"+i, "UC_CHKLMD001_ERR002");
                 }
                 String salutation = appSvcCgoList.get(i).getSalutation();
                 if(StringUtil.isEmpty(salutation)){
-                    errMap.put("salutation"+i,"cannot be blank");
+                    errMap.put("salutation"+i,"UC_CHKLMD001_ERR001");
                 }
                 String speciality = appSvcCgoList.get(i).getSpeciality();
                 if("-1".equals(speciality)){
-                    errMap.put("speciality"+i,"Select at least on");
+                    errMap.put("speciality"+i,"UC_CHKLMD001_ERR002");
                 }
                 String professionRegoType = appSvcCgoList.get(i).getProfessionRegoType();
                 if(StringUtil.isEmpty(professionRegoType)){
-                    errMap.put("professionRegoType"+i,"Select at least on");
+                    errMap.put("professionRegoType"+i,"UC_CHKLMD001_ERR002");
                 }
                 String designation = appSvcCgoList.get(i).getDesignation();
                 if(StringUtil.isEmpty(designation)){
-                    errMap.put("designation"+i,"cannot be blank");
+                    errMap.put("designation"+i,"UC_CHKLMD001_ERR001");
                 }
                 String professionRegoNo = appSvcCgoList.get(i).getProfessionRegoNo();
                 if(StringUtil.isEmpty(professionRegoNo)){
-                    errMap.put("professionRegoNo"+i,"cannot be blank");
+                    errMap.put("professionRegoNo"+i,"UC_CHKLMD001_ERR001");
                 }
                 String idNo = appSvcCgoList.get(i).getIdNo();
                 //to do
                 if(StringUtil.isEmpty(idNo)){
-                    errMap.put("idNo"+i,"cannot be blank");
+                    errMap.put("idNo"+i,"UC_CHKLMD001_ERR001");
                 }else {
                     boolean b = SgNoValidator.validateFin(idNo);
                     boolean b1 = SgNoValidator.validateNric(idNo);
@@ -969,21 +967,21 @@ public class ClinicalLaboratoryDelegator {
 
                 String Specialty = appSvcCgoList.get(i).getSpeciality();
                 if (StringUtil.isEmpty(Specialty)) {
-                    errMap.put("speciality"+i, "Specialty don not select");
+                    errMap.put("speciality"+i, "UC_CHKLMD001_ERR002");
                 }
 
                 String specialty = appSvcCgoList.get(i).getSpeciality();
                 if(StringUtil.isEmpty(specialty)){
-                    errMap.put("specialty"+i, "can not null");
+                    errMap.put("specialty"+i, "UC_CHKLMD001_ERR001");
                 }
                 String name = appSvcCgoList.get(i).getName();
                 if(StringUtil.isEmpty(name)){
-                    errMap.put("name"+i,"cannot be blank");
+                    errMap.put("name"+i,"UC_CHKLMD001_ERR001");
                 }
 
                 String mobileNo = appSvcCgoList.get(i).getMobileNo();
                 if(StringUtil.isEmpty(mobileNo)){
-                    errMap.put("mobileNo"+i, "cannot be blank");
+                    errMap.put("mobileNo"+i, "UC_CHKLMD001_ERR001");
                 }else if (!StringUtil.isEmpty(mobileNo)) {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         errMap.put("mobileNo"+i, "CHKLMD001_ERR004");
@@ -991,7 +989,7 @@ public class ClinicalLaboratoryDelegator {
                 }
                 String emailAddr = appSvcCgoList.get(i).getEmailAddr();
                 if(StringUtil.isEmpty(emailAddr)){
-                    errMap.put("emailAddr"+i, "cannot be blank");
+                    errMap.put("emailAddr"+i, "UC_CHKLMD001_ERR001");
                 }else if (!StringUtil.isEmpty(emailAddr)) {
                     if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                         errMap.put("emailAddr"+i, "CHKLMD001_ERR006");

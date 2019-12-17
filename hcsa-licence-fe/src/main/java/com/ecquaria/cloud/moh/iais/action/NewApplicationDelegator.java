@@ -377,7 +377,7 @@ public class NewApplicationDelegator {
                     }
                 } else{
                     if(prem.getIsMandatory()) {
-                        errorMap.put(name, "can not is empty");
+                        errorMap.put(name, "UC_CHKLMD001_ERR003");
                     }
                 }
             }
@@ -840,28 +840,28 @@ public class NewApplicationDelegator {
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
-                errorMap.put("premisesType"+i, "Please select the premises Type");
+                errorMap.put("premisesType"+i, "UC_CHKLMD001_ERR002");
             }else {
                 String premisesSelect = appGrpPremisesDtoList.get(i).getPremisesSelect();
                 if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
-                    errorMap.put("premisesSelect"+i, "Please select the premises from");
+                    errorMap.put("premisesSelect"+i, "UC_CHKLMD001_ERR002");
                 } else if ("newPremise".equals(premisesSelect)) {
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
                         String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
                         String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();
                         if(StringUtil.isEmpty(onsiteStartHH)||StringUtil.isEmpty(onsiteStartMM)){
-                            errorMap.put("onsiteStartMM"+i,"cannot be blank");
+                            errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
                         }
 
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
-                            errorMap.put("hciName"+i,"cannot be blank!");
+                            errorMap.put("hciName"+i,"UC_CHKLMD001_ERR002");
                         }else {
 
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
                         if(StringUtil.isEmpty(offTelNo)){
-                            errorMap.put("offTelNo"+i,"cannot be blank!");
+                            errorMap.put("offTelNo"+i,"UC_CHKLMD001_ERR002");
                         }else {
                             boolean matches = offTelNo.matches("^[6][0-9]{7}$");
                             if(!matches) {
@@ -871,25 +871,25 @@ public class NewApplicationDelegator {
 
                         String streetName = appGrpPremisesDtoList.get(i).getStreetName();
                         if(StringUtil.isEmpty(streetName)){
-                            errorMap.put("streetName"+i,"cannot be blank!");
+                            errorMap.put("streetName"+i,"UC_CHKLMD001_ERR002");
                         }
                         //do by wenkang
                         String addrType = appGrpPremisesDtoList.get(i).getAddrType();
                         if(StringUtil.isEmpty(addrType)){
-                            errorMap.put("addrType"+i, "can not is null");
+                            errorMap.put("addrType"+i, "UC_CHKLMD001_ERR002");
                         }else {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
                                 boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getFloorNo());
                                 boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getBlkNo());
                                 boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getUnitNo());
                                 if (empty) {
-                                    errorMap.put("floorNo"+i, "can not is null");
+                                    errorMap.put("floorNo"+i, "UC_CHKLMD001_ERR001");
                                 }
                                 if (empty1) {
-                                    errorMap.put("blkNo"+i, "can not is null");
+                                    errorMap.put("blkNo"+i, "UC_CHKLMD001_ERR001");
                                 }
                                 if (empty2) {
-                                    errorMap.put("unitNo"+i, "can not is null");
+                                    errorMap.put("unitNo"+i, "UC_CHKLMD001_ERR001");
                                 }
                             }
                         }
@@ -899,18 +899,18 @@ public class NewApplicationDelegator {
                                 errorMap.put("postalCode"+i, "CHKLMD001_ERR003");
                             }
                         }else {
-                            errorMap.put("postalCode"+i, "can not is null");
+                            errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR001");
                         }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
                         if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
-                            errorMap.put("conStartMM"+i,"cannot be blank ");
+                            errorMap.put("conStartMM"+i,"UC_CHKLMD001_ERR001 ");
                         }
 
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
                         if(StringUtil.isEmpty(conveyanceVehicleNo)){
-                            errorMap.put("conveyanceVehicleNo"+i,"cannot be blank");
+                            errorMap.put("conveyanceVehicleNo"+i,"UC_CHKLMD001_ERR001");
                         }else {
                             boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
                             if(!b){
@@ -919,7 +919,7 @@ public class NewApplicationDelegator {
                         }
                         String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
                         if(StringUtil.isEmpty(conveyancePostalCode)){
-                            errorMap.put("conveyancePostalCode"+i,"cannot be blank ");
+                            errorMap.put("conveyancePostalCode"+i,"UC_CHKLMD001_ERR001");
                         }else {
                             if(!conveyancePostalCode.matches("^[0-9]{6}$")){
                                 errorMap.put("conveyancePostalCode"+i, "CHKLMD001_ERR003");
@@ -929,24 +929,24 @@ public class NewApplicationDelegator {
                         String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
 
                         if(StringUtil.isEmpty(cStreetName)){
-                            errorMap.put("conveyanceStreetName"+i,"cannot be blank!");
+                            errorMap.put("conveyanceStreetName"+i,"UC_CHKLMD001_ERR001");
                         }
                         String conveyanceAddressType = appGrpPremisesDtoList.get(i).getConveyanceAddressType();
                         if(StringUtil.isEmpty(conveyanceAddressType)){
-                            errorMap.put("conveyanceAddressType"+i, "can not is null");
+                            errorMap.put("conveyanceAddressType"+i, "UC_CHKLMD001_ERR002");
                         }else {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(conveyanceAddressType)) {
                                 boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceFloorNo());
                                 boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceBlockNo());
                                 boolean empty2 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceUnitNo());
                                 if (empty) {
-                                    errorMap.put("conveyanceFloorNo"+i, "can not is null");
+                                    errorMap.put("conveyanceFloorNo"+i, "UC_CHKLMD001_ERR001");
                                 }
                                 if (empty1) {
-                                    errorMap.put("conveyanceBlockNos"+i, "can not is null");
+                                    errorMap.put("conveyanceBlockNos"+i, "UC_CHKLMD001_ERR001");
                                 }
                                 if (empty2) {
-                                    errorMap.put("conveyanceUnitNo"+i, "can not is null");
+                                    errorMap.put("conveyanceUnitNo"+i, "UC_CHKLMD001_ERR001");
                                 }
                             }
                         }
@@ -971,7 +971,7 @@ public class NewApplicationDelegator {
 
             String assignSelect = poDto.get(i).getAssignSelect();
             if (StringUtil.isEmpty(assignSelect)) {
-                oneErrorMap.put("assignSelect", "assignSelect can not null");
+                oneErrorMap.put("assignSelect", "UC_CHKLMD001_ERR002");
             } else {
                 //do by wenkang
                 String mobileNo = poDto.get(i).getMobileNo();
@@ -982,13 +982,13 @@ public class NewApplicationDelegator {
                 String salutation = poDto.get(i).getSalutation();
                 String designation = poDto.get(i).getDesignation();
                 if(StringUtil.isEmpty(name)){
-                    oneErrorMap.put("name","cannot be blank");
+                    oneErrorMap.put("name","UC_CHKLMD001_ERR001");
                 }
                 if(StringUtil.isEmpty(salutation)){
-                    oneErrorMap.put("salutation","cannot be blank");
+                    oneErrorMap.put("salutation","UC_CHKLMD001_ERR001");
                 }
                 if(StringUtil.isEmpty(designation)){
-                    oneErrorMap.put("designation","cannot be blank");
+                    oneErrorMap.put("designation","UC_CHKLMD001_ERR001");
                 }
                 if(!StringUtil.isEmpty(idNo)){
                     boolean b = SgNoValidator.validateFin(idNo);
@@ -997,28 +997,28 @@ public class NewApplicationDelegator {
                         oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
                     }
                 }else {
-                    oneErrorMap.put("NRICFIN","cannot be blank");
+                    oneErrorMap.put("NRICFIN","UC_CHKLMD001_ERR001");
                 }
                 if(!StringUtil.isEmpty(mobileNo)){
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         oneErrorMap.put("mobileNo", "CHKLMD001_ERR004");
                     }
                 }else {
-                    oneErrorMap.put("mobileNo", "cannot be blank");
+                    oneErrorMap.put("mobileNo", "UC_CHKLMD001_ERR001");
                 }
                 if(!StringUtil.isEmpty(emailAddr)) {
                     if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                         oneErrorMap.put("emailAddr", "CHKLMD001_ERR006");
                     }
                 }else {
-                    oneErrorMap.put("emailAddr", "cannot be blank");
+                    oneErrorMap.put("emailAddr", "UC_CHKLMD001_ERR001");
                 }
                 if(!StringUtil.isEmpty(officeTelNo)) {
                     if (!officeTelNo.matches("^[6][0-9]{7}$")) {
                         oneErrorMap.put("officeTelNo", "CHKLMD001_ERR007");
                     }
                 }else {
-                    oneErrorMap.put("officeTelNo", "cannot be blank");
+                    oneErrorMap.put("officeTelNo", "UC_CHKLMD001_ERR001");
                 }
             }
 
