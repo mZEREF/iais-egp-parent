@@ -153,7 +153,7 @@ public class InspectionServiceImpl implements InspectionService {
             flag = AppConsts.TRUE;
         }
         for(OrgUserDto oDto:orgUserDtoList){
-            if(!(oDto.getId().equals(loginContext.getUserId()))){
+            if((oDto.getId().equals(loginContext.getUserId()))){
                 SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
                 inspectorOption.add(so);
             } else {
@@ -161,6 +161,31 @@ public class InspectionServiceImpl implements InspectionService {
                     SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
                     inspectorOption.add(so);
                 }
+            }
+        }
+        inspectionTaskPoolListDto.setInspectorOption(inspectorOption);
+        return inspectionTaskPoolListDto;
+    }
+
+    @Override
+    public List<TaskDto> getReassignPoolByGroupWordId(String workGroupId) {
+        List<TaskDto> reassignTasks = new ArrayList<>();
+        if(workGroupId!=null){
+            reassignTasks = organizationClient.getReassignTaskByWkId(workGroupId).getEntity();
+        }
+        return reassignTasks;
+    }
+
+    @Override
+    public InspectionTaskPoolListDto reassignInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, String taskId){
+        List<SelectOption> inspectorOption = new ArrayList<>();
+        List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(inspectionTaskPoolListDto.getWorkGroupId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        TaskDto taskDto = organizationClient.getTaskById(taskId).getEntity();
+        String userId = taskDto.getUserId();
+        for(OrgUserDto oDto:orgUserDtoList){
+            if(!(oDto.getId().equals(userId))){
+                SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                inspectorOption.add(so);
             }
         }
         inspectionTaskPoolListDto.setInspectorOption(inspectorOption);
