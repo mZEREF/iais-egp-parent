@@ -8,6 +8,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
   //handle to the Engine APIs
@@ -22,9 +23,16 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
   <form method="post" id="mainReviewForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <input type="hidden" name="inspectorPreType" value="">
     <input type="hidden" id="taskId" name="taskId" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
+    <input type="hidden" id="processDec" name="processDec" value="">
+
     <iais:body >
       <div class="container">
         <div class="col-xs-12">
@@ -46,21 +54,21 @@
                       <iais:row>
                         <iais:field value="Remarks"/>
                         <iais:value width="300">
-                          <textarea id="preInspecRemarks" name="preInspecRemarks" cols="70" rows="7" ><c:out value="inspectionPreTaskDto.reMarks"></c:out></textarea>
+                          <textarea id="preInspecRemarks" name="preInspecRemarks" cols="70" rows="7" ><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_reMarks"></span>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Processing Decision"/>
                         <iais:value width="7">
-                          <iais:select name="process_dec" options="processDecOption" firstOption="Please select" value="${selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
+                          <iais:select name="selectValue" options="processDecOption" firstOption="Please select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
                         </iais:value>
                       </iais:row>
                       <iais:action >
-                        <button class="btn btn-lg btn-login-edit" style="float:left" type="button" onclick="javascript:doInspectionPreTaskEdit('<iais:mask name="taskId" value="${taskDto.taskId}"/>')">Edit</button>
-                      </iais:action>
-                      <iais:action >
                         <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectionPreTaskBack()">Back</button>
                         <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
+                        <span style="float:right">&nbsp;</span>
+                        <button class="btn btn-lg btn-login-edit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit('<iais:mask name="taskId" value="${taskDto.id}"/>');">Edit</button>
                       </iais:action>
                     </iais:section>
                   </div>
@@ -73,6 +81,7 @@
     </iais:body>
   </form>
 </div>
+<%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function submit(action){
         $("[name='inspectorPreType']").val(action);
@@ -82,6 +91,7 @@
 
     function doInspectionPreTaskEdit(taskId) {
         $("#taskId").val(taskId);
+        $("#actionValue").val('edit');
         submit('edit');
     }
 
@@ -91,15 +101,21 @@
     }
 
     function doInspectionPreTaskChange(value) {
-        $("#actionValue").val(value);
+        $("#processDec").val(value);
     }
 
     function doInspectionPreTaskSubmit() {
-        var actionValue = $("#actionValue").val();
-        if("REDECI002".equals(actionValue)){
+        var actionValue = $("#processDec").val();
+        if("REDECI002" == actionValue){
+            $("#actionValue").val('approve');
             submit("approve");
-        } else if ("REDECI001".equals(actionValue)){
-            submit("route");
+        } else if ("REDECI001" == actionValue){
+            $("#actionValue").val('routeB');
+            submit("routeB");
+        } else {
+            var errMsg = 'The field is mandatory.';
+            $("#error_selectValue").text(errMsg);
+            dismissWaiting();
         }
     }
 </script>
