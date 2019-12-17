@@ -22,13 +22,13 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.Process;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AppSubmisionServiceImpl
@@ -142,15 +142,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<RiskResultDto> riskResultDtoList = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
 
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-            //wait api change
-            String serviceCode = "BLB";
-            //String serviceCode = appSvcRelatedInfoDto.getServiceCode();
+            String serviceCode = appSvcRelatedInfoDto.getServiceCode();
             RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList,serviceCode);
             if(riskResultDto!= null){
                 appSvcRelatedInfoDto.setScore(riskResultDto.getScore());
-                //wait api change
-                //appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
-                appSvcRelatedInfoDto.setDoRiskDate(new Date());
+                appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
             }
         }
     }
