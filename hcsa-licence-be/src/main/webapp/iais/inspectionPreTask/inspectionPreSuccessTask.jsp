@@ -54,7 +54,6 @@
                       <iais:row>
                         <iais:field value="Processing Decision"/>
                         <iais:value width="7">
-                          <iais:select name="process_dec" options="processDecOption" firstOption="Please select" value="${selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
                           <label><c:out value="${inspectionPreTaskDto.selectValue}"></c:out></label>
                         </iais:value>
                       </iais:row>
