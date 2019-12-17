@@ -23,6 +23,7 @@ import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,11 +87,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public Double getGroupAmount(AppSubmissionDto appSubmissionDto) {
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount start ...."));
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDto();
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<LicenceFeeDto> linenceFeeQuaryDtos = new ArrayList();
-        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-            List<String> premisessTypes =  new ArrayList();
+        List<String> premisessTypes =  new ArrayList();
+        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
             premisessTypes.add(appGrpPremisesDto.getPremisesType());
+        }
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
             if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                 licenceFeeDto.setBaseService(appSvcRelatedInfoDto.getServiceCode());
@@ -131,7 +134,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
-            riskAcceptiionDto.setScvCode(riskAcceptiionDto.getScvCode());
+            riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());
             riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
             riskAcceptiionDtoList.add(riskAcceptiionDto);
         }
@@ -139,11 +142,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<RiskResultDto> riskResultDtoList = appConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
 
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-            String serviceCode = appSvcRelatedInfoDto.getServiceCode();
+            //wait api change
+            String serviceCode = "BLB";
+            //String serviceCode = appSvcRelatedInfoDto.getServiceCode();
             RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList,serviceCode);
             if(riskResultDto!= null){
                 appSvcRelatedInfoDto.setScore(riskResultDto.getScore());
-                appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
+                //wait api change
+                //appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
+                appSvcRelatedInfoDto.setDoRiskDate(new Date());
             }
         }
     }
@@ -176,7 +183,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         req.setStep(process.getCurrentComponentName());
         req.setService("appsubmit");
         req.setOperation("Create");
-        req.setSopUrl("https://egp.sit.inter.iais.com/hcsaapplication/eservice/INTERNET/MohNewApplication");
+        req.setSopUrl("https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
         req.setData(JsonUtil.parseToJson(appSubmissionDto));
         req.setCallbackUrl(null);
         req.setUserId("SOP");

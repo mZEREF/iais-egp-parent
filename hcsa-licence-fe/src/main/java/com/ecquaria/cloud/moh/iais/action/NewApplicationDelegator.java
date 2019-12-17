@@ -29,18 +29,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +40,19 @@ import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * NewApplicationDelegator
  *
@@ -61,7 +62,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("newApplicationDelegator")
 @Slf4j
 public class NewApplicationDelegator {
-    private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
+    //private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
     private static final String APPGRPPRIMARYDOCDTO = "AppGrpPrimaryDocDto";
     private static final String ERRORMAP_PREMISES = "errorMap_premises";
     public static final String CURRENTSERVICEID = "currentServiceId";
@@ -70,10 +71,12 @@ public class NewApplicationDelegator {
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
     public static final String COMMONHCSASVCDOCCONFIGDTO = "commonHcsaSvcDocConfigDto";
     public static final String PREMHCSASVCDOCCONFIGDTO = "premHcsaSvcDocConfigDto";
-    public static final String APPGRPPREMISESLIST = "appGrpPremisesList";
+    //public static final String APPGRPPREMISESLIST = "appGrpPremisesList";
     public static final String RELOADAPPGRPPRIMARYDOCMAP = "reloadAppGrpPrimaryDocMap";
-    public static final String APPGRPPRIMARYDOCLIST = "appGrpPrimaryDocList";
+    //public static final String APPGRPPRIMARYDOCLIST = "appGrpPrimaryDocList";
     public static final String  APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
+
+
     public static final String FIRESTOPTION = "Select One";
 
 
@@ -92,27 +95,25 @@ public class NewApplicationDelegator {
     public void doStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
-        //wait to delete one premises
-        ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, null);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
         List<AppSvcPrincipalOfficersDto> list=new ArrayList<>();
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
         list.add(appSvcPrincipalOfficersDto);
         ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",(Serializable) list);
-        ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, null);
-        ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCDTO, null);
+
+        //Primary Documents
+        ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
+        ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
+        ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
+        //
 
         //for loading the draft by appId
         loadingDraft(bpc);
-        //request For Information Loading
-        requestForInformationLoading(bpc);
         //for loading Service Config
         loadingServiceConfig(bpc);
         initSession(bpc);
         log.debug(StringUtil.changeForLog("the do Start end ...."));
     }
-
-
-
 
 
     /**
@@ -207,6 +208,18 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, (Serializable) commonHcsaSvcDocConfigDto);
             ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, (Serializable) premHcsaSvcDocConfigDto);
         }
+
+        //reload page
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if(appGrpPrimaryDocDtoList != null && appGrpPrimaryDocDtoList.size()>0){
+            Map<String,AppGrpPrimaryDocDto> reloadDocMap = new HashMap();
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
+                reloadDocMap.put(appGrpPrimaryDocDto.getPrimaryDocReloadName(), appGrpPrimaryDocDto);
+            }
+            ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) reloadDocMap);
+        }
+
         log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
 
@@ -265,14 +278,6 @@ public class NewApplicationDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
 
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-        //:todo delete
-        AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(0);
-        appSubmissionDto.setAppGrpPremisesDto(appGrpPremisesDto);
-
-        //:todo delete
-        ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESDTO, appGrpPremisesDto);
-        ParamUtil.setSessionAttr(bpc.request, APPGRPPREMISESLIST, (Serializable) appGrpPremisesDtoList);
-
         Map<String, String> errorMap = doValidatePremiss(bpc);
 
             if(errorMap.size()>0){
@@ -303,10 +308,10 @@ public class NewApplicationDelegator {
 
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
         CommonsMultipartFile file = null;
-
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
         List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
-        List<AppGrpPremisesDto> appGrpPremisesList = (List<AppGrpPremisesDto>) ParamUtil.getSessionAttr(bpc.request, APPGRPPREMISESLIST);
+        List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
         Map<String,String> errorMap = new HashMap<>();
         Map<String,AppGrpPrimaryDocDto> reloadDocMap = new HashMap();
@@ -331,13 +336,12 @@ public class NewApplicationDelegator {
                     String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
                     appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
                     appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
-                    reloadDocMap.put(name, appGrpPrimaryDocDto);
+
                 }
             }else if("N".equals(delFlagValue)){
                 AppGrpPrimaryDocDto beforeDto = (AppGrpPrimaryDocDto) beforeReloadDocMap.get(name);
                 if(beforeDto != null){
                     appGrpPrimaryDocDtoList.add(beforeDto);
-                    reloadDocMap.put(name, beforeDto);
                 }
             } else{
                 if(comm.getIsMandatory()){
@@ -365,12 +369,10 @@ public class NewApplicationDelegator {
                         String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
                         appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
                         appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
-                        reloadDocMap.put(name, appGrpPrimaryDocDto);
                     }
                 }else if("N".equals(delFlagValue)){
                     AppGrpPrimaryDocDto beforeDto = (AppGrpPrimaryDocDto) beforeReloadDocMap.get(name);
                     if(beforeDto != null){
-                        reloadDocMap.put(name, beforeDto);
                         appGrpPrimaryDocDtoList.add(beforeDto);
                     }
                 } else{
@@ -380,10 +382,11 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCLIST, (Serializable) appGrpPrimaryDocDtoList);
-        ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) reloadDocMap);
-        // do by wenkang
+        //set value into AppSubmissionDto
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtoList);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
+        // do by wenkang
         documentValid(bpc.request, errorMap);
         if(errorMap.size()>0){
             ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
@@ -391,10 +394,6 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
             return;
         }
-        //set value into AppSubmissionDto
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtoList);
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
 
@@ -742,6 +741,11 @@ public class NewApplicationDelegator {
     //=============================================================================
     private void loadingDraft(BaseProcessClass bpc) {
         //todo
+        String draftNo = (String) ParamUtil.getSessionAttr(bpc.request, "DraftNumber");
+        if(!StringUtil.isEmpty(draftNo)){
+            AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        }
     }
 
     private void requestForInformationLoading(BaseProcessClass bpc) {
@@ -758,8 +762,22 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
         //loading the service
         List<String> serviceConfigIds = new ArrayList<>();
-        serviceConfigIds.add("34F99D15-820B-EA11-BE7D-000C29F371DC");
-        serviceConfigIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        if(appSubmissionDto != null ){
+            // from draft,rfi
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size()>0){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
+                    serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
+                }
+            }
+        }else {
+            serviceConfigIds.add("34F99D15-820B-EA11-BE7D-000C29F371DC");
+            serviceConfigIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");
+            //serviceConfigIds = ParamUtil.getSessionAttr(bpc.request, "");
+        }
+        log.debug(StringUtil.changeForLog("service size:"+serviceConfigIds.size()));
+
         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
         sortHcsaServiceDto(hcsaServiceDtoList);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
@@ -817,9 +835,9 @@ public class NewApplicationDelegator {
         //do validate one premiss
 
         Map<String, String> errorMap = new HashMap<>();
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = (List<AppGrpPremisesDto>) ParamUtil.getSessionAttr(bpc.request, APPGRPPREMISESLIST);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
-
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
                 errorMap.put("premisesType"+i, "Please select the premises Type");
@@ -1089,6 +1107,7 @@ public class NewApplicationDelegator {
     private AppSubmissionDto getAppSubmissionDto(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);
         if(appSubmissionDto == null){
+            log.debug(StringUtil.changeForLog("appSubmissionDto is empty "));
             appSubmissionDto = new AppSubmissionDto();
         }
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
@@ -1096,36 +1115,33 @@ public class NewApplicationDelegator {
     }
 
     private void initSession(BaseProcessClass bpc){
-        AppSubmissionDto appSubmissionDto = new AppSubmissionDto();
-        //hard-code app type
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        List<HcsaServiceDto> HcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,  AppServicesConsts.HCSASERVICEDTOLIST);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>();
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         Map<String,AppSvcRelatedInfoDto>  svcRelatedMap = new HashMap<>();
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
-        for(HcsaServiceDto svc:HcsaServiceDtos){
-            appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-            appSvcRelatedInfoDto.setServiceId(svc.getId());
-            appSvcRelatedInfoDto.setServiceCode(svc.getSvcCode());
-            appSvcRelatedInfoDto.setServiceType(svc.getSvcType());
-            appSvcRelatedInfoDto.setServiceName(svc.getSvcName());
-            appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
-            svcRelatedMap.put(svc.getId(), appSvcRelatedInfoDto);
+        if(appSubmissionDto == null){
+            appSubmissionDto = new AppSubmissionDto();
+            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
+            AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+            appGrpPremisesDtoList.add(appGrpPremisesDto);
+            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+            List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,  AppServicesConsts.HCSASERVICEDTOLIST);
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>();
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
+            for(HcsaServiceDto svc:hcsaServiceDtos){
+                appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+                appSvcRelatedInfoDto.setServiceId(svc.getId());
+                appSvcRelatedInfoDto.setServiceCode(svc.getSvcCode());
+                appSvcRelatedInfoDto.setServiceType(svc.getSvcType());
+                appSvcRelatedInfoDto.setServiceName(svc.getSvcName());
+                appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
+                svcRelatedMap.put(svc.getId(), appSvcRelatedInfoDto);
+            }
         }
-        appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
-        //AppGrpPremisesDtoList
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
-        AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-        appGrpPremisesDtoList.add(appGrpPremisesDto);
-        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-
-
-        ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
-
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
         ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.APPSVCRELATEDINFOMAP, (Serializable) svcRelatedMap);
 
-
+        //reload
         ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST, null);
         Map<String,AppGrpPrimaryDocDto> initBeforeReloadDocMap = new HashMap<>();
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) initBeforeReloadDocMap);
@@ -1139,7 +1155,8 @@ public class NewApplicationDelegator {
 
     private void  documentValid(HttpServletRequest request, Map<String,String> errorMap){
         log.debug(StringUtil.changeForLog("the do doValidatePremiss start ...."));
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = (List<AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(request, APPGRPPRIMARYDOCLIST);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if(appGrpPrimaryDocDtoList == null){
             return;
         }

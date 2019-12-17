@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -145,5 +146,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public void updatePaymentStatus(ApplicationGroupDto appGrp) {
         applicationClient.doUpDate(appGrp);
+    }
+
+    @Override
+    public AppSubmissionDto getAppSubmissionDtoDraft(String draftNo) {
+        return applicationClient.draftNumberGet(draftNo).getEntity();
     }
 }
