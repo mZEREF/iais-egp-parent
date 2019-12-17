@@ -8,12 +8,12 @@
 <c:forEach var="selfDesc" items="${selfDeclQueryAttr}" varStatus="status">
     <c:if test="${tabIndex == null && selfDesc.common == true}">
       <c:forEach var="answerMap" items="${selfDesc.premAnswerMap}">
-        <c:forEach items="${answerMap.value}" var="list"><br>
-          <input type="hidden" name="${list.answerKey}" value="<c:out value="${list.answer}"/>"/>　
+        <c:forEach items="${answerMap.value}" var="list" varStatus="status">
+          <td><input type="hidden" name="${list.answerKey}" value=""/></td>
           <tr>
             <td>
               <p class="visible-xs visible-sm table-row-title"></p>
-              <p>1</p>
+              <p>${status.index + 1}</p>
             </td>
 
             <td>
@@ -45,14 +45,12 @@
 
   <c:if test="${tabIndex != null && selfDesc.common == false && tabIndex eq selfDesc.svcId}">
     <c:forEach var="answerMap" items="${selfDesc.premAnswerMap}">
-      <c:forEach items="${answerMap.value}" var="list"><br>
-        <input type="hidden" name="${list.answerKey}" value="<c:out value="${list.answer}"/>"/>　
+      <c:forEach items="${answerMap.value}" var="list" varStatus="status"><br>
+        <td><input type="hidden" name="${list.answerKey}" value=""/></td>
         <tr>
-          <td><iais:datePicker name = "inpDate" value=""></iais:datePicker></td>
-
           <td>
             <p class="visible-xs visible-sm table-row-title"></p>
-            <p>1</p>
+            <p>${status.index + 1}</p>
           </td>
 
           <td>
@@ -65,9 +63,9 @@
             <p>${list.checklistItem}</p>
           </td>
 
-          <<td>
-          <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.answerKey}')"/></p>
-        </td>
+          <td>
+            <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'YES'}">checked="checked"</c:if> onclick="javascript:selectAnswer('YES', '${list.answerKey}')"/></p>
+          </td>
 
           <td>
             <p><input name="${list.answerKey}" type="radio"  <c:if test="${list.answer == 'NO'}">checked="checked"</c:if> onclick="javascript:selectAnswer('NO', '${list.answerKey}')"/></p>

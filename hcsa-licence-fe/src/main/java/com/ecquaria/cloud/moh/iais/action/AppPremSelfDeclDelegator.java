@@ -10,14 +10,18 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +114,7 @@ public class AppPremSelfDeclDelegator {
 
         String tabIndex = ParamUtil.getString(request, "tabIndex");
         ParamUtil.setRequestAttr(request, "tabIndex", tabIndex);
+
     }
 
     /**
@@ -135,11 +140,38 @@ public class AppPremSelfDeclDelegator {
      */
     public void submitSelfDesc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
         List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
-        appPremSelfDesc.saveSelfDecl(selfDeclList);
+        boolean hasWriteAnswer = hasWtriteAnswer(selfDeclList).booleanValue();
+        if (!hasWriteAnswer){
+            Map<String, String> errorMap = new HashMap<>(1);
+            errorMap.put("premItemAnswer", "Please fill in the necessary answers.");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        }else {
+            appPremSelfDesc.saveSelfDecl(selfDeclList);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }
+    }
 
+    // Lamda is not recommended
+    private Boolean hasWtriteAnswer(List<SelfDecl> selfDeclList){
+        boolean fullPower = true;
+        if (selfDeclList != null){
+            for (SelfDecl selfDecl : selfDeclList){
+                Map<String, List<PremCheckItem>> listMap = selfDecl.getPremAnswerMap();
+                for(Map.Entry<String, List<PremCheckItem>> entry : listMap.entrySet()){
+                    List<PremCheckItem> premCheckItemList = entry.getValue();
+                    for (PremCheckItem item : premCheckItemList){
+                        if (StringUtils.isEmpty(item.getAnswer())){
+                            fullPower = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return fullPower;
     }
 
     /**

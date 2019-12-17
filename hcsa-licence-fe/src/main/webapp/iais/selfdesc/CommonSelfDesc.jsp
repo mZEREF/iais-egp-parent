@@ -34,13 +34,11 @@
 </style>
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
   <input type="hidden" name="tabIndex" value="">
-
-
 <c:choose>
   <c:when test="${empty selfDeclQueryAttr}">
     <tr>
@@ -50,12 +48,13 @@
     </tr>
   </c:when>
   <c:otherwise>
+
     <br><br><br><br><br><br>
     <div class = "container">
       <div class="row">
         <div class="col-xs-12">
+          &nbsp;<span id="error_premItemAnswer" name="iaisErrorMsg" class="error-msg"></span>
           <div class="dashboard-gp">
-
             <c:forEach var="declItem" items="${selfDeclQueryAttr}"  varStatus="status">
                   <c:choose>
                     <c:when test="${declItem.common eq true}">
@@ -77,8 +76,6 @@
                       </div>
                     </c:otherwise>
                   </c:choose>
-
-
             </c:forEach>
 
 
@@ -133,8 +130,8 @@
   </c:otherwise>
 </c:choose>
 
-
-  <script type="text/javascript">
+  <%@include file="/include/validation.jsp"%>
+  <script>
       function switchNextStep(index){
           $("[name='tabIndex']").val(index);
           $("[name='crud_action_type']").val("switchNextStep");
