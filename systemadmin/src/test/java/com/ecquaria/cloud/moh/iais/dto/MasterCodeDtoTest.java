@@ -19,7 +19,7 @@ public class MasterCodeDtoTest {
 
     @Test
     public void testMasterCodeDto(){
-        masterCodeDto.getId();
+        masterCodeDto.getMasterCodeId();
         masterCodeDto.getCodeValue();
         masterCodeDto.getCodeCategory();
         masterCodeDto.getCodeDescription();
@@ -31,7 +31,7 @@ public class MasterCodeDtoTest {
         masterCodeDto.setMasterCodeKey(null);
         masterCodeDto.setCodeCategory("");
         masterCodeDto.setCodeValue(null);
-        masterCodeDto.setId("0");
+        masterCodeDto.setMasterCodeId("1");
         masterCodeDto.setStatus("0");
         masterCodeDto.setCodeDescription(null);
         assertNotNull(masterCodeDto);

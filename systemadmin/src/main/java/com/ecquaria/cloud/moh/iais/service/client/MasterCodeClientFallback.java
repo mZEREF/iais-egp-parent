@@ -31,7 +31,7 @@ public class MasterCodeClientFallback implements MasterCodeClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> saveMasterCode(MasterCodeDto dto) {
+    public FeignResponseEntity<MasterCodeDto> saveMasterCode(MasterCodeDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -47,7 +47,7 @@ public class MasterCodeClientFallback implements MasterCodeClient{
     }
 
     @Override
-    public FeignResponseEntity<Void> updateMasterCode(MasterCodeDto dto) {
+    public FeignResponseEntity<MasterCodeDto> updateMasterCode(MasterCodeDto dto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
