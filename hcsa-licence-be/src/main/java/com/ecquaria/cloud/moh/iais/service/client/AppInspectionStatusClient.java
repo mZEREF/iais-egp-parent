@@ -6,6 +6,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,23 +23,22 @@ import java.util.List;
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = AppInspectionStatusClientFallback.class)
 public interface AppInspectionStatusClient {
-    @RequestMapping(path = "/iais-AppInspecStatus/search-status-swo/{status}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,
+    @RequestMapping(path = "/iais-inspecstatus/search-status-swo/{status}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspectionStatusByStatus(@PathVariable("status") String status);
 
-    @PostMapping(path = "/iais-AppInspecStatus/search-status-one/ids", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/iais-inspecstatus/search-status-one/ids", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspecStatusByIds(@RequestBody String ids);
 
-    @RequestMapping(path = "/iais-AppInspecStatus/search-status-three/{appPremCorreId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/iais-inspecstatus/search-status-three/{appPremCorreId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInspectionStatusDto> getAppInspectionStatusByPremId(@PathVariable("appPremCorreId") String appPremCorreId);
 
-    @PostMapping(path = "/iais-AppInspecStatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/iais-inspecstatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppInspectionStatusDto>> create(@RequestBody List<AppInspectionStatusDto> appInspecStatusDtos);
 
-    @PutMapping(path = "/iais-AppInspecStatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PutMapping(path = "/iais-inspecstatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppInspectionStatusDto> update(@RequestBody AppInspectionStatusDto appInspecStatusDto);
 
-    @PostMapping(path = "/iais-AppInspecStatus/create-status", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/iais-inspecstatus/create-status", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppInspectionStatusDto> createAppInspectionStatusByAppDto(@RequestBody ApplicationDto applicationDto);
 }
