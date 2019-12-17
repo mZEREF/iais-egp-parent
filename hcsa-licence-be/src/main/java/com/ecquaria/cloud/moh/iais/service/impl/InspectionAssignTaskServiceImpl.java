@@ -226,7 +226,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     inspecTaskCreAndAssDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     inspecTaskCreAndAssDto.setTaskDtos(commPools);
                     inspectorCheckList.remove(0);
-                    inspectionTaskClient.assignCommonPool(inspecTaskCreAndAssDto);
+                    organizationClient.assignCommonPool(inspecTaskCreAndAssDto);
                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
                     ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                     applicationViewDto.setApplicationDto(applicationDto1);
