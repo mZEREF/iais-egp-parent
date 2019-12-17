@@ -186,7 +186,7 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
 
         //create licence group fee
-        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount());
+        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
         licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
 
         //get organizationId
@@ -319,7 +319,7 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The isPostInspNeeded is -->:"+isPostInspNeeded));
 
         //create licence group fee
-        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount());
+        LicFeeGroupDto licFeeGroupDto = getLicFeeGroupDto(applicationGroupDto.getAmount().toString());
         licenceGroupDto.setLicFeeGroupDto(licFeeGroupDto);
 
         //get organizationId
