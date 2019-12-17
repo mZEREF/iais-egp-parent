@@ -517,6 +517,17 @@
                                                             <iais:datePicker id = "lienceStartDate" name = "tuc" value=""></iais:datePicker>
                                                         </td>
                                                     </tr>
+                                                    <tr id="rollBack" class="hidden">
+                                                        <td>
+                                                            <span>Roll Back:</span>
+                                                        </td>
+                                                        <td>
+                                                            <select name="rollBack" class="table-select">
+                                                                <option>---select---</option>
+
+                                                            </select>
+                                                        </td>
+                                                    </tr>
                                                 </table>
                                                 <div align="center">
                                                     <button id="submitButton" type="submit" class="btn btn-primary">
@@ -605,12 +616,14 @@
 
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
-
         if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
-        }else if(selectValue == "Licence Start Date"){
+        }else if(selectValue == "Licence Start Date") {
             $('#lienceStartDate').removeClass('hidden');
+        }else if(selectValue == "ROLLBACK"){
+            $('#rollBack').removeClass('hidden');
         }else{
+            $('#rollBack').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#lienceStartDate').addClass('hidden');
         }
