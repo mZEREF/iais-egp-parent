@@ -22,8 +22,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
@@ -117,6 +119,14 @@ public class InspectEmailAo1Delegator {
         log.debug("*******************crudAction-->:" + crudAction);
 
     }
+
+    public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
+        CheckListVadlidateDto dto = new CheckListVadlidateDto();
+        getDataFromPage(request);
+        getCommonDataFromPage(request);
+        getAdhocDtoFromPage(request);
+        return dto;
+    }
     public void emailSubmitStep(BaseProcessClass bpc){
         log.info("=======>>>>>emailSubmitStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
@@ -209,7 +219,7 @@ public class InspectEmailAo1Delegator {
         ParamUtil.setSessionAttr(request,"acDto", (Serializable) ncDtoList);
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, "isValid", "N");
-            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errMap);
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
             String saveFlag = ParamUtil.getString(request,"saveflag");

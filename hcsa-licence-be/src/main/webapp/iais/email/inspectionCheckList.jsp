@@ -8,7 +8,11 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.FillupChklistDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto"/>
+    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -487,6 +491,8 @@
                                                                 <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                                                     <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                 </div>
+                                                                <c:set value = "error_${item.incqDto.sectionName}${item.incqDto.itemId}com" var = "err"/>
+                                                                <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -532,6 +538,8 @@
                                                                 <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                                                     <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                 </div>
+                                                                <c:set value = "error_${item.incqDto.sectionName}${item.incqDto.itemId}" var = "err"/>
+                                                                <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -574,6 +582,8 @@
                                                             <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
                                                                 <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
                                                             </div>
+                                                            <c:set value = "error_${item.id}adhoc" var = "err"/>
+                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -588,6 +598,7 @@
                                                     <h4>Best Practice</h4>
                                                     <textarea cols="70" rows="7" name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
                                                 </div>
+                                                <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
@@ -607,7 +618,7 @@
                                             </button>
                                         </div>
                                         <input type="hidden" name = "saveflag" id="saveflag"/>
-                                        <iais:error>
+                                       <%-- <iais:error>
                                             <c:if test = "${not empty errorMap}">
                                                 <div class="error">
                                                     <c:forEach items="${errorMap}" var="map">
@@ -615,7 +626,7 @@
                                                     </c:forEach>
                                                 </div>
                                             </c:if>
-                                        </iais:error>
+                                        </iais:error>--%>
                                     </div>
                                 </div>
                             </div>
@@ -626,6 +637,8 @@
         </div>
     </div>
 </form>
+<%@ include file="/include/validation.jsp" %>
+
 <script type="text/javascript">
     function doNext(){
         $("#saveflag").val("save");

@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -17,8 +16,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckList
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -114,10 +115,18 @@ public class InspectionNcCheckListDelegator {
         Map<String, String> errMap = InspectionCheckListValidation.validate(request);
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, "isValid", "N");
-            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errMap);
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
         }
+    }
+
+    public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
+        CheckListVadlidateDto dto = new CheckListVadlidateDto();
+        getDataFromPage(request);
+        getCommonDataFromPage(request);
+        getAdhocDtoFromPage(request);
+        return dto;
     }
 
     public void doSubmit(BaseProcessClass bpc){

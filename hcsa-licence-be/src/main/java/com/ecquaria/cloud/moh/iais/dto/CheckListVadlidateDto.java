@@ -8,10 +8,10 @@ import java.io.Serializable;
  * @Author: jiahao
  * @Date: 2019/12/16 16:03
  */
-public class CheckListVadlidateDto {
-    @CustomValidate(impClass = "com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation")
-    public class ApplicationValidateDto implements Serializable {
-        private static final long serialVersionUID = 2291544600420550312L;
-    }
 
+@CustomValidate(impClass = "com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation")
+public class CheckListVadlidateDto implements Serializable {
+    private static final long serialVersionUID = 2291544600420550312L;
 }
+
+

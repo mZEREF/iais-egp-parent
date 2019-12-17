@@ -9,6 +9,11 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/include/formHidden.jsp" %>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.FillupChklistDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto"/>
+    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -233,6 +238,8 @@
                                                                 <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comck" <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                                                     <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                 </div>
+                                                                <c:set value = "error_${item.incqDto.sectionName}${item.incqDto.itemId}com" var = "err"/>
+                                                                <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -276,6 +283,8 @@
                                                                 <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>ck" <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                                                     <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                 </div>
+                                                                <c:set value = "error_${item.incqDto.sectionName}${item.incqDto.itemId}" var = "err"/>
+                                                                <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -286,43 +295,46 @@
 
                                         <div class="table-gp">
                                             <h3>Adhoc</h3>
-                                                <br/>
-                                                <h4></h4>
-                                                <table class="table">
-                                                    <thead>
+                                            <br/>
+                                            <h4></h4>
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>No.</th>
+                                                    <th>Regulation Clause Number</th>
+                                                    <th>Item</th>
+                                                    <th>Yes</th>
+                                                    <th>No</th>
+                                                    <th>N/A</th>
+                                                    <th>Remark</th>
+                                                    <th>Rectified</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
                                                     <tr>
-                                                        <th>No.</th>
-                                                        <th>Regulation Clause Number</th>
-                                                        <th>Item</th>
-                                                        <th>Yes</th>
-                                                        <th>No</th>
-                                                        <th>N/A</th>
-                                                        <th>Remark</th>
-                                                        <th>Rectified</th>
+                                                        <td class="row_no">${(status.index + 1) }</td>
+                                                        <td></td>
+                                                        <td><c:out value="${item.question}"/></td>
+                                                        <c:set value = "${item.id}" var = "ckkId"/>
+                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" /></td>
+                                                        <td>
+                                                            <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" />
+                                                        </td>
+                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+                                                        <td><input name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" type="text" value="<c:out value="${item.remark}"/>" /></td>
+                                                        <td>
+                                                            <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
+                                                                <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
+                                                            </div>
+                                                            <c:set value = "error_${item.id}adhoc" var = "err"/>
+                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                        </td>
+
                                                     </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
-                                                        <tr>
-                                                            <td class="row_no">${(status.index + 1) }</td>
-                                                            <td></td>
-                                                            <td><c:out value="${item.question}"/></td>
-                                                            <c:set value = "${item.id}" var = "ckkId"/>
-                                                            <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" /></td>
-                                                            <td>
-                                                                <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" />
-                                                            </td>
-                                                            <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A" /></td>
-                                                            <td><input name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" type="text" value="<c:out value="${item.remark}"/>" /></td>
-                                                            <td>
-                                                                <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
-                                                                    <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </c:forEach>
-                                                    </tbody>
-                                                </table>
+                                                </c:forEach>
+                                                </tbody>
+                                            </table>
                                         </div>
 
 
@@ -331,6 +343,7 @@
                                                 <div class="ax_default text_area">
                                                     <h4>Best Practice</h4>
                                                     <textarea cols="70" rows="7" name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                    <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
                                             <div class="input-group">
@@ -349,15 +362,6 @@
                                                 Next
                                             </button>
                                         </div>
-                                        <iais:error>
-                                            <c:if test = "${not empty errorMap}">
-                                                <div class="error">
-                                                    <c:forEach items="${errorMap}" var="map">
-                                                        ${map.key}  ${map.value} <br/>
-                                                    </c:forEach>
-                                                </div>
-                                            </c:if>
-                                        </iais:error>
                                     </div>
                                 </div>
                             </div>
@@ -368,7 +372,7 @@
         </div>
     </div>
 </form>
-
+<%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function doNext(){
         SOP.Crud.cfxSubmit("mainForm", "next");

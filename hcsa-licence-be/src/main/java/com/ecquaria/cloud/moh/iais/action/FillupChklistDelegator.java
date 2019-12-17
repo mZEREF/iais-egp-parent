@@ -4,7 +4,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.task.TaskService;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
@@ -13,8 +12,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestion
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -96,6 +97,13 @@ public class FillupChklistDelegator {
         ParamUtil.setRequestAttr(request,"isTcuOption",isTcuOption);
     }
 
+    public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) {
+        CheckListVadlidateDto dto = new CheckListVadlidateDto();
+        getDataFromPage(request);
+        getCommonDataFromPage(request);
+        getAdhocDtoFromPage(request);
+        return dto;
+    }
 
 
     /**
@@ -122,7 +130,7 @@ public class FillupChklistDelegator {
         ParamUtil.setRequestAttr(request,"isTcuOption",isTcuOption);
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, "isValid", "N");
-            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errMap);
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
         }
