@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
@@ -34,6 +36,8 @@ import java.util.Map;
 public class InspEmailServiceImpl implements InspEmailService {
     @Autowired
     private InsEmailClient insEmailClient;
+    @Autowired
+    AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
     private SystemBeLicClient systemClient;
@@ -81,6 +85,17 @@ public class InspEmailServiceImpl implements InspEmailService {
     @Override
     public AppInsRepDto getAppInsRepDto(String appNo){
         return insRepClient.getAppInsRepDto(appNo).getEntity();
+    }
+
+    @Override
+    public List<String> getAppPremisesCorrelationsByAppId(String appId) {
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=appPremisesCorrClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
+        List<String> appPremCorrIds=new ArrayList<>();
+        for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
+             ) {
+            appPremCorrIds.add(appPremisesCorrelationDto.getId());
+        }
+        return appPremCorrIds;
     }
 
     @Override

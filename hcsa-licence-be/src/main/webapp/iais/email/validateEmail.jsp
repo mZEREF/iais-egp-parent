@@ -516,14 +516,16 @@
 </form>
 <script type="text/javascript">
     function doReload(){
-        $.ajax({
-            'url':'${pageContext.request.contextPath}/reload-nc-email',
-            'type':'GET',
-            'success':function (data) {
-                alert(data);
-                 $('#htmlEditroArea').val(data);
-            }
-        });
+        var r=confirm("Are you sure you want to regenerate the Inspection NC/BP Outcome email?");
+        if (r==true){
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/reload-rev-email',
+                'type':'GET',
+                'success':function (data) {
+                    location.reload();
+                }
+            });
+        }
     }
 
     function doPreview(){

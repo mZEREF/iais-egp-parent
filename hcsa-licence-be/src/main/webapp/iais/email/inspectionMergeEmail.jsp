@@ -713,22 +713,6 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr height="1">
-                                        <td class="col-xs-2" >
-                                            <p >
-                                                Processing Decision:
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <div class="col-sm-9">
-                                                <select id="decision-email" name="decision">
-                                                    <c:forEach items="${appTypeOption}" var="decision">
-                                                        <option  value="${decision.value}">${decision.text}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
                                     </tbody>
                                 </table>
                                 <p class="text-right text-center-mobile">
