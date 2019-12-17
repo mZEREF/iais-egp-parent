@@ -105,8 +105,8 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
-        //
-
+        //request For Information Loading
+        requestForInformationLoading(bpc);
         //for loading the draft by appId
         loadingDraft(bpc);
         //for loading Service Config
@@ -751,7 +751,7 @@ public class NewApplicationDelegator {
     private void requestForInformationLoading(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         String appId = ParamUtil.getString(bpc.request,"appId");
-        if(StringUtil.isEmpty(appId)){
+        if(!StringUtil.isEmpty(appId)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppId(appId);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }

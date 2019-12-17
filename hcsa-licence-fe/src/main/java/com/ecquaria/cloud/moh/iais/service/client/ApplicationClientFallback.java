@@ -92,4 +92,10 @@ public class ApplicationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+    public FeignResponseEntity<AppSubmissionDto>  getAppSubmissionDtoByAppId(String appId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
