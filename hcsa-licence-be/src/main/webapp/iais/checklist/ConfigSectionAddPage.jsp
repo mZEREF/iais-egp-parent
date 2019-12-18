@@ -82,15 +82,15 @@
         </c:choose>
           <div class="instruction-content center-content" id="instruction">
             <div class="sort section" id="sortSection">
-              <c:forEach var = "chklsec" items = "${configSessionAttr.sectionDtos}" varStatus="status">
-                <div class="gray-content-box sectionClass sectionSon" data-id="${status.index}">
-                  <input type="hidden" name="${chklsec.section}" data-name="sectionWant" value="${status.index}">
+              <c:forEach var = "chklsec" items = "${configSessionAttr.sectionDtos}" varStatus="sectionStatus">
+                <div class="gray-content-box sectionClass sectionSon" data-id="${sectionStatus.index}">
+                  <input type="hidden" name="${chklsec.section}" data-name="sectionWant" value="${sectionStatus.index}">
                   <div class="panel panel-default">
                     <div class="panel-heading"  role="tab">
                       <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">${chklsec.section}</a>
-                        <p class="text-right"><a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'UP', 'sectionSon')"><i class=""></i>Up</a></p>
-                        <p class="text-right"><a class="btnDown" data-id="${status.index}"  onclick="javascript:swapPosition(${status.index},'DOWN', 'sectionSon')"><i class=""></i>Down</a></p>
-                        <p class="text-right"><a class="btnDown" data-id="${status.index}"  onclick="javascript:removeSection('${chklsec.id}')"><i class=""></i>Remove</a></p>
+                        <p class="text-right"><a class="btnUp" data-id="${sectionStatus.index}" onclick="javascript:swapPosition(${sectionStatus.index},'UP', 'sectionSon')"><i class=""></i>Up</a></p>
+                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:swapPosition(${sectionStatus.index},'DOWN', 'sectionSon')"><i class=""></i>Down</a></p>
+                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:removeSection('${chklsec.id}')"><i class=""></i>Remove</a></p>
                       </h4>
 
                     </div>
@@ -114,7 +114,7 @@
 
                             <c:forEach var = "chklitem" items = "${chklsec.checklistItemDtos}" varStatus="status">
 
-                                    <tr class="itemClass" data-id="${status.index}">
+                                    <tr class="itemClass" data-id="${chklitem.itemId} + ${sectionStatus.index}">
                                       <input type="hidden" name="${chklitem.itemId}" data-name="itemWant" value="${status.index}">
                                         <td>
                                           <p class="visible-xs visible-sm table-row-title">Regulation Clause Number</p>
@@ -139,9 +139,9 @@
 
                                         <td>
                                           <p class="visible-xs visible-sm table-row-title">Date</p>
-                                          <p><a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'UP', 'itemClass')"><i class=""> </i>Up</a>
-                                            <a class="btnUp" data-id="${status.index}" onclick="javascript:swapPosition(${status.index},'DOWN', 'itemClass')"><i class=""></i>Down</a>
-                                            <a class="btnUp"  onclick="javascript:removeSectionItem('${chklitem.itemId}')"><i class=""></i>Remove</a></p>
+                                          <p><a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId} + ${sectionStatus.index}','UP', 'itemClass')"><i class=""> </i>Up</a>
+                                            <a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId} + ${sectionStatus.index}','DOWN', 'itemClass')"><i class=""></i>Down</a>
+                                            <a class="btnUp"  onclick="javascript:removeSectionItem('${chklsec.id}','${chklitem.itemId}')"><i class=""></i>Remove</a></p>
                                           </p>
 
                                         </td>
@@ -241,8 +241,9 @@
         SOP.Crud.cfxSubmit("mainForm","backLastPage");
     }
 
-    function removeSectionItem(id){
-        SOP.Crud.cfxSubmit("mainForm","removeSectionItem", id);
+    function removeSectionItem(sectionId, itemId){
+        $('input[name=currentValidateId]').val(sectionId);
+        SOP.Crud.cfxSubmit("mainForm","removeSectionItem", itemId);
     }
 
     function removeSection(id){

@@ -374,18 +374,22 @@ public class HcsaChklConfigDelegator {
      */
     public void removeSectionItem(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        String currentSectionId = ParamUtil.getString(request, "currentValidateId");
         String value = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
 
         ChecklistConfigDto configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
         if (configDto != null){
             List<ChecklistSectionDto> sectionDtos = configDto.getSectionDtos();
             for (ChecklistSectionDto sec : sectionDtos){
-                List<ChecklistItemDto> itemDtoList = sec.getChecklistItemDtos();
-                Iterator<ChecklistItemDto> iter = itemDtoList.iterator();
-                while (iter.hasNext()){
-                    String itemId = iter.next().getItemId();
-                    if (value.equals(itemId)){
-                        iter.remove();
+                if (currentSectionId.equals(sec.getId())){
+                    List<ChecklistItemDto> itemDtoList = sec.getChecklistItemDtos();
+                    Iterator<ChecklistItemDto> iter = itemDtoList.iterator();
+                    while (iter.hasNext()){
+                        String itemId = iter.next().getItemId();
+                        if (value.equals(itemId)){
+                            iter.remove();
+                            break;
+                        }
                     }
                 }
             }
