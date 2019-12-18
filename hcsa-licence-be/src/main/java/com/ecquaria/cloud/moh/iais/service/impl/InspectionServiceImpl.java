@@ -153,7 +153,7 @@ public class InspectionServiceImpl implements InspectionService {
             flag = AppConsts.TRUE;
         }
         for(OrgUserDto oDto:orgUserDtoList){
-            if((oDto.getId().equals(loginContext.getUserId()))){
+            if(!(oDto.getId().equals(loginContext.getUserId()))){
                 SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
                 inspectorOption.add(so);
             } else {
