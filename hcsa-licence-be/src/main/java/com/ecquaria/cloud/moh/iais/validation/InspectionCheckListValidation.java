@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +25,6 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         Map<String, String> errMap = new HashMap<>();
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
         List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
-        if(StringUtil.isEmpty(icDto.getBestPractice())){
-            errMap.put("bestPractice","Best Pracice is mandatory.");
-        }
         if(cqDtoList!=null && !cqDtoList.isEmpty()){
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 if(StringUtil.isEmpty(temp.getChkanswer())){
@@ -70,7 +68,10 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         try {
             String dateStr = icDto.getTuc();
             if(!StringUtil.isEmpty(dateStr)){
-                Formatter.parseDate(dateStr);
+                Date tcuDate = Formatter.parseDate(dateStr);
+                if(tcuDate.getTime()< System.currentTimeMillis()){
+                    errMap.put("allList","TCU Date should be a future Date.");
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
