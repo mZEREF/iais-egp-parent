@@ -53,7 +53,7 @@
                                 </tr>
                                 </thead>
                                 <c:forEach var="premisesAndChkLst" items="${PremisesAndChkLst}" >
-                                  <c:set value="${premisesAndChkLst.premisesIndexNo}" var="premisesIndexNo"/>
+                                  <c:set value="${premisesAndChkLst.premiseVal}" var="premisesIndexNo"/>
                                   <tbody>
                                   <c:forEach var="chkLst" items="${premisesAndChkLst.appSvcChckListDtoList}" varStatus="status"  >
                                     <c:set value="${premisesIndexNo}${status.index}" var="cgoName"/>
@@ -61,7 +61,7 @@
                                       <c:if test="${status.first}">
                                         <td rowspan="4">
                                           <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                          <input type="hidden" name="${premisesAndChkLst.premisesIndexNo}" value="${premisesAndChkLst.premisesIndexNo}" />
+                                          <input type="hidden" name="${premisesIndexNo}" value="${premisesIndexNo}" />
                                           <p>${premisesAndChkLst.premiseGetAddress} </p>
                                         </td>
                                       </c:if>

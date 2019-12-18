@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -29,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import com.ecquaria.csrfguard.CsrfGuard;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -105,6 +107,8 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
+
+
         //request For Information Loading
         requestForInformationLoading(bpc);
         //for loading the draft by appId
@@ -243,14 +247,14 @@ public class NewApplicationDelegator {
      */
     public void preparePreview(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+       /* AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Map<String, AppSvcRelatedInfoDto> appSvcRelatedInfoMap = (Map<String, AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request, ClinicalLaboratoryDelegator.APPSVCRELATEDINFOMAP);
-       /* List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>();
-        appSvcRelatedInfoMap.keySet().forEach(key -> appSvcRelatedInfoDtoList.add(appSvcRelatedInfoMap.get(key)));*/
+       *//* List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>();
+        appSvcRelatedInfoMap.keySet().forEach(key -> appSvcRelatedInfoDtoList.add(appSvcRelatedInfoMap.get(key)));*//*
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>();
         appSvcRelatedInfoDtoList.add(appSvcRelatedInfoMap.get("35F99D15-820B-EA11-BE7D-000C29F371DC"));
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);*/
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
 
@@ -430,25 +434,26 @@ public class NewApplicationDelegator {
     public void doPayment(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
         String result = bpc.request.getParameter("result");
-        String switch2 = "loading";
+        String switch2 = "ack";
         if (!StringUtil.isEmpty(result)) {
             log.debug(StringUtil.changeForLog("payment result:" + result));
-            if ("success".equals(result)) {
+            String pmtRefNo = bpc.request.getParameter("reqRefNo");
+            if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 switch2 = "ack";
                 //update status
                 AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
                 String appGrpId = appSubmissionDto.getAppGrpId();
-                //String pmtRefNo = bpc.request.getParameter("pmtRefNo");
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(appGrpId);
-                //appGrp.setId("DCB99B5E-0618-EA11-BE78-000C29D29DB0");
-                appGrp.setPmtRefNo("AN1911136062");
+                appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
+            }else {
+                switch2 = "loading";
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
 
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
         log.debug(StringUtil.changeForLog("the do doPayment end ...."));
     }
 
@@ -531,6 +536,39 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
         log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));
 
+    }
+    /**
+     * StartStep: ControlSwitch
+     *
+     * @param bpc
+     * @throws
+     */
+    public void jumpBank(BaseProcessClass bpc) throws IOException {
+        log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
+        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        if(StringUtil.isEmpty(payMethod)){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
+            return;
+        }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        if("Credit".equals(payMethod)){
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/payment/eservice/INTERNET/PaymentRequest")
+                    .append("?amount=").append(appSubmissionDto.getAmount())
+                    .append("&payMethod=").append(payMethod)
+                    .append("&reqNo=").append(appSubmissionDto.getAppGrpNo());
+            String uuu = url.toString();
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }else if("GIRO".equals(payMethod)){
+            /*String appGrpId = appSubmissionDto.getAppGrpId();
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
+            serviceConfigService.updatePaymentStatus(appGrp);*/
+        }
+        log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
     }
 
     /**
@@ -774,7 +812,7 @@ public class NewApplicationDelegator {
         }else {
             serviceConfigIds.add("34F99D15-820B-EA11-BE7D-000C29F371DC");
             serviceConfigIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");
-            //serviceConfigIds = ParamUtil.getSessionAttr(bpc.request, "");
+            //serviceConfigIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "serviceList");
         }
         log.debug(StringUtil.changeForLog("service size:"+serviceConfigIds.size()));
 
@@ -1059,7 +1097,8 @@ public class NewApplicationDelegator {
             String premisesIndexNo = "prem"+ i;
             String premisesType = ParamUtil.getString(request, premisesIndexNo+"premType");
             appGrpPremisesDto.setPremisesType(premisesType);
-            appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
+            //wait to do
+            //appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
                 String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premOnSiteSelect");
                 String hciName = ParamUtil.getString(request, premisesIndexNo+"hciName");
@@ -1096,7 +1135,7 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setScdfRefNo(scdfRefNo);
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
                 //add index for dto refer
-                appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
+                //appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
 
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
                 String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premConSelect");
@@ -1140,7 +1179,7 @@ public class NewApplicationDelegator {
 
     private void initSession(BaseProcessClass bpc){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        Map<String,AppSvcRelatedInfoDto>  svcRelatedMap = new HashMap<>();
+       // Map<String,AppSvcRelatedInfoDto>  svcRelatedMap = new HashMap<>();
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
@@ -1158,12 +1197,13 @@ public class NewApplicationDelegator {
                 appSvcRelatedInfoDto.setServiceType(svc.getSvcType());
                 appSvcRelatedInfoDto.setServiceName(svc.getSvcName());
                 appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
-                svcRelatedMap.put(svc.getId(), appSvcRelatedInfoDto);
+               // svcRelatedMap.put(svc.getId(), appSvcRelatedInfoDto);
             }
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
-        ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.APPSVCRELATEDINFOMAP, (Serializable) svcRelatedMap);
+        //ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.APPSVCRELATEDINFOMAP, (Serializable) svcRelatedMap);
 
         //reload
         ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST, null);

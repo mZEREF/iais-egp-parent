@@ -20,23 +20,23 @@
                 </div>
                 <div class="control-input-span control-set-alignment">
                   <div class="normal-indicator">
-                    <table class="check-${appGrpPremisesDto.premisesIndexNo}">
+                    <table class="check-${appGrpPremisesDto.hciName}">
                       <tbody>
                       <c:forEach var="levelOneList" items="${HcsaSvcSubtypeOrSubsumedDto}" varStatus="levelOne">
-                        <c:set var="checkIndexNo1" value="${appGrpPremisesDto.premisesIndexNo};${levelOneList.name};${levelOneList.code};${levelOneList.parentId}"/>
-                        <c:set var="reloadIndexNo1" value="${appGrpPremisesDto.premisesIndexNo}${levelOneList.id}"/>
+                        <c:set var="checkIndexNo1" value="${appGrpPremisesDto.hciName};${levelOneList.name};${levelOneList.code};${levelOneList.parentId}"/>
+                        <c:set var="reloadIndexNo1" value="${currentServiceId}${appGrpPremisesDto.hciName}${levelOneList.id}"/>
                         <!--one -->
                         <tr>
                           <td>
-                            <div class="control-item-container parent-form-check" data-parent="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelOne.index}${levelOneList.code}" />" >
+                            <div class="control-item-container parent-form-check" data-parent="<c:out value="${appGrpPremisesDto.hciName}${levelOne.index}${levelOneList.code}" />" >
                               <input type="checkbox"
                              <c:if test="${reloadData[reloadIndexNo1] != null && reloadData[reloadIndexNo1] != ''}">
                               checked="checked"
                              </c:if>
                                      id="<c:out value="control--${levelOne.index}--${levelOne.index}" />"
-                                     name="<c:out value="${appGrpPremisesDto.premisesIndexNo}control--runtime--1" />" class="control-input"
+                                     name="<c:out value="${appGrpPremisesDto.hciName}control--runtime--1" />" class="control-input"
                                      value="<c:out value="${checkIndexNo1}" />">
-                              <label  for="<c:out value="control--${levelOne.index}--${levelOne.index}" />" data-code="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelOne.index}${levelOneList.code}" />" class="control-label control-set-font control-font-normal" />
+                              <label  for="<c:out value="control--${levelOne.index}--${levelOne.index}" />" data-code="<c:out value="${appGrpPremisesDto.hciName}${levelOne.index}${levelOneList.code}" />" class="control-label control-set-font control-font-normal" />
                               <span class="check-square"></span><c:out value="${levelOneList.name}" />
                               </label>
                               <input class="checkValue" type="hidden" name="<c:out value="${checkIndexNo1}" />" value="<iais:mask name="${checkIndexNo1}" value="${levelOneList.id}"/>"/>
@@ -45,18 +45,18 @@
                         </tr>
                         <c:if test="${not empty levelOneList.list}">
                           <c:forEach var="levelTwoList" items="${levelOneList.list}" varStatus="levelTwo">
-                            <c:set var="checkIndexNo2" value="${appGrpPremisesDto.premisesIndexNo};${levelTwoList.name};${levelTwoList.code};${levelTwoList.parentId}"/>
-                            <c:set var="reloadIndexNo2" value="${appGrpPremisesDto.premisesIndexNo}${levelTwoList.id}"/>
+                            <c:set var="checkIndexNo2" value="${appGrpPremisesDto.hciName};${levelTwoList.name};${levelTwoList.code};${levelTwoList.parentId}"/>
+                            <c:set var="reloadIndexNo2" value="${appGrpPremisesDto.hciName}${levelTwoList.id}"/>
                             <!--two -->
                             <tr>
                               <td>
-                                <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelTwo.index}${levelTwoList.code}"/>" data-child="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelOne.index}${levelOneList.code}"/>" >
+                                <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="<c:out value="${appGrpPremisesDto.hciName}${levelTwo.index}${levelTwoList.code}"/>" data-child="<c:out value="${appGrpPremisesDto.hciName}${levelOne.index}${levelOneList.code}"/>" >
                                   <input type="checkbox"
                                   <c:if test="${reloadData[reloadIndexNo2] != null && reloadData[reloadIndexNo2] != ''}">
                                          checked="checked"
                                   </c:if>
                                          id="<c:out value="control--${levelTwo.begin}--${levelTwo.index}"/>"
-                                         name="<c:out value="${appGrpPremisesDto.premisesIndexNo}control--runtime--1"/>" class="control-input"
+                                         name="<c:out value="${appGrpPremisesDto.hciName}control--runtime--1"/>" class="control-input"
                                          value="<c:out value="${checkIndexNo2}" />">
                                   <label  for="<c:out value="control--${levelTwo.index}--${levelTwo.index}"/>" class="control-label control-set-font control-font-normal" />
                                     <span class="check-square"></span><c:out value="${levelTwoList.name}"/>
@@ -68,17 +68,17 @@
                             <c:if test="${not empty levelTwoList.list}">
                               <!--three -->
                               <c:forEach var="levelThreeList" items="${levelTwoList.list}" varStatus="levelThree">
-                                <c:set var="checkIndexNo3" value="${appGrpPremisesDto.premisesIndexNo};${levelThreeList.name};${levelThreeList.code};${levelThreeList.parentId}"/>
-                                <c:set var="reloadIndexNo3" value="${appGrpPremisesDto.premisesIndexNo}${levelThreeList.id}"/>
+                                <c:set var="checkIndexNo3" value="${appGrpPremisesDto.hciName};${levelThreeList.name};${levelThreeList.code};${levelThreeList.parentId}"/>
+                                <c:set var="reloadIndexNo3" value="${appGrpPremisesDto.hciName}${levelThreeList.id}"/>
                                 <tr>
                                   <td>
-                                    <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelThree.index}${levelThreeList.code}"/>" data-child="<c:out value="${appGrpPremisesDto.premisesIndexNo}${levelTwo.index}${levelTwoList.code}"/>" >
+                                    <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="<c:out value="${appGrpPremisesDto.hciName}${levelThree.index}${levelThreeList.code}"/>" data-child="<c:out value="${appGrpPremisesDto.hciName}${levelTwo.index}${levelTwoList.code}"/>" >
                                       <input type="checkbox"
                                       <c:if test="${reloadData[reloadIndexNo3] != null && reloadData[reloadIndexNo3] != ''}">
                                              checked="checked"
                                       </c:if>
                                              id="<c:out value="control--${levelThree.index}--${levelThree.index}"/>"
-                                             name="<c:out value="${appGrpPremisesDto.premisesIndexNo}control--runtime--1"/>" class="control-input"
+                                             name="<c:out value="${appGrpPremisesDto.hciName}control--runtime--1"/>" class="control-input"
                                              value="<c:out value="${checkIndexNo3}"/>">
                                       <label  for="<c:out value="control--${levelThree.index}--${levelThree.index}"/>" class="control-label control-set-font control-font-normal">
                                         <span class="check-square"></span><c:out value="${levelThreeList.name}"/>

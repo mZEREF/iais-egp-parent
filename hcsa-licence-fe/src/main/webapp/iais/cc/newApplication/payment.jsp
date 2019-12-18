@@ -63,16 +63,16 @@
                                     </tbody>
                                 </table>
                                 <h2>Payment Method</h2>
-                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" value="Credit/Debit Card">
+                                <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="Credit">
                                 <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>&nbsp&nbsp&nbsp&nbsp
-                                <input class="form-check-input premTypeRadio"  type="radio" name="premisesType" value="GIRO">
+                                <input class="form-check-input premTypeRadio"  type="radio" name="payMethod" value="GIRO">
                                 <label class="form-check-label" ><span class="check-circle"></span>GIRO</label><br>
 
                                 &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">&nbsp
                                 <img src="<%=webroot1%>img/paymentVISA.png" width="66" height="25" alt="VISA">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                 <img src="<%=webroot1%>img/payments.png" width="36" height="30" alt="GIRO">
                                 <p class="visible-xs visible-sm table-row-title">Proceed</p>
-                                <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="btn btn-primary" value="Proceed"></iais:input></p>
+                                <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Proceed"></iais:input></p>
                             </div>
                         </div>
                     </div>
@@ -83,33 +83,9 @@
 </form>
 <script src=""></script>
 <script type="text/javascript">
-    /*$(function () {
-        // alert("ok")
-        $(":button").click(function () {
-            alert("ok")
-            var paymentRequestDto={
-                amount: $("#totalAmount").val(),
-                payMethod: $("input[name=payMethod]").val(),
-                reqDt: new Date(),
-                reqRefNo: "string12345"
-            }
-            //alert($("form[name=myform]").serialize())
-            $.ajax({
-                type:"GET",
-                url:"https://192.168.6.60/payment/eservice/INTERNET/PaymentRequest",
-                data:paymentRequestDto,
-                processData: false,
-                contentType: false,
-                success:function (response) {
-                    //alert(response)
-                }
-            })
-        })
-    })*/
 
-    $('#proceed').click(function () {
-        location.href= '${pageContext.request.contextPath}/payment-web/eservice/INTERNET/PaymentRequest?amount=1760&payMethod=Credit&reqNo=AN191211000150-01';
-        //location.href= 'https://192.168.6.60/payment/eservice/INTERNET/PaymentRequest?amount=1760&payMethod=Credit&reqNo=AN191211000150-01';
+    $('.proceed').click(function () {
+        submit('','ack',null);
     });
 </script>
 

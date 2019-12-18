@@ -69,7 +69,7 @@
                                         </div>
                                     </c:forEach>
                                     <!--prem -->
-                                    <c:forEach var="prem" items="${appGrpPremisesList}" varStatus="premStatus">
+                                    <c:forEach var="prem" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStatus">
                                         <c:forEach var="premDoc" items="${premHcsaSvcDocConfigDto}">
                                             <c:set var="premKey" value="prem${premDoc.id}${prem.hciName}" />
                                             <c:set var="primaryDoc" value="${docMap.get(premKey)}"/>

@@ -227,27 +227,6 @@
                               </div>
                             </td>
                           </tr>
-                            <%--<tr height="1">
-                              <td class="first last" style="width: 100%;">
-                                <div id="control--runtime--30" class="control control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--30--label" class="control-label control-set-font control-font-label">
-                                        Profession Type
-                                      </label>
-                                      <span class="mandatory">*</span>
-                                      <span class="upload_controls"></span>
-                                    </div>
-                                    <div class="col-sm-5">
-                                      <div class="">
-                                        <input name="professionType" type="text" id="control--runtime--30--text" class="form-control control-input control-set-font control-font-normal" value="${currentCgo.professionType}" size="30">
-                                        <span class="error-msg"><c:out value="${errorMap.professionType}"></c:out></span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>--%>
                           <tr height="1">
                             <td class="first last" style="width: 100%;">
                               <div  class="control control-caption-horizontal">
@@ -297,7 +276,7 @@
                                     <span class="upload_controls">*</span>
                                   </div>
                                   <div class="col-sm-5">
-                                    <div class="">
+                                    <div class="specialtyContent">
                                       <iais:select cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
                                       <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
                                       <c:choose>
@@ -429,13 +408,13 @@
 
 
     $('.specialty').change(function () {
-        $specialtyEle = $(this).closest('tr');
+        $specialtyEle = $(this).closest('.specialtyContent');
         var val = $(this).val();
 
         if('other' == val){
-            $specialtyEle.next().find('tr.specialtyOtherTr').removeClass('hidden');
+            $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
         }else{
-            $specialtyEle.next().find('tr.specialtyOtherTr').addClass('hidden');
+            $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
         }
     });
 
