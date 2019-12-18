@@ -59,19 +59,19 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Message Type</p>
-                                        <p><a href="#">${inboxQuery.messageType}</a></p>
+                                        <p>${inboxQuery.messageType}</p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Ref. No</p>
-                                        <p><a href="#">${inboxQuery.refNo}</a></p>
+                                        <p>${inboxQuery.refNo}</p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Service</p>
-                                        <p><a href="#">${inboxQuery.interService}</a></p>
+                                        <p>${inboxQuery.serviceId}</p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Date</p>
-                                        <p><a href="#"><fmt:formatDate value="${inboxQuery.createdAt}" pattern="MM/dd/yyyy HH:mm:ss" /></a></p>
+                                        <p><fmt:formatDate value="${inboxQuery.createdAt}" pattern="MM/dd/yyyy HH:mm:ss" /></p>
                                     </td>
                                 </tr>
                             </c:forEach>

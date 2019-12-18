@@ -11,8 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name = "iais-inter-inbox",configuration = FeignConfiguration.class,fallback = InboxFallback.class)
+@FeignClient(name = "inter-inbox",configuration = FeignConfiguration.class,fallback = InboxFallback.class)
 public interface InboxClient {
-    @RequestMapping(path = "/inter-inbox/inbox-param", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/iais-inter-inbox/inbox-param", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<InboxQueryDto>> searchInbox(SearchParam searchParam);
 }

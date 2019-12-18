@@ -4,16 +4,19 @@
         <![CDATA[
             SELECT
                 inbox.id,
+                inbox.src_system_id,
                 inbox.subject,
                 inbox.message_type,
                 inbox.ref_no,
-                inbox.service,
+                inbox.service_id,
+                inbox.process_url,
+                inbox.status,
                 inbox.created_dt
-            FROM INTER_INBOX AS inbox
+            FROM INBOX_MSG AS inbox
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, inbox.id) >0</#if>
             <#if messageType??> AND inbox.message_type = :messageType</#if>
-            <#if interService??> AND inbox.service = :interService</#if>
+            <#if interService??> AND inbox.service_id = :interService</#if>
         ]]>
     </sql>
 

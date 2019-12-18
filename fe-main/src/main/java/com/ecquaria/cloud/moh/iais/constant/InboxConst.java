@@ -8,12 +8,6 @@ package com.ecquaria.cloud.moh.iais.constant;
 public class InboxConst {
 
 
-    //URL Info
-
-    public static final String INBOX_URL            = "iais-inter-inbox:8877/inter-inbox";
-    public static final String APP_URL              = "iais-application:8883/iais-application";
-    public static final String LIC_URL              = "iais-hcsa-licence:8882/hcsa-licence";
-
     //SEARCH PARAM
 
     public static final String INBOX_RESULT         = "inboxResult";

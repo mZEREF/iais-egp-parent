@@ -32,7 +32,6 @@
     });
 
     $("#inboxService").change(function() {
-        console.log("inboxService");
         submit('inbox','doSearch');
     });
 

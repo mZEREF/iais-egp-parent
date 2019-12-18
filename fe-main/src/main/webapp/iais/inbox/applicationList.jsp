@@ -5,13 +5,13 @@
             <input type="hidden" name="crud_action_type" value="">
             <div class="form-group">
                 <label class="control-label" for="appType">Type</label>
-                <div class="col-xs-12 col-md-8 col-lg-9">
+                <div class="col-md-8 col-lg-9">
                     <iais:select name="appType" id="appType" options="appTypeSelect" firstOption="Select an type"></iais:select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label" for="appStatus">Status</label>
-                <div class="col-xs-12 col-md-8 col-lg-9">
+                <div class=" col-md-8 col-lg-9">
                     <iais:select name="appStatus" id="appStatus" options="appStatusSelect" firstOption="Select an status"></iais:select>
                 </div>
             </div>

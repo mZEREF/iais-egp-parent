@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @Program: iais-egp
  * @Create: 2019-11-29 09:57
  **/
-@FeignClient(name = "iais-application",configuration = FeignClientsConfiguration.class,fallback = AppInboxFallback.class)
+@FeignClient(name = "hcsa-application",configuration = FeignClientsConfiguration.class,fallback = AppInboxFallback.class)
 public interface AppInboxClient {
 
     @RequestMapping(path = "/iais-application/app-param",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
