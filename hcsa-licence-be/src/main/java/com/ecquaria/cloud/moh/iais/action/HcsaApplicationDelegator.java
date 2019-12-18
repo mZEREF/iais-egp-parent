@@ -504,6 +504,9 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         //todo:update FE Application Status
+//        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+//        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        applicationService.updateFEApplicaiton(applicationDto);
         //todo:send message to FE user.
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
@@ -515,6 +518,7 @@ public class HcsaApplicationDelegator {
         String url = "/hcsa-licence-web/eservice/INTERNET/MohNewApplication?appNo="+applicationDto.getApplicationNo();
         interMessageDto.setProcessUrl(url);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }
