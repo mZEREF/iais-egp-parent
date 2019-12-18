@@ -500,7 +500,7 @@
                                                         <td>
                                                             <select name="verified" class="table-select">
                                                                 <option>---select---</option>
-                                                                <c:forEach items="${applicationViewDto.verified}" var="verified">
+                                                                <c:forEach items="${applicationViewDto.routingStage}" var="verified">
                                                                     <option value="${verified.key}">${verified.value}</option>
                                                                 </c:forEach>
                                                             </select>
@@ -613,9 +613,9 @@
 
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "PROCVER") {
+        if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
-        }else if(selectValue == "PROCRB"){
+        }else if(selectValue == "ROLLBACK"){
             $('#rollBack').removeClass('hidden');
         }else{
             $('#rollBack').addClass('hidden');
