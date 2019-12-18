@@ -63,15 +63,15 @@ public interface OrganizationClient {
     FeignResponseEntity<BroadcastOrganizationDto> getBroadcastOrganizationDto(@PathVariable(name = "groupName") String groupName,
                                                                               @PathVariable(name = "groupDomain") String groupDomain);
 
-    @PostMapping(path = "/iais-task/assign", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/iais-task/assign", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspecTaskCreAndAssDto> assignCommonPool(@RequestBody InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
 
-    @PostMapping(path = "/iais-task/sup-assign", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/iais-task/sup-assign", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspectionTaskPoolListDto> assignSupTasks(@RequestBody InspectionTaskPoolListDto inspectionTaskPoolListDto);
 
     @GetMapping(value = "/iais-task/reassign-task-scores/{workGroupId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>>getReassignTaskByWkId(@PathVariable(name = "workGroupId") String workGroupId);
 
-    @GetMapping(value = "/iais-task/insert-inpor",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<InspectionTaskPoolListDto>filterInspectorOption(@RequestBody InspectionTaskPoolListDto inspectionTaskPoolListDto);
+    @GetMapping(value = "/iais-task/insert-inpor",produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<InspectionTaskPoolListDto> filterInspectorOption(@RequestBody InspectionTaskPoolListDto inspectionTaskPoolListDto);
 }

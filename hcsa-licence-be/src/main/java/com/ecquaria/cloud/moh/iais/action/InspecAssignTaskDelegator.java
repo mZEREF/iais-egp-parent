@@ -199,6 +199,7 @@ public class InspecAssignTaskDelegator {
      */
     public void inspectionAllotTaskInspectorQuery(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorQuery start ...."));
+        SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
     }
 
     /**
