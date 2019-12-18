@@ -38,4 +38,11 @@ public class SystemClientBeLicFallback {
         return entity;
     }
 
+    public FeignResponseEntity<String> messageID(){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }
