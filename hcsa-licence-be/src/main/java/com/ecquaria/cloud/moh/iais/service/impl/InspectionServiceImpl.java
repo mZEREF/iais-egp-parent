@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -144,26 +143,11 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public InspectionTaskPoolListDto inputInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto, LoginContext loginContext) {
-        List<SelectOption> inspectorOption = new ArrayList<>();
-        List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(inspectionTaskPoolListDto.getWorkGroupId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        String flag = AppConsts.FALSE;
         Set<String> roles = loginContext.getRoleIds();
         List<String> roleList = new ArrayList<>(roles);
-        if(roleList.contains(RoleConsts.USER_ROLE_INSPECTIOR)){
-            flag = AppConsts.TRUE;
-        }
-        for(OrgUserDto oDto:orgUserDtoList){
-            if(!(oDto.getId().equals(loginContext.getUserId()))){
-                SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
-                inspectorOption.add(so);
-            } else {
-                if(AppConsts.TRUE.equals(flag)){
-                    SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
-                    inspectorOption.add(so);
-                }
-            }
-        }
-        inspectionTaskPoolListDto.setInspectorOption(inspectorOption);
+        inspectionTaskPoolListDto.setRoles(roleList);
+        inspectionTaskPoolListDto.setLoginContextId(loginContext.getUserId());
+        inspectionTaskPoolListDto = organizationClient.filterInspectorOption(inspectionTaskPoolListDto).getEntity();
         return inspectionTaskPoolListDto;
     }
 

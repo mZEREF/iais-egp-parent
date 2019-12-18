@@ -71,4 +71,7 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-task/reassign-task-scores/{workGroupId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>>getReassignTaskByWkId(@PathVariable(name = "workGroupId") String workGroupId);
+
+    @GetMapping(value = "/iais-task/insert-inpor",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<InspectionTaskPoolListDto>filterInspectorOption(@RequestBody InspectionTaskPoolListDto inspectionTaskPoolListDto);
 }
