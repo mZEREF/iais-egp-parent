@@ -1,138 +1,126 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
-
+<webui:setLayout name="iais-intranet"/>
+<meta http-equiv="Content-Type" content="text/html charset=gb2312">
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
-    (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 
-
-<webui:setAttribute name="header-ext">
-    <%
-        /* You can add additional content (SCRIPT, STYLE elements)
-         * which need to be placed inside HEAD element here.
-         */
-    %>
-</webui:setAttribute>
-
-<webui:setAttribute name="title">
-    <%
-        /* You can set your page title here. */
-    %>
-
-    <%=process.runtime.getCurrentComponentName()%>
-
-</webui:setAttribute>
-<!-- START: CSS -->
-
-<!-- END: CSS -->
-
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
 
-<iais:body>
-        <iais:section title="Message List" id="msgList">
-            <iais:row>
-                <iais:field value="Domain Type" required="true"></iais:field>
-                <iais:value width="7">
-                    <iais:select name="domainType" id="domainType" options="domainTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
-                </iais:value>
-            </iais:row>
+    <br><br>
+    <div class="main-content">
+        <div class="container">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-xs-4 col-md-2 control-label" >Domain Type</label>
+                    <div class="col-xs-5 col-md-3">
+                        <iais:select name="domainType" id="domainType" options="domainTypeSelect" firstOption="Please select" onchange="displaySection()"></iais:select>
+                    </div>
+                </div>
 
-            <iais:row id="msgTypeRow" style="display:none">
-                <iais:field value="Msg Type" required="false"></iais:field>
-                <iais:value width="7">
-                    <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" ></iais:select>
-                </iais:value>
-            </iais:row>
+                <div class="form-group">
+                    <label class="col-xs-4 col-md-2 control-label" >Msg Type</label>
+                    <div class="col-xs-5 col-md-3">
+                        <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" ></iais:select>
+                    </div>
+                </div>
 
-            <iais:row id="moduleTypeRow" style="display:none">
-                <iais:field value="Module" required="false"></iais:field>
-                <iais:value width="7">
-                    <iais:select name="module"  options="moduleTypeSelect" firstOption="Please select" ></iais:select>
-                </iais:value>
-            </iais:row>
-
-            <iais:action>
-                <button type="button" class="search btn" onclick="javascript:doSearch();">Search</button>
-            </iais:action>
-    </iais:section>
-
-    </br>
-
-    <iais:error>
-        <c:if test = "${not empty errorMap}">
-            <div class="error">
-                <c:forEach items="${errorMap}" var="map">
-                    ${map.key}  ${map.value} <br/>
-                </c:forEach>
+                <div class="form-group">
+                    <label class="col-xs-4 col-md-2 control-label" >Module</label>
+                    <div class="col-xs-5 col-md-3">
+                        <iais:select name="module"  options="moduleTypeSelect" firstOption="Please select" ></iais:select>
+                    </div>
+                </div>
             </div>
-        </c:if>
-    </iais:error>
 
-    </br>
 
-    <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
-    <iais:searchSection title="" onclick="">
-        <div class="table-responsive" id="no-more-tables">
-        <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
-            <colgroup>
-                <col style="width: 10%;"/>
-                <col style="width: 20%;"/>
-                <col style="width: 20%;"/>
-                <col style="width: 20%;"/>
-                <col style="width: 20%;"/>
-                <col style="width: 10%;"/>
-            </colgroup>
-            <thead>
-            <tr>
-                <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"  field="domain_type" value="Domain Type"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="message" value="Message"></iais:sortableHeader>
-            </tr>
-            </thead>
-
-            <tbody style="text-align: center">
-            <c:choose>
-                <c:when test="${empty msgSearchResult.rows}">
-                    <tr>
-                        <td colspan="6">
-                            No Record!!
-                        </td>
-                    </tr>
-                </c:when>
-                <c:otherwise>
-                                                <%-- message entity--%>
-                    <c:forEach var = "msgQuery" items = "${msgSearchResult.rows}" varStatus="status">
+            <div class="components">
+                <h2 class="component-title">Search &amp; Result</h2>
+                <div class="table-gp">
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td class="row_no">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
-                            <td>${msgQuery.domainType}</td>
-                            <td>${msgQuery.msgType}</td>
-                            <td>${msgQuery.module}</td>
-                            <td>${msgQuery.description}</td>
-                            <td>${msgQuery.message}</td>
-                            <td>
-                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.id}');"/>
-                                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.id}');"/>
-                            </td>
+                            <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"  field="domain_type" value="Domain Type"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true"   field="message" value="Message"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                         </tr>
-                    </c:forEach>
-                </c:otherwise>
-            </c:choose>
-            </tbody>
-        </table>
+                        </thead>
+                        <tbody style="text-align: center">
+                        <c:choose>
+                            <c:when test="${empty msgSearchResult.rows}">
+                                <tr>
+                                    <td colspan="6">
+                                        No Record!!
+                                    </td>
+                                </tr>
+                            </c:when>
+                            <c:otherwise>
+                                <%-- message entity--%>
+                                <c:forEach var = "msgQuery" items = "${msgSearchResult.rows}" varStatus="status">
+                                    <tr>
+                                        <td class="row_no">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
+                                        <td>${msgQuery.domainType}</td>
+                                        <td>${msgQuery.msgType}</td>
+                                        <td>${msgQuery.module}</td>
+                                        <td>${msgQuery.description}</td>
+                                        <td>${msgQuery.message}</td>
+                                        <td>
+                                            <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.id}');"/>
+                                            <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.id}');"/>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                        </tbody>
+                    </table>
+                    <div class="table-footnote">
+                        <div class="row">
+                            <div class="col-xs-6 col-md-4">
+                                <p class="count">5 out of 25</p>
+                            </div>
+                            <div class="col-xs-6 col-md-8 text-right">
+                                <div class="nav">
+                                    <ul class="pagination">
+                                        <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-chevron-left"></i></span></a></li>
+                                        <li class="active"><a href="#">1</a></li>
+                                        <li><a href="#">2</a></li>
+                                        <li><a href="#">3</a></li>
+                                        <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right"></i></span></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    </iais:searchSection>
+                <div class="application-tab-footer">
+                    <td>
+                        <div class="text-right text-center-mobile">
+                            <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
 
-</iais:body>
+                        </div>
+
+                    </td>
+                </div>
+
+            </div>
+            </div>
+
+
+    </div>
 </form>
 
 <script type="text/javascript">
