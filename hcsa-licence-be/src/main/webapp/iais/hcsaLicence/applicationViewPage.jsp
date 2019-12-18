@@ -603,10 +603,11 @@
             $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>")
             return false;
         } else {
-            var nextStage = $("[name='nextStage']").val();
+            var nextStage = $("[name='verified']").val();
             console.log("---*>" + nextStage);
             $("[name='crud_action_type']").val(nextStage);
             var test = $("[name='crud_action_type']").val();
+            alert(test);
             return true;
         }
     });
@@ -626,8 +627,8 @@
 
 
     $('#verifiedDropdown').change(function verifiedChange() {
-        var verified= $('#verifiedDropdown').val();
-        if(verified=="Licence Start Date") {
+        var verified= $("[name='verified']").val();
+        if(verified=="PROCLSD") {
             $('#lienceStartDate').removeClass('hidden');
         }else{
             $('#lienceStartDate').addClass('hidden');

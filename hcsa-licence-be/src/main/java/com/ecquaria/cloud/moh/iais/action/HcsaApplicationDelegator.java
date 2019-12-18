@@ -28,24 +28,13 @@ import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -155,11 +144,11 @@ public class HcsaApplicationDelegator {
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList
              ) {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
-            verified.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
+//            verified.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
 
 
-        applicationViewDto.setVerified(verified);
+//        applicationViewDto.setVerified(verified);
         //History
 
 //        List<String> actionByList=new ArrayList<>();
@@ -182,32 +171,25 @@ public class HcsaApplicationDelegator {
 
         //add special stages
 
-
-
+        routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
+        routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }
-
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Pending Approval");
           //  routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
            // routingStage.put(ApplicationConsts.PROCESSING_DECISION_INTERNAL_ENQUIRY,"Internal Enquiry");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(applicationViewDto.getApplicationDto().getStatus())
                 ||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
 
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
 
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())) {
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
-        }else{
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+
         }
         applicationViewDto.setRoutingStage(routingStage);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
@@ -223,7 +205,7 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
-        String nextStage = ParamUtil.getString(bpc.request,"nextStage");
+        String nextStage = ParamUtil.getString(bpc.request,"verified");
         log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
         ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
