@@ -810,9 +810,12 @@ public class NewApplicationDelegator {
                 }
             }
         }else {
-            serviceConfigIds.add("34F99D15-820B-EA11-BE7D-000C29F371DC");
-            serviceConfigIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");
-            //serviceConfigIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "serviceList");
+            //serviceConfigIds.add("34F99D15-820B-EA11-BE7D-000C29F371DC");
+            //serviceConfigIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");
+            String[] ids = (String[]) ParamUtil.getSessionAttr(bpc.request, "serviceList");
+            for(String id:ids){
+                serviceConfigIds.add(id);
+            }
         }
         log.debug(StringUtil.changeForLog("service size:"+serviceConfigIds.size()));
 
