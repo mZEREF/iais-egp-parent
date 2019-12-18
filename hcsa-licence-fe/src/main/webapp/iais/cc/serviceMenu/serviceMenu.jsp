@@ -11,14 +11,13 @@
 <div class="container">
     <div class="component-gp">
         <br>
-        <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
+        <form  method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
             <%@ include file="/include/formHidden.jsp" %>
             <%--Validation fields Start--%>
             <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ServiceMenuDelegator"/>
             <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto"/>
-            <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
 
-            <input type="hidden" name="serviceid" id="serviceid" value="">
+            <input type="hidden" name="chosedservicelist" id="chosedservicelist" value="">
             <div class="row">
                 <div class="col-xs-12 col-md-4">
                 </div>
@@ -55,12 +54,12 @@
                     </div>
                 </div>
             </div>
-
         </form>
     </div>
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
+
     $(document).ready(function() {
         $('#submitService').click(function(){
             var arr = "";
@@ -70,8 +69,11 @@
                     arr += $(this).val()+",";
                 }
             );
-            $('#serviceid').val(arr);
-            SOP.Crud.cfxSubmit("mainForm");
+
+            console.log(arr +"-----<")
+            $('#chosedservicelist').attr("value",arr);
+
+            SOP.Crud.cfxSubmit("mainForm", "validation");
         });
 
 
