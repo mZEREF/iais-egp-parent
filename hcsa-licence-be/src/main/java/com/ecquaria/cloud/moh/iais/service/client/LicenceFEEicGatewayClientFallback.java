@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * LicenceFEEicGatewayClientFallback
@@ -14,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 
 public class LicenceFEEicGatewayClientFallback {
-    public FeignResponseEntity<List<LicenceGroupDto>> createLicence(@RequestBody List<LicenceGroupDto> licenceGroupDtoList){
+    public FeignResponseEntity<List<LicenceGroupDto>> createLicence(List<LicenceGroupDto> licenceGroupDtoList,
+                                                                    String date,
+                                                                    String authorization){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

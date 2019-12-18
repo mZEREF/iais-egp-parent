@@ -16,4 +16,6 @@ public interface ApplicationService {
     //
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId);
 
+    public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto);
+
 }
