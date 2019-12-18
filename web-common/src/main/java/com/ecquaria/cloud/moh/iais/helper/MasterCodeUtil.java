@@ -99,7 +99,8 @@ public final class MasterCodeUtil {
         Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
         Map<String, List<MasterCodeView>> filterMap = new HashMap<>();
         list.forEach(mc ->
-            RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getDescription())
+            RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getDescription(),
+                    RedisCacheHelper.NOT_EXPIRE)
         );
         list.forEach(mc -> {
             String cateStr = String.valueOf(mc.getCategory());
@@ -273,9 +274,10 @@ public final class MasterCodeUtil {
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
-                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getDescription())
+                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getDescription(),
+                            RedisCacheHelper.NOT_EXPIRE)
                 );
-                RedisCacheHelper.getInstance().set(CACHE_NAME_CATE_MAP, cateId, list);
+                RedisCacheHelper.getInstance().set(CACHE_NAME_CATE_MAP, cateId, list, RedisCacheHelper.NOT_EXPIRE);
             } else {
                 return new ArrayList<>();
             }
@@ -296,9 +298,10 @@ public final class MasterCodeUtil {
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
-                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getDescription())
+                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getDescription(),
+                            RedisCacheHelper.NOT_EXPIRE)
                 );
-                RedisCacheHelper.getInstance().set(CACHE_NAME_FILTER, filter, list);
+                RedisCacheHelper.getInstance().set(CACHE_NAME_FILTER, filter, list, RedisCacheHelper.NOT_EXPIRE);
             } else {
                 return new ArrayList<>();
             }
