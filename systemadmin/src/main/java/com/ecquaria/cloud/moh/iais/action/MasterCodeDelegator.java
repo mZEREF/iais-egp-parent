@@ -102,21 +102,7 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
     }
 
-    /**
-     * AutoStep: prepareEdit
-     *
-     * @param bpc
-     * @throws
-     */
-    public void prepareEdit(BaseProcessClass bpc){
-        logAboutStart("prepareEdit");
-        HttpServletRequest request = bpc.request;
-        String masterCodeId = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
-        if (!masterCodeId.isEmpty()){
-            MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
-            ParamUtil.setSessionAttr(request,MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
-        }
-    }
+
 
     /**
      * AutoStep: doSearch
@@ -191,11 +177,20 @@ public class MasterCodeDelegator {
         logAboutStart("doDelete");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, MasterCodeConstants.CRUD_ACTION_TYPE);
+        String action = ParamUtil.getString(request, "crud_action_deactivate");
+
         if ("doDelete".equals(type)){
-            String id = ParamUtil.getString(bpc.request,MasterCodeConstants.CRUD_ACTION_VALUE);
-            if(!StringUtil.isEmpty(id)){
-                masterCodeService.deleteMasterCodeById(id);
+            String masterCodeId = ParamUtil.getString(bpc.request,MasterCodeConstants.CRUD_ACTION_VALUE);
+            if("doDeactivate".equals(action)){
+                MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
+                String codeCategory = masterCodeService.findMasterCodeByDescription(masterCodeDto.getCodeCategory());
+                masterCodeDto.setCodeCategory(codeCategory);
+                masterCodeDto.setStatus("CMSTAT003");
+                masterCodeService.updateMasterCode(masterCodeDto);
+            }else{
+                masterCodeService.deleteMasterCodeById(masterCodeId);
             }
+
         }
     }
 
@@ -208,12 +203,12 @@ public class MasterCodeDelegator {
     public void doCreate(BaseProcessClass bpc) throws ParseException {
         logAboutStart("doCreate");
         HttpServletRequest request = bpc.request;
-        MasterCodeDto masterCodeDto = new MasterCodeDto();
         String type = ParamUtil.getString(request, MasterCodeConstants.CRUD_ACTION_TYPE);
         if (!MasterCodeConstants.SAVE_ACTION.equals(type)){
             ParamUtil.setRequestAttr(request, MasterCodeConstants.ISVALID, MasterCodeConstants.YES);
             return;
         }
+        MasterCodeDto masterCodeDto = new MasterCodeDto();
         getValueFromPage(masterCodeDto,request);
         ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeDto,MasterCodeConstants.SAVE_ACTION);
         if(validationResult != null && validationResult.isHasErrors()) {
@@ -225,6 +220,23 @@ public class MasterCodeDelegator {
         masterCodeService.saveMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, MasterCodeConstants.ISVALID, MasterCodeConstants.YES);
 
+    }
+
+
+    /**
+     * AutoStep: prepareEdit
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prepareEdit(BaseProcessClass bpc){
+        logAboutStart("prepareEdit");
+        HttpServletRequest request = bpc.request;
+        String masterCodeId = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
+        if (!masterCodeId.isEmpty()){
+            MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
+            ParamUtil.setSessionAttr(request,MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
+        }
     }
 
     /**
@@ -249,9 +261,10 @@ public class MasterCodeDelegator {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,MasterCodeConstants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, MasterCodeConstants.ISVALID, MasterCodeConstants.NO);
-
             return;
         }
+
+
 
         String codeCategory = masterCodeService.findMasterCodeByDescription(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_CATEGORY));
         masterCodeDto.setCodeCategory(codeCategory);

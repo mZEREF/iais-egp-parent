@@ -3,6 +3,7 @@
         <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
+        <input type="hidden" name="crud_action_deactivate" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -86,6 +87,7 @@
                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
                                                 <button type="button" class="btn btn-default btn-sm" onclick="doEdit('${masterCodeResult.masterCodeId}')">Edit</button>
                                                 <button type="button" class="btn btn-default btn-sm" onclick="doDelete('${masterCodeResult.masterCodeId}')">Delete</button>
+                                                <button type="button" class="btn btn-default btn-sm" onclick="doDeactivate('${masterCodeResult.masterCodeId}')">Deactivate</button>
                                             </td>
                                         </tr>
                                     </c:forEach>

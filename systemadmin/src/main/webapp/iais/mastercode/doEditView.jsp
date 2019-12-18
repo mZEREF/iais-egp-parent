@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
-    <form class="form-horizontal" method="post" id="MasterCodeEditForm" action=<%=process.runtime.continueURL()%>>
+    <form class="form-horizontal" method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -80,13 +80,13 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <iais:datePicker id="esd" name="esd" value="${MasterCodeDto.effectiveFrom}"/>
+                                <iais:datePicker id="esd" name="esd" dateVal="${MasterCodeDto.effectiveFrom}" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <iais:datePicker id="eed" name="eed" value="${MasterCodeDto.effectiveTo}" ></iais:datePicker>
+                                <iais:datePicker id="eed" name="eed" dateVal="${MasterCodeDto.effectiveTo}" ></iais:datePicker>
                                 <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
                                     <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a></div>
                                 </div>
                                 <div class="col-xs-10 col-sm-10">
-                                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="doEdit(${MasterCodeDto.masterCodeId})">SUBMIT</a></div>
+                                    <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="doEdit('${MasterCodeDto.masterCodeId}')">SUBMIT</a></div>
                                 </div>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
 
     function submit(action){
         $("[name='crud_action_type']").val(action);
-        $("#MasterCodeEditForm").submit();
+        $("#MasterCodeForm").submit();
     }
 
     function doEdit(mcId){
