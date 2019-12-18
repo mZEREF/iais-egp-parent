@@ -464,7 +464,38 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
-
+  <tag>
+    <description>Generate SOP process URL.</description>
+    <name>processUrl</name>
+    <tag-class>com.ecquaria.cloud.moh.iais.tags.ProcessUrlTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>value</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>project</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>processName</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>pathParams</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>hideUrl</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <type>boolean</type>
+    </attribute>
+  </tag>
   <tag>
     <description>Generate link icon.</description>
     <name>link</name>
