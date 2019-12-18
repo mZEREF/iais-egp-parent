@@ -1,9 +1,15 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +32,9 @@ public class RequestForInformationDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
+        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", new SearchParam(ReqForInfoSearchQueryDto.class.getName()));
+        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
+
         // 		Start->OnStepProcess
     }
 
@@ -76,6 +85,39 @@ public class RequestForInformationDelegator {
         HttpServletRequest request = bpc.request;
         List<SelectOption> appTypeOption = requestForInformationService.getAppTypeOption();
         List<SelectOption> appStatusOption =requestForInformationService.getAppStatusOption();
+
+
+        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "supTaskSearchParam");
+
+        String application_no = ParamUtil.getString(bpc.request, "application_no");
+        String application_type = ParamUtil.getString(bpc.request, "application_type");
+        String application_status = ParamUtil.getString(bpc.request, "application_status");
+        String sub_date = ParamUtil.getString(bpc.request, "sub_date");
+        String to_date = ParamUtil.getString(bpc.request, "to_date");
+
+
+        if(!StringUtil.isEmpty(application_no)){
+            searchParam.addFilter("application_no", application_no,true);
+        }
+        if(!StringUtil.isEmpty(application_type)){
+            searchParam.addFilter("application_type", application_type,true);
+        }
+        if(!StringUtil.isEmpty(application_status)){
+            searchParam.addFilter("application_status", application_status,true);
+        }
+        if(!StringUtil.isEmpty(sub_date)){
+            searchParam.addFilter("sub_date", sub_date,true);
+        }
+        if(!StringUtil.isEmpty(to_date)){
+            searchParam.addFilter("to_date", to_date,true);
+        }
+
+        QueryHelp.setMainSql("reqForInfoQuery", "reqForInfo",searchParam);
+        SearchResult<ReqForInfoSearchListDto> searchResult= requestForInformationService.getRfiByParam(searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
+
+
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
         // 		doSearchApplication->OnStepProcess
@@ -86,6 +128,40 @@ public class RequestForInformationDelegator {
         HttpServletRequest request = bpc.request;
         List<SelectOption> licSvcTypeOption =requestForInformationService.getLicSvcTypeOption();
         List<SelectOption> licStatusOption = requestForInformationService.getLicStatusOption();
+
+
+        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "supTaskSearchParam");
+
+        String licence_no = ParamUtil.getString(bpc.request, "licence_no");
+        String service_licence_type = ParamUtil.getString(bpc.request, "service_licence_type");
+        String licence_status = ParamUtil.getString(bpc.request, "licence_status");
+        String sub_date = ParamUtil.getString(bpc.request, "sub_date");
+        String to_date = ParamUtil.getString(bpc.request, "to_date");
+
+
+        if(!StringUtil.isEmpty(licence_no)){
+            searchParam.addFilter("licence_no", licence_no,true);
+        }
+        if(!StringUtil.isEmpty(service_licence_type)){
+            searchParam.addFilter("service_name", service_licence_type,true);
+        }
+        if(!StringUtil.isEmpty(licence_status)){
+            searchParam.addFilter("licence_status", licence_status,true);
+        }
+        if(!StringUtil.isEmpty(sub_date)){
+            searchParam.addFilter("start_date", sub_date,true);
+        }
+        if(!StringUtil.isEmpty(to_date)){
+            searchParam.addFilter("expiry_date", to_date,true);
+        }
+
+        QueryHelp.setMainSql("reqForInfoQuery", "reqForInfo",searchParam);
+        SearchResult<ReqForInfoSearchListDto> searchResult= requestForInformationService.getRfiByParam(searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
+
+
+
         ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
         ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
         // 		doSearchLicence->OnStepProcess

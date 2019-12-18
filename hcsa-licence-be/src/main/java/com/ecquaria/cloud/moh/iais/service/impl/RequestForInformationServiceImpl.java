@@ -1,9 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +21,9 @@ import java.util.List;
  */
 @Service
 public class RequestForInformationServiceImpl implements RequestForInformationService {
+    @Autowired
+    RequestForInformationClient requestForInformationClient;
+
     private final String[] appType=new String[]{
             ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
             ApplicationConsts.APPLICATION_TYPE_RENEWAL,
@@ -76,4 +84,10 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public List<SelectOption> getLicStatusOption() {
         return MasterCodeUtil.retrieveOptionsByCodes(licStatus);
     }
+
+    @Override
+    public SearchResult<ReqForInfoSearchListDto> getRfiByParam(SearchParam searchParam) {
+        return requestForInformationClient.searchRfiApp(searchParam).getEntity();
+    }
+
 }

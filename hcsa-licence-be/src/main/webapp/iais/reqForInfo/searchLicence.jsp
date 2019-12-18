@@ -59,9 +59,9 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppSearch()">Search</button>
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppBack()">Back</button>
-                                            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doAppClear()">Clear</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicSearch()">Search</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicBack()">Back</button>
+                                            <button class="btn btn-lg btn-login-clear" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicClear()">Clear</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -76,13 +76,13 @@
 
 </form>
 <script type="text/javascript">
-    function doAppSearch(){
-        SOP.Crud.cfxSubmit("mainForm", "preview");
+    function doLicSearch(){
+        SOP.Crud.cfxSubmit("mainForm", "search");
     }
-    function doAppBack(){
-        SOP.Crud.cfxSubmit("mainForm", "preview");
+    function doLicBack(){
+        SOP.Crud.cfxSubmit("mainForm", "back");
     }
-    function doAppClear(){
+    function doLicClear(){
         $('input[name="licence_no"]').val("");
         $("#licence_type option:first").val("");
         $("#licence_type option:first").prop("selected", 'selected');

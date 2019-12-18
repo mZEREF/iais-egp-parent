@@ -243,8 +243,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     public void saveInspectionCheckListDto(InspectionFillCheckListDto dto) {
+        boolean ncflag = isHaveNc(dto);
         List<InspectionCheckQuestionDto> icqDtoList = dto.getCheckList();
-
         String appPremCorrId = icqDtoList.get(0).getAppPreCorreId();
         String configId = icqDtoList.get(0).getConfigId();
         //AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
@@ -278,11 +278,13 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
         appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         try {
-            AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDto(dto,appPremCorrId);
-            appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
-            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(dto, appPremPreInspectionNcDto);
-            fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtoList);
-
+            List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = null;
+            if(ncflag){
+                AppPremPreInspectionNcDto appPremPreInspectionNcDto = getAppPremPreInspectionNcDto(dto,appPremCorrId);
+                appPremPreInspectionNcDto = fillUpCheckListGetAppClient.saveAppPreNc(appPremPreInspectionNcDto).getEntity();
+                appPremisesPreInspectionNcItemDtoList = getAppPremisesPreInspectionNcItemDto(dto, appPremPreInspectionNcDto);
+                fillUpCheckListGetAppClient.saveAppPreNcItem(appPremisesPreInspectionNcItemDtoList);
+            }
             List<InspectionCheckListAnswerDto> answerDtoList = new ArrayList<>();
             InspectionCheckListAnswerDto answerDto = null;
             int j =0;
@@ -291,7 +293,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 answerDto.setAnswer(icqDtoList.get(i).getChkanswer());
                 answerDto.setRemark(icqDtoList.get(i).getRemark());
                 answerDto.setItemId(icqDtoList.get(i).getItemId());
-                if("No".equals(icqDtoList.get(i).getChkanswer())){
+                if("No".equals(icqDtoList.get(i).getChkanswer())&&ncflag){
                     answerDto.setIsRec(appPremisesPreInspectionNcItemDtoList.get(j).getIsRecitfied()+"");
                     j++;
                 }
@@ -449,5 +451,15 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             }
         }
         return adCheckListShowDto;
+    }
+
+    public boolean isHaveNc(InspectionFillCheckListDto dto){
+        List<InspectionCheckQuestionDto> dtoList = dto.getCheckList();
+        for(InspectionCheckQuestionDto temp:dtoList){
+            if("No".equals(temp.getChkanswer())){
+                return true;
+            }
+        }
+        return false;
     }
 }

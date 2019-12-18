@@ -40,35 +40,70 @@
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
-                                    <div class="panel-heading"><b>Submission Details</b></div>
+                                    <div class="panel-heading"><b>Licensee Details</b></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
-                                                        <td class="col-xs-6" align="right">Application No. (Overall)</td>
-                                                        <td class="col-xs-6">${applicationViewDto.applicationDto.applicationNo}</td>
+                                                        <td class="col-xs-6" align="right">Licensee Type</td>
+                                                        <td class="col-xs-6">Company</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Application No.</td>
-                                                        <td>${applicationViewDto.applicationNoOverAll}</td>
+                                                        <td align="right">UEN</td>
+                                                        <td>20181224-00003</td>
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>&nbsp</div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><b>Company Details</b></div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="col-xs-6" align="right">Name of Company</td>
+                                                        <td class="col-xs-6">SAM Group</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationDto.applicationType}</td>
+                                                        <td align="right">Postal code</td>
+                                                        <td>319579</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Service Type</td>
-                                                        <td>${applicationViewDto.applicationDto.serviceId}</td>
+                                                        <td align="right">Block No</td>
+                                                        <td>Mapex</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Submission Date</td>
-                                                        <td>${applicationViewDto.submissionDate}</td>
+                                                        <td align="right">Floor No</td>
+                                                        <td>04</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Current Status</td>
-                                                        <td>${applicationViewDto.currentStatus}</td>
+                                                        <td align="right">Unit No</td>
+                                                        <td>13</td>
+                                                    </tr><tr>
+                                                        <td align="right">Street Name</td>
+                                                        <td>Jalan Permimpin</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Building Name</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Office Number</td>
+                                                        <td>6581111234</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Fax Number</td>
+                                                        <td>6587651234</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -76,37 +111,126 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div align="center">
-                                    <button type="button" class="btn btn-primary">
-                                        View Application
-                                    </button>
-                                </div>
                                 <div>&nbsp</div>
                                 <div class="panel panel-default">
-                                    <div class="panel-heading"><b>Applicant Details</b></div>
+                                    <div class="panel-heading"><b>Board Members</b></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
-                                                        <td class="col-xs-6" align="right">HCI Code</td>
-                                                        <td class="col-xs-6">-</td>
+                                                        <td class="col-xs-6" align="right">Name</td>
+                                                        <td class="col-xs-6">Tan Ah Kow</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">HCI Name</td>
-                                                        <td>${applicationViewDto.hciName}</td>
+                                                        <td align="right">Salutation</td>
+                                                        <td>DR</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">HCI ADDRESS</td>
-                                                        <td>${applicationViewDto.hciAddress}</td>
+                                                        <td align="right">ID Type</td>
+                                                        <td>NRIC</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Telephone</td>
-                                                        <td>${applicationViewDto.telephone}</td>
+                                                        <td align="right">ID No</td>
+                                                        <td>S123456789I</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Fax</td>
+                                                        <td align="right">Designation</td>
+                                                        <td>Director</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Designation Appointment Date</td>
+                                                        <td>01/01/2015</td>
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>&nbsp</div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><b>Sole Proprietor - Licensee</b></div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="col-xs-6" align="right">Name</td>
+                                                        <td class="col-xs-6">Tan Ah Kow</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Salutation</td>
+                                                        <td>DR</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID Type</td>
+                                                        <td>NRIC</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID No</td>
+                                                        <td>S123456789I</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Designation</td>
+                                                        <td>Director</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Profession Type</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Professional Regn No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Postal code</td>
+                                                        <td>319579</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Block No</td>
+                                                        <td>Mapex</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Floor No</td>
+                                                        <td>04</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Unit No</td>
+                                                        <td>13</td>
+                                                    </tr><tr>
+                                                        <td align="right">Street Name</td>
+                                                        <td>Jalan Permimpin</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Building Name</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Mobile No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Home Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Office Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Fax No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Email Address</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Add Another Licensee</td>
                                                         <td>-</td>
                                                     </tr>
                                                     </tbody>
@@ -118,121 +242,462 @@
                             </div>
 
                             <div class="tab-pane" id="tabPersonnelDetails" role="tabpanel">
-                                <div class="alert alert-info" role="alert"><b>
-                                    <h4>Supporting Document</h4>
-                                </b></div>
-                                <div id="u8522_text" class="text ">
-                                    <p><span>These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed
-												documents are those defined for this digital service only.</span></p>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="table-gp">
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>Document</th>
-                                                    <th>File</th>
-                                                    <th>Size</th>
-                                                    <th>Submitted By</th>
-                                                    <th>Date Submitted</th>
-                                                </tr>
-                                                </thead>
-
-                                                <tbody>
-                                                <c:forEach items="${applicationViewDto.appSupDocDtoList}" var="appSupDocDto">
+                                <div class="panel panel-default">
+                                    <!-- Default panel contents -->
+                                    <div class="panel-heading"><b>CGO</b></div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
+                                                <table class="table table-bordered">
+                                                    <tbody>
                                                     <tr>
-                                                        <td>
-                                                            <p><c:out value="${appSupDocDto.document}"></c:out></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><a href="#"><c:out value="${appSupDocDto.file}"></c:out></a></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out value="${appSupDocDto.size}"></c:out></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
-                                                        </td>
-                                                        <td>
-                                                            <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
-                                                        </td>
+                                                        <td class="col-xs-6" align="right">Name</td>
+                                                        <td class="col-xs-6">Tan Ah Kow</td>
                                                     </tr>
-                                                </c:forEach>
-                                                </tbody>
-
-                                            </table>
-                                            <div class="alert alert-info" role="alert"><strong>
-                                                <h4>Internal Document</h4>
-                                            </strong></div>
-                                            <div  class="text ">
-                                                <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
+                                                    <tr>
+                                                        <td align="right">Salutation</td>
+                                                        <td>DR</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID Type</td>
+                                                        <td>NRIC</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID No</td>
+                                                        <td>S123456789I</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Gender</td>
+                                                        <td>S123456789I</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Designation</td>
+                                                        <td>Director</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Profession Type</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Professional Regn No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Specialty</td>
+                                                        <td>319579</td>
+                                                    </tr><tr>
+                                                        <td align="right">Subspecialty or relevant qualification</td>
+                                                        <td>319579</td>
+                                                    </tr><tr>
+                                                        <td align="right">Postal code</td>
+                                                        <td>319579</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Address Type</td>
+                                                        <td>Mapex</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Blk No</td>
+                                                        <td>Mapex</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Floor No</td>
+                                                        <td>04</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Unit No</td>
+                                                        <td>13</td>
+                                                    </tr><tr>
+                                                        <td align="right">Street Name</td>
+                                                        <td>Jalan Permimpin</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Building Name</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Mobile No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Home Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Office Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Fax No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Email Address</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>Document</th>
-                                                    <th>File</th>
-                                                    <th>Size</th>
-                                                    <th>Submitted By</th>
-                                                    <th>Date Submitted</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td colspan="6" align="center">
-                                                        <p>No record found.</p>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>&nbsp</div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><b>Principal Officer</b></div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="col-xs-6" align="right">Name</td>
+                                                        <td class="col-xs-6">Tan Ah Kow</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Salutation</td>
+                                                        <td>DR</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID Type</td>
+                                                        <td>NRIC</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID No</td>
+                                                        <td>S123456789I</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Gender</td>
+                                                        <td>S123456789I</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Designation</td>
+                                                        <td>Director</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Profession Type</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Professional Regn No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Specialty</td>
+                                                        <td>319579</td>
+                                                    </tr><tr>
+                                                        <td align="right">Subspecialty or relevant qualification</td>
+                                                        <td>319579</td>
+                                                    </tr><tr>
+                                                        <td align="right">Postal code</td>
+                                                        <td>319579</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Address Type</td>
+                                                        <td>Mapex</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Blk No</td>
+                                                        <td>Mapex</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Floor No</td>
+                                                        <td>04</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Unit No</td>
+                                                        <td>13</td>
+                                                    </tr><tr>
+                                                        <td align="right">Street Name</td>
+                                                        <td>Jalan Permimpin</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Building Name</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Mobile No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Home Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Office Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Fax No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Email Address</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>&nbsp</div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><b>Deputy Principal Officer</b></div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="col-xs-6" align="right">Name</td>
+                                                        <td class="col-xs-6">Tan Ah Kow</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Salutation</td>
+                                                        <td>DR</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID Type</td>
+                                                        <td>NRIC</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID No</td>
+                                                        <td>S123456789I</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Gender</td>
+                                                        <td>S123456789I</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Designation</td>
+                                                        <td>Director</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Profession Type</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Professional Regn No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Specialty</td>
+                                                        <td>319579</td>
+                                                    </tr><tr>
+                                                        <td align="right">Subspecialty or relevant qualification</td>
+                                                        <td>319579</td>
+                                                    </tr><tr>
+                                                        <td align="right">Postal code</td>
+                                                        <td>319579</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Address Type</td>
+                                                        <td>Mapex</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Blk No</td>
+                                                        <td>Mapex</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Floor No</td>
+                                                        <td>04</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Unit No</td>
+                                                        <td>13</td>
+                                                    </tr><tr>
+                                                        <td align="right">Street Name</td>
+                                                        <td>Jalan Permimpin</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Building Name</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Mobile No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Home Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Office Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Fax No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Email Address</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>&nbsp</div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"><b>MedAlert</b></div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="col-xs-6" align="right">Name</td>
+                                                        <td class="col-xs-6">Tan Ah Kow</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Salutation</td>
+                                                        <td>DR</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID Type</td>
+                                                        <td>NRIC</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">ID No</td>
+                                                        <td>S123456789I</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Gender</td>
+                                                        <td>S123456789I</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Designation</td>
+                                                        <td>Director</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Profession Type</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Professional Regn No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Specialty</td>
+                                                        <td>319579</td>
+                                                    </tr><tr>
+                                                        <td align="right">Subspecialty or relevant qualification</td>
+                                                        <td>319579</td>
+                                                    </tr><tr>
+                                                        <td align="right">Postal code</td>
+                                                        <td>319579</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Address Type</td>
+                                                        <td>Mapex</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Blk No</td>
+                                                        <td>Mapex</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Floor No</td>
+                                                        <td>04</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Unit No</td>
+                                                        <td>13</td>
+                                                    </tr><tr>
+                                                        <td align="right">Street Name</td>
+                                                        <td>Jalan Permimpin</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Building Name</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Mobile No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Home Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Office Telephone No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Fax No</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Email Address</td>
+                                                        <td>-</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                             </div>
                             <div class="tab-pane" id="tabComplianceHistory" role="tabpanel">
-                                <div class="alert alert-info" role="alert"><strong>
-                                    <h4>Payment Details</h4>
-                                </strong></div>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <div class="table-gp">
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th>Payment</th>
-                                                    <th>Amount</th>
-                                                    <th>Date</th>
-                                                    <th>Status</th>
-                                                    <th>Reference No.</th>
-                                                    <th>Payment Type</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <p>New Licence Application</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>S$400.00</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>12-Dec-2018</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>success</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>TRANS-201812000013</p>
-                                                    </td>
-                                                    <td>
-                                                        <p>Credit Card</p>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+                                <div class="panel panel-default">
+                                    <!-- Default panel contents -->
+                                    <div class="alert alert-info" role="alert"><strong>
+                                        <h4>Past Inspection Reports</h4>
+                                    </strong></div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>SN</th>
+                                                        <th>Inspection Report</th>
+                                                        <th>Risk Tagging</th>
+                                                        <th>Compliance Tagging</th>
+                                                        <th>Year of Inspection</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <p>1</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>Inspection Report</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>Low</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>Full Compliance</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>2016</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <p>2</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>Inspection Report</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>Low</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>Full Compliance</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>2018</p>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

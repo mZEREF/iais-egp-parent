@@ -72,6 +72,13 @@ public interface FillUpCheckListGetAppClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AdhocDraftDto>> getAdhocByItemId(@PathVariable(value ="itemId" ) String itemId);
 
+    @GetMapping(path = "/iais-application-be/appindraftbychkId/{chkId}",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremInsDraftDto> getAppInsDraftByChkId(@PathVariable(value ="chkId" ) String chkId);
+
+    @PostMapping(path = "/iais-application-be/adhocdraftbyitemlsit",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AdhocDraftDto>> getAdhocDraftItems(@RequestBody List<String> itemList);
 
 
 }

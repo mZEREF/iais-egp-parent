@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -24,7 +25,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,12 +53,12 @@ public class MessageDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> domainOptionList = new ArrayList<>();
-        domainOptionList.add(new SelectOption("INTER", "Internet"));
-        domainOptionList.add(new SelectOption("INTRA", "Intranet"));
+        domainOptionList.add(new SelectOption("Internet", "Internet"));
+        domainOptionList.add(new SelectOption("Intranet", "Intranet"));
         ParamUtil.setRequestAttr(request, "domainTypeSelect", domainOptionList);
 
         List<SelectOption> msgOptionList = new ArrayList<>();
-        msgOptionList.add(new SelectOption("Acknowledgement", "Acknowledgement"));
+        msgOptionList.add(new SelectOption("Ack", "Acknowledgement"));
         msgOptionList.add(new SelectOption("Error", "Error"));
         ParamUtil.setRequestAttr(request, "msgTypeSelect", msgOptionList);
 
@@ -124,6 +124,7 @@ public class MessageDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
         }else if(!MessageConstants.ACTION_EDIT.equals(currentAction)){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
         }
 
@@ -144,14 +145,11 @@ public class MessageDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
         }else {
-            Map<String,String> successMap = new HashMap<>();
-            successMap.put("edit message","suceess");
             messageService.saveMessage(editDto);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
         }
 
     }
@@ -165,7 +163,7 @@ public class MessageDelegator {
         String msgId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(msgId)) {
             MessageDto messageDto = messageService.getMessageById(msgId);
-            messageDto.setStatus(MessageConstants.STATUS_DEACTIVATED);
+            messageDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
             messageService.saveMessage(messageDto);
         }
     }
@@ -180,31 +178,24 @@ public class MessageDelegator {
         if(!MessageConstants.ACTION_SEARCH.equals(currentAction)){
             return;
         }
-        MessageQueryDto queryDto = new MessageQueryDto();
         String domainType = ParamUtil.getString(request, MessageConstants.PARAM_DOMAIN_TYPE);
         String msgType = ParamUtil.getString(request, MessageConstants.PARAM_MSG_TYPE);
         String module = ParamUtil.getString(request, MessageConstants.PARAM_MODULE);
 
-        queryDto.setDomainType(domainType);
-        queryDto.setMsgType(msgType);
-        queryDto.setModule(module);
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
-        if(validationResult != null && validationResult.isHasErrors()) {
-            Map<String, String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMAP, errorMap);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, "N");
-        }else {
+
+        if (!StringUtil.isEmpty(domainType)){
             searchParam.addFilter(MessageConstants.PARAM_DOMAIN_TYPE, domainType, true);
+        }
 
-            if(!StringUtil.isEmpty(msgType)){
-                searchParam.addFilter(MessageConstants.PARAM_MSG_TYPE, msgType, true);
-            }
 
-            if(!StringUtil.isEmpty(module)){
-                searchParam.addFilter(MessageConstants.PARAM_MODULE, module, true);
-            }
+        if(!StringUtil.isEmpty(msgType)){
+            searchParam.addFilter(MessageConstants.PARAM_MSG_TYPE, msgType, true);
+        }
+
+        if(!StringUtil.isEmpty(module)){
+            searchParam.addFilter(MessageConstants.PARAM_MODULE, module, true);
         }
     }
 

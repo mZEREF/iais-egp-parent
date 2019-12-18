@@ -1,7 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
@@ -710,6 +709,38 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <p><textarea name="messageContent" cols="110" rows="40" class="wenbenkuang" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea></p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="col-xs-2" >
+                                            <p >
+                                                Processing Decision:
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-9">
+                                                <select id="decision-email" name="decision">
+                                                    <option>Select</option>
+                                                    <c:forEach items="${appTypeOption}" var="decision">
+                                                        <option  value="${decision.value}">${decision.text}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr height="1">
+                                        <td class="col-xs-2" >
+                                            <p >
+                                                need revise
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <div class="col-sm-9">
+                                                <c:forEach items="${appIds}" var="revise" varStatus="index">
+                                                    <input type="checkbox"  name="revise${index.index+1}" value="${revise}">NC/BP ${index.index+1}</input>
+                                                </c:forEach>
+
                                             </div>
                                         </td>
                                     </tr>

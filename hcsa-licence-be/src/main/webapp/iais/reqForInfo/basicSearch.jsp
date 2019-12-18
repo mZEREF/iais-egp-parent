@@ -22,7 +22,7 @@
                             <h2>Basic Search Criteria</h2>
                         </div>
                         <iais:row>
-                            <iais:value width="18">
+                            <iais:value width="36">
                                 <label>
                                     <input type="text" name="search_no"  />
                                 </label>

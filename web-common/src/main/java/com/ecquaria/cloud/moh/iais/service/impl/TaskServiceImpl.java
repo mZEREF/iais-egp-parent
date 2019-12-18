@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.base.IaisIdGenerator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -47,6 +48,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskApplicationClient taskApplicationClient;
 
+    @Autowired
+    private IaisIdGenerator iaisIdGenerator;
+
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
         return taskOrganizationClient.createTask(taskDtos).getEntity();
@@ -91,9 +95,10 @@ public class TaskServiceImpl implements TaskService {
 
             int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                     statgId,applicationDto.getApplicationType());
-            result = TaskUtil.getTaskDto(statgId,TaskConsts.TASK_TYPE_MAIN_FLOW,
+            String taskId = iaisIdGenerator.generateId();
+            result = TaskUtil.getTaskDto(taskId,statgId,TaskConsts.TASK_TYPE_MAIN_FLOW,
                     applicationDto.getApplicationNo(),workGroupId,
-                    taskScoreDto.getUserId(),assignDate,score,
+                    taskScoreDto.getUserId(),assignDate,score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW+taskId,
                     IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
             log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
@@ -146,9 +151,10 @@ public class TaskServiceImpl implements TaskService {
                 for(ApplicationDto applicationDto : applicationDtos){
                     int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             stageId,applicationDto.getApplicationType());
-                    TaskDto taskDto = TaskUtil.getUserTaskDto(stageId,
+                    String taskId = iaisIdGenerator.generateId();
+                    TaskDto taskDto = TaskUtil.getUserTaskDto(taskId,stageId,
                             applicationDto.getApplicationNo(),workGroupId,
-                            taskScoreDto.getUserId(),score,
+                            taskScoreDto.getUserId(),score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW+taskId,
                             auditTrailDto);
                     taskDtos.add(taskDto);
                     //create history

@@ -11,7 +11,7 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
+    <input type="hidden" id="applicationNo" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
 
     <iais:body >
@@ -100,7 +100,7 @@
                             </thead>
                             <tbody>
                             <c:choose>
-                                <c:when test="${empty cPoolSearchResult.rows}">
+                                <c:when test="${empty supTaskSearchResult.rows}">
                                     <tr>
                                         <td colspan="7">
                                             <iais:message key="ACK018" escape="true"></iais:message>
@@ -108,10 +108,10 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
+                                    <c:forEach var="pool" items="${supTaskSearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                                            <td><c:out value="${pool.applicationNo}"/></td>
+                                            <td><a onclick="doAppInfo(${pool.applicationNo})">${pool.applicationNo}</a></td>
                                             <td><c:out value="${pool.applicationType}"/></td>
                                             <td><c:out value="${pool.licenceNo}"/></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
@@ -124,7 +124,7 @@
                                             <td><c:out value="${pool.pastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
-                                            <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectionCommonPoolAssign('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Assign</button></td>
+                                            <td><button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Select</button></td>
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>
@@ -140,10 +140,10 @@
 </form>
 <script type="text/javascript">
     function doAppSearch(){
-        SOP.Crud.cfxSubmit("mainForm", "preview");
+        SOP.Crud.cfxSubmit("mainForm", "searchApp");
     }
     function doAppBack(){
-        SOP.Crud.cfxSubmit("mainForm", "preview");
+        SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doAppClear(){
         $('input[name="application_no"]').val("");
@@ -153,5 +153,13 @@
         $("#application_status option:first").prop("selected", 'selected');
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
+    }
+    function doReqForInfo(appNo) {
+        $("#applicationNo").val(appNo);
+        submit('reqForInfo');
+    }
+    function doAppInfo(appNo) {
+        $("#applicationNo").val(appNo);
+        submit('appInfo');
     }
 </script>
