@@ -76,10 +76,10 @@
 </form>
 <script type="text/javascript">
     function doAppSearch(){
-        SOP.Crud.cfxSubmit("mainForm", "preview");
+        SOP.Crud.cfxSubmit("mainForm", "search");
     }
     function doAppBack(){
-        SOP.Crud.cfxSubmit("mainForm", "preview");
+        SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doAppClear(){
         $('input[name="application_no"]').val("");

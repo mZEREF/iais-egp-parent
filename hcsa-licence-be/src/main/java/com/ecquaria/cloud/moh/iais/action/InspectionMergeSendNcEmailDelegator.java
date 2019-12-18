@@ -6,12 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
@@ -24,6 +26,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +49,8 @@ public class InspectionMergeSendNcEmailDelegator {
     private TaskService taskService;
     @Autowired
     InspectionPreTaskService inspectionPreTaskService;
-
+    @Autowired
+    ApplicationService applicationService;
     @Autowired
     ApplicationViewService applicationViewService;
 
@@ -57,34 +62,32 @@ public class InspectionMergeSendNcEmailDelegator {
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         String taskId = ParamUtil.getString(request,"TaskId");
         if(StringUtil.isEmpty(taskId)){
             taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
-        String licenseeId=inspEmailService.getAppInsRepDto(appNo).getLicenseeId();
-        String licenseeName="lichen";
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
-        List<String> appPremCorrIds=inspEmailService.getAppPremisesCorrelationsByAppId(applicationViewDto.getApplicationDto().getId());
+        Map<String,String> appPremCorrIds=inspEmailService.getAppPremisesCorrelationsByAppId(applicationViewDto.getApplicationDto().getId());
         StringBuilder mesContext=new StringBuilder();
-        String oneEmail=inspEmailService.getInsertEmail(appPremCorrIds.get(0)).getMessageContent();
+        String oneEmail=inspEmailService.getInsertEmail(appPremCorrIds.entrySet().iterator().next().getValue()).getMessageContent();
         mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome of the Submitted Non-Compliance")));
-        for (String appPremCorrId:
-                appPremCorrIds) {
-            String ncEmail= inspEmailService.getInsertEmail(appPremCorrId).getMessageContent();
+        List<String> appIds=new ArrayList<>();
+        for (Map.Entry<String, String> appPremCorr:appPremCorrIds.entrySet()
+                ) {
+            String ncEmail= inspEmailService.getInsertEmail(appPremCorr.getValue()).getMessageContent();
+            appIds.add(appPremCorr.getKey());
             mesContext.append(ncEmail.substring(ncEmail.indexOf("Below are the review outcome of the Submitted Non-Compliance"),ncEmail.indexOf("<p>Thank you</p><br><p>Regards</p><br><p>Ministry of Health</p></body></html>")));
         }
         mesContext.append(oneEmail.substring(oneEmail.indexOf("<p>Thank you</p><br><p>Regards</p><br><p>Ministry of Health</p></body></html>")));
-        String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
         InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
         inspectionEmailTemplateDto.setMessageContent(mesContext.toString());
         inspectionEmailTemplateDto.setSubject("Inspection NC / BP Outcome");
 
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
-
+        ParamUtil.setSessionAttr(request,"appIds", (Serializable) appIds);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,"mesContext", mesContext.toString());
         ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
@@ -116,16 +119,25 @@ public class InspectionMergeSendNcEmailDelegator {
 
         log.info("=======>>>>>sendEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
+        inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
+        inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,"messageContent"));
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!"send".equals(currentAction)){
             return;
         }
         String decision=ParamUtil.getString(request,"decision");
+        List<String>appIds= (List<String>) ParamUtil.getSessionAttr(request,"appIds");
+        for(int i=1;i<=appIds.size();i++){
+            String param="revise"+String.valueOf(i);
+            if(ParamUtil.getString(request, param).equals(null)){
+                appIds.set(i,"");
+            }
+        }
+        List<ApplicationDto> applicationDtos= applicationService.getApplicaitonsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());
 
-        InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
-        inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
-        inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,"messageContent"));
-        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
+
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = new HashMap<>();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
@@ -136,13 +148,26 @@ public class InspectionMergeSendNcEmailDelegator {
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
             ParamUtil.setRequestAttr(request,DemoConstants.ISVALID,"N");
         }
+        if (decision.equals(InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT)){
+            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_ROLL_BACK);
+            applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
 
-        applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-        applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
+            for(int i=0;i<appIds.size();i++){
+                if(appIds.get(i).equals(applicationDtos.get(i))){
+                    applicationDtos.get(i).setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_ROLL_BACK);
+                    applicationViewService.updateApplicaiton(applicationDtos.get(i));
+                }
+            }
+        }
+        else {
+            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
+            String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
+            ParamUtil.setSessionAttr(request,"templateId",id);
+        }
 
 
-        String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
-        ParamUtil.setSessionAttr(request,"templateId",id);
+
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
 
     }
@@ -153,7 +178,8 @@ public class InspectionMergeSendNcEmailDelegator {
         applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
         applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
         String id= (String) ParamUtil.getSessionAttr(request,"templateId");
-        inspEmailService.recallEmailTemplate(id);
+        if (!StringUtil.isEmpty(id)){
+        inspEmailService.recallEmailTemplate(id);}
     }
 
 }

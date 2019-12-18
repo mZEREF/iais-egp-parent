@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="reqForInfoQuery">
+    <sql key = "reqForInfo" remarks = "search for information">
+        <![CDATA[
+            SELECT  T5.APPLICATION_NO, T5.APP_TYPE, T5.LICENCE_NO,T5.STATUS, T5.HCI_CODE, T5.HCI_NAME,T5.LICENSEE_NAME,
+            T5.START_DATE,T5.EXPIRY_DATE,T5.BLK_NO, T5.FLOOR_NO, T5.UNIT_NO, T5.STREET_NAME, T5.BUILDING_NAME FROM
+            (SELECT  T1.APPLICATION_NO, T1.APP_TYPE, T7.LICENCE_NO,T7.STATUS, T3.HCI_CODE, T3.HCI_NAME, T7.START_DATE,T7.EXPIRY_DATE,
+             T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,T6.LICENSEE_NAME
+             FROM APPLICATION T1
+             JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+             JOIN LICENSEE T6 ON T6.ID=T4.LICENSEE_ID
+             JOIN LICENCE T7 ON T7.ID=T1.LICENCE_ID
+             WHERE 1 = 1
+            ) T5
+            WHERE 1 = 1
+            <#if application_no??> and T5.APPLICATION_NO = :application_no</#if>
+            <#if application_type??> and T5.APP_TYPE = :application_type</#if>
+            <#if application_status??> and T1.STATUS = :application_status </#if>
+            <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
+            <#if to_date??> and T5.SUBMIT_DT <= :to_date</#if>
+            <#if licence_no??> and T7.LICENCE_NO = :licence_no</#if>
+            <#if service_name??> T7.SERVICE_NAME in(:service_name)</#if>
+            <#if licence_status??> and T7.STATUS = :licence_status</#if>
+            <#if start_date??> and T7.START_DATE >= :start_date</#if>
+            <#if expiry_date??> and T7.EXPIRY_DATE <= :expiry_date</#if>
+        ]]>
+    </sql>
+
+
+</sqls>

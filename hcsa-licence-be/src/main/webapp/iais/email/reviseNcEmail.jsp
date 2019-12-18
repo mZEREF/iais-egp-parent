@@ -485,6 +485,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <select id="decision-revise-email" name="decision">
+                                                    <option>Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
                                                     </c:forEach>
