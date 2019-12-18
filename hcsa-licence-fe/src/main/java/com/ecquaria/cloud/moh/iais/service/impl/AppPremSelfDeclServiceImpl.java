@@ -6,17 +6,20 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  *description:
  */
 
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -39,17 +42,23 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     @Autowired
     private AppConfigClient appConfigClient;
 
+    private List<AppSvcPremisesScopeDto> premScopeList;
+
     /**
     * @author: yichen 
     * @description: Set service config
     * @param: 
     * @return: 
     */
-    private void setServiceSelfDeclConfig(List<PremCheckItem> premItemList, List<String> confList, String svcCode, String type, String module){
-        ChecklistConfigDto svcConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
-        if (svcConfig != null){
-            setPremChecklistItem(premItemList, svcConfig.getId(), false, null);
-            confList.add(svcConfig.getId());
+    private void setServiceSelfDeclConfig(List<PremCheckItem> premItemList, List<String> confList,
+                                          String svcCode, String type, String module, String grpPremId){
+        for (AppSvcPremisesScopeDto premise : this.premScopeList){
+            String scopeId = premise.getId();
+            ChecklistConfigDto svcConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
+            if (svcConfig != null){
+                setPremChecklistItem(premItemList, svcConfig.getId(), false, scopeId, grpPremId);
+                confList.add(svcConfig.getId());
+            }
         }
     }
 
@@ -59,10 +68,8 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @param: 
     * @return: 
     */
-    private void setSubTypeSelfDeclConfig(List<PremCheckItem> premItemList, List<String> confList,
-                                          String correId, String svcCode, String type, String module){
-        List<AppSvcPremisesScopeDto> premScopeList = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
-        for (AppSvcPremisesScopeDto premise : premScopeList){
+    private void setSubTypeSelfDeclConfig(List<PremCheckItem> premItemList, List<String> confList, String svcCode, String type, String module, String grpPremId){
+        for (AppSvcPremisesScopeDto premise : this.premScopeList){
             if (!premise.isSubsumedType()){
                 String scopeId = premise.getId();
                 String subTypeId = premise.getScopeName();
@@ -70,7 +77,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                 String subTypeName = subType.getSubtypeName();
                 ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
                 if (subTypeConfig != null){
-                    setPremChecklistItem(premItemList, subTypeConfig.getId(), false, scopeId);
+                    setPremChecklistItem(premItemList, subTypeConfig.getId(), false, scopeId, grpPremId);
                     confList.add(subTypeConfig.getId());
                 }
             }
@@ -87,10 +94,8 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                                          List<String> premIdList,
                                          String type, String module){
         ChecklistConfigDto commonConfig = appConfigClient.getMaxVersionCommonConfigByParams(type, module).getEntity();
-        if (commonConfig != null){
-            SelfDecl commonSelfDecl = overlayCommon(premIdList, commonConfig.getId());
-            selfDeclList.add(commonSelfDecl);
-        }
+        SelfDecl commonSelfDecl = overlayCommon(premIdList, commonConfig.getId());
+        selfDeclList.add(commonSelfDecl);
     }
 
     @Override
@@ -106,8 +111,8 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
         List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
         List<SelfDecl> selfDeclList = new ArrayList<>();
         List<String> premIdList = new ArrayList<>();
-        String type = "Self-Assessment";
-        String module = "New";
+        String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.SELF_ASSESSMENT);
+        String module = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
         for (ApplicationDto app : appList){
             SelfDecl selfDecl = new SelfDecl();
             List<String> confList = new ArrayList<>();
@@ -119,13 +124,17 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
             List<PremCheckItem> premItemList = new ArrayList<>();
 
-            setServiceSelfDeclConfig(premItemList, confList, svcCode, type, module);
-
             Map<String, List<PremCheckItem>> premAnswerMap = new HashMap<>(16);
             List<AppPremisesCorrelationDto>  correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto corre : correlationList){
                 String correId = corre.getId();
-                setSubTypeSelfDeclConfig(premItemList, confList, correId, svcCode, type, module);
+                String grpPremId = corre.getAppGrpPremId();
+
+                this.premScopeList = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
+
+                setServiceSelfDeclConfig(premItemList, confList,svcCode, type, module, grpPremId);
+                setSubTypeSelfDeclConfig(premItemList, confList, svcCode, type, module, grpPremId);
+
                 selfDecl.setPremAnswerMap(premAnswerMap);
                 selfDecl.setSvcCode(svcCode);
                 selfDecl.setSvcName(svcName);
@@ -167,7 +176,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @param: 
     * @return: 
     */
-    private void setPremChecklistItem(List<PremCheckItem> premItemList, String configId, Boolean isCommon, String scopeId){
+    private void setPremChecklistItem(List<PremCheckItem> premItemList, String configId, Boolean isCommon, String scopeId, String grpPremId){
         if (premItemList != null){
             SearchParam searchParam = new SearchParam(ChecklistQuestionDto.class.getName());
             searchParam.addFilter("svc_type", "Self-Assessment", true);
@@ -179,6 +188,11 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
             QueryHelp.setMainSql("applicationQuery", "listSelfDesc", searchParam);
 
+            AppGrpPremisesDto addressDto = null;
+            if (grpPremId != null){
+                addressDto = applicationClient.getAppGrpPremise(grpPremId).getEntity();
+            }
+
             SearchResult<ChecklistQuestionDto> searchResult = appConfigClient.listSelfDescConfig(searchParam).getEntity();
             List<ChecklistQuestionDto> rows = searchResult.getRows();
             for (ChecklistQuestionDto question : rows){
@@ -186,6 +200,11 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                 premCheckItem.setChecklistItem(question.getChecklistItem());
                 premCheckItem.setRegulation(question.getRegClauseNo());
                 premCheckItem.setChecklistItemId(question.getItemId());
+
+                if (addressDto != null){
+                    premCheckItem.setAddress(addressDto.getAddress());
+                }
+
                 String pkId = question.getId().substring(0, 10);   //from db section item id
                 String itemId = question.getItemId().substring(0, 10);
 
@@ -209,7 +228,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
         SelfDecl selfDecl = new SelfDecl();
         List<PremCheckItem> premCheckItems = new ArrayList<>();
-        setPremChecklistItem(premCheckItems, configId, true, null);
+        setPremChecklistItem(premCheckItems, configId, true, null, null);
 
         Map<String, List<PremCheckItem>> premAnswerMap = new HashMap<>(16);
 

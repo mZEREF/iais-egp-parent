@@ -82,7 +82,7 @@ public class AppPremSelfDeclDelegator {
         for (SelfDecl selfDecl : selfDeclByGroupId){
             if (currentPage == null && selfDecl.isCommon()){
                 Map<String, List<PremCheckItem>> premAnswerMap = selfDecl.getPremAnswerMap();
-                 setAnswer(request, premAnswerMap);
+                setAnswer(request, premAnswerMap);
             }else if (currentPage != null && currentPage.equals(selfDecl.getSvcId())){
                 Map<String, List<PremCheckItem>> premAnswerMap = selfDecl.getPremAnswerMap();
                 setAnswer(request, premAnswerMap);

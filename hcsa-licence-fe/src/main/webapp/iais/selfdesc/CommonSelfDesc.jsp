@@ -95,6 +95,7 @@
                     <th>No.</th>
                     <th>Regulation Clause</th>
                     <th>Item</th>
+                    <th>Address</th>
                     <th>Yes</th>
                     <th>No</th>
                     <th>Na</th>
