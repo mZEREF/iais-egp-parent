@@ -4,6 +4,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.dto.LoginContext" %>
 <%@ page import="java.util.HashMap" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 
 <%
     LoginContext loginContext = null;
@@ -40,13 +41,6 @@
     if (!url.startsWith("/")) {
         url = "/" + url;
     }
-    String viewEmsStoredTabId = ParamUtil.getString(request, "emsStoredTabId");
-    if (!StringUtil.isEmpty(viewEmsStoredTabId)) {
-        if (url.indexOf("?") >= 0) {
-            url += "&emsStoredTabId=" + viewEmsStoredTabId;
-        } else {
-            url += "?emsStoredTabId=" + viewEmsStoredTabId;
-        }
-    }
+    url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url, request);
 %>
 <jsp:forward page="<%=url%>"></jsp:forward>
