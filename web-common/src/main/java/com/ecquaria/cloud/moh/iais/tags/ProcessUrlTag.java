@@ -49,7 +49,8 @@ public class ProcessUrlTag extends TagSupport {
     @Override
     public int doStartTag() throws JspException {
         try {
-            String html = pageContext.getRequest().getServletContext().getContextPath() + "/eservice";
+            String html = "https://"  + pageContext.getRequest().getServerName()
+                    + pageContext.getRequest().getServletContext().getContextPath() + "/eservice";
             html += "/" + project + "/" + processName;
             CsrfGuard csrf = CsrfGuard.getInstance();
             if (!StringUtil.isEmpty(pathParams)) {
