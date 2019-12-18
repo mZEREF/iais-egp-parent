@@ -49,7 +49,9 @@ public class ServiceMenuDelegator {
     public void validation(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do validation start ...."));
         String validation = AppConsts.TRUE;
-
+        String serviceid = ParamUtil.getString(bpc.request, "serviceid");
+        String[] serviceList = serviceid.split(",");
+        ParamUtil.setSessionAttr(bpc.request,"serviceList",serviceList);
         ParamUtil.setRequestAttr(bpc.request, "validationValue", validation);
     }
 

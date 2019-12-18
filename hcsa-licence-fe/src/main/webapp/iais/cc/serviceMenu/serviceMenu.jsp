@@ -18,6 +18,7 @@
             <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto"/>
             <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
 
+            <input type="hidden" name="serviceid" id="serviceid" value="">
             <div class="row">
                 <div class="col-xs-12 col-md-4">
                 </div>
@@ -27,7 +28,7 @@
                         <div class="form-check-gp">
                             <c:forEach var="base" items="${baseService}">
                                 <div class="form-check">
-                                    <input class="form-check-input" id="clinical" type="checkbox" aria-invalid="false" value="${base.getId()}">
+                                    <input class="form-check-input" name="chk" id="clinical" type="checkbox" aria-invalid="false" value="${base.getId()}">
                                     <label class="form-check-label" for="clinical"><span class="check-square"></span>${base.getSvcName()}</label>
                                 </div>
                             </c:forEach>
@@ -36,7 +37,7 @@
                         <div class="form-check-gp">
                             <c:forEach var="specified" items="${specifiedService}">
                                 <div class="form-check">
-                                    <input class="form-check-input" id="clinical" type="checkbox" aria-invalid="false" value="${specified.getId()}">
+                                    <input class="form-check-input" name="chk"  id="clinical" type="checkbox" aria-invalid="false" value="${specified.getId()}">
                                     <label class="form-check-label" for="clinical"><span class="check-square"></span>${specified.getSvcName()}</label>
                                 </div>
                             </c:forEach>
@@ -54,6 +55,7 @@
                     </div>
                 </div>
             </div>
+
         </form>
     </div>
 </div>
@@ -61,7 +63,17 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('#submitService').click(function(){
-            SOP.Crud.cfxSubmit("mainForm", "validation");
+            var arr = "";
+
+            $('input[type="checkbox"][name="chk"]:checked').each(
+                function() {
+                    arr += $(this).val()+",";
+                }
+            );
+            $('#serviceid').val(arr);
+            SOP.Crud.cfxSubmit("mainForm");
         });
+
+
     });
 </script>
