@@ -152,4 +152,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public AppSubmissionDto getAppSubmissionDtoDraft(String draftNo) {
         return applicationClient.draftNumberGet(draftNo).getEntity();
     }
+
+    @Override
+    public List<HcsaServiceDto> getAllService(){
+        return appConfigClient.allHcsaService().getEntity();
+    }
 }

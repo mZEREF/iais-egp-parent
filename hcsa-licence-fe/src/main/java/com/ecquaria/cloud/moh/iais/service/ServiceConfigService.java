@@ -36,5 +36,5 @@ public interface ServiceConfigService {
     byte[] downloadFile(String fileRepoId);
     void updatePaymentStatus(ApplicationGroupDto appGrp);
     AppSubmissionDto getAppSubmissionDtoDraft(String draftNo);
-
+    List<HcsaServiceDto> getAllService();
 }
