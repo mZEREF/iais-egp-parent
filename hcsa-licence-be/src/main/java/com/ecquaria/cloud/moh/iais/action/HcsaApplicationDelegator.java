@@ -151,12 +151,15 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setCurrentStatus(status);
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         Map<String,String> routingStage=new HashMap<>();
+        Map<String,String> verified=new HashMap<>();
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList
              ) {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
+            verified.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
 
-        applicationViewDto.setVerified(routingStage);
+
+        applicationViewDto.setVerified(verified);
         //History
 
 //        List<String> actionByList=new ArrayList<>();
@@ -178,32 +181,33 @@ public class HcsaApplicationDelegator {
         }
 
         //add special stages
+
+
+
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }
+
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROLL_BACK,"RollBack");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Pending Approval");
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_INTERNAL_ENQUIRY,"Internal Enquiry");
+          //  routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
+           // routingStage.put(ApplicationConsts.PROCESSING_DECISION_INTERNAL_ENQUIRY,"Internal Enquiry");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(applicationViewDto.getApplicationDto().getStatus())
                 ||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROLL_BACK,"RollBack");
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_SUPPORT,"Support");
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED,"Verified");
-        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED,"Verified");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+
+        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())) {
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
         }else{
-            routingStage.put(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified");
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
         }
         applicationViewDto.setRoutingStage(routingStage);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);

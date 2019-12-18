@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="17" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/doStart" dtdVersion="6.0" executable="true" majorVersion="18" minorVersion="0" name="ApplicationView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="doStart" x="310" y="-20">
@@ -293,24 +293,24 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="310" y="440">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/ASO" value="&quot;ASO&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PSO" value="&quot;PSO&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/INS" value="&quot;INS&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/AO1" value="&quot;AO1&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/AO2" value="&quot;AO2&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/AO3" value="&quot;AO3&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;APPROVAL&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/DMS" value="&quot;ROUTE TO DMS&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/RouteBack" value="&quot;ROLLBACK&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/InternalEnquiry" value="&quot;INTERNAL ENQUIRY&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/ASO" value="&quot;PROCASO&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PSO" value="&quot;PROCPSO&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/INS" value="&quot;PROCINS&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AO1" value="&quot;PROCAO1&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AO2" value="&quot;PROCAO2&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/AO3" value="&quot;PROCAO3&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;PROCAP&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/DMS" value="&quot;PROCRTD&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/RouteBack" value="&quot;PROCRB&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InternalEnquiry" value="&quot;PROCINE&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareData" value=""/>
    <SwitchCase component="/Steps/AutomaticStep/Broadcast" value="&quot;PROCAO3001&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/BROADCAST_REPLY" value="&quot;PROCAO3002&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Support" value="&quot;SUPPORT&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Verified" value="&quot;VERIFIED&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Reject" value="&quot;REJECT&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/RequestForInformation" value="&quot;REQUEST FOR INFORMATION&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/LienceStartDate" value="&quot;LICENCE START DATE&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Support" value="&quot;PROCSUP&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Verified" value="&quot;PROCVER&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Reject" value="&quot;PROCREJ&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/RequestForInformation" value="&quot;PROCRFI&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/LienceStartDate" value="&quot;PROCLSD&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

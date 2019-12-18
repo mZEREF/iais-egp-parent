@@ -488,10 +488,8 @@
                                                         <td>
                                                             <select name="nextStage" class="table-select">
                                                                 <option>---select---</option>
-                                                                <c:forEach items="${applicationViewDto.routingStage}"
-                                                                           var="routingStageMap">
-                                                                    <option value="${routingStageMap.key}">${routingStageMap.value}</option>
-                                                                </c:forEach>
+                                                                <option value="VERIFIED">Verified</option>
+                                                                <option value="ROLLBACK">Roll back</option>
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -502,8 +500,7 @@
                                                         <td>
                                                             <select name="verified" class="table-select">
                                                                 <option>---select---</option>
-                                                                <c:forEach items="${applicationViewDto.verified}"
-                                                                           var="verified">
+                                                                <c:forEach items="${applicationViewDto.verified}" var="verified">
                                                                     <option value="${verified.key}">${verified.value}</option>
                                                                 </c:forEach>
                                                             </select>
@@ -616,15 +613,23 @@
 
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
-        if (selectValue == "VERIFIED") {
+        if (selectValue == "PROCVER") {
             $('#verifiedDropdown').removeClass('hidden');
-        }else if(selectValue == "Licence Start Date") {
-            $('#lienceStartDate').removeClass('hidden');
-        }else if(selectValue == "ROLLBACK"){
+        }else if(selectValue == "PROCRB"){
             $('#rollBack').removeClass('hidden');
         }else{
             $('#rollBack').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
+
+        }
+    });
+
+
+    $('#verifiedDropdown').change(function verifiedChange() {
+        var verified= $('#verifiedDropdown').val();
+        if(verified=="Licence Start Date") {
+            $('#lienceStartDate').removeClass('hidden');
+        }else{
             $('#lienceStartDate').addClass('hidden');
         }
     });
