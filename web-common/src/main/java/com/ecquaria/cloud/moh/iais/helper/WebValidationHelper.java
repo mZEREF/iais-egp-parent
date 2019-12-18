@@ -16,13 +16,11 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +107,7 @@ public class WebValidationHelper {
             for (Map.Entry<String, String> ent : errorMsg.entrySet()) {
                 sb.append("{\"");
                 sb.append(ent.getKey()).append("\" : \"");
-                String value = ent.getValue();
+                String value = MessageUtil.getMessageDesc(ent.getValue());
                 value = value.replaceAll("\"", "&quot;");
                 value = value.replaceAll("'", "&apos;");
                 sb.append(value).append("\"},");
@@ -128,13 +126,8 @@ public class WebValidationHelper {
         AuditTrailDto dto = IaisEGPHelper.getCurrentAuditTrailDto();
 
         Map<String, String> errors = result.retrieveAll();
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            dto.setValidationFail(mapper.writeValueAsString(errors));
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage(), e);
-            throw new IaisRuntimeException(e);
-        }
+        String errorMsg = generateJsonStr(errors);
+        dto.setValidationFail(errorMsg);
         List<AuditTrailDto> dtoList = new ArrayList<>();
         dtoList.add(dto);
         dto.setOperation(AuditTrailConsts.OPERATION_VALIDATION_FAIL);
