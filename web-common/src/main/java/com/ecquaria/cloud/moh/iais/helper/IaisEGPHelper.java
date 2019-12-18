@@ -175,7 +175,7 @@ public final class IaisEGPHelper extends EGPHelper {
         if (StringUtil.isEmpty(secKey)) {
             secKey = String.valueOf(System.currentTimeMillis());
             RedisCacheHelper.getInstance().set("iaisEdToken",
-                    "Callback_SecKEy__SubId_" + submissionId, secKey);
+                    "Callback_SecKEy__SubId_" + submissionId, secKey, 60L * 60L * 24L);
         }
         String token = StringUtil.digestStrSha256(serviceName + secKey);
 
