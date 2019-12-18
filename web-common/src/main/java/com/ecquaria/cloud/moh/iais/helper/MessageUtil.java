@@ -27,7 +27,7 @@ public class MessageUtil {
         }
 
         map.forEach((k, v) -> {
-            RedisCacheHelper.getInstance().set(CACHE_NAME_MSG, k, v);
+            RedisCacheHelper.getInstance().set(CACHE_NAME_MSG, k, v, RedisCacheHelper.NOT_EXPIRE);
         });
 
         log.debug("##########################Load Iais Messages End##############################");
