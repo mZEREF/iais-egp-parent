@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +44,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
  */
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
-@PrepareForTest({MessageTag.class})
+@PrepareForTest({MessageTag.class, MessageUtil.class})
 public class MessageTagTest {
     @Spy
     private MessageTag tag = new MessageTag();
@@ -60,6 +61,8 @@ public class MessageTagTest {
         tag.setKey("justkey");
         tag.setParams("ssscc");
         tag.setEscape(true);
+        PowerMockito.mockStatic(MessageUtil.class);
+        when(MessageUtil.getMessageDesc(anyString())).thenReturn("");
     }
 
     @Test

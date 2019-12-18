@@ -36,6 +36,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.ApplicationContext;
 
+import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -48,7 +49,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @MockPolicy(Slf4jMockPolicy.class)
 @PrepareForTest({WebValidationHelper.class, ValidationUtils.class, SubmissionClient.class,
-        ApplicationContext.class, AuditTrailDto.class, SpringContextHelper.class})
+        ApplicationContext.class, AuditTrailDto.class, SpringContextHelper.class, MessageUtil.class})
 @PowerMockIgnore("javax.management.*")
 public class WebValidationHelperTest {
 
@@ -86,12 +87,14 @@ public class WebValidationHelperTest {
         when(SpringContextHelper.getContext()).thenReturn(context);
         doReturn(client).when(context).getBean(SubmissionClient.class);
         PowerMockito.when(AuditTrailDto.getThreadDto()).thenReturn(dto);
+        PowerMockito.mockStatic(MessageUtil.class);
+        when(MessageUtil.getMessageDesc(anyString())).thenReturn("");
         WebValidationHelper.validateEntity(new Object());
         Assert.assertTrue(true);
     }
     @Test
     public void testValidateProperty() {
-        PowerMockito.when(ValidationUtils.validateProperty(Mockito.anyObject(),Mockito.anyString())).thenReturn(validationResult);
+        PowerMockito.when(ValidationUtils.validateProperty(Mockito.anyObject(), anyString())).thenReturn(validationResult);
         PowerMockito.when(validationResult.isHasErrors()).thenReturn(false);
         WebValidationHelper.validateProperty(new Object(),"");
         Assert.assertTrue(true);

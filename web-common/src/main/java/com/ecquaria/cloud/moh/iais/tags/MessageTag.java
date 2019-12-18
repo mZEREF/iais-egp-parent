@@ -1,13 +1,12 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
-import com.ecquaria.cloud.moh.iais.common.utils.MessageUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import java.util.HashMap;
 
 
 /**
