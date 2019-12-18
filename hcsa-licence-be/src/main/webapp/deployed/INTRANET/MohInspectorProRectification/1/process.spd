@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/InspectorProRectificationStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectorProRectification" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="InspectorProRectificationStart" x="10" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationStart_OnStepProcess_0" name="inspectorProRectificationStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRectificationInit" x="220" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationInit_OnStepProcess_0" name="inspectorProRectificationInit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRectificationPre" x="410" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationPre_OnStepProcess_0" name="inspectorProRectificationPre_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRectificationValid" x="840" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationValid_OnStepProcess_0" name="inspectorProRectificationValid_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRectificationAcc" x="1260" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationAcc_OnStepProcess_0" name="inspectorProRectificationAcc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRectificationReq" x="1030" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationReq_OnStepProcess_0" name="inspectorProRectificationReq_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorProRectificationAccCond" x="1480" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorProRectificationAccCond_OnStepProcess_0" name="inspectorProRectificationAccCond_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorProRectificationDoPage" stageIndicator="" x="610" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorProRectificationSuccessPage" stageIndicator="" x="1000" y="400">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationPre" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspectorProRectificationCond" style="oblique">
+   <position>{(1060,120)(1128,40)(491,40)(430,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/InspectorProRectificationStart" style="rectanular">
+   <position>{(30,120)(240,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationInit" style="rectanular">
+   <position>{(240,120)(430,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectorProRectificationDoPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationPre" style="rectanular">
+   <position>{(430,120)(630,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationValid" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectorProRectificationDoPage" style="rectanular">
+   <position>{(630,120)(860,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/InspectorProRectificationCond" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationValid" style="rectanular">
+   <position>{(860,120)(1060,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/InspectorProRectificationSwitch" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/InspectorProRectificationCond" style="rectanular">
+   <position>{(1060,120)(1270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationAcc" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/InspectorProRectificationSwitch" style="rectanular">
+   <position>{(1270,120)(1280,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationReq" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectorProRectificationSwitch" style="oblique">
+   <position>{(1270,120)(1050,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorProRectificationAccCond" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectorProRectificationSwitch" style="oblique">
+   <position>{(1270,120)(1500,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationReq" style="oblique">
+   <position>{(1050,250)(1340,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationAcc" style="rectanular">
+   <position>{(1280,250)(1340,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorProRectificationAccCond" style="oblique">
+   <position>{(1500,250)(1340,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectorProRectificationSuccessPage" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(1340,420)(1020,420)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspectorProRectificationPre" componentIfTrue="/Switches/Switch/InspectorProRectificationSwitch" defClass="" executor="" icon="" leftOperand="flag" name="InspectorProRectificationCond" operator="=" rightOperand="&quot;true&quot;" x="1040" y="100">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="InspectorProRectificationType" name="InspectorProRectificationSwitch" x="1250" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationAcc" value="&quot;accept&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationReq" value="&quot;request&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationAccCond" value="&quot;acccond&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1320" y="400">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
