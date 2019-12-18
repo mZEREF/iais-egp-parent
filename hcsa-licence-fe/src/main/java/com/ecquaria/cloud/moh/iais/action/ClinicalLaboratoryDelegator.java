@@ -631,6 +631,11 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
+        if(!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"disciplineAllocation");
+            return;
+        }
         ParamUtil.setSessionAttr(bpc.request, "ReloadAllocationMap", (Serializable) reloadAllocation);
         //save into sub-svc dto
         currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
@@ -642,6 +647,12 @@ public class ClinicalLaboratoryDelegator {
 
     }
 
+    private void doValidateDisciplineAllocation(Map<String ,String> map, List<AppSvcDisciplineAllocationDto> daList){
+        for(AppSvcDisciplineAllocationDto every:daList){
+            String idNo = every.getIdNo();
+
+        }
+    }
     /**
      * StartStep: doPrincipalOfficers
      *
@@ -875,7 +886,7 @@ public class ClinicalLaboratoryDelegator {
 
     private AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(HttpServletRequest request){
         AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
-        String assignSelect = ParamUtil.getString(request, "assign");
+        String assignSelect = ParamUtil.getString(request, "assignSelect");
         String deputySelect = ParamUtil.getString(request, "deputySelect");
         String salutation = ParamUtil.getString(request, "salutation");
         String name = ParamUtil.getString(request, "name");
