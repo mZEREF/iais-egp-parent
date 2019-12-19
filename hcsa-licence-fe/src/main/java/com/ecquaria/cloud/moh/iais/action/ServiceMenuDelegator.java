@@ -29,7 +29,7 @@ public class ServiceMenuDelegator {
     public void serviceMenuSelection(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do Start start 1...."));
 
-        List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getAllService();
+        List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getServicesInActive();
         List<HcsaServiceDto> baseService = new ArrayList<>();
         List<HcsaServiceDto> specifiedService = new ArrayList<>();
         for (HcsaServiceDto item: hcsaServiceDtoList

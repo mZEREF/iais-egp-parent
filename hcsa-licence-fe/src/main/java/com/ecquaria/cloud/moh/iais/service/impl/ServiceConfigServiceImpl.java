@@ -157,4 +157,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     public List<HcsaServiceDto> getAllService(){
         return appConfigClient.allHcsaService().getEntity();
     }
+
+    @Override
+    public List<HcsaServiceDto> getServicesInActive(){
+        return appConfigClient.getActiveServices().getEntity();
+    }
 }

@@ -131,4 +131,10 @@ public class AppConfigClientFallback {
         return entity;
     }
 
+    FeignResponseEntity<List<HcsaServiceDto>> getActiveServices() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
