@@ -562,11 +562,11 @@ public class NewApplicationDelegator {
             bpc.response.sendRedirect(tokenUrl);
             return;
         }else if("GIRO".equals(payMethod)){
-            /*String appGrpId = appSubmissionDto.getAppGrpId();
+            String appGrpId = appSubmissionDto.getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
-            serviceConfigService.updatePaymentStatus(appGrp);*/
+            serviceConfigService.updatePaymentStatus(appGrp);
         }
         log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
     }
@@ -629,6 +629,11 @@ public class NewApplicationDelegator {
         return null;
     }
 
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
     @RequestMapping(value = "/premises-html", method = RequestMethod.GET)
     public @ResponseBody String addPremisesHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the add premises html start ...."));
@@ -813,9 +818,12 @@ public class NewApplicationDelegator {
             //serviceConfigIds.add("34F99D15-820B-EA11-BE7D-000C29F371DC");
             //serviceConfigIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");
             String[] ids = (String[]) ParamUtil.getSessionAttr(bpc.request, "serviceList");
-            for(String id:ids){
-                serviceConfigIds.add(id);
+            if(ids != null && ids.length>0){
+                for(String id:ids){
+                    serviceConfigIds.add(id);
+                }
             }
+
         }
         log.debug(StringUtil.changeForLog("service size:"+serviceConfigIds.size()));
 
