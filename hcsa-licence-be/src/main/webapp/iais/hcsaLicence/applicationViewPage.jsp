@@ -498,7 +498,7 @@
                                                         <td>
                                                             <select name="verified" class="table-select">
                                                                 <option>---select---</option>
-                                                                <c:forEach items="${applicationViewDto.routingStage}" var="verified">
+                                                                <c:forEach items="${applicationViewDto.verified}" var="verified">
                                                                     <option value="${verified.key}">${verified.value}</option>
                                                                 </c:forEach>
                                                             </select>
