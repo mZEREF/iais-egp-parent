@@ -99,7 +99,7 @@
                             </thead>
                             <tbody>
                             <c:choose>
-                                <c:when test="${empty supTaskSearchResult.rows}">
+                                <c:when test="${empty SearchResult.rows}">
                                     <tr>
                                         <td colspan="7">
                                             <iais:message key="ACK018" escape="true"></iais:message>
@@ -107,7 +107,7 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <c:forEach var="pool" items="${supTaskSearchResult.rows}" varStatus="status">
+                                    <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
                                             <td><a onclick="doAppInfo(${pool.applicationNo})">${pool.applicationNo}</a></td>

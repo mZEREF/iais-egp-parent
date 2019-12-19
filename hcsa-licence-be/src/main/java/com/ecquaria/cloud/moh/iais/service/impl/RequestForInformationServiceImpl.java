@@ -1,10 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
@@ -85,9 +82,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         return MasterCodeUtil.retrieveOptionsByCodes(licStatus);
     }
 
-    @Override
-    public SearchResult<ReqForInfoSearchListDto> getRfiByParam(SearchParam searchParam) {
-        return requestForInformationClient.searchRfiApp(searchParam).getEntity();
-    }
+
 
 }

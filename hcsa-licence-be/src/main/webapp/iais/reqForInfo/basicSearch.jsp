@@ -13,41 +13,47 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-    <div class="main-content">
-        <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content">
-                    <iais:section title="" id = "supPoolList">
-                        <div class="bg-title">
-                            <h2>Basic Search Criteria</h2>
+    <iais:body >
+        <div class="container">
+            <div class="col-xs-12">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <br><br><br><br>
+                    <h2>Basic Search Criteria</h2>
+                    <div class="panel panel-default">
+                        <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
+                            <div class="panel-body">
+                                <div class="panel-main-content">
+                                    <iais:section title="" id = "supPoolList">
+                                        <iais:row>
+                                            <iais:field value="search no"/>
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" name="search_no"  />
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:value width="18">
+                                                <input type="radio" name="select_search" value="application" checked />Application No
+                                            </iais:value>
+                                            <iais:value width="18">
+                                                <input type="radio" name="select_search" value="licence" />Licence No
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:action style="text-align:center;">
+                                            <button type="button" class="search btn" onclick="javascript:doSearch();">Search</button>
+                                            <button type="button" class="search btn" onclick="javascript:doAdvancedSearch();">Advanced Search</button>
+                                            <button type="button" class="search btn" onclick="javascript:doClear();">Clear</button>
+                                        </iais:action>
+                                    </iais:section>
+                                </div>
+                            </div>
                         </div>
-                        <iais:row>
-                            <iais:value width="36">
-                                <label>
-                                    <input type="text" name="search_no"  />
-                                </label>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:value width="18">
-                                <input type="radio" name="select_search" value="application" checked />Application No
-                            </iais:value>
-                            <iais:value width="18">
-                                <input type="radio" name="select_search" value="licence" />Licence No
-                            </iais:value>
-                        </iais:row>
-
-                        <iais:action style="text-align:center;">
-                            <button type="button" class="search btn" onclick="javascript:doSearch();">Search</button>
-                            <button type="button" class="search btn" onclick="javascript:doAdvancedSearch();">Advanced Search</button>
-                            <button type="button" class="search btn" onclick="javascript:doClear();">Clear</button>
-                        </iais:action>
-                    </iais:section>
-
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </iais:body>
 </form>
 <script type="text/javascript">
 
