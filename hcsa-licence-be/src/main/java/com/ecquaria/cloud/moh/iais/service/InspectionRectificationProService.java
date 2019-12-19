@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
 
@@ -34,9 +35,9 @@ public interface InspectionRectificationProService {
     /**
       * @author: shicheng
       * @Date 2019/12/19
-      * @Param: taskDto, inspectionPreTaskDto
+      * @Param: taskDto, inspectionPreTaskDto, applicationViewDto, loginContext
       * @return: void
       * @Descripation: routing Task To Report
       */
-    void routingTaskToReport(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, ApplicationViewDto applicationViewDto);
+    void routingTaskToReport(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext);
 }

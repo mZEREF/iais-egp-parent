@@ -94,7 +94,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $("#indicateCondRemarks").hidden;
-    }
+    })
+
     function submit(action){
         $("[name='InspectorProRectificationType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
