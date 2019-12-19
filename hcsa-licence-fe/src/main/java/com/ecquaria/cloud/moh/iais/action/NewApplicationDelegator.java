@@ -554,13 +554,13 @@ public class NewApplicationDelegator {
         if("Credit".equals(payMethod)){
             StringBuffer url = new StringBuffer();
             url.append("https://").append(bpc.request.getServerName())
-                    .append("/payment/eservice/INTERNET/PaymentRequest")
+                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
                     .append("?amount=").append(appSubmissionDto.getAmount())
                     .append("&payMethod=").append(payMethod)
                     .append("&reqNo=").append(appSubmissionDto.getAppGrpNo());
-            String uuu = url.toString();
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
+            return;
         }else if("GIRO".equals(payMethod)){
             /*String appGrpId = appSubmissionDto.getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
