@@ -32,13 +32,13 @@
         <div class="col-xs-12">
           <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <h3>
-              <span>Review Task</span>
+              <span>Process Rectification</span>
             </h3>
             <div class="panel panel-default">
               <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                 <div class="panel-body">
                   <div class="panel-main-content">
-                    <iais:section title="" id = "review_Task">
+                    <iais:section title="" id = "process_Rectification">
                       <iais:row>
                         <iais:field value="Current Status"/>
                         <iais:value width="7">
@@ -54,7 +54,19 @@
                       <iais:row>
                         <iais:field value="Processing Decision"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspectionPreTaskDto.selectValue}"></c:out></label>
+                          <label><iais:code code="${inspectionPreTaskDto.internalMarks}"/></label>
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
+                        <iais:field value="Internal Remarks"/>
+                        <iais:value width="8000">
+                          <label><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></label>
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
+                        <iais:field value="Please indicate Licensing Terms and Conditions"/>
+                        <iais:value width="8000">
+                          <label><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></label>
                         </iais:value>
                       </iais:row>
                     </iais:section>
