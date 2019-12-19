@@ -63,12 +63,14 @@
                           <label><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></label>
                         </iais:value>
                       </iais:row>
-                      <iais:row>
-                        <iais:field value="Please indicate Licensing Terms and Conditions"/>
-                        <iais:value width="8000">
-                          <label><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></label>
-                        </iais:value>
-                      </iais:row>
+                      <c:if test="${inspectionPreTaskDto.accCondMarks != null}">
+                        <iais:row>
+                          <iais:field value="Please indicate Licensing Terms and Conditions"/>
+                          <iais:value width="8000">
+                            <label><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></label>
+                          </iais:value>
+                        </iais:row>
+                      </c:if>
                     </iais:section>
                   </div>
                 </div>
