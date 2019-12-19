@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,14 +88,9 @@ public class InspEmailServiceImpl implements InspEmailService {
     }
 
     @Override
-    public Map<String,String> getAppPremisesCorrelationsByAppId(String appId) {
+    public List<AppPremisesCorrelationDto> getAppPremisesCorrelationsByAppId(String appId) {
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=appPremisesCorrClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
-        Map<String,String> appPremCorrIds=new HashMap<>();
-        for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
-             ) {
-            appPremCorrIds.put(appPremisesCorrelationDto.getApplicationId(),appPremisesCorrelationDto.getId());
-        }
-        return appPremCorrIds;
+        return appPremisesCorrelationDtos;
     }
 
     @Override

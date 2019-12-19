@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -77,15 +78,15 @@ public class InspectionMergeSendNcEmailDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
-        Map<String,String> appPremCorrIds=inspEmailService.getAppPremisesCorrelationsByAppId(applicationViewDto.getApplicationDto().getId());
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByAppId(applicationViewDto.getApplicationDto().getId());
         StringBuilder mesContext=new StringBuilder();
-        String oneEmail=inspEmailService.getInsertEmail(appPremCorrIds.entrySet().iterator().next().getValue()).getMessageContent();
+        String oneEmail=inspEmailService.getInsertEmail(appPremisesCorrelationDtos.get(0).getId()).getMessageContent();
         mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome")));
         List<String> appIds=new ArrayList<>();
-        for (Map.Entry<String, String> appPremCorr:appPremCorrIds.entrySet()
+        for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
                 ) {
-            String ncEmail= inspEmailService.getInsertEmail(appPremCorr.getValue()).getMessageContent();
-            appIds.add(appPremCorr.getKey());
+            String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
+            appIds.add(appPremisesCorrelationDto.getApplicationId());
             mesContext.append(ncEmail.substring(ncEmail.indexOf("Below are the review outcome"),ncEmail.indexOf("<p>Thank you</p>")));
         }
         mesContext.append(oneEmail.substring(oneEmail.indexOf("<p>Thank you</p>")));

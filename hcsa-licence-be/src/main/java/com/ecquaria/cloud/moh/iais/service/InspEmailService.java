@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -30,7 +31,7 @@ public interface InspEmailService {
     List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode, String svcType);
     Map<String, String > SendAndSaveEmail(EmailDto emailDto);
     AppInsRepDto getAppInsRepDto(String appNo);
-    Map<String,String>getAppPremisesCorrelationsByAppId(String appId);
+    List<AppPremisesCorrelationDto>getAppPremisesCorrelationsByAppId(String appId);
     List<NcAnswerDto> getNcAnswerDtoList(InspectionFillCheckListDto cDto, InspectionFillCheckListDto commonDto,
                                          AdCheckListShowDto adchklDto,List<NcAnswerDto> acDtoList);
 }
