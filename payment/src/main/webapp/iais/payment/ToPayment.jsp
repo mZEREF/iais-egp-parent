@@ -30,5 +30,5 @@
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <h1>This is Bank!!!</h1>
-    <button type="submit">submit</button>
+    <button type="submit">pay</button>
 </form>

@@ -39,6 +39,6 @@
     <title>ToBank</title>
 </head>
 <body>
-<jsp:forward page="Bank.jsp"></jsp:forward>
+<jsp:forward page="ToPayment.jsp"></jsp:forward>
 </body>
 </html>

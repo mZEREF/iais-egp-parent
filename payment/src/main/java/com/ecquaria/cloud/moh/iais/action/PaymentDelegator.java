@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +30,13 @@ public class PaymentDelegator {
     public void savePayment(BaseProcessClass bpc) throws IOException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>payment");
         HttpServletRequest request = bpc.request;
-        String result = request.getParameter("result");
         PaymentDto paymentDto = new PaymentDto();
-        String am = request.getParameter("amount");
+        String result = (String)ParamUtil.getSessionAttr(bpc.request, "result");
+        String am = (String)ParamUtil.getSessionAttr(bpc.request, "amount");
+        ParamUtil.getSessionAttr(bpc.request, "amount");
         double amount = Double.parseDouble(am);
-        String reqRefNo = request.getParameter("reqRefNo");
-        String invoiceNo = request.getParameter("invoiceNo");
+        String reqRefNo = (String)ParamUtil.getSessionAttr(bpc.request, "reqRefNo");
+        String invoiceNo = (String)ParamUtil.getSessionAttr(bpc.request, "invoiceNo");
         String showUrl = "https://" + request.getServerName();
         String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&reqRefNo="+reqRefNo;
         String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
