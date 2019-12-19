@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -11,10 +12,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -57,19 +61,25 @@ public class InsReportDelegator {
 
     public void inspectionReportInit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
+        AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", null);
     }
 
 
     public void inspectionReportPre(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>inspectionReportPre");
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId = "46512333-7A16-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
+        String wkGrpId = taskDto.getWkGrpId();
+
+
         String appNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
-        if(insRepDto==null){
-            insRepDto = insRepService.getInsRepDto(appNo, applicationViewDto);
+        if (insRepDto == null) {
+            insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
@@ -81,13 +91,12 @@ public class InsReportDelegator {
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        String Remarks = ParamUtil.getRequestString(bpc.request, "remarks");
-
+        String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, "recommendation");
         String otherRecommendation = ParamUtil.getRequestString(bpc.request, "otherRecommendation");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-        appPremisesRecommendationDto.setRemarks(Remarks);
+        appPremisesRecommendationDto.setRemarks(remarks);
         appPremisesRecommendationDto.setRecomType("report");
 
         if ("Others".equals(recommendation)) {
@@ -99,7 +108,7 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(unit);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-        }else{
+        } else {
             String[] split_number = recommendation.split("\\D");
             String[] split_unit = recommendation.split("\\d");
             String unit = split_unit[1];
@@ -112,6 +121,9 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
+        ParamUtil.setSessionAttr(bpc.request, "remarks", remarks);
+        ParamUtil.setSessionAttr(bpc.request, "recommendation", recommendation);
+        ParamUtil.setSessionAttr(bpc.request, "otherRecommendation", otherRecommendation);
     }
 
     public void inspectorReportSave(BaseProcessClass bpc) throws FeignException {
@@ -136,7 +148,7 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setChronoUnit(unit);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
             insRepService.saveRecommendation(appPremisesRecommendationDto);
-        }else{
+        } else {
             String[] split_number = recommendation.split("\\D");
             String[] split_unit = recommendation.split("\\d");
             String unit = split_unit[1];
@@ -209,6 +221,7 @@ public class InsReportDelegator {
     private List<TaskDto> prepareTaskList(TaskDto taskDto) {
         List<TaskDto> list = new ArrayList<>();
         taskDto.setId(null);
+
         taskDto.setUserId("69F8BB01-F70C-EA11-BE7D-000C29F371DC");
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);

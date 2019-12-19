@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -18,10 +19,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 
 import java.util.ArrayList;
@@ -52,27 +56,38 @@ public class InsRepServiceImpl implements InsRepService {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    private OrganizationClient organizationClient;
+    @Autowired
+    private TaskService taskService;
 
-    public InsRepServiceImpl(InsRepClient insRepClient, ApplicationClient applicationClient, HcsaChklClient hcsaChklClient, InsepctionNcCheckListService insepctionNcCheckListService, FillUpCheckListGetAppClient fillUpCheckListGetAppClient, HcsaConfigClient hcsaConfigClient) {
+    public InsRepServiceImpl(InsRepClient insRepClient, ApplicationClient applicationClient, HcsaChklClient hcsaChklClient, InsepctionNcCheckListService insepctionNcCheckListService, FillUpCheckListGetAppClient fillUpCheckListGetAppClient, HcsaConfigClient hcsaConfigClient, OrganizationClient organizationClient) {
         this.insRepClient = insRepClient;
         this.applicationClient = applicationClient;
         this.hcsaChklClient = hcsaChklClient;
         this.insepctionNcCheckListService = insepctionNcCheckListService;
         this.fillUpCheckListGetAppClient = fillUpCheckListGetAppClient;
         this.hcsaConfigClient = hcsaConfigClient;
+        this.organizationClient = organizationClient;
     }
 
 
     @Override
-    public InspectionReportDto getInsRepDto(String appNo, ApplicationViewDto applicationViewDto) {
+    public InspectionReportDto getInsRepDto(TaskDto taskDto, ApplicationViewDto applicationViewDto) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
         //inspection report Dto
-        AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appNo).getEntity();
+        AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        String appGrpId = taskDto.getWkGrpId();
+        List<OrgUserDto> orgUserDtos = taskService.getUsersByWorkGroupId(appGrpId, AppConsts.COMMON_STATUS_ACTIVE);
+        List<String> inspectors = new ArrayList<>();
+        for(OrgUserDto orgUserDto :orgUserDtos){
+            inspectors.add(orgUserDto.getUserName());
+        }
 
-        String appGrpId = applicationDto.getAppGrpId();
+//        organizationClient.getUsersByWorkGroupName(appGrpId,)
         //get application type (new/renew)
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
@@ -102,22 +117,22 @@ public class InsRepServiceImpl implements InsRepService {
         List<ChecklistQuestionDto> listChecklistQuestionDtos = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
         List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = new ArrayList<>();
-//        if(listChecklistQuestionDtos!=null && !listChecklistQuestionDtos.isEmpty()){
-//            String configId = listChecklistQuestionDtos.get(0).getConfigId();
-//            List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
-//            if(ncAnswerDtoList!=null && !ncAnswerDtoList.isEmpty()){
-//                for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
-//                    ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
-//                    reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
-//                    reportNcRegulationDto.setRegulation(ncAnswerDto.getClause());
-//                    listReportNcRegulationDto.add(reportNcRegulationDto);
-//                }
-//                inspectionReportDto.setStatus("Partial Compliance");
-//
-//            }else {
-//                inspectionReportDto.setStatus("Full Compliance");
-//            }
-//        }
+        if(listChecklistQuestionDtos!=null && !listChecklistQuestionDtos.isEmpty()){
+            String configId = listChecklistQuestionDtos.get(0).getConfigId();
+            List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
+            if(ncAnswerDtoList!=null && !ncAnswerDtoList.isEmpty()){
+                for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
+                    ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
+                    reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
+                    reportNcRegulationDto.setRegulation(ncAnswerDto.getClause());
+                    listReportNcRegulationDto.add(reportNcRegulationDto);
+                }
+                inspectionReportDto.setStatus("Partial Compliance");
+
+            }else {
+                inspectionReportDto.setStatus("Full Compliance");
+            }
+        }
         //add ReportNcRegulationDto and add ncItemId
 
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationId).getEntity();
@@ -179,7 +194,7 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setInspectorRemark("inspection Remark");
         inspectionReportDto.setReportedBy("weilu");
         inspectionReportDto.setReportNoteBy("jinhua");
-        inspectionReportDto.setInspectedBy(inspects());
+        inspectionReportDto.setInspectors(inspectors);
 
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setRiskRecommendations(riskResult);
@@ -210,31 +225,5 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public ApplicationDto updateApplicaiton(ApplicationDto applicationDto) {
         return applicationClient.updateApplication(applicationDto).getEntity();
-    }
-
-
-    private List<ReportNcRegulationDto> ncRegulation() {
-        List<ReportNcRegulationDto> list = new ArrayList<>();
-        ReportNcRegulationDto reportNcRegulationDto1 = new ReportNcRegulationDto();
-        ReportNcRegulationDto reportNcRegulationDto2 = new ReportNcRegulationDto();
-        ReportNcRegulationDto reportNcRegulationDto3 = new ReportNcRegulationDto();
-        reportNcRegulationDto1.setNc("Nc1");
-        reportNcRegulationDto2.setNc("Nc2");
-        reportNcRegulationDto3.setNc("Nc3");
-        reportNcRegulationDto1.setRegulation("regulation1");
-        reportNcRegulationDto2.setRegulation("regulation2");
-        reportNcRegulationDto3.setRegulation("regulation3");
-        list.add(reportNcRegulationDto1);
-        list.add(reportNcRegulationDto2);
-        list.add(reportNcRegulationDto3);
-        return list;
-    }
-
-    private List<String> inspects() {
-        List<String> list = new ArrayList<>();
-        list.add("inspection1");
-        list.add("inspection2");
-        list.add("inspection3");
-        return list;
     }
 }
