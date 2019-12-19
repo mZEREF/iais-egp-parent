@@ -126,7 +126,6 @@ public class InspectionServiceImpl implements InspectionService {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         //create history, update application, update/create inspection status
         assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
-
     }
 
     @Override

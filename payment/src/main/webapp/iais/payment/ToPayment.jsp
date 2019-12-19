@@ -30,5 +30,5 @@
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <h1>This is Bank!!!</h1>
-    <a href="https://192.168.6.60/payment/eservice/INTERNET/Payment?result=success&amount=1760&invoiceNo=852963&reqRefNo=AN1911136061">ToPayment</a>
+    <a href="https://192.168.6.60/payment/eservice/INTERNET/Payment?result=success&amount=1760&invoiceNo=852963&reqRefNo=SG2019121861">ToPayment</a>
 </form>

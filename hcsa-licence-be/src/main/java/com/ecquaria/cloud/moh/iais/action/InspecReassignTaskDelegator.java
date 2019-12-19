@@ -42,14 +42,14 @@ public class InspecReassignTaskDelegator {
     }
 
     /**
-     * StartStep: inspectionSupSearchStart
+     * StartStep: inspectionReassignTask
      *
      * @param bpc
      * @throws
      */
     public void inspectionSupSearchStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchStart start ...."));
-        AuditTrailHelper.auditFunction("Inspection Sup Assign", "Sup Assign Task");
+        AuditTrailHelper.auditFunction("Inspection Reassign Task", "Sup Assign Task");
     }
 
     /**
@@ -348,8 +348,8 @@ public class InspecReassignTaskDelegator {
         String reassignReason = (String) ParamUtil.getSessionAttr(bpc.request, "reassignReason");
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         List<TaskDto> ReassignPools = (List<TaskDto>) ParamUtil.getSessionAttr(bpc.request, "ReassignPools");
-        String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
-        inspectionService.routingTaskByPool(inspectionTaskPoolListDto, ReassignPools, internalRemarks);
+        //String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
+        inspectionService.routingTaskByPool(inspectionTaskPoolListDto, ReassignPools, reassignReason);
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
     }
 }

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
@@ -28,13 +29,16 @@ public class PaymentDelegator {
     public void savePayment(BaseProcessClass bpc) throws IOException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>payment");
         HttpServletRequest request = bpc.request;
-        bpc.response.sendRedirect("https://192.168.6.113/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success");
         String result = request.getParameter("result");
         PaymentDto paymentDto = new PaymentDto();
         String am = request.getParameter("amount");
         double amount = Double.parseDouble(am);
         String reqRefNo = request.getParameter("reqRefNo");
         String invoiceNo = request.getParameter("invoiceNo");
+        String showUrl = "https://" + request.getServerName();
+        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&&reqRefNo="+reqRefNo;
+        String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
+        bpc.response.sendRedirect(url);
         paymentDto.setAmount(amount);
         paymentDto.setReqRefNo(reqRefNo);
         paymentDto.setInvoiceNo(invoiceNo);
