@@ -36,7 +36,7 @@ public class PaymentDelegator {
         String reqRefNo = request.getParameter("reqRefNo");
         String invoiceNo = request.getParameter("invoiceNo");
         String showUrl = "https://" + request.getServerName();
-        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&&reqRefNo="+reqRefNo;
+        String s = showUrl+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment?result=success&reqRefNo="+reqRefNo;
         String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
         bpc.response.sendRedirect(url);
         paymentDto.setAmount(amount);

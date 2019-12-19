@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PaymentRequestService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,14 +44,19 @@ public class PaymentRequestDelegator {
             paymentRequestDto.setPayMethod(payMethod);
             paymentRequestDto.setReqDt(new Date());
             paymentRequestDto.setReqRefNo(reqNo);
-
+            paymentRequestService.savePaymentRequestDto(paymentRequestDto);
         }
+        ParamUtil.setSessionAttr(bpc.request, "reqRefNo", "SG2019121861");
+        ParamUtil.setSessionAttr(bpc.request, "amount", "1760");
+        ParamUtil.setSessionAttr(bpc.request, "result", "success");
+        ParamUtil.setSessionAttr(bpc.request, "invoiceNo", "852963");
+
 //        paymentRequestDto.setReqRefNo("88888");
 //        paymentRequestDto.setReqDt(new Date());
 //        paymentRequestDto.setReqRefNo("7777777");
 //        paymentRequestDto.setPayMethod("CASH");
 //        paymentRequestDto.setAmount(100.0);
-        paymentRequestService.savePaymentRequestDto(paymentRequestDto);
+
     }
 
 
