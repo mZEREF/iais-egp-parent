@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
@@ -48,8 +47,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskApplicationClient taskApplicationClient;
 
-    @Autowired
-    private SystemAdminClient systemAdminClient;
+
 
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
