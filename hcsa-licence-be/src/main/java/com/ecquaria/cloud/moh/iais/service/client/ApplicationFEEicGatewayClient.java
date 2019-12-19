@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @date 2019/12/14 17:33
  */
 @FeignClient(value = "eicgate", url="${iais.application.url}", configuration = {FeignMultipartConfig.class},
-        fallback = LicenceFEEicGatewayClientFallback.class)
+        fallback = ApplicationFEEicGatewayClientFallback.class)
 public interface ApplicationFEEicGatewayClient {
     @RequestMapping(value = "/iais-application",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> updateApplication(@RequestBody ApplicationDto applicationDto,
