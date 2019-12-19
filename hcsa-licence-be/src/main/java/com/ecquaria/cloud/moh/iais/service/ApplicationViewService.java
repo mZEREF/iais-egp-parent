@@ -11,7 +11,6 @@ public interface ApplicationViewService {
 
     ApplicationViewDto searchByAppNo(String appNo);
 
-
     ApplicationDto getApplicaitonByAppNo(String appNo);
 
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
@@ -21,4 +20,6 @@ public interface ApplicationViewService {
     List<HcsaSvcDocConfigDto> getTitleById(List<String> titleIdList);
 
     List<HcsaSvcRoutingStageDto> getStage(String serviceId,String stageId);
+
+    OrgUserDto getUserById(String userId);
 }

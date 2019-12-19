@@ -29,25 +29,14 @@ import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -168,8 +157,11 @@ public class HcsaApplicationDelegator {
         }
 
 
-//        applicationViewDto.setVerified(verified);
-        //History
+//        applicationViewDto.setVerified(verified)
+
+
+
+// History
 
 //        List<String> actionByList=new ArrayList<>();
 //        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
@@ -188,6 +180,21 @@ public class HcsaApplicationDelegator {
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setAppStatus(statusUpdate);
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup(applicationViewDto.getApplicationNoOverAll());
         }
+
+
+
+
+        //      rollback
+//        List<String> rollBackStatusList=new ArrayList<>();
+//        Map<String,String> rollBackMap=new HashMap<>();
+//        for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()
+//             ) {
+//            String stageName=MasterCodeUtil.getCodeDesc(e.getAppStatus());
+//            String actionBy=applicationViewService.getUserById(e.getActionby()).getUserName();
+//            rollBackMap.put(actionBy+"("+stageName+")",e.getActionby());
+//        }
+//        applicationViewDto.setRollBack(rollBackMap);
+
 
         //add special stages
 
@@ -211,7 +218,7 @@ public class HcsaApplicationDelegator {
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())) {
 
         }
-        applicationViewDto.setRoutingStage(routingStage);
+        applicationViewDto.setVerified(routingStage);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
