@@ -60,7 +60,7 @@ public interface ApplicationClient  {
     @GetMapping(path = "/iais-application/application/correlations/{appid}")
     FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId);
 
-    @PutMapping(path="/iais-application/app-grp")
+    @PutMapping(path="/iais-application/app-grp", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> doUpDate(@RequestBody ApplicationGroupDto applicationGroupDto);
 
     @GetMapping(value = "/iais-submission/submission-id")
