@@ -54,7 +54,7 @@
                       <iais:row>
                         <iais:field value="Processing Decision"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspectionPreTaskDto.selectValue}"></c:out></label>
+                          <label><iais:code code="${inspectionPreTaskDto.selectValue}"/></label>
                         </iais:value>
                       </iais:row>
                     </iais:section>
