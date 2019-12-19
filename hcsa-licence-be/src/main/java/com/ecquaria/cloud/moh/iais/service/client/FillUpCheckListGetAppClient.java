@@ -80,5 +80,7 @@ public interface FillUpCheckListGetAppClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AdhocDraftDto>> getAdhocDraftItems(@RequestBody List<String> itemList);
 
-
+    @GetMapping(path = "/iais-apppreinsncitem-be/allrecItem",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getALlRecItem();
 }
