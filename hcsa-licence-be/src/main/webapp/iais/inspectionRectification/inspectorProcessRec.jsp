@@ -68,7 +68,7 @@
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_internalMarks"></span>
                         </iais:value>
                       </iais:row>
-                      <iais:row>
+                      <iais:row id="indicateCondRemarks">
                         <iais:field value="Please indicate Licensing Terms and Conditions"/>
                         <iais:value width="8000">
                           <textarea id="condRemarks" name="condRemarks" cols="70" rows="7"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
@@ -92,6 +92,9 @@
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
+    $(document).ready(function() {
+        $("#indicateCondRemarks").hidden;
+    }
     function submit(action){
         $("[name='InspectorProRectificationType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
@@ -105,6 +108,11 @@
 
     function doInspectorProRecChange(value) {
         $("#processDec").val(value);
+        if("REDECI007" == value){
+            $("#indicateCondRemarks").show();
+        } else if ("REDECI007" != value){
+            $("#indicateCondRemarks").hidden;
+        }
     }
 
     function doInspectorProRecSubmit() {

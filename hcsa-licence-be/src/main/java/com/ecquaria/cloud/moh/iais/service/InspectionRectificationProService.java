@@ -1,7 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
 import java.util.List;
 
@@ -27,4 +30,13 @@ public interface InspectionRectificationProService {
       * @Descripation:
       */
     List<SelectOption> getProcessRecDecOption();
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/19
+      * @Param: taskDto, inspectionPreTaskDto
+      * @return: void
+      * @Descripation: routing Task To Report
+      */
+    void routingTaskToReport(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, ApplicationViewDto applicationViewDto);
 }

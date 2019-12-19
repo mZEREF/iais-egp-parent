@@ -10,8 +10,6 @@
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -521,7 +519,9 @@
                                                         <td>
                                                             <select name="rollBack" class="table-select">
                                                                 <option>---select---</option>
-
+                                                                <c:forEach items="${applicationViewDto.rollBack}" var="rollBack">
+                                                                    <option value="${rollBack.value}">${rollBack.key}</option>
+                                                                </c:forEach>
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -602,22 +602,18 @@
             $('#notNull').remove();
             $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>")
             return false;
-        } else {
-            var nextStage = $("[name='verified']").val();
-            console.log("---*>" + nextStage);
-            $("[name='crud_action_type']").val(nextStage);
-            var test = $("[name='crud_action_type']").val();
-            alert(test);
-            return true;
         }
+
     });
 
     $("[name='nextStage']").change(function selectChange() {
         var selectValue = $("[name='nextStage']").val();
         if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
+            $('#rollBack').addClass('hidden');
         }else if(selectValue == "ROLLBACK"){
             $('#rollBack').removeClass('hidden');
+            $('#verifiedDropdown').addClass('hidden');
         }else{
             $('#rollBack').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');

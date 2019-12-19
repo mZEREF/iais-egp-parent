@@ -18,11 +18,11 @@ public class INTERNET___PaymentRequest___1 extends BaseProcessClass {
 
 	private static final String DELEGATOR ="paymentRequest";
 
-	public void saveData_OnStepProcess_0()  {
+	public void saveData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "savePaymentRequest", this);
 	}
 
-	public void start_OnStepProcess_0() {
+	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 

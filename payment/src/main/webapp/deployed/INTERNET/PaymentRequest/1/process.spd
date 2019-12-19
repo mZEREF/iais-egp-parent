@@ -16,6 +16,12 @@
     <JavaCode defClass="" executor="" methodName="saveData_OnStepProcess_0" name="saveData_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Step1" processname="Payment" project="INTERNET" version="-1" x="740" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PaymentRequest" stageIndicator="" x="470" y="100">
@@ -32,6 +38,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/PaymentRequest" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SaveData" style="rectanular">
    <position>{(310,120)(490,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Step1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PaymentRequest" style="oblique">
+   <position>{(490,120)(760,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
