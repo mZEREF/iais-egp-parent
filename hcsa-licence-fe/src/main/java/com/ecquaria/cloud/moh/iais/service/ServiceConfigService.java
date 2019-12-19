@@ -37,4 +37,5 @@ public interface ServiceConfigService {
     void updatePaymentStatus(ApplicationGroupDto appGrp);
     AppSubmissionDto getAppSubmissionDtoDraft(String draftNo);
     List<HcsaServiceDto> getAllService();
+    List<HcsaServiceDto> getServicesInActive();
 }

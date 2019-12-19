@@ -59,10 +59,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        AppSubmissionDto dto = applicationClient.saveSubmision(appSubmissionDto).getEntity();
+        appSubmissionDto= applicationClient.saveSubmision(appSubmissionDto).getEntity();
         //asynchronous save the other data.
         eventBus(appSubmissionDto, process);
-        return dto;
+        return appSubmissionDto;
     }
 
     @Override

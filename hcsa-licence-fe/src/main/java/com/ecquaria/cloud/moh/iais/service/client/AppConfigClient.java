@@ -48,6 +48,9 @@ public interface AppConfigClient {
     @RequestMapping(path = "/iais-hcsa-service/all-service",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>>  allHcsaService();
 
+    @GetMapping(value = "/iais-hcsa-service/active-service",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceDto>> getActiveServices();
+
     @PostMapping(path = "/iais-hcsa-checklist/config/self-desc-results",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<ChecklistQuestionDto>> listSelfDescConfig(@RequestBody SearchParam searchParam);
 

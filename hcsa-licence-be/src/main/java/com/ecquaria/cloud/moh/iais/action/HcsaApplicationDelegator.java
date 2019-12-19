@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.base.IaisIdGenerator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -37,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,7 +83,8 @@ public class HcsaApplicationDelegator {
     private SystemParamConfig systemParamConfig;
 
     @Autowired
-    private IaisIdGenerator iaisIdGenerator;
+    private SystemAdminClient systemAdminClient;
+
 
     public void routingTask(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
@@ -438,9 +439,8 @@ public class HcsaApplicationDelegator {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST);
             broadcastApplicationDto.setApplicationDto(applicationDto);
             //create the new task and create the history
-            String taskId = iaisIdGenerator.generateId();
-            TaskDto taskDtoNew = TaskUtil.getTaskDto(taskId,taskDto.getTaskKey(),TaskConsts.TASK_TYPE_MAIN_FLOW, applicationDto.getApplicationNo(),null,
-                    null,null,0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW+taskId, IaisEGPHelper.getCurrentAuditTrailDto());
+            TaskDto taskDtoNew = TaskUtil.getTaskDto(taskDto.getTaskKey(),TaskConsts.TASK_TYPE_MAIN_FLOW, applicationDto.getApplicationNo(),null,
+                    null,null,0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastOrganizationDto.setCreateTask(taskDtoNew);
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),
                     taskDto.getTaskKey(), taskDto.getWkGrpId(),null,null);
@@ -596,10 +596,9 @@ public class HcsaApplicationDelegator {
                 log.debug(StringUtil.changeForLog("The appId is-->;"+ applicationDto.getId()));
                 log.debug(StringUtil.changeForLog("The stageId is-->;"+ stageId));
                 if(appPremisesRoutingHistoryDto1 != null){
-                    String taskId = iaisIdGenerator.generateId();
-                    TaskDto newTaskDto = TaskUtil.getTaskDto(taskId,stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
+                    TaskDto newTaskDto = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
                             applicationDto.getApplicationNo(),appPremisesRoutingHistoryDto1.getWrkGrpId(),
-                            appPremisesRoutingHistoryDto1.getActionby(),new Date(),0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW+taskId,
+                            appPremisesRoutingHistoryDto1.getActionby(),new Date(),0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,
                             IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
                     //delete workgroup

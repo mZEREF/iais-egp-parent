@@ -40,4 +40,5 @@ public interface FillupChklistService {
     CheckListDraftDto getDraftByTaskId(String taskId,String svcType);
     List<AdhocDraftDto> getAdhocDraftByAppPremId(String appPremId);
     AdCheckListShowDto getAdhocDraftByappCorrId(String appremCorrId);
+    void routingTask(TaskDto taskDto, String preInspecRemarks);
 }

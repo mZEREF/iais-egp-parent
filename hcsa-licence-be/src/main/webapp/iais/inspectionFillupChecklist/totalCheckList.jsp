@@ -24,10 +24,10 @@
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
+                            <li class="complete" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
+                            <li class="active" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
                                                                         data-toggle="tab">CheckList</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
@@ -41,7 +41,7 @@
                         </div>
 
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabInfo" role="tabpanel">
+                            <div class="tab-pane" id="tabInfo" role="tabpanel">
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
@@ -197,7 +197,7 @@
                                 </div>
 
                             </div>
-                            <div class="tab-pane" id="tabPayment" role="tabpanel">
+                            <div class="tab-pane active" id="tabPayment" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
                                 </strong></div>
                                 <div class="row">
@@ -349,6 +349,7 @@
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
                                                     <h4>TCU Date</h4> &nbsp;<iais:datePicker id = "tuc" name = "tuc" value="${fillCheckListDto.tuc}"></iais:datePicker><br>
+                                                    <span class="error-msg" id="error_tcuDate" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
                                             <div class="input-group">
