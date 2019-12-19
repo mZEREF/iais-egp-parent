@@ -46,7 +46,7 @@
                         <c:if test="${not empty levelOneList.list}">
                           <c:forEach var="levelTwoList" items="${levelOneList.list}" varStatus="levelTwo">
                             <c:set var="checkIndexNo2" value="${appGrpPremisesDto.hciName};${levelTwoList.name};${levelTwoList.code};${levelTwoList.parentId}"/>
-                            <c:set var="reloadIndexNo2" value="${appGrpPremisesDto.hciName}${levelTwoList.id}"/>
+                            <c:set var="reloadIndexNo2" value="${currentServiceId}${appGrpPremisesDto.hciName}${levelTwoList.id}"/>
                             <!--two -->
                             <tr>
                               <td>
@@ -69,7 +69,7 @@
                               <!--three -->
                               <c:forEach var="levelThreeList" items="${levelTwoList.list}" varStatus="levelThree">
                                 <c:set var="checkIndexNo3" value="${appGrpPremisesDto.hciName};${levelThreeList.name};${levelThreeList.code};${levelThreeList.parentId}"/>
-                                <c:set var="reloadIndexNo3" value="${appGrpPremisesDto.hciName}${levelThreeList.id}"/>
+                                <c:set var="reloadIndexNo3" value="${currentServiceId}${appGrpPremisesDto.hciName}${levelThreeList.id}"/>
                                 <tr>
                                   <td>
                                     <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="<c:out value="${appGrpPremisesDto.hciName}${levelThree.index}${levelThreeList.code}"/>" data-child="<c:out value="${appGrpPremisesDto.hciName}${levelTwo.index}${levelTwoList.code}"/>" >
