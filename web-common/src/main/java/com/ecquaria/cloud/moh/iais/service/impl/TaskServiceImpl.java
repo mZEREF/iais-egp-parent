@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.base.IaisIdGenerator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -16,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
@@ -49,7 +49,7 @@ public class TaskServiceImpl implements TaskService {
     private TaskApplicationClient taskApplicationClient;
 
     @Autowired
-    private IaisIdGenerator iaisIdGenerator;
+    private SystemAdminClient systemAdminClient;
 
     @Override
     public List<TaskDto> createTasks(List<TaskDto> taskDtos) {
@@ -95,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
 
             int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                     statgId,applicationDto.getApplicationType());
-            String taskId = iaisIdGenerator.generateId();
+            String taskId = systemAdminClient.getSeqId().getEntity();
             result = TaskUtil.getTaskDto(taskId,statgId,TaskConsts.TASK_TYPE_MAIN_FLOW,
                     applicationDto.getApplicationNo(),workGroupId,
                     taskScoreDto.getUserId(),assignDate,score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW+taskId,
@@ -151,7 +151,7 @@ public class TaskServiceImpl implements TaskService {
                 for(ApplicationDto applicationDto : applicationDtos){
                     int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             stageId,applicationDto.getApplicationType());
-                    String taskId = iaisIdGenerator.generateId();
+                    String taskId = systemAdminClient.getSeqId().getEntity();
                     TaskDto taskDto = TaskUtil.getUserTaskDto(taskId,stageId,
                             applicationDto.getApplicationNo(),workGroupId,
                             taskScoreDto.getUserId(),score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW+taskId,
