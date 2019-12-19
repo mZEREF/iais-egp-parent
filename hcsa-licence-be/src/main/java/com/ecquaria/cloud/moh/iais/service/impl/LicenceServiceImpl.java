@@ -13,7 +13,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceFEEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FEEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +42,7 @@ public class LicenceServiceImpl implements LicenceService {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
-    private LicenceFEEicGatewayClient licenceFEEicGatewayClient;
+    private FEEicGatewayClient feEicGatewayClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -112,6 +112,6 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public List<LicenceGroupDto> createFESuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        return licenceFEEicGatewayClient.createLicence(licenceGroupDtos, signature.date(), signature.authorization()).getEntity();
+        return feEicGatewayClient.createLicence(licenceGroupDtos, signature.date(), signature.authorization()).getEntity();
     }
 }
