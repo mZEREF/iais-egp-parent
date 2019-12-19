@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
@@ -9,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -19,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocSaveAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
@@ -31,7 +35,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
@@ -62,10 +70,17 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
+    @Autowired
+    AppInspectionStatusClient appInspectionStatusClient;
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
+    @Autowired
+    private InspectionAssignTaskService inspectionAssignTaskService;
     @Override
     public ApplicationViewDto getAppViewDto(String taskId){
         TaskDto taskDto = taskService.getTaskById(taskId);
@@ -462,7 +477,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 adhocSaveList.add(saveDto);
             }
         }
-        //fillUpCheckListGetAppClient.saveAdhocDraft(adhocSaveList);
+        fillUpCheckListGetAppClient.saveAdhocDraft(adhocSaveList);
         fillUpCheckListGetAppClient.saveAppInsDraft(insDraftDto);
 
     }
@@ -492,8 +507,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         CheckListDraftDto draft = null;
         if(chklDto!=null){
             AppPremInsDraftDto draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(chklDto.getId()).getEntity();
-            String answerStr = draftDto.getAnswer();
-            draft = JsonUtil.parseToObject(answerStr,CheckListDraftDto.class);
+            if(draftDto!=null){
+                String answerStr = draftDto.getAnswer();
+                draft = JsonUtil.parseToObject(answerStr,CheckListDraftDto.class);
+            }
         }
         return draft;
     }
@@ -551,5 +568,43 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }
         }
         return false;
+    }
+
+
+    @Override
+    public void routingTask(TaskDto taskDto, String preInspecRemarks) {
+        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppNo(taskDto.getRefNo());
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY);
+        //ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
+        //applicationViewDto.setApplicationDto(applicationDto1);
+        //createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null, null);
+        taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        taskService.updateTask(taskDto);
+        updateInspectionStatus(applicationDto);
+    }
+
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                         String stageId, String internalRemarks, String processDec){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto.setProcessDecision(processDec);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto).getEntity();
+        return appPremisesRoutingHistoryDto;
+    }
+
+    private void updateInspectionStatus(ApplicationDto applicationDto) {
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos =  appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
+        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationDtos.get(0).getId()).getEntity();
+        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION);
+        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appInspectionStatusClient.update(appInspectionStatusDto);
     }
 }

@@ -28,7 +28,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(cqDtoList!=null && !cqDtoList.isEmpty()){
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(temp.getSectionName()+temp.getItemId(),"Answer is mandaroty.");
+                    errMap.put(temp.getSectionName()+temp.getItemId(),"UC_INSTA004_ERR001");
                 }
             }
         }else{
@@ -46,7 +46,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(cqDtoList!=null && !cqDtoList.isEmpty()){
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(temp.getSectionName()+temp.getItemId()+"com","Answer is mandaroty.");
+                    errMap.put(temp.getSectionName()+temp.getItemId()+"com","UC_INSTA004_ERR001");
                 }
             }
         }else{
@@ -59,7 +59,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(itemDtoList!=null && !itemDtoList.isEmpty()){
             for(AdhocNcCheckItemDto temp:itemDtoList){
                 if(StringUtil.isEmpty(temp.getAdAnswer())){
-                    errMap.put(temp.getId()+"adhoc","Answer is mandaroty.");
+                    errMap.put(temp.getId()+"adhoc","UC_INSTA004_ERR001");
                 }
             }
         }
@@ -70,12 +70,12 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             if(!StringUtil.isEmpty(dateStr)){
                 Date tcuDate = Formatter.parseDate(dateStr);
                 if(tcuDate.getTime()< System.currentTimeMillis()){
-                    errMap.put("allList","TCU Date should be a future Date.");
+                    errMap.put("tcuDate","UC_INSTA004_ERR002");
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
-            errMap.put("allList","Date Format Error.");
+            errMap.put("allList","UC_INSTA004_ERR003");
         }
     }
 

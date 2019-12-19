@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.task.TaskService;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
@@ -73,6 +74,7 @@ public class FillupChklistDelegator {
         if(StringUtil.isEmpty(taskId)){
             taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
         }
+        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         String serviceType = "Inspection";
         CheckListDraftDto checkListDraftDto = fillupChklistService.getDraftByTaskId(taskId,serviceType);
         InspectionFillCheckListDto cDto = null;
@@ -97,7 +99,7 @@ public class FillupChklistDelegator {
         commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
         AdCheckListShowDto adchklDto = fillupChklistService.getAdhoc(cDto.getCheckList().get(0).getAppPreCorreId());*/
         //test
-
+        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
         ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
         ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
