@@ -567,19 +567,19 @@ var retrieveAddr = function(){
         $.ajax({
             'url':'${pageContext.request.contextPath}/premises-html',
             'data':data,
-            'dataType':'json',
+            'dataType':'text',
             'type':'GET',
             'success':function (data) {
-                // $('div.premContent').(data);
-
-            },
-            'error':function (data) {
-                $('div.premContent:last').after(data.responseText);
+                $('div.premContent:last').after(data);
                 premType();
 
                 premSelect();
 
                 retrieveAddr();
+
+            },
+            'error':function (data) {
+
             }
         });
     });

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="governanceOfficer">
+    <sql key="generateGovernanceOfficerHtml" cached="no" remarks="generate Governance Officer Html">
+        <![CDATA[
+        <hr/>
+        <table class="assignContent control-grid">
+          <tbody>
+          <tr height="1">
+            <td class="first last" style="width: 100%;">
+              <div id="control--runtime--2" class="control control-caption-horizontal">
+                <div class=" form-group form-horizontal formgap">
+                  <div class="col-sm-4 control-label formtext ">
+                    <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Clinical Governance Officer</label>
+                    <span class="upload_controls"></span>
+                  </div>
+                  <div class="col-sm-5">
+                    <div class="">
+                      (1)
+                      <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect1"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="profile-info-gp hidden">
+                <div class="officer-info">
+                  <h3>Linda Tan</h3>
+                  <div class="row profile-line">
+                    <div class="col-xs-6 col-md-3">
+                      <p>Name</p>
+                    </div>
+                    <div class="col-xs-6 col-md-7">
+                      <p>Linda Tan</p>
+                    </div>
+                  </div>
+                  <div class="row profile-line">
+                    <div class="col-xs-6 col-md-3">
+                      <p>ID No.</p>
+                    </div>
+                    <div class="col-xs-6 col-md-7">
+                      <p>XXXX422 (NRIC)</p>
+                    </div>
+                  </div>
+                  <div class="row profile-line">
+                    <div class="col-xs-6 col-md-3">
+                      <p>Mobile No.</p>
+                    </div>
+                    <div class="col-xs-6 col-md-7">
+                      <p>+65 90009098</p>
+                    </div>
+                  </div>
+                  <div class="row profile-line">
+                    <div class="col-xs-6 col-md-3">
+                      <p>Email Address</p>
+                    </div>
+                    <div class="col-xs-6 col-md-7">
+                      <p>lindatan@hotmail.com</p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <p>To edit these details, you will need to <a data-toggle="modal" data-target="#officerAmend">amend</a> it first before proceeding with your application.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="newOfficer" class="new-officer-form hidden">
+                <table class="control-grid">
+                  <tbody>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label class="control-label control-set-font control-font-label">Salutation</label>
+                            <span class="mandatory">*</span>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-xs-5 col-sm-3">
+                            (2)
+                            <span class="error-msg" name="iaisErrorMsg" id="error_salutation1"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label class="control-label control-set-font control-font-label">
+                              Name
+                            </label>
+                            <span class="mandatory">*</span>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-xs-11 col-sm-6">
+                            <div class="">
+                              <input type="text" name="name" value="" maxlength="66" autocomplete="off"><span id="error_name" name="iaisErrorMsg" class="error-msg"></span>
+                              <span class="error-msg" name="iaisErrorMsg" id="error_name1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div id="control--runtime--3" class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label id="control--runtime--3--label" class="control-label control-set-font control-font-label">ID Type</label>
+                            <span class="mandatory">*</span>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-xs-5 col-sm-3">
+                            <div class="">
+                              (3)
+                              <span class="error-msg" name="iaisErrorMsg" id="error_idTyp1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div id="control--runtime--28" class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label id="control--runtime--28--label" class="control-label control-set-font control-font-label">
+                              ID No.
+                            </label>
+                            <span class="mandatory">*</span>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-xs-8 col-sm-4">
+                            <div class="">
+                              <input type="text" name="idNo" value="22" maxlength="9" autocomplete="off"><span id="error_idNo" name="iaisErrorMsg" class="error-msg"></span>
+                              <span class="error-msg" name="iaisErrorMSg" id="error_idNo1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div class="control control-caption-horizontal">
+                        <div class="form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label class="control-label control-set-font control-font-label">Designation</label>
+                            <span class="mandatory">*</span>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-xs-5 col-sm-4">
+                            <div class="">
+                              (4)
+                              <span class="error-msg" name="iaisErrorMsg" id="error_designation1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div class="control control-caption-horizontal">
+                        <div class="form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label class="control-label control-set-font control-font-label">Professional Regn Type</label>
+                            <span class="mandatory">*</span>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-xs-10 col-sm-5">
+                            <div class="professionRegoType">
+                              (5)
+                              <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoType1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div id="control--runtime--31" class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label id="control--runtime--31--label" class="control-label control-set-font control-font-label">
+                              Professional Regn No.
+                            </label>
+                            <span class="mandatory">*</span>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-xs-5 col-sm-3">
+                            <div class="">
+                              <input type="text" name="professionRegoNo" value="" maxlength="20" autocomplete="off"><span id="error_professionRegoNo" name="iaisErrorMsg" class="error-msg"></span>
+                              <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div id="control--runtime--29" class="control control-caption-horizontal">
+                        <div class="form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
+                            <span class="upload_controls">*</span>
+                          </div>
+                          <div class="col-xs-8 col-sm-4">
+                            <div class="specialtyContent">
+                              (6)
+                              <span class="error-msg" name="iaisErrorMsg" id="error_speciality1"></span>
+
+
+
+                                  <input name="specialtyOther" type="text" class="form-control control-input control-set-font control-font-normal hidden" value="" size="30">
+
+
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div id="control--runtime--32" class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label id="control--runtime--32--label" class="control-label control-set-font control-font-label">
+                              Subspeciality or relevant qualification
+                            </label>
+                          </div>
+                          <div class="col-xs-9 col-sm-5">
+                            <div class="">
+                              <input type="text" name="qualification" maxlength="100" autocomplete="off"><span id="error_qualification" name="iaisErrorMsg" class="error-msg"></span>
+                              <span class="error-msg" name="iaisErrorMsg" id="error_qualification1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="width: 100%;">
+                      <div class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label class="control-label control-set-font control-font-label">Mobile No.
+                            </label>                                                                                                                                        <span class="mandatory">*</span>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-xs-9 col-sm-5">
+                            <div class="">
+                              <input type="text" name="mobileNo" value="" maxlength="8" autocomplete="off"><span id="error_mobileNo" name="iaisErrorMsg" class="error-msg"></span>
+                              <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr height="1">
+                    <td class="first last" style="">
+                      <div id="control--runtime--33" class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                          <div class="control-label formtext col-sm-5">
+                            <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email address
+                            </label>                                                                                                                                                        <span class="mandatory">*</span>
+                            <span class="upload_controls"></span>
+                          </div>
+                          <div class="col-sm-4 col-xs-6 col-sm-3">
+                            <div class="">
+                              <input type="text" name="emailAddress" value="" maxlength="66" autocomplete="off"><span id="error_emailAddress" name="iaisErrorMsg" class="error-msg"></span>
+                              <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr1"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+                </table>
+        ]]>
+    </sql>
+</sqls>

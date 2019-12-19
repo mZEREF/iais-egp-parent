@@ -20,17 +20,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HtmlElementHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
-import com.ecquaria.csrfguard.CsrfGuard;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,8 +61,6 @@ import java.util.Set;
 @Delegator("newApplicationDelegator")
 @Slf4j
 public class NewApplicationDelegator {
-    //private static final String APPGRPPREMISESDTO = "appGrpPremisesDto";
-    private static final String APPGRPPRIMARYDOCDTO = "AppGrpPrimaryDocDto";
     private static final String ERRORMAP_PREMISES = "errorMap_premises";
     public static final String CURRENTSERVICEID = "currentServiceId";
     public static final String CURRENTSVCCODE = "currentSvcCode";
@@ -73,11 +68,8 @@ public class NewApplicationDelegator {
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
     public static final String COMMONHCSASVCDOCCONFIGDTO = "commonHcsaSvcDocConfigDto";
     public static final String PREMHCSASVCDOCCONFIGDTO = "premHcsaSvcDocConfigDto";
-    //public static final String APPGRPPREMISESLIST = "appGrpPremisesList";
     public static final String RELOADAPPGRPPRIMARYDOCMAP = "reloadAppGrpPrimaryDocMap";
-    //public static final String APPGRPPRIMARYDOCLIST = "appGrpPrimaryDocList";
     public static final String  APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
-
 
     public static final String FIRESTOPTION = "Select One";
 
@@ -107,7 +99,6 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
-
 
         //request For Information Loading
         requestForInformationLoading(bpc);
@@ -311,6 +302,7 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
 
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
+        List<CommonsMultipartFile> commonsMultipartFiles = new ArrayList<>();
         CommonsMultipartFile file = null;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
@@ -337,8 +329,7 @@ public class NewApplicationDelegator {
                     //if  common ==> set null
                     appGrpPrimaryDocDto.setPremisessName("");
                     appGrpPrimaryDocDto.setPremisessType("");
-                    String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-                    appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
+                    appGrpPrimaryDocDto.setCommonsMultipartFile(file);
                     appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
 
                 }
@@ -370,8 +361,7 @@ public class NewApplicationDelegator {
                         appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
                         appGrpPrimaryDocDto.setPremisessName(appGrpPremisesDto.getHciName());
                         appGrpPrimaryDocDto.setPremisessType(appGrpPremisesDto.getPremisesType());
-                        String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-                        appGrpPrimaryDocDto.setFileRepoId(fileRepoGuid);
+                        appGrpPrimaryDocDto.setCommonsMultipartFile(file);
                         appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
                     }
                 }else if("N".equals(delFlagValue)){
@@ -398,6 +388,17 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
             return;
         }
+
+        for(AppGrpPrimaryDocDto primaryDoc:appGrpPrimaryDocDtoList){
+            CommonsMultipartFile commonsMultipartFile = primaryDoc.getCommonsMultipartFile();
+            if(commonsMultipartFile != null && commonsMultipartFile.getSize() != 0){
+                String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                primaryDoc.setFileRepoId(fileRepoGuid);
+                primaryDoc.setCommonsMultipartFile(null);
+            }
+        }
+
+
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
 
@@ -669,10 +670,6 @@ public class NewApplicationDelegator {
 
         //premiseSelect -- on-site
         List<SelectOption> premisesOnSite= (List) ParamUtil.getSessionAttr(request, "premisesSelect");
-        Map<String,String> premisesOnsiteOpt = new HashMap<>();
-        for(SelectOption sp:premisesOnSite){
-            premisesOnsiteOpt.put(sp.getValue(), sp.getText());
-        }
         Map<String,String> premisesOnSiteAttr = new HashMap<>();
         premisesOnSiteAttr.put("class", "premSelect");
         premisesOnSiteAttr.put("id", "premOnsiteSel");
@@ -682,10 +679,6 @@ public class NewApplicationDelegator {
 
         //premiseSelect -- conveyance
         List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
-        Map<String,String> premisesConvOpt = new HashMap<>();
-        for(SelectOption sp:premisesOnSite){
-            premisesConvOpt.put(sp.getValue(), sp.getText());
-        }
         Map<String,String> premisesConvAttr = new HashMap<>();
         premisesConvAttr.put("class", "premSelect");
         premisesConvAttr.put("id", "premConSel");
@@ -695,30 +688,18 @@ public class NewApplicationDelegator {
 
         //Address Type on-site
         List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
-        Map<String,String> addrTypeOpt = new HashMap<>();
-        addrTypeOpt.put("-1", FIRESTOPTION);
-        for(SelectOption addrType:addrTypes){
-            addrTypeOpt.put(addrType.getValue(), addrType.getText());
-        }
         Map<String,String> addrTypesAttr = new HashMap<>();
         addrTypesAttr.put("id", "siteAddressType");
         addrTypesAttr.put("name", premIndexNo+"addrType");
         addrTypesAttr.put("style", "display: none;");
-        String addrTypeSelect = HtmlElementHelper.generateSelect(addrTypesAttr,addrTypeOpt,null,null,-1,false);
         String addrTypeSelectStr = generateDropDownHtml(addrTypesAttr, addrTypes, FIRESTOPTION);
 
         //Address Type conveyance
         List<SelectOption> conAddrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
-        Map<String,String> conAddrTypeOpt = new HashMap<>();
-        conAddrTypeOpt.put("-1", FIRESTOPTION);
-        for(SelectOption addrType:addrTypes){
-            addrTypeOpt.put(addrType.getValue(), addrType.getText());
-        }
         Map<String,String> conAddrTypesAttr = new HashMap<>();
         conAddrTypesAttr.put("id", "siteAddressType");
         conAddrTypesAttr.put("name", premIndexNo+"conveyanceAddrType");
         conAddrTypesAttr.put("style", "display: none;");
-        String conAddrTypeSelect = HtmlElementHelper.generateSelect(conAddrTypesAttr,conAddrTypeOpt,null,null,-1,false);
         String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
 
         sql = sql.replace("(0)", premIndexNo);
@@ -785,6 +766,7 @@ public class NewApplicationDelegator {
     private void loadingDraft(BaseProcessClass bpc) {
         //todo
         String draftNo = (String) ParamUtil.getSessionAttr(bpc.request, "DraftNumber");
+        //draftNo = "DN191218000050";
         if(!StringUtil.isEmpty(draftNo)){
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -815,8 +797,6 @@ public class NewApplicationDelegator {
                 }
             }
         }else {
-            //serviceConfigIds.add("34F99D15-820B-EA11-BE7D-000C29F371DC");
-            //serviceConfigIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");
             String[] ids = (String[]) ParamUtil.getSessionAttr(bpc.request, "serviceList");
             if(ids != null && ids.length>0){
                 for(String id:ids){
@@ -1109,7 +1089,6 @@ public class NewApplicationDelegator {
             String premisesType = ParamUtil.getString(request, premisesIndexNo+"premType");
             appGrpPremisesDto.setPremisesType(premisesType);
             //wait to do
-            //appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
                 String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premOnSiteSelect");
                 String hciName = ParamUtil.getString(request, premisesIndexNo+"hciName");
@@ -1145,8 +1124,6 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setOffTelNo(offTelNo);
                 appGrpPremisesDto.setScdfRefNo(scdfRefNo);
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
-                //add index for dto refer
-                //appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
 
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
                 String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premConSelect");
@@ -1190,7 +1167,6 @@ public class NewApplicationDelegator {
 
     private void initSession(BaseProcessClass bpc){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-       // Map<String,AppSvcRelatedInfoDto>  svcRelatedMap = new HashMap<>();
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
@@ -1208,23 +1184,20 @@ public class NewApplicationDelegator {
                 appSvcRelatedInfoDto.setServiceType(svc.getSvcType());
                 appSvcRelatedInfoDto.setServiceName(svc.getSvcName());
                 appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
-               // svcRelatedMap.put(svc.getId(), appSvcRelatedInfoDto);
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
-        //ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.APPSVCRELATEDINFOMAP, (Serializable) svcRelatedMap);
 
         //reload
-        ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST, null);
         Map<String,AppGrpPrimaryDocDto> initBeforeReloadDocMap = new HashMap<>();
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) initBeforeReloadDocMap);
 
         //error_msg
         ParamUtil.setSessionAttr(bpc.request, ERRORMAP_PREMISES, null);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, null);
-        ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.ERRORMAP_GOVERNANCEOFFICERS, null);
+
 
     }
 
@@ -1297,7 +1270,7 @@ public class NewApplicationDelegator {
         return sBuffer.toString();
     }
 
-    public String generateDropDownHtml(Map<String,String> premisesOnSiteAttr,List<SelectOption> selectOptionList, String firestOption){
+    public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption){
         StringBuffer sBuffer = new StringBuffer();
         sBuffer.append("<select ");
         for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){

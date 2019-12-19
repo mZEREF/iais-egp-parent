@@ -59,7 +59,7 @@
                                     <c:set value="${premisesIndexNo}${status.index}" var="cgoName"/>
                                     <tr>
                                       <c:if test="${status.first}">
-                                        <td rowspan="4">
+                                        <td rowspan="${premisesAndChkLst.appSvcChckListDtoList.size()}">
                                           <p class="visible-xs visible-sm table-row-title">Premises</p>
                                           <input type="hidden" name="${premisesIndexNo}" value="${premisesIndexNo}" />
                                           <p>${premisesAndChkLst.premiseGetAddress} </p>

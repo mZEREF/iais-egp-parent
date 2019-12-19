@@ -76,17 +76,11 @@
             submitForms('disciplineAllocation',null,null,controlFormLi);
         });
         $('#principalOfficersSaveDraft').click(function(){
-            // submitForms('governanceOfficers','saveDraft',null,'clinical');
+            submitForms('governanceOfficers','saveDraft',null,'clinical');
         });
         $('#principalOfficersNext').click(function(){
-          /*  doValidation();
-            if(getErrorMsg()){
-                dismissWaiting();
-            }else {*/
-                var controlFormLi = $('#controlFormLi').val();
-                submitForms('documents',null,null,controlFormLi);
-        /*    }*/
-
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('documents',null,null,controlFormLi);
         });
 
     });

@@ -1,5 +1,4 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
@@ -71,6 +70,17 @@
         $("[name='crud_action_type_form_page']").val(action);
         $("[name='crud_action_value']").val(value);
         $("[name='crud_action_additional']").val(additional);
+        var mainForm = document.getElementById('mainForm');
+        mainForm.submit();
+    }
+    
+    function backFormsBtn(action,value,additional,tab, bak) {
+        $("[name='crud_action_type']").val('serviceForms');
+        $("[name='crud_action_type_tab']").val(tab);
+        $("[name='crud_action_type_form_page']").val(action);
+        $("[name='crud_action_value']").val(value);
+        $("[name='crud_action_additional']").val(additional);
+        $('[name="crud_action_bak"]').val(bak);
         var mainForm = document.getElementById('mainForm');
         mainForm.submit();
     }

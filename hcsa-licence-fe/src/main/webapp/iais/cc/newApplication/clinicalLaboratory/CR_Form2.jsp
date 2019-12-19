@@ -36,6 +36,10 @@
     width: auto;
     padding-right: 25px;
   }
+  .mandatory{
+    color: rgb(255,0,0);
+  }
+
 </style>
 <%--<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>--%>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
@@ -60,10 +64,11 @@
 
               <span class="upload_controls"></span>
               <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
+
               <c:if test="${CgoMandatoryCount >0}">
               <c:forEach  begin="0" end="${CgoMandatoryCount-1}"  step="1" varStatus="status" >
-                <c:set value="cgo-${status.index}-" var="cgoIndeNo"/>
                 <c:set value="${GovernanceOfficersList}" var="cgoList"/>
+                <c:set value="cgo-${status.index}-" var="cgoIndeNo"/>
                 <c:set value="${cgoList[status.index]}" var="currentCgo"/>
                 <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
                 <table class="assignContent control-grid">
@@ -406,17 +411,18 @@
         reLoadChange();
     });
 
+    var showSpecialty = function () {
+        $('.specialty').change(function () {
+            $specialtyEle = $(this).closest('.specialtyContent');
+            var val = $(this).val();
 
-    $('.specialty').change(function () {
-        $specialtyEle = $(this).closest('.specialtyContent');
-        var val = $(this).val();
-
-        if('other' == val){
-            $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
-        }else{
-            $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
-        }
-    });
+            if('other' == val){
+                $specialtyEle.find('input[name="specialtyOther"]').removeClass('hidden');
+            }else{
+                $specialtyEle.find('input[name="specialtyOther"]').addClass('hidden');
+            }
+        });
+    }
 
     var reLoadChange = function () {
         var i=0;
@@ -435,14 +441,29 @@
         var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
         $('.assignContent:last').after(appendHtml);*/
         $.ajax({
-            'url':'https://egp.sit.inter.iais.com/hcsaapplication/governance-officer-list',
-            'dataType':'json',
+            'url':'${pageContext.request.contextPath}/governance-officer-html',
+            'dataType':'text',
             'type':'GET',
             'success':function (data) {
-                console.log("data:"+data);
+                console.log("suc");
+                $('.assignContent:last').after(data);
+                showSpecialty();
+
+                $('select.assignSel').change(function () {
+                    $parentEle = $(this).closest('td.first');
+                    if ($(this).val() == "newOfficer") {
+                        $parentEle.find('> .new-officer-form').removeClass('hidden');
+                        $parentEle.find('> .profile-info-gp').addClass('hidden');
+                    } else {
+                        $parentEle.find('> .profile-info-gp').removeClass('hidden');
+                        $parentEle.find('> .new-officer-form').addClass('hidden');
+                    }
+                });
+
+
             },
             'error':function (data) {
-                console.log("data:"+data);
+                console.log("err");
             }
         });
     });
