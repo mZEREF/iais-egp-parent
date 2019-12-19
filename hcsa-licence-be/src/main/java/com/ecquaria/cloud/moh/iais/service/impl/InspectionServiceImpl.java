@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -239,14 +240,14 @@ public class InspectionServiceImpl implements InspectionService {
                         inspectionTaskPoolListDto.setTaskDtos(commPools);
                         inspectorCheckList.remove(0);
                         organizationClient.assignSupTasks(inspectionTaskPoolListDto);
-                        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+                        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks, "");
                         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                         applicationViewDto.setApplicationDto(applicationDto1);
-                        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
+                        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null, InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_ASSIGN);
                         appInspectionStatusClient.createAppInspectionStatusByAppDto(applicationDto);
                         if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                             for(int i = 0; i < inspectorCheckList.size(); i++){
-                                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
+                                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null, null);
                             }
                         }
                     } else {
@@ -256,10 +257,10 @@ public class InspectionServiceImpl implements InspectionService {
                         inspectionTaskPoolListDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         inspectionTaskPoolListDto.setTaskDtos(commPools);
                         organizationClient.assignSupTasks(inspectionTaskPoolListDto);
-                        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+                        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks, null);
                         if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                             for(int i = 0; i < inspectorCheckList.size(); i++){
-                                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks);
+                                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks, null);
                             }
                         }
                     }
@@ -288,7 +289,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-                                                                         String stageId, String internalRemarks){
+                                                                         String stageId, String internalRemarks, String processDec){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRoutingHistoryDto.setStageId(stageId);
