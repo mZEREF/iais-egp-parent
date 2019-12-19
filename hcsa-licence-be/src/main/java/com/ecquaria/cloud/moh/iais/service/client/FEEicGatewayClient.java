@@ -22,16 +22,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(value = "eicgate", url="${iais.inter.gateway.url}", configuration = {FeignMultipartConfig.class},
         fallback = FEEicGatewayClientFallback.class)
 public interface FEEicGatewayClient {
-    @RequestMapping(value = "/iais-internet/hcsa-licence-transport-licence/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/hcsa-licence-transport-licence/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceGroupDto>> createLicence(@RequestBody List<LicenceGroupDto> licenceGroupDtoList,
                                                              @RequestHeader("date") String date,
                                                              @RequestHeader("authorization") String authorization);
-    @RequestMapping(value = "/iais-internet/hcsa-application/iais-application",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/hcsa-application/iais-application",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> updateApplication(@RequestBody ApplicationDto applicationDto,
                                                           @RequestHeader("date") String date,
                                                           @RequestHeader("authorization") String authorization);
 
-    @RequestMapping(value = "/iais-internet/inter-inbox/iais-inter-inbox/message",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/inter-inbox/iais-inter-inbox/message",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InterMessageDto> saveInboxMessage(@RequestBody InterMessageDto interInboxDto,
                                                           @RequestHeader("date") String date,
                                                           @RequestHeader("authorization") String authorization);
