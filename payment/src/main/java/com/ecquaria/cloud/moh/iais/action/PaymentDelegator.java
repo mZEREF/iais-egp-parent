@@ -32,9 +32,8 @@ public class PaymentDelegator {
         HttpServletRequest request = bpc.request;
         PaymentDto paymentDto = new PaymentDto();
         String result = (String)ParamUtil.getSessionAttr(bpc.request, "result");
-        String am = (String)ParamUtil.getSessionAttr(bpc.request, "amount");
+        Double amount = (Double)ParamUtil.getSessionAttr(bpc.request, "amount");
         ParamUtil.getSessionAttr(bpc.request, "amount");
-        double amount = Double.parseDouble(am);
         String reqRefNo = (String)ParamUtil.getSessionAttr(bpc.request, "reqRefNo");
         String invoiceNo = (String)ParamUtil.getSessionAttr(bpc.request, "invoiceNo");
         String showUrl = "https://" + request.getServerName();
