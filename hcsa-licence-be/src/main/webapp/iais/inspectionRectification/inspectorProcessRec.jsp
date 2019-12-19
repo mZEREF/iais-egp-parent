@@ -63,14 +63,14 @@
                       </iais:row>
                       <iais:row>
                         <iais:field value="Internal Remarks"/>
-                        <iais:value width="8000">
+                        <iais:value width="4000">
                           <textarea id="internalRemarks" name="internalRemarks" cols="70" rows="7"><c:out value="${inspectionPreTaskDto.internalMarks}"></c:out></textarea>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_internalMarks"></span>
                         </iais:value>
                       </iais:row>
                       <iais:row id="indicateCondRemarks">
                         <iais:field value="Please indicate Licensing Terms and Conditions"/>
-                        <iais:value width="8000">
+                        <iais:value width="4000">
                           <textarea id="condRemarks" name="condRemarks" cols="70" rows="7"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_accCondMarks"></span>
                         </iais:value>
