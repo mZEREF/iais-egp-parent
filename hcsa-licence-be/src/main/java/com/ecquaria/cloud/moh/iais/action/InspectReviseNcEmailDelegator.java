@@ -29,10 +29,10 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.impl.InsepctionNcCheckListImpl;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -72,7 +72,7 @@ public class InspectReviseNcEmailDelegator {
     ApplicationViewService applicationViewService;
 
     @Autowired
-    InsepctionNcCheckListImpl insepctionNcCheckListService;
+    InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
     FillupChklistService fillupChklistService;
     public void start(BaseProcessClass bpc){

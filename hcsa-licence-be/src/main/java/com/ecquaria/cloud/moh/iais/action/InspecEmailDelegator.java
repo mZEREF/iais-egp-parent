@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -54,6 +55,8 @@ public class InspecEmailDelegator {
 
     @Autowired
     InsepctionNcCheckListService insepctionNcCheckListService;
+    @Autowired
+    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -117,6 +120,7 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setMessageContent(mesContext);
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 
+        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,"mesContext", mesContext);
