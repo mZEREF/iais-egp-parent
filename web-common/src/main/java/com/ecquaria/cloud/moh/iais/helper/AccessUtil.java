@@ -15,14 +15,16 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * AccessUtil
@@ -73,8 +75,28 @@ public class AccessUtil {
     * @return: 
     * @author: yichen 
     */
-    public static boolean isIntranet(){
-        return true;
+    public static Boolean isIntranet(AuditTrailDto currentAuditTrail){
+        String userDomain = currentAuditTrail.getUserDomain();
+        if ("Intranet".equals(userDomain)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    /**
+    * @description: use for judeg is internet user
+    * @param:
+    * @return:
+    * @author: yichen
+    */
+    public static Boolean isInternet(AuditTrailDto currentAuditTrail){
+        String userDomain = currentAuditTrail.getUserDomain();
+        if ("Internet".equals(userDomain)){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public static void initLoginUserInfo(HttpServletRequest request) {

@@ -20,7 +20,7 @@ import java.util.List;
 public interface HcsaChklService {
 
     void deleteRecord(String configId);
-    void inActiveItem(String itemId);
+    Boolean inActiveItem(String itemId);
 
     /**
      * list checklist item by SearchParam

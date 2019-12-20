@@ -34,8 +34,8 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
-    public void inActiveItem(String itemId) {
-        chklClient.inActiveItem(itemId);
+    public Boolean inActiveItem(String itemId) {
+        return chklClient.inActiveItem(itemId).getEntity();
     }
 
     @Override

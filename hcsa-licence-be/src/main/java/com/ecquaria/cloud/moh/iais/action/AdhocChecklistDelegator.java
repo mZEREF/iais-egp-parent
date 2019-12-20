@@ -87,7 +87,17 @@ public class AdhocChecklistDelegator {
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction("Pre-Inspection",
                 "Adhoc Checklist");
-        String taskId = ParamUtil.getMaskedString(request, "taskId");
+
+        /*boolean isIntranet = AccessUtil.isIntranet(IaisEGPHelper.getCurrentAuditTrailDto());
+        if (!isIntranet){
+
+            return;
+        }
+
+        String taskId = ParamUtil.getMaskedString(request, "taskId");*/
+
+        String taskId = "4E032AF9-C110-EA11-BE7D-000C29F371DC";
+
         log.info("doInspectorSearchTaskAssign task id ====>>>>> " + taskId);
         if (taskId == null) {
             return;
@@ -95,12 +105,14 @@ public class AdhocChecklistDelegator {
 
         TaskDto task = taskService.getTaskById(taskId);
 
-        String appNo = task.getRefNo();
-        ApplicationDto application = applicationViewService.getApplicaitonByAppNo(appNo);
-        List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(application);
+        if (task != null){
+            String appNo = task.getRefNo();
+            ApplicationDto application = applicationViewService.getApplicaitonByAppNo(appNo);
+            List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(application);
 
-        log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
-        ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
+            log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
+            ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
+        }
     }
 
 
