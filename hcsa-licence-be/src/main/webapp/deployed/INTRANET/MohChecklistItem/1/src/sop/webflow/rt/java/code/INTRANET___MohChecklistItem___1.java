@@ -1,6 +1,7 @@
 package sop.webflow.rt.java.code;
 
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohChecklistItem___1 extends BaseProcessClass {
@@ -19,7 +20,7 @@ public class INTRANET___MohChecklistItem___1 extends BaseProcessClass {
 	}
 
 	public void deleteChecklistItem_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "deleteChecklist", this);
+		EngineHelper.delegate(DELEGATOR, "deleteChecklistItem", this);
 	}
 
 	public void updateChecklistItem_OnStepProcess_0() throws Exception {

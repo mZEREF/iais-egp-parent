@@ -34,6 +34,11 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
+    public void inActiveItem(String itemId) {
+        chklClient.inActiveItem(itemId);
+    }
+
+    @Override
     @SearchTrack(catalog = "hcsaconfig",key = "listChklItem")
     public SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam) {
         return chklClient.listChklItem(searchParam).getEntity();

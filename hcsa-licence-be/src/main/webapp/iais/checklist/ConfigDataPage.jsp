@@ -98,6 +98,8 @@
               <iais:sortableHeader needSort="true"   field="hciCode" value="HCI Code"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="eftStartDate" value="Effective Start Date"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="eftEndDate" value="Effective End Date"></iais:sortableHeader>
+              <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
+
             </tr>
             </thead>
             <tbody>
@@ -117,6 +119,7 @@
               <td>
                 <iais:link icon="form_edit" title="Edit" onclick="javascript:loadEditData('${config.id}');"/>
                 <iais:link icon="form_delete" title="Disable" onclick="javascript:ivActiveRecord('${config.id}');"/>
+                <iais:link icon="form_view" title="View" onclick="javascript:doView('${config.id}');"/>
               </td>
             </tr>
             </c:forEach>
@@ -170,6 +173,10 @@
   function ivActiveRecord(id){
       console.log("=========id==>>>>>>>", id);
     SOP.Crud.cfxSubmit("mainForm", "deleteRecord", id);
+  }
+
+  function doView(id){
+    SOP.Crud.cfxSubmit("mainForm", "doView", id);
   }
 
   function loadEditData(id){

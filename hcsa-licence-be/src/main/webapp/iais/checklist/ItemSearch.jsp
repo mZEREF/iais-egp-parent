@@ -110,14 +110,15 @@
                                                         <td>${item.checklistItem}</td>
                                                         <td>${item.riskLevel}</td>
                                                         <td>${item.status}</td>
-                                                        <td>
-                                                            <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEditItem('${item.itemId}');"/>
-                                                            <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${item.itemId}');"/>
-                                                        </td>
+                                                        <c:if test="${empty sessionScope.currentValidateId}">
+                                                            <td>
+                                                                <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEditItem('${item.itemId}');"/>
+                                                                <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${item.itemId}');"/>
+                                                            </td>
+                                                        </c:if>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
-
 
                                         </c:choose>
                                         </tbody>
@@ -192,23 +193,13 @@
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
     }
 
+    function disable(itemId){
+        SOP.Crud.cfxSubmit("mainForm", "deleteChecklistItem", itemId);
+    }
+
     function configToChecklist(){
         SOP.Crud.cfxSubmit("mainForm", "configToChecklist");
     }
-    /*
-    function addToConfig(id){
-        var form = $('#mainForm');
-        var inputs = $('form').find("input");
-        if(inputs.length != 0){
-            inputs.each(function(index, obj){
-                if('currentValidateId' == obj.name){
-                    obj.value = id;
-                }
-            });
-        }
-
-        SOP.Crud.cfxSubmit("mainForm", "addToConfig");
-    }*/
 
     function prepareAddItem(){
         SOP.Crud.cfxSubmit("mainForm", "prepareAddItem");

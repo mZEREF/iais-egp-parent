@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -95,10 +96,17 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!HcsaChecklistConstants.ACTION_SAVE_ITEM.equals(currentAction)){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
             return;
         }
 
-        doSubmitOrUpdate(request);
+        try {
+            doSubmitOrUpdate(request);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+        }catch (IaisRuntimeException e){
+            throw new IaisRuntimeException(e.getMessage());
+        }
+
     }
 
     /**
@@ -111,8 +119,16 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
 
         List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) request.getSession().getAttribute("cloneItems");
+        if (chklItemDtos == null || chklItemDtos.isEmpty()){
+            Map<String,String> errorMap = new HashMap<>(1);
+            errorMap.put("cloneRecords", "Please add item to be clone.");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+        }else {
+            hcsaChklService.submitCloneItem(chklItemDtos);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+        }
 
-        hcsaChklService.submitCloneItem(chklItemDtos);
     }
 
 
@@ -131,15 +147,12 @@ public class HcsaChklItemDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "save");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
         }else {
-            Map<String,String> successMap = new HashMap<>(16);
-            successMap.put("save item","suceess");
-
             hcsaChklService.saveChklItem(itemDto);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
+
         }
 
     }
@@ -252,7 +265,7 @@ public class HcsaChklItemDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "save");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
         }else {
             Map<String,String> successMap = new HashMap<>(16);
@@ -337,10 +350,10 @@ public class HcsaChklItemDelegator {
                     for (String s : checkBoxItemId){
                         if (chkl.getItemId().equals(s)){
                             Map<String,String> errorMap = new HashMap<>();
-                            errorMap.put("A", "The same section cannot configure the same item");
+                            errorMap.put("configCustomValidation", "CHKL_ERR007");
 
                             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,"N");
-                            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP, errorMap);
+                            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                             return;
                         }
                     }
@@ -415,6 +428,20 @@ public class HcsaChklItemDelegator {
      */
     public void cancelClone(BaseProcessClass bpc){
         // do nothing.
+    }
+
+
+    /**
+     * AutoStep: deleteChecklistItem
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void deleteChecklistItem(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(!StringUtil.isEmpty(itemId)){
+            hcsaChklService.inActiveItem(itemId);
+        }
     }
 
     /**

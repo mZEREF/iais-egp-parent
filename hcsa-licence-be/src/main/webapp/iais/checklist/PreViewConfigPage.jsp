@@ -93,8 +93,17 @@
             <div class="application-tab-footer">
               <td>
                 <div class="text-right text-center-mobile">
-                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: submitConfig();">Submit</a>
-                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doBack();">Back</a>
+                  <c:choose>
+                    <c:when test="${actionBtn eq 'dataView'}">
+                      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doBack();">Back</a>
+                    </c:when>
+                    <c:otherwise>
+                      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: submitConfig();">Submit</a>
+                      <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doBack();">Back</a>
+                    </c:otherwise>
+                    
+                  </c:choose>
+
 
                 </div>
 

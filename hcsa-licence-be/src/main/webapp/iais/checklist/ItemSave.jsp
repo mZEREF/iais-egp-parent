@@ -29,7 +29,7 @@
 
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
@@ -45,6 +45,7 @@
                             <iais:field value="Regulation Clause Number" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
                                 <iais:select name="regulationClauseNo"  options="clauseSelect" firstOption="Select Clause Number"  value="${itemRequestAttr.regulationClauseNo}"></iais:select>
+                                <span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
@@ -54,6 +55,7 @@
                             <iais:field value="Regulation" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
                                 <input type="text" name="regulationClause"  value="${itemRequestAttr.regulationClause}" />
+                                <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
@@ -64,25 +66,30 @@
                             <iais:field value="Checklist Item" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
                                 <input type="text" name="checklistItem" value="${itemRequestAttr.checklistItem}" />
+                                <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
 
-
-                    <div class="form-group">
-                        <div class="col-xs-5 col-md-3">
-                            <iais:field value="Status" required="true"></iais:field>
+                    <%--the updating page no need to change status--%>
+                    <c:if test="${btnTag eq 'SubmitButton'}">
+                        <div class="form-group">
                             <div class="col-xs-5 col-md-3">
-                                <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status" value="${itemRequestAttr.status}"></iais:select>
+                                <iais:field value="Status" required="true"></iais:field>
+                                <div class="col-xs-5 col-md-3">
+                                    <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status" value="${itemRequestAttr.status}"></iais:select>
+                                    <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </c:if>
 
                     <div class="form-group">
                         <div class="col-xs-5 col-md-3">
                             <iais:field value="Risk Level" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
                                 <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Select Risk Level" value="${itemRequestAttr.riskLevel}"></iais:select>
+                                <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
@@ -93,6 +100,7 @@
                             <iais:field value="Answer Type" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
                                 <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Select Answer Type" value="${itemRequestAttr.answerType}"></iais:select>
+                                <span id="error_answerType" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
@@ -107,7 +115,7 @@
                         <a class="btn btn-primary next" onclick="javascript:doSubmit();">Submit</a>
                     </c:when>
                     <c:when test="${btnTag eq 'UpdateButton'}">
-                        <a class="btn btn-primary next" onclick="javascript:doSubmit();">Update</a>
+                        <a class="btn btn-primary next" onclick="javascript:doSubmit('${itemRequestAttr.itemId}');">Update</a>
                     </c:when>
                 </c:choose>
             </div>
@@ -119,10 +127,10 @@
 
 </>
 
-
-<script type="text/javascript">
-    function doSubmit(){
-        SOP.Crud.cfxSubmit("mainForm", "saveChecklistItem");
+<%@include file="/include/validation.jsp"%>
+<script>
+    function doSubmit(itemId){
+        SOP.Crud.cfxSubmit("mainForm", "saveChecklistItem", itemId);
     }
 
     function doCancel(){

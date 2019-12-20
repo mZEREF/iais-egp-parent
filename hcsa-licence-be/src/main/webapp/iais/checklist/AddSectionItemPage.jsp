@@ -16,24 +16,18 @@
 %>
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
 
+  <span id="error_sectionName" name="iaisErrorMsg" class="error-msg"></span>
   <div class="main-content">
     <div class="container">
       <div class="row">
         <div class="col-xs-12">
           <div class="instruction-content center-content">
 
-              <c:if test = "${not empty errorMap}">
-                <div class="error">
-                  <c:forEach items="${errorMap}" var="map">
-                    ${map.key}  ${map.value} <br/>
-                  </c:forEach>
-                </div>
-              </c:if>
             <h2>Add Section Item</h2>
               <div class="gray-content-box">
                 <div class="form-horizontal">
@@ -72,6 +66,7 @@
   </div>
 
 </form>
+<%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function addSectionItem() {
         SOP.Crud.cfxSubmit("mainForm","addSectionItem");

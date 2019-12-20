@@ -25,11 +25,13 @@
 
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
+  <%@ include file="/include/formHidden.jsp" %>
 
+  <br><br>
+  <span id="error_cloneRecords" name="iaisErrorMsg" class="error-msg"></span>
   <div class="main-content">
     <div class="container">
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
@@ -130,8 +132,8 @@
 
 
 </form>
-
-<script type="text/javascript">
+<%@include file="/include/validation.jsp"%>
+<script>
     function prepareCloneItem(itemId){
         SOP.Crud.cfxSubmit("mainForm", "prepareCloneItem", itemId);
     }

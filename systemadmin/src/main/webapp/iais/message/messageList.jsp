@@ -26,14 +26,14 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div id = "msgTypeRow" class="form-group" style="display:none">
                     <label class="col-xs-4 col-md-2 control-label" >Msg Type</label>
                     <div class="col-xs-5 col-md-3">
                         <iais:select name="msgType" options="msgTypeSelect" firstOption="Please select" ></iais:select>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div id = "moduleTypeRow" class="form-group" style="display:none">
                     <label class="col-xs-4 col-md-2 control-label" >Module</label>
                     <div class="col-xs-5 col-md-3">
                         <iais:select name="module"  options="moduleTypeSelect" firstOption="Please select" ></iais:select>

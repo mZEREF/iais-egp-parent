@@ -28,6 +28,13 @@ public class HcsaChklFallback {
         return entity;
     }
 
+    public FeignResponseEntity<Boolean> inActiveItem(String itemId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     public FeignResponseEntity<SearchResult> listChecklistConfig(SearchParam searchParam){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

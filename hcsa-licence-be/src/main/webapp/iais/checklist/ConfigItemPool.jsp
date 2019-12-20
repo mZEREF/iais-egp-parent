@@ -26,12 +26,14 @@
 
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="crud_action_type" value="">
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
   <input type="hidden" name="currentValidateId" value="">
 
+
+  <span id="error_configCustomValidation" name="iaisErrorMsg" class="error-msg"></span>
   <div class="main-content">
     <div class="container">
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
@@ -180,14 +182,13 @@
 
 
 </form>
-
+<%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function doSearch(){
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
     }
 
     function configToChecklist(id){
-        var form = $('#mainForm');
         var inputs = $('form').find("input");
         if(inputs.length != 0){
             inputs.each(function(index, obj){

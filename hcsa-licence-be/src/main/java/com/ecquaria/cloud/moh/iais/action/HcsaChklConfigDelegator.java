@@ -78,6 +78,7 @@ public class HcsaChklConfigDelegator {
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);
         ParamUtil.setSessionAttr(request, "addedItemIdList", null);
+        ParamUtil.setSessionAttr(request, "actionBtn", null);
 
     }
 
@@ -132,13 +133,17 @@ public class HcsaChklConfigDelegator {
         String sectionDesc = ParamUtil.getString(request, "sectionDesc");
 
         if(StringUtils.isEmpty(section) || StringUtils.isEmpty(sectionDesc)){
+            Map<String,String> errorMap = new HashMap<>(1);
+            errorMap.put("sectionName","ERR0009");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
 
         if (curSecName.contains(section)){
             Map<String,String> errorMap = new HashMap<>(1);
-            errorMap.put("sectionName","section name can not same");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+            errorMap.put("sectionName","CHKL_ERR007");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
@@ -341,6 +346,20 @@ public class HcsaChklConfigDelegator {
         }
     }
 
+    /**
+     * AutoStep: doView
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void doView(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String configId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        if(!StringUtil.isEmpty(configId)){
+            ChecklistConfigDto checklistConfigById = hcsaChklService.getChecklistConfigById(configId);
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigById);
+            ParamUtil.setSessionAttr(request, "actionBtn", "dataView");
+        }
+    }
 
     /**
      * @AutoStep: removeSection
@@ -420,7 +439,7 @@ public class HcsaChklConfigDelegator {
         ValidationResult validationResult = WebValidationHelper.validateProperty(configDto, "update");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,errorMap);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else {
             configDto.setType(MasterCodeUtil.getCodeDesc(type));
@@ -565,6 +584,7 @@ public class HcsaChklConfigDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         }else {
+            ParamUtil.setSessionAttr(request, "actionBtn", "submitView");
             generateOrderIndex(request, preViewConfig.getSectionDtos());
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, preViewConfig);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
