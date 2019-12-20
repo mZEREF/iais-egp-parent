@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectC
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -80,7 +81,9 @@ public interface FillUpCheckListGetAppClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AdhocDraftDto>> getAdhocDraftItems(@RequestBody List<String> itemList);
 
-    @GetMapping(path = "/iais-apppreinsncitem-be/allrecItem",produces = { MediaType.APPLICATION_JSON_VALUE },
-            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/iais-apppreinsncitem-be/allrecItem",produces = { MediaType.APPLICATION_JSON_VALUE })
     FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> getALlRecItem();
+
+    @GetMapping(path = "/iais-apppreinsncitem-be/ncitemappdto",produces = { MediaType.APPLICATION_JSON_VALUE })
+    FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByNcItem();
 }

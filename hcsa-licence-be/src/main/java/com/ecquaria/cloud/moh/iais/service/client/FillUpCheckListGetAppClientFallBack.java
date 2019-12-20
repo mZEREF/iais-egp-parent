@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectC
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -131,6 +132,14 @@ public class FillUpCheckListGetAppClientFallBack implements  FillUpCheckListGetA
 
     @Override
     public FeignResponseEntity<List<AdhocDraftDto>> getAdhocDraftItems(List<String> itemList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationDto>> getApplicationDtoByNcItem() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
