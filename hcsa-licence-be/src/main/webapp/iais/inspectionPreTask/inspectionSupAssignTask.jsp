@@ -84,7 +84,7 @@
                       </iais:value>
                     </iais:row>
                     <iais:row>
-                      <iais:field value="Inspector"/>
+                      <iais:field value="Inspector" required="true"/>
                       <iais:value width="10">
                         <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
                           <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
