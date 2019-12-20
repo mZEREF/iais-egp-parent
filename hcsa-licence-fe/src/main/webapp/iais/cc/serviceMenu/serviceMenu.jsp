@@ -22,6 +22,15 @@
                 <div class="col-xs-12 col-md-4">
                 </div>
                 <div class="col-xs-12 col-md-4">
+                    <h3>
+                        Select the service(s) for which you wish to make this licence application
+                    </h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-4">
+                </div>
+                <div class="col-xs-12 col-md-4">
                     <div class="self-assessment-checkbox-gp gradient-light-grey">
                         <p class="assessment-title">Base Services</p>
                         <div class="form-check-gp">
@@ -50,7 +59,7 @@
                 </div>
                 <div class="col-xs-10 col-md-3">
                     <div class="components">
-                        <a class="btn btn-secondary " id="submitService" >Submit</a>
+                        <a class="btn btn-secondary " id="submitService" >Continue</a>
                     </div>
                 </div>
             </div>
