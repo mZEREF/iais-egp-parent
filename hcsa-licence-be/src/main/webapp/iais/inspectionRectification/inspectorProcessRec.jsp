@@ -69,7 +69,7 @@
                         </iais:value>
                       </iais:row>
                       <iais:row id="indicateCondRemarks">
-                        <iais:field value="Please indicate Licensing Terms and Conditions"/>
+                        <iais:field value="Please indicate Licensing Terms and Conditions" required="true"/>
                         <iais:value width="4000">
                           <textarea id="condRemarks" name="condRemarks" cols="70" rows="7"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_accCondMarks"></span>
