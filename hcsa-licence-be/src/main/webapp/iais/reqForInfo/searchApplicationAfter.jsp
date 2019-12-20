@@ -48,7 +48,7 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Licence Period:"/>
+                                            <iais:field value="Application Submitted Date:"/>
                                             <iais:value width="18">
                                                 <iais:datePicker id = "sub_date" name = "sub_date" ></iais:datePicker>
                                             </iais:value>

@@ -493,23 +493,61 @@
                                                         <td class="col-xs-8"><p>${applicationViewDto.currentStatus}</p></td>
                                                     </tr>
                                                     <tr>
-                                                        <td><p>Internal Remarks:</p></td>
+                                                        <td><span>Internal Remarks(</span><span
+                                                                style="color: red">*</span><span>):</span></td>
                                                         <td>
                                                             <div class="input-group">
                                                                 <div class="ax_default text_area">
-                                                                    <textarea name="internalRemarks" cols="70" rows="7"></textarea>
+                                                                    <textarea id="internalRemarksId"
+                                                                              name="internalRemarks" cols="70"
+                                                                              rows="7"></textarea>
                                                                 </div>
                                                             </div>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td>
-                                                            <p>Processing Decision:</p>
+                                                            <span>Processing Decision(</span><span
+                                                                style="color: red">*</span><span>):</span></span>
                                                         </td>
                                                         <td>
-                                                            <select name="nextStage" >
-                                                                <c:forEach items="${applicationViewDto.routingStage}" var="routingStageMap">
-                                                                    <option  value="${routingStageMap.key}">${routingStageMap.value}</option>
+                                                            <select name="nextStage" class="table-select">
+                                                                <option>---select---</option>
+                                                                <option value="VERIFIED">Verified</option>
+                                                                <option value="ROLLBACK">Roll back</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="verifiedDropdown" class="hidden">
+                                                        <td>
+                                                            <span>Verified</span>
+                                                        </td>
+                                                        <td>
+                                                            <select name="verified" class="table-select">
+                                                                <option>---select---</option>
+                                                                <c:forEach items="${applicationViewDto.verified}" var="verified">
+                                                                    <option value="${verified.key}">${verified.value}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="lienceStartDate" class="hidden">
+                                                        <td>
+                                                            <span>Lience Start Date</span>
+                                                        </td>
+                                                        <td>
+                                                            <iais:datePicker id = "lienceStartDate" name = "tuc" value=""></iais:datePicker>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="rollBack" class="hidden">
+                                                        <td>
+                                                            <span>Roll Back:</span>
+                                                        </td>
+                                                        <td>
+                                                            <select name="rollBack" class="table-select">
+                                                                <option>---select---</option>
+                                                                <c:forEach items="${applicationViewDto.rollBack}" var="rollBack">
+                                                                    <option value="${rollBack.value}">${rollBack.key}</option>
                                                                 </c:forEach>
                                                             </select>
                                                         </td>

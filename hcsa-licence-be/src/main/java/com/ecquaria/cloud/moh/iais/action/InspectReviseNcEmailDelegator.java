@@ -81,7 +81,7 @@ public class InspectReviseNcEmailDelegator {
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getString(request,"TaskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
+            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
         }
         String serviceType = "Inspection";
         InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
@@ -236,8 +236,7 @@ public class InspectReviseNcEmailDelegator {
     public void preEmailView(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String taskId="DF1C07EE-191E-EA11-BE7D-000C29F371DC";
-        TaskDto taskDto = taskService.getTaskById(taskId);
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appNo = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
         String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
@@ -323,11 +322,7 @@ public class InspectReviseNcEmailDelegator {
     public @ResponseBody
     String reloadRevEmail(HttpServletRequest request) throws IOException, TemplateException {
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-        String taskId = ParamUtil.getString(request,"TaskId");
-        if(StringUtil.isEmpty(taskId)){
-            taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
-        }
-        TaskDto taskDto = taskService.getTaskById(taskId);
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, "taskDto");
         String appNo = taskDto.getRefNo();
         //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();
         String licenseeName="lichen";

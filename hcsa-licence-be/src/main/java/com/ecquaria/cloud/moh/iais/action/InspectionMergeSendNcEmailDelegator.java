@@ -73,7 +73,7 @@ public class InspectionMergeSendNcEmailDelegator {
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getString(request,"TaskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
+            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appNo = taskDto.getRefNo();
@@ -170,7 +170,12 @@ public class InspectionMergeSendNcEmailDelegator {
             String taskKey = taskDto.getTaskKey();
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status,decision, taskKey);
             completedTask(taskDto);
+
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto.getApplicationDto().getId());
+
+
             List<TaskDto> taskDtos = prepareTaskList(taskDto);
+
             taskService.createTasks(taskDtos);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,decision, taskKey);
 
@@ -183,6 +188,8 @@ public class InspectionMergeSendNcEmailDelegator {
                     status=applicationDtos.get(i).getStatus();
                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status, decision,taskKey);
                     completedTask(taskDto);
+
+                    taskDtos = prepareTaskList(taskDto);
                     taskService.createTasks(taskDtos);
                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,decision, taskKey);
 
@@ -219,6 +226,7 @@ public class InspectionMergeSendNcEmailDelegator {
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
