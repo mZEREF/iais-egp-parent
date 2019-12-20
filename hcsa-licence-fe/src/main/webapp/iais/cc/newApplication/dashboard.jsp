@@ -24,3 +24,10 @@
         </div>
     </div>
 </div>
+
+<style>
+    .mandatory{
+        color: rgb(255,0,0);
+    }
+
+</style>

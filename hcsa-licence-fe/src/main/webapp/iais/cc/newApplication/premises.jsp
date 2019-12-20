@@ -41,7 +41,7 @@
                     <div class="col-xs-12">
                       <div class="form-horizontal">
                         <div class="form-group premisesTypeDiv" id="${premIndexNo}premisesType">
-                          <label class="col-xs-12 col-md-4 control-label error-msg-type" for="${premIndexNo}premisesType">What is your premises type *?</label><br>
+                          <label class="col-xs-12 col-md-4 control-label error-msg-type" for="${premIndexNo}premisesType">What is your premises type ? <span class="mandatory">*</span></label><br>
                           <span class="error-msg"></span>
                           <input class="premTypeValue" type="hidden" name="${premIndexNo}premType" value="${appGrpPremisesDto.premisesType}"/>
                           <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
@@ -76,7 +76,7 @@
                         </div>
                         <iais:row cssClass="premiseOnSiteSelect hidden">
                           <span class="error-msg"></span>
-                          <iais:field value="Add or select a premises from the list *" width="12"/>
+                          <iais:field value="Add or select a premises from the list" width="12" required="true" />
                           <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
                               <c:choose>
                                 <c:when test="${appGrpPremisesDto.premisesType == onSite}">
@@ -411,8 +411,7 @@
                 $premCountEle.find('.premiseConSelect').addClass('hidden');
                 $premCountEle.find('.new-premise-form-conv').addClass('hidden');
                 var premSelValue =  $premCountEle.find('.premiseOnSiteSelect .premSelect').val();
-                //alert("premSelValue:"+premSelValue);
-                if(premSelValue !=null && premSelValue != ""){
+                if(premSelValue == "newPremise"){
                     $premCountEle.find('.new-premise-form-on-site').removeClass('hidden');
                 }
             }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
@@ -420,7 +419,7 @@
                 $premCountEle.find('.premiseOnSiteSelect').addClass('hidden');
                 $premCountEle.find('.new-premise-form-on-site').addClass('hidden');
                 var premSelValue =  $premCountEle.find('.premiseConSelect .premSelect').val();
-                if(premSelValue !=null && premSelValue != ""){
+                if(premSelValue =="newPremise"){
                     $premCountEle.find('.new-premise-form-conv').removeClass('hidden');
                 }
             }
@@ -540,6 +539,14 @@ var retrieveAddr = function(){
                     $premContent.find('.siteBlockNo').val(data.blkHseNo);
                     $premContent.find('.siteStreetName').val(data.streetName);
                     $premContent.find('.siteBuildingName').val(data.buildingName);
+                    if(null == data.addressType || ''== data.addressType){
+
+
+                    }else{
+
+
+                    }
+
                     $premContent.find('.siteBlockNo').prop('readonly',true);
                     $premContent.find('.siteStreetName').prop('readonly',true);
                     $premContent.find('.siteBuildingName').prop('readonly',true);

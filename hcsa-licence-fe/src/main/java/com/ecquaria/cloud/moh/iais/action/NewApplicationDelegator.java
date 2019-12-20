@@ -641,8 +641,9 @@ public class NewApplicationDelegator {
         String currentLength = ParamUtil.getRequestString(request, "currentLength");
         log.debug(StringUtil.changeForLog("currentLength : "+currentLength));
         String premIndexNo = "prem";
+        Integer IndexNoCount = 0 ;
         try {
-            Integer IndexNoCount = Integer.parseInt(currentLength);
+            IndexNoCount = Integer.parseInt(currentLength);
             ParamUtil.setSessionAttr(request, "IndexNoCount", IndexNoCount);
             premIndexNo = premIndexNo+currentLength;
             log.debug(StringUtil.changeForLog("premIndexNo : "+premIndexNo));
@@ -702,6 +703,8 @@ public class NewApplicationDelegator {
         conAddrTypesAttr.put("style", "display: none;");
         String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
 
+        //IndexNoCount
+        sql = sql.replace("(00)", IndexNoCount.toString());
         sql = sql.replace("(0)", premIndexNo);
         sql = sql.replace("(1)", premTypeBuffer.toString());
         sql = sql.replace("(2)", premOnSiteSelectStr);

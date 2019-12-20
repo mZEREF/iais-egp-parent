@@ -36,9 +36,7 @@
     width: auto;
     padding-right: 25px;
   }
-  .mandatory{
-    color: rgb(255,0,0);
-  }
+
 
 </style>
 <%--<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>--%>
@@ -278,7 +276,7 @@
                                 <div class="form-group form-horizontal formgap">
                                   <div class="col-sm-4 control-label formtext">
                                     <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
-                                    <span class="upload_controls">*</span>
+                                    <span class="mandatory">*</span>
                                   </div>
                                   <div class="col-sm-5">
                                     <div class="specialtyContent">
@@ -409,6 +407,8 @@
         });
 
         reLoadChange();
+
+        showSpecialty();
     });
 
     var showSpecialty = function () {

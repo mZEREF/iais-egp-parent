@@ -292,8 +292,22 @@ public class ClinicalLaboratoryDelegator {
      */
     public void preparePrincipalOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers start ...."));
-        /*List poList = appGrpSvcRelatedInfoService.loadPO();
-        ParamUtil.setSessionAttr(bpc.request, "POList", (Serializable) poList);*/
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        String psnType = "PO";
+        //List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, psnType);
+
+
+        List<SelectOption> MedAlertSelectList = new ArrayList<>();
+        SelectOption idType0 = new SelectOption("-1", "Select MedAlert");
+        MedAlertSelectList.add(idType0);
+        SelectOption idType1 = new SelectOption("Email", "Email");
+        MedAlertSelectList.add(idType1);
+        SelectOption idType2 = new SelectOption("SMS", "SMS");
+        MedAlertSelectList.add(idType2);
+        ParamUtil.setSessionAttr(bpc.request, "MedAlertSelect", (Serializable) MedAlertSelectList);
+
+
+
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
     }
 
