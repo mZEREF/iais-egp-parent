@@ -73,11 +73,12 @@
     </sql>
     <sql key="AppGroup"  remarks="query AppGroup items">
         <![CDATA[
-                SELECT DISTINCT T4.ID, T4.GROUP_NO, T1.APP_TYPE, T4.SUBMIT_DT, T4.PMT_STATUS, T1.UPDATED_DT
+                SELECT DISTINCT T4.ID, T4.GROUP_NO, T1.APP_TYPE, T4.SUBMIT_DT, T4.PMT_STATUS, T1.UPDATED_DT, T5.COU
                 FROM APPLICATION T1
                 JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
                 JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
                 JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+                JOIN (SELECT COUNT(ID) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T5 ON t4.ID = T5.app_grp_id
                 WHERE 1 = 1
                 <#if applicationNo_list??> and ${applicationNo_list} </#if>
                 <#if application_no??> and T1.APPLICATION_NO = :application_no</#if>
