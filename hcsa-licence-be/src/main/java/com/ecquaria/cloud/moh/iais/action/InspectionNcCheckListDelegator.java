@@ -71,7 +71,7 @@ public class InspectionNcCheckListDelegator {
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getString(request,"TaskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
+            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
         }
         String serviceType = "Inspection";
         InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);

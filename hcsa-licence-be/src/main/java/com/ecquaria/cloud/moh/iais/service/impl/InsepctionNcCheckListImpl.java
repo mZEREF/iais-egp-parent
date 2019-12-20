@@ -441,13 +441,15 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Override
     public AdCheckListShowDto getAdhocCheckListDto(String appPremCorrId) {
         AdCheckListShowDto adCheckListShowDto = fillupChklistService.getAdhoc(appPremCorrId);
-        List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
-        if(adItemList!=null && !adItemList.isEmpty()){
-            for(AdhocNcCheckItemDto temp:adItemList){
-                String answerStr = temp.getAnswer();
-                AdhocAnswerDto answerDto = JsonUtil.parseToObject(answerStr,AdhocAnswerDto.class);
-                temp.setAdAnswer(answerDto.getAnswer());
-                temp.setRemark(answerDto.getRemark());
+        if(adCheckListShowDto!=null){
+            List<AdhocNcCheckItemDto> adItemList = adCheckListShowDto.getAdItemList();
+            if(adItemList!=null && !adItemList.isEmpty()){
+                for(AdhocNcCheckItemDto temp:adItemList){
+                    String answerStr = temp.getAnswer();
+                    AdhocAnswerDto answerDto = JsonUtil.parseToObject(answerStr,AdhocAnswerDto.class);
+                    temp.setAdAnswer(answerDto.getAnswer());
+                    temp.setRemark(answerDto.getRemark());
+                }
             }
         }
         return adCheckListShowDto;

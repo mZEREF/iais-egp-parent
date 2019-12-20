@@ -70,9 +70,9 @@ public class FillupChklistDelegator {
     public void init(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
-        String taskId = ParamUtil.getString(request,"TaskId");
+        String taskId = ParamUtil.getString(request,"taskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "DF1C07EE-191E-EA11-BE7D-000C29F371DC";
+            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
         }
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         String serviceType = "Inspection";
@@ -85,7 +85,9 @@ public class FillupChklistDelegator {
         }else{
             cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
             ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
-            commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
+            if(commonCheckListDto!=null){
+                commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
+            }
         }
         AdCheckListShowDto adchklDto = null;
         adchklDto = fillupChklistService.getAdhocDraftByappCorrId(cDto.getCheckList().get(0).getAppPreCorreId());

@@ -28,7 +28,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(cqDtoList!=null && !cqDtoList.isEmpty()){
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(temp.getSectionName()+temp.getItemId(),"UC_INSTA004_ERR001");
+                    errMap.put(temp.getSectionName()+temp.getItemId(),"ERR0010");
                 }
             }
         }else{
@@ -46,7 +46,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(cqDtoList!=null && !cqDtoList.isEmpty()){
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(temp.getSectionName()+temp.getItemId()+"com","UC_INSTA004_ERR001");
+                    errMap.put(temp.getSectionName()+temp.getItemId()+"com","ERR0010");
                 }
             }
         }else{
@@ -59,7 +59,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(itemDtoList!=null && !itemDtoList.isEmpty()){
             for(AdhocNcCheckItemDto temp:itemDtoList){
                 if(StringUtil.isEmpty(temp.getAdAnswer())){
-                    errMap.put(temp.getId()+"adhoc","UC_INSTA004_ERR001");
+                    errMap.put(temp.getId()+"adhoc","ERR0010");
                 }
             }
         }

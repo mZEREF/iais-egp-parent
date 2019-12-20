@@ -91,24 +91,18 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public InspectionFillCheckListDto getInspectionFillCheckListDto(String taskId,String svcType) {
-        //List<ChecklistQuestionDto> cDtoList = RestApiUtil.getListByReqParam("hcsa-config:8878/iais-hcsa-checklist/config/results/{svcCode}/{svcType}",paramMap,ChecklistQuestionDto.class);
-        //List<ChecklistQuestionDto> cDtoList = fillUpCheckListCilent.getcheckListQuestionDtoList(svcCode,svcType).getEntity();
-        //TaskDto taskDto = RestApiUtil.getByPathParam("hcsa-config:8879/iais-task/{taskId}",taskId, TaskDto.class);
         TaskDto taskDto = taskService.getTaskById(taskId);
         List<AppPremisesCorrelationDto> appCorrDtolist = null;
         String appPremCorrId = null;
         String serviceCode = null;
         if(taskDto!=null){
             String refNo = taskDto.getRefNo();
-            //ApplicationViewDto appDto = RestApiUtil.getByPathParam("hcsa-config:8883/iais-application/application/{AppNo}",refNo, ApplicationViewDto.class);
             ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
             String serviceId = appDto.getServiceId();
             HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
             serviceCode = svcDto.getSvcCode();
             String appId = appDto.getId();
             appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
-            //appCorrDtolist = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-application/application/correlations/{appid}",appId,AppPremisesCorrelationDto.class);
-
             if(appCorrDtolist!=null && !appCorrDtolist.isEmpty()){
                 appPremCorrId = appCorrDtolist.get(0).getId();
             }
@@ -525,23 +519,24 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public AdCheckListShowDto getAdhocDraftByappCorrId(String appremCorrId) {
         AdCheckListShowDto adShowDto = getAdhoc(appremCorrId);
-        List<AdhocNcCheckItemDto> adhocItemList = adShowDto.getAdItemList();
-        List<String> itemIdList = new ArrayList<>();
-        if(adhocItemList!=null&&!adhocItemList.isEmpty()){
-            for(AdhocNcCheckItemDto temp:adhocItemList){
-                itemIdList.add(temp.getId());
+        if(adShowDto!=null){
+            List<AdhocNcCheckItemDto> adhocItemList = adShowDto.getAdItemList();
+            List<String> itemIdList = new ArrayList<>();
+            if(adhocItemList!=null&&!adhocItemList.isEmpty()){
+                for(AdhocNcCheckItemDto temp:adhocItemList){
+                    itemIdList.add(temp.getId());
+                }
+            }else{
+                return null;
             }
-        }else{
-            return null;
-        }
-
-        List<AdhocDraftDto> adhocDraftDtoList = fillUpCheckListGetAppClient.getAdhocDraftItems(itemIdList).getEntity();
-        if(adhocDraftDtoList!=null && !adhocDraftDtoList.isEmpty()){
-            for(AdhocNcCheckItemDto temp:adhocItemList){
-                if(adhocDraftDtoList!=null&& !adhocDraftDtoList.isEmpty()){
-                    for(AdhocDraftDto draft:adhocDraftDtoList){
-                        if(draft.getAdhocItemId().equals(temp.getId())){
-                            getAdhocDraft(temp,draft);
+            List<AdhocDraftDto> adhocDraftDtoList = fillUpCheckListGetAppClient.getAdhocDraftItems(itemIdList).getEntity();
+            if(adhocDraftDtoList!=null && !adhocDraftDtoList.isEmpty()){
+                for(AdhocNcCheckItemDto temp:adhocItemList){
+                    if(adhocDraftDtoList!=null&& !adhocDraftDtoList.isEmpty()){
+                        for(AdhocDraftDto draft:adhocDraftDtoList){
+                            if(draft.getAdhocItemId().equals(temp.getId())){
+                                getAdhocDraft(temp,draft);
+                            }
                         }
                     }
                 }
