@@ -87,13 +87,13 @@ public class AdhocChecklistDelegator {
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction("Pre-Inspection",
                 "Adhoc Checklist");
-        //String taskId = (String) ParamUtil.getRequestAttr(request, "taskId");
-        String taskId = "7102C311-D10D-EA11-BE7D-000C29F371DC";
-        TaskDto task = taskService.getTaskById(taskId);
-
-        if (task == null) {
+        String taskId = ParamUtil.getMaskedString(request, "taskId");
+        log.info("doInspectorSearchTaskAssign task id ====>>>>> " + taskId);
+        if (taskId == null) {
             return;
         }
+
+        TaskDto task = taskService.getTaskById(taskId);
 
         String appNo = task.getRefNo();
         ApplicationDto application = applicationViewService.getApplicaitonByAppNo(appNo);
