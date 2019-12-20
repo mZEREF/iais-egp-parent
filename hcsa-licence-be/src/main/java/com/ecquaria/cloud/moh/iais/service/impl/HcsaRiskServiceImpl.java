@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
@@ -32,9 +31,6 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
 
     @Override
     public RiskFinancialShowDto getfinancialShowDto(){
-        String url = RestApiUrlConsts.HCSA_CONFIG + RestApiUrlConsts.HCSA_CONFIG_SERVICE+"/all-service";
-        Map<String,Object> map = new HashMap();
-        map.put("test","add");
         //List<HcsaServiceDto> serviceDtoList =  RestApiUtil.getListByReqParam(url,map,HcsaServiceDto.class);
         List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
         Map<String,Object> mapTwo = new HashMap();
@@ -80,13 +76,33 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         //call api to save
         if(saveList!= null && !saveList.isEmpty()){
             //RestApiUtil.postGetObject("hcsa-config:8878/iais-hcsa-risk/FinanceMatrixMemoryStorage",saveList,HcsaRiskFinanceMatrixDto.class);
-
+            doSave(saveList);
         }
         if(updateList!=null&&!updateList.isEmpty()){
             //RestApiUtil.update("hcsa-config:8878/iais-hcsa-risk/FinanceMatrixMemoryUpdating",updateList,HcsaRiskFinanceMatrixDto.class);
+            doUpdate(updateList);
+        }
+    }
+    public void doSave(List<HcsaRiskFinanceMatrixDto> saveList){
+        for(HcsaRiskFinanceMatrixDto temp:saveList){
+            temp.setId(null);
+        }
+
+        //save
+    }
+
+    public void doUpdate(List<HcsaRiskFinanceMatrixDto> updateList){
+        //get last version form db
+        List<HcsaRiskFinanceMatrixDto> lastversionList = new ArrayList<>();
+        for(HcsaRiskFinanceMatrixDto temp:updateList){
 
         }
     }
+    public HcsaRiskFinanceMatrixDto getBaseDtoData(HcsaRiskFinanceMatrixDto dto){
+        HcsaRiskFinanceMatrixDto baseDto = new HcsaRiskFinanceMatrixDto();
+        return null;
+    }
+
     public boolean isNeedUpdatePreviouds(HcsaRiskFinanceMatrixDto dto,boolean isIn){
         try {
             if(isIn){
