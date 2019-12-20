@@ -16,9 +16,7 @@
               <div class="tab-pane active" id="previewTab" role="tabpanel">
                 <div class="preview-gp">
                   <div class="row">
-                    <div class="col-xs-12 col-md-10">
-                      <p>Please note that you will not be able to pay for this application if you have not provided the mandatory information and documents.</p>
-                    </div>
+
                     <div class="col-xs-12 col-md-2 text-right">
                       <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
                     </div>
@@ -33,7 +31,9 @@
                           </div>
                           <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                             <div class="panel-body">
-                              <p class="text-right"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                              <p class="text-right">
+                                <input class="form-check-input" id="premisesCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="premises">
+                              </p>
                               <div class="panel-main-content">
                                 <div class="preview-info">
                                   <p><strong>Premises</strong></p>
@@ -49,7 +49,9 @@
                           </div>
                           <div class="panel-collapse collapse" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                             <div class="panel-body">
-                              <p class="text-right mb-0"><a href="#" id="docEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                              <p class="text-right">
+                                <input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
+                              </p>
                               <div class="elemClass-1561088919456">
                                 <div id="control--runtime--34" class="page section control  container-s-1" style="margin: 10px 0px">
                                   <div class="control-set-font control-font-header section-header">
@@ -82,20 +84,14 @@
                             </div>
                             <div class="panel-collapse collapse in" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">
                               <div class="panel-body">
-                                <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                <p class="text-right">
+                                  <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="service">
+                                </p>
                                 <iframe  class="elemClass-1561088919456" title="" src="${pageContext.request.contextPath}/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form_value=prepareView&svcId=${hcsaServiceDto.id}" id="elemId-${status.index}"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
                               </div>
                             </div>
                           </div>
                         </c:forEach>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" aria-invalid="false">
-                        <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>Herby I certify that the information I provided is all correct and accurate</label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" id="declarationCheckbox" type="checkbox" name="declarationCheckbox" aria-invalid="false">
-                        <label class="form-check-label" for="declarationCheckbox"><span class="check-square"></span>&lt;Sample Declaration&gt;</label>
                       </div>
                     </div>
                   </div>
@@ -103,10 +99,10 @@
                 <div class="application-tab-footer">
                   <div class="row">
                     <div class="col-xs-12 col-sm-6">
-                      <p><a id = "docBack" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
+
                     </div>
                     <div class="col-xs-12 col-sm-6">
-                      <div class="button-group"><a class="btn btn-secondary" id = "previewSaveDraft">Save as Draft</a><a class="next btn btn-primary" id = "previewNext">SUBMIT & PAY </a></div>
+                      <div class="button-group"><a class="next btn btn-primary" id = "previewNext">SUBMIT </a></div>
                     </div>
                   </div>
                 </div>
