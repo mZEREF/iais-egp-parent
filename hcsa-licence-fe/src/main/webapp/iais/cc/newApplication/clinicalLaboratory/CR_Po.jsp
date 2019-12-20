@@ -34,8 +34,8 @@
                       </div>
                       <div class="col-sm-5">
                         <div class="">
-                          <select name="assignSelect"  class="poSelect form-control control-input control-set-font control-font-normal">
-                            <option>Select Personnel</option>
+                          <select name="assignSelect" id="cgoSelect" class="form-control control-input control-set-font control-font-normal">
+                            <option value="">Select Personnel</option>
                             <option  <c:if test="${appSvcPrincipalOfficersDto.assignSelect=='newOfficer'}">selected="selected"</c:if> value="newOfficer">I'd like to add a new personnel</option>
                             <option>Deng Jin, XXX675 (NRIC)</option>
                           </select>
@@ -75,6 +75,7 @@
                       <div class="col-sm-4">
                         <div class="">
                           <iais:select  name="idType" value="${appSvcPrincipalOfficersDto.idType}" options="IdTypeSelect"></iais:select>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_idType"></span>
                         </div>
                       </div>
                       <div class="col-sm-4">
@@ -94,6 +95,7 @@
                       <div class="col-sm-5">
                         <iais:select name="designation" codeCategory="CATE_ID_DESIGNATION" value="${appSvcPrincipalOfficersDto.designation}" firstOption="Select Designation"></iais:select>
                       </div>
+
                     </div>
                   </div>
                 </div>
@@ -134,7 +136,7 @@
                       </div>
                       <div class="col-sm-4">
                         <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.emailAddr}" size="30">
-                        <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr" >${error.emailAddr}</span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr" ></span>
                       </div>
                     </div>
                   </div>
@@ -144,10 +146,10 @@
                     Deputy Principal Officer(Optional):
                   </div>
                   <div class="col-sm-4" >
-                    <select name="deputySelect" class="deputySelect form-control control-input control-set-font control-font-normal">
-                      <option>Please Select</option>
-                      <option value="0">N</option>
-                      <option value="1">Y</option>
+                    <select name="deputyPrincipalOfficer" class="deputySelect form-control control-input control-set-font control-font-normal">
+                      <option value="">Please Select</option>
+                      <option <c:if test="${appSvcPrincipalOfficersDto.deputyPrincipalOfficer==0}">selected="selected"</c:if> value="0">N</option>
+                      <option <c:if test="${appSvcPrincipalOfficersDto.deputyPrincipalOfficer==1}">selected="selected"</c:if> value="1">Y</option>
                     </select>
                     <br/>
                     <br/>
@@ -160,6 +162,7 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -197,6 +200,7 @@
                         <label  class="control-label control-set-font control-font-label">ID No.
                           <span class="mandatory">*</span>
                         </label>
+
                       </div>
                       <div class="col-sm-4">
                         <div class="">
@@ -287,7 +291,7 @@
         $poContentEle.find('div.principalOfficers').removeClass('hidden');
 
     });
-  
+
     $('.deputySelect').change(function () {
         var deputyFlag = $(this).val();
         $poContentEle = $(this).closest('div.panel-group');
