@@ -1,10 +1,11 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * LoginContext
@@ -21,6 +22,8 @@ public class LoginContext implements Serializable {
     @Setter private String userDomain;
     private Set<String> wrkGrpIds;
     private Set<String> roleIds;
+    @Setter private String curRoleId;
+
 
     public LoginContext() {
         wrkGrpIds = new HashSet<>();

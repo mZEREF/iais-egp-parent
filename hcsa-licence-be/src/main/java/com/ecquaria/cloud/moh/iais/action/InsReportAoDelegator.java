@@ -69,7 +69,7 @@ public class InsReportAoDelegator {
         //String appNo = "AN1911136061-01";
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-        InspectionReportDto insRepDto = insRepService.getInsRepDto(appNo,applicationViewDto);
+        InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, "report").getEntity();
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);

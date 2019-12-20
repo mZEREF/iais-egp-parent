@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -41,4 +43,13 @@ public interface InspectionTaskClient {
     @RequestMapping(path = "/iais-inspection/inspection-sub-searchParam",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<InspectionSubPoolQueryDto>> searchInspectionSupPool(SearchParam searchParam);
+
+    @RequestMapping(path = "/iais-inspection/inspection-be-appGroup",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<SearchResult<InspectionAppGroupQueryDto>> searchInspectionBeAppGroup(SearchParam searchParam);
+
+    @RequestMapping(path = "/iais-inspection/inspection-be-appGroup-ajax",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
+        consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<SearchResult<InspectionAppInGroupQueryDto>> searchInspectionBeAppGroupAjax(SearchParam searchParam);
+
 }

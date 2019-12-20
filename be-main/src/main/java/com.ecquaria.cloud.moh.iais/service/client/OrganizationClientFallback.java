@@ -28,6 +28,13 @@ public class OrganizationClientFallback {
         return entity;
     }
 
+    public FeignResponseEntity<List<TaskDto>> getcommPoolByGroupWordId(String workGroupId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     public FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupName(String workGroupId, String status) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

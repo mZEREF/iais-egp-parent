@@ -4,6 +4,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+
+import java.util.List;
 
 /**
  * @author weilu
@@ -11,7 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
  */
 public interface InsRepService {
 
-    InspectionReportDto getInsRepDto (String appNo,ApplicationViewDto applicationViewDto);
+    InspectionReportDto getInsRepDto (TaskDto taskDto, ApplicationViewDto applicationViewDto);
     Boolean saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     ApplicationViewDto getApplicationViewDto (String appNo);
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
