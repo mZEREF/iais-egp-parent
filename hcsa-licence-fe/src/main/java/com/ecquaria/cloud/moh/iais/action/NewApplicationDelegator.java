@@ -302,7 +302,6 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
 
         AppGrpPrimaryDocDto appGrpPrimaryDocDto = null;
-        List<CommonsMultipartFile> commonsMultipartFiles = new ArrayList<>();
         CommonsMultipartFile file = null;
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
@@ -310,8 +309,8 @@ public class NewApplicationDelegator {
         List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
         Map<String,String> errorMap = new HashMap<>();
-        Map<String,AppGrpPrimaryDocDto> reloadDocMap = new HashMap();
         Map<String,AppGrpPrimaryDocDto> beforeReloadDocMap = (Map<String, AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP);
+        Map<String,CommonsMultipartFile> commonsMultipartFileMap = new HashMap<>();
         for(HcsaSvcDocConfigDto comm:commonHcsaSvcDocConfigList){
             String name = "common"+comm.getId();
             file = (CommonsMultipartFile) mulReq.getFile(name);
@@ -329,7 +328,7 @@ public class NewApplicationDelegator {
                     //if  common ==> set null
                     appGrpPrimaryDocDto.setPremisessName("");
                     appGrpPrimaryDocDto.setPremisessType("");
-                    appGrpPrimaryDocDto.setCommonsMultipartFile(file);
+                    commonsMultipartFileMap.put(comm.getId(), file);
                     appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
 
                 }
@@ -361,7 +360,7 @@ public class NewApplicationDelegator {
                         appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
                         appGrpPrimaryDocDto.setPremisessName(appGrpPremisesDto.getHciName());
                         appGrpPrimaryDocDto.setPremisessType(appGrpPremisesDto.getPremisesType());
-                        appGrpPrimaryDocDto.setCommonsMultipartFile(file);
+                        commonsMultipartFileMap.put(appGrpPremisesDto.getHciName()+prem.getId(), file);
                         appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
                     }
                 }else if("N".equals(delFlagValue)){
@@ -389,14 +388,15 @@ public class NewApplicationDelegator {
             return;
         }
 
-        for(AppGrpPrimaryDocDto primaryDoc:appGrpPrimaryDocDtoList){
-            CommonsMultipartFile commonsMultipartFile = primaryDoc.getCommonsMultipartFile();
-            if(commonsMultipartFile != null && commonsMultipartFile.getSize() != 0){
+        if( commonsMultipartFileMap!= null){
+            for(AppGrpPrimaryDocDto primaryDoc:appGrpPrimaryDocDtoList){
+                String key = primaryDoc.getPremisessName()+primaryDoc.getSvcComDocId();
+                CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
                 String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
                 primaryDoc.setFileRepoId(fileRepoGuid);
-                primaryDoc.setCommonsMultipartFile(null);
             }
         }
+
 
 
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
@@ -769,7 +769,12 @@ public class NewApplicationDelegator {
         //draftNo = "DN191218000050";
         if(!StringUtil.isEmpty(draftNo)){
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
+                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            }else{
+                ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+            }
+
         }
     }
 
