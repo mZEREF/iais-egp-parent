@@ -20,5 +20,5 @@ public interface AppSubmissionService {
     public  Double getGroupAmount(AppSubmissionDto appSubmissionDto);
     public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
     public void setRiskToDto(AppSubmissionDto appSubmissionDto);
-    public AppSubmissionDto getAppSubmissionDtoByAppId(String appId);
+    public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
 }

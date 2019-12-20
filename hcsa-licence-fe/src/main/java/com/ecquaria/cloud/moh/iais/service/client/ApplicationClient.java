@@ -72,6 +72,6 @@ public interface ApplicationClient  {
     @GetMapping(value = "/iais-application/application/grp-premises/{appPreId}")
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
 
-    @RequestMapping(path = "/iais-submission/appSubmissionDto/{appId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
-    FeignResponseEntity<AppSubmissionDto>  getAppSubmissionDtoByAppId(@PathVariable("appId") String appId);
+    @RequestMapping(path = "/iais-submission/appSubmissionDto/{appNo}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
+    FeignResponseEntity<AppSubmissionDto>  getAppSubmissionDtoByAppNo(@PathVariable("appNo") String appId);
 }

@@ -152,9 +152,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public AppSubmissionDto getAppSubmissionDtoByAppId(String appId) {
+    public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo) {
 
-        return applicationClient.getAppSubmissionDtoByAppId(appId).getEntity();
+        return applicationClient.getAppSubmissionDtoByAppNo(appNo).getEntity();
     }
 
     private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList,String serviceCode){
