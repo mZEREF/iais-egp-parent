@@ -440,7 +440,12 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(itemId)){
-            hcsaChklService.inActiveItem(itemId);
+            boolean canInactive = hcsaChklService.inActiveItem(itemId);
+            if (!canInactive){
+                Map<String,String> errorMap = new HashMap<>(1);
+                errorMap.put("deleteItemMsg", "Delete Item faild, this item is being used.");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            }
         }
     }
 

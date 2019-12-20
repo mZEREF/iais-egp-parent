@@ -25,18 +25,17 @@
 
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="currentValidateId" value="">
 
-
-
-
+    <br><br>
     <div class="main-content">
         <div class="container">
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
+                <span id="error_deleteItemMsg" name="iaisErrorMsg" class="error-msg"></span>
                 <div class="form-horizontal">
                     <div class="form-group">
                         <label class="col-xs-4 col-md-2 control-label" >Regulation Clause Number</label>
@@ -187,7 +186,7 @@
 
 
 </form>
-
+<%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
     function doSearch(){
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
