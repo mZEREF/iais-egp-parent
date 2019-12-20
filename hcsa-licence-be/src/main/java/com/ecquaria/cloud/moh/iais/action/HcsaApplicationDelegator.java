@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -522,11 +523,11 @@ public class HcsaApplicationDelegator {
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,null);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        //todo:update FE Application Status
-//        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-//        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//        applicationService.updateFEApplicaiton(applicationDto);
-        //todo:send message to FE user.
+        //update FE Application Status
+        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        applicationService.updateFEApplicaiton(applicationDto);
+        //send message to FE user.
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
         interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
@@ -534,7 +535,7 @@ public class HcsaApplicationDelegator {
         String mesNO = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(mesNO);
         interMessageDto.setService_id(applicationDto.getServiceId());
-        String url = systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
+        String url = HmacConstants.HTTPS +systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
         interMessageDto.setProcessUrl(url);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
