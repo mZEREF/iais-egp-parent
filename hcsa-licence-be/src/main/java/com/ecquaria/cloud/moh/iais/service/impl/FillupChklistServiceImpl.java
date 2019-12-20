@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
@@ -578,17 +579,36 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         taskDto.setSlaDateCompleted(new Date());
+        //create
         TaskDto updatedtaskDto = taskService.updateTask(taskDto);
         updatedtaskDto.setId(null);
-        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
+        updatedtaskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
         updatedtaskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         updatedtaskDto.setSlaDateCompleted(null);
+        List<ApplicationDto> applicationDtos = new ArrayList<>();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
+        String workGroupId = null;
+        if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0) {
+            workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
+        }
+        updatedtaskDto.setWkGrpId(workGroupId);
         List<TaskDto> createTaskDtoList = new ArrayList<>();
         createTaskDtoList.add(updatedtaskDto);
         taskService.createTasks(createTaskDtoList);
         updateInspectionStatus(applicationDto);
     }
-
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
+        for(ApplicationDto applicationDto : applicationDtos){
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        return hcsaSvcStageWorkingGroupDtos;
+    }
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
                                                                          String stageId, String internalRemarks, String processDec,String role){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
