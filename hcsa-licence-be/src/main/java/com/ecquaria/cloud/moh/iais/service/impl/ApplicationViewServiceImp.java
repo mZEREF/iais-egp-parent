@@ -62,7 +62,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public OrgUserDto getUserById(String userId) {
-        return organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
+        return organizationClient.retrieveOrgUserAccountById(userId).getEntity();
     }
 
 

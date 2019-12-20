@@ -31,24 +31,13 @@ import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -192,19 +181,20 @@ public class HcsaApplicationDelegator {
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup(applicationViewDto.getApplicationNoOverAll());
         }
 
-
-
-
-        //      rollback
-//        List<String> rollBackStatusList=new ArrayList<>();
-//        Map<String,String> rollBackMap=new HashMap<>();
-//        for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()
-//             ) {
-//            String stageName=MasterCodeUtil.getCodeDesc(e.getAppStatus());
-//            String actionBy=applicationViewService.getUserById(e.getActionby()).getUserName();
-//            rollBackMap.put(actionBy+"("+stageName+")",e.getActionby());
-//        }
-//        applicationViewDto.setRollBack(rollBackMap);
+        //   rollback
+        List<String> rollBackStatusList=new ArrayList<>();
+        Map<String,String> rollBackMap=new HashMap<>();
+        if(applicationViewDto.getRollBackHistroyList()!=null){
+        for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()
+             ) {
+            String stageName=MasterCodeUtil.getCodeDesc(e.getAppStatus());
+            String UserId=e.getActionby();
+            OrgUserDto user=applicationViewService.getUserById(UserId);
+            String actionBy=user.getUserName();
+            rollBackMap.put(actionBy+"("+stageName+")",e.getStageId());
+         }
+        }
+        applicationViewDto.setRollBack(rollBackMap);
 
 
         //add special stages
@@ -369,9 +359,24 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void routeBack(BaseProcessClass bpc) {
+    public void routeBack(BaseProcessClass bpc) throws FeignException{
         log.debug(StringUtil.changeForLog("the do routeBack start ...."));
-
+        String routeBack = ParamUtil.getString(bpc.request,"rollBack");
+        if(HcsaConsts.ROUTING_STAGE_ASO.equals(routeBack)){
+            routingTask(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,RoleConsts.USER_ROLE_ASO);
+        }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(routeBack)){
+            routingTask(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,RoleConsts.USER_ROLE_PSO);
+        }else if(HcsaConsts.ROUTING_STAGE_INS.equals(routeBack)){
+            routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,RoleConsts.USER_ROLE_INSPECTIOR);
+        }else if(HcsaConsts.ROUTING_STAGE_AO1.equals(routeBack)){
+            routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,RoleConsts.USER_ROLE_AO1);
+        }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(routeBack)){
+            routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2);
+        }else if(HcsaConsts.ROUTING_STAGE_AO3.equals(routeBack)){
+            routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3);
+        }else{
+            return;
+        }
         log.debug(StringUtil.changeForLog("the do routeBack end ...."));
     }
 
