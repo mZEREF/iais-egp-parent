@@ -545,7 +545,7 @@
                                                         </td>
                                                         <td>
                                                             <select name="rollBack" class="table-select">
-                                                                <option>---select---</option>
+                                                                <option>Please select</option>
                                                                 <c:forEach items="${applicationViewDto.rollBack}" var="rollBack">
                                                                     <option value="${rollBack.value}">${rollBack.key}</option>
                                                                 </c:forEach>

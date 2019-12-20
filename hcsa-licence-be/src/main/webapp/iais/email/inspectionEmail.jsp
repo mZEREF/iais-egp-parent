@@ -520,7 +520,7 @@
                                                         </td>
                                                         <td>
                                                             <select name="verified" class="table-select">
-                                                                <option>---select---</option>
+                                                                <option>Please select</option>
                                                                 <c:forEach items="${applicationViewDto.verified}" var="verified">
                                                                     <option value="${verified.key}">${verified.value}</option>
                                                                 </c:forEach>

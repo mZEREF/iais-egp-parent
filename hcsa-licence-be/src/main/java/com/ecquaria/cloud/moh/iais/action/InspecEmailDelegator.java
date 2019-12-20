@@ -158,6 +158,7 @@ public class InspecEmailDelegator {
             return;
         }
         String decision=ParamUtil.getString(request,"decision");
+        if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
@@ -189,11 +190,6 @@ public class InspecEmailDelegator {
     public void doRecallEmail(BaseProcessClass bpc) {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
-        applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
-        applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-        String id= (String) ParamUtil.getSessionAttr(request,"templateId");
-        inspEmailService.recallEmailTemplate(id);
     }
 
 

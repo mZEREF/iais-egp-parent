@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="ReqForInfoQuery">
+
+    <sql key = "applicationQuery" remarks = "Query Application Data by condition">
+        <![CDATA[
+            SELECT
+                app.id,
+                app.application_no,
+                app.app_type,
+                app.status,
+                app.service_id,
+                app.created_dt
+            FROM APPLICATION AS app
+            WHERE 1=1
+            <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
+            <#if appType??> AND app.app_type = :appType</#if>
+            <#if appNo??> AND app.application_no = :appNo</#if>
+            <#if appStatus??> AND app.status = :appStatus</#if>
+        ]]>
+    </sql>
+
+
+    <sql key = "licenceQuery" remarks = "Query Licence Data by condition">
+        <![CDATA[
+            SELECT
+                lic.id,
+                lic.licence_no,
+                lic.svc_name,
+                lic.STATUS
+                lic.start_date,
+                lic.expiry_date,
+                licApp.APPLICATION_ID
+            FROM LICENCE AS lic
+            JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
+            WHERE 1=1
+            <#if licence_status??> AND lic.STATUS = :licence_status</#if>
+            <#if sub_date??> AND lic.start_date => :sub_date</#if>
+            <#if to_date??> AND lic.expiry_date =< :to_date</#if>
+            <#if licence_no??> AND lic.licence_no = :licence_no</#if>
+        ]]>
+    </sql>
+
+</sqls>

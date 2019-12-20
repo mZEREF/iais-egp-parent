@@ -1,9 +1,15 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +26,10 @@ import java.util.List;
 public class RequestForInformationServiceImpl implements RequestForInformationService {
     @Autowired
     RequestForInformationClient requestForInformationClient;
+    @Autowired
+    ApplicationClient applicationClient;
+    @Autowired
+    AppPremisesCorrClient appPremisesCorrClient;
 
     private final String[] appType=new String[]{
             ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
@@ -82,6 +92,16 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         return MasterCodeUtil.retrieveOptionsByCodes(licStatus);
     }
 
+    @Override
+    public SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam) {
+        return null;
+    }
+
+    @Override
+    public SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam) {
+
+        return requestForInformationClient.searchRfiLicence(searchParam).getEntity();
+    }
 
 
 }

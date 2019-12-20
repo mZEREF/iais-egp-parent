@@ -142,7 +142,7 @@ public class InspectionMergeSendNcEmailDelegator {
             return;
         }
         String decision=ParamUtil.getString(request,"decision");
-        if(decision.equals("select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
+        if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
         List<String>appIds= (List<String>) ParamUtil.getSessionAttr(request,"appIds");
         for(int i=1;i<=appIds.size();i++){
             String param="revise"+String.valueOf(i);
@@ -257,23 +257,6 @@ public class InspectionMergeSendNcEmailDelegator {
     public void doRecallEmail(BaseProcessClass bpc) {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-
-        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
-        applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
-        applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-
-        String status=applicationViewDto.getApplicationDto().getStatus();
-        String taskKey = taskDto.getTaskKey();
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK, taskKey);
-        completedTask(taskDto);
-        List<TaskDto> taskDtos = prepareTaskList(taskDto);
-        taskService.createTasks(taskDtos);
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.SWITCH_ACTION_BACK, ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,taskKey);
-
-        String id= (String) ParamUtil.getSessionAttr(request,"templateId");
-        if (!StringUtil.isEmpty(id)){
-        inspEmailService.recallEmailTemplate(id);}
     }
 
 }
