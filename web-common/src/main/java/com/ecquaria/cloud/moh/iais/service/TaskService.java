@@ -26,11 +26,11 @@ public interface TaskService {
     List<HcsaSvcStageWorkingGroupDto> getTaskConfig(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos);
     //get Task
     TaskDto getTaskById(String taskId);
-    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId) throws FeignException;
-    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId, AuditTrailDto auditTrailDto) throws FeignException;
+    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId) throws FeignException;
+    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto) throws FeignException;
     //rounting Task
-     void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stage, AuditTrailDto auditTrailDto) throws FeignException;
-     TaskDto routingTask(ApplicationDto applicationDto, String statgId) throws FeignException;
+     void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stage,String roleId, AuditTrailDto auditTrailDto) throws FeignException;
+     TaskDto routingTask(ApplicationDto applicationDto, String statgId,String roleId) throws FeignException;
      //get users
     List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status);
     //get Task Score

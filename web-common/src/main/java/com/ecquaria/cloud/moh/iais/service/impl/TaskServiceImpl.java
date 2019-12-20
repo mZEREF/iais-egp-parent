@@ -70,7 +70,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId) throws FeignException {
+    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         TaskDto result = null;
         if(applicationDto == null  || StringUtil.isEmpty(statgId)){
@@ -95,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
                     statgId,applicationDto.getApplicationType());
             result = TaskUtil.getTaskDto(statgId,TaskConsts.TASK_TYPE_MAIN_FLOW,
                     applicationDto.getApplicationNo(),workGroupId,
-                    taskScoreDto.getUserId(),assignDate,score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,
+                    taskScoreDto.getUserId(),assignDate,score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
                     IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
             log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
@@ -116,7 +116,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto routingTask(ApplicationDto applicationDto, String stageId) throws FeignException {
+    public TaskDto routingTask(ApplicationDto applicationDto, String stageId,String roleId) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         TaskDto result = null;
         if(applicationDto == null  || StringUtil.isEmpty(stageId)){
@@ -124,7 +124,7 @@ public class TaskServiceImpl implements TaskService {
             return result;
         }
         List<TaskDto> taskDtos = new ArrayList<>();
-        result = this.getRoutingTask(applicationDto,stageId);
+        result = this.getRoutingTask(applicationDto,stageId,roleId);
         taskDtos.add(result);
         this.createTasks(taskDtos);
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
@@ -132,7 +132,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId, AuditTrailDto auditTrailDto) throws FeignException {
+    public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison start ...."));
         TaskHistoryDto result = new TaskHistoryDto();
         if(applicationDtos != null && applicationDtos.size() > 0){
@@ -150,7 +150,7 @@ public class TaskServiceImpl implements TaskService {
                             stageId,applicationDto.getApplicationType());
                     TaskDto taskDto = TaskUtil.getUserTaskDto(stageId,
                             applicationDto.getApplicationNo(),workGroupId,
-                            taskScoreDto.getUserId(),score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,
+                            taskScoreDto.getUserId(),score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
                             auditTrailDto);
                     taskDtos.add(taskDto);
                     //create history
@@ -158,7 +158,7 @@ public class TaskServiceImpl implements TaskService {
                     log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationId));
                     AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
                             createAppPremisesRoutingHistory(appPremisesCorrelationId,applicationDto.getStatus(),
-                                    stageId,null,auditTrailDto);
+                                    stageId,null,roleId,auditTrailDto);
                     appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
                 }
                 result.setTaskDtoList(taskDtos);
@@ -175,9 +175,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,AuditTrailDto auditTrailDto) throws FeignException {
+    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,String roleId,AuditTrailDto auditTrailDto) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
-        TaskHistoryDto taskHistoryDto = getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,auditTrailDto);
+        TaskHistoryDto taskHistoryDto = getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,roleId,auditTrailDto);
         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
         if(taskDtos!=null && taskDtos.size() >0 && appPremisesRoutingHistoryDtos !=null && appPremisesRoutingHistoryDtos.size()>0){
@@ -311,13 +311,15 @@ public class TaskServiceImpl implements TaskService {
         return  result;
     }
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-                                                                         String stageId, String internalRemarks,AuditTrailDto auditTrailDto){
+                                                                         String stageId, String internalRemarks,String roleId,
+                                                                         AuditTrailDto auditTrailDto){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(auditTrailDto.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setRoleId(roleId);
         appPremisesRoutingHistoryDto.setAuditTrailDto(auditTrailDto);
         return appPremisesRoutingHistoryDto;
     }

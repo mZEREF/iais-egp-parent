@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -42,7 +43,7 @@ public class LicenceFileDownloadDelegator {
             for(ApplicationDto applicationDto:applicationDtos){
                 applicationDto.setAuditTrailDto(intranet);
             }
-            taskService.routingTaskOneUserForSubmisison(applicationDtos,HcsaConsts.ROUTING_STAGE_ASO,intranet);
+            taskService.routingTaskOneUserForSubmisison(applicationDtos,HcsaConsts.ROUTING_STAGE_ASO,RoleConsts.USER_ROLE_ASO,intranet);
         }
 
     }
