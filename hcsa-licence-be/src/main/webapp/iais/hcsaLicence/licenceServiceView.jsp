@@ -24,7 +24,6 @@
                   <div class="row">
                     <div class="col-xs-12">
                       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <c:set var="appGrpPremisesDto" value="${AppSubmissionDto.appGrpPremisesDto}"></c:set>
                         <div class="panel panel-default">
                           <div class="panel-heading" id="headingPremise" role="tab">
                             <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Premises</a></h4>
@@ -34,12 +33,17 @@
                               <p class="text-right">
                                 <input class="form-check-input" id="premisesCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="premises">
                               </p>
-                              <div class="panel-main-content">
-                                <div class="preview-info">
-                                  <p><strong>Premises</strong></p>
-                                  <p>${appGrpPremisesDto.premisesType}: ${appGrpPremisesDto.address}</p>
+                              <c:forEach var="appGrpPremDto" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
+                                <div class="panel-main-content">
+                                  <div class="preview-info">
+                                    <p><strong>Premises ${status.index+1}</strong></p>
+                                    <p>${appGrpPremDto.premisesType}: ${appGrpPremDto.address}</p>
+                                    <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
+                                      <p>Vehicle No: ${appGrpPremDto.conveyanceVehicleNo}</p>
+                                    </c:if>
+                                  </div>
                                 </div>
-                              </div>
+                              </c:forEach>
                             </div>
                           </div>
                         </div>
