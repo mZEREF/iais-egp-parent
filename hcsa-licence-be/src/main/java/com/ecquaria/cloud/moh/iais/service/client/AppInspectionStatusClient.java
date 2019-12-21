@@ -23,14 +23,14 @@ import java.util.List;
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = AppInspectionStatusClientFallback.class)
 public interface AppInspectionStatusClient {
-    @RequestMapping(path = "/iais-inspecstatus/search-status-swo/{status}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,
+    @RequestMapping(path = "/iais-inspecstatus/status-swo/{status}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspectionStatusByStatus(@PathVariable("status") String status);
 
-    @PostMapping(path = "/iais-inspecstatus/search-status-one/ids", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/iais-inspecstatus/status-one/ids", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspecStatusByIds(@RequestBody String ids);
 
-    @GetMapping(path = "/iais-inspecstatus/search-status-three/{appPremCorreId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-inspecstatus/status-three/{appPremCorreId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInspectionStatusDto> getAppInspectionStatusByPremId(@PathVariable("appPremCorreId") String appPremCorreId);
 
     @PostMapping(path = "/iais-inspecstatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
@@ -39,6 +39,6 @@ public interface AppInspectionStatusClient {
     @PutMapping(path = "/iais-inspecstatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppInspectionStatusDto> update(@RequestBody AppInspectionStatusDto appInspecStatusDto);
 
-    @PostMapping(path = "/iais-inspecstatus/create-status", consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "/iais-inspecstatus/inspectionstatus", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppInspectionStatusDto> createAppInspectionStatusByAppDto(@RequestBody ApplicationDto applicationDto);
 }
