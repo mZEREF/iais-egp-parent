@@ -102,7 +102,7 @@
                                 <p>Reason for Visit:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reasonForVisit}</p>
+<%--                                <p>${insRepDto.reasonForVisit}</p>--%>
                             </td>
                         </tr>
                         <tr>
@@ -110,7 +110,7 @@
                                 <p>Inspected By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.inspectedBy}</p>
+<%--                                <p>${insRepDto.inspectedBy}</p>--%>
                             </td>
                         </tr>
                         <tr>
@@ -118,7 +118,7 @@
                                 <p>Other Inspection Officer:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reportedBy}</p>
+<%--                                <p>${insRepDto.reportedBy}</p>--%>
                             </td>
                         </tr>
                         <tr>
@@ -126,7 +126,7 @@
                                 <p>Reported By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reportedBy}</p>
+<%--                                <p>${insRepDto.reportedBy}</p>--%>
                             </td>
                         </tr>
                         <tr>
@@ -134,7 +134,7 @@
                                 <p>Report Noted By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reportedBy}</p>
+<%--                                <p>${insRepDto.reportedBy}</p>--%>
                             </td>
                         </tr>
                     </table>

@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -107,6 +108,13 @@ public class OrganizationClientFallback {
     }
 
     public FeignResponseEntity<InspectionTaskPoolListDto> filterInspectorOption(InspectionTaskPoolListDto inspectionTaskPoolListDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<String> getInspectionLead(String workGroupId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

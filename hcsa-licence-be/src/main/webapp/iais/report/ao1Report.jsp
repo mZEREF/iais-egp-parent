@@ -9,7 +9,7 @@
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
 <form method="post" id="aomainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="confirmAction" value="">
+    <input type="hidden" name="action_type" value="">
     <div class="tab-pane" id="tabInspection" role="tabpanel">
         <div class="alert alert-info" role="alert">
             <p><span><strong>Section A (HCI Details)</strong></span></p>
@@ -120,7 +120,7 @@
                                 <p>Inspected By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.inspectedBy}</p>
+<%--                                <p>${insRepDto.inspectedBy}</p>--%>
                             </td>
                         </tr>
                         <tr>
@@ -128,7 +128,7 @@
                                 <p>Other Inspection Officer:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reportedBy}</p>
+<%--                                <p>${insRepDto.reportedBy}</p>--%>
                             </td>
                         </tr>
                         <tr>
@@ -136,7 +136,7 @@
                                 <p>Reported By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reportedBy}</p>
+<%--                                <p>${insRepDto.reportedBy}</p>--%>
                             </td>
                         </tr>
                         <tr>
@@ -325,7 +325,7 @@
                             </td>
                             <div>
                                 <td class="col-xs-4">
-                                    <input name="remarks" type="text" value="${appPremisesRecommendationDto.remarks}">
+                                    <p>${appPremisesRecommendationDto.remarks}</p>
                                 </td>
                             </div>
                             <td class="col-xs-4">
@@ -349,18 +349,7 @@
                                 <p>Recommendation:</p>
                             </td>
                             <td class="col-xs-4">
-                                        <span>
-                                               <select id="select" name="recommendation" onchange="x(this)">
-                                                   <option value="">---Please select---</option>
-                                                   <c:forEach items="${insRepDto.riskRecommendations}" var="risk">
-                                                       <option value="${risk}"><c:out value="${risk}"></c:out></option>
-                                                   </c:forEach>
-<%--                                                   <c:if test="${appPremisesRecommendationDto.recomInNumber eq '2'}">selected</c:if>--%>
-                                                   <input type="text" name="otherRecommendation" id="recom" value=""
-                                                          style="display: none"></input>
-                                               </select>
-                                            </p>
-                                        </span>
+                                <p>${option}</p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
