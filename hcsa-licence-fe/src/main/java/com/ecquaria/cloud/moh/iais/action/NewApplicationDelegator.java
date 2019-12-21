@@ -805,12 +805,7 @@ public class NewApplicationDelegator {
                 }
             }
         }else {
-            String[] ids = (String[]) ParamUtil.getSessionAttr(bpc.request, "serviceList");
-            if(ids != null && ids.length>0){
-                for(String id:ids){
-                    serviceConfigIds.add(id);
-                }
-            }
+            serviceConfigIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
 
         }
         log.debug(StringUtil.changeForLog("service size:"+serviceConfigIds.size()));
