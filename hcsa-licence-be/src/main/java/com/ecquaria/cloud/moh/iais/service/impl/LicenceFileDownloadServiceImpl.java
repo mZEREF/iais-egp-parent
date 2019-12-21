@@ -164,6 +164,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(!b.exists()){
             b.mkdirs();
         }
+
         if(!file.mkdirs()){
             file.mkdirs();
         }

@@ -74,7 +74,7 @@
                                         <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
 
                                         <iais:select name="${cgoName}" firstOption="select cgo"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocation${status.index}"></span>
                                       </td>
                                     </tr>
                                   </c:forEach>

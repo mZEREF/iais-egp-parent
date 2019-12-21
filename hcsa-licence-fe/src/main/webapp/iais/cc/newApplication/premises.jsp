@@ -64,18 +64,18 @@
                                     </c:if>
                                   </label>
                                 </div>
-                              <span id="error_premisesType" name="iaisErrorMsg" class="error-msg"></span>
+
                             </div>
                           </c:forEach>
+
                         </div>
                         <div class="row">
                           <div class="col-xs-12 col-md-4"></div>
                           <div class="col-xs-6 col-md-5">
-                            <span class="error-msg"><c:out value="${errorMap_premises.premisesType}"></c:out></span>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}"></span>
                           </div>
                         </div>
                         <iais:row cssClass="premiseOnSiteSelect hidden">
-                          <span class="error-msg"></span>
                           <iais:field value="Add or select a premises from the list" width="12" mandatory="true"/>
                           <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
                               <c:choose>

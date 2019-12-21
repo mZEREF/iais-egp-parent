@@ -63,7 +63,7 @@ public class ClinicalLaboratoryDelegator {
     public static final String  GOVERNANCEOFFICERSDTO = "GovernanceOfficersDto";
     public static final String  GOVERNANCEOFFICERSDTOLIST = "GovernanceOfficersList";
     public static final String  APPSVCRELATEDINFODTO ="AppSvcRelatedInfoDto";
-    //public static final String  APPSVCRELATEDINFOMAP = "AppsvcRelatedInfoMap";
+    public static final String  APPSVCRELATEDINFOMAP = "AppsvcRelatedInfoMap";
     public static final String  ERRORMAP_GOVERNANCEOFFICERS = "errorMap_governanceOfficers";
 
     /**
@@ -157,7 +157,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
-    private void turn(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,Map<String,HcsaSvcSubtypeOrSubsumedDto> allCheckListMap){
+    public static void turn(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,Map<String,HcsaSvcSubtypeOrSubsumedDto> allCheckListMap){
 
         for(HcsaSvcSubtypeOrSubsumedDto dto:hcsaSvcSubtypeOrSubsumedDtos){
             allCheckListMap.put(dto.getId(),dto);
@@ -478,12 +478,12 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
 
-    private Map<String,String> doValidateLaboratory(  List<AppSvcChckListDto>  listDtos,String serviceId  ){
+    public static Map<String,String> doValidateLaboratory(List<AppSvcChckListDto>  listDtos,String serviceId){
         Map<String,String> map=new HashMap<>();
         int count=0;
 
         if(listDtos.isEmpty()){
-
+            map.put("checkError","UC_CHKLMD001_ERR002");
         }else {
             for(int i=0;i<listDtos.size();i++){
                 String parentName = listDtos.get(i).getParentName();
@@ -518,7 +518,7 @@ public class ClinicalLaboratoryDelegator {
 
         }
         if(count!=listDtos.size()){
-            map.put("checkError","Illegal or not empty operation");
+            map.put("checkError","UC_CHKLMD001_ERR002");
         }
 
         return map;
@@ -535,8 +535,8 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
         //do validate
-       Map<String,String> errList = doValidateGovernanceOfficers(bpc.request);
 
+        Map<String,String> errList =doValidateGovernanceOfficers(bpc.request);
             if(!errList.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "governanceOfficers");
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errList));
@@ -602,6 +602,7 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
+        doValidateDisciplineAllocation(errorMap,daList);
         if(!errorMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"disciplineAllocation");
@@ -616,9 +617,11 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private void doValidateDisciplineAllocation(Map<String ,String> map, List<AppSvcDisciplineAllocationDto> daList){
-        for(AppSvcDisciplineAllocationDto every:daList){
-            String idNo = every.getIdNo();
-
+        for(int i=0;i< daList.size();i++){
+            String idNo = daList.get(i).getIdNo();
+            if(StringUtil.isEmpty(idNo)){
+                map.put("disciplineAllocation"+i,"UC_CHKLMD001_ERR002");
+            }
         }
     }
     /**
@@ -633,6 +636,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = new ArrayList<>();
         appSvcPrincipalOfficersDtoList.add(appSvcPrincipalOfficersDto);
         ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
+
         Map<String,String> map = NewApplicationDelegator.doValidatePo(bpc.request);
         if(!map.isEmpty()){
             //ParamUtil.setSessionAttr(bpc.request, "", );
@@ -918,30 +922,40 @@ public class ClinicalLaboratoryDelegator {
 
     private AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(HttpServletRequest request){
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = new ArrayList<>();
+
         AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
         String assignSelect = ParamUtil.getString(request, "assignSelect");
-        String deputySelect = ParamUtil.getString(request, "deputySelect");
+        String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
         String salutation = ParamUtil.getString(request, "salutation");
         String name = ParamUtil.getString(request, "name");
-        String idType = ParamUtil.getString(request, "idType");
+        String idType = ParamUtil.getString(request, "deputyIdType");
         String idNo = ParamUtil.getString(request, "idNo");
         String designation = ParamUtil.getString(request, "designation");
         String mobileNo = ParamUtil.getString(request, "mobileNo");
         String officeTelNo = ParamUtil.getString(request, "officeTelNo");
         String emailAddress = ParamUtil.getString(request, "emailAddress");
         if("1".equals(deputySelect)){
-           /* String salutation = ParamUtil.getString(request, "salutation");
-            String name = ParamUtil.getString(request, "name");
-            String idType = ParamUtil.getString(request, "idType");
-            String idNo = ParamUtil.getString(request, "idNo");
-            String designation = ParamUtil.getString(request, "designation");
-            String mobileNo = ParamUtil.getString(request, "mobileNo");
-            String officeTelNo = ParamUtil.getString(request, "officeTelNo");
-            String emailAddress = ParamUtil.getString(request, "emailAddress");*/
-        }
+            String deputySalutation = ParamUtil.getString(request, "deputySalutation");
+            String deputyIdType = ParamUtil.getString(request, "deputyIdType");
+            String deputyDesignation = ParamUtil.getString(request, "deputyDesignation");
+            String deputyMobileNo = ParamUtil.getString(request, "deputyMobileNo");
+            String deputyEmailAddr = ParamUtil.getString(request, "deputyEmailAddr");
+            String modeOfMedAlert = ParamUtil.getString(request, "modeOfMedAlert");
+            String deputyName = ParamUtil.getString(request, "deputyName");
+            String deputyIdNo = ParamUtil.getString(request, "deputyIdNo");
 
+
+            dto.setDeputyIdNo(deputyIdNo);
+            dto.setDeputyName(deputyName);
+            dto.setDeputySalutation(deputySalutation);
+            dto.setDeputyIdType(deputyIdType);
+            dto.setDeputyDesignation(deputyDesignation);
+            dto.setDeputyMobileNo(deputyMobileNo);
+            dto.setDeputyEmailAddr(deputyEmailAddr);
+            dto.setModeOfMedAlert(modeOfMedAlert);
+        }
         dto.setAssignSelect(assignSelect);
-        //dto.setDeputyPrincipalOfficer(deputySelect);
+        dto.setDeputyPrincipalOfficer(deputySelect);
         dto.setSalutation(salutation);
         dto.setName(name);
         dto.setOfficeTelNo(officeTelNo);
@@ -970,10 +984,10 @@ public class ClinicalLaboratoryDelegator {
         return appSubmissionDto;
     }
 
-    private Map<String,String> doValidateGovernanceOfficers(HttpServletRequest request){
+    public static Map<String,String> doValidateGovernanceOfficers(HttpServletRequest request){
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
-        if(appSvcCgoList == null || appSvcCgoList.isEmpty()){
-            return null;
+        if(appSvcCgoList == null){
+            return new HashMap<>();
         }
 
         Map<String,String> errMap = new HashMap<>();

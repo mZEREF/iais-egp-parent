@@ -34,7 +34,7 @@
                       </div>
                       <div class="col-sm-5">
                         <div class="">
-                          <select name="assignSelect" id="cgoSelect" class="form-control control-input control-set-font control-font-normal">
+                          <select name="assignSelect" id="cgoSelect" class="poSelect form-control control-input control-set-font control-font-normal ">
                             <option value="">Select Personnel</option>
                             <option  <c:if test="${appSvcPrincipalOfficersDto.assignSelect=='newOfficer'}">selected="selected"</c:if> value="newOfficer">I'd like to add a new personnel</option>
                             <option>Deng Jin, XXX675 (NRIC)</option>
@@ -184,11 +184,11 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <iais:select  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="" firstOption="Select Salution"></iais:select>
+                        <iais:select  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${appSvcPrincipalOfficersDto.deputySalutation}" firstOption="Select Salution"></iais:select>
                       </div>
                       <div class="col-sm-4">
-                        <input name="deputyName"  type="text"  class="form-control control-input control-set-font control-font-normal" value=""  size="30">
-                        <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                        <input name="deputyName"  type="text"  class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.deputyName}"  size="30">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_deputyName"></span>
                       </div>
                     </div>
                   </div>
@@ -204,12 +204,13 @@
                       </div>
                       <div class="col-sm-4">
                         <div class="">
-                          <iais:select  name="deputyIdType" value="" options="IdTypeSelect"></iais:select>
+                          <iais:select  name="deputyIdType" value="${appSvcPrincipalOfficersDto.deputyIdType}" options="IdTypeSelect"></iais:select>
+                          <span name="iaisErrorMsg" class="error-msg" id=""></span>
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input  name="deputyIdNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                        <span class="error-msg"  name="iaisErrorMsg"></span>
+                        <input  name="deputyIdNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.deputyIdNo}" size="30">
+                        <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo"></span>
                       </div>
                     </div>
                   </div>
@@ -222,7 +223,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-5">
-                        <iais:select name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="" firstOption="Select Designation"></iais:select>
+                        <iais:select name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${appSvcPrincipalOfficersDto.deputyDesignation}" firstOption="Select Designation"></iais:select>
                       </div>
                     </div>
                   </div>
@@ -235,8 +236,8 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                        <span class="error-msg"  name="iaisErrorMsg" ></span>
+                        <input name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.deputyMobileNo}" size="30">
+                        <span class="error-msg"  name="iaisErrorMsg"  id="error_deputyMobileNo"></span>
                       </div>
                     </div>
                   </div>
@@ -249,8 +250,8 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="emailAddress" type="text" class="form-control control-input control-set-font control-font-normal" value="" size="30">
-                        <span class="error-msg" name="iaisErrorMsg"  ></span>
+                        <input name="deputyEmailAddr" type="text" class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.deputyEmailAddr}" size="30">
+                        <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr" ></span>
                       </div>
                     </div>
                   </div>
@@ -263,8 +264,8 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <iais:select  name="modeOfMedAlert" value="" options="MedAlertSelect"></iais:select>
-                        <span class="error-msg" name="iaisErrorMsg"  ></span>
+                        <iais:select  name="modeOfMedAlert" value="${appSvcPrincipalOfficersDto.modeOfMedAlert}" options="MedAlertSelect"></iais:select>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_modeOfMedAlert" ></span>
                       </div>
                     </div>
                   </div>
