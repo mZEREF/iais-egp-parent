@@ -338,7 +338,7 @@ public class NewApplicationDelegator {
 
                 }
             }else if("N".equals(delFlagValue)){
-                AppGrpPrimaryDocDto beforeDto = (AppGrpPrimaryDocDto) beforeReloadDocMap.get(name);
+                AppGrpPrimaryDocDto beforeDto = beforeReloadDocMap.get(name);
                 if(beforeDto != null){
                     appGrpPrimaryDocDtoList.add(beforeDto);
                 }

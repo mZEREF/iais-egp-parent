@@ -65,7 +65,7 @@ public class ClinicalLaboratoryDelegator {
     public static final String  APPSVCRELATEDINFODTO ="AppSvcRelatedInfoDto";
     //public static final String  APPSVCRELATEDINFOMAP = "AppsvcRelatedInfoMap";
     public static final String  ERRORMAP_GOVERNANCEOFFICERS = "errorMap_governanceOfficers";
-
+    public static final String  RELOADSVCDOC = "ReloadSvcDoc";
     /**
      * StartStep: doStart
      *
@@ -78,6 +78,7 @@ public class ClinicalLaboratoryDelegator {
         //svc
         ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.ERRORMAP_GOVERNANCEOFFICERS, null);
+        ParamUtil.setSessionAttr(bpc.request, RELOADSVCDOC,  null);
 
         log.debug(StringUtil.changeForLog("the do doStart end ...."));
     }
@@ -320,10 +321,22 @@ public class ClinicalLaboratoryDelegator {
     public void prepareDocuments(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareDocuments start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
         if(hcsaSvcDocDtos != null && !hcsaSvcDocDtos.isEmpty()){
             ParamUtil.setSessionAttr(bpc.request, "serviceDocConfigDto", (Serializable) hcsaSvcDocDtos);
         }
+
+        Map<String,AppSvcDocDto> reloadSvcDo = new HashMap<>();
+        if(appSvcRelatedInfoDto != null){
+            List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+            if(appSvcDocDtos != null && !appSvcDocDtos.isEmpty()){
+                for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                    reloadSvcDo.put(appSvcDocDto.getSvcDocId(), appSvcDocDto);
+                }
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request, RELOADSVCDOC, (Serializable) reloadSvcDo);
 
         log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
@@ -629,13 +642,10 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doPrincipalOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers start ...."));
-        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = genAppSvcPrincipalOfficersDto(bpc.request) ;
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = new ArrayList<>();
-        appSvcPrincipalOfficersDtoList.add(appSvcPrincipalOfficersDto);
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request) ;
         ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
         Map<String,String> map = NewApplicationDelegator.doValidatePo(bpc.request);
         if(!map.isEmpty()){
-            //ParamUtil.setSessionAttr(bpc.request, "", );
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "principalOfficers");
             ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(map));
             return;
@@ -645,8 +655,7 @@ public class ClinicalLaboratoryDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
-//        ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFOMAP, (Serializable) appSvcRelatedInfoMap);
-        //ParamUtil.setSessionAttr(bpc.request, APPSVCRELATEDINFODTO, appSvcRelatedInfoDto);
+
 
 
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
@@ -677,14 +686,20 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM,crudActionTypeForm);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE,crudActionTypeFormPage);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,formTab);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "jump");
-
+        if(!StringUtil.isEmpty(crudActionTypeFormPage)){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,crudActionTypeFormPage);
+        }else{
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "jump");
+        }
+        Map<String,AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
         List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, "serviceDocConfigDto");
-
+        Map<String,CommonsMultipartFile> commonsMultipartFileMap = new HashMap<>();
         CommonsMultipartFile file = null;
         if(svcDocConfigDtos != null && !svcDocConfigDtos.isEmpty()){
             for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:svcDocConfigDtos){
                 String docConfigId = hcsaSvcDocConfigDto.getId();
+                String delFlag = docConfigId+"flag";
+                String delFlagValue =  mulReq.getParameter(delFlag);
                 String fileName = docConfigId + "selectedFile";
                 file = (CommonsMultipartFile) mulReq.getFile(fileName);
                 if(file != null && file.getSize() != 0) {
@@ -695,14 +710,36 @@ public class ClinicalLaboratoryDelegator {
                         appSvcDocDto.setDocName(file.getOriginalFilename());
                         long size = file.getSize()/1024;
                         appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
-                        String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-                        appSvcDocDto.setFileRepoId(fileRepoGuid);
+                        commonsMultipartFileMap.put(docConfigId, file);
                         //wait api change to get fileRepoId
                         appSvcDocDtoList.add(appSvcDocDto);
                     }
+                }else if("N".equals(delFlagValue)){
+                    AppSvcDocDto beforeDto =  beforeReloadDocMap.get(docConfigId);
+                    if(beforeDto != null){
+                        appSvcDocDtoList.add(beforeDto);
+                    }
+                }
+
+            }
+        }
+
+
+
+
+        if( commonsMultipartFileMap!= null && commonsMultipartFileMap.size()>0){
+            for(AppSvcDocDto appSvcDocDto1:appSvcDocDtoList){
+                String key = appSvcDocDto1.getSvcDocId();
+                CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
+                if(commonsMultipartFile != null && commonsMultipartFile.getSize() != 0){
+                    String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                    appSvcDocDto1.setFileRepoId(fileRepoGuid);
                 }
             }
         }
+
+
+
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoList);
@@ -916,9 +953,9 @@ public class ClinicalLaboratoryDelegator {
 
 
 
-    private AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(HttpServletRequest request){
+    private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request){
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = new ArrayList<>();
-        AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
+        AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
         String assignSelect = ParamUtil.getString(request, "assignSelect");
         String deputySelect = ParamUtil.getString(request, "deputySelect");
         String salutation = ParamUtil.getString(request, "salutation");
@@ -929,28 +966,39 @@ public class ClinicalLaboratoryDelegator {
         String mobileNo = ParamUtil.getString(request, "mobileNo");
         String officeTelNo = ParamUtil.getString(request, "officeTelNo");
         String emailAddress = ParamUtil.getString(request, "emailAddress");
+        poDto.setAssignSelect(assignSelect);
+        poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+        poDto.setSalutation(salutation);
+        poDto.setName(name);
+        poDto.setIdType(idType);
+        poDto.setIdNo(idNo);
+        poDto.setOfficeTelNo(officeTelNo);
+        poDto.setDesignation(designation);
+        poDto.setMobileNo(mobileNo);
+        poDto.setEmailAddr(emailAddress);
+        appSvcPrincipalOfficersDtos.add(poDto);
         if("1".equals(deputySelect)){
-           /* String salutation = ParamUtil.getString(request, "salutation");
-            String name = ParamUtil.getString(request, "name");
-            String idType = ParamUtil.getString(request, "idType");
-            String idNo = ParamUtil.getString(request, "idNo");
-            String designation = ParamUtil.getString(request, "designation");
-            String mobileNo = ParamUtil.getString(request, "mobileNo");
-            String officeTelNo = ParamUtil.getString(request, "officeTelNo");
-            String emailAddress = ParamUtil.getString(request, "emailAddress");*/
+            String deputySalutation = ParamUtil.getString(request, "deputySalutation");
+            String deputyName = ParamUtil.getString(request, "deputyName");
+            String deputyIdType = ParamUtil.getString(request, "deputyIdType");
+            String deputyIdNo = ParamUtil.getString(request, "deputyIdNo");
+            String deputyMobileNo = ParamUtil.getString(request, "deputyMobileNo");
+            String deputyEmailAddress = ParamUtil.getString(request, "deputyEmailAddress");
+            String modeOfMedAlert = ParamUtil.getString(request, "modeOfMedAlert");
+
+            AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
+            dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+            dpoDto.setSalutation(deputySalutation);
+            dpoDto.setName(deputyName);
+            dpoDto.setIdType(deputyIdType);
+            dpoDto.setIdNo(deputyIdNo);
+            dpoDto.setMobileNo(deputyMobileNo);
+            dpoDto.setEmailAddr(deputyEmailAddress);
+            dpoDto.setModeOfMedAlert(modeOfMedAlert);
+            appSvcPrincipalOfficersDtos.add(dpoDto);
         }
 
-        dto.setAssignSelect(assignSelect);
-        //dto.setDeputyPrincipalOfficer(deputySelect);
-        dto.setSalutation(salutation);
-        dto.setName(name);
-        dto.setOfficeTelNo(officeTelNo);
-        dto.setDesignation(designation);
-        dto.setMobileNo(mobileNo);
-        dto.setEmailAddr(emailAddress);
-        dto.setIdType(idType);
-        dto.setIdNo(idNo);
-        return  dto;
+        return  appSvcPrincipalOfficersDtos;
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(HttpServletRequest request){
