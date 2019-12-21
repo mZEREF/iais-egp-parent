@@ -15,6 +15,7 @@
             FROM INBOX_MSG AS inbox
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, inbox.id) >0</#if>
+            <#if msgSubject??> AND inbox.subject = :msgSubject</#if>
             <#if messageType??> AND inbox.message_type = :messageType</#if>
             <#if interService??> AND inbox.service_id = :interService</#if>
         ]]>
@@ -22,7 +23,7 @@
 
     <sql key = "applicationQuery" remarks = "Query Inter-Application Data by condition">
         <![CDATA[
-            SELECT
+             SELECT
                 app.id,
                 app.application_no,
                 app.app_type,
@@ -30,14 +31,18 @@
                 app.service_id,
                 app.created_dt
             FROM APPLICATION AS app
-            WHERE 1=1
+             union
+            select
+                A.ID,A.DRAFT_NO AS application_no,A.APP_TYPE,'APST008' as status,NULL as service_id, A.CREATED_DT
+            from
+                app_grp_submission_draft AS A
+            where  A.status = 'CMSTAT001'
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND app.app_type = :appType</#if>
             <#if appNo??> AND app.application_no = :appNo</#if>
             <#if appStatus??> AND app.status = :appStatus</#if>
         ]]>
     </sql>
-
 
     <sql key = "licenceQuery" remarks = "Query Inter-Licence Data by condition">
         <![CDATA[
@@ -53,5 +58,6 @@
             <#if licenseAdvancedSearch??> AND lic.licence_no = :licenseAdvancedSearch</#if>
         ]]>
     </sql>
+
 
 </sqls>

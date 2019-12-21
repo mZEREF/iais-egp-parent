@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +34,8 @@ import java.util.Map;
  * @Create: 2019-11-06 09:46
  **/
 
-@Delegator("inboxDelegator")
 @Slf4j
+@Delegator("inboxDelegator")
 public class InboxDelegator {
 
 
@@ -74,9 +77,17 @@ public class InboxDelegator {
         inboxParameter.setResultAttr(InboxConst.INBOX_RESULT);
         inboxParameter.setSortField("id");
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request, true,inboxParameter);
-        QueryHelp.setMainSql("interInboxQuery","inboxQuery",inboxParam);
+        QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
-
+        List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
+        for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
+             ) {
+//            String msgType = MasterCodeUtil.getCodeDesc(inboxQueryDto.getMessageType());
+            String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
+            inboxQueryDto.setProcessUrl(RedirectUtil.changeUrlToCsrfGuardUrlUrl(inboxQueryDto.getProcessUrl(), request));
+//            inboxQueryDto.setMessageType(msgType);
+            inboxQueryDto.setServiceId(serviceName);
+        }
         if(!StringUtil.isEmpty(inboxResult)){
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
@@ -88,10 +99,23 @@ public class InboxDelegator {
         appParameter.setClz(InboxAppQueryDto.class);
         appParameter.setSearchAttr(InboxConst.APP_PARAM);
         appParameter.setResultAttr(InboxConst.APP_RESULT);
-        appParameter.setSortField("id");
+        appParameter.setSortField("CREATED_DT");
         SearchParam appParam = SearchResultHelper.getSearchParam(request, true,appParameter);
-        QueryHelp.setMainSql("interInboxQuery","applicationQuery",appParam);
+        QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         SearchResult appResult = inboxService.appDoQuery(appParam);
+        List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
+        for (InboxAppQueryDto appDto:inboxAppQueryDtoList
+             ) {
+            String appType = MasterCodeUtil.getCodeDesc(appDto.getApplicationType());
+            String appStatus = MasterCodeUtil.getCodeDesc(appDto.getStatus());
+            String serviceName = "N.A.";
+            if (appDto.getServiceId() != null){
+                serviceName = inboxService.getServiceNameById(appDto.getServiceId());
+            }
+            appDto.setApplicationType(appType);
+            appDto.setServiceId(serviceName);
+            appDto.setStatus(appStatus);
+        }
 
         if(!StringUtil.isEmpty(appResult)){
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
@@ -107,7 +131,7 @@ public class InboxDelegator {
         licenceParameter.setSortField("licence_no");
         licenceParameter.setSortType(InboxConst.DESCENDING);
         SearchParam licParam = SearchResultHelper.getSearchParam(request, true,licenceParameter);
-        QueryHelp.setMainSql("interInboxQuery","licenceQuery",licParam);
+        QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         if (licParam != null) {
             SearchResult licResult = inboxService.licenceDoQuery(licParam);
             if(!StringUtil.isEmpty(licResult)){
@@ -127,37 +151,59 @@ public class InboxDelegator {
         HttpServletRequest request = bpc.request;
         String switchAction = ParamUtil.getString(request, InboxConst.SWITCH_ACTION);
         if(switchAction.equals(InboxConst.SEARCH_INBOX)){
-            String inboxType = ParamUtil.getString(request,"inboxType");
-            String inboxService = ParamUtil.getString(request,"inboxService");
-            String licenceNo = ParamUtil.getString(request,"inboxAdvancedSearch");
+
+            /**
+             * MESSAGE
+             */
+            String inboxType = ParamUtil.getString(request,InboxConst.MESSAGE_TYPE);
+            String inboxService = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
+            String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
             Map<String,Object> inboxSearchMap = new HashMap<>();
-            if (inboxType != null || inboxService != null){
+
+            if (inboxType != null || inboxService != null || msgSubject != null){
                 ParamUtil.setRequestAttr(request,"TAB_NO", "inboxTab");
             }
-            if(inboxType != null && !inboxType.equals("All")){
+            if(inboxType != null && !inboxType.equals(InboxConst.SEARCH_ALL)){
                 inboxSearchMap.put("messageType",inboxType);
             }
-            if(inboxService != null && !inboxService.equals("All")){
+            if(inboxService != null && !inboxService.equals(InboxConst.SEARCH_ALL)){
                 inboxSearchMap.put("interService",inboxService);
+            }
+            if(msgSubject != null){
+                inboxSearchMap.put("msgSubject",msgSubject);
             }
             inboxParameter.setFilters(inboxSearchMap);
             inboxParameter.setPageNo(1);
 
+            /**
+             * APPLICATION
+             */
             String applicationType = ParamUtil.getString(request,"appType");
             String applicationStatus = ParamUtil.getString(request,"appStatus");
+            String applicationNo = ParamUtil.getString(request,"applicationAdvancedSearch");
+            log.debug(StringUtil.changeForLog("Step ---> applicationNo" + applicationNo));
             log.debug(StringUtil.changeForLog("Step ---> applicationType") + applicationType);
             Map<String,Object> appSearchMap = new HashMap<>();
-            if (applicationType != null || applicationStatus != null){
+            if (applicationType != null || applicationStatus != null || applicationNo != null){
                 ParamUtil.setRequestAttr(request,"TAB_NO", "appTab");
             }
-            if(applicationType != null && !applicationType.equals("All")){
+            if(applicationType != null && !applicationType.equals(InboxConst.SEARCH_ALL)){
                 appSearchMap.put("appType",applicationType);
             }
-            if(applicationStatus != null && !applicationStatus.equals("All")){
+            if(applicationStatus != null && !applicationStatus.equals(InboxConst.SEARCH_ALL)){
+
                 appSearchMap.put("appStatus",applicationStatus);
+            }
+            if(applicationNo != null){
+                appSearchMap.put("appNo",applicationNo);
             }
             appParameter.setFilters(appSearchMap);
             appParameter.setPageNo(1);
+
+            /**
+             * LICENCE
+             */
+            String licenceNo = ParamUtil.getString(request,"licenseAdvancedSearch");
         }
     }
 
@@ -186,8 +232,28 @@ public class InboxDelegator {
     public void prepareSwitchStep(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
         String switchAction = ParamUtil.getString(bpc.request, InboxConst.SWITCH_ACTION);
-        log.debug("*******************crudAction-->:" + switchAction);
+        log.debug("***crudAction***:" + switchAction);
         log.debug("The prepareSwitch end ...");
+    }
+
+    /**
+     * @param bpc
+     * @Description Step ---> DoSort
+     */
+    public void doDraft(BaseProcessClass bpc) throws IOException {
+        log.debug("The prepareEdit start ...");
+        HttpServletRequest request = bpc.request;
+        String appNo = ParamUtil.getString(request, "app_action_type");
+        String action = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
+        log.debug("The prepareEdit start---"+action+"--"+appNo);
+//        String draftNo = inboxService.getDraftNumber(appNo);
+        StringBuffer url = new StringBuffer();
+        url.append("https://").append("192.168.6.113")
+                .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
+                .append("?DraftNumber=")
+                .append(appNo);
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
     }
 
     /**
@@ -199,7 +265,9 @@ public class InboxDelegator {
         List<SelectOption> inboxServiceSelectList = new ArrayList<>();
         inboxServiceSelectList.add(new SelectOption("All", "All"));
         inboxServiceSelectList.add(new SelectOption("Blood Banking", "Blood Banking"));
-        inboxServiceSelectList.add(new SelectOption("3", "Second"));
+        inboxServiceSelectList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
+        inboxServiceSelectList.add(new SelectOption("Radiological Service", "Radiological Service"));
+        inboxServiceSelectList.add(new SelectOption("Nuclear Medicine (Assay)", "Nuclear Medicine (Assay)"));
         ParamUtil.setRequestAttr(bpc.request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = new ArrayList<>();
@@ -211,17 +279,19 @@ public class InboxDelegator {
 
         List<SelectOption> applicationTypeSelectList = new ArrayList<>();
         applicationTypeSelectList.add(new SelectOption("All", "All"));
-        applicationTypeSelectList.add(new SelectOption("APTY002", "APTY002"));
-        applicationTypeSelectList.add(new SelectOption("New Licence", "New Licence"));
-        applicationTypeSelectList.add(new SelectOption("Group", "Group"));
+        applicationTypeSelectList.add(new SelectOption("APTY001", "Appeal "));
+        applicationTypeSelectList.add(new SelectOption("APTY004", "Renewal"));
+        applicationTypeSelectList.add(new SelectOption("APTY002", "New Application"));
+        applicationTypeSelectList.add(new SelectOption("APTY003", "Reinstatement "));
         ParamUtil.setRequestAttr(bpc.request, "appTypeSelect", applicationTypeSelectList);
 
 
         List<SelectOption> applicationStatusSelectList = new ArrayList<>();
         applicationStatusSelectList.add(new SelectOption("All", "All"));
-        applicationStatusSelectList.add(new SelectOption("Approved", "Approved"));
-        applicationStatusSelectList.add(new SelectOption("Pending", "Pending"));
-        applicationStatusSelectList.add(new SelectOption("Draft", "Draft"));
+        applicationStatusSelectList.add(new SelectOption("APST008", "Draft"));
+        applicationStatusSelectList.add(new SelectOption("APST000", "Rollback"));
+        applicationStatusSelectList.add(new SelectOption("APST005", "Approved"));
+        applicationStatusSelectList.add(new SelectOption("APST007", "Pending"));
         ParamUtil.setRequestAttr(bpc.request, "appStatusSelect", applicationStatusSelectList);
 
         List<SelectOption> selectApplicationSelectList = new ArrayList<>();
@@ -230,5 +300,45 @@ public class InboxDelegator {
         selectApplicationSelectList.add(new SelectOption("Make Payment", "Make Payment"));
         ParamUtil.setRequestAttr(bpc.request, "selectApplication", selectApplicationSelectList);
 
+    }
+
+    private static String getPageInfo(int pageNo,int pageCount) {
+        String tempStr = "";
+        if (pageNo > 1){
+            tempStr += "<li><a href=\"#\" aria-label=\"Previous\" onclick=\"getPageValue("+(pageNo - 1)+")\"><span aria-hidden=\"true\"><em class=\"fa fa-chevron-left\"></em></span></a></li>";
+        }else{
+            tempStr += "<li class=\"active\"><a href=\"#\" aria-label=\"Previous\" onclick=\"getPageValue("+(pageNo - 1)+")\"><span aria-hidden=\"true\"><em class=\"fa fa-chevron-left\"></em></span></a></li>";
+        }
+        if(pageCount<3){
+            for (int i = 1 ;i <= pageCount;i++) {
+                if(pageNo == i){
+                    tempStr += "<li class=\"active\"><a onclick='getPageValue("+ i +")'>"+i+"</a></li>";
+                }else{
+                    tempStr += "<li><a onclick='getPageValue("+ i +")'>"+i+"</a></li>";
+                }
+            }
+        }else if(pageNo + 2 <= pageCount){
+            for (int i = 0 ;i < 3;i++) {
+                if(pageNo == pageNo + i){
+                    tempStr += "<li class=\"active\"><a onclick='getPageValue("+ (pageNo + i) +")'>"+(pageNo + i)+"</a></li>";
+                }else{
+                    tempStr += "<li><a onclick='getPageValue("+ (pageNo + i) +")'>"+(pageNo + i)+"</a></li>";
+                }
+            }
+        }else {
+            for (int i = 2 ;i > -1;i--) {
+                if (pageNo == pageCount - i) {
+                    tempStr += "<li class=\"active\"><a onclick='getPageValue(" + (pageCount - i) + ")'>" + (pageCount - i) + "</a></li>";
+                }else{
+                    tempStr += "<li><a onclick='getPageValue(" + (pageCount - i) + ")'>" + (pageCount - i) + "</a></li>";
+                }
+            }
+        }
+        if(pageNo < pageCount){
+            tempStr += "<li><a aria-label=\"Next\"><span aria-hidden=\"true\" onclick=\"getPageValue("+(pageNo + 1)+")\"><em class=\"fa fa-chevron-right\"></em></span></a></li>";
+        }else{
+            tempStr += "<li class=\"active\"><a aria-label=\"Next\"><span aria-hidden=\"true\" onclick=\"getPageValue("+(pageNo + 1)+")\"><em class=\"fa fa-chevron-right\"></em></span></a></li>";
+        }
+        return tempStr;
     }
 }
