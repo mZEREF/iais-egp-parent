@@ -148,8 +148,8 @@
                   <div class="col-sm-4" >
                     <select name="deputyPrincipalOfficer" class="deputySelect form-control control-input control-set-font control-font-normal">
                       <option value="">Please Select</option>
-                      <option <c:if test="${appSvcPrincipalOfficersDto.deputyPrincipalOfficer==0}">selected="selected"</c:if> value="0">N</option>
-                      <option <c:if test="${appSvcPrincipalOfficersDto.deputyPrincipalOfficer==1}">selected="selected"</c:if> value="1">Y</option>
+                      <option>N</option>
+                      <option>Y</option>
                     </select>
                     <br/>
                     <br/>
@@ -209,7 +209,7 @@
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input  name="deputyIdNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.deputyIdNo}" size="30">
+                        <input  name="deputyIdNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
                         <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo"></span>
                       </div>
                     </div>
