@@ -20,8 +20,8 @@
                 <div class="search-wrap">
                     <iais:value>
                         <div class="input-group">
-                            <input class="form-control" id="inboxAdvancedSearch" type="text" placeholder="Licence no." name="inboxAdvancedSearch" aria-label="inboxAdvancedSearch"><span class="input-group-btn">
-                                <button class="btn btn-default buttonsearch" title="Search by keywords" onclick="javascript:searchLicenceNo();"><em class="fa fa-search"></em></button></span>
+                            <input class="form-control" id="inboxAdvancedSearch" type="text" placeholder="Message Subject." name="inboxAdvancedSearch" aria-label="inboxAdvancedSearch"><span class="input-group-btn">
+                                <button class="btn btn-default buttonsearch" title="Search by keywords" onclick="searchBySubject()"><em class="fa fa-search"></em></button></span>
                         </div>
                     </iais:value>
                 </div>
@@ -55,7 +55,7 @@
                                 <tr>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Subject</p>
-                                        <p><a href="#">${inboxQuery.subject}</a></p>
+                                        <p><a href="${inboxQuery.processUrl}">${inboxQuery.subject}</a></p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Message Type</p>
@@ -86,7 +86,7 @@
                         </div>
                         <div class="col-xs-6 col-md-8 text-right">
                             <div class="nav">
-                                <ul class="pagination">
+                                <ul class="msgPagination">
                                 </ul>
                             </div>
                         </div>

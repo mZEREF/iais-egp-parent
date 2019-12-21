@@ -1,6 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
-    String webroot=IaisEGPConstant.FE_CSS_ROOT;
+    String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
@@ -58,8 +58,14 @@
                             <p class="dashboard-txt">Licences Ready <br> for Printing</p></a></div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile txt-only"><a href="#">
-                            <p class="dashboard-txt">Not sure what to do? Let us guide you <em class="fa fa-angle-right"></em></p></a></div>
+                        <div class="dashboard-tile txt-only">
+                            <a href="#">
+                                <p class="dashboard-txt" style="line-height: 27px;">
+                                    Not sure what to do? Let us guide you
+                                    <i class="fa fa-angle-right"></i>
+                                </p>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

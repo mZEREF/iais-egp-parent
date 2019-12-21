@@ -19,7 +19,7 @@
             $("#inboxForm").submit();
         }else if (pageTab == "app") {
             $("[name='crud_action_type']").val(action);
-            $("#appInboxForm").submit();
+            $("#appForm").submit();
         }else{
             $("[name='crud_action_type']").val(action);
             $("#licenceForm").submit();
@@ -39,13 +39,12 @@
         submit('app','doSearch')
     });
 
+
     $("#appStatus").change(function() {
         submit('app','doSearch')
     });
 
     $(function () {
-        doPage(${inboxParam.pageNo});
-        doPage(${appParam.pageNo});
         activeTab('${TAB_NO}');
     });
 
@@ -53,62 +52,26 @@
         if(tabNo == 'inboxTab'){
             $('#'+tabNo+' a[href="#tabInbox"]').tab('show');
         }else if(tabNo == 'appTab'){
-            $('#'+tabNo+' a[href="#tabApplication"]').tab('show');
+            $('#'+tabNo+' a[href="#tabApp"]').tab('show');
         }else {
             $('#'+tabNo+' a[href="#tabLicence"]').tab('show');
         }
 
     }
-    function getPageValue(pageNo){
-        SOP.Crud.cfxSubmit("inboxForm","doPage",pageNo);
-    }
 
-    function doPage(pageNo){
-        $(".pagination").empty() ;
-        parseInt(pageNo);
-        var tempStr = "";
-        var pageCount = ${pageCount}
-        if (pageNo > 1){
-            tempStr += "<li><a href=\"#\" aria-label=\"Previous\" onclick=\"getPageValue("+(pageNo - 1)+")\"><span aria-hidden=\"true\"><em class=\"fa fa-chevron-left\"></em></span></a></li>";
-        }else{
-            tempStr += "<li class=\"active\"><a href=\"#\" aria-label=\"Previous\" onclick=\"getPageValue("+(pageNo - 1)+")\"><span aria-hidden=\"true\"><em class=\"fa fa-chevron-left\"></em></span></a></li>";
+    function doDraft(appNo){
+        if (appNo.indexOf("DN") !== -1 ||appNo.indexOf("DR") !== -1) {
+            $("[name='app_action_type']").val(appNo);
+            submit('app','doDraft');
         }
-        if(pageCount<3){
-            for (var i = 1 ;i <= pageCount;i++) {
-                if(pageNo == i){
-                    tempStr += "<li class=\"active\"><a onclick='getPageValue("+ i +")'>"+i+"</a></li>";
-                }else{
-                    tempStr += "<li><a onclick='getPageValue("+ i +")'>"+i+"</a></li>";
-                }
-            }
-        }else if(pageNo + 2 <= pageCount){
-            for (var i = 0 ;i < 3;i++) {
-                if(pageNo == pageNo + i){
-                    tempStr += "<li class=\"active\"><a onclick='getPageValue("+ (pageNo + i) +")'>"+(pageNo + i)+"</a></li>";
-                }else{
-                    tempStr += "<li><a onclick='getPageValue("+ (pageNo + i) +")'>"+(pageNo + i)+"</a></li>";
-                }
-            }
-        }else {
-            for (var i = 2 ;i > -1;i--) {
-                if (pageNo == pageCount - i) {
-                    tempStr += "<li class=\"active\"><a onclick='getPageValue(" + (pageCount - i) + ")'>" + (pageCount - i) + "</a></li>";
-                }else{
-                    tempStr += "<li><a onclick='getPageValue(" + (pageCount - i) + ")'>" + (pageCount - i) + "</a></li>";
-                }
-            }
-        }
-        if(pageNo < pageCount){
-            tempStr += "<li><a aria-label=\"Next\"><span aria-hidden=\"true\" onclick=\"getPageValue("+(pageNo + 1)+")\"><em class=\"fa fa-chevron-right\"></em></span></a></li>";
-        }else{
-            tempStr += "<li class=\"active\"><a aria-label=\"Next\"><span aria-hidden=\"true\" onclick=\"getPageValue("+(pageNo + 1)+")\"><em class=\"fa fa-chevron-right\"></em></span></a></li>";
-        }
-        $(".pagination").append(tempStr);
     }
 
     function searchLicenceNo(){
-        SOP.Crud.cfxSubmit("inboxForm","doSearch")
+        SOP.Crud.cfxSubmit("licenceForm","doSearch")
     }
 
+    function searchByAppNo() {
+        submit('app','doSearch')
+    }
 
 </script>
