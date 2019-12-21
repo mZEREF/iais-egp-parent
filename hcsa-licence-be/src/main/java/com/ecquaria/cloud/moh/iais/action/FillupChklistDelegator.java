@@ -70,7 +70,8 @@ public class FillupChklistDelegator {
     public void init(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
-        String taskId = ParamUtil.getString(request,"taskId");
+        //String taskId = ParamUtil.getString(request,"taskId");
+        String taskId = ParamUtil.getRequestString(request,"taskId");
         if(StringUtil.isEmpty(taskId)){
             taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
         }

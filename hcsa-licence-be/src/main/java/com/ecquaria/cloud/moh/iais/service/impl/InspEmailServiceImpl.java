@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgLicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,8 @@ public class InspEmailServiceImpl implements InspEmailService {
     private HcsaChklClient hcsaChklClient;
     @Autowired
     InsRepClient insRepClient;
+    @Autowired
+    OrgLicenseeClient licenseeClient;
 
     @Override
     public String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto) {
@@ -134,6 +138,12 @@ public class InspEmailServiceImpl implements InspEmailService {
         getAdhocNcItem(adhocItemList,ncList);
         return ncList;
     }
+
+    @Override
+    public LicenseeDto getLicenseeDtoById(String id) {
+        return licenseeClient.getLicenseeDtoById(id).getEntity();
+    }
+
     public void getAdhocNcItem(List<AdhocNcCheckItemDto> adhocItemList,List<NcAnswerDto> ncList){
         if(adhocItemList!=null && !adhocItemList.isEmpty()){
             NcAnswerDto ncDto = null;

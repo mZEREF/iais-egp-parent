@@ -163,21 +163,19 @@ public class InspectionMergeSendNcEmailDelegator {
         }
         String status ;
         if (decision.equals(InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT)){
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto.getApplicationDto().getId());
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_ROLL_BACK);
             status=applicationViewDto.getApplicationDto().getStatus();
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
 
             String taskKey = taskDto.getTaskKey();
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status,decision, taskKey);
+
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status,"VERIFIED", taskKey);
+            taskDto.setUserId(appPremisesRoutingHistoryDtos.get(appPremisesRoutingHistoryDtos.size()-1).getActionby());
             completedTask(taskDto);
-
-            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto.getApplicationDto().getId());
-
-
             List<TaskDto> taskDtos = prepareTaskList(taskDto);
-
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,decision, taskKey);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,"VERIFIED", taskKey);
 
 
             for(int i=0;i<appIds.size();i++){
@@ -186,9 +184,9 @@ public class InspectionMergeSendNcEmailDelegator {
                     applicationViewService.updateApplicaiton(applicationDtos.get(i));
 
                     status=applicationDtos.get(i).getStatus();
-                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status, decision,taskKey);
+                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status, "VERIFIED",taskKey);
+                    taskDto.setUserId(appPremisesRoutingHistoryDtos.get(i).getActionby());
                     completedTask(taskDto);
-
                     taskDtos = prepareTaskList(taskDto);
                     taskService.createTasks(taskDtos);
                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,decision, taskKey);
@@ -201,11 +199,11 @@ public class InspectionMergeSendNcEmailDelegator {
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
             status=applicationViewDto.getApplicationDto().getStatus();
             String taskKey = taskDto.getTaskKey();
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status,decision, taskKey);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status,"VERIFIED", taskKey);
             completedTask(taskDto);
             List<TaskDto> taskDtos = prepareTaskList(taskDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, decision,taskKey);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, "VERIFIED",taskKey);
 
             String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
             ParamUtil.setSessionAttr(request,"templateId",id);
@@ -233,7 +231,6 @@ public class InspectionMergeSendNcEmailDelegator {
     private List<TaskDto> prepareTaskList(TaskDto taskDto) {
         List<TaskDto> list = new ArrayList<>();
         taskDto.setId(null);
-        taskDto.setUserId("69F8BB01-F70C-EA11-BE7D-000C29F371DC");
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
