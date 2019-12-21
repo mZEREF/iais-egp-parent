@@ -121,7 +121,7 @@
             submitForms('governanceOfficers',null,null,controlFormLi);
         });
         $('#disciplineAllocationSaveDraft').click(function(){
-            submitForms('governanceOfficers','saveDraft',null,'clinical');
+            submitForms('principalOfficers','saveDraft',null,'clinical');
         });
         $('#disciplineAllocationNext').click(function(){
             var controlFormLi = $('#controlFormLi').val();

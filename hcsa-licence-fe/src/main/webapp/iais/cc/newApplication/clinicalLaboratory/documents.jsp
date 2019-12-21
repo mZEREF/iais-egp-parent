@@ -48,12 +48,10 @@
                                 <div class="application-tab-footer">
                                     <div class="row">
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group">
-                                            <p><a id = "docBack" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
-                                            </div>
+                                            <p><a id = "svcDocumentBack" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group"><a class="btn btn-secondary" id = "governanceOfficersSaveDraft">Save as Draft</a><a class="next btn btn-primary" id="svcDocumentNext" data-goto="clinical-governance-officer">Next</a></div>
+                                            <div class="button-group"><a class="btn btn-secondary" id = "svcDocumentSaveDraft">Save as Draft</a><a class="next btn btn-primary" id="svcDocumentNext" data-goto="clinical-governance-officer">Next</a></div>
                                         </div>
                                     </div>
                                 </div>
@@ -69,13 +67,12 @@
 <script type="text/javascript">
     $(document).ready(function() {
         //Binding method
-        $('#governanceOfficersBack').click(function(){
-            //submitForms('laboratoryDisciplines',null,null,'clinical');
+        $('#svcDocumentBack').click(function(){
             var controlFormLi = $('#controlFormLi').val();
             submitForms('principalOfficers',null,null,controlFormLi);
         });
-        $('#governanceOfficersSaveDraft').click(function(){
-            //submitForms('governanceOfficers','saveDraft',null,'clinical');
+        $('#svcDocumentSaveDraft').click(function(){
+            submitForms('documents','saveDraft',null,'clinical');
         });
         $('#svcDocumentNext').click(function(){
             submit('preview',null,null);
