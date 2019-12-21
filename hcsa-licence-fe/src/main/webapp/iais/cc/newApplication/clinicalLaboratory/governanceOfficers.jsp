@@ -82,8 +82,8 @@
                dismissWaiting();
            } else {*/
             var controlFormLi = $('#controlFormLi').val();
-            //submitForms('disciplineAllocation',null,null,controlFormLi);
-             submitForms('nuclearMedicineImaging',null,null,controlFormLi);
+            submitForms('disciplineAllocation',null,null,controlFormLi);
+             //submitForms('nuclearMedicineImaging',null,null,controlFormLi);
             /*  }*/
         });
 
