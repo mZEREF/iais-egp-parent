@@ -108,6 +108,10 @@ public class InspectionServiceImpl implements InspectionService {
         return organizationClient.getTasksByUserId(userId).getEntity();
     }
 
+    @Override
+    public List<TaskDto> getTasksByUserIdAndRole(String userId,String curRole) {
+        return organizationClient.getTasksByUserIdAndRole(userId, curRole).getEntity();
+    }
 
     @Override
     public String[] getApplicationNoListByPool(List<TaskDto> commPools) {

@@ -57,6 +57,14 @@ public interface InspectionService {
      */
     List<TaskDto> getTasksByUserId(String workGroupId);
 
+    /**
+     * @author: guyin
+     * @Date 2019/12/2
+     * @Param: workGroupId
+     * @return: List<TaskDto>
+     * @Descripation: According to the group Id, get the work pool
+     */
+    List<TaskDto> getTasksByUserIdAndRole(String workGroupId,String curRole);
 
     /**
      * @author: shicheng

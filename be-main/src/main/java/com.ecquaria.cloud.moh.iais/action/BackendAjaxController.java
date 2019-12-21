@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,25 +31,37 @@ public class BackendAjaxController {
     @Autowired
     InspectionService inspectionService;
 
-    @RequestMapping(value="appGroup.do", method = RequestMethod.POST)
-    public @ResponseBody Map<String,Object> appGroup(HttpServletRequest request, HttpServletResponse response)  {
+    @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         String groupNo = request.getParameter("groupno");
-        SearchParam searchParamAjax = (SearchParam)ParamUtil.getSessionAttr(request,"searchParamAjax");
-        Map<String, String> appNoUrl = (Map<String, String>)ParamUtil.getSessionAttr(request,"appNoUrl");
+        SearchParam searchParamAjax = (SearchParam) ParamUtil.getSessionAttr(request, "searchParamAjax");
+        Map<String, String> appNoUrl = (Map<String, String>) ParamUtil.getSessionAttr(request, "appNoUrl");
 
-        Map<String,Object> map = new HashMap();
-        if (groupNo != null){
-            searchParamAjax.addFilter("groupNo", groupNo,true);
+        Map<String, Object> map = new HashMap();
+        if (groupNo != null) {
+            searchParamAjax.addFilter("groupNo", groupNo, true);
 
-            QueryHelp.setMainSql("inspectionQuery", "AppByGroupAjax",searchParamAjax);
+            QueryHelp.setMainSql("inspectionQuery", "AppByGroupAjax", searchParamAjax);
             SearchResult<InspectionAppInGroupQueryDto> ajaxResult = inspectionService.searchInspectionBeAppGroupAjax(searchParamAjax);
 
             map.put("appNoUrl", appNoUrl);
             map.put("ajaxResult", ajaxResult);
             map.put("result", "Success");
-        }else {
+        } else {
             map.put("result", "Fail");
         }
         return map;
+    }
+
+    @RequestMapping(value = "setCurrentRole.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, String> setCurrentRole(HttpServletRequest request, HttpServletResponse response) {
+        String curRole = request.getParameter("curRole");
+        LoginContext loginContext = new LoginContext();
+        loginContext.setCurRoleId(curRole);
+        Map<String, String> res = new HashMap<>();
+        res.put("role",curRole);
+        return res;
     }
 }

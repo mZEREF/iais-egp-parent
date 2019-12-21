@@ -106,6 +106,16 @@
                 WHERE 1 = 1
                 <#if applicationNo_list??> and ${applicationNo_list} </#if>
                 <#if groupNo??> and T4.GROUP_NO = :groupNo</#if>
+                <#if application_type??> and T1.APP_TYPE = :application_type</#if>
+                <#if hci_code??> and charindex(:hci_code, T3.HCI_CODE) >0 </#if>
+                <#if hci_name??> and charindex(:hci_name, T3.HCI_NAME) >0 </#if>
+                <#if sub_date??> and T4.SUBMIT_DT >= :sub_date</#if>
+                <#if blk_no??> and charindex(:blk_no, T3.BLK_NO) >0 </#if>
+                <#if floor_no??> and charindex(:floor_no, T3.FLOOR_NO) >0 </#if>
+                <#if unit_no??> and charindex(:unit_no, T3.UNIT_NO) >0 </#if>
+                <#if street_name??> and charindex(:street_name, T3.STREET_NAME) >0 </#if>
+                <#if building_name??> and charindex(:building_name, T3.BUILDING_NAME) >0 </#if>
+                <#if postal_code??> and charindex(:postal_code, T3.POSTAL_CODE) >0 </#if>
             ]]>
     </sql>
 </sqls>

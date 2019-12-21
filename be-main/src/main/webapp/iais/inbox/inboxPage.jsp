@@ -88,9 +88,18 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
                     <h3>
                         <span>Search Criteria</span>
                     </h3>
+                    <iais:section title="" id = "supPoolList">
+                        <iais:row>
+                            <iais:field value="choose role"/>
+                            <iais:value width="4">
+                                <iais:select name="roleIds" onchange="chooseCurRole()" options="roleIds" firstOption="${curRole}" value="${roleIds}" ></iais:select>
+                            </iais:value>
+                        </iais:row>
+                    </iais:section>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                             <div class="panel-body">
@@ -99,25 +108,25 @@
                                         <iais:row>
                                             <iais:field value="HCI Code"/>
                                             <iais:value width="18">
-                                                <input type="text" name="hci_code" value="${supTaskSearchParam.filters['hci_code']}" />
+                                                <input type="text" name="hci_code" value="${hci_code}" />
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="HCI Name"/>
                                             <iais:value width="18">
-                                                <input type="text" name="hci_name" value="${supTaskSearchParam.filters['hci_name']}" />
+                                                <input type="text" name="hci_name" value="${hci_name}" />
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="HCI Address"/>
                                             <iais:value width="18">
-                                                <input type="text" name="hci_address" value="${supTaskSearchParam.filters['blk_no']}" />
+                                                <input type="text" name="hci_address" value="${blk_no}" />
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Application No."/>
                                             <iais:value width="18">
-                                                <input type="text" name="application_no" value="${supTaskSearchParam.filters['application_no']}" />
+                                                <input type="text" name="application_no" value="${application_no}" />
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -179,9 +188,14 @@
                                                     show more
                                                 </p>
                                             </div>
-                                            <div class="col-xs-2  col-lg-2 border-div-cell"><c:out value="${pool.submitDate}"/></div>
                                             <div class="col-xs-2  col-lg-2 border-div-cell"><c:out value="${pool.applicationType}"/></div>
-                                            <div class="col-xs-2  col-lg-2 border-div-cell"><c:out value="${pool.paymentstatus}"/></div>
+                                            <c:if test="${pool.count > 1}">
+                                            <div class="col-xs-2  col-lg-2 border-div-cell"><c:out value="Multiple"/></div>
+                                            </c:if>
+                                            <c:if test="${pool.count == 1}">
+                                                <div class="col-xs-2  col-lg-2 border-div-cell"><c:out value="Single"/></div>
+                                            </c:if>
+                                            <div class="col-xs-2  col-lg-2 border-div-cell"><c:out value="${pool.updateDt}"/></div>
                                             <div class="col-xs-2  col-lg-2 border-div-cell-last"><c:out value="${pool.paymentstatus}"/></div>
                                         </div>
                                         <div id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}" class="collapse table col-xs-12 col-lg-12 app-in-group">
@@ -271,6 +285,10 @@
 
         }
 
+    }
+    
+    function chooseCurRole() {
+        submit('page');
     }
 
 </script>
