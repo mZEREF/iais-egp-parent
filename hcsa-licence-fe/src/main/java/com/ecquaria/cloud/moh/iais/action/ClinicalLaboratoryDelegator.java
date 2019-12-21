@@ -755,6 +755,32 @@ public class ClinicalLaboratoryDelegator {
     }
 
     /**
+     * StartStep: prepareResult
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prepareServicePersonnel(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do prepareNuclearMedicineImaging start ...."));
+
+        log.debug(StringUtil.changeForLog("the do prepareNuclearMedicineImaging end ...."));
+    }
+
+    /**
+     * StartStep: prepareResult
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doServicePersonnel (BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doNuclearMedicineImaging start ...."));
+
+        log.debug(StringUtil.changeForLog("the do doNuclearMedicineImaging end ...."));
+    }
+
+
+
+    /**
      * ajax
      */
     public void loadGovernanceOfficerByCGOId(BaseProcessClass bpc){
@@ -842,7 +868,10 @@ public class ClinicalLaboratoryDelegator {
         AppSvcCgoDto appSvcCgoDto = null;
 
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
-        int size = assignSelect.length;
+        int size = 0 ;
+        if(assignSelect != null && assignSelect.length>0){
+            size = assignSelect.length;
+        }
         String[] salutation = ParamUtil.getStrings(request, "salutation");
         String[] name = ParamUtil.getStrings(request, "name");
         String[] idType = ParamUtil.getStrings(request, "idType");
@@ -888,6 +917,7 @@ public class ClinicalLaboratoryDelegator {
 
 
     private AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(HttpServletRequest request){
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = new ArrayList<>();
         AppSvcPrincipalOfficersDto dto = new AppSvcPrincipalOfficersDto();
         String assignSelect = ParamUtil.getString(request, "assignSelect");
         String deputySelect = ParamUtil.getString(request, "deputySelect");
@@ -899,9 +929,19 @@ public class ClinicalLaboratoryDelegator {
         String mobileNo = ParamUtil.getString(request, "mobileNo");
         String officeTelNo = ParamUtil.getString(request, "officeTelNo");
         String emailAddress = ParamUtil.getString(request, "emailAddress");
+        if("1".equals(deputySelect)){
+           /* String salutation = ParamUtil.getString(request, "salutation");
+            String name = ParamUtil.getString(request, "name");
+            String idType = ParamUtil.getString(request, "idType");
+            String idNo = ParamUtil.getString(request, "idNo");
+            String designation = ParamUtil.getString(request, "designation");
+            String mobileNo = ParamUtil.getString(request, "mobileNo");
+            String officeTelNo = ParamUtil.getString(request, "officeTelNo");
+            String emailAddress = ParamUtil.getString(request, "emailAddress");*/
+        }
 
         dto.setAssignSelect(assignSelect);
-        dto.setDeputyPrincipalOfficer(deputySelect);
+        //dto.setDeputyPrincipalOfficer(deputySelect);
         dto.setSalutation(salutation);
         dto.setName(name);
         dto.setOfficeTelNo(officeTelNo);
@@ -932,7 +972,7 @@ public class ClinicalLaboratoryDelegator {
 
     private Map<String,String> doValidateGovernanceOfficers(HttpServletRequest request){
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
-        if(appSvcCgoList == null){
+        if(appSvcCgoList == null || appSvcCgoList.isEmpty()){
             return null;
         }
 

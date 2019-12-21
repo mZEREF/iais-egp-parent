@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohServiceRelatedInformation___1 extends BaseProcessClass {
@@ -100,6 +101,16 @@ public class INTERNET___MohServiceRelatedInformation___1 extends BaseProcessClas
 	public void doSubmit_OnStepProcess_0() throws Exception {
 	// 		doSubmit->OnStepProcess
 		EngineHelper.delegate(NEWAPPLICATIONDELEGATOR, "doSubmit", this);
+	}
+
+	public void doNuclearMedicineImaging_OnStepProcess_0() throws Exception {
+	// 		doNuclearMedicineImaging->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doServicePersonnel", this);
+	}
+
+	public void prepareNuclearMedicineImaging_OnStepProcess_0() throws Exception {
+	// 		PrepareNuclearMedicineImaging->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareServicePersonnel", this);
 	}
 
 	

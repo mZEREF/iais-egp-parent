@@ -105,8 +105,10 @@ public class NewApplicationDelegator {
         //for loading the draft by appId
         loadingDraft(bpc);
         //for loading Service Config
-        loadingServiceConfig(bpc);
-        initSession(bpc);
+        boolean flag = loadingServiceConfig(bpc);
+        if(flag){
+            initSession(bpc);
+        }
         log.debug(StringUtil.changeForLog("the do Start end ...."));
     }
 
@@ -213,6 +215,8 @@ public class NewApplicationDelegator {
                 reloadDocMap.put(appGrpPrimaryDocDto.getPrimaryDocReloadName(), appGrpPrimaryDocDto);
             }
             ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) reloadDocMap);
+        }else{
+            ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) new HashMap());
         }
 
         log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
@@ -310,6 +314,7 @@ public class NewApplicationDelegator {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = new ArrayList<>();
         Map<String,String> errorMap = new HashMap<>();
         Map<String,AppGrpPrimaryDocDto> beforeReloadDocMap = (Map<String, AppGrpPrimaryDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP);
+
         Map<String,CommonsMultipartFile> commonsMultipartFileMap = new HashMap<>();
         for(HcsaSvcDocConfigDto comm:commonHcsaSvcDocConfigList){
             String name = "common"+comm.getId();
@@ -388,12 +393,14 @@ public class NewApplicationDelegator {
             return;
         }
 
-        if( commonsMultipartFileMap!= null){
+        if( commonsMultipartFileMap!= null && commonsMultipartFileMap.size()>0){
             for(AppGrpPrimaryDocDto primaryDoc:appGrpPrimaryDocDtoList){
                 String key = primaryDoc.getPremisessName()+primaryDoc.getSvcComDocId();
                 CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
-                String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                primaryDoc.setFileRepoId(fileRepoGuid);
+                if(commonsMultipartFile != null && commonsMultipartFile.getSize() != 0){
+                    String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                    primaryDoc.setFileRepoId(fileRepoGuid);
+                }
             }
         }
 
@@ -573,6 +580,27 @@ public class NewApplicationDelegator {
     }
 
     /**
+     * StartStep: PrePareErrorAckPage
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prepareErrorAck(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do prepareErrorAck start ...."));
+
+        log.debug(StringUtil.changeForLog("the do prepareErrorAck end ...."));
+    }
+
+    public void doErrorAck(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doErrorAck start ...."));
+
+
+        log.debug(StringUtil.changeForLog("the do doErrorAck end ...."));
+    }
+
+
+
+    /**
      * StartStep: PrepareAckPage
      *
      * @param bpc
@@ -720,9 +748,14 @@ public class NewApplicationDelegator {
 
     @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
     public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("file-repo start ...."));
         String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
         String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
         String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
+        if(StringUtil.isEmpty(fileRepoId)){
+            log.debug(StringUtil.changeForLog("file-repo id is empty"));
+            return;
+        }
         byte[] fileData =serviceConfigService.downloadFile(fileRepoId);
         response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
         response.addHeader("Content-Length", "" + fileData.length);
@@ -731,10 +764,7 @@ public class NewApplicationDelegator {
         ops.write(fileData);
         ops.close();
         ops.flush();
-        /*OutputStream out = response.getOutputStream();
-        out.write(fileData);
-        out.close();
-        out.flush();*/
+        log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
 
 
@@ -791,7 +821,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
     }
 
-    private void loadingServiceConfig(BaseProcessClass bpc) {
+    private boolean loadingServiceConfig(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
         //loading the service
         List<String> serviceConfigIds = new ArrayList<>();
@@ -808,12 +838,18 @@ public class NewApplicationDelegator {
             serviceConfigIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
 
         }
+
         log.debug(StringUtil.changeForLog("service size:"+serviceConfigIds.size()));
+        if(serviceConfigIds == null || serviceConfigIds.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
+            return false;
+        }
 
         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
         sortHcsaServiceDto(hcsaServiceDtoList);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         log.debug(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
+        return true;
     }
 
     private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList) {

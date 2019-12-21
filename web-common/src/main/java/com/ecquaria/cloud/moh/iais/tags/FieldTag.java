@@ -30,6 +30,7 @@ public final class FieldTag extends DivTagSupport {
     private boolean checked;
     private String onclick;
     private int width;
+    private boolean mandatory;
 
     public FieldTag() {
         super();
@@ -51,6 +52,7 @@ public final class FieldTag extends DivTagSupport {
         checked = false;
         onclick = null;
         width = 0;
+        mandatory = false;
     }
 
     // Releases any resources we may have (or inherit)
@@ -89,6 +91,11 @@ public final class FieldTag extends DivTagSupport {
         } else if (required) {
             html.append("<span class=\"orangetxt\">*</span>");
         }
+
+        if(mandatory){
+            html.append("<span class=\"mandatory\">*</span>");
+        }
+
         html.append(ENDLABLE);
         if (script.length() > 0) {
             html.append(script);
@@ -193,4 +200,6 @@ public final class FieldTag extends DivTagSupport {
     public void setWidth(int width) {
         this.width = width;
     }
+    public void setMandatory(Boolean mandatory){this.mandatory = mandatory;}
+
 }

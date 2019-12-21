@@ -84,6 +84,14 @@ public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	// 		jumpBlank->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "jumpBank", this);
 	}
+	public void prepareErrorAck_OnStepProcess_0() throws Exception {
+	// 		PrepareErrorAck->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareErrorAck", this);
+	}
+	public void doErrorAck_OnStepProcess_0() throws Exception {
+	// 		doErrorAck->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doErrorAck", this);
+	}
 	
 
 }

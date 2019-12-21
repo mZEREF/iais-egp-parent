@@ -47,7 +47,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation:</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.salutation}</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> <iais:code code="${cgo.salutation}" /></p>
                     </td>
                   </tr>
 
@@ -83,7 +83,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation :</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.designation  }</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cgo.designation}"/> </p>
                     </td>
                   </tr>
 
@@ -202,7 +202,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation:</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.salutation}</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.salutation}"/></p>
                     </td>
                   </tr>
                   <tr>
@@ -234,7 +234,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation:</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>${po.designation}</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${po.designation}"/></p>
                     </td>
                   </tr>
                   <tr>
@@ -291,7 +291,8 @@
                 </tr>
                 <tr class="col-xs-12">
                   <td>
-                  <a href="${pageContext.request.contextPath}/file-repo?filerepo=svcFileRo${status.index}&fileRo${status.index}=<iais:mask name="svcfileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>
+                 <%-- <a href="${pageContext.request.contextPath}/file-repo?filerepo=svcFileRoId${currentSvcCode}${status.index}&fileRo${status.index}=<iais:mask name="svcFileRoId${currentSvcCode}${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>--%>
+                   <div class="fileList"><span class="filename server-site" id="130"><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a> (${svcDoc.docSize} KB)</span></div>
                   </td>
                 </tr>
               </c:forEach>

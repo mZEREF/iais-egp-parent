@@ -43,7 +43,6 @@
                             <h2>Discipline Allocation</h2>
                             <p>Please ensure that each laboratory discipline is assigned to a clinical governance officer.</p>
                             <div class="table-gp">
-                              <input type="hidden" name="premId" value="67bf3139-5222-4c02-9e38-7b1153b871f6"/>
                               <table class="table discipline-table">
                                 <thead>
                                 <tr>
