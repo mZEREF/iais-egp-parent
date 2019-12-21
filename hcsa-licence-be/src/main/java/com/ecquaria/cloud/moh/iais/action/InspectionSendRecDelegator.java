@@ -56,8 +56,6 @@ public class InspectionSendRecDelegator {
      */
     public void mohInspecSendRectifiToUserStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohInspecSendRectifiToUserStart start ...."));
-        log.info("Step 1 ==============>" + bpc.request.getSession().getId());
-        AuditTrailHelper.auditFunction("Inspection Rectification", "Send Rectification");
     }
 
     /**
