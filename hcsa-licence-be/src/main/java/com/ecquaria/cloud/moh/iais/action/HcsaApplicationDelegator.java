@@ -182,7 +182,6 @@ public class HcsaApplicationDelegator {
         }
 
         //   rollback
-        List<String> rollBackStatusList=new ArrayList<>();
         Map<String,String> rollBackMap=new HashMap<>();
         if(applicationViewDto.getRollBackHistroyList()!=null){
         for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()
@@ -349,7 +348,10 @@ public class HcsaApplicationDelegator {
      */
     public void routeToDMS(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
-
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto application=applicationViewDto.getApplicationDto();
+        application.setStatus(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS);
+        applicationViewDto.setApplicationDto(application);
         log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
 
