@@ -41,4 +41,13 @@ public class INTERNET___MohInterInbox___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doPage", this);
 	}
 
+
+	public void doWithdraw_OnStepProcess_0() throws Exception {
+	    EngineHelper.delegate(DELEGATOR, "doWithdraw", this);
+	}
+
+	public void doDraft_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doDraft", this);
+	}
+
 }
