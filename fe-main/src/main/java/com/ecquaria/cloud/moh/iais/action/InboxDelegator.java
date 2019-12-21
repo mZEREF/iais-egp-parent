@@ -248,7 +248,7 @@ public class InboxDelegator {
         log.debug("The prepareEdit start---"+action+"--"+appNo);
 //        String draftNo = inboxService.getDraftNumber(appNo);
         StringBuffer url = new StringBuffer();
-        url.append("https://").append("192.168.6.113")
+        url.append("https://").append(bpc.request.getServerName())
                 .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
                 .append("?DraftNumber=")
                 .append(appNo);
