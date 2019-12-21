@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.util.List;
+
 /**
  * EicGatewayClient
  *
@@ -20,6 +22,17 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface EicGatewayClient {
     @PostMapping(value = "/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveFile(@RequestBody ProcessFileTrackDto processFileTrackDto,
+                                         @RequestHeader("date") String date,
+
+                                         @RequestHeader("authorization") String authorization);
+    /**
+    * @author: yichen
+    * @description: route to BE db
+    * @param:
+    * @return:
+    */
+    @PostMapping(value = "/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> routeSelfDeclData(@RequestBody List<String> contentJsonList,
                                          @RequestHeader("date") String date,
                                          @RequestHeader("authorization") String authorization);
 }

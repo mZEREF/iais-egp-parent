@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -24,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -122,21 +124,18 @@ public class InspectionMergeSendNcEmailDelegator {
         }
         String content=ParamUtil.getString(request,"messageContent");
         ParamUtil.setRequestAttr(request,"content", content);
-
-
     }
 
-    public void sendEmail(BaseProcessClass bpc){
+    public void sendEmail(BaseProcessClass bpc) throws FeignException {
 
         log.info("=======>>>>>sendEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
+        TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,"messageContent"));
-        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!"send".equals(currentAction)){
             return;
@@ -152,7 +151,6 @@ public class InspectionMergeSendNcEmailDelegator {
         }
         List<ApplicationDto> applicationDtos= applicationService.getApplicaitonsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());
 
-
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = new HashMap<>();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
@@ -161,35 +159,42 @@ public class InspectionMergeSendNcEmailDelegator {
             Map<String,String> errorMap = new HashMap<>();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
         }
-        String status ;
         if (decision.equals(InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT)){
-            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto.getApplicationDto().getId());
+
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_ROLL_BACK);
-            status=applicationViewDto.getApplicationDto().getStatus();
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
 
             String taskKey = taskDto.getTaskKey();
-
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status,"VERIFIED", taskKey);
-            taskDto.setUserId(appPremisesRoutingHistoryDtos.get(appPremisesRoutingHistoryDtos.size()-1).getActionby());
-            completedTask(taskDto);
-            List<TaskDto> taskDtos = prepareTaskList(taskDto);
-            taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,"VERIFIED", taskKey);
-
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_GROUP_STATUS_ROLL_BACK,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskKey);
 
             for(int i=0;i<appIds.size();i++){
                 if(appIds.get(i).equals(applicationDtos.get(i))){
+                    AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= new AppPremisesRoutingHistoryDto();
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto.getApplicationDto().getId());
+                    String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
+                    for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1:appPremisesRoutingHistoryDtos){
+                        if(appPremisesRoutingHistoryDto1.getUpdatedDt().compareTo(upDt)<0){
+                            upDt=appPremisesRoutingHistoryDto1.getUpdatedDt();
+                            appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
+                        }
+                    }
                     applicationDtos.get(i).setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
                     applicationViewService.updateApplicaiton(applicationDtos.get(i));
 
-                    status=applicationDtos.get(i).getStatus();
-                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status, "VERIFIED",taskKey);
-                    taskDto.setUserId(appPremisesRoutingHistoryDtos.get(i).getActionby());
-                    completedTask(taskDto);
-                    taskDtos = prepareTaskList(taskDto);
+                    taskKey = taskDto.getTaskKey();
+                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey);
+
+                    TaskDto taskDto2=new TaskDto();
+                    taskDto2.setUserId(appPremisesRoutingHisDto.getActionby());
+                    taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
+                    taskDto2.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+                    //taskDto2.setScore(taskService.getRoutingTask(applicationViewDto.getApplicationDto(), HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTION_LEAD).getScore());
+                    taskDto2.setScore(50);
+                    completedTask(taskDto2);
+                    List<TaskDto> taskDtos = prepareTaskList(taskDto2);
                     taskService.createTasks(taskDtos);
-                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,decision, taskKey);
+                    taskKey = taskDto2.getTaskKey();
+                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskKey);
 
                 }
             }
@@ -197,20 +202,21 @@ public class InspectionMergeSendNcEmailDelegator {
         else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-            status=applicationViewDto.getApplicationDto().getStatus();
             String taskKey = taskDto.getTaskKey();
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), status,"VERIFIED", taskKey);
-            completedTask(taskDto);
-            List<TaskDto> taskDtos = prepareTaskList(taskDto);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, taskKey);
+
+            TaskDto taskDto2=new TaskDto();
+            taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
+            taskDto2.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+            //taskDto2.setScore(taskService.getRoutingTask(applicationViewDto.getApplicationDto(), HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTION_LEAD).getScore());
+            taskDto2.setScore(50);
+            completedTask(taskDto2);
+            List<TaskDto> taskDtos = prepareTaskList(taskDto2);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, "VERIFIED",taskKey);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskKey);
 
-            String id= inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
-            ParamUtil.setSessionAttr(request,"templateId",id);
+            inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
         }
-
-
-
         ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
 
     }
@@ -231,6 +237,7 @@ public class InspectionMergeSendNcEmailDelegator {
     private List<TaskDto> prepareTaskList(TaskDto taskDto) {
         List<TaskDto> list = new ArrayList<>();
         taskDto.setId(null);
+        taskDto.setScore(50);
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
@@ -253,7 +260,6 @@ public class InspectionMergeSendNcEmailDelegator {
 
     public void doRecallEmail(BaseProcessClass bpc) {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
-        HttpServletRequest request = bpc.request;
     }
 
 }

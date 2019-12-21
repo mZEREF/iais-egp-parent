@@ -121,7 +121,15 @@
                                 <p>Inspected By:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.inspectedBy}</p>
+                                <table class="table">
+                                    <c:forEach items="${insRepDto.inspectors}" var="inspector" varStatus="status">
+                                        <tr>
+                                            <td>
+                                                <p><c:out value="${inspector}"></c:out></p>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
                             </td>
                         </tr>
                         <tr>
@@ -129,7 +137,7 @@
                                 <p>Other Inspection Officer:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.reportedBy}</p>
+<%--                                <p>${insRepDto.reportedBy}</p>--%>
                             </td>
                         </tr>
                         <tr>

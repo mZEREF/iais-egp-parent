@@ -154,6 +154,7 @@ public class RequestForInformationDelegator {
         QueryHelp.setMainSql("ReqForInfoQuery","licenceQuery",licParam);
         if (licParam != null) {
             SearchResult licResult = requestForInformationService.licenceDoQuery(licParam);
+
             if(!StringUtil.isEmpty(licResult)){
                 ParamUtil.setSessionAttr(request,"SearchParam", licParam);
                 ParamUtil.setRequestAttr(request,"SearchResult", licResult);

@@ -15,5 +15,6 @@ public interface AppPremSelfDeclService {
 
     List<SelfDecl> getSelfDeclByGroupId(String groupId);
 
-    void saveSelfDecl(List<SelfDecl> selfDeclList);
+    void saveAllSelfDecl(List<SelfDecl> selfDeclList);
+
 }

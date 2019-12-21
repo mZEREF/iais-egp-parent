@@ -71,6 +71,14 @@
 <script type="text/javascript">
     $(document).ready(function() {
         //Binding method
+        if($('#cgoSelect').val()!=""){
+
+            $('.principalOfficers').removeClass('hidden');
+            $('#collapsePrincipal').attr("class","in");
+        }else {
+          /*  $('.principalOfficers').attr("class",' hidden');*/
+            $('#collapsePrincipal').removeClass(" in");
+        }
         $('#principalOfficersBack').click(function(){
             var controlFormLi = $('#controlFormLi').val();
             submitForms('disciplineAllocation',null,null,controlFormLi);

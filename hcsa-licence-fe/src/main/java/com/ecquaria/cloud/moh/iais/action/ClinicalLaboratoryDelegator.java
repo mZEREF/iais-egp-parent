@@ -491,12 +491,12 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines end ...."));
     }
 
-    private Map<String,String> doValidateLaboratory(  List<AppSvcChckListDto>  listDtos,String serviceId  ){
+    public static Map<String,String> doValidateLaboratory(List<AppSvcChckListDto>  listDtos,String serviceId){
         Map<String,String> map=new HashMap<>();
         int count=0;
 
         if(listDtos.isEmpty()){
-
+            map.put("checkError","UC_CHKLMD001_ERR002");
         }else {
             for(int i=0;i<listDtos.size();i++){
                 String parentName = listDtos.get(i).getParentName();
@@ -531,7 +531,7 @@ public class ClinicalLaboratoryDelegator {
 
         }
         if(count!=listDtos.size()){
-            map.put("checkError","Illegal or not empty operation");
+            map.put("checkError","UC_CHKLMD001_ERR002");
         }
 
         return map;
@@ -548,8 +548,8 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
         //do validate
-       Map<String,String> errList = doValidateGovernanceOfficers(bpc.request);
 
+        Map<String,String> errList =doValidateGovernanceOfficers(bpc.request);
             if(!errList.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "governanceOfficers");
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errList));
@@ -615,6 +615,7 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
+        doValidateDisciplineAllocation(errorMap,daList);
         if(!errorMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"disciplineAllocation");
@@ -629,9 +630,11 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private void doValidateDisciplineAllocation(Map<String ,String> map, List<AppSvcDisciplineAllocationDto> daList){
-        for(AppSvcDisciplineAllocationDto every:daList){
-            String idNo = every.getIdNo();
-
+        for(int i=0;i< daList.size();i++){
+            String idNo = daList.get(i).getIdNo();
+            if(StringUtil.isEmpty(idNo)){
+                map.put("disciplineAllocation"+i,"UC_CHKLMD001_ERR002");
+            }
         }
     }
     /**
@@ -644,6 +647,7 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers start ...."));
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request) ;
         ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
+
         Map<String,String> map = NewApplicationDelegator.doValidatePo(bpc.request);
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "principalOfficers");
@@ -978,24 +982,14 @@ public class ClinicalLaboratoryDelegator {
         poDto.setEmailAddr(emailAddress);
         appSvcPrincipalOfficersDtos.add(poDto);
         if("1".equals(deputySelect)){
-            String deputySalutation = ParamUtil.getString(request, "deputySalutation");
-            String deputyName = ParamUtil.getString(request, "deputyName");
-            String deputyIdType = ParamUtil.getString(request, "deputyIdType");
-            String deputyIdNo = ParamUtil.getString(request, "deputyIdNo");
-            String deputyMobileNo = ParamUtil.getString(request, "deputyMobileNo");
-            String deputyEmailAddress = ParamUtil.getString(request, "deputyEmailAddress");
-            String modeOfMedAlert = ParamUtil.getString(request, "modeOfMedAlert");
-
-            AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
-            dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-            dpoDto.setSalutation(deputySalutation);
-            dpoDto.setName(deputyName);
-            dpoDto.setIdType(deputyIdType);
-            dpoDto.setIdNo(deputyIdNo);
-            dpoDto.setMobileNo(deputyMobileNo);
-            dpoDto.setEmailAddr(deputyEmailAddress);
-            dpoDto.setModeOfMedAlert(modeOfMedAlert);
-            appSvcPrincipalOfficersDtos.add(dpoDto);
+           /* String salutation = ParamUtil.getString(request, "salutation");
+            String name = ParamUtil.getString(request, "name");
+            String idType = ParamUtil.getString(request, "idType");
+            String idNo = ParamUtil.getString(request, "idNo");
+            String designation = ParamUtil.getString(request, "designation");
+            String mobileNo = ParamUtil.getString(request, "mobileNo");
+            String officeTelNo = ParamUtil.getString(request, "officeTelNo");
+            String emailAddress = ParamUtil.getString(request, "emailAddress");*/
         }
 
         return  appSvcPrincipalOfficersDtos;
@@ -1018,10 +1012,10 @@ public class ClinicalLaboratoryDelegator {
         return appSubmissionDto;
     }
 
-    private Map<String,String> doValidateGovernanceOfficers(HttpServletRequest request){
+    public static Map<String,String> doValidateGovernanceOfficers(HttpServletRequest request){
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
-        if(appSvcCgoList == null || appSvcCgoList.isEmpty()){
-            return null;
+        if(appSvcCgoList == null){
+            return new HashMap<>();
         }
 
         Map<String,String> errMap = new HashMap<>();

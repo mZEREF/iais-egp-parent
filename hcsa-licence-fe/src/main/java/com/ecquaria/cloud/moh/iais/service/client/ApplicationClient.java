@@ -55,7 +55,10 @@ public interface ApplicationClient  {
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppGroId(@PathVariable("applicationId") String applicationId);
 
     @PostMapping(path = "/iais-application/self-decl", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> saveSelfDecl(@RequestBody  List<SelfDecl> selfDeclList);
+    FeignResponseEntity<List<String>> saveAllSelfDecl(@RequestBody  List<SelfDecl> selfDeclList);
+
+    @GetMapping(path = "/iais-application/self-decl/{id}")
+    FeignResponseEntity<String> getPremisesSelfDeclChklJson(String selfDeclId);
 
     @GetMapping(path = "/iais-application/application/correlations/{appid}")
     FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId);
