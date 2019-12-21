@@ -23,25 +23,39 @@
     <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="770" y="380">
+  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="600" y="300">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPage_OnStepProcess_0" name="doPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="660" y="370">
+  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="480" y="300">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSort_OnStepProcess_0" name="doSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="550" y="370">
+  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="360" y="300">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doWithdraw" x="680" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doWithdraw_OnStepProcess_0" name="doWithdraw_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doDraft" x="820" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doDraft_OnStepProcess_0" name="doDraft_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -68,25 +82,34 @@
    <position>{(570,120)(720,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
-   <position>{(720,120)(790,400)}</position>
+   <position>{(720,120)(620,320)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
-   <position>{(720,120)(680,390)}</position>
+   <position>{(720,120)(500,320)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
-   <position>{(720,120)(570,390)}</position>
+   <position>{(720,120)(380,320)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doSearch" style="rectanular">
-   <position>{(570,390)(680,500)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
+   <position>{(380,320)(620,520)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doSort" style="rectanular">
-   <position>{(680,390)(680,500)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSort" style="oblique">
+   <position>{(500,320)(620,520)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPage" style="rectanular">
-   <position>{(790,400)(680,500)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPage" style="oblique">
+   <position>{(620,320)(620,520)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(680,500)(272,505)(270,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(620,520)(286,508)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doWithdraw" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
+   <position>{(720,120)(700,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doWithdraw" style="oblique">
+   <position>{(700,310)(620,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
+   <position>{(720,120)(840,320)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -96,11 +119,13 @@
    <SwitchCase component="/Steps/AutomaticStep/doPage" value="&quot;doPage&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSort" value="&quot;doSort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doWithdraw" value="&quot;doWithdraw&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doDraft" value="&quot;doDraft&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="660" y="480">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="600" y="500">
    <Description/>
   </Merge>
  </Merges>
