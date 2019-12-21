@@ -14,10 +14,10 @@
         <form  method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
             <%@ include file="/include/formHidden.jsp" %>
             <%--Validation fields Start--%>
+
             <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ServiceMenuDelegator"/>
             <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto"/>
 
-            <input type="hidden" name="chosedservicelist" id="chosedservicelist" value="">
             <div class="row">
                 <div class="col-xs-12 col-md-4">
                 </div>
@@ -27,6 +27,16 @@
                     </h3>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-4">
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <c:if test="${!empty err}">
+                    <span class="error-msg">${err}</span>
+                    </c:if>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-xs-12 col-md-4">
                 </div>
@@ -71,20 +81,7 @@
 
     $(document).ready(function() {
         $('#submitService').click(function(){
-            var arr = "";
-
-            $('input[type="checkbox"][name="chk"]:checked').each(
-                function() {
-                    arr += $(this).val()+",";
-                }
-            );
-
-            console.log(arr +"-----<")
-            $('#chosedservicelist').attr("value",arr);
-
             SOP.Crud.cfxSubmit("mainForm", "validation");
         });
-
-
     });
 </script>
