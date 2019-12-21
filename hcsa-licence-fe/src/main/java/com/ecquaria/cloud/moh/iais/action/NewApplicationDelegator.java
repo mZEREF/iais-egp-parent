@@ -1267,47 +1267,7 @@ public class NewApplicationDelegator {
                 String salutation = poDto.get(i).getSalutation();
                 String designation = poDto.get(i).getDesignation();
                 String idType = poDto.get(i).getIdType();
-                String deputyPrincipalOfficer = poDto.get(i).getDeputyPrincipalOfficer();
-                if("1".equals(deputyPrincipalOfficer)){
-                    String deputySalutation = poDto.get(i).getDeputySalutation();
-                    String deputyIdType = poDto.get(i).getDeputyIdType();
-                    String deputyDesignation = poDto.get(i).getDeputyDesignation();
-                    String deputyMobileNo = poDto.get(i).getDeputyMobileNo();
-                    String deputyEmailAddr = poDto.get(i).getDeputyEmailAddr();
-                    String modeOfMedAlert = poDto.get(i).getModeOfMedAlert();
-                    String deputyName = poDto.get(i).getDeputyName();
-                    String deputyIdNo = poDto.get(i).getDeputyIdNo();
 
-
-                    if(StringUtil.isEmpty(deputyName)){
-                        oneErrorMap.put("deputyName","UC_CHKLMD001_ERR001");
-                    }
-                    if(StringUtil.isEmpty(deputyIdNo)){
-                        oneErrorMap.put("deputyIdNo","UC_CHKLMD001_ERR001");
-                    }else {
-                        boolean b = SgNoValidator.validateFin(deputyIdNo);
-                        boolean b1 = SgNoValidator.validateNric(deputyIdNo);
-                        if(b||b1){
-                            oneErrorMap.put("deputyIdNo","CHKLMD001_ERR005");
-                        }
-                    }
-                   if(StringUtil.isEmpty(deputyMobileNo)){
-                       oneErrorMap.put("deputyMobileNo","UC_CHKLMD001_ERR001");
-                   }else {
-                       if(!deputyMobileNo.matches("^[8|9][0-9]{7}$")){
-                           oneErrorMap.put("deputyMobileNo","CHKLMD001_ERR004");
-                       }
-                   }
-                    if(StringUtil.isEmpty(deputyEmailAddr)){
-                        oneErrorMap.put("deputyEmailAddr","UC_CHKLMD001_ERR001");
-                    }
-                    else {
-                        if(deputyEmailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
-                            oneErrorMap.put("deputyEmailAddr","CHKLMD001_ERR006");
-                        }
-
-                    }
-                }
                 if(StringUtil.isEmpty(idType)){
                     oneErrorMap.put("idType","UC_CHKLMD001_ERR001");
                 }
