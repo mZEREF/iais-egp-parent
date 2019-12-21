@@ -335,8 +335,8 @@ public class InspectEmailAo1Delegator {
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, "taskDto");
         String appNo = taskDto.getRefNo();
-        //String licenseeName=insRepService.getInsRepDto(appNo).getLicenseeName();
-        String licenseeName="lichen";
+        String licenseeId=inspEmailService.getAppInsRepDto(appNo).getLicenseeId();
+        String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
         String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);

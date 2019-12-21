@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
@@ -34,4 +35,6 @@ public interface InspEmailService {
     List<AppPremisesCorrelationDto>getAppPremisesCorrelationsByAppId(String appId);
     List<NcAnswerDto> getNcAnswerDtoList(InspectionFillCheckListDto cDto, InspectionFillCheckListDto commonDto,
                                          AdCheckListShowDto adchklDto,List<NcAnswerDto> acDtoList);
+    LicenseeDto getLicenseeDtoById ( String id);
+
 }
