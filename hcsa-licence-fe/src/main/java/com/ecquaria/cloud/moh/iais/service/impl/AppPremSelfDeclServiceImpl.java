@@ -1,10 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-/*
- *author: yichen
- *date time:11/20/2019 1:56 PM
- *description:
- */
 
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -19,13 +14,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +31,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author yichen
+ * @date time:11/20/2019 1:56 PM
+ * @description:  applicant will be submit self-assessment after application submitted and payment over.
+                Each premises will have a common config, one or more service config、subtype config if have.
+ */
 @Service
 @Slf4j
 public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
@@ -42,7 +46,16 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     @Autowired
     private AppConfigClient appConfigClient;
 
+    @Autowired
+    private EicGatewayClient gatewayClient;
+
     private List<AppSvcPremisesScopeDto> premScopeList;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
 
     /**
     * @author: yichen 
@@ -217,8 +230,22 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     }
 
     @Override
-    public void saveSelfDecl(List<SelfDecl> selfDeclList) {
-        applicationClient.saveSelfDecl(selfDeclList);
+    /**
+    * @author: yichen 
+    * @description: If the transaction for FE fails, the action saved to BE is not triggered.
+    * If BE fails, will be bactch-job synchronizes the data
+    * @param: [selfDeclList]
+    * @return: void
+    */
+    public void saveAllSelfDecl(List<SelfDecl> selfDeclList) {
+        //save fe after return data
+        List<String> contentJsonList = applicationClient.saveAllSelfDecl(selfDeclList).getEntity();
+
+        //route to be
+        if (contentJsonList != null && !contentJsonList.isEmpty()){
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization()).getEntity();
+        }
     }
 
     private SelfDecl overlayCommon(List<String> premIdList, String configId){

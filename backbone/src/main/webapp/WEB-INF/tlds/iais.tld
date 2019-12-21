@@ -113,6 +113,19 @@
       <type>boolean</type>
     </attribute>
   </tag>
+
+  <tag>
+    <description>Record the current page name.</description>
+    <name>page</name>
+    <tag-class>com.ecquaria.cloud.moh.iais.tags.ResourceNameTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>request</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>javax.servlet.http.HttpServletRequest</type>
+    </attribute>
+  </tag>
   <tag>
     <description>Generate form group html.</description>
     <name>row</name>

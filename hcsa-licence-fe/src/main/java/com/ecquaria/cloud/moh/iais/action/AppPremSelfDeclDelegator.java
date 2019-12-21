@@ -150,6 +150,7 @@ public class AppPremSelfDeclDelegator {
         HttpServletRequest request = bpc.request;
         List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
+        //Once transaction
         boolean hasWriteAnswer = hasWtriteAnswer(selfDeclList).booleanValue();
         if (!hasWriteAnswer){
             Map<String, String> errorMap = new HashMap<>(1);
@@ -157,7 +158,7 @@ public class AppPremSelfDeclDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         }else {
-            appPremSelfDesc.saveSelfDecl(selfDeclList);
+            appPremSelfDesc.saveAllSelfDecl(selfDeclList);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
     }
