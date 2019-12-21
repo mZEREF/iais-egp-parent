@@ -36,7 +36,7 @@
                         <div class="form-check-gp">
                             <c:forEach var="base" items="${baseService}">
                                 <div class="form-check">
-                                    <input class="form-check-input" name="chk" id="clinical" type="checkbox" aria-invalid="false" value="${base.getId()}">
+                                    <input class="form-check-input" name="basechk" id="clinical" type="checkbox" aria-invalid="false" value="${base.getId()}">
                                     <label class="form-check-label" for="clinical"><span class="check-square"></span>${base.getSvcName()}</label>
                                 </div>
                             </c:forEach>
@@ -45,7 +45,7 @@
                         <div class="form-check-gp">
                             <c:forEach var="specified" items="${specifiedService}">
                                 <div class="form-check">
-                                    <input class="form-check-input" name="chk"  id="clinical" type="checkbox" aria-invalid="false" value="${specified.getId()}">
+                                    <input class="form-check-input" name="sepcifiedchk"  id="clinical" type="checkbox" aria-invalid="false" value="${specified.getId()}">
                                     <label class="form-check-label" for="clinical"><span class="check-square"></span>${specified.getSvcName()}</label>
                                 </div>
                             </c:forEach>
