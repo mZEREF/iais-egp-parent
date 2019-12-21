@@ -797,10 +797,11 @@ public class NewApplicationDelegator {
     //private method
     //=============================================================================
     private void loadingDraft(BaseProcessClass bpc) {
-        //todo
-        String draftNo = (String) ParamUtil.getSessionAttr(bpc.request, "DraftNumber");
-        //draftNo = "DN191218000050";
+        log.debug(StringUtil.changeForLog("the do loadingDraft start ...."));
+        String draftNo = (String) ParamUtil.getString(bpc.request, "DraftNumber");
+        //draftNo = "DN191118000001";
         if(!StringUtil.isEmpty(draftNo)){
+            log.debug(StringUtil.changeForLog("draftNo is not empty"));
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -809,6 +810,7 @@ public class NewApplicationDelegator {
             }
 
         }
+        log.debug(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
 
     private void requestForInformationLoading(BaseProcessClass bpc) {
@@ -838,9 +840,8 @@ public class NewApplicationDelegator {
             serviceConfigIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
 
         }
-
-        log.debug(StringUtil.changeForLog("service size:"+serviceConfigIds.size()));
         if(serviceConfigIds == null || serviceConfigIds.isEmpty()){
+            log.debug(StringUtil.changeForLog("service id is empty"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
             return false;
         }
