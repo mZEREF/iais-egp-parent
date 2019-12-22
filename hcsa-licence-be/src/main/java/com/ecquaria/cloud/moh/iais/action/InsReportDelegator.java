@@ -137,13 +137,19 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
 
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String serviceId = applicationDto.getServiceId();
+
         updateApplicaiton(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
         String status = applicationDto.getStatus();
         String taskKey = taskDto.getTaskKey();
         createAppPremisesRoutingHistory(appPremisesCorrelationId, status, taskKey,null,null,RoleConsts.USER_ROLE_INSPECTIOR);
         completedTask(taskDto);
+        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+        hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
+        hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
+        hcsaSvcStageWorkingGroupDto.setOrder(1);
 
-        List<TaskDto> taskDtos = prepareTaskList(taskDto);
+        List<TaskDto> taskDtos = prepareTaskList(taskDto,hcsaSvcStageWorkingGroupDto);
         taskService.createTasks(taskDtos);
         createAppPremisesRoutingHistory(appPremisesCorrelationId,status, taskKey,null,null,RoleConsts.USER_ROLE_AO1);
     }
@@ -198,19 +204,20 @@ public class InsReportDelegator {
         return appPremisesRoutingHistoryDto;
     }
 
-    private List<TaskDto> prepareTaskList(TaskDto taskDto) {
+    private List<TaskDto> prepareTaskList(TaskDto taskDto,HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) {
         List<TaskDto> list = new ArrayList<>();
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+        List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
+        String schemeType = listhcsaSvcStageWorkingGroupDto.get(0).getSchemeType();
+        Integer count = listhcsaSvcStageWorkingGroupDto.get(0).getCount();
 
-        //List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
         taskDto.setId(null);
         taskDto.setUserId(null);
         taskDto.setDateAssigned(null);
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);
-        taskDto.setScore(0);
+        taskDto.setScore(count);
 
-        taskDto.setTaskType(TaskConsts.TASK_TYPE_INSPECTION);
+        taskDto.setTaskType(schemeType);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
         taskDto.setRoleId(RoleConsts.USER_ROLE_AO1);
         taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);

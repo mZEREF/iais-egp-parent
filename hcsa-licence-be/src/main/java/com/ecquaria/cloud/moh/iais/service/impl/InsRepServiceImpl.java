@@ -97,9 +97,9 @@ public class InsRepServiceImpl implements InsRepService {
 //        String reportBy = orgUserDto.getUserName();
         String reportBy = "ssss";
         //get inspection lead
-       // String leadId = organizationClient.getInspectionLead(wkGrpId).getEntity();
-//        OrgUserDto entity = organizationClient.retrieveOneOrgUserAccount(leadId).getEntity();
-//        String leadName = entity.getUserName();
+        String leadId = organizationClient.getInspectionLead(wkGrpId).getEntity();
+        OrgUserDto entity = organizationClient.retrieveOneOrgUserAccount(leadId).getEntity();
+        String leadName = entity.getUserName();
 
         //get application type (new/renew)
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
