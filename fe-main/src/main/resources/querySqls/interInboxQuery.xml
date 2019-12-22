@@ -23,7 +23,8 @@
 
     <sql key = "applicationQuery" remarks = "Query Inter-Application Data by condition">
         <![CDATA[
-             SELECT
+        SELECT *
+        FROM (SELECT
                 app.id,
                 app.application_no,
                 app.app_type,
@@ -36,11 +37,12 @@
                 A.ID,A.DRAFT_NO AS application_no,A.APP_TYPE,'APST008' as status,NULL as service_id, A.CREATED_DT
             from
                 app_grp_submission_draft AS A
-            where  A.status = 'CMSTAT001'
+            where  A.status = 'CMSTAT001') AS B
+         WHERE 1=1
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
-            <#if appType??> AND app.app_type = :appType</#if>
-            <#if appNo??> AND app.application_no = :appNo</#if>
-            <#if appStatus??> AND app.status = :appStatus</#if>
+            <#if appType??> AND B.app_type = :appType</#if>
+            <#if appNo??> AND B.application_no = :appNo</#if>
+            <#if appStatus??> AND B .status = :appStatus</#if>
         ]]>
     </sql>
 

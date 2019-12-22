@@ -302,43 +302,4 @@ public class InboxDelegator {
 
     }
 
-    private static String getPageInfo(int pageNo,int pageCount) {
-        String tempStr = "";
-        if (pageNo > 1){
-            tempStr += "<li><a href=\"#\" aria-label=\"Previous\" onclick=\"getPageValue("+(pageNo - 1)+")\"><span aria-hidden=\"true\"><em class=\"fa fa-chevron-left\"></em></span></a></li>";
-        }else{
-            tempStr += "<li class=\"active\"><a href=\"#\" aria-label=\"Previous\" onclick=\"getPageValue("+(pageNo - 1)+")\"><span aria-hidden=\"true\"><em class=\"fa fa-chevron-left\"></em></span></a></li>";
-        }
-        if(pageCount<3){
-            for (int i = 1 ;i <= pageCount;i++) {
-                if(pageNo == i){
-                    tempStr += "<li class=\"active\"><a onclick='getPageValue("+ i +")'>"+i+"</a></li>";
-                }else{
-                    tempStr += "<li><a onclick='getPageValue("+ i +")'>"+i+"</a></li>";
-                }
-            }
-        }else if(pageNo + 2 <= pageCount){
-            for (int i = 0 ;i < 3;i++) {
-                if(pageNo == pageNo + i){
-                    tempStr += "<li class=\"active\"><a onclick='getPageValue("+ (pageNo + i) +")'>"+(pageNo + i)+"</a></li>";
-                }else{
-                    tempStr += "<li><a onclick='getPageValue("+ (pageNo + i) +")'>"+(pageNo + i)+"</a></li>";
-                }
-            }
-        }else {
-            for (int i = 2 ;i > -1;i--) {
-                if (pageNo == pageCount - i) {
-                    tempStr += "<li class=\"active\"><a onclick='getPageValue(" + (pageCount - i) + ")'>" + (pageCount - i) + "</a></li>";
-                }else{
-                    tempStr += "<li><a onclick='getPageValue(" + (pageCount - i) + ")'>" + (pageCount - i) + "</a></li>";
-                }
-            }
-        }
-        if(pageNo < pageCount){
-            tempStr += "<li><a aria-label=\"Next\"><span aria-hidden=\"true\" onclick=\"getPageValue("+(pageNo + 1)+")\"><em class=\"fa fa-chevron-right\"></em></span></a></li>";
-        }else{
-            tempStr += "<li class=\"active\"><a aria-label=\"Next\"><span aria-hidden=\"true\" onclick=\"getPageValue("+(pageNo + 1)+")\"><em class=\"fa fa-chevron-right\"></em></span></a></li>";
-        }
-        return tempStr;
-    }
 }
