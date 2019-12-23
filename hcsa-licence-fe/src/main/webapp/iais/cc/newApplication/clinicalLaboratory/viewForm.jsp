@@ -175,7 +175,7 @@
                       ${stat.end}
                       <tr>
                         <c:if test="${stat.first}">
-                          <td rowspan="5">
+                          <td rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
                             <p class="visible-xs visible-sm table-row-title">${appGrpPrem.address}</p>
                           </td>
                         </c:if>
