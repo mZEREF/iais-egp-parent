@@ -206,6 +206,7 @@ public class InspectEmailAo1Delegator {
             hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
             hcsaSvcStageWorkingGroupDto.setOrder(1);
             TaskDto taskDto1=taskDto;
+            taskDto1.setTaskKey(taskKey);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
             taskDto1.setUserId("61F8BB01-F70C-EA11-BE7D-000C29F371DC");
             completedTask(taskDto1);
@@ -219,7 +220,7 @@ public class InspectEmailAo1Delegator {
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
 
             String taskKey = HcsaConsts.ROUTING_STAGE_INS;
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
 
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getId(),HcsaConsts.ROUTING_STAGE_INS);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
@@ -227,6 +228,7 @@ public class InspectEmailAo1Delegator {
             hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
             hcsaSvcStageWorkingGroupDto.setOrder(1);
             TaskDto taskDto1=taskDto;
+            taskDto1.setTaskKey(taskKey);
             taskDto1.setUserId(appPremisesRoutingHistoryDto.getActionby());
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
@@ -234,8 +236,7 @@ public class InspectEmailAo1Delegator {
             completedTask(taskDto1);
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
-            taskKey = taskDto1.getTaskKey();
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId());
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId());
 
 
         }

@@ -185,7 +185,7 @@ public class InspectReviseNcEmailDelegator {
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
 
             String taskKey = HcsaConsts.ROUTING_STAGE_AO1;
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
 
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
@@ -193,31 +193,33 @@ public class InspectReviseNcEmailDelegator {
             hcsaSvcStageWorkingGroupDto.setOrder(1);
             TaskDto taskDto1=taskDto;
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
+            taskDto1.setTaskKey(taskKey);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_AO1);
             completedTask(taskDto1);
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId());
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId());
 
         }
         else {
-            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
 
             String taskKey = HcsaConsts.ROUTING_STAGE_INS;
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
 
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
             hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
             hcsaSvcStageWorkingGroupDto.setOrder(1);
             TaskDto taskDto1=taskDto;
+            taskDto1.setTaskKey(taskKey);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
             taskDto1.setUserId("61F8BB01-F70C-EA11-BE7D-000C29F371DC");
             completedTask(taskDto1);
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId());
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId());
 
         }
         inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);

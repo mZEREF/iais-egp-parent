@@ -197,6 +197,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
                     hcsaSvcStageWorkingGroupDto.setOrder(1);
                     TaskDto taskDto2=taskDto;
+                    taskDto2.setTaskKey(taskKey);
                     taskDto2.setUserId(appPremisesRoutingHisDto.getActionby());
                     taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
                     taskDto2.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
@@ -212,7 +213,7 @@ public class InspectionMergeSendNcEmailDelegator {
         else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-            String taskKey = HcsaConsts.ROUTING_STAGE_ASO;
+            String taskKey = HcsaConsts.ROUTING_STAGE_INS;
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
 
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
@@ -220,6 +221,7 @@ public class InspectionMergeSendNcEmailDelegator {
             hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
             hcsaSvcStageWorkingGroupDto.setOrder(1);
             TaskDto taskDto2=taskDto;
+            taskDto2.setTaskKey(taskKey);
             taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
             taskDto2.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
 
