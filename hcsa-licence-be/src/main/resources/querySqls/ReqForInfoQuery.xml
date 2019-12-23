@@ -10,9 +10,14 @@
                 app.status,
                 app.service_id,
                 app.created_dt
+                T3.HCI_CODE,
+                T3.HCI_NAME,
+                T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME
             FROM APPLICATION AS app
+             JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = app.ID
+             JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
             WHERE 1=1
-            <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
+            <#if id??> AND app.id = :id </#if>
             <#if appType??> AND app.app_type = :appType</#if>
             <#if appNo??> AND app.application_no = :appNo</#if>
             <#if appStatus??> AND app.status = :appStatus</#if>
@@ -37,6 +42,7 @@
             <#if sub_date??> AND lic.start_date => :sub_date</#if>
             <#if to_date??> AND lic.expiry_date =< :to_date</#if>
             <#if licence_no??> AND lic.licence_no = :licence_no</#if>
+            <#if app_id??> AND licApp.APPLICATION_ID = :app_id</#if>
         ]]>
     </sql>
 

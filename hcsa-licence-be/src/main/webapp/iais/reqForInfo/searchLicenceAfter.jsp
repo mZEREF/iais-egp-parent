@@ -115,7 +115,7 @@
                                             <td><c:out value="${pool.licenceNo}"/></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
-                                            <td><c:out value="${pool.address}"/></td>
+                                            <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
                                             <td><c:out value="${pool.licenseeName}"/></td>
                                             <td><c:out value="${pool.serviceName}"/></td>
                                             <td><c:out value="${pool.licencePeriod}"/></td>

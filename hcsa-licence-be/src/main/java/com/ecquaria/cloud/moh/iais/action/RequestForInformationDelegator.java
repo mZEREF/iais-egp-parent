@@ -4,6 +4,8 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -12,11 +14,13 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +36,8 @@ import java.util.Map;
 public class RequestForInformationDelegator {
     @Autowired
     RequestForInformationService requestForInformationService;
-
+    @Autowired
+    ApplicationClient applicationClient;
     FilterParameter licenceParameter = new FilterParameter();
 
     public void start(BaseProcessClass bpc) {
@@ -129,6 +134,7 @@ public class RequestForInformationDelegator {
         String licence_status = ParamUtil.getString(bpc.request, "licence_status");
         String sub_date = ParamUtil.getString(bpc.request, "sub_date");
         String to_date = ParamUtil.getString(bpc.request, "to_date");
+        //List<String> svcNames=
         licenceParameter.setClz(RfiLicenceQueryDto.class);
         licenceParameter.setSearchAttr("SearchParam");
         licenceParameter.setResultAttr("SearchResult");
@@ -136,9 +142,6 @@ public class RequestForInformationDelegator {
 
         if(!StringUtil.isEmpty(licence_no)){
             filters.put("licence_no", licence_no);
-        }
-        if(!StringUtil.isEmpty(service_licence_type)){
-            filters.put("service_name", service_licence_type);
         }
         if(!StringUtil.isEmpty(licence_status)){
             filters.put("licence_status", licence_status);
@@ -153,17 +156,52 @@ public class RequestForInformationDelegator {
         SearchParam licParam = SearchResultHelper.getSearchParam(request, true,licenceParameter);
         QueryHelp.setMainSql("ReqForInfoQuery","licenceQuery",licParam);
         if (licParam != null) {
-            SearchResult licResult = requestForInformationService.licenceDoQuery(licParam);
+            SearchResult<RfiLicenceQueryDto> licResult = requestForInformationService.licenceDoQuery(licParam);
 
             if(!StringUtil.isEmpty(licResult)){
+                SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
+                searchListDtoSearchResult.setRowCount(licResult.getRowCount());
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                for (RfiLicenceQueryDto rfiLicenceQueryDto:licResult.getRows()
+                     ) {
+                    ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
+                    reqForInfoSearchListDto.setLicenceStatus(rfiLicenceQueryDto.getLicenceStatus());
+                    reqForInfoSearchListDto.setLicenceNo(rfiLicenceQueryDto.getLicenceNo());
+                    reqForInfoSearchListDto.setAppId(rfiLicenceQueryDto.getAppId());
+                    reqForInfoSearchListDto.setServiceName(rfiLicenceQueryDto.getServiceName());
+                    reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
+                    reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
+
+                    licenceParameter.setClz(RfiApplicationQueryDto.class);
+                    licenceParameter.setSearchAttr("SearchParam");
+                    licenceParameter.setResultAttr("SearchResult");
+                    Map<String,Object> filter=new HashMap<>();
+                    if(!StringUtil.isEmpty(rfiLicenceQueryDto.getAppId())){
+                        filters.put("id", rfiLicenceQueryDto.getAppId());
+                    }
+                    licenceParameter.setFilters(filters);
+                    SearchParam appParam = SearchResultHelper.getSearchParam(request, true,licenceParameter);
+                    QueryHelp.setMainSql("ReqForInfoQuery","applicationQuery",licParam);
+                    SearchResult<RfiApplicationQueryDto> appResult =applicationClient.searchApp(appParam).getEntity();
+                    RfiApplicationQueryDto app=appResult.getRows().get(0);
+
+                    reqForInfoSearchListDto.setApplicationType(app.getApplicationType());
+                    reqForInfoSearchListDto.setApplicationNo(app.getApplicationNo());
+                    reqForInfoSearchListDto.setHciCode(app.getHciCode());
+                    reqForInfoSearchListDto.setHciName(app.getHciName());
+                    reqForInfoSearchListDto.setBlkNo(app.getBlkNo());
+                    reqForInfoSearchListDto.setBuildingName(app.getBuildingName());
+                    reqForInfoSearchListDto.setUnitNo(app.getUnitNo());
+                    reqForInfoSearchListDto.setStreetName(app.getStreetName());
+                    reqForInfoSearchListDto.setFloorNo(app.getFloorNo());
+
+                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                }
+                searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
                 ParamUtil.setSessionAttr(request,"SearchParam", licParam);
-                ParamUtil.setRequestAttr(request,"SearchResult", licResult);
+                ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
             }
         }
-
-
-
-
         ParamUtil.setRequestAttr(request,"licSvcTypeOption", licSvcTypeOption);
         ParamUtil.setRequestAttr(request,"licStatusOption", licStatusOption);
         // 		doSearchLicence->OnStepProcess
