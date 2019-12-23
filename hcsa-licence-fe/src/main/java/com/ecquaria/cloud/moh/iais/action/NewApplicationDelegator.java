@@ -1041,8 +1041,20 @@ public class NewApplicationDelegator {
                 }
             }
         }else {
-            serviceConfigIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
 
+            List<String> baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseService");
+            List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedService");
+            if(baseServiceIds != null && !baseServiceIds.isEmpty()){
+                for(String id:baseServiceIds){
+                    serviceConfigIds.add(id);
+                }
+            }
+
+            if(specifiedServiceIds != null && !specifiedServiceIds.isEmpty()){
+                for(String id:specifiedServiceIds){
+                    serviceConfigIds.add(id);
+                }
+            }
         }
         if(serviceConfigIds == null || serviceConfigIds.isEmpty()){
             log.debug(StringUtil.changeForLog("service id is empty"));
