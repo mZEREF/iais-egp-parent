@@ -261,7 +261,7 @@
         var excute = dividlist.indexOf(divid);
         if(excute < 0){
             $.post(
-                '/be-main/backend/appGroup.do',
+                '/main-web/backend/appGroup.do',
                 {groupno:applicationGroupNo},
                 function (data,status) {
                     var res = data.ajaxResult;
