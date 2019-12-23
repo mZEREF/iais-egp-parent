@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -68,6 +69,7 @@ public class ClinicalLaboratoryDelegator {
     //public static final String  APPSVCRELATEDINFOMAP = "AppsvcRelatedInfoMap";
     public static final String  ERRORMAP_GOVERNANCEOFFICERS = "errorMap_governanceOfficers";
     public static final String  RELOADSVCDOC = "ReloadSvcDoc";
+    public static final String  SERVICEPERSONNELCONFIG = "ServicePersonnelConfig";
     /**
      * StartStep: doStart
      *
@@ -81,6 +83,8 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.ERRORMAP_GOVERNANCEOFFICERS, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADSVCDOC,  null);
+
+        ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
 
         log.debug(StringUtil.changeForLog("the do doStart end ...."));
     }
@@ -560,7 +564,13 @@ public class ClinicalLaboratoryDelegator {
         Map<String,String> errorMap=new HashMap<>();
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = new ArrayList<>();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
-            String name = appGrpPremisesDto.getHciName()+"control--runtime--1";
+            String premiseName = "";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                premiseName = appGrpPremisesDto.getHciName();
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                premiseName = appGrpPremisesDto.getConveyanceVehicleNo();
+            }
+            String name = premiseName+"control--runtime--1";
             String [] checkList = ParamUtil.getStrings(bpc.request, name);
             List<AppSvcChckListDto> appSvcChckListDtoList = new ArrayList<>();
             AppSvcChckListDto appSvcChckListDto = new AppSvcChckListDto();
@@ -935,9 +945,37 @@ public class ClinicalLaboratoryDelegator {
      * @throws
      */
     public void prepareServicePersonnel(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do prepareNuclearMedicineImaging start ...."));
+        log.debug(StringUtil.changeForLog("the do prepareServicePersonnel start ...."));
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
 
-        log.debug(StringUtil.changeForLog("the do prepareNuclearMedicineImaging end ...."));
+        ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, (Serializable) hcsaSvcPersonnelList);
+
+        List<SelectOption> personnel = new ArrayList<>();
+        SelectOption personnelOp1 = new SelectOption("Radiology Professional", "Radiology Professional");
+        SelectOption personnelOp2 = new SelectOption("Medical Physicist", "Medical Physicist");
+        SelectOption personnelOp3 = new SelectOption("Radiation Safety Officer", "Radiation Safety Officer");
+        SelectOption personnelOp4 = new SelectOption("Registered Nurse", "Registered Nurse");
+        personnel.add(personnelOp1);
+        personnel.add(personnelOp2);
+        personnel.add(personnelOp3);
+        personnel.add(personnelOp4);
+        ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingPersonnel", (Serializable) personnel);
+
+
+        List<SelectOption> designation = new ArrayList<>();
+        SelectOption designationOp1 = new SelectOption("Diagnostic radiographer", "Diagnostic radiographer");
+        SelectOption designationOp2 = new SelectOption("Radiation therapist", "Radiation therapist");
+        SelectOption designationOp3 = new SelectOption("Nuclear Medicine Technologist", "Nuclear Medicine Technologist");
+        designation.add(designationOp1);
+        designation.add(designationOp2);
+        designation.add(designationOp3);
+        ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingDesignation", (Serializable) designation);
+
+
+
+
+        log.debug(StringUtil.changeForLog("the do prepareServicePersonnel end ...."));
     }
 
     /**
@@ -947,9 +985,15 @@ public class ClinicalLaboratoryDelegator {
      * @throws
      */
     public void doServicePersonnel (BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the do doNuclearMedicineImaging start ...."));
+        log.debug(StringUtil.changeForLog("the do doServicePersonnel start ...."));
+        //:todo
+        String servicePersonnelType = "NuclearMedicineImaging";
+        List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
+        if("NuclearMedicineImaging".equals(servicePersonnelType)){
+            appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request);
+        }
 
-        log.debug(StringUtil.changeForLog("the do doNuclearMedicineImaging end ...."));
+        log.debug(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
 
 
@@ -1094,7 +1138,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = new ArrayList<>();
         AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
         String assignSelect = ParamUtil.getString(request, "assignSelect");
-        String deputySelect = ParamUtil.getString(request, "deputySelect");
+        String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
         String salutation = ParamUtil.getString(request, "salutation");
         String name = ParamUtil.getString(request, "name");
         String idType = ParamUtil.getString(request, "idType");
@@ -1115,14 +1159,24 @@ public class ClinicalLaboratoryDelegator {
         poDto.setEmailAddr(emailAddress);
         appSvcPrincipalOfficersDtos.add(poDto);
         if("1".equals(deputySelect)){
-           /* String salutation = ParamUtil.getString(request, "salutation");
-            String name = ParamUtil.getString(request, "name");
-            String idType = ParamUtil.getString(request, "idType");
-            String idNo = ParamUtil.getString(request, "idNo");
-            String designation = ParamUtil.getString(request, "designation");
-            String mobileNo = ParamUtil.getString(request, "mobileNo");
-            String officeTelNo = ParamUtil.getString(request, "officeTelNo");
-            String emailAddress = ParamUtil.getString(request, "emailAddress");*/
+            String deputySalutation = ParamUtil.getString(request, "deputySalutation");
+            String deputyName = ParamUtil.getString(request, "deputyName");
+            String deputyIdType = ParamUtil.getString(request, "deputyIdType");
+            String deputyIdNo = ParamUtil.getString(request, "deputyIdNo");
+            String deputyMobileNo = ParamUtil.getString(request, "deputyMobileNo");
+            String deputyEmailAddress = ParamUtil.getString(request, "deputyEmailAddress");
+            String modeOfMedAlert = ParamUtil.getString(request, "modeOfMedAlert");
+
+            AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
+            dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+            dpoDto.setSalutation(deputySalutation);
+            dpoDto.setName(deputyName);
+            dpoDto.setIdType(deputyIdType);
+            dpoDto.setIdNo(deputyIdNo);
+            dpoDto.setMobileNo(deputyMobileNo);
+            dpoDto.setEmailAddr(deputyEmailAddress);
+            dpoDto.setModeOfMedAlert(modeOfMedAlert);
+            appSvcPrincipalOfficersDtos.add(dpoDto);
         }
 
         return  appSvcPrincipalOfficersDtos;
@@ -1327,4 +1381,42 @@ public class ClinicalLaboratoryDelegator {
         return specialtySelectList;
     }
 
+
+    public List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request){
+        List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
+        String [] personnelType =  ParamUtil.getStrings(request, "personnelSel");
+        if(personnelType != null && personnelType.length>0){
+            for(String personnelSel:personnelType){
+                AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
+                appSvcPersonnelDto.setPersonnelSel(personnelSel);
+                String designation = "";
+                String name = "";
+                String qualification = "";
+                String wrkExpYear = "";
+                String professionalRegnNo = "";
+                if("Radiology Professional" == personnelSel){
+                    designation = ParamUtil.getString(request, "designation");
+                    name = ParamUtil.getString(request, "name");
+                    qualification = ParamUtil.getString(request, "qualification");
+                    wrkExpYear = ParamUtil.getString(request, "wrkExpYear");
+                }else if("Medical Physicist" == personnelSel){
+                    name = ParamUtil.getString(request, "name");
+                    qualification = ParamUtil.getString(request, "qualification");
+                    wrkExpYear = ParamUtil.getString(request, "wrkExpYear");
+                }else if("Radiation Safety Officer" == personnelSel){
+                    name = ParamUtil.getString(request, "name");
+                }else if("Registered Nurse" == personnelSel){
+                    name = ParamUtil.getString(request, "name");
+                    professionalRegnNo = ParamUtil.getString(request, "regnNo");
+                }
+                appSvcPersonnelDto.setDesignation(designation);
+                appSvcPersonnelDto.setName(name);
+                appSvcPersonnelDto.setQuaification(qualification);
+                appSvcPersonnelDto.setWrkExpYear(wrkExpYear);
+                appSvcPersonnelDto.setProfRegNo(professionalRegnNo);
+                appSvcPersonnelDtos.add(appSvcPersonnelDto);
+            }
+        }
+        return appSvcPersonnelDtos;
+    }
 }

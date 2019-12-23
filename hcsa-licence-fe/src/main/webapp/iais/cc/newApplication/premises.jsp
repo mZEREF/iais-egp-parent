@@ -304,18 +304,18 @@
                             </iais:value>
                           </iais:row>
                           <iais:row>
-                            <iais:field value="Street Name " mandatory="true" width="10"/>
-                            <iais:value width="10">
-                              <iais:input maxLength="32" cssClass="conveyanceStreetName" type="text" name="${premIndexNo}conveyanceStreetName"  value="${appGrpPremisesDto.conveyanceStreetName}"></iais:input>
-                              <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceStreetName${status.index}"></span>
-                            </iais:value>
-                          </iais:row>
-                          <iais:row>
                             <iais:field value="Building Name " width="12"/>
                             <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
                               <iais:input maxLength="45" cssClass="conveyanceBuildingName" type="text" name="${premIndexNo}conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
                               <p class="small-txt">(Optional)</p>
                               <span  class="error-msg"></span>
+                            </iais:value>
+                          </iais:row>
+                          <iais:row>
+                            <iais:field value="Street Name " mandatory="true" width="10"/>
+                            <iais:value width="10">
+                              <iais:input maxLength="32" cssClass="conveyanceStreetName" type="text" name="${premIndexNo}conveyanceStreetName"  value="${appGrpPremisesDto.conveyanceStreetName}"></iais:input>
+                              <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceStreetName${status.index}"></span>
                             </iais:value>
                           </iais:row>
                           <div class="form-group">
@@ -582,6 +582,9 @@ var retrieveAddr = function(){
                 premSelect();
 
                 retrieveAddr();
+                $('.date_picker').datepicker({
+                    format:"dd/mm/yyyy"
+                });
 
             },
             'error':function (data) {

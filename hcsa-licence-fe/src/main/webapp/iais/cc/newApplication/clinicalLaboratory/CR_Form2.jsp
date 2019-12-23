@@ -370,7 +370,7 @@
           </td>
         </tr>
         <hr/>
-        <c:if test="${CgoMandatoryCount >0}">
+        <c:if test="${'BLB'!=currentSvcCode || 'RDS'!=currentSvcCode}">
         <tr id="addInfo">
           <td>
             <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Clinical Governance Officer</span>

@@ -134,9 +134,9 @@
               Operating Hours (Start) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="(0)onsiteStartHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="(0)onsiteStartMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="form-group">
@@ -225,13 +225,6 @@
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
-            <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
-            <div class="col-sm-7 col-md-5 col-xs-10">
-              <input type="text" id="conveyanceStreetName" name="(0)conveyanceStreetName" class="conveyanceStreetName" maxlength="32" autocomplete="off">
-              <span class="error-msg" name="iaisErrorMsg" id="error_streetName(00)"></span>
-            </div>
-          <div class="clear"></div></div>
-          <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Building Name </label>
             <div class=" col-xs-11 col-sm-7 col-md-6 input-with-label">
               <input type="text" id="conveyanceBuildingName" name="(0)conveyanceBuildingName" class="conveyanceBuildingName" maxlength="45" autocomplete="off">
@@ -239,13 +232,20 @@
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
+            <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
+            <div class="col-sm-7 col-md-5 col-xs-10">
+              <input type="text" id="conveyanceStreetName" name="(0)conveyanceStreetName" class="conveyanceStreetName" maxlength="32" autocomplete="off">
+              <span class="error-msg" name="iaisErrorMsg" id="error_streetName(00)"></span>
+            </div>
+          <div class="clear"></div></div>
+          <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">
               Operating Hours (Start) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="(0)conStartHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="(0)conStartMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="form-group">

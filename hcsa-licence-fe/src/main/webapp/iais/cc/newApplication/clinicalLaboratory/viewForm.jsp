@@ -113,7 +113,16 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> ${cgo.speciality }</p>
                     </td>
                   </tr>
-
+                  <c:if test="${'other' == cgo.speciality}">
+                  <tr>
+                    <td class="col-xs-8">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                    </td>
+                    <td>
+                      <p><c:out value="${cgo.specialityOther}"/></p>
+                    </td>
+                  </tr>
+                  </c:if>
                   <tr>
                     <td class="col-xs-8">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspeciality or relevant qualification:</p>
