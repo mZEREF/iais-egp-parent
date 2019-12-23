@@ -362,8 +362,6 @@
                                             <button type="button" class="btn btn-primary" onclick="javascript: doNext();">
                                                 Next
                                             </button>
-                                        </div>
-                                        <div align="right">
                                             <button type="button" class="btn btn-primary" onclick="javascript: doSaveDraft();">
                                                 Save Draft
                                             </button>

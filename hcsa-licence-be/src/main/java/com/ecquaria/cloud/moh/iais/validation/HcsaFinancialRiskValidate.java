@@ -20,12 +20,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * HcsaFinancialRiskValidate
@@ -48,7 +49,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }
         if(editList!=null &&!editList.isEmpty()){
             for(HcsaRiskFinanceMatrixDto fdto :editList){
-                if(fdto.isInIsEdit()&&fdto.isPrIsEdit()){
+                if(fdto.isInIsEdit()&&fdto.isPrIsEdit()||!StringUtil.isEmpty(fdto.getId())){
                     therholdVad(errMap,fdto);
                     caseCounthVad(errMap,fdto);
                     dateVad(errMap,fdto);
@@ -56,6 +57,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                     //one serviceCode need both Edit pr and in
                     errMap.put(fdto.getServiceCode()+"both","The category of Institution and Practitioner should be update at the same time");
                 }
+
             }
         }
         return errMap;
@@ -261,10 +263,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         String prEndDate = fdto.getPrEffectiveEndDate();
         boolean inDateFormatVad = doDateFormatVad(errMap,inEffDate,inEndDate,fdto.getServiceCode(),true);
         boolean prDateFormatVad = doDateFormatVad(errMap,prEffDate,prEndDate,fdto.getServiceCode(),false);
-        if(inDateFormatVad){
+        if(inDateFormatVad&&fdto.isInIsEdit()){
             doDateLogicVad(errMap,fdto,true);
         }
-        if(prDateFormatVad){
+        if(prDateFormatVad&&fdto.isPrIsEdit()){
             doDateLogicVad(errMap,fdto,false);
         }
 
@@ -276,16 +278,24 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             Date inEndDate = Formatter.parseDate(fdto.getInEffectiveEndDate());
             Date prEffDate = Formatter.parseDate(fdto.getPrEffectiveStartDate());
             Date prEndDate = Formatter.parseDate(fdto.getPrEffectiveEndDate());
+            int inEditNumFlag = 0;
+            int prEditNumFlag = 0;
+            if(fdto.isInIsEdit()){
+                inEditNumFlag = 1;
+            }
+            if(fdto.isPrIsEdit()){
+                prEditNumFlag = 1;
+            }
             if (StringUtil.isEmpty(fdto.getId())) {
-                doUsualDateVad(inEffDate,inEndDate,fdto.getServiceCode(),errMap,true);
-                doUsualDateVad(prEffDate,prEndDate,fdto.getServiceCode(),errMap,false);
+                doUsualDateVad(inEffDate,inEndDate,fdto.getServiceCode(),errMap,true,inEditNumFlag,prEditNumFlag);
+                doUsualDateVad(prEffDate,prEndDate,fdto.getServiceCode(),errMap,false,inEditNumFlag,prEditNumFlag);
             } else {
                 boolean inDateFlag;
-                inDateFlag = doUsualDateVad(inEffDate,inEndDate,fdto.getServiceCode(),errMap,true);
+                inDateFlag = doUsualDateVad(inEffDate,inEndDate,fdto.getServiceCode(),errMap,true,inEditNumFlag,prEditNumFlag);
                 if(inDateFlag){
                     doSpecialDateFlag(errMap,fdto,true);
                 }
-                inDateFlag = doUsualDateVad(prEffDate,prEndDate,fdto.getServiceCode(),errMap,false);
+                inDateFlag = doUsualDateVad(prEffDate,prEndDate,fdto.getServiceCode(),errMap,false,inEditNumFlag,prEditNumFlag);
                 if(inDateFlag){
                     doSpecialDateFlag(errMap,fdto,true);
                 }
@@ -315,21 +325,29 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }
     }
 
-    public boolean doUsualDateVad(Date effDate,Date endDate,String serviceCode,Map<String, String> errMap,boolean isIn){
+    public boolean doUsualDateVad(Date effDate,Date endDate,String serviceCode,Map<String, String> errMap,boolean isIn,int inEdit,int prEdit){
         boolean flag = true;
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if(isIn){
-                errMap.put(serviceCode + "inEffDate", "EffectiveDate should be furture time");
-            }else{
-                errMap.put(serviceCode + "prEffDate", "EffectiveDate should be furture time");
+                if(inEdit == 1){
+                    errMap.put(serviceCode + "inEffDate", "EffectiveDate should be furture time");
+                }
+            }else {
+                if(prEdit == 1){
+                    errMap.put(serviceCode + "prEffDate", "EffectiveDate should be furture time");
+                }
             }
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
             if(isIn){
-                errMap.put(serviceCode + "inEndDate", "EffectiveDate should be ealier than EndDate");
+                if(inEdit == 1){
+                    errMap.put(serviceCode + "inEndDate", "EffectiveDate should be ealier than EndDate");
+                }
             }else{
-                errMap.put(serviceCode + "prEndDate", "EffectiveDate should be ealier than EndDate");
+                if(prEdit == 1){
+                    errMap.put(serviceCode + "prEndDate", "EffectiveDate should be ealier than EndDate");
+                }
             }
         }
         return flag;

@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/RiskFinancialRiskAddPage.jsp"%>MohRiskFinancialConfig
+<%@include file="/iais/riskconfig/RiskLeaderShipAddPage.jsp"%>

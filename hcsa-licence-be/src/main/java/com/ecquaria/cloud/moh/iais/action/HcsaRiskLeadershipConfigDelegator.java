@@ -5,9 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConsta
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.service.HcsaRiskLeaderShipService;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,11 @@ import java.util.List;
 @Delegator(value = "hcsaRiskLeadershipConfigDelegator")
 @Slf4j
 public class HcsaRiskLeadershipConfigDelegator {
-
+    private HcsaRiskLeaderShipService hcsaRiskLeaderShipService;
     private HcsaRiskService hcsaRiskService;
     @Autowired
-    public HcsaRiskLeadershipConfigDelegator(HcsaRiskService hcsaRiskService){
-        this.hcsaRiskService = hcsaRiskService;
+    public HcsaRiskLeadershipConfigDelegator(HcsaRiskLeaderShipService hcsaRiskLeaderShipService){
+        this.hcsaRiskLeaderShipService = hcsaRiskLeaderShipService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -39,16 +41,15 @@ public class HcsaRiskLeadershipConfigDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
-        RiskFinancialShowDto financialShowDto = hcsaRiskService.getfinancialShowDto();
-        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO, financialShowDto);
-        ;
+        RiskLeaderShipShowDto leaderShowDto = hcsaRiskLeaderShipService.getLeaderShowDto();
+        ParamUtil.setSessionAttr(request, "leaderShowDto", leaderShowDto);
     }
 
     public void prepare(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfig start ...."));
         HttpServletRequest request = bpc.request;
-        RiskFinancialShowDto financialShowDto = (RiskFinancialShowDto) ParamUtil.getSessionAttr(request, RiskConsts.FINANCIALSHOWDTO);
-        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO, financialShowDto);
+        RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
+        ParamUtil.setSessionAttr(request, "leaderShowDto", leaderShowDto);
 
     }
 

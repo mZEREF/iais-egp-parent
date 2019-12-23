@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -28,16 +26,11 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
     @Autowired
     HcsaConfigClient hcsaConfigClient;
 
-
     @Override
     public RiskFinancialShowDto getfinancialShowDto(){
-        //List<HcsaServiceDto> serviceDtoList =  RestApiUtil.getListByReqParam(url,map,HcsaServiceDto.class);
         List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
-        Map<String,Object> mapTwo = new HashMap();
         RiskFinancialShowDto showDto  = hcsaConfigClient.getRiskFinShow(serviceDtoList).getEntity();
-        //RiskFinancialShowDto showDto = RestApiUtil.postGetObject("hcsa-config:8878/iais-hcsa-risk/FinancialShow",serviceDtoList,RiskFinancialShowDto.class);
-        //RiskFinancialShowDto showDto = new RiskFinancialShowDto();
-        for(HcsaRiskFinanceMatrixDto temp:showDto.getFinanceList()){
+       for(HcsaRiskFinanceMatrixDto temp:showDto.getFinanceList()){
             if(!StringUtil.isEmpty(temp.getId())){
                 temp.setInEffectiveEndDate(temp.getBaseInEffectiveEndDate());
                 temp.setInEffectiveStartDate(temp.getBaseInEffectiveStartDate());
@@ -47,7 +40,6 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         }
         return showDto;
     }
-
     @Override
     public void saveDto(RiskFinancialShowDto dto) {
         List<HcsaRiskFinanceMatrixDto> dtoList = dto.getFinanceList();
@@ -63,7 +55,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                 saveList.add(getFinDto(temp,false,false));
             }
         }
-        for(HcsaRiskFinanceMatrixDto temp : dtoList){
+/*        for(HcsaRiskFinanceMatrixDto temp : dtoList){
             if(StringUtil.isEmpty(temp.getId())){
                 if(isNeedUpdatePreviouds(temp,true)){
                     updateList.add(temp);
@@ -72,35 +64,83 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                     updateList.add(temp);
                 }
             }
-        }
+        }*/
         //call api to save
-        if(saveList!= null && !saveList.isEmpty()){
-            //RestApiUtil.postGetObject("hcsa-config:8878/iais-hcsa-risk/FinanceMatrixMemoryStorage",saveList,HcsaRiskFinanceMatrixDto.class);
+        doUpdate(saveList);
+     /*   if(saveList!= null && !saveList.isEmpty()){
             doSave(saveList);
         }
         if(updateList!=null&&!updateList.isEmpty()){
-            //RestApiUtil.update("hcsa-config:8878/iais-hcsa-risk/FinanceMatrixMemoryUpdating",updateList,HcsaRiskFinanceMatrixDto.class);
             doUpdate(updateList);
-        }
+        }*/
     }
     public void doSave(List<HcsaRiskFinanceMatrixDto> saveList){
         for(HcsaRiskFinanceMatrixDto temp:saveList){
             temp.setId(null);
         }
-
+        hcsaConfigClient.saveFinRiskMatrix(saveList);
         //save
     }
 
     public void doUpdate(List<HcsaRiskFinanceMatrixDto> updateList){
         //get last version form db
-        List<HcsaRiskFinanceMatrixDto> lastversionList = new ArrayList<>();
         for(HcsaRiskFinanceMatrixDto temp:updateList){
-
+            //List<HcsaRiskFinanceMatrixDto> lastversionList= hcsaConfigClient.getFinianceRiskBySvcCode(temp.getServiceCode()).getEntity();
+            List<HcsaRiskFinanceMatrixDto> lastversionList = getLastversionList(temp);
+            if(lastversionList!=null && !lastversionList.isEmpty()){
+                for(HcsaRiskFinanceMatrixDto lastversion:lastversionList){
+                    updateLastVersion(temp,lastversion);
+                }
+                hcsaConfigClient.saveFinRiskMatrix(lastversionList);
+            }
         }
+        for(HcsaRiskFinanceMatrixDto temp:updateList){
+            temp.setId(null);
+        }
+        hcsaConfigClient.saveFinRiskMatrix(updateList);
     }
-    public HcsaRiskFinanceMatrixDto getBaseDtoData(HcsaRiskFinanceMatrixDto dto){
-        HcsaRiskFinanceMatrixDto baseDto = new HcsaRiskFinanceMatrixDto();
-        return null;
+
+    public List<HcsaRiskFinanceMatrixDto> getLastversionList(HcsaRiskFinanceMatrixDto temp){
+        List<HcsaRiskFinanceMatrixDto> lastversionList= hcsaConfigClient.getFinianceRiskBySvcCode(temp.getServiceCode()).getEntity();
+        List<HcsaRiskFinanceMatrixDto> returnList = new ArrayList<>();
+        if(lastversionList!=null && !lastversionList.isEmpty()){
+            for(HcsaRiskFinanceMatrixDto fin:lastversionList){
+                if(temp.isInIsEdit()&&"SOURCE001".equals(fin.getFinSource())){
+                    returnList.add(fin);
+                }
+                if(temp.isPrIsEdit()&&"SOURCE002".equals(fin.getFinSource())){
+                    returnList.add(fin);
+                }
+            }
+        }
+        return returnList;
+    }
+    public void updateLastVersion(HcsaRiskFinanceMatrixDto newFin,HcsaRiskFinanceMatrixDto dbFin){
+        if("SOURCE001".equals(dbFin.getFinSource())){
+            if("CRRR003".equals(dbFin.getRiskRating())){
+                dbFin.setEndDate(newFin.getEffectiveDate());
+                if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                    dbFin.setStatus("CMSTAT003");
+                }
+            }else if("CRRR001".equals(dbFin.getRiskRating())){
+                dbFin.setEndDate(newFin.getEffectiveDate());
+                if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                    dbFin.setStatus("CMSTAT003");
+                }
+            }
+        }else if("SOURCE002".equals(dbFin.getFinSource())){
+            if("CRRR003".equals(dbFin.getRiskRating())){
+                dbFin.setEndDate(newFin.getEffectiveDate());
+                if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                    dbFin.setStatus("CMSTAT003");
+                }
+            }else if("CRRR001".equals(dbFin.getRiskRating())){
+                dbFin.setEndDate(newFin.getEffectiveDate());
+                if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                    dbFin.setStatus("CMSTAT003");
+                }
+            }
+        }
     }
 
     public boolean isNeedUpdatePreviouds(HcsaRiskFinanceMatrixDto dto,boolean isIn){
@@ -198,7 +238,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         Integer prInEditNum = 0;
         if(!StringUtil.isEmpty(fin.getFinSource())) {
             if ("SOURCE001".equals(fin.getInSource())) {
-                if (!(fin.getInThershold() + "").equals(inthershold)) {
+                if (!(fin.getBaseInThershold() + "").equals(inthershold)) {
                     fin.setInThershold(inthershold);
                     isInEditNum++;
                 }
@@ -236,7 +276,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                 }
             }
             if ("SOURCE002".equals(fin.getPrSource())) {
-                if (!(fin.getPrThershold() + "").equals(prthershold)) {
+                if (!(fin.getBasePrThershold() + "").equals(prthershold)) {
                     fin.setPrThershold(prthershold);
                     prInEditNum++;
                 }

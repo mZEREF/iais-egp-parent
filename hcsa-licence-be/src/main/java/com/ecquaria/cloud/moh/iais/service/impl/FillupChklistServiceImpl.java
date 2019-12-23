@@ -54,6 +54,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -453,6 +454,17 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             appDto = fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto).getEntity();
         }
         insDraftDto.setPreInsChklId(appDto.getId());
+        //Date date = newDate()
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.set(Calendar.HOUR_OF_DAY,9);
+        c.set(Calendar.MINUTE,0);
+        c.set(Calendar.SECOND,0);
+        insDraftDto.setClockin(c.getTime());
+        c.set(Calendar.HOUR_OF_DAY,17);
+        c.set(Calendar.MINUTE,0);
+        c.set(Calendar.SECOND,0);
+        insDraftDto.setClockout(c.getTime());
         List<AdhocNcCheckItemDto> adhocItemList = adDto.getAdItemList();
         List<AdhocDraftDto> adhocSaveList = new ArrayList<>();
         if(adhocItemList!=null &&!adhocItemList.isEmpty()){
@@ -474,8 +486,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 adhocSaveList.add(saveDto);
             }
         }
-        fillUpCheckListGetAppClient.saveAdhocDraft(adhocSaveList);
         fillUpCheckListGetAppClient.saveAppInsDraft(insDraftDto);
+        fillUpCheckListGetAppClient.saveAdhocDraft(adhocSaveList);
 
     }
 
@@ -574,7 +586,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppNo(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR);
-        createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null, null, RoleConsts.USER_ROLE_INSPECTIOR);
         taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

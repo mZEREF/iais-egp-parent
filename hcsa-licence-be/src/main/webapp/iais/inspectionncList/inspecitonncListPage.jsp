@@ -364,15 +364,6 @@
                                                 Next
                                             </button>
                                         </div>
-                                        <iais:error>
-                                            <c:if test = "${not empty errorMap}">
-                                                <div class="error">
-                                                    <c:forEach items="${errorMap}" var="map">
-                                                        ${map.key}  ${map.value} <br/>
-                                                    </c:forEach>
-                                                </div>
-                                            </c:if>
-                                        </iais:error>
                                     </div>
                                 </div>
                             </div>

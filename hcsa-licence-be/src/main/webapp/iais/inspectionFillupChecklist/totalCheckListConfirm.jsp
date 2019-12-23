@@ -335,12 +335,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div align="left">
+                                        <div align="right">
                                             <button type="button" class="btn btn-primary" onclick="javascript: doBack();">
                                                 Back
                                             </button>
-                                        </div>
-                                        <div align="right">
                                             <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
                                                 Submit
                                             </button>
