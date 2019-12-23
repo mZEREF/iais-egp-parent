@@ -35,6 +35,7 @@ import sop.rbac.user.User;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -158,8 +159,7 @@ public class IaisEGPHelperTest {
 
     @Test
     public void testGetDate(){
-        IaisEGPHelper.parseToDate(null);
-        IaisEGPHelper.parseToDate("2019-01-01");
+        Date date = IaisEGPHelper.parseToDate("2019-01-01", "yyyy-MM-dd");
         Assert.assertTrue(true);
     }
 }

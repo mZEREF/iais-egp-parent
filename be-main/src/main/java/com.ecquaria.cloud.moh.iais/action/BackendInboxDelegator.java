@@ -76,7 +76,7 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request, "workGroupIds", null);
         ParamUtil.setSessionAttr(bpc.request, "appTypeOption", null);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", null);
-
+        ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
     }
 
     /**
@@ -101,6 +101,10 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setSessionAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
 
+        String swithtype = (String)ParamUtil.getRequestAttr(bpc.request, "SearchSwitchType");
+        if(swithtype == null || swithtype ==""){
+            ParamUtil.setRequestAttr(bpc.request, "SearchSwitchType","search");
+        }
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){
@@ -386,7 +390,7 @@ public class BackendInboxDelegator {
 
 
         ParamUtil.setSessionAttr(bpc.request, "appNoUrl",(Serializable) appNoUrl);
-
+        ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
 
     }
 

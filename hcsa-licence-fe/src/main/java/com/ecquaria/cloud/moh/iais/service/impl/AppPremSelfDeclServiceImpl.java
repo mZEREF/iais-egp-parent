@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -237,12 +239,18 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @param: [selfDeclList]
     * @return: void
     */
-    public void saveAllSelfDecl(List<SelfDecl> selfDeclList) {
+    public void saveSelfDeclAndInspectionDate(List<SelfDecl> selfDeclList, String groupId, Date inspStartDate, Date inspEndDate) {
         //save fe after return data
         List<String> contentJsonList = applicationClient.saveAllSelfDecl(selfDeclList).getEntity();
 
         //route to be
         if (contentJsonList != null && !contentJsonList.isEmpty()){
+            ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
+            applicationGroupDto.setId(groupId);
+            applicationGroupDto.setPrefInspStartDate(inspStartDate);
+            applicationGroupDto.setPrefInspEndDate(inspEndDate);
+            applicationClient.doUpDate(applicationGroupDto);
+
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization()).getEntity();
         }

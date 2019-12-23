@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
@@ -11,11 +12,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
@@ -25,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -64,10 +68,13 @@ public class InspectionMergeSendNcEmailDelegator {
     ApplicationViewService applicationViewService;
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
-
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        AccessUtil.initLoginUserInfo(bpc.request);
+
     }
 
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
@@ -132,6 +139,7 @@ public class InspectionMergeSendNcEmailDelegator {
         HttpServletRequest request = bpc.request;
         ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
+        String serviceId=applicationViewDto.getApplicationDto().getServiceId();
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
@@ -165,7 +173,7 @@ public class InspectionMergeSendNcEmailDelegator {
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
 
             String taskKey = taskDto.getTaskKey();
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_GROUP_STATUS_ROLL_BACK,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskKey);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
 
             for(int i=0;i<appIds.size();i++){
                 if(appIds.get(i).equals(applicationDtos.get(i))){
@@ -181,20 +189,22 @@ public class InspectionMergeSendNcEmailDelegator {
                     applicationDtos.get(i).setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
                     applicationViewService.updateApplicaiton(applicationDtos.get(i));
 
-                    taskKey = taskDto.getTaskKey();
-                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey);
+                    taskKey = HcsaConsts.ROUTING_STAGE_INS;
+                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
 
-                    TaskDto taskDto2=new TaskDto();
+                    HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+                    hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
+                    hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
+                    hcsaSvcStageWorkingGroupDto.setOrder(1);
+                    TaskDto taskDto2=taskDto;
                     taskDto2.setUserId(appPremisesRoutingHisDto.getActionby());
                     taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
                     taskDto2.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
-                    //taskDto2.setScore(taskService.getRoutingTask(applicationViewDto.getApplicationDto(), HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTION_LEAD).getScore());
-                    taskDto2.setScore(50);
+
                     completedTask(taskDto2);
-                    List<TaskDto> taskDtos = prepareTaskList(taskDto2);
+                    List<TaskDto> taskDtos = prepareTaskList(taskDto2,hcsaSvcStageWorkingGroupDto);
                     taskService.createTasks(taskDtos);
-                    taskKey = taskDto2.getTaskKey();
-                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskKey);
+                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto2.getTaskKey(),taskDto2.getRoleId(),taskDto2.getWkGrpId());
 
                 }
             }
@@ -202,18 +212,21 @@ public class InspectionMergeSendNcEmailDelegator {
         else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
-            String taskKey = taskDto.getTaskKey();
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT, taskKey);
+            String taskKey = HcsaConsts.ROUTING_STAGE_ASO;
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId());
 
-            TaskDto taskDto2=new TaskDto();
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
+            hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
+            hcsaSvcStageWorkingGroupDto.setOrder(1);
+            TaskDto taskDto2=taskDto;
             taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
             taskDto2.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
-            //taskDto2.setScore(taskService.getRoutingTask(applicationViewDto.getApplicationDto(), HcsaConsts.ROUTING_STAGE_INS, RoleConsts.USER_ROLE_INSPECTION_LEAD).getScore());
-            taskDto2.setScore(50);
+
             completedTask(taskDto2);
-            List<TaskDto> taskDtos = prepareTaskList(taskDto2);
+            List<TaskDto> taskDtos = prepareTaskList(taskDto2,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskKey);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto2.getTaskKey(),taskDto2.getRoleId(),taskDto2.getWkGrpId());
 
             inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
         }
@@ -222,25 +235,35 @@ public class InspectionMergeSendNcEmailDelegator {
     }
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,String decision,
-                                                                         String stageId) {
+                                                                         String stageId,String roleId,String wrkGrpId ) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setProcessDecision(decision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        //appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby("C55C9E62-750B-EA11-BE7D-000C29F371DC");
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-
+        appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
-    private List<TaskDto> prepareTaskList(TaskDto taskDto) {
+    private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) {
         List<TaskDto> list = new ArrayList<>();
+        List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
+        String schemeType = listhcsaSvcStageWorkingGroupDto.get(0).getSchemeType();
+        Integer count = listhcsaSvcStageWorkingGroupDto.get(0).getCount();
+
         taskDto.setId(null);
-        taskDto.setScore(50);
+        taskDto.setDateAssigned(null);
         taskDto.setSlaDateCompleted(null);
         taskDto.setSlaRemainInDays(null);
+        taskDto.setScore(count);
+
+        taskDto.setTaskType(schemeType);
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         list.add(taskDto);
         return list;
     }

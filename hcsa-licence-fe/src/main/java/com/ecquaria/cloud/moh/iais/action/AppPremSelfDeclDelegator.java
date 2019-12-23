@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremSelfDeclService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,7 @@ import java.util.Map;
 public class AppPremSelfDeclDelegator {
 
     private final AppPremSelfDeclService appPremSelfDesc;
+    private String groupId;
 
     @Autowired
     public AppPremSelfDeclDelegator(AppPremSelfDeclService appPremSelfDesc){
@@ -47,6 +50,9 @@ public class AppPremSelfDeclDelegator {
         AuditTrailHelper.auditFunction("Hcsa Application", "Self desc");
 
         ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", null);
+        ParamUtil.setSessionAttr(request, "inspStartDate", null);
+        ParamUtil.setSessionAttr(request, "inspEndDate", null);
+
     }
 
     /**
@@ -59,6 +65,7 @@ public class AppPremSelfDeclDelegator {
         HttpServletRequest request = bpc.request;
 
         String groupId = ParamUtil.getRequestString(request, "groupId");
+        this.groupId = groupId;
 
         log.info("assign to self decl group id ==>>>>> " + groupId);
 
@@ -84,6 +91,12 @@ public class AppPremSelfDeclDelegator {
         HttpServletRequest request = bpc.request;
 
         String currentPage = ParamUtil.getString(request, "tabIndex");
+
+        String inspStartDate = ParamUtil.getString(request, "inspStartDate");
+        String inspEndDate = ParamUtil.getString(request, "inspEndDate");
+
+        ParamUtil.setSessionAttr(request, "inspStartDate", inspStartDate);
+        ParamUtil.setSessionAttr(request, "inspEndDate", inspEndDate);
 
         List<SelfDecl> selfDeclByGroupId = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
@@ -151,14 +164,45 @@ public class AppPremSelfDeclDelegator {
         List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 
         //Once transaction
+
+        String inspStartDate = ParamUtil.getString(request, "inspStartDate");
+        String inspEndDate = ParamUtil.getString(request, "inspEndDate");
+
+        Map<String, String> errorMap = new HashMap<>(4);
+        if (StringUtils.isEmpty(inspStartDate)){
+            errorMap.put("inspStartDate", "CHKL_ERR001");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            return;
+        }
+
+        if (StringUtils.isEmpty(inspEndDate)){
+            errorMap.put("inspEndDate", "CHKL_ERR001");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            return;
+        }
+
         boolean hasWriteAnswer = hasWtriteAnswer(selfDeclList).booleanValue();
         if (!hasWriteAnswer){
-            Map<String, String> errorMap = new HashMap<>(1);
             errorMap.put("premItemAnswer", "Please fill in the necessary answers.");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-        }else {
-            appPremSelfDesc.saveAllSelfDecl(selfDeclList);
+            return;
+        }
+
+        Date startDate = IaisEGPHelper.parseToDate(inspStartDate, "dd/MM/yyyy");
+        Date endDate = IaisEGPHelper.parseToDate(inspEndDate, "dd/MM/yyyy");
+
+        if (endDate.compareTo(startDate) < 0){
+            errorMap.put("inspectionDateErr", "CHKL_ERR002");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            return;
+        }
+
+        if (errorMap != null && errorMap.isEmpty()){
+            appPremSelfDesc.saveSelfDeclAndInspectionDate(selfDeclList, this.groupId, startDate, endDate);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
     }

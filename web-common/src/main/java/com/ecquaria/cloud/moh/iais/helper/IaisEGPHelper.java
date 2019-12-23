@@ -17,20 +17,21 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.sqlite.date.FastDateFormat;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Date;
 
 @Slf4j
@@ -159,14 +160,16 @@ public final class IaisEGPHelper extends EGPHelper {
     * @return: 
     * @author: yichen 
     */
-    public static Date parseToDate(String val){
-        if(StringUtil.isEmpty(val)){
-            return null;
+    public static Date parseToDate(String val, String pattern) {
+        if(StringUtil.isEmpty(val) || pattern.isEmpty()){
+           throw new IaisRuntimeException("No has input for String to Date!");
         }
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        ParsePosition position = new ParsePosition(0);
-        return formatter.parse(val, position);
+        try {
+            return FastDateFormat.getInstance(pattern).parse(val);
+        } catch (ParseException e) {
+            throw new IaisRuntimeException(e.getMessage());
+        }
     }
 
     public static String genTokenForCallback(String submissionId, String serviceName) {

@@ -16,22 +16,6 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<style>
-  .form-check-gp{
-    width: 50%;
-    float:left;
-  }
-
-  .form-inline .form-group {
-    width: 30%;
-    margin-bottom: 25px;
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-
-
-</style>
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
@@ -53,7 +37,11 @@
     <div class = "container">
       <div class="row">
         <div class="col-xs-12">
+
           &nbsp;<span id="error_premItemAnswer" name="iaisErrorMsg" class="error-msg"></span>
+          &nbsp;<span id="error_inspectionDateErr" name="iaisErrorMsg" class="error-msg"></span>
+          &nbsp;<span id="error_inspStartDate" name="iaisErrorMsg" class="error-msg"></span>
+          &nbsp;<span id="error_inspEndDate" name="iaisErrorMsg" class="error-msg"></span>
           <div class="dashboard-gp">
             <c:forEach var="declItem" items="${selfDeclQueryAttr}"  varStatus="status">
                   <c:choose>
@@ -78,9 +66,16 @@
                   </c:choose>
             </c:forEach>
 
-
           </div>
         </div>
+      </div>
+
+      <div class="col-xs-8 col-sm-6 col-md-5">
+        Inspection Start Date: <iais:datePicker id = "inspStartDate" name = "inspStartDate"  value="${inspStartDate}"></iais:datePicker>
+      </div>
+
+      <div class="col-xs-8 col-sm-6 col-md-5">
+        Inspection End Date: <iais:datePicker id = "inspEndDate" name = "inspEndDate" value="${inspEndDate}"></iais:datePicker>
       </div>
 
       <div class="tab-content">
@@ -109,6 +104,9 @@
               </div>
             </div>
           </div>
+
+
+
         </div>
 
         <div class="application-tab-footer">

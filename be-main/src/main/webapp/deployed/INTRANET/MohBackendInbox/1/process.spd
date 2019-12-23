@@ -60,7 +60,7 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxPage" stageIndicator="" x="400" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxPage" stageIndicator="" x="410" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -72,14 +72,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchInit" style="oblique">
    <position>{(180,120)(270,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/InboxPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="oblique">
-   <position>{(270,120)(420,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SearchInit" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
    <position>{(70,120)(180,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchStart" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InboxPage" style="oblique">
-   <position>{(420,120)(570,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/SearchStartSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchStart" style="oblique">
    <position>{(570,120)(720,120)}</position>
@@ -102,13 +96,29 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchPage" style="oblique">
    <position>{(860,280)(1020,250)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchQuery" style="oblique">
-   <position>{(1020,250)(886,395)(669,278)(270,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchStart" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InboxPage" style="rectanular">
+   <position>{(430,120)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SearchQuery" style="rectanular">
+   <position>{(1020,250)(280,358)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="rectanular">
+   <position>{(270,120)(370,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InboxPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(370,120)(430,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchStart" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(370,120)(370,74)(580,38)(570,120)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/SearchStart" componentIfTrue="/Pages/WebPage/InboxPage" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="350" y="100">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="SearchSwitchType" name="SearchStartSwitch" x="700" y="100">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/DoSearch" executor="" icon="" leftOperand="SearchSwitchType" name="SearchStartSwitch" x="700" y="100">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/DoSearch" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/SearchPage" value="&quot;page&quot;"/>

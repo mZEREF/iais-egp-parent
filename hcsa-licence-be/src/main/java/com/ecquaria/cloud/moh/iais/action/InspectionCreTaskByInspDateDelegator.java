@@ -1,0 +1,138 @@
+package com.ecquaria.cloud.moh.iais.action;
+
+import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @author Shicheng
+ * @date 2019/12/21 15:07
+ **/
+@Delegator("inspectionCreTaskByInspDateDelegator")
+@Slf4j
+public class InspectionCreTaskByInspDateDelegator {
+
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
+
+    @Autowired
+    private OrganizationClient organizationClient;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private InspectionCreTaskByInspDateDelegator(TaskService taskService, OrganizationClient organizationClient, InspectionTaskClient inspectionTaskClient){
+        this.organizationClient = organizationClient;
+        this.inspectionTaskClient = inspectionTaskClient;
+        this.taskService = taskService;
+    }
+
+    /**
+     * StartStep: mohCreTaskByInspecDateStart
+     *
+     * @param bpc
+     * @throws
+     */
+    public void mohCreTaskByInspecDateStart(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the mohCreTaskByInspecDateStart start ...."));
+    }
+
+    /**
+     * StartStep: mohCreTaskByInspecDatePre
+     *
+     * @param bpc
+     * @throws
+     */
+    public void mohCreTaskByInspecDatePre(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the mohCreTaskByInspecDatePre start ...."));
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = inspectionTaskClient.getAppPremisesRecommendationDtoByType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        if(appPremisesRecommendationDtos == null || appPremisesRecommendationDtos.isEmpty()){
+            return;
+        }
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+        for(AppPremisesRecommendationDto aRecoDto:appPremisesRecommendationDtos){
+            if(aRecoDto.getRecomInDate() != null && aRecoDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
+                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
+                List<ApplicationDto> applicationDtos = new ArrayList<>();
+                applicationDtos.add(applicationDto);
+                List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+                hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+                List<TaskDto> taskDtos = getTaskByHistoryTasks(applicationDto);
+                createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount());
+            }
+        }
+    }
+
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
+        for(ApplicationDto applicationDto : applicationDtos){
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        return hcsaSvcStageWorkingGroupDtos;
+    }
+
+    private void createTasksByHistory(List<TaskDto> taskDtos, AuditTrailDto intranet, Integer score) {
+        List<TaskDto> taskDtoList = new ArrayList<>();
+        for(TaskDto td:taskDtos){
+            TaskDto taskDto = new TaskDto();
+            taskDto.setId(null);
+            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+            taskDto.setPriority(td.getPriority());
+            taskDto.setRefNo(td.getRefNo());
+            taskDto.setSlaAlertInDays(td.getSlaAlertInDays());
+            taskDto.setSlaDateCompleted(null);
+            taskDto.setSlaInDays(td.getSlaInDays());
+            taskDto.setSlaRemainInDays(null);
+            taskDto.setTaskKey(td.getTaskKey());
+            taskDto.setTaskType(td.getTaskType());
+            taskDto.setWkGrpId(td.getWkGrpId());
+            taskDto.setUserId(td.getUserId());
+            taskDto.setDateAssigned(new Date());
+            taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+            taskDto.setAuditTrailDto(intranet);
+            taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
+            taskDto.setScore(score);
+            taskDtoList.add(taskDto);
+        }
+        taskService.createTasks(taskDtoList);
+    }
+
+    private List<TaskDto> getTaskByHistoryTasks(ApplicationDto applicationDto) {
+        List<TaskDto> taskDtos = organizationClient.getTaskByAppNo(applicationDto.getApplicationNo()).getEntity();
+        if(taskDtos == null || taskDtos.isEmpty()){
+            return null;
+        }
+        List<TaskDto> taskDtoList = new ArrayList<>();
+        for(TaskDto tDto:taskDtos){
+            if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_COMPLETED)){
+                taskDtoList.add(tDto);
+            }
+        }
+        return taskDtoList;
+    }
+}
