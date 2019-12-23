@@ -20,7 +20,7 @@
         }else if (pageTab == "app") {
             $("[name='crud_action_type']").val(action);
             $("#appForm").submit();
-        }else{
+        }else if (pageTab == "lic") {
             $("[name='crud_action_type']").val(action);
             $("#licenceForm").submit();
         }
@@ -45,6 +45,7 @@
     });
 
     $(function () {
+        console.log('${TAB_NO}');
         activeTab('${TAB_NO}');
     });
 
@@ -53,7 +54,8 @@
             $('#'+tabNo+' a[href="#tabInbox"]').tab('show');
         }else if(tabNo == 'appTab'){
             $('#'+tabNo+' a[href="#tabApp"]').tab('show');
-        }else {
+        }else if (tabNo == 'licTab') {
+            console.log("Lic Tab")
             $('#'+tabNo+' a[href="#tabLicence"]').tab('show');
         }
 
@@ -67,7 +69,7 @@
     }
 
     function searchLicenceNo(){
-        SOP.Crud.cfxSubmit("licenceForm","doSearch")
+        submit('lic','doSearch');
     }
 
     function searchByAppNo() {

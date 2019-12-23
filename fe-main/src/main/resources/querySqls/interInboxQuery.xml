@@ -57,7 +57,7 @@
             FROM LICENCE AS lic
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
-            <#if licenseAdvancedSearch??> AND lic.licence_no = :licenseAdvancedSearch</#if>
+            <#if licNo??> AND lic.licence_no = :licNo</#if>
         ]]>
     </sql>
 

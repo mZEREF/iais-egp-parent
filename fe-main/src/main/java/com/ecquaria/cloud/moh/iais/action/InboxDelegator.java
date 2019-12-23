@@ -203,7 +203,16 @@ public class InboxDelegator {
             /**
              * LICENCE
              */
+            Map<String,Object> licSearchMap = new HashMap<>();
             String licenceNo = ParamUtil.getString(request,"licenseAdvancedSearch");
+            if (licenceNo != null){
+                ParamUtil.setRequestAttr(request,"TAB_NO", "licTab");
+            }
+            if(licenceNo != null){
+                licSearchMap.put("licNo",licenceNo);
+            }
+            licenceParameter.setFilters(licSearchMap);
+            licenceParameter.setPageNo(1);
         }
     }
 
@@ -223,6 +232,8 @@ public class InboxDelegator {
         int pageNo = ParamUtil.getInt(bpc.request,InboxConst.CRUD_ACTION_VALUE);
         log.debug(StringUtil.changeForLog("PageNo ....") + pageNo);
         inboxParameter.setPageNo(pageNo);
+
+
     }
     /**
      *

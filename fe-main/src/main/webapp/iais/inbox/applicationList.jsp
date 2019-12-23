@@ -3,8 +3,8 @@
         <form class="form-inline" method="post" id="appForm" action=<%=process.runtime.continueURL()%>>
             <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
             <input type="hidden" name="crud_action_type" value="">
-            <input type="hidden" name="app_action_type" value="">
             <input type="hidden" name="crud_action_value" value="">
+            <input type="hidden" name="app_action_type" value="">
             <div class="form-group">
                 <label class="control-label" for="appType">Type</label>
                 <div class="col-xs-12 col-md-8 col-lg-9">
