@@ -246,7 +246,7 @@ public class InspectionServiceImpl implements InspectionService {
                         td.setUserId(inspectorCheckList.get(0).getValue());
                         td.setDateAssigned(new Date());
                         td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                        td.setTaskStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        td.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
                         td.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
                         td.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
                         td.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
