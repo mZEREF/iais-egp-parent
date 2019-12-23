@@ -45,8 +45,7 @@ public class BackendInboxDelegator {
     public void start(BaseProcessClass bpc){
         List<SelectOption> selectOptionArrayList = new ArrayList<>();
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        for (String item:loginContext.getRoleIds()
-             ) {
+        for (String item : loginContext.getRoleIds()) {
             selectOptionArrayList.add(new SelectOption(item,item));
         }
         log.debug(StringUtil.changeForLog("the BackendInboxDelegator start ...."));
