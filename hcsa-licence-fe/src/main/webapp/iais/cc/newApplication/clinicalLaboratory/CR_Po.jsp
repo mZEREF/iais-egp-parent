@@ -148,8 +148,8 @@
                   <div class="col-sm-4" >
                     <select name="deputyPrincipalOfficer" class="deputySelect form-control control-input control-set-font control-font-normal">
                       <option value="">Please Select</option>
-                      <option>N</option>
-                      <option>Y</option>
+                      <option value="0">N</option>
+                      <option value="1">Y</option>
                     </select>
                     <br/>
                     <br/>
