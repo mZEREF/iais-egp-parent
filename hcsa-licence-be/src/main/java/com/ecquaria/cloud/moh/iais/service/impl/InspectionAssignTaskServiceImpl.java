@@ -228,7 +228,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
                     td.setUserId(inspectorCheckList.get(0).getValue());
                     td.setDateAssigned(new Date());
-                    td.setTaskStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    td.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
                     td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     td.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
                     td.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
