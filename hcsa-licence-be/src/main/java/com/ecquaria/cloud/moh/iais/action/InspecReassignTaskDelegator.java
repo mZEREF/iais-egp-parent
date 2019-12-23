@@ -2,27 +2,42 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -269,7 +284,10 @@ public class InspecReassignTaskDelegator {
             }
             //get inspector Option
             inspectionTaskPoolListDto = inspectionService.reassignInspectorOption(inspectionTaskPoolListDto, taskId);
+            List<SelectOption> inspectorOption = inspectionTaskPoolListDto.getInspectorOption();
+            ParamUtil.setSessionAttr(bpc.request, "inspectorOption", (Serializable) inspectorOption);
         }
+
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
     }
@@ -352,4 +370,111 @@ public class InspecReassignTaskDelegator {
         inspectionService.routingTaskByPool(inspectionTaskPoolListDto, ReassignPools, reassignReason);
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException {
+//
+//        //get the user for this applicationNo
+//        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+//        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+//        BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+//        BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+//
+//        //complated this task and create the history
+//        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+//        taskDto =  completedTask(taskDto);
+//        broadcastOrganizationDto.setComplateTask(taskDto);
+//        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+//        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+//        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),
+//                applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
+//        broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+//        //update application status
+//        String oldStatus = applicationDto.getStatus();
+//        applicationDto.setStatus(appStatus);
+//        broadcastApplicationDto.setApplicationDto(applicationDto);
+//        // send the task
+//        if(!StringUtil.isEmpty(stageId)){
+//            //For the BROADCAST Rely
+//            if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(oldStatus)){
+//                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1 = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(
+//                        applicationDto.getId(),stageId
+//                );
+//                log.debug(StringUtil.changeForLog("The appId is-->;"+ applicationDto.getId()));
+//                log.debug(StringUtil.changeForLog("The stageId is-->;"+ stageId));
+//                if(appPremisesRoutingHistoryDto1 != null){
+//                    TaskDto newTaskDto = TaskUtil.getTaskDto(stageId, TaskConsts.TASK_TYPE_MAIN_FLOW,
+//                            applicationDto.getApplicationNo(),appPremisesRoutingHistoryDto1.getWrkGrpId(),
+//                            appPremisesRoutingHistoryDto1.getActionby(),new Date(),0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
+//                            IaisEGPHelper.getCurrentAuditTrailDto());
+//                    broadcastOrganizationDto.setCreateTask(newTaskDto);
+//                    //delete workgroup
+//                    BroadcastOrganizationDto broadcastOrganizationDto1 = broadcastService.getBroadcastOrganizationDto(
+//                            applicationDto.getApplicationNo(),AppConsts.DOMAIN_TEMPORARY);
+//
+//                    WorkingGroupDto workingGroupDto = broadcastOrganizationDto1.getWorkingGroupDto();
+//                    workingGroupDto = changeStatusWrokGroup(workingGroupDto,AppConsts.COMMON_STATUS_DELETED);
+//                    broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
+//                    List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto1.getUserGroupCorrelationDtoList();
+//                    userGroupCorrelationDtos = changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtos,AppConsts.COMMON_STATUS_DELETED);
+//                    broadcastOrganizationDto.setUserGroupCorrelationDtoList(userGroupCorrelationDtos);
+//                }else{
+//                    throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
+//                }
+//            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+//                List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+//                boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+//                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+//                if(isAllSubmit){
+//                    // send the task to Ao3
+//                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,
+//                            HcsaConsts.ROUTING_STAGE_AO3,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
+//                    List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+//                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+//                    broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+//                    broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+//                }
+//            }else{
+//                TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId);
+//                broadcastOrganizationDto.setCreateTask(newTaskDto);
+//            }
+//            //add history for next stage start
+//            if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+//                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),stageId,
+//                        taskDto.getWkGrpId(),null,null,roleId);
+//                broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+//            }
+//        }
+//        //save the broadcast
+//        broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto);
+//        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto);
+//    }
+
+//    private TaskDto completedTask(TaskDto taskDto) {
+//        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+//        taskDto.setSlaDateCompleted(new Date());
+//        taskDto.setSlaRemainInDays(remainDays(taskDto));
+//        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        return taskService.updateTask(taskDto);
+//    }
+
+
+
+
+
+
+
 }

@@ -92,14 +92,17 @@ public class InsRepServiceImpl implements InsRepService {
         }
 
         //get the inspector who login in and create this report
-//        String userId = loginContext.getUserId();
-//        OrgUserDto orgUserDto = organizationClient.retrieveOneOrgUserAccount(userId).getEntity();
-//        String reportBy = orgUserDto.getUserName();
-        String reportBy = "ssss";
+        List<String> listUserId = new ArrayList<>();
+        String userId = loginContext.getUserId();
+        listUserId.add(userId);
+        List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
+        String reportBy =  userList.get(0).getUserName();
+        listUserId.clear();
         //get inspection lead
         String leadId = organizationClient.getInspectionLead(wkGrpId).getEntity();
-        OrgUserDto entity = organizationClient.retrieveOneOrgUserAccount(leadId).getEntity();
-        String leadName = entity.getUserName();
+        listUserId.add(leadId);
+        List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
+        String leadName = leadList.get(0).getUserName();
 
         //get application type (new/renew)
         String appTypeCode = insRepClient.getAppType(appId).getEntity();
@@ -207,7 +210,7 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setMarkedForAudit(true);
         inspectionReportDto.setInspectOffices("inspector officer");
         inspectionReportDto.setReportedBy(reportBy);
-        inspectionReportDto.setReportNoteBy("leadName");
+        inspectionReportDto.setReportNoteBy(leadName);
         inspectionReportDto.setInspectors(inspectors);
         inspectionReportDto.setTaskRemarks(remarks);
         inspectionReportDto.setRiskRecommendations(riskResult);
