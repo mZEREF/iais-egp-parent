@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -162,6 +164,19 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Override
     public List<HcsaServiceDto> getServicesInActive(){
         return appConfigClient.getActiveServices().getEntity();
+    }
+
+    @Override
+    public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(String serviceId) {
+        List<HcsaServiceStepSchemeDto> result = new ArrayList<>();
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos =  appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
+        if(hcsaServiceStepSchemeDtos!=null && hcsaServiceStepSchemeDtos.size() > 0){
+            for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : hcsaServiceStepSchemeDtos){
+                hcsaServiceStepSchemeDto.setStepName(MasterCodeUtil.getCodeDesc(hcsaServiceStepSchemeDto.getStepCode()));
+                result.add(hcsaServiceStepSchemeDto);
+            }
+        }
+        return result;
     }
     @Override
     public List<HcsaServiceCorrelationDto> getCorrelation(){

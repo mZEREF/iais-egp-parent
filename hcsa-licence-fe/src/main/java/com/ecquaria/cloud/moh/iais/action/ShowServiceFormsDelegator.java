@@ -3,15 +3,17 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import java.io.Serializable;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.List;
 
 /**
  * ShowServiceFormsDelegator
@@ -22,6 +24,8 @@ import java.util.List;
 @Delegator("showServiceFormsDelegator")
 @Slf4j
 public class ShowServiceFormsDelegator {
+    public  static final String SERVICESTEPDTO = "serviceStepDto";
+
     @Autowired
     ServiceConfigService serviceConfigService;
 
@@ -58,8 +62,13 @@ public class ShowServiceFormsDelegator {
         //why call api?  , can get from  AppServicesConsts.HCSASERVICEDTOLIST
         String svcId = serviceConfigService.getSvcIdBySvcCode(actionTab);
 
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
+        ServiceStepDto serviceStepDto = new ServiceStepDto();
+        serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID, svcId);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE, actionTab);
+        ParamUtil.setSessionAttr(bpc.request, SERVICESTEPDTO, (Serializable) serviceStepDto);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,IaisEGPConstant.YES);
         log.debug(StringUtil.changeForLog("the do prepareSwitch end ...."));
     }

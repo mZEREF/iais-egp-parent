@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohServiceRelatedInformation" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="9" minorVersion="0" name="MohServiceRelatedInformation" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="90" y="250">
@@ -312,15 +312,15 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form_value" name="Switch1" x="400" y="260">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareLaboratoryDisciplines" value="&quot;laboratoryDisciplines&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareGovernanceOfficers" value="&quot;governanceOfficers&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareDisciplineAllocation" value="&quot;disciplineAllocation&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreparePrincipalOfficers" value="&quot;principalOfficers&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareDocuments" value="&quot;documents&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareLaboratoryDisciplines" value="&quot;SVST001&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareGovernanceOfficers" value="&quot;SVST002&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDisciplineAllocation" value="&quot;SVST003&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreparePrincipalOfficers" value="&quot;SVST004&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDocuments" value="&quot;SVST005&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareJump" value="&quot;jump&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareView" value="&quot;prepareView&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="&quot;doSubmit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareServicePersonnel" value="&quot;nuclearMedicineImaging&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareServicePersonnel" value="&quot;SVST006&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="Switch2" name="Switch2" x="1250" y="220">
    <Description/>

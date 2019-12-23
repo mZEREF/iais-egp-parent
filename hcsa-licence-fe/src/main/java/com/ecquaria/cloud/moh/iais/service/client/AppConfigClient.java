@@ -12,12 +12,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
@@ -109,6 +112,10 @@ public interface AppConfigClient {
     @GetMapping(value = {"/iais-hcsa-checklist/config/results-common-max-version/{type}/{module}"})
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfigByParams(@PathVariable("type")String type,
                                                                               @PathVariable("module") String module);
+
+    @GetMapping(value = {"/iais-service-step/steps/{serviceId}"})
+    FeignResponseEntity<List<HcsaServiceStepSchemeDto>> getServiceStepsByServiceId(@PathVariable(name ="serviceId") String serviceId);
+
 
     @GetMapping(value = "/iais-hcsa-service/service-correlation",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceCorrelationDto>> serviceCorrelation();

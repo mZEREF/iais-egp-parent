@@ -26,6 +26,13 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,14 +42,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 
@@ -102,14 +101,30 @@ public class ClinicalLaboratoryDelegator {
             }
         }
 
+
         log.debug(StringUtil.changeForLog("The prepareJumpPage action is -->;"+action));
         String formTab = (String)ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB);
         log.debug(StringUtil.changeForLog("The form_tab action is -->;"+formTab));
+        //controller the step.
+        if(IaisEGPConstant.YES.equals(formTab)){
+            action = null;
+        }
+        ServiceStepDto serviceStepDto = (ServiceStepDto)ParamUtil.getSessionAttr(bpc.request,ShowServiceFormsDelegator.SERVICESTEPDTO);
+        String svcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        List<HcsaServiceDto> hcsaServiceDtoList= (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+        serviceStepDto = getServiceStepDto(serviceStepDto,action,hcsaServiceDtoList,svcId);
+        ParamUtil.setSessionAttr(bpc.request, ShowServiceFormsDelegator.SERVICESTEPDTO, (Serializable) serviceStepDto);
+
         if(StringUtil.isEmpty(action)||IaisEGPConstant.YES.equals(formTab)){
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"laboratoryDisciplines");
+            if(serviceStepDto.getCurrentStep()!=null){
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, serviceStepDto.getCurrentStep().getStepCode());
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
+            }
         }else{
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,action);
         }
+
 
         String crudActionType = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         if(StringUtil.isEmpty(crudActionType)){
@@ -123,7 +138,106 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"jump");
         }
 
+
         log.debug(StringUtil.changeForLog("the do prepareJumpPage end ...."));
+    }
+
+    private ServiceStepDto getServiceStepDto(ServiceStepDto serviceStepDto,String action,List<HcsaServiceDto> hcsaServiceDtoList,String svcId){
+        //get the service information
+         int serviceNum = -1;
+         if(svcId!=null && hcsaServiceDtoList!=null && hcsaServiceDtoList.size() >0){
+            for (int i = 0 ; i< hcsaServiceDtoList.size();i++){
+                if(svcId.equals(hcsaServiceDtoList.get(i).getId())){
+                  serviceNum = i;
+                  break;
+                }
+            }
+         }
+        serviceStepDto.setServiceNumber(serviceNum);
+         boolean serviceFirst = false;
+         boolean serviceEnd =  false;
+         if(serviceNum == 0){
+             serviceFirst = true;
+         }
+         if(serviceNum+1 == hcsaServiceDtoList.size()){
+             serviceEnd = true;
+         }
+        serviceStepDto.setServiceFirst(serviceFirst);
+        serviceStepDto.setServiceEnd(serviceEnd);
+        //get the step information
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceStepDto.getHcsaServiceStepSchemeDtos();
+        if(hcsaServiceStepSchemeDtos!=null && hcsaServiceStepSchemeDtos.size()>0){
+          int number = -1;
+            if(StringUtil.isEmpty(action)){
+                number = 0;
+            }else{
+                for (int i = 0 ;i<hcsaServiceStepSchemeDtos.size();i++){
+                    if(action.equals(hcsaServiceStepSchemeDtos.get(i).getStepCode())){
+                        number =i;
+                        break;
+                    }
+                }
+            }
+          boolean stepFirst = false;
+          boolean stepEnd = false;
+          if(number == 0){
+              stepFirst = true;
+          }
+          if(number+1 == hcsaServiceStepSchemeDtos.size()){
+              stepEnd = true;
+          }
+          serviceStepDto.setStepFirst(stepFirst);
+          serviceStepDto.setStepEnd(stepEnd);
+          if(number!=-1){
+              //clear the old data
+              serviceStepDto.setPreviousStep(null);
+              serviceStepDto.setNextStep(null);
+              //set the new data
+              serviceStepDto.setCurrentNumber(number);
+              serviceStepDto.setCurrentStep(hcsaServiceStepSchemeDtos.get(number));
+              if(stepFirst){
+                  if(!serviceFirst){
+                      HcsaServiceDto preHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum-1);
+                      HcsaServiceStepSchemeDto preHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
+                      preHcsaServiceStepSchemeDto.setStepCode(preHcsaServiceDto.getSvcCode());
+                      serviceStepDto.setPreviousStep(preHcsaServiceStepSchemeDto);
+                  }
+                  if(stepEnd){
+                      if(!serviceEnd){
+                          HcsaServiceDto nextHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum+1);
+                          HcsaServiceStepSchemeDto nextHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
+                          nextHcsaServiceStepSchemeDto.setStepCode(nextHcsaServiceDto.getSvcCode());
+                          serviceStepDto.setNextStep(nextHcsaServiceStepSchemeDto);
+                      }
+                  }else{
+                      serviceStepDto.setNextStep(hcsaServiceStepSchemeDtos.get(number+1));
+                  }
+              }else if(stepEnd){
+                  if(stepFirst){
+                      if(!serviceFirst){
+                          HcsaServiceDto preHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum-1);
+                          HcsaServiceStepSchemeDto preHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
+                          preHcsaServiceStepSchemeDto.setStepCode(preHcsaServiceDto.getSvcCode());
+                          serviceStepDto.setPreviousStep(preHcsaServiceStepSchemeDto);
+                      }
+                  }else{
+                      serviceStepDto.setPreviousStep(hcsaServiceStepSchemeDtos.get(number-1));
+                  }
+                  if(!serviceEnd){
+                      HcsaServiceDto nextHcsaServiceDto =  hcsaServiceDtoList.get(serviceNum+1);
+                      HcsaServiceStepSchemeDto nextHcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
+                      nextHcsaServiceStepSchemeDto.setStepCode(nextHcsaServiceDto.getSvcCode());
+                      serviceStepDto.setNextStep(nextHcsaServiceStepSchemeDto);
+                  }
+
+              }else{
+                  serviceStepDto.setPreviousStep(hcsaServiceStepSchemeDtos.get(number-1));
+                  serviceStepDto.setNextStep(hcsaServiceStepSchemeDtos.get(number+1));
+              }
+          }
+        }
+
+        return serviceStepDto;
     }
 
     /**
@@ -483,7 +597,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
         if(!errorMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"laboratoryDisciplines");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
             return;
         }
         currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
@@ -551,7 +665,7 @@ public class ClinicalLaboratoryDelegator {
 
         Map<String,String> errList =doValidateGovernanceOfficers(bpc.request);
             if(!errList.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "governanceOfficers");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errList));
                 return;
             }
@@ -618,7 +732,7 @@ public class ClinicalLaboratoryDelegator {
         doValidateDisciplineAllocation(errorMap,daList);
         if(!errorMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"disciplineAllocation");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.DISCIPLINEALLOCATION);
             return;
         }
 
@@ -650,7 +764,8 @@ public class ClinicalLaboratoryDelegator {
 
         Map<String,String> map = NewApplicationDelegator.doValidatePo(bpc.request);
         if(!map.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "principalOfficers");
+            //ParamUtil.setSessionAttr(bpc.request, "", );
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.PRINCIPALOFFICERS);
             ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(map));
             return;
         }
