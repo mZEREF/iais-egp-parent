@@ -42,7 +42,9 @@ import java.util.Map;
 public class BackendInboxDelegator {
     @Autowired
     InspectionService inspectionService;
+
     public void start(BaseProcessClass bpc){
+        AccessUtil.initLoginUserInfo(bpc.request);
         List<SelectOption> selectOptionArrayList = new ArrayList<>();
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         for (String item : loginContext.getRoleIds()) {
