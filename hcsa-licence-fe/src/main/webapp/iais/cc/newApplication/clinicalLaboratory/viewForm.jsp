@@ -41,7 +41,7 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
-                <table>
+                <table class="col-xs-8">
                   <tr>
                     <td class="col-xs-8">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation:</p>
@@ -205,7 +205,7 @@
           <div class="row">
             <div class="col-xs-12">
               <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po">
-                <table>
+                <table class="col-xs-8">
                   <tr>
                     <td class="col-xs-8">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation:</p>
@@ -271,6 +271,7 @@
                     </td>
                   </tr>
                 </table>
+                <br/>
               </c:forEach>
             </div>
           </div>
