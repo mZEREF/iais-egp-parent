@@ -49,6 +49,29 @@
     <%@ include file="/include/validation.jsp" %>
 </form>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        //Binding method
+        $('#governanceOfficersBack').click(function(){
+            submitForms('laboratoryDisciplines',null,null,'clinical');
+        });
+        $('#governanceOfficersSaveDraft').click(function(){
+            submitForms('governanceOfficers','saveDraft',null,'clinical');
+        });
+        $('#governanceOfficersNext').click(function(){
+            /*   doValidation();
+           if (getErrorMsg()) {
+               dismissWaiting();
+           } else {*/
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('disciplineAllocation',null,'next',controlFormLi);
+             //submitForms('nuclearMedicineImaging',null,null,controlFormLi);
+            /*  }*/
+        });
+
+    });
+
+</script>
 
 
 

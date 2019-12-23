@@ -51,6 +51,32 @@
     <input type="hidden" name="pageCon" value="checkBox">
 </form>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        //Binding method
+        $('#laboratoryDisciplinesBack').click(function(){
+            submit('documents',null,null);
+        });
+        $('#laboratoryDisciplinesSaveDraft').click(function(){
+            submitForms('laboratoryDisciplines','saveDraft',null,'clinical');
+        });
+        $('#laboratoryDisciplinesNext').click(function(){
+          /*  var controlFormLi = $('#controlFormLi').val();
+           var aBoolean= $("input[name='control--runtime--1']:checked").length>0;
+           if(!aBoolean){
+                $('.laboratory-disciplines>span').removeAttr('style');
+               return;
+           }else {
+               $('.laboratory-disciplines>span').attr('style','display: none');
+           }
+                              */
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('governanceOfficers',null,'next',controlFormLi);
+        });
+
+    });
+
+</script>
 
 
 

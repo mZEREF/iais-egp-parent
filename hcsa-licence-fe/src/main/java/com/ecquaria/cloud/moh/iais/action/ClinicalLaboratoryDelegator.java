@@ -595,7 +595,11 @@ public class ClinicalLaboratoryDelegator {
                 appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
                 appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
             }
-            errorMap = doValidateLaboratory(appSvcChckListDtoList,currentSvcId);
+            String crud_action_type = ParamUtil.getRequestString( bpc.request,"crud_action_additional");
+            if("next".equals(crud_action_type)){
+                errorMap = doValidateLaboratory(appSvcChckListDtoList,currentSvcId);
+            }
+
         }
         ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
         if(!errorMap.isEmpty()){
@@ -665,8 +669,11 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
         //do validate
-
-        Map<String,String> errList =doValidateGovernanceOfficers(bpc.request);
+        Map<String,String> errList=new HashMap<>();
+        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "crud_action_additional");
+        if("next".equals(crud_action_additional)){
+            errList =doValidateGovernanceOfficers(bpc.request);
+        }
             if(!errList.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errList));
@@ -732,7 +739,12 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
         }
-        doValidateDisciplineAllocation(errorMap,daList);
+
+        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "crud_action_additional");
+        if("next".equals(crud_action_additional)){
+            doValidateDisciplineAllocation(errorMap,daList);
+        }
+
         if(!errorMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.DISCIPLINEALLOCATION);
@@ -764,8 +776,11 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers start ...."));
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request) ;
         ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
-
-        Map<String,String> map = NewApplicationDelegator.doValidatePo(bpc.request);
+        Map<String,String> map=new HashMap<>();
+        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "crud_action_additional");
+        if("next".equals(crud_action_additional)){
+            map = NewApplicationDelegator.doValidatePo(bpc.request);
+        }
         if(!map.isEmpty()){
             //ParamUtil.setSessionAttr(bpc.request, "", );
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.PRINCIPALOFFICERS);
@@ -1171,11 +1186,20 @@ public class ClinicalLaboratoryDelegator {
                 if(StringUtil.isEmpty(idNo)){
                     errMap.put("idNo"+i,"UC_CHKLMD001_ERR001");
                 }else {
-                    boolean b = SgNoValidator.validateFin(idNo);
-                    boolean b1 = SgNoValidator.validateNric(idNo);
-                    if(!(b||b1)){
-                 /*       errMap.put("idNo"+i,"CHKLMD001_ERR005");*/
+                    if("FIN".equals(idTyp)){
+                        boolean b = SgNoValidator.validateFin(idNo);
+                        if(!b){
+                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                        }
                     }
+                    if("NRIC".equals(idTyp)){
+                        boolean b1 = SgNoValidator.validateNric(idNo);
+                        if(!b1){
+                            errMap.put("idNo"+i,"CHKLMD001_ERR005");
+                        }
+
+                    }
+
                 }
                 //to do
 

@@ -9,7 +9,11 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
 <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <%@ include file="/include/formHidden.jsp" %>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
+    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -40,15 +44,17 @@
                                     <c:set value="${reloadAppGrpPrimaryDocMap}" var="docMap"/>
 
                                     <!--common -->
-                                    <c:forEach var="commonDoc" items="${commonHcsaSvcDocConfigDto}">
+                                    <c:forEach var="commonDoc" items="${commonHcsaSvcDocConfigDto}" varStatus="v">
                                         <c:set var="commKey" value="common${commonDoc.id}" />
                                         <c:set var="file" value="${docMap.get(commKey)}"/>
                                         <c:set var="commDelFlag" value="common${commonDoc.id}flag"/>
                                         <div class="document-upload-list">
+
                                             <h3>${commonDoc.docTitle}</h3>
                                             <div class="file-upload-gp">
                                                 <input class="hidden delFlag" type="hidden" name="${commDelFlag}" value="N"/>
                                                 <span  >${file.docName}</span>
+
                                                 <c:choose>
                                                     <c:when test="${file.docName == '' || file.docName == null }">
                                                     <span class="hidden delBtn">
@@ -64,8 +70,8 @@
                                                 <br/>
                                                 <input class="selectedFile commDoc" id="commonDoc"  name = "${commKey}" type="file" style="display: none;" aria-label="selectedFile1" >
                                                 <a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
-                                                <span class="error-msg"><c:out value="${appGrpPrimaryDocErrMsgMap.get(commKey)}"></c:out></span>
                                             </div>
+
                                         </div>
                                     </c:forEach>
                                     <!--prem -->
@@ -94,7 +100,7 @@
                                                     <br/>
                                                     <input class="selectedFile premDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1">
                                                     <a class="btn btn-file-upload btn-secondary" >Upload</a><br/>
-                                                    <span class="error-msg"><c:out value="${appGrpPrimaryDocErrMsgMap.get(premKey)}"></c:out></span>
+
                                                 </div>
                                             </div>
                                         </c:forEach>
@@ -117,6 +123,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" name="pageCon" value="valPremiseList" >
 </form>
 
 

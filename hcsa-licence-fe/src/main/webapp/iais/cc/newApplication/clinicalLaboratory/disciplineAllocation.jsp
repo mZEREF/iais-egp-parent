@@ -94,3 +94,22 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+
+
+
+        //Binding method
+        $('#disciplineAllocationBack').click(function(){
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('governanceOfficers',null,null,controlFormLi);
+        });
+        $('#disciplineAllocationSaveDraft').click(function(){
+            submitForms('principalOfficers','saveDraft',null,'clinical');
+        });
+        $('#disciplineAllocationNext').click(function(){
+            var controlFormLi = $('#controlFormLi').val();
+            submitForms('principalOfficers',null,'next',controlFormLi);
+        });
+
+    });
+
+</script>

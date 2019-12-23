@@ -223,6 +223,8 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
 
+
+
     /**
      * StartStep: PrepareForms
      *
@@ -277,7 +279,8 @@ public class NewApplicationDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
 
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-        Map<String, String> errorMap = doValidatePremiss(bpc);
+
+        Map<String, String> errorMap= doValidatePremiss(bpc);
 
             if(errorMap.size()>0){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
@@ -289,6 +292,8 @@ public class NewApplicationDelegator {
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
     }
+
+
 
     /**
      * StartStep: DoDocument
@@ -375,7 +380,7 @@ public class NewApplicationDelegator {
                     }
                 } else{
                     if(prem.getIsMandatory()) {
-                        errorMap.put(name, "UC_CHKLMD001_ERR003");
+                        errorMap.put(name, "UC_CHKLMD001_ERR001");
                     }
                 }
             }
@@ -385,8 +390,10 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         // do by wenkang
+
         documentValid(bpc.request, errorMap);
         if(errorMap.size()>0){
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
@@ -409,6 +416,16 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
     }
 
+
+    private void isMantory(  List<HcsaSvcDocConfigDto> hcsaSvcDocDtos ,Map errorMap ){
+        for(int i=0;i<hcsaSvcDocDtos.size();i++ ){
+            Boolean isMandatory = hcsaSvcDocDtos.get(i).getIsMandatory();
+            if(isMandatory){
+                errorMap.put("documents","UC_CHKLMD001_ERR002");
+            }
+        }
+
+    }
     /**
      * StartStep: doForms
      *
@@ -693,12 +710,21 @@ public class NewApplicationDelegator {
                 flag=true;
             }else {
                 //todo change is error
-                boolean b = SgNoValidator.validateFin(idNo);
-                boolean b1 = SgNoValidator.validateNric(idNo);
-                if(!(b||b1)){
-                    map.put("POidNo"+i,"CHKLMD001_ERR005");
-                    flag=true;
+                if("FIN".equals(idType)){
+                    boolean b = SgNoValidator.validateFin(idNo);
+                    if(!b){
+                        map.put("POidNo"+i,"CHKLMD001_ERR005");
+                        flag=true;
+                    }
                 }
+                if("NRIC".equals(idType)){
+                    boolean b1 = SgNoValidator.validateNric(idNo);
+                    if(!b1){
+                        map.put("POidNo"+i,"CHKLMD001_ERR005");
+                        flag=true;
+                    }
+                }
+
             }
             String salutation = list.get(i).getSalutation();
             if(StringUtil.isEmpty(salutation)){
@@ -1290,11 +1316,19 @@ public class NewApplicationDelegator {
                     oneErrorMap.put("designation","UC_CHKLMD001_ERR001");
                 }
                 if(!StringUtil.isEmpty(idNo)){
-                    boolean b = SgNoValidator.validateFin(idNo);
-                    boolean b1 = SgNoValidator.validateNric(idNo);
-                    if(!(b||b1)){
-                        oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
+                    if("FIN".equals(idType)){
+                        boolean b = SgNoValidator.validateFin(idNo);
+                        if(!b){
+                            oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
+                        }
                     }
+                    if("NRIC".equals(idType)){
+                        boolean b1 = SgNoValidator.validateNric(idNo);
+                        if(!b1){
+                            oneErrorMap.put("NRICFIN","CHKLMD001_ERR005");
+                        }
+                    }
+
                 }else {
                     oneErrorMap.put("NRICFIN","UC_CHKLMD001_ERR001");
                 }

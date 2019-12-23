@@ -88,7 +88,6 @@
                               </c:choose>
                           </iais:value>
                         </iais:row>
-
                         <iais:row cssClass="premiseConSelect hidden">
                           <iais:field value="Add or select a premises from the list" width="12" mandatory="true"/>
                           <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
@@ -100,9 +99,9 @@
                                 <iais:select cssClass="premSelect" id="premConSel" name="${premIndexNo}premConSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
                               </c:otherwise>
                             </c:choose>
-                            <span class="error-msg"><c:out value="${errMsg.premisesSelect}"></c:out></span>
                           </iais:value>
                         </iais:row>
+                        <span class="error-msg" id="error_premisesSelect${status.index}" name="iaisErrorMsg"></span>
                       </div>
                       <div class="prem-summary hidden">
                         <h3 class="without-header-line">Premises Summary</h3>
