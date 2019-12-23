@@ -121,4 +121,11 @@ public class ApplicationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    FeignResponseEntity<List<String>> getItemIdsByAppNo(String appNo){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

@@ -77,4 +77,8 @@ public interface ApplicationClient  {
 
     @RequestMapping(path = "/iais-submission/appSubmissionDto/{appNo}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<AppSubmissionDto>  getAppSubmissionDtoByAppNo(@PathVariable("appNo") String appId);
+
+    @GetMapping(path = "/iais-inspection-fe/itemids/{appNo}", produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<String>> getItemIdsByAppNo(@PathVariable("appNo") String appNo);
 }
