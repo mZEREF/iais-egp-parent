@@ -1,13 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -75,7 +73,7 @@ public class InspectionNcCheckListDelegator {
             taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
         }
         String serviceType = "Inspection";
-        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
+/*        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
         String configId = cDto.getCheckList().get(0).getConfigId();
         AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,configId);
         InspectionFillCheckListDto insepectionNcCheckListDto = null;
@@ -93,7 +91,30 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,"taskDto",taskDto);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",insepectionNcCheckListDto);
         ParamUtil.setSessionAttr(request,"commonDto",commonDto);
+        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);*/
+        CheckListDraftDto checkListDraftDto = fillupChklistService.getDraftByTaskId(taskId,serviceType);
+        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
+        InspectionFillCheckListDto cDto = null;
+        InspectionFillCheckListDto commonDto = null;
+        if(checkListDraftDto!=null){
+            cDto = checkListDraftDto.getGeneralDto();
+            commonDto = checkListDraftDto.getComDto();
+        }else{
+            cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
+            ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
+            if(commonCheckListDto!=null){
+                commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
+            }
+        }
+        AdCheckListShowDto adchklDto = null;
+        adchklDto = fillupChklistService.getAdhocDraftByappCorrId(cDto.getCheckList().get(0).getAppPreCorreId());
+        if(adchklDto==null){
+            adchklDto = fillupChklistService.getAdhoc(cDto.getCheckList().get(0).getAppPreCorreId());
+        }
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
+        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
+        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
+        ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
     }
 
     public void pre(BaseProcessClass bpc){
