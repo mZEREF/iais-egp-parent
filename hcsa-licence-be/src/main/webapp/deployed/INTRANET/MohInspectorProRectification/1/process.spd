@@ -51,6 +51,11 @@
     <JavaCode defClass="" executor="" methodName="inspectorProRectificationAccCond_OnStepProcess_0" name="inspectorProRectificationAccCond_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Step1" x="1320" y="-10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorProRectificationDoPage" stageIndicator="" x="610" y="100">
@@ -110,6 +115,9 @@
   <SynchronousLink destinationName="/Pages/WebPage/InspectorProRectificationSuccessPage" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(1340,420)(1020,420)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/InspectorProRectificationSwitch" style="rectanular">
+   <position>{(1270,120)(1340,10)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/InspectorProRectificationPre" componentIfTrue="/Switches/Switch/InspectorProRectificationSwitch" defClass="" executor="" icon="" leftOperand="flag" name="InspectorProRectificationCond" operator="=" rightOperand="&quot;true&quot;" x="1040" y="100">
@@ -122,6 +130,7 @@
    <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationAcc" value="&quot;accept&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationReq" value="&quot;request&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectorProRectificationAccCond" value="&quot;acccond&quot;"/>
+   <SwitchCase component="/Steps/ReturnInvokeProcessStep/Step1" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
