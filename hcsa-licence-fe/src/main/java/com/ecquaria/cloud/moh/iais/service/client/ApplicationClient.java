@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -81,4 +82,16 @@ public interface ApplicationClient  {
     @GetMapping(path = "/iais-inspection-fe/itemids/{appNo}", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<String>> getItemIdsByAppNo(@PathVariable("appNo") String appNo);
+
+    @PostMapping(value = "/iais-inspection-fe/appncdocs", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> saveappNcDoc(@RequestBody List<AppPremPreInspectionNcDocDto> dtoList);
+
+    @PutMapping(value = "/iais-inspection-fe/appncdoc", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremPreInspectionNcDocDto> updateappNcDoc(@RequestBody AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto);
+
+    @GetMapping(value = "/appncdociteid/{ncItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremPreInspectionNcDocDto> getNcDocByNcItemId(@PathVariable(name = "ncItemId") String ncItemId);
 }
