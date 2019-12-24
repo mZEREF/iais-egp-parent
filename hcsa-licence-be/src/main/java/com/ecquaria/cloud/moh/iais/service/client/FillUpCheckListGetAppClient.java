@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -33,13 +34,28 @@ public interface FillUpCheckListGetAppClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesPreInspectChklDto> saveAppPreInspChkl(@RequestBody AppPremisesPreInspectChklDto dto);
 
+    @PutMapping(path = "/iais-apppreinschkl-be/AppPremissChklupdate",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremisesPreInspectChklDto> updateAppPreInspChkl(@RequestBody AppPremisesPreInspectChklDto dto);
+
+
     @PostMapping(path = "/application-be/RescomDtoStorage",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremisesRecommendationDto> saveAppRecom(@RequestBody AppPremisesRecommendationDto appPremisesRecommendationDto);
 
+    @PutMapping(path = "/application-be/RescomDtoStorageupdate",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremisesRecommendationDto> updateAppRecom(@RequestBody AppPremisesRecommendationDto appPremisesRecommendationDto);
+
+
     @PostMapping(path = "/iais-apppreinsnc-be/AppPremNcResult",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremPreInspectionNcDto> saveAppPreNc(@RequestBody AppPremPreInspectionNcDto dto);
+
+    @PutMapping(path = "/iais-apppreinsnc-be/AppPremNcResultupdate",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremPreInspectionNcDto> updateAppPreNc(@RequestBody AppPremPreInspectionNcDto dto);
+
 
     @PostMapping(path = "/iais-apppreinsncitem-be/AppPremNcItemResult",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
@@ -65,9 +81,18 @@ public interface FillUpCheckListGetAppClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremInsDraftDto> saveAppInsDraft(@RequestBody AppPremInsDraftDto dto);
 
+    @PutMapping(path = "/iais-application-be/apppreminsdraftresultupdate",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<AppPremInsDraftDto> updateAppInsDraft(@RequestBody AppPremInsDraftDto dto);
+
     @PostMapping(path = "/iais-application-be/adhocdraftresult",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AdhocDraftDto>> saveAdhocDraft(@RequestBody List<AdhocDraftDto> dtoList);
+
+    @PutMapping(path = "/iais-application-be/adhocdraftresultupdate",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<AdhocDraftDto>> updateAdhocDraft(@RequestBody List<AdhocDraftDto> dtoList);
+
 
     @GetMapping(path = "/iais-apppreinsncitem-be/adhocdraftbyitemId/{itemId}",produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})

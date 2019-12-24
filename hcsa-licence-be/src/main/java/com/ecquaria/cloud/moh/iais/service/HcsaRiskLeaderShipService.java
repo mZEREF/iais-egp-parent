@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLeadershipMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
 
 /**
@@ -8,5 +9,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
  */
 public interface HcsaRiskLeaderShipService {
     RiskLeaderShipShowDto getLeaderShowDto();
-
+    void saveDto(RiskLeaderShipShowDto dto);
+    void getOneFinDto(HcsaRiskLeadershipMatrixDto lea, String prsource, String prthershold,
+                      String prleftmod, String prlefthigh, String prrightlow, String prrightmod,
+                      String insource, String inthershold, String inleftmod, String inlefthigh, String inrightlow, String inrightmod,
+                      String inStartDate, String inEndDate, String prStartDate, String prEndDate);
 }

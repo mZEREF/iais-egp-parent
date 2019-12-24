@@ -15,6 +15,9 @@
 %>
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/include/formHidden.jsp" %>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaRiskLeadershipConfigDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.HcsaRiskLeaderShipVadlidateDto"/>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
@@ -26,15 +29,6 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>Risk Configuration</h2>
-                        <iais:error>
-                            <c:if test = "${not empty errorMap}">
-                                <div class="error">
-                                    <c:forEach items="${errorMap}" var="map">
-                                        ${map.key}  ${map.value} <br/>
-                                    </c:forEach>
-                                </div>
-                            </c:if>
-                        </iais:error>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
@@ -48,14 +42,17 @@
                                         <th>Mininum Number of Cases</th>
                                         <th>Maximun Number of Cases</th>
                                         <th>Risk Rating</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <c:forEach var="lea" items="${leaderShowDto.leaderShipDtoList}" varStatus="status">
                                         <tr>
                                             <td>
+                                                <c:set value = "error_${lea.svcCode}both" var = "errboth"/>
+                                                <span class="error-msg" id="<c:out value="${errboth}"/>" name="iaisErrorMsg"></span>
                                                 <c:choose>
-                                                    <c:when test="${lea.isAdEdit}">
+                                                    <c:when test="${lea.adIsEdit}">
                                                         <p><b>${lea.serviceName}</b></p>
                                                     </c:when>
                                                     <c:otherwise>
@@ -66,14 +63,21 @@
                                             <td>
                                                 <p><input type="text" id="<c:out value="${lea.svcCode}"/>inthershold" name="<c:out value="${lea.svcCode}"/>inthershold"value="<c:out value="${lea.adThershold}"></c:out>">
                                                 </p>
+                                                <c:set value = "error_${lea.svcCode}inThershold" var = "inther"/>
+                                                <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
                                             </td>
-
                                             <td>
                                                 <input type="hidden" id="<c:out value="${lea.svcCode}"></c:out>insource" name="<c:out value="${lea.svcCode}"></c:out>insource" value="LGRAT001">
-                                                <p>Institution</p>
+                                                <p>Audit</p>
                                             </td>
-                                            <td><iais:datePicker id = "${lea.svcCode}instartdate" name = "${lea.svcCode}instartdate" value="${lea.inEffectiveStartDate}"></iais:datePicker></td>
-                                            <td><iais:datePicker id = "${lea.svcCode}inenddate" name = "${lea.svcCode}inenddate" value="${lea.inEffectiveEndDate}"></iais:datePicker></td>
+                                            <td><iais:datePicker id = "${lea.svcCode}instartdate" name = "${lea.svcCode}instartdate" value="${lea.adEffectiveStartDate}"></iais:datePicker>
+                                                <c:set value = "error_${lea.svcCode}inEffDate" var = "inEffdate"/>
+                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td><iais:datePicker id = "${lea.svcCode}inenddate" name = "${lea.svcCode}inenddate" value="${lea.adEffectiveEndDate}"></iais:datePicker>
+                                                <c:set value = "error_${lea.svcCode}inEndDate" var = "inEnddate"/>
+                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
+                                            </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly maxlength="5" value="0">
@@ -82,7 +86,7 @@
                                                     <input type="text" id="<c:out value="${lea.svcCode}"/>inleftmod" name = "<c:out value="${lea.svcCode}"/>inleftmod" maxlength="5"value="${lea.adLeftModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${lea.svcCode}"/>inlefthigh" name = "<c:out value="${lea.svcCode}"/>inlefthigh" maxlength="5"value="${lea.adLeftHighCaseCount}">
+                                                    <input type="text" id="<c:out value="${lea.svcCode}"/>inlefthigh" name = "<c:out value="${lea.svcCode}"/>inlefthigh" maxlength="5"value="${lea.adLeftHighCaseCounth}">
                                                 </div></div>
                                             </td>
                                             <td>
@@ -101,12 +105,21 @@
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
-
+                                            <td>
+                                                <c:set value = "error_${lea.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
+                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}inLeftHighCaseCounth" var = "inlefthigh"/>
+                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
+                                                <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}inRightModCaseCounth" var = "inrightmod"/>
+                                                <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>
                                                 <c:choose>
-                                                    <c:when test="${lea.prIsEdit}">
+                                                    <c:when test="${lea.dpIsEdit}">
                                                         <p><b>${lea.serviceName}</b></p>
                                                     </c:when>
                                                     <c:otherwise>
@@ -116,13 +129,21 @@
                                             </td>
                                             <td>
                                                 <p><input type="text" id="<c:out value="${lea.svcCode}"/>prthershold" name="<c:out value="${lea.svcCode}"/>prthershold" value="<c:out value="${lea.dpThershold}"></c:out>"></p>
+                                                <c:set value = "error_${fin.svcCode}prThershold" var = "prther"/>
+                                                <span class="error-msg" id="<c:out value="${prther}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <input type="hidden" id="<c:out value="${lea.svcCode}"></c:out>prsource" name="<c:out value="${lea.svcCode}"></c:out>prsource" value="SOURCE002">
-                                                <p>Practitioner</p>
+                                                <p>Disciplinary</p>
                                             </td>
-                                            <td><iais:datePicker id = "${lea.svcCode}prstartdate" name = "${lea.svcCode}prstartdate" value="${lea.dpEffectiveStartDate}"></iais:datePicker></td>
-                                            <td><iais:datePicker id = "${lea.svcCode}prenddate" name = "${lea.svcCode}prenddate" value="${lea.dpEffectiveEndDate}"></iais:datePicker></td>
+                                            <td><iais:datePicker id = "${lea.svcCode}prstartdate" name = "${lea.svcCode}prstartdate" value="${lea.dpEffectiveStartDate}"></iais:datePicker>
+                                                <c:set value = "error_${lea.svcCode}prEffDate" var = "prEffDate"/>
+                                                <span class="error-msg" id="<c:out value="${prEffDate}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td><iais:datePicker id = "${lea.svcCode}prenddate" name = "${lea.svcCode}prenddate" value="${lea.dpEffectiveEndDate}"></iais:datePicker>
+                                                <c:set value = "error_${lea.svcCode}prEndDate" var = "prEndDate"/>
+                                                <span class="error-msg" id="<c:out value="${prEndDate}"/>" name="iaisErrorMsg"></span>
+                                            </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly maxlength="5" value="0">
@@ -131,7 +152,7 @@
                                                     <input type="text" id="<c:out value="${lea.svcCode}"/>prleftmod" name = "<c:out value="${lea.svcCode}"/>prleftmod"  maxlength="5"value="${lea.dpLeftModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${lea.svcCode}"/>prlefthigh" name = "<c:out value="${lea.svcCode}"/>prlefthigh"  maxlength="5"value="${lea.dpLeftHighCaseCount}">
+                                                    <input type="text" id="<c:out value="${lea.svcCode}"/>prlefthigh" name = "<c:out value="${lea.svcCode}"/>prlefthigh"  maxlength="5"value="${lea.dpLeftHighCaseCounth}">
                                                 </div></div>
                                             </td>
                                             <td>
@@ -149,6 +170,16 @@
                                                 <div style="width: 100px;margin-top: 15px;">Low</div>
                                                 <div style="width: 100px;margin-top: 45px;">Moderate</div>
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
+                                            </td>
+                                            <td>
+                                                <c:set value = "error_${lea.svcCode}prRightModCaseCounth" var = "prrightmod"/>
+                                                <span class="error-msg" id="<c:out value="${prrightmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}prRightLowCaseCounth" var = "prrightlow"/>
+                                                <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}prLeftHighCaseCounth" var = "prlefthigh"/>
+                                                <span class="error-msg" id="<c:out value="${prlefthigh}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${lea.svcCode}prLeftModCaseCounth" var = "prleftmod"/>
+                                                <span class="error-msg" id="<c:out value="${prleftmod}"/>" name="iaisErrorMsg"></span>
                                             </td>
 
                                         </tr>
@@ -173,9 +204,9 @@
                 </div>
             </div>
         </div>
-
     </div>
 </form>
+<%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","next");

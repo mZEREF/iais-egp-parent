@@ -5,13 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.HcsaRiskFinianceVadlidateDto;
+import com.ecquaria.cloud.moh.iais.service.HcsaRiskLegislativeService;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
 import com.ecquaria.cloud.moh.iais.validation.HcsaFinancialRiskValidate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,16 +21,16 @@ import java.util.Map;
 
 /**
  * @Author: jiahao
- * @Date: 2019/11/13 18:10
+ * @Date: 2019/12/24 15:57
  */
-@Delegator(value = "hcsaRiskFinancialConfigDelegator")
+@Delegator(value = "hcsaRiskLegislativeConfigDelegator")
 @Slf4j
-public class HcsaRiskFinancialConfigDelegator {
+public class HcsaRiskLegislativeConfigDelegator {
+    private HcsaRiskLegislativeService hcsaRiskLegislativeService;
     private HcsaRiskService hcsaRiskService;
+    public HcsaRiskLegislativeConfigDelegator(HcsaRiskLegislativeService hcsaRiskLegislativeService){
+        this.hcsaRiskLegislativeService = hcsaRiskLegislativeService;
 
-    @Autowired
-    public HcsaRiskFinancialConfigDelegator(HcsaRiskService hcsaRiskService) {
-        this.hcsaRiskService = hcsaRiskService;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -41,8 +42,8 @@ public class HcsaRiskFinancialConfigDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
-        RiskFinancialShowDto financialShowDto = hcsaRiskService.getfinancialShowDto();
-        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO, financialShowDto);
+        RiskLegislativeShowDto legislativeShowDto = hcsaRiskLegislativeService.getLegShowDto();
+        ParamUtil.setSessionAttr(request, "legShowDto", legislativeShowDto);
         ;
     }
 
@@ -112,10 +113,10 @@ public class HcsaRiskFinancialConfigDelegator {
             String prStartDate = ParamUtil.getDate(request, fin.getServiceCode() + "prstartdate");
             String prEndDate = ParamUtil.getDate(request, fin.getServiceCode() + "prenddate");
             hcsaRiskService.getOneFinDto(fin,prsource,prthershold,prleftmod,prlefthigh,prrightlow,prrightmod,insource,inthershold
-            ,inleftmod,inlefthigh,inrightlow,inrightmod,inStartDate,inEndDate,prStartDate,prEndDate);
+                    ,inleftmod,inlefthigh,inrightlow,inrightmod,inStartDate,inEndDate,prStartDate,prEndDate);
         }
         financialShowDto.setFinanceList(finList);
-        ParamUtil.setSessionAttr(request,RiskConsts.FINANCIALSHOWDTO,financialShowDto);
+        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO,financialShowDto);
         return financialShowDto;
     }
     public HcsaRiskFinianceVadlidateDto getValueFromPage(HttpServletRequest request) {

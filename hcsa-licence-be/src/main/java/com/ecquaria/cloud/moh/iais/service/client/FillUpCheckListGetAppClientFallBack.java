@@ -145,4 +145,44 @@ public class FillUpCheckListGetAppClientFallBack implements  FillUpCheckListGetA
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<AppPremInsDraftDto> updateAppInsDraft(AppPremInsDraftDto dto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AdhocDraftDto>> updateAdhocDraft(List<AdhocDraftDto> dtoList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremisesPreInspectChklDto> updateAppPreInspChkl(AppPremisesPreInspectChklDto dto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremisesRecommendationDto> updateAppRecom(AppPremisesRecommendationDto appPremisesRecommendationDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppPremPreInspectionNcDto> updateAppPreNc(AppPremPreInspectionNcDto dto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

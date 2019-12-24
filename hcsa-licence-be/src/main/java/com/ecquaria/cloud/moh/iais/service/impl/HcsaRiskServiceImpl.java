@@ -91,7 +91,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                 for(HcsaRiskFinanceMatrixDto lastversion:lastversionList){
                     updateLastVersion(temp,lastversion);
                 }
-                hcsaConfigClient.saveFinRiskMatrix(lastversionList);
+                hcsaConfigClient.updateFinRiskMatrix(lastversionList);
             }
         }
         for(HcsaRiskFinanceMatrixDto temp:updateList){

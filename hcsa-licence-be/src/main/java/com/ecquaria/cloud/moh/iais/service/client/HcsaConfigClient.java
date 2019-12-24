@@ -1,9 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLeadershipMatrixDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLegislativeMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
@@ -84,8 +87,26 @@ public interface HcsaConfigClient {
     @RequestMapping(value = "/iais-hcsa-risk/FinanceMatrixMemoryStorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskFinanceMatrixDto>> saveFinRiskMatrix(@RequestBody List<HcsaRiskFinanceMatrixDto> finDtoList);
 
+    @RequestMapping(value = "/iais-hcsa-risk/FinanceMatrixMemoryStorageupdate",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskFinanceMatrixDto>> updateFinRiskMatrix(@RequestBody List<HcsaRiskFinanceMatrixDto> finDtoList);
+
     @RequestMapping(value = "/iais-hcsa-risk/leadership/show",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<RiskLeaderShipShowDto> getRiskLeaderShipShow(@RequestBody List<HcsaServiceDto> svcList);
+
+    @GetMapping(value = "/iais-hcsa-risk/leadershipbysvccode{serviceCode}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> getLeadershipRiskBySvcCode(@PathVariable("serviceCode")String serviceCode);
+
+    @RequestMapping(value = "/iais-hcsa-risk/LeaderShipMatrixStorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> saveLeadershipRiskMatrix(@RequestBody List<HcsaRiskLeadershipMatrixDto> finDtoList);
+
+    @RequestMapping(value = "/iais-hcsa-risk/LeaderShipMatrixStorageupdate",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> updateLeadershipRiskMatrix(@RequestBody List<HcsaRiskLeadershipMatrixDto> finDtoList);
+
+    @GetMapping(value = "/iais-hcsa-risk/leadershipbysvccode{serviceCode}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> getLegislativeRiskBySvcCode(@PathVariable("serviceCode")String serviceCode);
+
+    @RequestMapping(value = "/iais-hcsa-risk/legislativeshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<RiskLegislativeShowDto> getLegislativeShow(@RequestBody List<HcsaServiceDto> svcList);
 
 
 }
