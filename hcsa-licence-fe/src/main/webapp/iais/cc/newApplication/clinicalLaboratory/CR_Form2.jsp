@@ -284,7 +284,7 @@
                                       <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
                                       <c:choose>
                                         <c:when test="${currentCgo.speciality eq 'other'}">
-                                          <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" size="30">
+                                          <input  name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" size="30">
                                         </c:when>
                                         <c:otherwise>
                                           <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" size="30">

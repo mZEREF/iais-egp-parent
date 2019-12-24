@@ -605,7 +605,7 @@ public class ClinicalLaboratoryDelegator {
                 appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
                 appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
             }
-            String crud_action_type = ParamUtil.getRequestString( bpc.request,"crud_action_additional");
+            String crud_action_type = ParamUtil.getRequestString( bpc.request,"nextStep");
             if("next".equals(crud_action_type)){
                 errorMap = doValidateLaboratory(appSvcChckListDtoList,currentSvcId);
             }
@@ -680,7 +680,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
         //do validate
         Map<String,String> errList=new HashMap<>();
-        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "crud_action_additional");
+        String crud_action_additional = bpc.request.getParameter("nextStep");
         if("next".equals(crud_action_additional)){
             errList =doValidateGovernanceOfficers(bpc.request);
         }
@@ -750,7 +750,7 @@ public class ClinicalLaboratoryDelegator {
             }
         }
 
-        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "crud_action_additional");
+        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
         if("next".equals(crud_action_additional)){
             doValidateDisciplineAllocation(errorMap,daList);
         }
@@ -787,7 +787,7 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request) ;
         ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
         Map<String,String> map=new HashMap<>();
-        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "crud_action_additional");
+        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
         if("next".equals(crud_action_additional)){
             map = NewApplicationDelegator.doValidatePo(bpc.request);
         }

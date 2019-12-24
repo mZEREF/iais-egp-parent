@@ -5,6 +5,7 @@
     <div class="col-xs-12 col-sm-6">
       <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
         <a class="next btn btn-primary" id = "Next">Next</a></div>
+      <input name="nextStep" value="" type="hidden">
     </div>
   </div>
 </div>
@@ -28,6 +29,7 @@
             submitForms('${serviceStepDto.currentStep.stepCode}','saveDraft',null,controlFormLi);
         });
         $('#Next').click(function(){
+            $("[name='nextStep']").val('next');
             if(${serviceStepDto.isStepEnd()}){
                 if(${serviceStepDto.isServiceEnd()}){
                     submit('preview',null,null);
