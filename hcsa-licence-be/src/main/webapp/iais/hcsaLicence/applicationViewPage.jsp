@@ -158,11 +158,10 @@
                                                            var="appSupDocDto">
                                                     <tr>
                                                         <td>
-                                                            <p><c:out value="${appSupDocDto.document}"></c:out></p>
+                                                            <p><c:out value="${appSupDocDto.file}"></c:out></p>
                                                         </td>
                                                         <td>
-                                                            <p><a href="#"><c:out
-                                                                    value="${appSupDocDto.file}"></c:out></a></p>
+                                                            <p><a href="#"><c:out value="${appSupDocDto.document}"></c:out></a></p>
                                                         </td>
                                                         <td>
                                                             <p><c:out value="${appSupDocDto.size}"></c:out></p>
@@ -512,7 +511,7 @@
                                                             <iais:datePicker id = "lienceStartDate" name = "tuc" value=""></iais:datePicker>
                                                         </td>
                                                     </tr>
-                                                    <tr id="rollBack" class="hidden">
+                                                    <tr id="rollBackDropdown" class="hidden">
                                                         <td>
                                                             <span>Roll Back:</span>
                                                         </td>
@@ -610,12 +609,12 @@
         var selectValue = $("[name='nextStage']").val();
         if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
-            $('#rollBack').addClass('hidden');
+            $('#rollBackDropdown').addClass('hidden');
         }else if(selectValue == "ROLLBACK"){
-            $('#rollBack').removeClass('hidden');
+            $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
         }else{
-            $('#rollBack').addClass('hidden');
+            $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
 
         }
