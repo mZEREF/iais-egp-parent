@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -237,12 +238,11 @@ public class AdhocChecklistDelegator {
     public void receiveItemPool(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
-        FilterParameter filterParameter = new FilterParameter();
-
-        filterParameter.setClz(CheckItemQueryDto.class);
-        filterParameter.setSearchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH);
-        filterParameter.setResultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT);
-        filterParameter.setSortField("item_id");
+        FilterParameter filterParameter = new FilterParameter.Builder()
+                .clz(CheckItemQueryDto.class)
+                .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH)
+                .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT)
+                .sortField("item_id").build();
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);

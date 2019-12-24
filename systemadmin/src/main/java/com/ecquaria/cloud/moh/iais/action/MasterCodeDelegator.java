@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.mastercode.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -30,12 +32,17 @@ import java.util.Map;
 @Slf4j
 public class MasterCodeDelegator {
 
-    private final FilterParameter filterParameter;
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(MasterCodeQueryDto.class)
+            .searchAttr(MasterCodeConstants.SEARCH_PARAM)
+            .resultAttr(MasterCodeConstants.SEARCH_RESULT)
+            .sortField(MasterCodeConstants.MASTERCODE_SORT_COLUM).sortType(SearchParam.ASCENDING).build();
+
+
     private final MasterCodeService masterCodeService;
 
     @Autowired
-    private MasterCodeDelegator(FilterParameter filterParameter, MasterCodeService masterCodeService){
-        this.filterParameter = filterParameter;
+    private MasterCodeDelegator(MasterCodeService masterCodeService){
         this.masterCodeService = masterCodeService;
     }
 
@@ -64,10 +71,7 @@ public class MasterCodeDelegator {
     public void prepareData(BaseProcessClass bpc){
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
-        filterParameter.setClz(MasterCodeQueryDto.class);
-        filterParameter.setSearchAttr(MasterCodeConstants.SEARCH_PARAM);
-        filterParameter.setResultAttr(MasterCodeConstants.SEARCH_RESULT);
-        filterParameter.setSortField(MasterCodeConstants.MASTERCODE_SORT_COLUM);
+
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "masterCodeQuery",searchParam);
         SearchResult searchResult = masterCodeService.doQuery(searchParam);

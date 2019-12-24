@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -38,12 +39,17 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class AuditTrailDelegator {
 
-    private FilterParameter filterParameter;
+    private FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(AuditTrailQueryDto.class)
+            .searchAttr(AuditTrailConstants.PARAM_SEARCH)
+            .resultAttr(AuditTrailConstants.PARAM_SEARCHRESULT)
+            .sortField("audit_id").sortType(SearchParam.ASCENDING).build();
+
+
     private AuditTrailService auditTrailService;
 
     @Autowired
-    public AuditTrailDelegator(FilterParameter filterParameter, AuditTrailService auditTrailService){
-        this.filterParameter = filterParameter;
+    public AuditTrailDelegator(AuditTrailService auditTrailService){
         this.auditTrailService = auditTrailService;
     }
 
@@ -83,10 +89,6 @@ public class AuditTrailDelegator {
     */
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        filterParameter.setClz(AuditTrailQueryDto.class);
-        filterParameter.setSearchAttr(AuditTrailConstants.PARAM_SEARCH);
-        filterParameter.setResultAttr(AuditTrailConstants.PARAM_SEARCHRESULT);
-        filterParameter.setSortField("audit_id");
 
         SearchParam trailDtoSearchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         SearchResult<AuditTrailQueryDto> trailDtoSearchResult = null;

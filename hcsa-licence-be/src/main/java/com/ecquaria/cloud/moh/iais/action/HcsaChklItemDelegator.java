@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -45,12 +46,15 @@ import java.util.Map;
 public class HcsaChklItemDelegator {
 
     private HcsaChklService hcsaChklService;
-    private FilterParameter filterParameter;
+    private FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(CheckItemQueryDto.class)
+            .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH)
+            .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT)
+            .sortField("item_id").build();
 
     @Autowired
-    public HcsaChklItemDelegator(HcsaChklService hcsaChklService, FilterParameter filterParameter){
+    public HcsaChklItemDelegator(HcsaChklService hcsaChklService){
         this.hcsaChklService = hcsaChklService;
-        this.filterParameter = filterParameter;
     }
 
     /**
@@ -306,11 +310,6 @@ public class HcsaChklItemDelegator {
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
             ParamUtil.setSessionAttr(request, "currentValidateId", null);
         }
-
-        filterParameter.setClz(CheckItemQueryDto.class);
-        filterParameter.setSearchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH);
-        filterParameter.setResultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT);
-        filterParameter.setSortField("item_id");
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);

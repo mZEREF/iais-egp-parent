@@ -93,7 +93,7 @@ public class IaisEGPHelperTest {
     @Test
     public void testGetSearchParam(){
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        FilterParameter filterParameter = new FilterParameter();
+        FilterParameter filterParameter = new FilterParameter.Builder().build();
         filterParameter.setSearchAttr("test");
         Class clz = ParamUtil.class;
         filterParameter.setClz(clz);
@@ -128,7 +128,7 @@ public class IaisEGPHelperTest {
     @Test
     public void testGetSearchParamToError(){
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
-        FilterParameter filterParameter = new FilterParameter();
+        FilterParameter filterParameter = new FilterParameter.Builder().build();
         filterParameter.setSearchAttr("test");
         filterParameter.setClz(null);
         PowerMockito.mockStatic(ParamUtil.class);

@@ -53,7 +53,12 @@ import java.util.UUID;
 public class HcsaChklConfigDelegator {
 
     private HcsaChklService hcsaChklService;
-    private FilterParameter filterParameter;
+
+    private FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(ChecklistConfigQueryDto.class)
+            .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH)
+            .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT)
+            .sortField("config_id").build();
 
     private List<String> subtypeNames = null;
     private List<String> svcNames = null;
@@ -62,9 +67,8 @@ public class HcsaChklConfigDelegator {
 
 
     @Autowired
-    public HcsaChklConfigDelegator(HcsaChklService hcsaChklService, FilterParameter filterParameter){
+    public HcsaChklConfigDelegator(HcsaChklService hcsaChklService){
         this.hcsaChklService = hcsaChklService;
-        this.filterParameter = filterParameter;
     }
 
     /**
@@ -100,11 +104,6 @@ public class HcsaChklConfigDelegator {
         }
 
         preSelectOption(request);
-
-        filterParameter.setClz(ChecklistConfigQueryDto.class);
-        filterParameter.setSearchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH);
-        filterParameter.setResultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT);
-        filterParameter.setSortField("config_id");
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("hcsaconfig", "listChecklistConfig", searchParam);

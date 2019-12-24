@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.mastercode.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -38,12 +40,16 @@ import java.util.Map;
 @Delegator
 @Slf4j
 public class MessageDelegator {
-    private  final FilterParameter filterParameter;
+    private  final FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(MessageQueryDto.class)
+            .searchAttr(MessageConstants.PARAM_MESSAGE_SEARCH)
+            .resultAttr(MessageConstants.PARAM_MESSAGE_SEARCH_RESULT)
+            .sortField("msg_id").build();
+
     private  final MessageService messageService;
 
     @Autowired
-    public MessageDelegator(FilterParameter filterParameter, MessageService messageService){
-        this.filterParameter = filterParameter;
+    public MessageDelegator(MessageService messageService){
         this.messageService = messageService;
     }
 
@@ -96,12 +102,6 @@ public class MessageDelegator {
         HttpServletRequest request = bpc.request;
 
         preSelectOption(request);
-
-        //setting of query default value
-        filterParameter.setClz(MessageQueryDto.class);
-        filterParameter.setSortField("msg_id");
-        filterParameter.setSearchAttr(MessageConstants.PARAM_MESSAGE_SEARCH);
-        filterParameter.setResultAttr(MessageConstants.PARAM_MESSAGE_SEARCH_RESULT);
 
         SearchParam param = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "queryMessage", param);

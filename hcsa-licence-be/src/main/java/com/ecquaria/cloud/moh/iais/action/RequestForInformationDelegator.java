@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
@@ -38,8 +40,17 @@ public class RequestForInformationDelegator {
     RequestForInformationService requestForInformationService;
     @Autowired
     ApplicationClient applicationClient;
-    FilterParameter licenceParameter = new FilterParameter();
-    FilterParameter applicationParameter = new FilterParameter();
+    FilterParameter licenceParameter = new FilterParameter.Builder()
+            .clz(RfiLicenceQueryDto.class)
+            .searchAttr("licParam")
+            .resultAttr("licResult")
+            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(0).pageSize(10).build();
+
+    FilterParameter applicationParameter = new FilterParameter.Builder()
+            .clz(RfiApplicationQueryDto.class)
+            .searchAttr("appParam")
+            .resultAttr("appResult")
+            .sortField("application_no").pageNo(0).pageSize(10).sortType(SearchParam.ASCENDING).build();
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
@@ -136,10 +147,7 @@ public class RequestForInformationDelegator {
         String sub_date = ParamUtil.getString(bpc.request, "sub_date");
         String to_date = ParamUtil.getString(bpc.request, "to_date");
         //List<String> svcNames=
-        licenceParameter.setClz(RfiLicenceQueryDto.class);
-        licenceParameter.setSearchAttr("licParam");
-        licenceParameter.setResultAttr("licResult");
-        Map<String,Object> filters=new HashMap<>();
+        Map<String,Object> filters=new HashMap<>(16);
 
         if(!StringUtil.isEmpty(licence_no)){
             filters.put("licence_no", licence_no);
@@ -154,10 +162,7 @@ public class RequestForInformationDelegator {
             filters.put("expiry_date", to_date);
         }
         licenceParameter.setFilters(filters);
-        licenceParameter.setPageNo(0);
-        licenceParameter.setPageSize(10);
-        licenceParameter.setSortField("id");
-        licenceParameter.setSortType(SearchParam.ASCENDING);
+
         SearchParam licParam = SearchResultHelper.getSearchParam(request, true,licenceParameter);
         QueryHelp.setMainSql("ReqForInfoQuery","licenceQuery",licParam);
         if (licParam != null) {
@@ -177,18 +182,14 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
                     reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
 
-                    applicationParameter.setClz(RfiApplicationQueryDto.class);
-                    applicationParameter.setSearchAttr("appParam");
-                    applicationParameter.setResultAttr("appResult");
+
                     Map<String,Object> filter=new HashMap<>();
                     if(!StringUtil.isEmpty(rfiLicenceQueryDto.getAppId())){
                         filter.put("id", rfiLicenceQueryDto.getAppId());
                     }
+
                     applicationParameter.setFilters(filter);
-                    applicationParameter.setPageNo(0);
-                    applicationParameter.setPageSize(10);
-                    applicationParameter.setSortField("application_no");
-                    applicationParameter.setSortType(SearchParam.ASCENDING);
+
                     SearchParam appParam = SearchResultHelper.getSearchParam(request, true,applicationParameter);
                     QueryHelp.setMainSql("ReqForInfoQuery","applicationQuery",appParam);
                     SearchResult<RfiApplicationQueryDto> appResult =applicationClient.searchApp(appParam).getEntity();

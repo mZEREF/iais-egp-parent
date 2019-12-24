@@ -43,13 +43,10 @@ import java.util.Map;
 public class FillupChklistDelegator {
     private TaskService taskService;
     private FillupChklistService fillupChklistService;
-    private FilterParameter filterParameter;
-
 
     @Autowired
-    public FillupChklistDelegator(FillupChklistService fillupChklistService, FilterParameter filterParameter){
+    public FillupChklistDelegator(FillupChklistService fillupChklistService){
         this.fillupChklistService = fillupChklistService;
-        this.filterParameter = filterParameter;
     }
 
     /**

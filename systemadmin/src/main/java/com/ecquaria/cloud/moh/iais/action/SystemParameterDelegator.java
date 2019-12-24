@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.mastercode.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -37,12 +39,15 @@ import java.util.Map;
 @Slf4j
 public class SystemParameterDelegator {
 
-    private final FilterParameter filterParameter;
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(SystemParameterQueryDto.class)
+            .searchAttr(SystemParameterConstants.PARAM_SEARCH)
+            .resultAttr(SystemParameterConstants.PARAM_SEARCHRESULT)
+            .sortField("pid").build();
     private final SystemParameterService parameterService;
 
     @Autowired
-    public SystemParameterDelegator(FilterParameter filterParameter, SystemParameterService parameterService){
-        this.filterParameter = filterParameter;
+    public SystemParameterDelegator(SystemParameterService parameterService){
         this.parameterService = parameterService;
     }
 
@@ -104,11 +109,6 @@ public class SystemParameterDelegator {
     public void loadData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
-
-        filterParameter.setClz(SystemParameterQueryDto.class);
-        filterParameter.setSearchAttr(SystemParameterConstants.PARAM_SEARCH);
-        filterParameter.setResultAttr(SystemParameterConstants.PARAM_SEARCHRESULT);
-        filterParameter.setSortField("pid");
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "querySystemParam", searchParam);

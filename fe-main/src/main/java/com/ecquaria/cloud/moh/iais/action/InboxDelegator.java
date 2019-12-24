@@ -48,9 +48,24 @@ public class InboxDelegator {
 
     }
 
-    FilterParameter appParameter = new FilterParameter();
-    FilterParameter inboxParameter = new FilterParameter();
-    FilterParameter licenceParameter = new FilterParameter();
+    private FilterParameter appParameter = new FilterParameter.Builder()
+            .clz(InboxAppQueryDto.class)
+            .searchAttr(InboxConst.APP_PARAM)
+            .resultAttr(InboxConst.APP_RESULT)
+            .sortField("CREATED_DT").build();
+
+    private FilterParameter inboxParameter = new FilterParameter.Builder()
+            .clz(InboxQueryDto.class)
+            .searchAttr(InboxConst.INBOX_PARAM)
+            .resultAttr(InboxConst.INBOX_RESULT)
+            .sortField("id").build();
+
+    private FilterParameter licenceParameter = new FilterParameter.Builder()
+            .clz(InboxLicenceQueryDto.class)
+            .searchAttr(InboxConst.LIC_PARAM)
+            .resultAttr(InboxConst.LIC_RESULT)
+            .sortField("licence_no").sortType(InboxConst.DESCENDING).build();
+
 
     /**
      *
@@ -72,10 +87,6 @@ public class InboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> PrepareDate"));
         HttpServletRequest request = bpc.request;
         prepareSelectOption(bpc);
-        inboxParameter.setClz(InboxQueryDto.class);
-        inboxParameter.setSearchAttr(InboxConst.INBOX_PARAM);
-        inboxParameter.setResultAttr(InboxConst.INBOX_RESULT);
-        inboxParameter.setSortField("id");
         SearchParam inboxParam = SearchResultHelper.getSearchParam(request, true,inboxParameter);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
@@ -96,10 +107,7 @@ public class InboxDelegator {
         /**
          * Application SearchResult
          */
-        appParameter.setClz(InboxAppQueryDto.class);
-        appParameter.setSearchAttr(InboxConst.APP_PARAM);
-        appParameter.setResultAttr(InboxConst.APP_RESULT);
-        appParameter.setSortField("CREATED_DT");
+
         SearchParam appParam = SearchResultHelper.getSearchParam(request, true,appParameter);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         SearchResult appResult = inboxService.appDoQuery(appParam);
@@ -125,11 +133,7 @@ public class InboxDelegator {
         /**
          * Licence SearchResult
          */
-        licenceParameter.setClz(InboxLicenceQueryDto.class);
-        licenceParameter.setSearchAttr(InboxConst.LIC_PARAM);
-        licenceParameter.setResultAttr(InboxConst.LIC_RESULT);
-        licenceParameter.setSortField("licence_no");
-        licenceParameter.setSortType(InboxConst.DESCENDING);
+
         SearchParam licParam = SearchResultHelper.getSearchParam(request, true,licenceParameter);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         if (licParam != null) {
