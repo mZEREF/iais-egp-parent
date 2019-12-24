@@ -49,6 +49,13 @@
     <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadConfirm_OnStepProcess_0" name="inspecUserRectifiUploadConfirm_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspecUserRectifiUploadQuery" x="1300" y="380">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspecUserRectifiUploadQuery_OnStepProcess_0" name="inspecUserRectifiUploadQuery_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadReviewPage" stageIndicator="" x="650" y="100">
@@ -63,7 +70,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadConfPage" stageIndicator="" x="1280" y="380">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspecUserRectifiUploadConfPage" stageIndicator="" x="1280" y="230">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -106,10 +113,16 @@
    <position>{(1080,250)(1080,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/InspecUserRectifiUploadConfPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadConfirm" style="rectanular">
-   <position>{(1300,120)(1300,400)}</position>
+   <position>{(1300,120)(1300,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(1150,120)(1125,38)(560,38)(500,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspecUserRectifiUploadQuery" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspecUserRectifiUploadConfPage" style="rectanular">
+   <position>{(1300,250)(1320,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspecUserRectifiUploadQuery" style="oblique">
+   <position>{(1320,400)(1150,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

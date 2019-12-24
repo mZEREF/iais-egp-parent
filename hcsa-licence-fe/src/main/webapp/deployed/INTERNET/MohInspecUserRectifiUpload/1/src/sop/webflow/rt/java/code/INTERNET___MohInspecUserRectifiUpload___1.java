@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohInspecUserRectifiUpload___1 extends BaseProcessClass {
@@ -46,6 +47,11 @@ public class INTERNET___MohInspecUserRectifiUpload___1 extends BaseProcessClass 
 	public void inspecUserRectifiUploadSuccess_OnStepProcess_0() throws Exception {
 	// 		InspecUserRectifiUploadSuccess->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "inspecUserRectifiUploadSuccess", this);
+	}
+
+	public void inspecUserRectifiUploadQuery_OnStepProcess_0() throws Exception {
+	// 		InspecUserRectifiUploadQuery->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "inspecUserRectifiUploadQuery", this);
 	}
 
 }
