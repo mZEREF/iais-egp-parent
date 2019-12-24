@@ -22,6 +22,9 @@
   <input type="hidden" name="crud_action_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
 
+  <div class="main-content" >
 
+
+    </div>
 
 </>

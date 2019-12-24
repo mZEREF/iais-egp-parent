@@ -44,7 +44,7 @@ public class MessageDelegator {
             .clz(MessageQueryDto.class)
             .searchAttr(MessageConstants.PARAM_MESSAGE_SEARCH)
             .resultAttr(MessageConstants.PARAM_MESSAGE_SEARCH_RESULT)
-            .sortField("msg_id").build();
+            .sortField("msg_id").sortType(SearchParam.ASCENDING).build();
 
     private  final MessageService messageService;
 

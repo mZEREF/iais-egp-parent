@@ -16,14 +16,17 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___MohRole___1 extends BaseProcessClass {
     private static final String DELEGATOR ="createRoleDelegator";
-    public void create_OnStepProcess_0() throws Exception {
-    // 		create->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "prepareData", this);
-    }
-
     public void step2_OnStepProcess_0() throws Exception {
     // 		Step2->OnStepProcess
         EngineHelper.delegate(DELEGATOR, "createRole", this);
+    }
+    public void create_OnStepProcess_0() throws Exception {
+        // 		create->OnStepProcess
+            EngineHelper.delegate(DELEGATOR, "prepareData", this);
+        }
+    public void step3_OnStepProcess_0() throws Exception {
+    // 		Step3->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doSave", this);
     }
 
 }

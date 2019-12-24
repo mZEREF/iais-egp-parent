@@ -62,7 +62,6 @@ public class MessageDelegatorTest {
 
     private MessageDto messageDto = new MessageDto();
 
-    @Spy
     private FilterParameter filterParameter = new FilterParameter.Builder().build();
 
     @Before
