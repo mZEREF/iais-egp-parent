@@ -122,18 +122,20 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
     @Override
     public void compressFile(){
-        compress();
-        rename();
+        String compress = compress();
+        rename(compress);
         deleteFile();
     }
     /*****************compress*********/
 
-    private void compress(){
+    private String compress(){
+        long l=0L;
         ZipOutputStream zos=null;
         CheckedOutputStream cos=null;
         OutputStream is=null;
         try {
-             is=new FileOutputStream(backups+File.separator+System.currentTimeMillis()+".zip");
+            l = System.currentTimeMillis();
+            is=new FileOutputStream(backups+File.separator+ l+".zip");
             cos =new CheckedOutputStream(is,new CRC32());
              zos =new ZipOutputStream(cos);
             File file =new File(download);
@@ -165,7 +167,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 }
             }
         }
-
+        return l+"";
     }
     private void zipFile(ZipOutputStream zos,File file)  {
         BufferedInputStream bis=null;
@@ -218,12 +220,12 @@ public class UploadFileServiceImpl implements UploadFileService {
         }
     }
 
-    private void rename()  {
+    private void rename(String fileNamesss)  {
         flag=true;
         File zipFile =new File(backups);
        if(zipFile.isDirectory()){
            File[] files = zipFile.listFiles((dir, name) -> {
-               if (name.endsWith(".zip")) {
+               if (name.endsWith(fileNamesss+".zip")) {
                    return true;
                }
                return false;
