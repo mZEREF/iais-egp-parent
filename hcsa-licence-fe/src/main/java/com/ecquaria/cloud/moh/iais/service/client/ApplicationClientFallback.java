@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -130,14 +132,14 @@ public class ApplicationClientFallback {
         return entity;
     }
 
-    FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> saveappNcDoc(List<AppPremPreInspectionNcDocDto> dtoList){
+    FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> saveAppNcDoc(List<AppPremPreInspectionNcDocDto> dtoList){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<AppPremPreInspectionNcDocDto> updateappNcDoc(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto){
+    FeignResponseEntity<AppPremPreInspectionNcDocDto> updateAppNcDoc(AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -145,6 +147,41 @@ public class ApplicationClientFallback {
     }
 
     FeignResponseEntity<AppPremPreInspectionNcDocDto> getNcDocByNcItemId(String ncItemId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<AppPremisesPreInspectionNcItemDto> updateAppPreItemNc(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<AppPremisesPreInspectionNcItemDto> getNcItemByItemId(String itemId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<AppPremPreInspectionNcDto> getPreNcByPreNcId(String preNcId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<AppPremPreInspectionNcDto> saveAppPremPreNc(AppPremPreInspectionNcDto appPremPreInspectionNcDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<AppPremPreInspectionNcDto> updateAppPremPreNc(AppPremPreInspectionNcDto appPremPreInspectionNcDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

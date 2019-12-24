@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -85,13 +87,33 @@ public interface ApplicationClient  {
 
     @PostMapping(value = "/iais-inspection-fe/appncdocs", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> saveappNcDoc(@RequestBody List<AppPremPreInspectionNcDocDto> dtoList);
+    FeignResponseEntity<List<AppPremPreInspectionNcDocDto>> saveAppNcDoc(@RequestBody List<AppPremPreInspectionNcDocDto> dtoList);
 
     @PutMapping(value = "/iais-inspection-fe/appncdoc", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppPremPreInspectionNcDocDto> updateappNcDoc(@RequestBody AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto);
+    FeignResponseEntity<AppPremPreInspectionNcDocDto> updateAppNcDoc(@RequestBody AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto);
 
-    @GetMapping(value = "/appncdociteid/{ncItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(value = "/iais-inspection-fe/appncdociteid/{ncItemId}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremPreInspectionNcDocDto> getNcDocByNcItemId(@PathVariable(name = "ncItemId") String ncItemId);
+
+    @PutMapping(value = "/iais-inspection-fe/appprempreitemncu", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesPreInspectionNcItemDto> updateAppPreItemNc(@RequestBody AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto);
+
+    @GetMapping(value = "/iais-inspection-fe/appncitemdto/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesPreInspectionNcItemDto> getNcItemByItemId(@PathVariable(name = "itemId") String itemId);
+
+    @GetMapping(value = "/iais-inspection-fe/apprencdto/{preNcId}", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremPreInspectionNcDto> getPreNcByPreNcId(@PathVariable(name = "preNcId") String preNcId);
+
+    @PostMapping(value = "/iais-inspection-fe/apppremprencdto", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremPreInspectionNcDto> saveAppPremPreNc(@RequestBody AppPremPreInspectionNcDto appPremPreInspectionNcDto);
+
+    @PutMapping(value = "/iais-inspection-fe/apppremprencdtou", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremPreInspectionNcDto> updateAppPremPreNc(@RequestBody AppPremPreInspectionNcDto appPremPreInspectionNcDto);
 }
