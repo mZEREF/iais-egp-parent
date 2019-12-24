@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQue
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -26,7 +27,10 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,14 +265,19 @@ public class BackendInboxDelegator {
      * @param bpc
      * @throws
      */
-    public void searchQuery(BaseProcessClass bpc){
+    public void searchQuery(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         List<TaskDto> commPools =(List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
 
         QueryHelp.setMainSql("inspectionQuery", "assignInspectorSupper",searchParam);
+        log.debug(StringUtil.changeForLog("searchResult param = "+JsonUtil.parseToJson(searchParam)));
+
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
+        log.debug(StringUtil.changeForLog("searchResult2 searchResult = "+JsonUtil.parseToJson(searchResult)));
+        log.debug(StringUtil.changeForLog("searchResult2 commPools = "+JsonUtil.parseToJson(commPools)));
+        log.debug(StringUtil.changeForLog("searchResult2 loginContext = "+JsonUtil.parseToJson(loginContext)));
         SearchResult<InspectionTaskPoolListDto> searchResult2 = inspectionService.getOtherDataForSr(searchResult, commPools, loginContext);
 
         SearchParam searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
@@ -279,7 +288,7 @@ public class BackendInboxDelegator {
         SearchParam searchParamAjax = new SearchParam(InspectionAppInGroupQueryDto.class.getName());
         searchParamAjax.setPageSize(10);
         searchParamAjax.setPageNo(1);
-        searchParamAjax.setSort("ID", SearchParam.ASCENDING);
+        searchParamAjax.setSort("APPLICATION_NO", SearchParam.ASCENDING);
 
         if(searchResult2 != null && searchResult2.getRowCount() > 0){
             List<InspectionTaskPoolListDto> rows = searchResult2.getRows();
@@ -372,7 +381,19 @@ public class BackendInboxDelegator {
             }
 
             QueryHelp.setMainSql("inspectionQuery", "AppGroup",searchParamGroup);
+            log.debug(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             SearchResult<InspectionAppGroupQueryDto> searchResult3 = inspectionService.searchInspectionBeAppGroup(searchParamGroup);
+            List<InspectionAppGroupQueryDto> inspectionAppGroupQueryDtoList = searchResult3.getRows();
+            SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat newformat =  new SimpleDateFormat("dd/MM/yyyy");
+            for (InspectionAppGroupQueryDto item:inspectionAppGroupQueryDtoList
+                 ) {
+                long lt = format.parse(item.getSubmitDate()).getTime();
+                Date date = new Date(lt);
+                String newdate = newformat.format(date);
+                item.setSubmitDate(newdate);
+            }
+
             ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult3);
             ParamUtil.setSessionAttr(bpc.request, "searchParamAjax", searchParamAjax);
         }else{

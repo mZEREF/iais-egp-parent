@@ -195,8 +195,8 @@
                                             <c:if test="${pool.count == 1}">
                                                 <div class="col-xs-2  col-lg-2 border-div-cell"><c:out value="Single"/></div>
                                             </c:if>
-                                            <div class="col-xs-2  col-lg-2 border-div-cell"><c:out value="${pool.updateDt}"/></div>
-                                            <div class="col-xs-2  col-lg-2 border-div-cell-last"><c:out value="${pool.paymentstatus}"/></div>
+                                            <div class="col-xs-2  col-lg-2 border-div-cell"><c:out value="${pool.submitDate}"/></div>
+                                            <div class="col-xs-2  col-lg-2 border-div-cell-last"><c:out value="${pool.paymentstatus}" /></div>
                                         </div>
                                         <div id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}" class="collapse table col-xs-12 col-lg-12 app-in-group">
                                             <div class="col-xs-12 col-lg-12 ">
