@@ -30,18 +30,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +40,19 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * NewApplicationDelegator
@@ -72,7 +73,7 @@ public class NewApplicationDelegator {
     public static final String RELOADAPPGRPPRIMARYDOCMAP = "reloadAppGrpPrimaryDocMap";
     public static final String  APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
 
-    public static final String FIRESTOPTION = "Select One";
+    public static final String FIRESTOPTION = "Please Select";
 
 
     @Autowired
@@ -355,7 +356,14 @@ public class NewApplicationDelegator {
         }
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesList){
             for(HcsaSvcDocConfigDto prem:premHcsaSvcDocConfigList){
-                String name = "prem"+prem.getId()+appGrpPremisesDto.getHciName();
+
+                String premisesIndexNo = "";
+                if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                    premisesIndexNo = appGrpPremisesDto.getHciName();
+                }else  if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                    premisesIndexNo = appGrpPremisesDto.getConveyanceVehicleNo();
+                }
+                String name = "prem"+prem.getId()+premisesIndexNo;
                 file = (CommonsMultipartFile) mulReq.getFile(name);
                 String delFlag = name+"flag";
                 String delFlagValue =  mulReq.getParameter(delFlag);
@@ -368,9 +376,9 @@ public class NewApplicationDelegator {
                         appGrpPrimaryDocDto.setRealDocSize(file.getSize());
                         long size = file.getSize() / 1024;
                         appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
-                        appGrpPrimaryDocDto.setPremisessName(appGrpPremisesDto.getHciName());
+                        appGrpPrimaryDocDto.setPremisessName(premisesIndexNo);
                         appGrpPrimaryDocDto.setPremisessType(appGrpPremisesDto.getPremisesType());
-                        commonsMultipartFileMap.put(appGrpPremisesDto.getHciName()+prem.getId(), file);
+                        commonsMultipartFileMap.put(premisesIndexNo+prem.getId(), file);
                         appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
                     }
                 }else if("N".equals(delFlagValue)){
@@ -1604,7 +1612,7 @@ public class NewApplicationDelegator {
             sBuffer.append("<li data-value=\"-1\" class=\"option selected\">"+firestOption+"</li>");
         }
         for(SelectOption kv:selectOptionList){
-            sBuffer.append(" <li data-value="+kv.getValue()+" class=\"option\">"+kv.getText()+"</li>");
+            sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
         }
         sBuffer.append("</div>")
                 .append("<div id=\"mCSB_2_scrollbar_vertical\" class=\"mCSB_scrollTools mCSB_2_scrollbar mCS-light mCSB_scrollTools_vertical\" style=\"display: none;\">")

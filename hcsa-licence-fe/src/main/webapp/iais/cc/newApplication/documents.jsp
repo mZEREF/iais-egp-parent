@@ -77,9 +77,18 @@
                                     <!--prem -->
                                     <c:forEach var="prem" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStatus">
                                         <c:forEach var="premDoc" items="${premHcsaSvcDocConfigDto}">
-                                            <c:set var="premKey" value="prem${premDoc.id}${prem.hciName}" />
+                                            <c:choose>
+                                                <c:when test="${prem.hciName != null && prem.hciName != ''}">
+                                                    <c:set value="${prem.hciName}" var="premIndexNo"/>
+                                                </c:when>
+                                                <c:when test="${prem.conveyanceVehicleNo != null && prem.conveyanceVehicleNo != ''}">
+                                                    <c:set value="${prem.conveyanceVehicleNo}" var="premIndexNo"/>
+                                                </c:when>
+                                            </c:choose>
+
+                                            <c:set var="premKey" value="prem${premDoc.id}${premIndexNo}" />
                                             <c:set var="primaryDoc" value="${docMap.get(premKey)}"/>
-                                            <c:set var="premDelFlag" value="prem${premDoc.id}${prem.hciName}flag"/>
+                                            <c:set var="premDelFlag" value="prem${premDoc.id}${premIndexNo}flag"/>
                                             <div class="document-upload-list">
                                                 <h3>premises${premStatus.index+1}: ${premDoc.docTitle}</h3>
                                                 <div class="file-upload-gp">

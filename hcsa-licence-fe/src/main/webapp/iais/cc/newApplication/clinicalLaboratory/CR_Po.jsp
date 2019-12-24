@@ -1,23 +1,15 @@
-<%--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>--%>
-
 <div class="row">
-  <%--  <div class="col-xs-12 col-md-10">
-      <p>Please note that you will not be able to pay for this application if you have not provided the mandatory information and documents.</p>
-    </div>--%>
-  <%--<div class="col-xs-12 col-md-2 text-right">
-    <p class="print"><a href="#"> <i class="fa fa-print"></i>Print</a></p>
-  </div>--%>
 </div>
 <div class="row">
   <div class="col-xs-12">
-    <c:forEach items="${AppSvcPrincipalOfficersDto}" var="appSvcPrincipalOfficersDto">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
       <div class="panel panel-default">
         <div class="panel-heading " id="headingPrincipal" role="tab">
           <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePrincipal" aria-expanded="true" aria-controls="collapsePrincipal">Principal Officer</a></h4>
         </div>
-
-        <div class="panel-collapse collapse" id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
+        <div class="panel-collapse collapse <c:if test="${ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0}" >
+          in
+        </c:if>  " id="collapsePrincipal" role="tabpanel" aria-labelledby="headingPremise">
 
           <div class="panel-body">
             <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
@@ -25,6 +17,15 @@
               <div class="" style="height: auto">
                 <h2>Principal Officer</h2>
                 <p><h4>A Principal Officer is responsible for overseeing the day-to-day operations of medical service</h4></p>
+                <div class="row"></div>
+              </div>
+              <c:if test="${PrincipalOfficersMandatory>0}">
+              <c:forEach begin="0" end="${PrincipalOfficersMandatory-1}" step="1" varStatus="status">
+                <c:if test="${ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0}" >
+                  <c:set var="principalOfficer" value="${ReloadPrincipalOfficers[status.index]}"/>
+                </c:if>
+                <div class="po-content">
+              <div class="">
                 <div class="row">
                   <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
@@ -34,11 +35,7 @@
                       </div>
                       <div class="col-sm-5">
                         <div class="">
-                          <select name="assignSelect" id="cgoSelect" class="poSelect form-control control-input control-set-font control-font-normal ">
-                            <option value="">Select Personnel</option>
-                            <option  <c:if test="${appSvcPrincipalOfficersDto.assignSelect=='newOfficer'}">selected="selected"</c:if> value="newOfficer">I'd like to add a new personnel</option>
-                            <option>Deng Jin, XXX675 (NRIC)</option>
-                          </select>
+                          <iais:select cssClass="poSelect"  name="assignSelect" options="PrincipalOfficersAssignSelect"  value="${principalOfficer.assignSelect}" ></iais:select>
                           <div id="control--runtime--2--errorMsg_right" style="display: none;" class="error_placements"></div>
                         </div>
                       </div>
@@ -55,10 +52,10 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <iais:select  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${appSvcPrincipalOfficersDto.salutation}" firstOption="Select Salution"></iais:select>
+                        <iais:select  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${principalOfficer.salutation}" firstOption="Please Select"></iais:select>
                       </div>
                       <div class="col-sm-4">
-                        <input name="name" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.name}"  size="30">
+                        <input name="name" id="cr-po-name" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.name}" >
                         <span class="error-msg" name="iaisErrorMsg" id="error_name"></span>
                       </div>
                     </div>
@@ -74,12 +71,12 @@
                       </div>
                       <div class="col-sm-4">
                         <div class="">
-                          <iais:select  name="idType" value="${appSvcPrincipalOfficersDto.idType}" options="IdTypeSelect"></iais:select>
+                          <iais:select  name="idType" value="${principalOfficer.idType}" options="IdTypeSelect"></iais:select>
                           <span class="error-msg" name="iaisErrorMsg" id="error_idType"></span>
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input id="idType-idNo" name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.idNo}" size="30">
+                        <input id="idType-idNo" name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
                         <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                       </div>
                     </div>
@@ -93,7 +90,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-5">
-                        <iais:select name="designation" codeCategory="CATE_ID_DESIGNATION" value="${appSvcPrincipalOfficersDto.designation}" firstOption="Select Designation"></iais:select>
+                        <iais:select name="designation" codeCategory="CATE_ID_DESIGNATION" value="${principalOfficer.designation}" firstOption="Please Select"></iais:select>
                       </div>
 
                     </div>
@@ -107,7 +104,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="mobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.mobileNo}" size="30">
+                        <input name="mobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.mobileNo}" >
                         <span class="error-msg"  name="iaisErrorMsg" id="error_mobileNo"></span>
                       </div>
                     </div>
@@ -121,7 +118,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="officeTelNo" type="text"  id="officeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.officeTelNo}" size="30">
+                        <input name="officeTelNo" type="text"  id="officeTelNo" maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.officeTelNo}" >
                         <span class="error-msg" name="iaisErrorMsg" id="error_officeTelNo" ></span>
                       </div>
                     </div>
@@ -135,32 +132,32 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${appSvcPrincipalOfficersDto.emailAddr}" size="30">
+                        <input name="emailAddress" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
                         <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr" ></span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col-sm-4">
-                    Deputy Principal Officer(Optional):
-                  </div>
-                  <div class="col-sm-4" >
-                    <select name="deputyPrincipalOfficer" class="deputySelect form-control control-input control-set-font control-font-normal">
-                      <option value="">Please Select</option>
-                      <option value="0">N</option>
-                      <option value="1">Y</option>
-                    </select>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                  </div>
+              </div>
+                </div>
+              </c:forEach>
+              </c:if>
+              <div class="row">
+                <div class="col-sm-4">
+                  Deputy Principal Officer(Optional):
+                </div>
+                <div class="col-sm-4" >
+                  <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect"  value="" ></iais:select>
+                  <br/>
+                  <br/>
+                  <br/>
+                  <br/>
+                  <br/>
+                  <br/>
+                  <br/>
                 </div>
               </div>
+
             </div>
 
           </div>
@@ -174,7 +171,7 @@
           <div class="panel-body">
             <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
             <div class="panel-main-content">
-              <div class="principalOfficers">
+              <div class="deputyPrincipalOfficers">
                 <h2>Deputy Principal Officer</h2>
                 <div class="row">
                   <div class="control control-caption-horizontal">
@@ -256,7 +253,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row ">
                   <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
                       <div class="col-sm-3 control-label formtext ">
@@ -281,17 +278,26 @@
       </div>
 
     </div>
-    </c:forEach>
   </div>
 </div>
 
 <script>
-    $('.poSelect').change(function () {
-        $poContentEle = $(this).closest('div.panel-group');
-        var selectVal = $(this).val();
-        $poContentEle.find('div.principalOfficers').removeClass('hidden');
+  $(document).ready(function () {
+      poSelect();
+      $('.poSelect').trigger('change');
 
-    });
+  });
+
+  var poSelect = function(){
+      $('.poSelect').change(function () {
+          $poContentEle = $(this).closest('div.po-content');
+          var selectVal = $(this).val();
+          if("newOfficer" == selectVal){
+              $poContentEle.find('div.principalOfficers').removeClass('hidden');
+          }
+      });
+  };
+
 
     $('.deputySelect').change(function () {
         var deputyFlag = $(this).val();

@@ -60,9 +60,10 @@
             <div id="control--runtime--1" class="section control  container-s-1">
               <div class="control-set-font control-font-header section-header"><label>A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</label></div>
 
-              <span class="upload_controls"></span>
               <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
+              <div class="assignContent hideen-div hidden">
 
+              </div>
               <c:if test="${CgoMandatoryCount >0}">
               <c:forEach  begin="0" end="${CgoMandatoryCount-1}"  step="1" varStatus="status" >
                 <c:set value="${GovernanceOfficersList}" var="cgoList"/>
@@ -284,10 +285,10 @@
                                       <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
                                       <c:choose>
                                         <c:when test="${currentCgo.speciality eq 'other'}">
-                                          <input  name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" size="30">
+                                          <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" maxlength="100">
                                         </c:when>
                                         <c:otherwise>
-                                          <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" size="30">
+                                          <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" maxlength="100">
                                         </c:otherwise>
                                       </c:choose>
 
@@ -385,6 +386,7 @@
 
 <script>
     $(document).ready(function () {
+        $('.hideen-div').addClass('hidden');
         //coverage  cpl_custom_form_script init css
         $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').removeClass('col-sm-2');
         $('.new-officer-form > table> tbody> tr:first-child > td >div.control > div.form-group > div:nth-child(2)').addClass('col-sm-3');
@@ -440,6 +442,7 @@
         /*var assignContent = $('.assignContent:last').html();
         var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
         $('.assignContent:last').after(appendHtml);*/
+        $('.hideen-div').addClass('hidden');
         $.ajax({
             'url':'${pageContext.request.contextPath}/governance-officer-html',
             'dataType':'text',

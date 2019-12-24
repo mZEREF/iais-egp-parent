@@ -271,7 +271,11 @@
                     </td>
                   </tr>
                 </table>
-                <br/>
+                <div class="row">
+                  <div class="col-xs-8">
+                   <hr>
+                  </div>
+                </div>
               </c:forEach>
             </div>
           </div>

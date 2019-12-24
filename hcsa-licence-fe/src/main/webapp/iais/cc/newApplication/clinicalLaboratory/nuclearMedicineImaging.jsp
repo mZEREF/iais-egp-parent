@@ -16,23 +16,30 @@
         <tr height="1">
           <td class="first last" style="width: 100%;">
             <div id="control--runtime--1" class="section control  container-s-1">
-              <div class="control-set-font control-font-header section-header"><label>The Nuclear Medicine Imagine Service have the following personnel that satisfy the minimum requirements at all times</label></div>
+              <div class="control-set-font control-font-header control-font-header section-header"><label>The Nuclear Medicine Imagine Service have the following personnel that satisfy the minimum requirements at all times</label></div>
 
               <span class="upload_controls"></span>
+
               <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
-                  <table class="personnel-content control-grid ">
+              <div class="personnel-content "></div>
+              <c:if test="${ServicePersonnelMandatory>0}">
+              <c:forEach begin="0" end="${ServicePersonnelMandatory-1}" step="1" varStatus="status">
+                <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
+                  <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
+                </c:if>
+                  <table class="personnel-content ">
                     <tbody>
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
                         <div id="control--runtime--2" class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
-                            <div class="col-sm-4 control-label formtext ">
+                            <div class="col-sm-5 control-label formtext ">
                               <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Select Service Personnel</label>
                               <span class="upload_controls"></span>
                             </div>
                             <div class="col-sm-5">
                               <div class="">
-                                <iais:select cssClass="personnelSel"  name="personnel" options="NuclearMedicineImagingPersonnel"  value="" firstOption="Please Select"></iais:select>
+                                <iais:select cssClass="personnelSel"  name="personnelSel" options="NuclearMedicineImagingPersonnel"  value="${appSvcPersonnelDto.personnelSel}" firstOption="Please Select"></iais:select>
                                 <span class="error-msg" name="iaisErrorMsg" id=""></span>
                               </div>
                             </div>
@@ -51,7 +58,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5">
-                                      <iais:select  name="radiologyProfessionalDesignation" options="designation"  value="" firstOption="Please Select"></iais:select>
+                                      <iais:select  name="designation" options="NuclearMedicineImagingDesignation"  value="${appSvcPersonnelDto.designation}" firstOption="Please Select"></iais:select>
                                       <span class="error-msg" name="iaisErrorMsg" id=""></span>
                                     </div>
                                   </div>
@@ -68,7 +75,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5">
-                                      <iais:input maxLength="66" type="text" name="name"  value=""></iais:input>
+                                      <iais:input maxLength="66" type="text" name="name"  value="${appSvcPersonnelDto.name}"></iais:input>
                                       <span class="error-msg" name="iaisErrorMsg" id=""></span>
                                     </div>
                                   </div>
@@ -85,7 +92,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5">
-                                      <iais:input maxLength="20" type="text" name="qualification"  value=""></iais:input>
+                                      <iais:input maxLength="20" type="text" name="qualification"  value="${appSvcPersonnelDto.quaification}"></iais:input>
                                       <span class="error-msg" name="iaisErrorMsg" id=""></span>
                                     </div>
                                   </div>
@@ -102,7 +109,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5">
-                                      <iais:input maxLength="2" type="text" name="wrkExpYear"  value=""></iais:input>
+                                      <iais:input maxLength="2" type="text" name="wrkExpYear"  value="${appSvcPersonnelDto.wrkExpYear}"></iais:input>
                                       <span class="error-msg" name="iaisErrorMsg" id=""></span>
                                     </div>
                                   </div>
@@ -119,7 +126,7 @@
                                       <span class="upload_controls"></span>
                                     </div>
                                     <div class="col-sm-5">
-                                      <iais:input maxLength="20" type="text" name="regnNo"  value=""></iais:input>
+                                      <iais:input maxLength="20" type="text" name="regnNo"  value="${appSvcPersonnelDto.profRegNo}"></iais:input>
                                       <span class="error-msg" name="iaisErrorMsg" id=""></span>
                                     </div>
                                   </div>
@@ -133,6 +140,11 @@
                     </tr>
                     </tbody>
                   </table>
+              </c:forEach>
+              </c:if>
+              <div>
+                <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
+              </div>
             </div>
           </td>
         </tr>
@@ -145,6 +157,8 @@
 <script>
   $(document).ready(function () {
       personnelSel();
+      //triggering event
+      $('.personnelSel').trigger('change');
 
   });
 
@@ -153,6 +167,13 @@
           var personnelSel = $(this).val();
           $personnelContentEle = $(this).closest('table.personnel-content');
           $personnelContentEle.find('div.new-officer-form ').removeClass('hidden');
+          /*//clear
+          $personnelContentEle.find('div.personnel-designation input[name="designation"]').val('');
+          $personnelContentEle.find('div.personnel-name input[name="name"]').val('');
+          $personnelContentEle.find('div.personnel-qualification input[name="qualification"]').val('');
+          $personnelContentEle.find('div.personnel-wrkExpYear input[name="wrkExpYear"]').val('');
+          $personnelContentEle.find('div.personnel-regnNo input[name="regnNo"]').val('');*/
+
           if('Radiology Professional' == personnelSel){
               $personnelContentEle.find('div.personnel-designation').removeClass('hidden');
               $personnelContentEle.find('div.personnel-name').removeClass('hidden');
@@ -182,6 +203,25 @@
       });
 
   };
+
+
+  $('.addListBtn').click(function () {
+      $.ajax({
+          'url':'${pageContext.request.contextPath}/nuclear-medicine-imaging-html',
+          'dataType':'text',
+          'type':'GET',
+          'success':function (data) {
+              $('.personnel-content:last').after(data);
+              personnelSel();
+          },
+          'error':function (data) {
+
+          }
+      });
+
+
+
+  });
 
 
 </script>

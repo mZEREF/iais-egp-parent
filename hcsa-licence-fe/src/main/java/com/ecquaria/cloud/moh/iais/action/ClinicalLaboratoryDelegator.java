@@ -30,13 +30,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +39,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 
@@ -69,7 +70,12 @@ public class ClinicalLaboratoryDelegator {
     //public static final String  APPSVCRELATEDINFOMAP = "AppsvcRelatedInfoMap";
     public static final String  ERRORMAP_GOVERNANCEOFFICERS = "errorMap_governanceOfficers";
     public static final String  RELOADSVCDOC = "ReloadSvcDoc";
-    public static final String  SERVICEPERSONNELCONFIG = "ServicePersonnelConfig";
+    //public static final String  SERVICEPERSONNELCONFIG = "ServicePersonnelConfig";
+
+
+    //dropdown
+    public static final String DROPWOWN_IDTYPESELECT = "IdTypeSelect";
+
     /**
      * StartStep: doStart
      *
@@ -84,7 +90,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.ERRORMAP_GOVERNANCEOFFICERS, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADSVCDOC,  null);
 
-        ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
+        //ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
 
         log.debug(StringUtil.changeForLog("the do doStart end ...."));
     }
@@ -335,18 +341,11 @@ public class ClinicalLaboratoryDelegator {
         idTypeSelectList.add(idType1);
         SelectOption idType2 = new SelectOption("FIN", "FIN");
         idTypeSelectList.add(idType2);
-        ParamUtil.setSessionAttr(bpc.request, "IdTypeSelect", (Serializable) idTypeSelectList);
+        ParamUtil.setSessionAttr(bpc.request, DROPWOWN_IDTYPESELECT, (Serializable) idTypeSelectList);
 
         List<HcsaServiceDto> hcsaServiceDtoList= (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        String svcName = "";
-        for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
-            String svcId = hcsaServiceDto.getId();
-            if(currentSvcId.equals(svcId)){
-                svcName = hcsaServiceDto.getSvcName();
-                break;
-            }
-        }
-        List<SelectOption> specialtySelectList = genSpecialtySelectList(svcName);
+        String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+        List<SelectOption> specialtySelectList = genSpecialtySelectList(currentSvcCode);
         ParamUtil.setSessionAttr(bpc.request, "SpecialtySelectList", (Serializable) specialtySelectList);
 
         //reload
@@ -415,19 +414,52 @@ public class ClinicalLaboratoryDelegator {
     public void preparePrincipalOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        String psnType = "PO";
-        //List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, psnType);
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
 
+        int mandatory = 0;
+        if(hcsaSvcPersonnelList != null && !hcsaSvcPersonnelList.isEmpty()){
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
+            if(hcsaSvcPersonnelDto != null){
+                mandatory = hcsaSvcPersonnelDto.getMandatoryCount();
+            }
+        }
+
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        if(appSvcPrincipalOfficersDtos != null && ! appSvcPrincipalOfficersDtos.isEmpty()){
+            if(appSvcPrincipalOfficersDtos.size() > mandatory){
+                mandatory = appSvcPrincipalOfficersDtos.size();
+            }
+        }
+        //reload
+        ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersMandatory", mandatory);
+        ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", appSvcPrincipalOfficersDtos);
+
+        List<SelectOption> assignSelectList = new ArrayList<>();
+        SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+        SelectOption assignOp2 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        assignSelectList.add(assignOp1);
+        assignSelectList.add(assignOp2);
+        ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
 
         List<SelectOption> MedAlertSelectList = new ArrayList<>();
-        SelectOption idType0 = new SelectOption("-1", "Select MedAlert");
+        SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         MedAlertSelectList.add(idType0);
         SelectOption idType1 = new SelectOption("Email", "Email");
         MedAlertSelectList.add(idType1);
         SelectOption idType2 = new SelectOption("SMS", "SMS");
         MedAlertSelectList.add(idType2);
-        ParamUtil.setSessionAttr(bpc.request, "MedAlertSelect", (Serializable) MedAlertSelectList);
+        ParamUtil.setRequestAttr(bpc.request, "MedAlertSelect", MedAlertSelectList);
 
+
+        List<SelectOption> deputyFlagSelect = new ArrayList<>();
+        SelectOption deputyFlagOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+        deputyFlagSelect.add(deputyFlagOp1);
+        SelectOption deputyFlagOp2 = new SelectOption("0", "N");
+        deputyFlagSelect.add(deputyFlagOp2);
+        SelectOption deputyFlagOp3 = new SelectOption("1", "Y");
+        deputyFlagSelect.add(deputyFlagOp3);
+        ParamUtil.setRequestAttr(bpc.request, "DeputyFlagSelect", deputyFlagSelect);
 
 
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
@@ -948,8 +980,27 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+        //List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
 
-        ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, (Serializable) hcsaSvcPersonnelList);
+        int mandatory = 0;
+        if(hcsaSvcPersonnelList != null && !hcsaSvcPersonnelList.isEmpty()){
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
+            if(hcsaSvcPersonnelDto != null){
+                mandatory = hcsaSvcPersonnelDto.getMandatoryCount();
+            }
+        }
+
+        //reload
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+        if(appSvcPersonnelDtos != null && !appSvcPersonnelDtos.isEmpty()){
+            if(appSvcPersonnelDtos.size() > mandatory){
+                mandatory = appSvcPersonnelDtos.size();
+            }
+            ParamUtil.setRequestAttr(bpc.request, "AppSvcPersonnelDtoList", appSvcPersonnelDtos);
+        }
+
+        ParamUtil.setRequestAttr(bpc.request, "ServicePersonnelMandatory", mandatory);
 
         List<SelectOption> personnel = new ArrayList<>();
         SelectOption personnelOp1 = new SelectOption("Radiology Professional", "Radiology Professional");
@@ -973,8 +1024,6 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingDesignation", (Serializable) designation);
 
 
-
-
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel end ...."));
     }
 
@@ -986,12 +1035,30 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doServicePersonnel (BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doServicePersonnel start ...."));
-        //:todo
-        String servicePersonnelType = "NuclearMedicineImaging";
+
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
-        if("NuclearMedicineImaging".equals(servicePersonnelType)){
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
             appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request);
+            appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
         }
+
+
+        //:todo
+        if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)){
+
+        }
+        if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)){
+
+        }
+        if(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)){
+
+        }
+
+
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
 
         log.debug(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
@@ -1031,7 +1098,7 @@ public class ClinicalLaboratoryDelegator {
         String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
 
         //ID Type
-        List<SelectOption> idTypeList = (List<SelectOption>) ParamUtil.getSessionAttr(request, "IdTypeSelect");
+        List<SelectOption> idTypeList = (List<SelectOption>) ParamUtil.getSessionAttr(request, DROPWOWN_IDTYPESELECT);
         Map<String,String>  idTypeAttr = new HashMap<>();
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
@@ -1350,12 +1417,12 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
     }
 
-    private  List<SelectOption> genSpecialtySelectList(String svcName){
+    private  List<SelectOption> genSpecialtySelectList(String svcCode){
         List<SelectOption> specialtySelectList = null;
-        if(!StringUtil.isEmpty(svcName)){
-            if(AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY.equals(svcName) ||
-                    AppServicesConsts.SERVICE_NAME_BLOOD_BANKING.equals(svcName) ||
-                    AppServicesConsts.SERVICE_NAME_TISSUE_BANKING.equals(svcName)){
+        if(!StringUtil.isEmpty(svcCode)){
+            if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
                 specialtySelectList = new ArrayList<>();
                 SelectOption ssl1 = new SelectOption("-1", "Select Specialty");
                 SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
@@ -1365,8 +1432,9 @@ public class ClinicalLaboratoryDelegator {
                 specialtySelectList.add(ssl2);
                 specialtySelectList.add(ssl3);
                 specialtySelectList.add(ssl4);
-            }else if(AppServicesConsts.SERVICE_NAME_RADIOLOGICAL_SERVICES.equals(svcName) ||
-                    AppServicesConsts.SERVICE_NAME_NUCLEAR_MEDICINE.equals(svcName)){
+            }else if(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
                 specialtySelectList = new ArrayList<>();
                 SelectOption ssl1 = new SelectOption("-1", "Select Specialty");
                 SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
@@ -1384,30 +1452,42 @@ public class ClinicalLaboratoryDelegator {
 
     public List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request){
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
-        String [] personnelType =  ParamUtil.getStrings(request, "personnelSel");
-        if(personnelType != null && personnelType.length>0){
-            for(String personnelSel:personnelType){
+        String [] personnelSels =  ParamUtil.getStrings(request, "personnelSel");
+        String [] designations = ParamUtil.getStrings(request, "designation");
+        String [] names = ParamUtil.getStrings(request, "name");
+        String [] qualifications = ParamUtil.getStrings(request, "qualification");
+        String [] wrkExpYears = ParamUtil.getStrings(request, "wrkExpYear");
+        String [] professionalRegnNos = ParamUtil.getStrings(request, "regnNo");
+        if(personnelSels != null && personnelSels.length>0){
+            for(int i =0; i <personnelSels.length; i++){
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
+                String personnelSel = personnelSels[i];
                 appSvcPersonnelDto.setPersonnelSel(personnelSel);
+                if(StringUtil.isEmpty(personnelSel)){
+                    appSvcPersonnelDtos.add(appSvcPersonnelDto);
+                    continue;
+                }
                 String designation = "";
                 String name = "";
                 String qualification = "";
                 String wrkExpYear = "";
                 String professionalRegnNo = "";
-                if("Radiology Professional" == personnelSel){
-                    designation = ParamUtil.getString(request, "designation");
-                    name = ParamUtil.getString(request, "name");
-                    qualification = ParamUtil.getString(request, "qualification");
-                    wrkExpYear = ParamUtil.getString(request, "wrkExpYear");
-                }else if("Medical Physicist" == personnelSel){
-                    name = ParamUtil.getString(request, "name");
-                    qualification = ParamUtil.getString(request, "qualification");
-                    wrkExpYear = ParamUtil.getString(request, "wrkExpYear");
-                }else if("Radiation Safety Officer" == personnelSel){
-                    name = ParamUtil.getString(request, "name");
-                }else if("Registered Nurse" == personnelSel){
-                    name = ParamUtil.getString(request, "name");
-                    professionalRegnNo = ParamUtil.getString(request, "regnNo");
+
+
+                if("Radiology Professional".equals(personnelSel)){
+                    designation = designations[i];
+                    name = names[i];
+                    qualification = qualifications[i];
+                    wrkExpYear = wrkExpYears[i];
+                }else if("Medical Physicist".equals(personnelSel)){
+                    name = names[i];
+                    qualification = qualifications[i];
+                    wrkExpYear = wrkExpYears[i];
+                }else if("Radiation Safety Officer".equals(personnelSel)){
+                    name = names[i];
+                }else if("Registered Nurse".equals(personnelSel)){
+                    name = names[i];
+                    professionalRegnNo = professionalRegnNos[i];
                 }
                 appSvcPersonnelDto.setDesignation(designation);
                 appSvcPersonnelDto.setName(name);
@@ -1419,4 +1499,30 @@ public class ClinicalLaboratoryDelegator {
         }
         return appSvcPersonnelDtos;
     }
+
+    @RequestMapping(value = "/nuclear-medicine-imaging-html", method = RequestMethod.GET)
+    public @ResponseBody String addNuclearMedicineImagingHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html start ...."));
+        String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
+        List<SelectOption> personnel = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingPersonnel");
+        Map<String,String> personnelAttr = new HashMap<>();
+        personnelAttr.put("name", "personnelSel");
+        personnelAttr.put("class", "personnelSel");
+        personnelAttr.put("style", "display: none;");
+        String personnelSelectStr = NewApplicationDelegator.generateDropDownHtml(personnelAttr, personnel, NewApplicationDelegator.FIRESTOPTION);
+
+        List<SelectOption> designation = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingDesignation");
+        Map<String,String> designationAttr = new HashMap<>();
+        designationAttr.put("name", "designation");
+        designationAttr.put("style", "display: none;");
+        String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designation, NewApplicationDelegator.FIRESTOPTION);
+
+        sql = sql.replace("(1)", personnelSelectStr);
+        sql = sql.replace("(2)", designationSelectStr);
+
+        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html start ...."));
+        return sql;
+    }
+
+
 }
