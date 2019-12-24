@@ -39,6 +39,7 @@ public class RequestForInformationDelegator {
     @Autowired
     ApplicationClient applicationClient;
     FilterParameter licenceParameter = new FilterParameter();
+    FilterParameter applicationParameter = new FilterParameter();
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
@@ -136,8 +137,8 @@ public class RequestForInformationDelegator {
         String to_date = ParamUtil.getString(bpc.request, "to_date");
         //List<String> svcNames=
         licenceParameter.setClz(RfiLicenceQueryDto.class);
-        licenceParameter.setSearchAttr("SearchParam");
-        licenceParameter.setResultAttr("SearchResult");
+        licenceParameter.setSearchAttr("licParam");
+        licenceParameter.setResultAttr("licResult");
         Map<String,Object> filters=new HashMap<>();
 
         if(!StringUtil.isEmpty(licence_no)){
@@ -153,6 +154,10 @@ public class RequestForInformationDelegator {
             filters.put("expiry_date", to_date);
         }
         licenceParameter.setFilters(filters);
+        licenceParameter.setPageNo(0);
+        licenceParameter.setPageSize(10);
+        licenceParameter.setSortField("id");
+        licenceParameter.setSortType(SearchParam.ASCENDING);
         SearchParam licParam = SearchResultHelper.getSearchParam(request, true,licenceParameter);
         QueryHelp.setMainSql("ReqForInfoQuery","licenceQuery",licParam);
         if (licParam != null) {
@@ -172,16 +177,20 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setStartDate(rfiLicenceQueryDto.getStartDate());
                     reqForInfoSearchListDto.setExpiryDate(rfiLicenceQueryDto.getExpiryDate());
 
-                    licenceParameter.setClz(RfiApplicationQueryDto.class);
-                    licenceParameter.setSearchAttr("SearchParam");
-                    licenceParameter.setResultAttr("SearchResult");
+                    applicationParameter.setClz(RfiApplicationQueryDto.class);
+                    applicationParameter.setSearchAttr("appParam");
+                    applicationParameter.setResultAttr("appResult");
                     Map<String,Object> filter=new HashMap<>();
                     if(!StringUtil.isEmpty(rfiLicenceQueryDto.getAppId())){
-                        filters.put("id", rfiLicenceQueryDto.getAppId());
+                        filter.put("id", rfiLicenceQueryDto.getAppId());
                     }
-                    licenceParameter.setFilters(filters);
-                    SearchParam appParam = SearchResultHelper.getSearchParam(request, true,licenceParameter);
-                    QueryHelp.setMainSql("ReqForInfoQuery","applicationQuery",licParam);
+                    applicationParameter.setFilters(filter);
+                    applicationParameter.setPageNo(0);
+                    applicationParameter.setPageSize(10);
+                    applicationParameter.setSortField("application_no");
+                    applicationParameter.setSortType(SearchParam.ASCENDING);
+                    SearchParam appParam = SearchResultHelper.getSearchParam(request, true,applicationParameter);
+                    QueryHelp.setMainSql("ReqForInfoQuery","applicationQuery",appParam);
                     SearchResult<RfiApplicationQueryDto> appResult =applicationClient.searchApp(appParam).getEntity();
                     RfiApplicationQueryDto app=appResult.getRows().get(0);
 

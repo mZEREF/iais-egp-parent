@@ -8,8 +8,6 @@
                 app.application_no,
                 app.app_type,
                 app.status,
-                app.service_id,
-                app.created_dt
                 T3.HCI_CODE,
                 T3.HCI_NAME,
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME
@@ -28,13 +26,13 @@
     <sql key = "licenceQuery" remarks = "Query Licence Data by condition">
         <![CDATA[
             SELECT
-                lic.id,
-                lic.licence_no,
-                lic.svc_name,
-                lic.STATUS
-                lic.start_date,
-                lic.expiry_date,
-                licApp.APPLICATION_ID
+                lic.id as id,
+                lic.licence_no as licence_no,
+                lic.svc_name as svc_name,
+                lic.STATUS as STATUS,
+                lic.start_date as start_date,
+                lic.expiry_date as expiry_date,
+                licApp.APPLICATION_ID as APPLICATION_ID
             FROM LICENCE AS lic
             JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
             WHERE 1=1

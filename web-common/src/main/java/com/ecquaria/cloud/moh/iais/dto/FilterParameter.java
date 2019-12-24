@@ -28,5 +28,5 @@ public class FilterParameter {
     private String resultAttr;
     private String sortField;
     private String sortType;
-    private Map<String,Object> Filters;
+    private Map<String,Object> filters;
 }
