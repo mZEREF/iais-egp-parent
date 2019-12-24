@@ -89,5 +89,5 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-licence-view/appSubmissionDto/{appId}",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionByAppId(@PathVariable("appId") String appId);
     @PostMapping (path = "/iais-application-be/app-rfi-param",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<RfiApplicationQueryDto>> searchApp(@RequestBody SearchParam searchParam);
+    FeignResponseEntity<SearchResult<RfiApplicationQueryDto>> searchRfiApp(@RequestBody SearchParam searchParam);
 }

@@ -19,6 +19,8 @@
             <#if appType??> AND app.app_type = :appType</#if>
             <#if appNo??> AND app.application_no = :appNo</#if>
             <#if appStatus??> AND app.status = :appStatus</#if>
+            <#if sub_date??> AND T2.submit_dt => :sub_date</#if>
+            <#if to_date??> AND T2.submit_dt =< :to_date</#if>
         ]]>
     </sql>
 

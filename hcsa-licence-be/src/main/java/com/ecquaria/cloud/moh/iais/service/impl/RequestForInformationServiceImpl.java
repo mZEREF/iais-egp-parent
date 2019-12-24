@@ -94,7 +94,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam) {
-        return null;
+        return applicationClient.searchRfiApp(searchParam).getEntity();
     }
 
     @Override

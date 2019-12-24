@@ -89,7 +89,7 @@
                                 <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="ADDRESS" value=" Address"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="LICENSEE_NAME" value="Licence NAME"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="LICENSEE_NAME" value="Licensee NAME"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="SERVICE_NAME" value="Service NAME"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"></iais:sortableHeader>
@@ -111,12 +111,12 @@
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                                            <td><a onclick="doAppInfo(${pool.applicationNo})">${pool.applicationNo}</a></td>
+                                            <td><a onclick="doAppInfo()">${pool.applicationNo}</a></td>
                                             <td><c:out value="${pool.applicationType}"/></td>
                                             <td><c:out value="${pool.licenceNo}"/></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
-                                            <td><c:out value="${pool.address}"/></td>
+                                            <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
                                             <td><c:out value="${pool.licenseeName}"/></td>
                                             <td><c:out value="${pool.serviceName}"/></td>
                                             <td><c:out value="${pool.licencePeriod}"/></td>
@@ -124,7 +124,9 @@
                                             <td><c:out value="${pool.pastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
-                                            <td><button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Select</button></td>
+                                            <td><iais:action style="text-align:center;">
+                                                <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo();">Select</button>
+                                            </iais:action></td>
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>
@@ -154,12 +156,10 @@
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }
-    function doReqForInfo(appNo) {
-        $("#applicationNo").val(appNo);
-        submit('reqForInfo');
+    function doReqForInfo() {
+        SOP.Crud.cfxSubmit("mainForm", "reqForInfo");
     }
-    function doAppInfo(appNo) {
-        $("#applicationNo").val(appNo);
-        submit('appInfo');
+    function doAppInfo() {
+        SOP.Crud.cfxSubmit("mainForm", "appInfo");
     }
 </script>

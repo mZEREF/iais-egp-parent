@@ -1,11 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
@@ -16,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -38,8 +35,7 @@ import java.util.Map;
 public class RequestForInformationDelegator {
     @Autowired
     RequestForInformationService requestForInformationService;
-    @Autowired
-    ApplicationClient applicationClient;
+
     FilterParameter licenceParameter = new FilterParameter.Builder()
             .clz(RfiLicenceQueryDto.class)
             .searchAttr("licParam")
@@ -122,7 +118,76 @@ public class RequestForInformationDelegator {
         String to_date = ParamUtil.getString(bpc.request, "to_date");
 
 
+        Map<String,Object> filters=new HashMap<>();
 
+        if(!StringUtil.isEmpty(application_no)){
+            filters.put("appNo", application_no);
+        }
+        if(!StringUtil.isEmpty(application_type)){
+            filters.put("appType", application_type);
+        }
+        if(!StringUtil.isEmpty(status)){
+            filters.put("appStatus", status);
+        }
+        if(!StringUtil.isEmpty(sub_date)){
+            filters.put("sub_date", sub_date);
+        }
+        if(!StringUtil.isEmpty(to_date)){
+            filters.put("to_date", to_date);
+        }
+        applicationParameter.setFilters(filters);
+        SearchParam appParam = SearchResultHelper.getSearchParam(request, true,applicationParameter);
+        QueryHelp.setMainSql("ReqForInfoQuery","applicationQuery",appParam);
+        if (appParam != null) {
+            SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
+
+            if(!StringUtil.isEmpty(appResult)){
+                SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
+                searchListDtoSearchResult.setRowCount(appResult.getRowCount());
+                List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=new ArrayList<>();
+                for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
+                ) {
+                    ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
+
+                    reqForInfoSearchListDto.setAppId(rfiApplicationQueryDto.getId());
+                    reqForInfoSearchListDto.setApplicationType(rfiApplicationQueryDto.getApplicationType());
+                    reqForInfoSearchListDto.setApplicationNo(rfiApplicationQueryDto.getApplicationNo());
+                    reqForInfoSearchListDto.setApplicationStatus(rfiApplicationQueryDto.getApplicationStatus());
+                    reqForInfoSearchListDto.setHciCode(rfiApplicationQueryDto.getHciCode());
+                    reqForInfoSearchListDto.setHciName(rfiApplicationQueryDto.getHciName());
+                    reqForInfoSearchListDto.setBlkNo(rfiApplicationQueryDto.getBlkNo());
+                    reqForInfoSearchListDto.setBuildingName(rfiApplicationQueryDto.getBuildingName());
+                    reqForInfoSearchListDto.setUnitNo(rfiApplicationQueryDto.getUnitNo());
+                    reqForInfoSearchListDto.setStreetName(rfiApplicationQueryDto.getStreetName());
+                    reqForInfoSearchListDto.setFloorNo(rfiApplicationQueryDto.getFloorNo());
+
+
+                    licenceParameter.setClz(RfiLicenceQueryDto.class);
+                    licenceParameter.setSearchAttr("licParam");
+                    licenceParameter.setResultAttr("licResult");
+                    Map<String,Object> filter=new HashMap<>();
+                    if(!StringUtil.isEmpty(rfiApplicationQueryDto.getId())){
+                        filter.put("app_id", rfiApplicationQueryDto.getId());
+                    }
+                    licenceParameter.setFilters(filter);
+                    SearchParam licParam = SearchResultHelper.getSearchParam(request, true,licenceParameter);
+                    QueryHelp.setMainSql("ReqForInfoQuery","licenceQuery",licParam);
+                    SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
+                    RfiLicenceQueryDto lic=licResult.getRows().get(0);
+
+                    reqForInfoSearchListDto.setLicenceStatus(lic.getLicenceStatus());
+                    reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
+                    reqForInfoSearchListDto.setServiceName(lic.getServiceName());
+                    reqForInfoSearchListDto.setStartDate(lic.getStartDate());
+                    reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
+
+                    reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                }
+                searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
+                ParamUtil.setSessionAttr(request,"SearchParam", appParam);
+                ParamUtil.setRequestAttr(request,"SearchResult", searchListDtoSearchResult);
+            }
+        }
 
 
 
@@ -192,7 +257,7 @@ public class RequestForInformationDelegator {
 
                     SearchParam appParam = SearchResultHelper.getSearchParam(request, true,applicationParameter);
                     QueryHelp.setMainSql("ReqForInfoQuery","applicationQuery",appParam);
-                    SearchResult<RfiApplicationQueryDto> appResult =applicationClient.searchApp(appParam).getEntity();
+                    SearchResult<RfiApplicationQueryDto> appResult =requestForInformationService.appDoQuery(appParam);
                     RfiApplicationQueryDto app=appResult.getRows().get(0);
 
                     reqForInfoSearchListDto.setApplicationType(app.getApplicationType());
