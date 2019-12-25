@@ -5,13 +5,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +85,8 @@ public class InspecUserRecUploadDelegator {
                     iDto.setCheckClause(cDto.getRegulationClause());
                     iDto.setCheckQuestion(cDto.getChecklistItem());
                     iDto.setIndex(index++);
+                    iDto.setAppNo(appNo);
+                    iDto.setItemId(cDto.getItemId());
                     inspecUserRecUploadDtos.add(iDto);
                 }
             }
@@ -143,7 +149,7 @@ public class InspecUserRecUploadDelegator {
             }
             for(String fileType: AppServicesConsts.FILE_TYPE){
                 if(fileType.equalsIgnoreCase(substring)){
-                    flag=true;
+                    flag = true;
                 }
             }
             if(!flag){
@@ -185,6 +191,10 @@ public class InspecUserRecUploadDelegator {
     public void inspecUserRectifiUploadQuery(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadQuery start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        String auditTrailStr = JsonUtil.parseToJson(auditTrailDto);
+        inspecUserRecUploadService.submitRecByUser(loginContext, auditTrailStr, inspecUserRecUploadDtos);
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
     }
 
