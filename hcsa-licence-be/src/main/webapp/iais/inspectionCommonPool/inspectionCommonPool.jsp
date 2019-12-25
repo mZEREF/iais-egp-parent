@@ -85,13 +85,13 @@
         </div>
       </div>
     </div>
+    <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
     <div class="container">
       <div class="col-xs-12">
         <div class="components">
           <h3>
             <span>Search Result</span>
           </h3>
-          <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
           <div class="table-gp">
             <table class="table">
               <thead>
