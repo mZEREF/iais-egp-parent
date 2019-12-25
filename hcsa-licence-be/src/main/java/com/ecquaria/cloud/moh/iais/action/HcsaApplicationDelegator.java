@@ -727,7 +727,6 @@ public class HcsaApplicationDelegator {
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);
         appPremisesRoutingHistoryDto.setRoleId(roleId);
-        appPremisesRoutingHistoryDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return appPremisesRoutingHistoryDto;
     }
