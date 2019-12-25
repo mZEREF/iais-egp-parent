@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLeadershipMatrixDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -57,7 +56,6 @@ public class HcsaRiskLeadershipConfigDelegator {
     public void confirm(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfirm start ...."));
         HttpServletRequest request = bpc.request;
-        RiskFinancialShowDto financialShowDto = hcsaRiskService.getfinancialShowDto();
         RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
         ParamUtil.setSessionAttr(request, "leaderShowDto", leaderShowDto);
     }
@@ -81,8 +79,8 @@ public class HcsaRiskLeadershipConfigDelegator {
     public void submit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
-        RiskFinancialShowDto financialShowDto = hcsaRiskService.getfinancialShowDto();
         RiskLeaderShipShowDto leaderShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
+        hcsaRiskLeaderShipService.saveDto(leaderShowDto);
     }
 
     public void backToMenu(BaseProcessClass bpc) {

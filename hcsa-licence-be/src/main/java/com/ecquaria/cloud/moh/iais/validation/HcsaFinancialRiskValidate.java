@@ -59,6 +59,8 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 }
 
             }
+        }else{
+            errMap.put("All","Please do some change");
         }
         return errMap;
     }

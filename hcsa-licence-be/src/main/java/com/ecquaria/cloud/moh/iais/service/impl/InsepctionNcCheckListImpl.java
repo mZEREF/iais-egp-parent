@@ -249,6 +249,9 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         String configId = icqDtoList.get(0).getConfigId();
         //AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
         AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
+        //update
+        appDto.setStatus("CMSTAT003");
+        fillUpCheckListGetAppClient.updateAppPreInspChkl(appDto);
         appDto.setId(null);
         appDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
         appDto.setAppPremCorrId(appPremCorrId);
@@ -258,7 +261,11 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId,"tcu").getEntity();
         //AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
+        //update
+        appPreRecommentdationDto.setStatus("CMSTAT003");
+        fillUpCheckListGetAppClient.updateAppRecom(appPreRecommentdationDto);
         appPreRecommentdationDto.setAppPremCorreId(appPremCorrId);
+
         appPreRecommentdationDto.setRecomType("tcu");
         Date tcuDate = null;
         try {
@@ -333,6 +340,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     public AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(InspectionFillCheckListDto dto,String appPremCorrId) {
         AppPremPreInspectionNcDto ncDto =  fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
+        ncDto.setStatus("CMSTAT003");
+        fillUpCheckListGetAppClient.updateAppPreNc(ncDto);
         ncDto.setStatus("CMSTAT001");
         ncDto.setId(null);
         ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());

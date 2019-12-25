@@ -45,6 +45,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <span class="error-msg" id="error_All" name="iaisErrorMsg"></span>
                                     <c:forEach var="fin" items="${financialShowDto.financeList}" varStatus="status">
                                         <tr>
                                             <td>

@@ -2,12 +2,12 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.HcsaRiskFinianceVadlidateDto;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
 import com.ecquaria.cloud.moh.iais.validation.HcsaFinancialRiskValidate;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +73,7 @@ public class HcsaRiskFinancialConfigDelegator {
             ParamUtil.setRequestAttr(request, "isValid", "N");
         }else{
             ParamUtil.setRequestAttr(request, "isValid", "Y");
-            ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errMap);
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
         }
 
     }

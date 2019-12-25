@@ -39,36 +39,36 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
         if(!StringUtil.isEmpty(lea.getLsSourse())) {
             if ("LGRAT001".equals(lea.getAdSource())) {
                 if (!(lea.getBaseAdThershold() + "").equals(inthershold)) {
-                    lea.setAdThershold(inthershold);
                     isInEditNum++;
                 }
+                lea.setAdThershold(inthershold);
                 String baseRightLowCase = getRightLowCase(lea.getBaseAdLowCaseCounth());
                 if (!baseRightLowCase.equals(inrightlow)) {
-                    lea.setAdRightLowCaseCounth(inrightlow);
                     isInEditNum++;
                 }
+                lea.setAdRightLowCaseCounth(inrightlow);
 
                 if (!lea.getBaseAdLowCaseCounth().equals(inleftmod)) {
-                    lea.setAdLeftModCaseCounth(inleftmod);
                     isInEditNum++;
                 }
+                lea.setAdLeftModCaseCounth(inleftmod);
                 if (!lea.getBaseAdHighCaseCounth().equals(inrightmod)) {
-                    lea.setAdRightModCaseCounth(inrightmod);
                     isInEditNum++;
                 }
+                lea.setAdRightModCaseCounth(inrightmod);
                 String baseLeftHighCase = getLeftHighCase(lea.getBaseAdHighCaseCounth());
                 if (!baseLeftHighCase.equals(inlefthigh)) {
-                    lea.setAdLeftHighCaseCounth(inlefthigh);
                     isInEditNum++;
                 }
+                lea.setAdLeftHighCaseCounth(inlefthigh);
                 if(!lea.getBaseAdEffectiveStartDate().equals(inStartDate)){
-                    lea.setAdEffectiveStartDate(inStartDate);
                     isInEditNum++;
                 }
+                lea.setAdEffectiveStartDate(inStartDate);
                 if(!lea.getBaseAdEffectiveEndDate().equals(inEndDate)){
-                    lea.setAdEffectiveEndDate(inEndDate);
                     isInEditNum++;
                 }
+                lea.setAdEffectiveEndDate(inEndDate);
                 if (isInEditNum >=1) {
                     lea.setAdIsEdit(true);
                 } else {
@@ -77,35 +77,35 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
             }
             if ("LGRAT002".equals(lea.getDpSource())) {
                 if (!(lea.getBaseDpThershold() + "").equals(prthershold)) {
-                    lea.setDpThershold(prthershold);
                     prInEditNum++;
                 }
+                lea.setDpThershold(prthershold);
                 String baseRightLowCase = getRightLowCase(lea.getBaseDpLowCaseCounth());
                 if (!baseRightLowCase.equals(prrightlow)) {
-                    lea.setDpRightLowCaseCounth(prrightlow);
                     prInEditNum++;
                 }
+                lea.setDpRightLowCaseCounth(prrightlow);
                 if (!lea.getBaseDpLowCaseCounth().equals(prleftmod)) {
-                    lea.setDpLeftModCaseCounth(prleftmod);
                     prInEditNum++;
                 }
+                lea.setDpLeftModCaseCounth(prleftmod);
                 if (!lea.getBaseDpHighCaseCounth().equals(prrightmod)) {
-                    lea.setDpRightModCaseCounth(prrightmod);
                     prInEditNum++;
                 }
+                lea.setDpRightModCaseCounth(prrightmod);
                 String baseLeftHighCase = getLeftHighCase(lea.getBaseDpHighCaseCounth());
                 if (!baseLeftHighCase.equals(prlefthigh)) {
-                    lea.setDpLeftHighCaseCounth(prlefthigh);
                     prInEditNum++;
                 }
+                lea.setDpLeftHighCaseCounth(prlefthigh);
                 if(!lea.getBaseDpEffectiveStartDate().equals(prStartDate)){
-                    lea.setDpEffectiveStartDate(prStartDate);
                     prInEditNum++;
                 }
+                lea.setDpEffectiveStartDate(prStartDate);
                 if(!lea.getBaseDpEffectiveEndDate().equals(prEndDate)){
-                    lea.setDpEffectiveEndDate(prEndDate);
                     prInEditNum++;
                 }
+                lea.setDpEffectiveEndDate(prEndDate);
                 if (prInEditNum >= 1) {
                     lea.setDpIsEdit(true);
                 } else {
@@ -310,6 +310,8 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
         HcsaRiskLeadershipMatrixDto finDto = new HcsaRiskLeadershipMatrixDto();
         finDto.setSvcCode(dto.getSvcCode());
         finDto.setStatus("CMSTAT001");
+        finDto.setAdIsEdit(dto.isAdIsEdit());
+        finDto.setDpIsEdit(dto.isDpIsEdit());
         if(StringUtil.isEmpty(dto.getVersion())){
             finDto.setVersion(1);
         }else{

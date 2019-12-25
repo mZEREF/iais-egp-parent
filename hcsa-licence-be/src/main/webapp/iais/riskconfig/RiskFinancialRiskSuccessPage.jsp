@@ -56,34 +56,32 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${fin.serviceCode}"/>inthershold" name="<c:out value="${fin.serviceCode}"/>inthershold"value="<c:out value="${fin.inThershold}"></c:out>">
+                                                <p><input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inthershold" name="<c:out value="${fin.serviceCode}"/>inthershold"value="<c:out value="${fin.inThershold}"></c:out>">
                                                 </p>
-                                                <span class="error-msg"><c:out value="${errorMap_aaa}"></c:out></span>
                                             </td>
-
                                             <td>
                                                 <input type="hidden" id="<c:out value="${fin.serviceCode}"></c:out>insource" name="<c:out value="${fin.serviceCode}"></c:out>insource" value="SOURCE001">
                                                 <p>Institution</p>
                                             </td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}instartdate" name = "${fin.serviceCode}instartdate" value="${fin.inEffectiveStartDate}"></iais:datePicker></td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}inenddate" name = "${fin.serviceCode}inenddate" value="${fin.inEffectiveEndDate}"></iais:datePicker></td>
+                                            <td><c:out value="${fin.prEffectiveStartDate}"></c:out></td>
+                                            <td><c:out value="${fin.prEffectiveEndDate}"></c:out></td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly maxlength="5" value="0">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>inleftmod" name = "<c:out value="${fin.serviceCode}"/>inleftmod" maxlength="5"value="${fin.inLeftModCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inleftmod" name = "<c:out value="${fin.serviceCode}"/>inleftmod" maxlength="5"value="${fin.inLeftModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>inlefthigh" name = "<c:out value="${fin.serviceCode}"/>inlefthigh" maxlength="5"value="${fin.inLeftHighCaseCount}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inlefthigh" name = "<c:out value="${fin.serviceCode}"/>inlefthigh" maxlength="5"value="${fin.inLeftHighCaseCount}">
                                                 </div></div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>inrightlow" name = "<c:out value="${fin.serviceCode}"/>inrightlow"  maxlength="5" value="${fin.inRightLowCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inrightlow" name = "<c:out value="${fin.serviceCode}"/>inrightlow"  maxlength="5" value="${fin.inRightLowCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>inrightmod" name = "<c:out value="${fin.serviceCode}"/>inrightmod"  maxlength="5"value="${fin.inRightModCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inrightmod" name = "<c:out value="${fin.serviceCode}"/>inrightmod"  maxlength="5"value="${fin.inRightModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly  maxlength="5" value="999">
@@ -108,7 +106,7 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${fin.serviceCode}"/>prthershold" name="<c:out value="${fin.serviceCode}"/>prthershold" value="<c:out value="${fin.prThershold}"></c:out>"></p>
+                                                <p><input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prthershold" name="<c:out value="${fin.serviceCode}"/>prthershold" value="<c:out value="${fin.prThershold}"></c:out>"></p>
                                             </td>
                                             <td>
                                                 <input type="hidden" id="<c:out value="${fin.serviceCode}"></c:out>prsource" name="<c:out value="${fin.serviceCode}"></c:out>prsource" value="SOURCE002">
@@ -121,18 +119,18 @@
                                                     <input type="text" disabled readonly maxlength="5" value="0">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>prleftmod" name = "<c:out value="${fin.serviceCode}"/>prleftmod"  maxlength="5"value="${fin.prLeftModCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prleftmod" name = "<c:out value="${fin.serviceCode}"/>prleftmod"  maxlength="5"value="${fin.prLeftModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>prlefthigh" name = "<c:out value="${fin.serviceCode}"/>prlefthigh"  maxlength="5"value="${fin.prLeftHighCaseCount}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prlefthigh" name = "<c:out value="${fin.serviceCode}"/>prlefthigh"  maxlength="5"value="${fin.prLeftHighCaseCount}">
                                                 </div></div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>prrightlow" name = "<c:out value="${fin.serviceCode}"/>prrightlow" maxlength="5" value="${fin.prRightLowCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prrightlow" name = "<c:out value="${fin.serviceCode}"/>prrightlow" maxlength="5" value="${fin.prRightLowCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>prrightlmod" name = "<c:out value="${fin.serviceCode}"/>prrightmod" maxlength="5"value="${fin.prRightModCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prrightlmod" name = "<c:out value="${fin.serviceCode}"/>prrightmod" maxlength="5"value="${fin.prRightModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly value="999">
@@ -153,6 +151,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="application-tab-footer">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <p><a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Submit</a></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,10 +169,10 @@
 </form>
 <script type="text/javascript">
     function doNext() {
-        SOP.Crud.cfxSubmit("mainForm","next");
+        SOP.Crud.cfxSubmit("mainForm","submit");
     }
 
     function doBack(){
-        SOP.Crud.cfxSubmit("mainForm","backToMenu");
+        SOP.Crud.cfxSubmit("mainForm","back");
     }
 </script>

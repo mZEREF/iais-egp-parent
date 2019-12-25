@@ -56,32 +56,32 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${fin.serviceCode}"/>inthershold" name="<c:out value="${fin.serviceCode}"/>inthershold"value="<c:out value="${fin.inThershold}"></c:out>">
+                                                <p><input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inthershold" name="<c:out value="${fin.serviceCode}"/>inthershold"value="<c:out value="${fin.inThershold}"></c:out>">
                                                 </p>
                                             </td>
                                             <td>
                                                 <input type="hidden" id="<c:out value="${fin.serviceCode}"></c:out>insource" name="<c:out value="${fin.serviceCode}"></c:out>insource" value="SOURCE001">
                                                 <p>Institution</p>
                                             </td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}instartdate" name = "${fin.serviceCode}instartdate" value="${fin.inEffectiveStartDate}"></iais:datePicker></td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}inenddate" name = "${fin.serviceCode}inenddate" value="${fin.inEffectiveEndDate}"></iais:datePicker></td>
+                                            <td><c:out value="${fin.inEffectiveStartDate}"></c:out></td>
+                                            <td><c:out value="${fin.inEffectiveEndDate}"></c:out></td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly maxlength="5" value="0">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>inleftmod" name = "<c:out value="${fin.serviceCode}"/>inleftmod" maxlength="5"value="${fin.inLeftModCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inleftmod" name = "<c:out value="${fin.serviceCode}"/>inleftmod" maxlength="5"value="${fin.inLeftModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>inlefthigh" name = "<c:out value="${fin.serviceCode}"/>inlefthigh" maxlength="5"value="${fin.inLeftHighCaseCount}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inlefthigh" name = "<c:out value="${fin.serviceCode}"/>inlefthigh" maxlength="5"value="${fin.inLeftHighCaseCount}">
                                                 </div></div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>inrightlow" name = "<c:out value="${fin.serviceCode}"/>inrightlow"  maxlength="5" value="${fin.inRightLowCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inrightlow" name = "<c:out value="${fin.serviceCode}"/>inrightlow"  maxlength="5" value="${fin.inRightLowCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>inrightmod" name = "<c:out value="${fin.serviceCode}"/>inrightmod"  maxlength="5"value="${fin.inRightModCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>inrightmod" name = "<c:out value="${fin.serviceCode}"/>inrightmod"  maxlength="5"value="${fin.inRightModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly  maxlength="5" value="999">
@@ -106,31 +106,31 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${fin.serviceCode}"/>prthershold" name="<c:out value="${fin.serviceCode}"/>prthershold" value="<c:out value="${fin.prThershold}"></c:out>"></p>
+                                                <p><input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prthershold" name="<c:out value="${fin.serviceCode}"/>prthershold" value="<c:out value="${fin.prThershold}"></c:out>"></p>
                                             </td>
                                             <td>
                                                 <input type="hidden" id="<c:out value="${fin.serviceCode}"></c:out>prsource" name="<c:out value="${fin.serviceCode}"></c:out>prsource" value="SOURCE002">
                                                 <p>Practitioner</p>
                                             </td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}prstartdate" name = "${fin.serviceCode}prstartdate" value="${fin.prEffectiveStartDate}"></iais:datePicker></td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}prenddate" name = "${fin.serviceCode}prenddate" value="${fin.prEffectiveEndDate}"></iais:datePicker></td>
+                                            <td><c:out value="${fin.prEffectiveStartDate}"></c:out></td>
+                                            <td><c:out value="${fin.prEffectiveEndDate}"></c:out></td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly maxlength="5" value="0">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>prleftmod" name = "<c:out value="${fin.serviceCode}"/>prleftmod"  maxlength="5"value="${fin.prLeftModCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prleftmod" name = "<c:out value="${fin.serviceCode}"/>prleftmod"  maxlength="5"value="${fin.prLeftModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>prlefthigh" name = "<c:out value="${fin.serviceCode}"/>prlefthigh"  maxlength="5"value="${fin.prLeftHighCaseCount}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prlefthigh" name = "<c:out value="${fin.serviceCode}"/>prlefthigh"  maxlength="5"value="${fin.prLeftHighCaseCount}">
                                                 </div></div>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>prrightlow" name = "<c:out value="${fin.serviceCode}"/>prrightlow" maxlength="5" value="${fin.prRightLowCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prrightlow" name = "<c:out value="${fin.serviceCode}"/>prrightlow" maxlength="5" value="${fin.prRightLowCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${fin.serviceCode}"/>prrightlmod" name = "<c:out value="${fin.serviceCode}"/>prrightmod" maxlength="5"value="${fin.prRightModCaseCounth}">
+                                                    <input type="text" disabled id="<c:out value="${fin.serviceCode}"/>prrightlmod" name = "<c:out value="${fin.serviceCode}"/>prrightmod" maxlength="5"value="${fin.prRightModCaseCounth}">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
                                                     <input type="text" disabled readonly value="999">

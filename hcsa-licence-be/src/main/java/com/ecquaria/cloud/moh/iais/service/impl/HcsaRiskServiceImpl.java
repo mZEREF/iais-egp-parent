@@ -178,6 +178,8 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
     public HcsaRiskFinanceMatrixDto getFinDto(HcsaRiskFinanceMatrixDto dto,boolean isLow,boolean isIn){
         HcsaRiskFinanceMatrixDto finDto = new HcsaRiskFinanceMatrixDto();
         finDto.setServiceCode(dto.getServiceCode());
+        finDto.setInIsEdit(dto.isInIsEdit());
+        finDto.setPrIsEdit(dto.isPrIsEdit());
         finDto.setStatus("CMSTAT001");
         if(StringUtil.isEmpty(dto.getVersion())){
             finDto.setVersion(1);
@@ -239,36 +241,36 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         if(!StringUtil.isEmpty(fin.getFinSource())) {
             if ("SOURCE001".equals(fin.getInSource())) {
                 if (!(fin.getBaseInThershold() + "").equals(inthershold)) {
-                    fin.setInThershold(inthershold);
                     isInEditNum++;
                 }
+                fin.setInThershold(inthershold);
                 String baseRightLowCase = getRightLowCase(fin.getBaseInLowCaseCountth());
                 if (!baseRightLowCase.equals(inrightlow)) {
-                    fin.setInRightLowCaseCounth(inrightlow);
                     isInEditNum++;
                 }
+                fin.setInRightLowCaseCounth(inrightlow);
 
                 if (!fin.getBaseInLowCaseCountth().equals(inleftmod)) {
-                    fin.setInLeftModCaseCounth(inleftmod);
                     isInEditNum++;
                 }
+                fin.setInLeftModCaseCounth(inleftmod);
                 if (!fin.getBaseInHighCaseCountth().equals(inrightmod)) {
-                    fin.setInRightModCaseCounth(inrightmod);
                     isInEditNum++;
                 }
+                fin.setInRightModCaseCounth(inrightmod);
                 String baseLeftHighCase = getLeftHighCase(fin.getBaseInHighCaseCountth());
                 if (!baseLeftHighCase.equals(inlefthigh)) {
-                    fin.setInLeftHighCaseCount(inlefthigh);
                     isInEditNum++;
                 }
+                fin.setInLeftHighCaseCount(inlefthigh);
                 if(!fin.getBaseInEffectiveStartDate().equals(inStartDate)){
-                    fin.setInEffectiveStartDate(inStartDate);
                     isInEditNum++;
                 }
+                fin.setInEffectiveStartDate(inStartDate);
                 if(!fin.getBaseInEffectiveEndDate().equals(inEndDate)){
-                    fin.setInEffectiveEndDate(inEndDate);
                     isInEditNum++;
                 }
+                fin.setInEffectiveEndDate(inEndDate);
                 if (isInEditNum >=1) {
                     fin.setInIsEdit(true);
                 } else {
@@ -277,35 +279,35 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
             }
             if ("SOURCE002".equals(fin.getPrSource())) {
                 if (!(fin.getBasePrThershold() + "").equals(prthershold)) {
-                    fin.setPrThershold(prthershold);
                     prInEditNum++;
                 }
+                fin.setPrThershold(prthershold);
                 String baseRightLowCase = getRightLowCase(fin.getBasePrLowCaseCountth());
                 if (!baseRightLowCase.equals(prrightlow)) {
-                    fin.setPrRightLowCaseCounth(prrightlow);
                     prInEditNum++;
                 }
+                fin.setPrRightLowCaseCounth(prrightlow);
                 if (!fin.getBasePrLowCaseCountth().equals(prleftmod)) {
-                    fin.setPrLeftModCaseCounth(prleftmod);
                     prInEditNum++;
                 }
+                fin.setPrLeftModCaseCounth(prleftmod);
                 if (!fin.getBasePrHighCaseCountth().equals(prrightmod)) {
-                    fin.setPrRightModCaseCounth(prrightmod);
                     prInEditNum++;
                 }
+                fin.setPrRightModCaseCounth(prrightmod);
                 String baseLeftHighCase = getLeftHighCase(fin.getBasePrHighCaseCountth());
                 if (!baseLeftHighCase.equals(prlefthigh)) {
-                    fin.setPrLeftHighCaseCount(prlefthigh);
                     prInEditNum++;
                 }
+                fin.setPrLeftHighCaseCount(prlefthigh);
                 if(!fin.getBasePrEffectiveStartDate().equals(prStartDate)){
-                    fin.setPrEffectiveStartDate(prStartDate);
                     prInEditNum++;
                 }
+                fin.setPrEffectiveStartDate(prStartDate);
                 if(!fin.getBasePrEffectiveEndDate().equals(prEndDate)){
-                    fin.setPrEffectiveEndDate(prEndDate);
                     prInEditNum++;
                 }
+                fin.setPrEffectiveEndDate(prEndDate);
                 if (prInEditNum >= 1) {
                     fin.setPrIsEdit(true);
                 } else {

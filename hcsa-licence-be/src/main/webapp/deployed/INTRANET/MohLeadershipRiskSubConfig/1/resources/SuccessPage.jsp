@@ -1,1 +1,1 @@
-<%@include file="/iais/riskconfig/RiskFinancialRiskSuccessPage.jsp"%>
+<%@include file="/iais/riskconfig/RiskLeadershipSuccessPage.jsp"%>

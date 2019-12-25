@@ -46,6 +46,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <span class="error-msg" id="error_All" name="iaisErrorMsg"></span>
                                     <c:forEach var="lea" items="${leaderShowDto.leaderShipDtoList}" varStatus="status">
                                         <tr>
                                             <td>
