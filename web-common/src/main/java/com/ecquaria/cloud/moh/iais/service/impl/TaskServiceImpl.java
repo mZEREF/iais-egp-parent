@@ -116,20 +116,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    public TaskDto routingTask(ApplicationDto applicationDto, String stageId,String roleId) throws FeignException {
-        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
-        TaskDto result = null;
-        if(applicationDto == null  || StringUtil.isEmpty(stageId)){
-            log.error(StringUtil.changeForLog("The applicationDto or stageId is null"));
-            return result;
-        }
-        List<TaskDto> taskDtos = new ArrayList<>();
-        result = this.getRoutingTask(applicationDto,stageId,roleId);
-        taskDtos.add(result);
-        this.createTasks(taskDtos);
-        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
-        return result;
-    }
+//    public TaskDto routingTask(ApplicationDto applicationDto, String stageId,String roleId) throws FeignException {
+//        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
+//        TaskDto result = null;
+//        if(applicationDto == null  || StringUtil.isEmpty(stageId)){
+//            log.error(StringUtil.changeForLog("The applicationDto or stageId is null"));
+//            return result;
+//        }
+//        List<TaskDto> taskDtos = new ArrayList<>();
+//        result = this.getRoutingTask(applicationDto,stageId,roleId);
+//        taskDtos.add(result);
+//        this.createTasks(taskDtos);
+//        log.debug(StringUtil.changeForLog("the do routingTask start ...."));
+//        return result;
+//    }
 
     @Override
     public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto) throws FeignException {
@@ -174,7 +174,7 @@ public class TaskServiceImpl implements TaskService {
         return  result;
     }
 
-
+    @Override
     public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,String roleId,AuditTrailDto auditTrailDto) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
         TaskHistoryDto taskHistoryDto = getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,roleId,auditTrailDto);
