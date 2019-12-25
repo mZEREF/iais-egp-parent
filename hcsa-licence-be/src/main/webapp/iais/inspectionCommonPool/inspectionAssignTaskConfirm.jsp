@@ -102,11 +102,11 @@
 </div>
 <script type="text/javascript">
     function doInspectionAssignTaskConfirmBack() {
-        submit('assign');
+        inspectionAssignTaskConfirmSubmit('assign');
     }
 
     function doInspectionAssignTaskConfirmSubmit() {
-        submit('success');
+        inspectionAssignTaskConfirmSubmit('success');
     }
     function inspectionAssignTaskConfirmSubmit(action){
         $("[name='inspectionPoolType']").val(action);

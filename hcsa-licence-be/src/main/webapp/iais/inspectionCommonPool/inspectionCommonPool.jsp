@@ -141,7 +141,7 @@
 
     function doInspectionCommonPoolAssign(applicationNo) {
         $("#applicationNo").val(applicationNo);
-        submit('assign');
+        inspectionCommonPoolSubmit('assign');
     }
 
     function doInspectionCommonPoolClear() {
@@ -160,6 +160,6 @@
         mainPoolForm.submit();
     }
     function doInspectionCommonPoolSearch() {
-        submit('search');
+        inspectionCommonPoolSubmit('search');
     }
 </script>

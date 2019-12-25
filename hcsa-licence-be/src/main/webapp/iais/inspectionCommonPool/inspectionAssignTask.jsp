@@ -103,13 +103,13 @@
 <script type="text/javascript">
     function doInspectionAssignTaskBack() {
         $("[name='actionValue']").val('back');
-        submit('back');
+        inspectionAssignTaskSubmit('back');
     }
 
     function doInspectionAssignTaskNext() {
         doValidation();
         $("[name='actionValue']").val('confirm');
-        submit('confirm');
+        inspectionAssignTaskSubmit('confirm');
     }
     function inspectionAssignTaskSubmit(action){
         $("[name='inspectionPoolType']").val(action);
