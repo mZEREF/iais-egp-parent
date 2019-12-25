@@ -16,16 +16,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class INTRANET___MohRequestForInformation___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="requestForInformationDelegator";
 
-	public void preSearch_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preSearch", this); 
-	// 		preSearch->OnStepProcess
-	}
-
-	public void doSearch_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doSearch", this); 
-	// 		doSearch->OnStepProcess
-	}
-
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this); 
 	// 		Start->OnStepProcess
@@ -81,14 +71,24 @@ public class INTRANET___MohRequestForInformation___1 extends BaseProcessClass {
 	// 		preReqForInfo->OnStepProcess
 	}
 
-	public void doCloseRfi_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doCloseRfi", this);
-	// 		doCloseRfi->OnStepProcess
-	}
-
 	public void doReqForInfo_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doReqForInfo", this);
 	// 		doReqForInfo->OnStepProcess
+	}
+
+	public void doCreateRequest_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doCreateRequest", this);
+// 		doCreateRequest->OnStepProcess
+	}
+
+	public void doRemind_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doRemind", this);
+// 		doRemind->OnStepProcess
+	}
+
+	public void doCancel_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doCancel", this);
+// 		doCancel->OnStepProcess
 	}
 
 	

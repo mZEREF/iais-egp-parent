@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -118,16 +119,15 @@
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
                                             <td><c:out value="${pool.licenseeName}"/></td>
                                             <td><c:out value="${pool.serviceName}"/></td>
-                                            <td><c:out value="${pool.licencePeriod}"/></td>
+                                            <td><fmt:formatDate value="${pool.startDate}" pattern="dd/MM/yyyy" />-<fmt:formatDate value="${pool.expiryDate}" pattern="dd/MM/yyyy" /></td>
                                             <td><c:out value="${pool.licenceStatus}"/></td>
                                             <td><c:out value="${pool.pastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
                                             <td>
-                                                <input type="button" class="btn btn-default" onclick="javascript:doReqForInfo();" value="Select">
-<%--                                                <iais:action style="text-align:center;">--%>
-<%--                                                    <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo();" >Select</button>--%>
-<%--                                                </iais:action>--%>
+                                                <iais:action style="text-align:center;">
+                                                    <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.applicationNo}');" >Request For Information</button>
+                                                </iais:action>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -159,9 +159,9 @@
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }
-    function doReqForInfo() {
+    function doReqForInfo(appNo) {
 
-        SOP.Crud.cfxSubmit("mainForm", "reqForInfo");
+        SOP.Crud.cfxSubmit("mainForm", "reqForInfo",appNo);
     }
     function doAppInfo() {
         SOP.Crud.cfxSubmit("mainForm", "appInfo");
