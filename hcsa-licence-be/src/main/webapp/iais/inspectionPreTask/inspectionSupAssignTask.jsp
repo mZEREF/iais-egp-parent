@@ -130,7 +130,7 @@
     function doInspectionSupAssignTaskBack() {
         clearErrorMsg();
         $("[name='actionValue']").val('back');
-        submit('back');
+        inspectionSupAssignTaskSubmit('back');
     }
 
     function doInspectionSupAssignTaskNext() {
@@ -140,10 +140,10 @@
             dismissWaiting();
         } else {
             $("[name='actionValue']").val('confirm');
-            submit('confirm');
+            inspectionSupAssignTaskSubmit('confirm');
         }
     }
-    function submit(action){
+    function inspectionSupAssignTaskSubmit(action){
         $("[name='InspectionSupSearchSwitchType']").val(action);
         var mainPoolForm = document.getElementById('mainAssignForm');
         mainPoolForm.submit();

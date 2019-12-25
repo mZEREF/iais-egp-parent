@@ -83,7 +83,7 @@
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
-    function submit(action){
+    function inspectionPreTaskSubmit(action){
         $("[name='inspectorPreType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
         mainPoolForm.submit();
@@ -92,12 +92,12 @@
     function doInspectionPreTaskEdit(taskId) {
         $("#taskId").val(taskId);
         $("#actionValue").val('edit');
-        submit('edit');
+        inspectionPreTaskSubmit('edit');
     }
 
     function doInspectionPreTaskBack() {
         $("#actionValue").val('back');
-        submit('back');
+        inspectionPreTaskSubmit('back');
     }
 
     function doInspectionPreTaskChange(value) {
@@ -108,10 +108,10 @@
         var actionValue = $("#processDec").val();
         if("REDECI002" == actionValue){
             $("#actionValue").val('approve');
-            submit("approve");
+            inspectionPreTaskSubmit("approve");
         } else if ("REDECI001" == actionValue){
             $("#actionValue").val('routeB');
-            submit("routeB");
+            inspectionPreTaskSubmit("routeB");
         } else {
             var errMsg = 'The field is mandatory.';
             $("#error_selectValue").text(errMsg);

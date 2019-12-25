@@ -178,7 +178,7 @@
 
     function doInspectorSearchTaskAssign(taskId) {
         $("#taskId").val(taskId);
-        submit('assign');
+        inspectorSearchTaskSubmit('assign');
     }
 
     function doInspectorSearchTaskClear() {
@@ -190,12 +190,12 @@
         $('input[name="hci_name"]').val("");
         $('input[name="hci_address"]').val("");
     }
-    function submit(action){
+    function inspectorSearchTaskSubmit(action){
         $("[name='InspectionSupSearchSwitchType']").val(action);
         var mainPoolForm = document.getElementById('mainSupForm');
         mainPoolForm.submit();
     }
     function doInspectorSearchTaskSearch() {
-        submit('search');
+        inspectorSearchTaskSubmit('search');
     }
 </script>

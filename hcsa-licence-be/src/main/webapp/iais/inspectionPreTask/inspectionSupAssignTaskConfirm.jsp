@@ -123,13 +123,13 @@
 </div>
 <script type="text/javascript">
     function doInspectionSupAssignTaskConfirmBack() {
-        submit('assign');
+        inspectionSupAssignTaskConfirmSubmit('assign');
     }
 
     function doInspectionSupAssignTaskConfirmSubmit() {
-        submit('success');
+        inspectionSupAssignTaskConfirmSubmit('success');
     }
-    function submit(action){
+    function inspectionSupAssignTaskConfirmSubmit(action){
         $("[name='InspectionSupSearchSwitchType']").val(action);
         var mainPoolForm = document.getElementById('mainConfirmForm');
         mainPoolForm.submit();
