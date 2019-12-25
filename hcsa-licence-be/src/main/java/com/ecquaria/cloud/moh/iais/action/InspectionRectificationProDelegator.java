@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -42,9 +43,13 @@ public class InspectionRectificationProDelegator {
     private TaskService taskService;
 
     @Autowired
-    private InspectionRectificationProDelegator(TaskService taskService, InspectionRectificationProService inspectionRectificationProService){
+    private ApplicationClient applicationClient;
+
+    @Autowired
+    private InspectionRectificationProDelegator(ApplicationClient applicationClient, TaskService taskService, InspectionRectificationProService inspectionRectificationProService){
         this.inspectionRectificationProService = inspectionRectificationProService;
         this.taskService = taskService;
+        this.applicationClient = applicationClient;
     }
 
     /**
@@ -85,9 +90,11 @@ public class InspectionRectificationProDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
-            String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+            //String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+            String taskId = "425810AB-8D1D-EA11-BE7D-000C29F371DC";
             taskDto = taskService.getTaskById(taskId);
-            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            //ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            ApplicationDto applicationDto = applicationClient.getAppByNo(taskDto.getRefNo()).getEntity();
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = inspectionRectificationProService.getAppHistoryByTask(applicationDto.getId(), InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION);
             inspectionPreTaskDto.setReMarks(appPremisesRoutingHistoryDto.getInternalRemarks());
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
