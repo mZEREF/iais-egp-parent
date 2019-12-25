@@ -54,6 +54,10 @@
             <artifactId>spring-cloud-bus</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.ecquaria.kafka</groupId>
+            <artifactId>servicewrapper</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.ecquaria.sz</groupId>
             <artifactId>ecq-sz-commons</artifactId>
         </dependency>
