@@ -108,7 +108,7 @@
     function doInspectionAssignTaskConfirmSubmit() {
         submit('success');
     }
-    function submit(action){
+    function inspectionAssignTaskConfirmSubmit(action){
         $("[name='inspectionPoolType']").val(action);
         var mainPoolForm = document.getElementById('mainConfirmForm');
         mainPoolForm.submit();

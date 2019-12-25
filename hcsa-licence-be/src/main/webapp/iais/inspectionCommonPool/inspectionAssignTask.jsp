@@ -111,7 +111,7 @@
         $("[name='actionValue']").val('confirm');
         submit('confirm');
     }
-    function submit(action){
+    function inspectionAssignTaskSubmit(action){
         $("[name='inspectionPoolType']").val(action);
         var mainPoolForm = document.getElementById('mainAssignForm');
         mainPoolForm.submit();

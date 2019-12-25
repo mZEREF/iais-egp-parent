@@ -85,55 +85,55 @@
         </div>
       </div>
     </div>
-    <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
-      <div class="container">
-        <div class="col-xs-12">
-          <div class="components">
-            <h3>
-              <span>Search Result</span>
-            </h3>
-            <div class="table-gp">
-              <table class="table">
-                <thead>
-                  <tr align="center">
-                    <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name / Address"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="SUBMIT_DT" value="Submission Date"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
-                  </tr>
-                </thead>
-                <tbody>
-                  <c:choose>
-                    <c:when test="${empty cPoolSearchResult.rows}">
+    <div class="container">
+      <div class="col-xs-12">
+        <div class="components">
+          <h3>
+            <span>Search Result</span>
+          </h3>
+          <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
+          <div class="table-gp">
+            <table class="table">
+              <thead>
+                <tr align="center">
+                  <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name / Address"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="SUBMIT_DT" value="Submission Date"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
+                </tr>
+              </thead>
+              <tbody>
+                <c:choose>
+                  <c:when test="${empty cPoolSearchResult.rows}">
+                    <tr>
+                      <td colspan="7">
+                        <iais:message key="ACK018" escape="true"></iais:message>
+                      </td>
+                    </tr>
+                  </c:when>
+                  <c:otherwise>
+                    <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
                       <tr>
-                        <td colspan="7">
-                          <iais:message key="ACK018" escape="true"></iais:message>
-                        </td>
+                        <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
+                        <td><c:out value="${pool.applicationNo}"/></td>
+                        <td><iais:code code="${pool.applicationType}"/></td>
+                        <td><c:out value="${pool.hciCode}"/></td>
+                        <td><c:out value="${pool.hciName}"/></td>
+                        <td><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></td>
+                        <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectionCommonPoolAssign('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Assign</button></td>
                       </tr>
-                    </c:when>
-                    <c:otherwise>
-                      <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
-                        <tr>
-                          <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                          <td><c:out value="${pool.applicationNo}"/></td>
-                          <td><iais:code code="${pool.applicationType}"/></td>
-                          <td><c:out value="${pool.hciCode}"/></td>
-                          <td><c:out value="${pool.hciName}"/></td>
-                          <td><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></td>
-                          <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectionCommonPoolAssign('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Assign</button></td>
-                        </tr>
-                      </c:forEach>
-                    </c:otherwise>
-                  </c:choose>
-                </tbody>
-              </table>
-            </div>
+                    </c:forEach>
+                  </c:otherwise>
+                </c:choose>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+    </div>
   </iais:body>
 </form>
 </div>
@@ -154,7 +154,7 @@
         $('input[name="service_name"]').val("");
         $('input[name="sub_date"]').val("");
     }
-    function submit(action){
+    function inspectionCommonPoolSubmit(action){
         $("[name='inspectionPoolType']").val(action);
         var mainPoolForm = document.getElementById('mainPoolForm');
         mainPoolForm.submit();
