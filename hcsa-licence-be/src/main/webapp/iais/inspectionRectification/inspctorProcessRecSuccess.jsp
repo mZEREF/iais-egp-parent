@@ -68,6 +68,7 @@
                           <iais:field value="Please indicate Licensing Terms and Conditions"/>
                           <iais:value width="8000">
                             <label><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></label>
+
                           </iais:value>
                         </iais:row>
                       </c:if>
