@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     ApplicationClient applicationClient;
     @Autowired
     AppPremisesCorrClient appPremisesCorrClient;
+    @Autowired
+    HcsaConfigClient hcsaConfigClient;
 
     private final String[] appType=new String[]{
             ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
@@ -94,13 +97,18 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam) {
-        return applicationClient.searchRfiApp(searchParam).getEntity();
+        return applicationClient.searchApp(searchParam).getEntity();
     }
 
     @Override
     public SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam) {
 
         return requestForInformationClient.searchRfiLicence(searchParam).getEntity();
+    }
+
+    @Override
+    public List<String> getSvcNamesByType(String type) {
+        return hcsaConfigClient.getHcsaServiceNameByType(type).getEntity();
     }
 
 

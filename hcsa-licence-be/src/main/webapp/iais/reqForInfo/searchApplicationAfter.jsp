@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -11,7 +12,7 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" id="applicationNo" name="crud_action_value" value="">
+    <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
 
     <iais:body >
@@ -31,7 +32,7 @@
                                             <iais:field value="Application No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="application_no" value="${searchNo}" />
+                                                    <input type="text" name="application_no" value="${SearchParam.filters['appNo']}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -50,13 +51,13 @@
                                         <iais:row>
                                             <iais:field value="Application Submitted Date:"/>
                                             <iais:value width="18">
-                                                <iais:datePicker id = "sub_date" name = "sub_date" ></iais:datePicker>
+                                                <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['subDate']}" ></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="To:"/>
                                             <iais:value width="18">
-                                                <iais:datePicker id = "to_date" name = "to_date" ></iais:datePicker>
+                                                <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">
@@ -73,7 +74,7 @@
             </div>
         </div>
         <div class="container">
-            <div class="col-xs-12">
+            <div class="col-xs-14">
                 <div class="components">
                     <h3>
                         <span>Search Result</span>
@@ -119,13 +120,13 @@
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
                                             <td><c:out value="${pool.licenseeName}"/></td>
                                             <td><c:out value="${pool.serviceName}"/></td>
-                                            <td><c:out value="${pool.licencePeriod}"/></td>
+                                            <td><fmt:formatDate value="${pool.startDate}" pattern="dd/MM/yyyy" />-<fmt:formatDate value="${pool.expiryDate}" pattern="dd/MM/yyyy" /></td>
                                             <td><c:out value="${pool.licenceStatus}"/></td>
                                             <td><c:out value="${pool.pastComplianceHistory}"/></td>
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
                                             <td><iais:action style="text-align:center;">
-                                                <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo();">Select</button>
+                                                <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.applicationNo}');">Request For Information</button>
                                             </iais:action></td>
                                         </tr>
                                     </c:forEach>
@@ -156,8 +157,8 @@
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }
-    function doReqForInfo() {
-        SOP.Crud.cfxSubmit("mainForm", "reqForInfo");
+    function doReqForInfo(appNo) {
+        SOP.Crud.cfxSubmit("mainForm", "reqForInfo",appNo);
     }
     function doAppInfo() {
         SOP.Crud.cfxSubmit("mainForm", "appInfo");

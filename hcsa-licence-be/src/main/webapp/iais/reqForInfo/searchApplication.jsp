@@ -30,7 +30,7 @@
                                             <iais:field value="Application No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="application_no" value="${searchNo}" />
+                                                    <input type="text" name="application_no" value="${SearchParam.filters['appNo']}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -49,13 +49,13 @@
                                         <iais:row>
                                             <iais:field value="Application Submitted Date:"/>
                                             <iais:value width="18">
-                                                <iais:datePicker id = "sub_date" name = "sub_date" ></iais:datePicker>
+                                                <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['subDate']}" ></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="To:"/>
                                             <iais:value width="18">
-                                                <iais:datePicker id = "to_date" name = "to_date" ></iais:datePicker>
+                                                <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['toDate']}"></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">

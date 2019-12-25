@@ -93,6 +93,8 @@ public interface HcsaConfigClient {
     @RequestMapping(value = "/iais-hcsa-risk/leadership/show",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<RiskLeaderShipShowDto> getRiskLeaderShipShow(@RequestBody List<HcsaServiceDto> svcList);
 
+    @PostMapping(value = "/iais-hcsa-service/hcsa-service-type",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getHcsaServiceNameByType(@RequestBody String type);
     @GetMapping(value = "/iais-hcsa-risk/leadershipbysvccode{serviceCode}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> getLeadershipRiskBySvcCode(@PathVariable("serviceCode")String serviceCode);
 

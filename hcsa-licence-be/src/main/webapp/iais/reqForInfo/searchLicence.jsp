@@ -30,7 +30,7 @@
                                             <iais:field value="Licence No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="licence_no" value="${searchNo}" />
+                                                    <input type="text" name="licence_no" value="${SearchParam.filters['licence_no']}" />
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -49,13 +49,13 @@
                                         <iais:row>
                                             <iais:field value="Licence Period:"/>
                                             <iais:value width="18">
-                                                <iais:datePicker id = "sub_date" name = "sub_date" ></iais:datePicker>
+                                                <iais:datePicker id = "sub_date" name = "sub_date" value="${SearchParam.filters['start_date']}" ></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="To:"/>
                                             <iais:value width="18">
-                                                <iais:datePicker id = "to_date" name = "to_date" ></iais:datePicker>
+                                                <iais:datePicker id = "to_date" name = "to_date" value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:action style="text-align:center;">

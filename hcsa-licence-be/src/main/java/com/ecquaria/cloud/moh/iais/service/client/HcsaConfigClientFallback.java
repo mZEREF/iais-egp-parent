@@ -140,4 +140,11 @@ public class HcsaConfigClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+    FeignResponseEntity<List<String>> getHcsaServiceNameByType( String type){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

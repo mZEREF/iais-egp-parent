@@ -4,23 +4,22 @@
     <sql key = "applicationQuery" remarks = "Query Application Data by condition">
         <![CDATA[
             SELECT
-                app.id,
-                app.application_no,
-                app.app_type,
-                app.status,
-                T3.HCI_CODE,
-                T3.HCI_NAME,
-                T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME
+                app.id,app.application_no,app.app_type,app.status,
+                T3.HCI_CODE,T3.HCI_NAME,
+                T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,
+                T4.LICENSEE_ID
             FROM APPLICATION AS app
              JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = app.ID
              JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+             JOIN APPLICATION_GROUP T4 ON T4.ID = app.APP_GRP_ID
+
             WHERE 1=1
             <#if id??> AND app.id = :id </#if>
             <#if appType??> AND app.app_type = :appType</#if>
             <#if appNo??> AND app.application_no = :appNo</#if>
             <#if appStatus??> AND app.status = :appStatus</#if>
-            <#if sub_date??> AND T2.submit_dt => :sub_date</#if>
-            <#if to_date??> AND T2.submit_dt =< :to_date</#if>
+            <#if subDate??> AND T4.submit_dt >= convert(date,:subDate)</#if>
+            <#if toDate??> AND T4.submit_dt <= convert(date,:toDate)</#if>
         ]]>
     </sql>
 
@@ -39,8 +38,8 @@
             JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
             WHERE 1=1
             <#if licence_status??> AND lic.STATUS = :licence_status</#if>
-            <#if sub_date??> AND lic.start_date => :sub_date</#if>
-            <#if to_date??> AND lic.expiry_date =< :to_date</#if>
+            <#if start_date??> AND lic.start_date >= :start_date</#if>
+            <#if expiry_date??> AND lic.expiry_date <= :expiry_date</#if>
             <#if licence_no??> AND lic.licence_no = :licence_no</#if>
             <#if app_id??> AND licApp.APPLICATION_ID = :app_id</#if>
         ]]>
