@@ -352,6 +352,9 @@ public class HcsaApplicationDelegator {
         ApplicationDto application=applicationViewDto.getApplicationDto();
         application.setStatus(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS);
         applicationViewDto.setApplicationDto(application);
+        //todo
+        //update to DB
+        applicationService.updateFEApplicaiton(application);
         log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
 
