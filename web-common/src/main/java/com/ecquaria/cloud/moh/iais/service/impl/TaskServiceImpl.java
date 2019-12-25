@@ -115,7 +115,7 @@ public class TaskServiceImpl implements TaskService {
         return taskOrganizationClient.getTaskScores(workGroupId).getEntity();
     }
 
-    @Override
+
     public TaskDto routingTask(ApplicationDto applicationDto, String stageId,String roleId) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         TaskDto result = null;
@@ -174,7 +174,7 @@ public class TaskServiceImpl implements TaskService {
         return  result;
     }
 
-    @Override
+
     public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,String roleId,AuditTrailDto auditTrailDto) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
         TaskHistoryDto taskHistoryDto = getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,roleId,auditTrailDto);
@@ -219,8 +219,13 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         //there is not new , return the Lowest Score taskScoreDtos. because there is sort in the SQL side
+        //public
         if(result == null){
-            result = taskScoreDtos.get(0);
+            for(TaskDto taskDto : taskScoreDtos){
+               boolean isExist = isExistUser(users,taskDto.getUserId());
+                result = taskDto;
+                break;
+            }
            // result.setScore(0);
         }
         return result;
@@ -279,6 +284,16 @@ public class TaskServiceImpl implements TaskService {
         boolean result = false;
         for (TaskDto taskScoreDto : taskScoreDtos){
             if(userId.equals(taskScoreDto.getUserId()) ){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+    private boolean isExistUser(List<OrgUserDto> users,String userId){
+        boolean result = false;
+        for (OrgUserDto orgUserDto : users){
+            if(orgUserDto.getId().equals(userId)){
                 result = true;
                 break;
             }

@@ -29,15 +29,28 @@ import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.BroadcastService;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -244,7 +257,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToPSO(BaseProcessClass bpc) throws FeignException {
+    public void rontingTaskToPSO(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToPSO start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,RoleConsts.USER_ROLE_PSO);
         log.debug(StringUtil.changeForLog("the do rontingTaskToPSO end ...."));
@@ -257,7 +270,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToINS(BaseProcessClass bpc) throws FeignException {
+    public void rontingTaskToINS(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,RoleConsts.USER_ROLE_INSPECTIOR);
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS end ...."));
@@ -270,7 +283,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToASO(BaseProcessClass bpc) throws FeignException {
+    public void rontingTaskToASO(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToASO start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,RoleConsts.USER_ROLE_ASO);
         log.debug(StringUtil.changeForLog("the do rontingTaskToASO end ...."));
@@ -282,7 +295,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToAO1(BaseProcessClass bpc) throws FeignException {
+    public void rontingTaskToAO1(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,RoleConsts.USER_ROLE_AO1);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO1 end ...."));
@@ -296,7 +309,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToAO2(BaseProcessClass bpc) throws FeignException {
+    public void rontingTaskToAO2(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
@@ -309,7 +322,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void rontingTaskToAO3(BaseProcessClass bpc) throws FeignException {
+    public void rontingTaskToAO3(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3);
         log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
@@ -322,21 +335,9 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void approve(BaseProcessClass bpc) throws FeignException {
+    public void approve(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do approve start ...."));
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED,null);
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-        boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
-                ApplicationConsts.APPLICATION_STATUS_APPROVED);
-        if(isAllSubmit){
-            //update application Group status
-            ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-            applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
-            applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            applicationGroupService.updateApplicationGroup(applicationGroupDto);
-        }
         log.debug(StringUtil.changeForLog("the do approve end ...."));
     }
 
@@ -364,7 +365,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void routeBack(BaseProcessClass bpc) throws FeignException{
+    public void routeBack(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do routeBack start ...."));
         String routeBack = ParamUtil.getString(bpc.request,"rollBack");
         if(HcsaConsts.ROUTING_STAGE_ASO.equals(routeBack)){
@@ -416,7 +417,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void broadcast(BaseProcessClass bpc) {
+    public void broadcast(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do broadcast start ...."));
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
@@ -430,6 +431,7 @@ public class HcsaApplicationDelegator {
             BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
             //create workgroup
             WorkingGroupDto workingGroupDto = broadcastOrganizationDto.getWorkingGroupDto();
+            broadcastOrganizationDto.setRollBackworkingGroupDto((WorkingGroupDto)CopyUtil.copyMutableObject(workingGroupDto));
             if(workingGroupDto ==  null){
                 workingGroupDto = new WorkingGroupDto();
                 workingGroupDto.setGroupName(applicationDto.getApplicationNo());
@@ -441,6 +443,9 @@ public class HcsaApplicationDelegator {
             //add this user to this workgroup
             List<UserGroupCorrelationDto> userGroupCorrelationDtoList = broadcastOrganizationDto.getUserGroupCorrelationDtoList();
             if(broadcastOrganizationDto.getWorkingGroupDto()!= null && userGroupCorrelationDtoList != null && userGroupCorrelationDtoList.size() > 0){
+                List<UserGroupCorrelationDto> cloneUserGroupCorrelationDtos = new ArrayList<>();
+                CopyUtil.copyMutableObjectList(userGroupCorrelationDtoList,cloneUserGroupCorrelationDtos);
+                broadcastOrganizationDto.setRollBackUserGroupCorrelationDtoList(cloneUserGroupCorrelationDtos);
                 userGroupCorrelationDtoList =changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtoList,AppConsts.COMMON_STATUS_ACTIVE);
             }else{
                 userGroupCorrelationDtoList = new ArrayList<>();
@@ -463,6 +468,7 @@ public class HcsaApplicationDelegator {
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),
                     applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
             broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+            broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto)CopyUtil.copyMutableObject(applicationDto));
             //update application status
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST);
             broadcastApplicationDto.setApplicationDto(applicationDto);
@@ -476,8 +482,8 @@ public class HcsaApplicationDelegator {
             //save the broadcast
             broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto);
-            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto);
+            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null);
+            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null);
         }
 
         log.debug(StringUtil.changeForLog("the do broadcast end ...."));
@@ -490,7 +496,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void broadcastReply(BaseProcessClass bpc) throws FeignException {
+    public void broadcastReply(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do broadcastReply start ...."));
         routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3);
         log.debug(StringUtil.changeForLog("the do broadcastReply end ...."));
@@ -528,7 +534,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void requestForInformation(BaseProcessClass bpc) throws FeignException {
+    public void requestForInformation(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do requestForInformation start ...."));
         routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,null);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
@@ -593,7 +599,7 @@ public class HcsaApplicationDelegator {
     //private methods
     //*************************************
 
-    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException {
+    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ) throws FeignException, CloneNotSupportedException {
 
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
@@ -603,6 +609,7 @@ public class HcsaApplicationDelegator {
 
         //complated this task and create the history
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
@@ -611,6 +618,7 @@ public class HcsaApplicationDelegator {
                 applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
+        broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
         String oldStatus = applicationDto.getStatus();
         applicationDto.setStatus(appStatus);
         broadcastApplicationDto.setApplicationDto(applicationDto);
@@ -634,9 +642,13 @@ public class HcsaApplicationDelegator {
                             applicationDto.getApplicationNo(),AppConsts.DOMAIN_TEMPORARY);
 
                     WorkingGroupDto workingGroupDto = broadcastOrganizationDto1.getWorkingGroupDto();
+                    broadcastOrganizationDto.setRollBackworkingGroupDto((WorkingGroupDto) CopyUtil.copyMutableObject(workingGroupDto));
                     workingGroupDto = changeStatusWrokGroup(workingGroupDto,AppConsts.COMMON_STATUS_DELETED);
                     broadcastOrganizationDto.setWorkingGroupDto(workingGroupDto);
                     List<UserGroupCorrelationDto> userGroupCorrelationDtos = broadcastOrganizationDto1.getUserGroupCorrelationDtoList();
+                    List<UserGroupCorrelationDto> cloneUserGroupCorrelationDtos = new ArrayList<>();
+                    CopyUtil.copyMutableObjectList(userGroupCorrelationDtos,cloneUserGroupCorrelationDtos);
+                    broadcastOrganizationDto.setRollBackUserGroupCorrelationDtoList(cloneUserGroupCorrelationDtos);
                     userGroupCorrelationDtos = changeStatusUserGroupCorrelationDtos(userGroupCorrelationDtos,AppConsts.COMMON_STATUS_DELETED);
                     broadcastOrganizationDto.setUserGroupCorrelationDtoList(userGroupCorrelationDtos);
                 }else{
@@ -665,12 +677,27 @@ public class HcsaApplicationDelegator {
                         taskDto.getWkGrpId(),null,null,roleId);
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
+        }else{
+            List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+            boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+                    ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            if(isAllSubmit){
+                //update application Group status
+                ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
+                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+            }
         }
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto);
-        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto);
+        String eventRefNo = EventBusHelper.getEventRefNo();
+        broadcastOrganizationDto.setEventRefNo(eventRefNo);
+        broadcastApplicationDto.setEventRefNo(eventRefNo);
+        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
+        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
     }
     private List<UserGroupCorrelationDto> changeStatusUserGroupCorrelationDtos(List<UserGroupCorrelationDto> userGroupCorrelationDtos,String status){
         List<UserGroupCorrelationDto> result = new ArrayList<>();
@@ -700,6 +727,7 @@ public class HcsaApplicationDelegator {
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
         appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);
         appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return appPremisesRoutingHistoryDto;
     }
