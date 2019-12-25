@@ -174,21 +174,21 @@ public class TaskServiceImpl implements TaskService {
         return  result;
     }
 
-    @Override
-    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,String roleId,AuditTrailDto auditTrailDto) throws FeignException {
-        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
-        TaskHistoryDto taskHistoryDto = getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,roleId,auditTrailDto);
-        List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-        if(taskDtos!=null && taskDtos.size() >0 && appPremisesRoutingHistoryDtos !=null && appPremisesRoutingHistoryDtos.size()>0){
-            this.createTasks(taskDtos);
-            this.createHistorys(appPremisesRoutingHistoryDtos);
-        }else {
-            log.error(StringUtil.changeForLog("The taksDto is null !!!"));
-        }
 
-        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison end ...."));
-    }
+//    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,String roleId,AuditTrailDto auditTrailDto) throws FeignException {
+//        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
+//        TaskHistoryDto taskHistoryDto = getRoutingTaskOneUserForSubmisison(applicationDtos,stageId,roleId,auditTrailDto);
+//        List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+//        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+//        if(taskDtos!=null && taskDtos.size() >0 && appPremisesRoutingHistoryDtos !=null && appPremisesRoutingHistoryDtos.size()>0){
+//            this.createTasks(taskDtos);
+//            this.createHistorys(appPremisesRoutingHistoryDtos);
+//        }else {
+//            log.error(StringUtil.changeForLog("The taksDto is null !!!"));
+//        }
+//
+//        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison end ...."));
+//    }
 
 
 

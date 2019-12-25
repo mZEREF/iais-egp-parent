@@ -22,17 +22,22 @@ public class EventBusHelper {
                                    String userId,boolean wait,Process process){
         SubmitReq req = new SubmitReq();
         req.setSubmissionId(submissionId);
-        req.setProject(process.getCurrentProject());
-        req.setProcess(process.getCurrentProcessName());
-        req.setStep(process.getCurrentComponentName());
+        if(process!=null){
+            req.setProject(process.getCurrentProject());
+            req.setProcess(process.getCurrentProcessName());
+            req.setStep(process.getCurrentComponentName());
+            req.setCallbackUrl("https://"
+                    +process.getHttpRequest().getServerName()
+                    +process.getHttpRequest().getContextPath()
+                    +callBackUrl);
+        }else{
+            req.setCallbackUrl("https://"+callBackUrl);
+        }
         req.setService(service);
         req.setOperation(operation);
         req.setSopUrl(sopUrl);
         req.setData(JsonUtil.parseToJson(dto));
-        req.setCallbackUrl("https://"
-                +process.getHttpRequest().getServerName()
-                +process.getHttpRequest().getContextPath()
-                +callBackUrl);
+
         req.setUserId(userId);
         req.setWait(wait);
         req.addCallbackParam("token", IaisEGPHelper.genTokenForCallback(req.getSubmissionId(), req.getService()));

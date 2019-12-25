@@ -38,13 +38,15 @@ public class BroadcastServiceImpl implements BroadcastService {
     private SubmissionClient client;
     @Override
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process) {
-
+        String  callBackUrl = "/eservice/INTRANET/LicenceEventBusCallBack";
+        if(process==null){
+            callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web"+callBackUrl;
+        }
         SubmitReq req =EventBusHelper.getSubmitReq(broadcastOrganizationDto, systemAdminClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",
-                "/eservice/INTERNET/HcsaApplicationEventBusCallBack",
-                "sop",true,process);
+                callBackUrl, "sop",false,process);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
         return broadcastOrganizationDto;
@@ -52,12 +54,15 @@ public class BroadcastServiceImpl implements BroadcastService {
 
     @Override
     public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process) {
+        String  callBackUrl = "/eservice/INTRANET/LicenceEventBusCallBack";
+        if(process==null){
+            callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web"+callBackUrl;
+        }
         SubmitReq req =EventBusHelper.getSubmitReq(broadcastApplicationDto,systemAdminClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",
-                "/eservice/INTERNET/HcsaApplicationEventBusCallBack",
-                "sop",true,process);
+                callBackUrl, "sop",false,process);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
         return broadcastApplicationDto;

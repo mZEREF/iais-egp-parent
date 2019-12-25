@@ -29,7 +29,7 @@ public interface TaskService {
     public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId) throws FeignException;
     public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto) throws FeignException;
     //rounting Task
-     void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stage,String roleId, AuditTrailDto auditTrailDto) throws FeignException;
+    // void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stage,String roleId, AuditTrailDto auditTrailDto) throws FeignException;
      //TaskDto routingTask(ApplicationDto applicationDto, String statgId,String roleId) throws FeignException;
      //get users
     List<OrgUserDto> getUsersByWorkGroupId(String workGroupId, String status);
