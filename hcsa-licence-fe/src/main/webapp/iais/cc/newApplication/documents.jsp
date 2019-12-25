@@ -39,7 +39,7 @@
                                     <h2>PRIMARY DOCUMENTS</h2>
                                     <div class="document-upload-list">
                                         <h3>Fire Safety Certificate (FSC) from SCDF</h3>
-                                        <p><a href="#" target="_blank">Preview</a></p>
+                                        <p><a  target="_blank">Preview</a></p>
                                     </div>
                                     <c:set value="${reloadAppGrpPrimaryDocMap}" var="docMap"/>
 
