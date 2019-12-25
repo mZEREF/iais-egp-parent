@@ -130,7 +130,7 @@ public interface AppConfigClient {
     * @param: 
     * @return: 
     */
-    @PostMapping(value = "/iais-hcsa-service/pref-period/reuslts",
+    @PostMapping(value = "/iais-hcsa-service/pref-period/results",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(@RequestBody SearchParam searchParam);
 

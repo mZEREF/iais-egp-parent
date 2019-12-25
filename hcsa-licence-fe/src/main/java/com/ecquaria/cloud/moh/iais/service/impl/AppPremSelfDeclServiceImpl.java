@@ -142,7 +142,6 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
             String svcName = hcsa.getSvcName();
             List<PremCheckItem> premItemList = new ArrayList<>();
-
             Map<String, List<PremCheckItem>> premAnswerMap = new HashMap<>(16);
             List<AppPremisesCorrelationDto>  correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto corre : correlationList){
