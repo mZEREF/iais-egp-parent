@@ -271,6 +271,15 @@ public class InspectionSearchDelegator {
                     inspectionTaskPoolListDto = iDto;
                 }
             }
+            if(StringUtil.isEmpty(inspectionTaskPoolListDto.getInspector())){
+                if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_INSPECTIOR)){
+                    inspectionTaskPoolListDto.setInspectorFlag(AppConsts.TRUE);
+                } else {
+                    inspectionTaskPoolListDto.setInspectorFlag(AppConsts.FALSE);
+                }
+            } else {
+                inspectionTaskPoolListDto.setInspectorFlag(AppConsts.TRUE);
+            }
             //get inspector Option
             inspectionTaskPoolListDto = inspectionService.inputInspectorOption(inspectionTaskPoolListDto, loginContext);
         }
