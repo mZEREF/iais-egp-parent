@@ -122,7 +122,11 @@ public interface ApplicationClient  {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationViewDto> searchAppByNo(@PathVariable("AppNo") String appNo);
 
-    @GetMapping(value = "/AppPremNcByAppCorrId/{appCorrId}",produces = MediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(value = "/iais-inspection-fe/AppPremNcByAppCorrId/{appCorrId}",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremPreInspectionNcDto> getAppPremPreInsNcDtoByAppCorrId(@PathVariable(name = "appCorrId") String appCorrId);
+
+    @PostMapping(value = "/iais-inspection-fe/apppremncitemdtoc",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> createAppNcItemDto(@RequestBody List<AppPremisesPreInspectionNcItemDto> dtoList);
 }
