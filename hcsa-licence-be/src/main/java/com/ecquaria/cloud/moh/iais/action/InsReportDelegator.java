@@ -209,7 +209,6 @@ public class InsReportDelegator {
         List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
         String schemeType = listhcsaSvcStageWorkingGroupDto.get(0).getSchemeType();
         Integer count = listhcsaSvcStageWorkingGroupDto.get(0).getCount();
-
         taskDto.setId(null);
         taskDto.setUserId(null);
         taskDto.setDateAssigned(null);
