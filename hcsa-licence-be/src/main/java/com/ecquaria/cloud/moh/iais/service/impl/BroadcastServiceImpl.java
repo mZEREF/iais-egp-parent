@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicat
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
@@ -29,8 +28,6 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Autowired
     private OrganizationClient organizationClient;
 
-    @Autowired
-    private ApplicationClient applicationClient;
 
     @Autowired
     private SystemAdminClient systemAdminClient;
@@ -42,14 +39,14 @@ public class BroadcastServiceImpl implements BroadcastService {
         if(process==null){
             callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web"+callBackUrl;
         }
-        SubmitReq req =EventBusHelper.getSubmitReq(broadcastOrganizationDto, systemAdminClient.getSeqId().getEntity(),
+        SubmitReq req = EventBusHelper.getSubmitReq(broadcastOrganizationDto, systemAdminClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",
                 callBackUrl, "sop",false,process);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
-        return broadcastOrganizationDto;
+        return null;
     }
 
     @Override
@@ -65,7 +62,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                 callBackUrl, "sop",false,process);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
-        return broadcastApplicationDto;
+        return null;
     }
 
     @Override

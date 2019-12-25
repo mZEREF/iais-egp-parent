@@ -1,20 +1,28 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FEEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.FEEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.cloud.submission.client.model.SubmitReq;
+import com.ecquaria.cloud.submission.client.model.SubmitResp;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +51,11 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Autowired
     private FEEicGatewayClient feEicGatewayClient;
+
+    @Autowired
+    private SystemAdminClient systemAdminClient;
+    @Autowired
+    private SubmissionClient client;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -105,8 +118,17 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public List<LicenceGroupDto> createSuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
+        String   callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
 
-        return    hcsaLicenceClient.createLicence(licenceGroupDtos).getEntity();
+        SubmitReq req =EventBusHelper.getSubmitReq(licenceGroupDtos,systemAdminClient.getSeqId().getEntity(),
+                EventBusConsts.SERVICE_NAME_LICENCESAVE,
+                EventBusConsts.SERVICE_NAME_LICENCESAVE,
+                "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",
+                callBackUrl, "sop",true,null);
+        //
+        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+
+        return   null;
     }
 
     @Override
