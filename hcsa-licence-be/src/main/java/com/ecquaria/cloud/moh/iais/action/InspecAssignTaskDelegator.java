@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -27,6 +26,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -141,13 +141,9 @@ public class InspecAssignTaskDelegator {
             inspecTaskCreAndAssDto.setTaskId(taskId);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
         }
-        if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_INSPECTIOR)){
-            ParamUtil.setRequestAttr(bpc.request,"isInspector",AppConsts.TRUE);
-        } else {
-            ParamUtil.setRequestAttr(bpc.request,"isInspector",AppConsts.FALSE);
-        }
+
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
-        ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", searchResult);
+        ParamUtil.setSessionAttr(bpc.request,"cPoolSearchResult", searchResult);
     }
 
     /**
@@ -161,14 +157,9 @@ public class InspecAssignTaskDelegator {
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
-            if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_INSPECTIOR)){
-                inspecTaskCreAndAssDto = getValueFromPage(bpc);
-                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
-            } else {
-                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.FALSE);
-            }
+        if(InspectionConstants.SWITCH_ACTION_CONFIRM.equals(actionValue)){
+            inspecTaskCreAndAssDto = getValueFromPage(bpc);
+            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)){
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         } else {
@@ -181,13 +172,10 @@ public class InspecAssignTaskDelegator {
     public InspecTaskCreAndAssDto getValueFromPage(BaseProcessClass bpc) {
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String[] nameValue = new String[]{loginContext.getUserId()};
-        if(nameValue == null || nameValue.length <= 0) {
-            inspecTaskCreAndAssDto.setInspectorCheck(null);
-        } else {
-            List<SelectOption> inspectorCheckList = inspectionAssignTaskService.getCheckInspector(nameValue, inspecTaskCreAndAssDto);
-            inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
-        }
+        SelectOption so = new SelectOption(loginContext.getUserId(), "text");
+        List<SelectOption> inspectorCheckList = new ArrayList<>();
+        inspectorCheckList.add(so);
+        inspecTaskCreAndAssDto.setInspectorCheck(inspectorCheckList);
         return inspecTaskCreAndAssDto;
     }
 
@@ -200,6 +188,7 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorQuery(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorQuery start ...."));
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
+        ParamUtil.setSessionAttr(bpc.request,"cPoolSearchResult", searchResult);
     }
 
     /**

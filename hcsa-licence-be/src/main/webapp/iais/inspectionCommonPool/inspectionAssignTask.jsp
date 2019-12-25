@@ -85,9 +85,7 @@
                       </iais:row>
                       <iais:action >
                         <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectionAssignTaskBack()">Back</button>
-                        <c:if test="${'true' eq isInspector}">
-                          <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doInspectionAssignTaskNext()">Next</button>
-                        </c:if>
+                        <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doInspectionAssignTaskNext()">Next</button>
                       </iais:action>
                     </iais:section>
                   </div>

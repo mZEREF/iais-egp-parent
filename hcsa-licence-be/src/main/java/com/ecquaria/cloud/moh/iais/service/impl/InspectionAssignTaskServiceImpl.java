@@ -204,17 +204,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public List<SelectOption> getCheckInspector(String[] nameValue, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
-        List<SelectOption> inspectorCheckList = new ArrayList<>();
-        for (int i = 0; i < nameValue.length; i++) {
-            for (SelectOption so : inspecTaskCreAndAssDto.getInspector()) {
-                getInNameBySelectOption(inspectorCheckList, nameValue[i], so);
-            }
-        }
-        return inspectorCheckList;
-    }
-
-    @Override
     public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto,
                                         ApplicationViewDto applicationViewDto, String internalRemarks, TaskDto taskDto) {
         try {
@@ -320,12 +309,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             }
         }
         return taskDto;
-    }
-
-    private void getInNameBySelectOption(List<SelectOption> nameList, String s, SelectOption so) {
-        if(s.equals(so.getValue())){
-            nameList.add(so);
-        }
     }
 
     /**
