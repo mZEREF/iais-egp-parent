@@ -203,7 +203,7 @@ public class ApplicationClientFallback {
         return entity;
     }
 
-    FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> createAppNcItemDto(List<AppPremisesPreInspectionNcItemDto> dtoList){
+    FeignResponseEntity<AppPremisesPreInspectionNcItemDto> createAppNcItemDto(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

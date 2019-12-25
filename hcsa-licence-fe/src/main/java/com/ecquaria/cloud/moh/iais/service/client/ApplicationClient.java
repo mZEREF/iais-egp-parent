@@ -128,5 +128,5 @@ public interface ApplicationClient  {
 
     @PostMapping(value = "/iais-inspection-fe/apppremncitemdtoc",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremisesPreInspectionNcItemDto>> createAppNcItemDto(@RequestBody List<AppPremisesPreInspectionNcItemDto> dtoList);
+    FeignResponseEntity<AppPremisesPreInspectionNcItemDto> createAppNcItemDto(@RequestBody AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto);
 }
