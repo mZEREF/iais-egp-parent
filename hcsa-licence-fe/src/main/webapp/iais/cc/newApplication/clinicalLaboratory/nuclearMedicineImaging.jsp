@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="col-sm-5">
                                       <iais:select  name="designation" options="NuclearMedicineImagingDesignation"  value="${appSvcPersonnelDto.designation}" firstOption="Please Select"></iais:select>
-                                      <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -76,7 +76,7 @@
                                     </div>
                                     <div class="col-sm-5">
                                       <iais:input maxLength="66" type="text" name="name"  value="${appSvcPersonnelDto.name}"></iais:input>
-                                      <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -93,7 +93,7 @@
                                     </div>
                                     <div class="col-sm-5">
                                       <iais:input maxLength="20" type="text" name="qualification"  value="${appSvcPersonnelDto.quaification}"></iais:input>
-                                      <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -110,7 +110,7 @@
                                     </div>
                                     <div class="col-sm-5">
                                       <iais:input maxLength="2" type="text" name="wrkExpYear"  value="${appSvcPersonnelDto.wrkExpYear}"></iais:input>
-                                      <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_wrkExpYear${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -127,7 +127,7 @@
                                     </div>
                                     <div class="col-sm-5">
                                       <iais:input maxLength="20" type="text" name="regnNo"  value="${appSvcPersonnelDto.profRegNo}"></iais:input>
-                                      <span class="error-msg" name="iaisErrorMsg" id=""></span>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_regnNo${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>

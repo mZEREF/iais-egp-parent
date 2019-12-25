@@ -202,7 +202,7 @@
                       <div class="col-sm-4">
                         <div class="">
                           <iais:select  name="deputyIdType" value="" options="IdTypeSelect"></iais:select>
-                          <span name="iaisErrorMsg" class="error-msg" id=""></span>
+                          <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType"></span>
                         </div>
                       </div>
                       <div class="col-sm-4">
@@ -221,6 +221,7 @@
                       </div>
                       <div class="col-sm-5">
                         <iais:select name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="" firstOption="Select Designation"></iais:select>
+                        <span class="error-msg" id="error_deputyDesignation" name="iaisErrorMsg"></span>
                       </div>
                     </div>
                   </div>

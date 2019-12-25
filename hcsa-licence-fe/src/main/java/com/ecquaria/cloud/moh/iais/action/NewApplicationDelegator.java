@@ -614,10 +614,7 @@ public class NewApplicationDelegator {
 
     private void dolabory(Map map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
         if(list==null){
-            sB.append(serviceId);
-            map.put("labory","UC_CHKLMD001_ERR001");
-            map.put("serviceId",sB.toString());
-            return;
+
         }
     }
 
@@ -671,10 +668,7 @@ public class NewApplicationDelegator {
 
     private void doSvcDis(Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
         if(list==null){
-            sB.append(serviceId);
-            map.put("svcDis","UC_CHKLMD001_ERR001");
-            map.put("serviceId",sB.toString());
-            return;
+
         }
     }
 
@@ -1311,7 +1305,7 @@ public class NewApplicationDelegator {
                     String salutation = poDto.get(i).getSalutation();
                     String designation = poDto.get(i).getDesignation();
                     String idType = poDto.get(i).getIdType();
-                    if(StringUtil.isEmpty(idType)){
+                    if("-1".equals(idType)){
                         oneErrorMap.put("idType","UC_CHKLMD001_ERR001");
                     }
                     if(StringUtil.isEmpty(name)){
@@ -1362,10 +1356,65 @@ public class NewApplicationDelegator {
                     }
                 }
             }
+
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
                 String salutation = poDto.get(i).getSalutation();
                 String name = poDto.get(i).getName();
                 String idType = poDto.get(i).getIdType();
+                String mobileNo = poDto.get(i).getMobileNo();
+                String emailAddr = poDto.get(i).getEmailAddr();
+                String idNo = poDto.get(i).getIdNo();
+                String modeOfMedAlert = poDto.get(i).getModeOfMedAlert();
+                String designation = poDto.get(i).getDesignation();
+                if(StringUtil.isEmpty(modeOfMedAlert)||"-1".equals(modeOfMedAlert)){
+                    oneErrorMap.put("modeOfMedAlert","UC_CHKLMD001_ERR001");
+                }
+
+                if(StringUtil.isEmpty(designation)||"-1".equals(designation)){
+                    oneErrorMap.put("deputyDesignation","UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(salutation)){
+                    oneErrorMap.put("deputySalutation","UC_CHKLMD001_ERR001");
+                }
+
+                if(StringUtil.isEmpty(idType)||"-1".equals(idType)){
+                    oneErrorMap.put("deputyIdType","UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(name)){
+                    oneErrorMap.put("deputyName","UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(idNo)){
+                    oneErrorMap.put("deputyIdNo","UC_CHKLMD001_ERR001");
+                }
+                if("FIN".equals(idType)){
+                    boolean b = SgNoValidator.validateFin(idNo);
+                    if(!b){
+                        oneErrorMap.put("deputyIdNo","CHKLMD001_ERR005");
+                    }
+                }
+                if("NRIC".equals(idType)){
+                    boolean b1 = SgNoValidator.validateNric(idNo);
+                    if(!b1){
+                        oneErrorMap.put("deputyIdNo","CHKLMD001_ERR005");
+                    }
+                }
+
+                if(StringUtil.isEmpty(mobileNo)){
+                    oneErrorMap.put("deputyMobileNo","UC_CHKLMD001_ERR001");
+                }
+                else {
+                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                        oneErrorMap.put("deputyMobileNo", "CHKLMD001_ERR004");
+                    }
+
+                }
+                if(StringUtil.isEmpty(emailAddr)){
+                    oneErrorMap.put("deputyEmailAddr","UC_CHKLMD001_ERR001");
+                }else {
+                    if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                        oneErrorMap.put("deputyEmailAddr", "CHKLMD001_ERR006");
+                    }
+                }
 
 
             }

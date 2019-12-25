@@ -18,15 +18,39 @@ public class INTRANET___MohRole___1 extends BaseProcessClass {
     private static final String DELEGATOR ="createRoleDelegator";
     public void step2_OnStepProcess_0() throws Exception {
     // 		Step2->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "createRole", this);
+        EngineHelper.delegate(DELEGATOR, "prepareData", this);
+    }
+    public void edit_OnStepProcess_0() throws Exception {
+    // 		edit->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "editRole", this);
+    }
+    public void step7_OnStepProcess_0() throws Exception {
+    // 		Step7->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "step", this);
+    }
+    public void view_OnStepProcess_0() throws Exception {
+    // 		view->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "viewRole", this);
+    }
+    public void search_OnStepProcess_0() throws Exception {
+    // 		search->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "searchRole", this);
     }
     public void create_OnStepProcess_0() throws Exception {
-        // 		create->OnStepProcess
-            EngineHelper.delegate(DELEGATOR, "prepareData", this);
-        }
-    public void step3_OnStepProcess_0() throws Exception {
-    // 		Step3->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "doSave", this);
+    // 		create->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "createRole", this);
+    }
+    public void export_OnStepProcess_0() throws Exception {
+    // 		export->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "exportRole", this);
+    }
+    public void delete_OnStepProcess_0() throws Exception {
+    // 		delete->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "deleteRole", this);
+    }
+    public void import_OnStepProcess_0() throws Exception {
+    // 		import->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "importRole", this);
     }
 
 }

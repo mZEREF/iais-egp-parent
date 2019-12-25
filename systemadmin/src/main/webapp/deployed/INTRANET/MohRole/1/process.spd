@@ -14,29 +14,83 @@
     <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="create" x="600" y="110">
+  <AutomaticStep defClass="" executor="" icon="" name="edit" x="720" y="50">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="edit_OnStepProcess_0" name="edit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="view" x="720" y="120">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="view_OnStepProcess_0" name="view_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="create" x="720" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="create_OnStepProcess_0" name="create_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step3" x="730" y="230">
+  <AutomaticStep defClass="" executor="" icon="" name="Step7" x="920" y="350">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="step3_OnStepProcess_0" name="step3_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="step7_OnStepProcess_0" name="step7_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="search" x="710" y="280">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="search_OnStepProcess_0" name="search_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="export" x="720" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="export_OnStepProcess_0" name="export_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="delete" x="720" y="420">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="delete_OnStepProcess_0" name="delete_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="import" x="720" y="500">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="import_OnStepProcess_0" name="import_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="roles" stageIndicator="" x="440" y="110">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="roles" stageIndicator="" x="420" y="110">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="createRole" stageIndicator="" x="720" y="110">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="900" y="200">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="viewPAge" stageIndicator="" x="900" y="110">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="editPage" stageIndicator="" x="890" y="40">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -49,23 +103,90 @@
    <position>{(120,120)(300,130)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/roles" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
-   <position>{(300,130)(460,130)}</position>
+   <position>{(300,130)(440,130)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/create" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/roles" style="rectanular">
-   <position>{(460,130)(620,130)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/type" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/roles" style="rectanular">
+   <position>{(440,130)(580,130)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/createRole" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/create" style="rectanular">
-   <position>{(620,130)(740,130)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/edit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/type" style="rectanular">
+   <position>{(580,130)(740,70)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step3" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/createRole" style="rectanular">
-   <position>{(740,130)(750,250)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/view" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/type" style="rectanular">
+   <position>{(580,130)(740,140)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step3" style="rectanular">
-   <position>{(750,250)(325,325)(300,130)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/create" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/type" style="rectanular">
+   <position>{(580,130)(740,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/create" style="rectanular">
+   <position>{(740,220)(920,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step7" style="rectanular">
+   <position>{(940,370)(531,611)(262,519)(300,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/export" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/type" style="rectanular">
+   <position>{(580,130)(740,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/search" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/type" style="rectanular">
+   <position>{(580,130)(730,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step7" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/search" style="rectanular">
+   <position>{(730,300)(940,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step7" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/export" style="rectanular">
+   <position>{(740,380)(940,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/delete" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/type" style="rectanular">
+   <position>{(580,130)(740,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step7" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/delete" style="rectanular">
+   <position>{(740,440)(940,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/import" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/type" style="rectanular">
+   <position>{(580,130)(740,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step7" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/import" style="rectanular">
+   <position>{(740,520)(940,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page1" style="rectanular">
+   <position>{(920,220)(1080,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step7" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1080,270)(940,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1080,270)(371,661)(300,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/editPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/edit" style="rectanular">
+   <position>{(740,70)(910,60)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/viewPAge" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/view" style="rectanular">
+   <position>{(740,140)(920,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/editPage" style="rectanular">
+   <position>{(910,60)(1080,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/viewPAge" style="rectanular">
+   <position>{(920,130)(1080,270)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
- <Switches/>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/create" executor="" icon="" leftOperand="crud_action_type" name="type" x="560" y="110">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/edit" value="&quot;editRole&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/view" value="&quot;viewRole&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/create" value="&quot;saveRole&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/export" value="&quot;export&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/search" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/delete" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/import" value="&quot;import&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Step7" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="1060" y="250">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Step7" value="&quot;saveRole&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Step2" value="&quot;cancel&quot;"/>
+  </Switch>
+ </Switches>
  <Branches/>
  <Merges/>
  <StudioLabels/>

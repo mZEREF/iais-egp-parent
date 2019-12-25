@@ -27,45 +27,45 @@
         <input id="roleID" size="30" type="text" value="" name="roleID">
       </div>
     </div>
-      <div class="form-group">
-        <label class="col-xs-12 col-md-4 control-label">Role Name</label>
-        <div class="col-xs-8 col-sm-6 col-md-5">
-          <input id="roleName" size="30" type="text" value="" name="roleName">
+    <div class="form-group">
+      <label class="col-xs-12 col-md-4 control-label">Role Name</label>
+      <div class="col-xs-8 col-sm-6 col-md-5">
+        <input id="roleName" size="30" type="text" value="" name="roleName">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-xs-12 col-md-4 control-label">remakes</label>
+      <div class="col-xs-8 col-sm-6 col-md-5">
+        <input id="remakes" size="30" type="text" value="" name="remakes">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-xs-12 col-md-4 control-label">tag</label>
+      <div class="col-xs-8 col-sm-6 col-md-5">
+        <input id="tag" size="30" type="text" value="" name="roleTag">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-6">
+      </div>
+      <div class="col-md-2">
+        <div class="components">
+          <a class="btn btn-secondary" data-toggle="collapse" data-target="#advfilter" id="cancel">cancel</a>
         </div>
       </div>
-      <div class="form-group">
-        <label class="col-xs-12 col-md-4 control-label">remakes</label>
-        <div class="col-xs-8 col-sm-6 col-md-5">
-          <input id="remakes" size="30" type="text" value="" name="remakes">
+      <div class="col-md-2">
+        <div class="components">
+          <a class="btn btn-secondary" data-toggle="collapse" data-target="#advfilter" id="save">save</a>
         </div>
       </div>
-      <div class="form-group">
-        <label class="col-xs-12 col-md-4 control-label">tag</label>
-        <div class="col-xs-8 col-sm-6 col-md-5">
-          <input id="tag" size="30" type="text" value="" name="roleTag">
+      <div class="col-md-1">
+        <div class="components">
+          <a class="btn btn-secondary" data-toggle="collapse" data-target="#advfilter" id="clear">clear</a>
         </div>
       </div>
-      <div class="form-group">
-        <div class="col-md-6">
-        </div>
-        <div class="col-md-2">
-          <div class="components">
-            <a class="btn btn-secondary" data-toggle="collapse" data-target="#advfilter" id="cancel">cancel</a>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <div class="components">
-            <a class="btn btn-secondary" data-toggle="collapse" data-target="#advfilter" id="save">save</a>
-          </div>
-        </div>
-        <div class="col-md-1">
-          <div class="components">
-            <a class="btn btn-secondary" data-toggle="collapse" data-target="#advfilter" id="clear">clear</a>
-          </div>
-        </div>
-      </div>
+    </div>
 
-    </form>
+  </form>
 
 </div>
 

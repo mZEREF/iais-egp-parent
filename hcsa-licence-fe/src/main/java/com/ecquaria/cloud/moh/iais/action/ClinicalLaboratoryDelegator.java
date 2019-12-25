@@ -820,6 +820,13 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
         Map<String,String> map=new HashMap<>();
         String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
+
+
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
+
         if("next".equals(crud_action_additional)){
             map = NewApplicationDelegator.doValidatePo(bpc.request);
         }
@@ -829,13 +836,6 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(map));
             return;
         }
-
-        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
-        appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
-        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
-
-
 
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
     }
@@ -1035,9 +1035,10 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doServicePersonnel (BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doServicePersonnel start ...."));
-
+        Map<String ,String >errorMap=new HashMap<>();
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
@@ -1057,13 +1058,87 @@ public class ClinicalLaboratoryDelegator {
 
         }
 
-
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
 
+        String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if(!StringUtil.isEmpty(nextStep)){
+            doValidatetionServicePerson(errorMap,appSvcPersonnelDtos);
+        }
+        if(!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,HcsaLicenceFeConstant.NUCLEARMEDICINEIMAGING);
+            return;
+        }
         log.debug(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
 
+    private void doValidatetionServicePerson(Map <String,String> errorMap,List<AppSvcPersonnelDto> appSvcPersonnelDtos){
 
+        for(int i=0;i<appSvcPersonnelDtos.size();i++){
+            String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelSel();
+            if("Registered Nurse".equals(personnelSel)){
+                String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if(StringUtil.isEmpty(name)){
+                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(profRegNo)){
+                    errorMap.put("regnNo"+i,"UC_CHKLMD001_ERR001");
+                }
+            }
+            if("Radiology Professional".equals(personnelSel)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                String designation = appSvcPersonnelDtos.get(i).getDesignation();
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                String qualification = appSvcPersonnelDtos.get(i).getQuaification();
+
+                if(StringUtil.isEmpty(name)){
+                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(designation)){
+                    errorMap.put("designation"+i,"UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(wrkExpYear)){
+                    errorMap.put("wrkExpYear"+i,"UC_CHKLMD001_ERR001");
+                }else {
+                    if(!wrkExpYear.matches("^[0-9]*$")){
+                        errorMap.put("wrkExpYear"+i,"CHKLMD001_ERR003");
+                    }
+                }
+                if(StringUtil.isEmpty(qualification)){
+                    errorMap.put("qualification"+i,"UC_CHKLMD001_ERR001");
+                }
+            }
+
+            if("Medical Physicist".equals(personnelSel)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                String quaification = appSvcPersonnelDtos.get(i).getQuaification();
+                if(StringUtil.isEmpty(name)){
+                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }
+                if(StringUtil.isEmpty(wrkExpYear)){
+                    errorMap.put("wrkExpYear"+i,"UC_CHKLMD001_ERR001");
+                }
+                else {
+                    if(!wrkExpYear.matches("^[0-9]*$")){
+                        errorMap.put("wrkExpYear"+i,"CHKLMD001_ERR003");
+                    }
+                }
+                if(StringUtil.isEmpty(quaification)){
+                    errorMap.put("quaification"+i,"UC_CHKLMD001_ERR001");
+                }
+            }
+            if("Radiation Safety Officer".equals(personnelSel)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if(StringUtil.isEmpty(name)){
+                    errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                }
+            }
+
+        }
+
+    }
 
     /**
      * ajax
@@ -1227,21 +1302,24 @@ public class ClinicalLaboratoryDelegator {
         appSvcPrincipalOfficersDtos.add(poDto);
         if("1".equals(deputySelect)){
             String deputySalutation = ParamUtil.getString(request, "deputySalutation");
+            String deputyDesignation = ParamUtil.getString(request, "deputyDesignation");
             String deputyName = ParamUtil.getString(request, "deputyName");
             String deputyIdType = ParamUtil.getString(request, "deputyIdType");
             String deputyIdNo = ParamUtil.getString(request, "deputyIdNo");
             String deputyMobileNo = ParamUtil.getString(request, "deputyMobileNo");
-            String deputyEmailAddress = ParamUtil.getString(request, "deputyEmailAddress");
-            String modeOfMedAlert = ParamUtil.getString(request, "modeOfMedAlert");
 
+            String modeOfMedAlert = ParamUtil.getString(request, "modeOfMedAlert");
+            String deputyEmailAddr = ParamUtil.getString(request, "deputyEmailAddr");
             AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
             dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+            dpoDto.setDesignation(deputyDesignation);
+            dpoDto.setEmailAddr(deputyEmailAddr);
             dpoDto.setSalutation(deputySalutation);
             dpoDto.setName(deputyName);
             dpoDto.setIdType(deputyIdType);
             dpoDto.setIdNo(deputyIdNo);
             dpoDto.setMobileNo(deputyMobileNo);
-            dpoDto.setEmailAddr(deputyEmailAddress);
+
             dpoDto.setModeOfMedAlert(modeOfMedAlert);
             appSvcPrincipalOfficersDtos.add(dpoDto);
         }
