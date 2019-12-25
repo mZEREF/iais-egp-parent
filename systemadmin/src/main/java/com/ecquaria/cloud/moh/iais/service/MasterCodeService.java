@@ -11,5 +11,6 @@ public interface MasterCodeService {
     MasterCodeDto updateMasterCode(MasterCodeDto masterCode);
     void deleteMasterCodeById(String id);
     MasterCodeDto findMasterCodeByMcId(String masterCodeId);
-    String findMasterCodeByDescription(String description);
+    String findCodeCategoryByDescription(String description);
+    String findCodeKeyByDescription(String description);
 }

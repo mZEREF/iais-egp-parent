@@ -63,7 +63,15 @@ public class MasterCodeClientFallback implements MasterCodeClient{
     }
 
     @Override
-    public FeignResponseEntity<String> getMasterCodeByDescription(String description) {
+    public FeignResponseEntity<String> getCodeCategoryByDescription(String description) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> getCodeKeyByDescription(String description) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

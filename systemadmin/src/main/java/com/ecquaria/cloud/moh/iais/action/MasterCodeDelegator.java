@@ -1,11 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.mastercode.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -127,7 +125,7 @@ public class MasterCodeDelegator {
         Map<String,Object> masterCodeMap = new HashMap<>();
 
         if (!StringUtil.isEmpty(categoryDescription)){
-            String codeCategory = masterCodeService.findMasterCodeByDescription(categoryDescription);
+            String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
             masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY,codeCategory);
         }
         if(!StringUtil.isEmpty(codeStatus)){
@@ -187,7 +185,7 @@ public class MasterCodeDelegator {
             String masterCodeId = ParamUtil.getString(bpc.request,MasterCodeConstants.CRUD_ACTION_VALUE);
             if("doDeactivate".equals(action)){
                 MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
-                String codeCategory = masterCodeService.findMasterCodeByDescription(masterCodeDto.getCodeCategory());
+                String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
                 masterCodeDto.setCodeCategory(codeCategory);
                 masterCodeDto.setStatus("CMSTAT003");
                 masterCodeService.updateMasterCode(masterCodeDto);
@@ -267,10 +265,7 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request, MasterCodeConstants.ISVALID, MasterCodeConstants.NO);
             return;
         }
-
-
-
-        String codeCategory = masterCodeService.findMasterCodeByDescription(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_CATEGORY));
+        String codeCategory = masterCodeService.findCodeCategoryByDescription(ParamUtil.getString(request,MasterCodeConstants.MASTER_CODE_CATEGORY));
         masterCodeDto.setCodeCategory(codeCategory);
         masterCodeService.updateMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.YES);

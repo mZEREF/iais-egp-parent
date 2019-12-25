@@ -133,9 +133,28 @@
                 and item.regulation_id = regulation.id and item.status = 'cmstat001'
                 <#if itemid??> item.id in(:itemid)</#if>
         ]]>
-
     </sql>
 
+    <sql key="templatesQuery"  remarks="QUERY MESSAGE TEMPLATE">
+        <![CDATA[
+            SELECT
+                id,
+                message_type,
+                template_name,
+                message_content,
+                delivery_mode,
+                effective_from,
+                effective_to
+            FROM message_template
+            WHERE 1=1
+            <#if id??> and charindex(:id, id) >0</#if>
+            <#if msgType??> AND message_type = :msgType</#if>
+            <#if templateName??> AND template_name = :templateName</#if>
+            <#if deliveryMode??> AND delivery_mode = :deliveryMode</#if>
+            <#if esd??> AND effective_from > :esd</#if>
+            <#if eed??> AND effective_to < :eed</#if>
+        ]]>
+    </sql>
 
 </sqls>
 
