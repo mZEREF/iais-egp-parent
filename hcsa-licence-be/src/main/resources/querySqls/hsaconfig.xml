@@ -68,6 +68,32 @@
 
     </sql>
 
+    <sql key="getPrefInspPeriodList"  remarks="Get Pref InspPeriod List, week">
+        <![CDATA[
+                select
+                T1.ID AS ID,
+                T2.SVC_NAME AS SVC_NAME,
+                T2.SVC_TYPE AS SVC_TYPE,
+                T1.SERVICE_CODE AS SERVICE_CODE ,
+                T1.PERIOD_AFTER_APP / 7 AS PERIOD_AFTER_APP,
+                T1.PERIOD_BEFORE_EXP / 7 AS PERIOD_BEFORE_EXP,
+                T1.NON_REPLY_WINDOW AS NON_REPLY_WINDOW,
+                T1.STATUS,
+                T1.VERSION
+                from hcsa_service_pref_insp_period T1, hcsa_service T2
+                WHERE T1.STATUS = 'CMSTAT001' AND T2.STATUS = 'CMSTAT001' AND T1.SERVICE_CODE = T2.SVC_CODE
+                <#if id??> AND T1.ID = :id</#if>
+                <#if svcName??> AND T2.SVC_NAME = :svcName</#if>
+                <#if svcType??> AND T2.SVC_TYPE = :svcType</#if>
+                <#if svcCode??> AND T1.SERVICE_CODE = :svcCode</#if>
+                <#if periodAfterApp??> AND T1.PERIOD_AFTER_APP = :periodAfterApp</#if>
+                <#if periodBeforeExp??> AND T1.PERIOD_BEFORE_EXP = :periodBeforeExp</#if>
+                <#if nonReplyWindow??> AND T1.NON_REPLY_WINDOW = :nonReplyWindow</#if>
+        ]]>
+
+    </sql>
+
+
 
 </sqls>
 

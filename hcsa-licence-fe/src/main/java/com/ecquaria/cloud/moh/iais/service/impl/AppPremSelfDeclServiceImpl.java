@@ -53,11 +53,15 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     private List<AppSvcPremisesScopeDto> premScopeList;
 
+    private List<String> svcCodeList;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
 
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
+
+
 
     /**
     * @author: yichen 
@@ -135,8 +139,8 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             String svcId = app.getServiceId();
             HcsaServiceDto hcsa = appConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
             String svcCode = hcsa.getSvcCode();
-            String svcName = hcsa.getSvcName();
 
+            String svcName = hcsa.getSvcName();
             List<PremCheckItem> premItemList = new ArrayList<>();
 
             Map<String, List<PremCheckItem>> premAnswerMap = new HashMap<>(16);
