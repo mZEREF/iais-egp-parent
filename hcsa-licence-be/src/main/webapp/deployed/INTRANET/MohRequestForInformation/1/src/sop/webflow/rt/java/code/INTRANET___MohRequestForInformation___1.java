@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohRequestForInformation___1 extends BaseProcessClass {
@@ -89,6 +90,11 @@ public class INTRANET___MohRequestForInformation___1 extends BaseProcessClass {
 	public void doCancel_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doCancel", this);
 // 		doCancel->OnStepProcess
+	}
+
+	public void doAccept_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doAccept", this);
+// 		doAccept->OnStepProcess
 	}
 
 	

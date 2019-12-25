@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
@@ -16,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,10 @@ public class RequestForInformationDelegator {
     RequestForInformationService requestForInformationService;
     @Autowired
     InspEmailService inspEmailService;
+    @Autowired
+    ApplicationViewService applicationViewService;
+
+
     FilterParameter licenceParameter = new FilterParameter.Builder()
             .clz(RfiLicenceQueryDto.class)
             .searchAttr("licParam")
@@ -329,6 +335,11 @@ public class RequestForInformationDelegator {
 
     public void preReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>preReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String appNo = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        ApplicationDto applicationDto=applicationViewService.getApplicaitonByAppNo(appNo);
+        String licenceId=applicationDto.getLicenceId();
+
         // 		preReqForInfo->OnStepProcess
     }
 
@@ -347,5 +358,9 @@ public class RequestForInformationDelegator {
     public void doCancel(BaseProcessClass bpc) {
         log.info("=======>>>>>doCancel>>>>>>>>>>>>>>>>requestForInformation");
         // 		doCancel->OnStepProcess
+    }
+    public void doAccept(BaseProcessClass bpc) {
+        log.info("=======>>>>>doAccept>>>>>>>>>>>>>>>>requestForInformation");
+        // 		doAccept->OnStepProcess
     }
 }

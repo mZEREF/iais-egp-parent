@@ -14,7 +14,7 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <div class="main-content">
-        <br><br><br><br><br>
+        <br><br><br>
         <div class="container">
             <div class="col-xs-12">
                 <div class="components">
@@ -57,7 +57,10 @@
                                                                 <td><c:out value="${pool.hciCode}"/></td>
                                                                 <td>
                                                                     <iais:action style="text-align:center;">
-                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo();" >Cancel</button>
+                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doCancel('${pool.licenceNo}');" >Cancel</button>
+                                                                    </iais:action>
+                                                                    <iais:action style="text-align:center;">
+                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doAccept('${pool.licenceNo}');" >Accept</button>
                                                                     </iais:action>
                                                                 </td>
                                                             </tr>
@@ -95,20 +98,20 @@
                                                                 <iais:field value="message/instructions"/>
                                                                 <iais:value width="18">
                                                                     <label>
-                                                                        <input type="text" name="message_or_instructions" value="${searchNo}" />
+                                                                        <textarea name="message_instructions"></textarea>
                                                                     </label>
                                                                 </iais:value>
                                                             </iais:row>
                                                             <iais:row>
                                                                 <iais:value width="18">
                                                                     <label>
-                                                                        <input type="radio" name="licence_no"  />need to upload file
+                                                                        <input type="checkbox" name="need_doc"  />Need to upload file
                                                                     </label>
                                                                 </iais:value>
                                                             </iais:row>
                                                             <iais:action style="text-align:center;">
-                                                                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicSearch()">Remind</button>
-                                                                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doLicBack()">Submit Request</button>
+                                                                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doRemind()">Remind</button>
+                                                                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSubmit()">Submit Request</button>
                                                             </iais:action>
                                                         </iais:section>
                                                     </div>
@@ -128,3 +131,17 @@
         </div>
     </div>
 </form>
+<script type="text/javascript">
+    function doRemind(){
+        SOP.Crud.cfxSubmit("mainForm", "remind");
+    }
+    function doAccept(appNo) {
+        SOP.Crud.cfxSubmit("mainForm", "accept",appNo);
+    }
+    function doCancel(appNo) {
+        SOP.Crud.cfxSubmit("mainForm", "cancel",appNo);
+    }
+    function doSubmit() {
+        SOP.Crud.cfxSubmit("mainForm", "submit");
+    }
+</script>
