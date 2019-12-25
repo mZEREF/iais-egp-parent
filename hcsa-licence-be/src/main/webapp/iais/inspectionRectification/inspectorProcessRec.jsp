@@ -96,7 +96,7 @@
         $("#indicateCondRemarks").hidden;
     })
 
-    function submit(action){
+    function inspectorProRecSubmit(action){
         $("[name='InspectorProRectificationType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
         mainPoolForm.submit();
@@ -104,7 +104,7 @@
 
     function doInspectorProRecBack() {
         $("#actionValue").val('back');
-        submit('back');
+        inspectorProRecSubmit('back');
     }
 
     function doInspectorProRecChange(value) {
@@ -120,13 +120,13 @@
         var processDec = $("#processDec").val();
         if("REDECI006" == processDec){
             $("#actionValue").val('accept');
-            submit("accept");
+            inspectorProRecSubmit("accept");
         } else if ("REDECI001" == processDec){
             $("#actionValue").val('request');
-            submit("request");
+            inspectorProRecSubmit("request");
         } else if("REDECI007" == processDec) {
             $("#actionValue").val('acccond');
-            submit("acccond");
+            inspectorProRecSubmit("acccond");
         } else {
             var errMsg = 'The field is mandatory.';
             $("#error_selectValue").text(errMsg);
