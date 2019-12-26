@@ -1075,7 +1075,7 @@ public class ClinicalLaboratoryDelegator {
     private void doValidatetionServicePerson(Map <String,String> errorMap,List<AppSvcPersonnelDto> appSvcPersonnelDtos){
 
         for(int i=0;i<appSvcPersonnelDtos.size();i++){
-            String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelSel();
+            String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
             if("Registered Nurse".equals(personnelSel)){
                 String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
                 String name = appSvcPersonnelDtos.get(i).getName();
@@ -1540,7 +1540,7 @@ public class ClinicalLaboratoryDelegator {
             for(int i =0; i <personnelSels.length; i++){
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
                 String personnelSel = personnelSels[i];
-                appSvcPersonnelDto.setPersonnelSel(personnelSel);
+                appSvcPersonnelDto.setPersonnelType(personnelSel);
                 if(StringUtil.isEmpty(personnelSel)){
                     appSvcPersonnelDtos.add(appSvcPersonnelDto);
                     continue;
