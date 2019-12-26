@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcSpecificPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
@@ -39,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SuperLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -465,6 +468,12 @@ public class LicenceApproveBatchjob {
                 //do not need create in the Dto
                 //todo:lic_base_specified_correlation
                 //
+
+                //create LicSvcSpecificPersonnelDto
+                List<AppSvcPersonnelDto> appSvcPersonnelDtos = applicationListDto.getAppSvcPersonnelDtos();
+                List<LicSvcSpecificPersonnelDto> licSvcSpecificPersonnelDtos = getLicSvcSpecificPersonnelDtos(appSvcPersonnelDtos);
+                superLicDto.setLicSvcSpecificPersonnelDtos(licSvcSpecificPersonnelDtos);
+
                 superLicDtos.add(superLicDto);
             }
             licenceGroupDto.setSuperLicDtos(superLicDtos);
@@ -479,6 +488,18 @@ public class LicenceApproveBatchjob {
         log.debug(StringUtil.changeForLog("The generateLIcence is end ..."));
         return result;
     }
+
+    private List<LicSvcSpecificPersonnelDto> getLicSvcSpecificPersonnelDtos(List<AppSvcPersonnelDto> appSvcPersonnelDtos){
+        List<LicSvcSpecificPersonnelDto> result = new ArrayList<>();
+        if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)){
+           for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtos){
+               LicSvcSpecificPersonnelDto licSvcSpecificPersonnelDto = MiscUtil.transferEntityDto(appSvcPersonnelDto,LicSvcSpecificPersonnelDto.class);
+               result.add(licSvcSpecificPersonnelDto);
+           }
+        }
+        return  result;
+    }
+
 
     private List<PremisesGroupDto> getPremisesGroupDto(List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,
                                                        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,
