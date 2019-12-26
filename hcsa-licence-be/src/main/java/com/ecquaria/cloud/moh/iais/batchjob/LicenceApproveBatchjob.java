@@ -129,6 +129,9 @@ public class LicenceApproveBatchjob {
         //if create licence success
         //todo:update the success application group.
            if(success.size() > 0){
+               //get the application
+               List<ApplicationDto> applicationDtos =getApplications(licenceGroupDtos);
+               //
                EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
                eventApplicationGroupDto.setEventRefNo(eventRefNo);
                eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
@@ -147,7 +150,26 @@ public class LicenceApproveBatchjob {
 
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
     }
-
+   private List<ApplicationDto> getApplications(List<LicenceGroupDto> licenceGroupDtos){
+       List<ApplicationDto> result = new ArrayList<>();
+       if(licenceGroupDtos!=null && licenceGroupDtos.size() > 0){
+         for (LicenceGroupDto licenceGroupDto : licenceGroupDtos){
+             List<SuperLicDto>  superLicDtos =  licenceGroupDto.getSuperLicDtos();
+             if(superLicDtos!=null && superLicDtos.size() > 0){
+               for (SuperLicDto superLicDto : superLicDtos){
+                   LicenceDto licenceDto = superLicDto.getLicenceDto();
+                   if(licenceDto!=null){
+                       List<ApplicationDto> applicationDtos = licenceDto.getApplicationDtos();
+                       if(applicationDtos!=null && applicationDtos.size() >0){
+                           result.addAll(applicationDtos);
+                       }
+                   }
+               }
+             }
+         }
+       }
+       return  result;
+   }
     private List<ApplicationGroupDto> updateStatusToGenerated(List<ApplicationGroupDto> applicationGroupDtos){
         List<ApplicationGroupDto> result = new ArrayList<>();
         for(ApplicationGroupDto applicationGroupDto : applicationGroupDtos){
@@ -235,8 +257,9 @@ public class LicenceApproveBatchjob {
                     errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() + ":" + yearLength;
                     break;
                 }
+                List<ApplicationDto> applicationDtos =  getApplicationDtos(applicationListDtos);
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,
-                        applicationListDtos.get(0).getApplicationDto().getOriginLicenceId(),organizationId);
+                        applicationDtos.get(0).getOriginLicenceId(),organizationId,null,applicationDtos);
                 superLicDto.setLicenceDto(licenceDto);
                 //
                 List<PremisesGroupDto> premisesGroupDtos = new ArrayList<>();
@@ -323,6 +346,15 @@ public class LicenceApproveBatchjob {
        return result;
     }
 
+    private List<ApplicationDto> getApplicationDtos(List<ApplicationListDto> applicationListDtos){
+        List<ApplicationDto> result = new ArrayList<>();
+        if(applicationListDtos!=null && applicationListDtos.size() > 0){
+            for (ApplicationListDto applicationListDto : applicationListDtos){
+                result.add(applicationListDto.getApplicationDto());
+            }
+        }
+        return  result;
+    }
 
     private GenerateResult generateLIcence(ApplicationLicenceDto applicationLicenceDto,List<HcsaServiceDto> hcsaServiceDtos){
         log.debug(StringUtil.changeForLog("The generateLIcence is start ..."));
@@ -395,7 +427,7 @@ public class LicenceApproveBatchjob {
                     break;
                 }
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,
-                        applicationDto.getOriginLicenceId(),organizationId);
+                        applicationDto.getOriginLicenceId(),organizationId,applicationDto,null);
                 superLicDto.setLicenceDto(licenceDto);
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = new ArrayList<>();
@@ -735,7 +767,9 @@ public class LicenceApproveBatchjob {
     }
 
     private LicenceDto getLicenceDto(String licenceNo,String svcName,ApplicationGroupDto applicationGroupDto,
-                                     int yearLength,String originLicenceId,String organizationId){
+                                     int yearLength,String originLicenceId,String organizationId,
+                                     ApplicationDto applicationDto,
+                                     List<ApplicationDto> applicationDtos){
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setLicenceNo(licenceNo);
         licenceDto.setSvcName(svcName);
@@ -756,6 +790,14 @@ public class LicenceApproveBatchjob {
         //todo:Judge the licence status
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
         licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+        List<ApplicationDto> applicationDtos1 =  new ArrayList<>();
+        if(applicationDto!=null){
+            applicationDtos1.add(applicationDto);
+        }
+        if(applicationDtos!=null){
+            applicationDtos1.addAll(applicationDtos);
+        }
+        licenceDto.setApplicationDtos(applicationDtos1);
         return licenceDto;
     }
     private String getOrganizationIdBylicenseeId(String licenseeId){
