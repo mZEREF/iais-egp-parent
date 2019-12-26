@@ -20,7 +20,64 @@
                             <h2>Create Intranet User</h2>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label" for="userId">User ID.</label>
+                            <span style="color:red">*</span>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input id="userId" type="text" name="userId">
+                                    <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name.</label>
+                            <span style="color:red">*</span>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input id="displayName" type="text" name="displayName">
+                                    <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label" for="startDate">Account Activation Start.</label>
+                            <span style="color:red">*</span>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:datePicker id="startDate" name="startDate"/>
+                                    <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End.</label>
+                            <span style="color:red">*</span>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:datePicker id="endDate" name="endDate"/>
+                                    <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">Salutation.</label>
+                            <span style="color:red">*</span>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <select name="salutation">
+                                        <option>---Please Select---</option>
+                                        <option value="Mr">Mr</option>
+                                        <option value="Ms">Ms</option>
+                                        <option value="Mrs">Mrs</option>
+                                        <option value="Mdm">Mdm</option>
+                                        <option value="Dr">Dr</option>
+                                    </select>
+                                </div>
+                            </iais:value>
+                        </div>
+                        <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name.</label>
+                            <span style="color:red">*</span>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="firstName" type="text" name="firstName">

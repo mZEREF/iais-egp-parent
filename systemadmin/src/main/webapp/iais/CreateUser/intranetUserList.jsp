@@ -34,6 +34,7 @@
                             <h2>Master Code View</h2>
                         </div>
                         <%@ include file="doSearch.jsp" %>
+                        <%@ include file="userList.jsp" %>
                     </div>
                 </div>
             </div>

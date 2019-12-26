@@ -377,7 +377,12 @@
             </div>
         </div>
     </div>
-    <button type="submit">confirm</button>
+    <div align="right">
+        <button id="submitButton" type="submit" class="btn btn-primary">
+            Submit
+        </button>
+    </div>
+<%--    <button type="submit">confirm</button>--%>
 </form>
 
 <script type="text/javascript">

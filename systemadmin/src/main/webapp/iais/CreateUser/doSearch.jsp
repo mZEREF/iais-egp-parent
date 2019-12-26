@@ -72,7 +72,7 @@
             <div class="application-tab-footer">
                 <div class="row">
                     <div class="col-xs-12 col-md-12">
-                        <div class="text-right"><a class="btn btn-primary" id="MC_Search">Search</a></div>
+                        <div class="text-right"><a class="btn btn-primary" id="IU_Search">Search</a></div>
                     </div>
                 </div>
             </div>
