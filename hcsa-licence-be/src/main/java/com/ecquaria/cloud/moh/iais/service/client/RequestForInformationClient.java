@@ -36,7 +36,7 @@ public interface RequestForInformationClient {
     @GetMapping(value = "/hcsa-reqForInfo/licence-search-rfi/{licPremId}")
     FeignResponseEntity<List<LicPremisesReqForInfoDto>> searchLicPremisesReqForInfo(@PathVariable("licPremId")String licPremId);
 
-    @DeleteMapping(value = "/hcsa-reqForInfo/licence-cancel-rfi")
+    @DeleteMapping(value = "/hcsa-reqForInfo/licence-cancel-rfi",consumes = MediaType.APPLICATION_JSON_VALUE)
     void deleteLicPremisesReqForInfo(@RequestBody String id);
 
     @PostMapping(value = "/hcsa-reqForInfo/licence-accept-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)

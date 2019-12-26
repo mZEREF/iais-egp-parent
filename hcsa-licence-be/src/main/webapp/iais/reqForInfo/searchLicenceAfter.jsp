@@ -87,7 +87,6 @@
                                 <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="ADDRESS" value=" Address"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="LICENSEE_NAME" value="Licensee NAME"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="SERVICE_NAME" value="Service NAME"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"></iais:sortableHeader>
@@ -113,7 +112,6 @@
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
-                                            <td><c:out value="${pool.licenseeName}"/></td>
                                             <td><c:out value="${pool.serviceName}"/></td>
                                             <td><fmt:formatDate value="${pool.startDate}" pattern="dd/MM/yyyy" />-<fmt:formatDate value="${pool.expiryDate}" pattern="dd/MM/yyyy" /></td>
                                             <td><c:out value="${pool.licenceStatus}"/></td>
@@ -155,9 +153,9 @@
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }
-    function doReqForInfo(appNo) {
+    function doReqForInfo(licPremId) {
 
-        SOP.Crud.cfxSubmit("mainForm", "reqForInfo",appNo);
+        SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
     }
     function doAppInfo() {
         SOP.Crud.cfxSubmit("mainForm", "appInfo");

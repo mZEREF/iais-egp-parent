@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformat
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
@@ -306,16 +305,16 @@ public class RequestForInformationDelegator {
     public void doSearchLicenceAfter(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchLicenceAfter>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String appNo = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setRequestAttr(request,"appNo",appNo);
+        String licPremId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        ParamUtil.setSessionAttr(request,"licPremId",licPremId);
         // 		doSearchLicenceAfter->OnStepProcess
     }
 
     public void doSearchApplicationAfter(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchApplicationAfter>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String appNo = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setRequestAttr(request,"appNo",appNo);
+        String licPremId = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        ParamUtil.setSessionAttr(request,"licPremId",licPremId);
 // 		doSearchApplicationAfter->OnStepProcess
     }
 
@@ -329,32 +328,13 @@ public class RequestForInformationDelegator {
     public void preReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>preReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String licenceId;
-        String appNo = ParamUtil.getRequestString(request, "appNo");
-        if(!StringUtil.isEmpty(appNo)){
-            ApplicationDto applicationDto=applicationViewService.getApplicaitonByAppNo(appNo);
-            licenceId=applicationDto.getLicenceId();
-        }else {
-            licenceId= (String) ParamUtil.getSessionAttr(request,"licenceId");
-        }
-        String licPremId;
+        String licPremId = (String) ParamUtil.getSessionAttr(request, "licPremId");
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList=new ArrayList<>();
-        licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licenceId);
+        licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremId);
 
-        List<SelectOption> selectOptions=new ArrayList<>();
-        SelectOption selectOption=new SelectOption();
-        selectOption.setValue(RequestForInformationConstants.REQUEST_FOR_SUPPORTING_DOCUMENTS);
-        selectOption.setText(RequestForInformationConstants.REQUEST_FOR_SUPPORTING_DOCUMENTS);
-        selectOptions.add(selectOption);
-        selectOption.setValue(RequestForInformationConstants.REQUEST_FOR_INFORMATION);
-        selectOption.setText(RequestForInformationConstants.REQUEST_FOR_INFORMATION);
-        selectOptions.add(selectOption);
-        selectOption.setValue(RequestForInformationConstants.OTHERS);
-        selectOption.setText(RequestForInformationConstants.OTHERS);
-        selectOptions.add(selectOption);
+        List<SelectOption> selectOptions=MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.REQUEST_FOR_SUPPORTING_DOCUMENTS,RequestForInformationConstants.REQUEST_FOR_INFORMATION,RequestForInformationConstants.OTHERS});
 
         ParamUtil.setRequestAttr(request,"selectOptions", selectOptions);
-        ParamUtil.setSessionAttr(request,"licenceId", licenceId);
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoList);
 
 
@@ -363,44 +343,47 @@ public class RequestForInformationDelegator {
 
     public void doReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>doReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
+        String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        ParamUtil.setRequestAttr(bpc.request,"reqInfoId",reqInfoId);
         // 		doReqForInfo->OnStepProcess
     }
     public void doCreateRequest(BaseProcessClass bpc) {
         log.info("=======>>>>>doCreateRequest>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String licenceId= (String) ParamUtil.getSessionAttr(request,"licenceId");
+        String licPremId = (String) ParamUtil.getSessionAttr(request, "licPremId");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
         licPremisesReqForInfoDto.setReqType(ParamUtil.getString(request,"Select_category"));
         licPremisesReqForInfoDto.setOfficerRemarks(ParamUtil.getString(request,"message_instructions"));
-        licPremisesReqForInfoDto.setLicPremId(licenceId);
+        licPremisesReqForInfoDto.setLicPremId(licPremId);
         String isNeed=ParamUtil.getString(request,"need_doc");
-        byte isNeedDoc;
-        if("true".equals(isNeed)){
-            isNeedDoc=1;
+        boolean isNeedDoc;
+        if( "true".equals(isNeed)){
+            isNeedDoc=true;
         }
         else {
-            isNeedDoc=0;
+            isNeedDoc=false;
         }
         licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
+        requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
         // 		doCreateRequest->OnStepProcess
     }
     public void doRemind(BaseProcessClass bpc) {
         log.info("=======>>>>>doRemind>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String licenceId= (String) ParamUtil.getSessionAttr(request,"licenceId");
+        String licPremId = (String) ParamUtil.getSessionAttr(request, "licPremId");
 
         // 		doRemind->OnStepProcess
     }
     public void doCancel(BaseProcessClass bpc) {
         log.info("=======>>>>>doCancel>>>>>>>>>>>>>>>>requestForInformation");
-        String id = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String id = (String) ParamUtil.getRequestAttr(bpc.request, "reqInfoId");
         requestForInformationService.deleteLicPremisesReqForInfo(id);
         // 		doCancel->OnStepProcess
     }
     public void doAccept(BaseProcessClass bpc) {
         log.info("=======>>>>>doAccept>>>>>>>>>>>>>>>>requestForInformation");
-        String id = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String id = (String) ParamUtil.getRequestAttr(bpc.request, "reqInfoId");
         requestForInformationService.acceptLicPremisesReqForInfo(id);
         // 		doAccept->OnStepProcess
     }

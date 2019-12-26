@@ -157,8 +157,8 @@
         $('input[name="to_date"]').val("");
         $('input[name="sub_date"]').val("");
     }
-    function doReqForInfo(appNo) {
-        SOP.Crud.cfxSubmit("mainForm", "reqForInfo",appNo);
+    function doReqForInfo(licPremId) {
+        SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
     }
     function doAppInfo() {
         SOP.Crud.cfxSubmit("mainForm", "appInfo");

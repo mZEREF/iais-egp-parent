@@ -57,10 +57,10 @@
                                                                 <td><c:out value="${pool.docName}"/></td>
                                                                 <td>
                                                                     <iais:action style="text-align:center;">
-                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doCancel('${pool.licPremId}');" >Cancel</button>
+                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doCancel('${pool.reqInfoId}');" >Cancel</button>
                                                                     </iais:action>
                                                                     <iais:action style="text-align:center;">
-                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doAccept('${pool.licPremId}');" >Accept</button>
+                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doAccept('${pool.reqInfoId}');" >Accept</button>
                                                                     </iais:action>
                                                                 </td>
                                                             </tr>
@@ -135,11 +135,11 @@
     function doRemind(){
         SOP.Crud.cfxSubmit("mainForm", "remind");
     }
-    function doAccept(appNo) {
-        SOP.Crud.cfxSubmit("mainForm", "accept",appNo);
+    function doAccept(reqInfoId) {
+        SOP.Crud.cfxSubmit("mainForm", "accept",reqInfoId);
     }
-    function doCancel(appNo) {
-        SOP.Crud.cfxSubmit("mainForm", "cancel",appNo);
+    function doCancel(reqInfoId) {
+        SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);
     }
     function doSubmit() {
         SOP.Crud.cfxSubmit("mainForm", "submit");
