@@ -154,29 +154,32 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         numberCaseCounthVad(errMap,fdto);
     }
     public void numberCaseCounthVad(Map<String, String> errMap,HcsaRiskLegislativeMatrixDto fdto){
-        inLeftModVadAndinRightModVad(errMap,fdto.getDoLeftModCaseCounth(),fdto.getDoRightModCaseCounth(),fdto.getSvcCode(),true);
+        inLeftModVadAndinRightModVad(errMap,fdto.getDoLeftModCaseCounth(),fdto.getDoRightModCaseCounth(),fdto.getSvcCode());
         inRightLowVad(errMap,fdto.getDoRightLowCaseCounth(),fdto.getDoLeftModCaseCounth(),fdto.getSvcCode());
         inLeftHighVad(errMap,fdto.getDoLeftHighCaseCounth(),fdto.getDoRightModCaseCounth(),fdto.getSvcCode());
 
     }
     public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode){
         Integer inLeftHighNum = 0;
+        boolean inLeftHighNumFlag = true;
         Integer inRightModNum = 0;
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
                 inLeftHighNum = Integer.parseInt(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
+                    inLeftHighNumFlag = false;
                     errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
                 }
             }
         } catch (Exception e) {
+            inLeftHighNumFlag = false;
             errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
             e.printStackTrace();
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
                 inRightModNum = Integer.parseInt(inRightMod);
-                if(inRightModNum +1 != inLeftHighNum){
+                if((inRightModNum +1 != inLeftHighNum)&&inLeftHighNumFlag){
                     errMap.put(serviceCode + "inRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
                 }
             }
@@ -187,21 +190,24 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
     }
     public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode){
         Integer inRightLowNum = 0;
+        boolean inrightflag = true;
         Integer inLeftModNum = 0;
         try {
             if(!StringUtil.isEmpty(inRightLow)){
                 inRightLowNum = Integer.parseInt(inRightLow);
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
+                    inrightflag = false;
                     errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
                 }
             }
         } catch (Exception e) {
             // TODO: handle exception
+                inrightflag = false;
                 errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
             e.printStackTrace();
         }
         try {
-            if(!StringUtil.isEmpty(inLeftMod)){
+            if(!StringUtil.isEmpty(inLeftMod)&&inrightflag){
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum){
                     errMap.put(serviceCode + "inRightLowCaseCounth", "Low Maximun cases and Moderate Minimun can only differ by 1");
@@ -213,7 +219,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
 
     }
 
-    public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,boolean isIn){
+    public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode){
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
         int numberFlag = 0;
@@ -221,19 +227,11 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
-                    if(isIn){
                         errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
-                    }else{
-                        errMap.put(serviceCode+"prLeftModCaseCounth","Invalid Number");
-                    }
                 }
                 numberFlag++;
             }catch (Exception e){
-                if(isIn){
                     errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
-                }else{
-                    errMap.put(serviceCode+"prLeftModCaseCounth","Invalid Number");
-                }
                 e.printStackTrace();
             }
         }

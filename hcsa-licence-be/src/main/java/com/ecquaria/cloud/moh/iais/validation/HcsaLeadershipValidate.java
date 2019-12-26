@@ -135,22 +135,28 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     }
     public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode,boolean isIn){
         Integer inLeftHighNum = 0;
+        boolean inLeftHighNumFlag = true;
+        boolean prLeftHighNumFlag = true;
         Integer inRightModNum = 0;
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
                 inLeftHighNum = Integer.parseInt(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
+                        inLeftHighNumFlag = false;
                         errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
                     }else{
+                        prLeftHighNumFlag = false;
                         errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
                     }
                 }
             }
         } catch (Exception e) {
             if(isIn){
+                inLeftHighNumFlag = false;
                 errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
             }else{
+                prLeftHighNumFlag = false;
                 errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
             }
             e.printStackTrace();
@@ -159,9 +165,9 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             if(!StringUtil.isEmpty(inRightMod)){
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
-                    if(isIn){
+                    if(isIn&&inLeftHighNumFlag){
                         errMap.put(serviceCode + "inRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
-                    }else{
+                    }else if(!isIn&&prLeftHighNumFlag){
                         errMap.put(serviceCode + "prRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
                     }
 
@@ -175,13 +181,17 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,boolean isIn){
         Integer inRightLowNum = 0;
         Integer inLeftModNum = 0;
+        boolean inRightLowNumFlag = true;
+        boolean prRightLowNumFlag = true;
         try {
             if(!StringUtil.isEmpty(inRightLow)){
                 inRightLowNum = Integer.parseInt(inRightLow);
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if(isIn){
+                        inRightLowNumFlag = false;
                         errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
                     }else{
+                        prRightLowNumFlag = false;
                         errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
                     }
                 }
@@ -189,9 +199,13 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         } catch (Exception e) {
             // TODO: handle exception
             if(isIn){
-                errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                if(inRightLowNumFlag){
+                    errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                }
             }else{
-                errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                if(prRightLowNumFlag){
+                    errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                }
             }
 
             e.printStackTrace();

@@ -136,7 +136,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
                 for(HcsaRiskLegislativeMatrixDto lastversion:lastversionList){
                     updateLastVersion(temp,lastversion);
                 }
-                hcsaConfigClient.updateLegislativeRiskMatrix(updateList);
+                hcsaConfigClient.updateLegislativeRiskMatrix(lastversionList);
             }
         }
         for(HcsaRiskLegislativeMatrixDto temp:updateList){
