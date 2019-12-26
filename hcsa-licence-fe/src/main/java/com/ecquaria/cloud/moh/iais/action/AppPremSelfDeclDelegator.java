@@ -31,6 +31,9 @@ import java.util.Map;
 @Slf4j
 public class AppPremSelfDeclDelegator {
 
+    private static final String INSPECTION_START_PERIOD = "inspStartDate";
+    private static final String INSPECTION_END_PERIOD = "inspEndDate";
+
     private final AppPremSelfDeclService appPremSelfDesc;
     private String groupId;
 
@@ -50,8 +53,8 @@ public class AppPremSelfDeclDelegator {
         AuditTrailHelper.auditFunction("Hcsa Application", "Self desc");
 
         ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", null);
-        ParamUtil.setSessionAttr(request, "inspStartDate", null);
-        ParamUtil.setSessionAttr(request, "inspEndDate", null);
+        ParamUtil.setSessionAttr(request, INSPECTION_START_PERIOD, null);
+        ParamUtil.setSessionAttr(request, INSPECTION_END_PERIOD, null);
 
     }
 
@@ -69,16 +72,13 @@ public class AppPremSelfDeclDelegator {
 
         log.info("assign to self decl group id ==>>>>> " + groupId);
 
-        if (groupId == null){
-            return;
-        }
-
         List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
         if (selfDeclList == null){
-            List<SelfDecl> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId(groupId);
-
+            List<SelfDecl> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId("1C629C17-CB72-4892-8F31-87F6759C791A");
             ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
 
+            Date date = appPremSelfDesc.getBlockPeriodByAfterApp("1C629C17-CB72-4892-8F31-87F6759C791A", selfDeclByGroupId);
+            ParamUtil.setSessionAttr(request, INSPECTION_START_PERIOD, IaisEGPHelper.parseToString(date, "dd/MM/yyyy"));
         }
 
     }
@@ -97,8 +97,8 @@ public class AppPremSelfDeclDelegator {
         String inspStartDate = ParamUtil.getString(request, "inspStartDate");
         String inspEndDate = ParamUtil.getString(request, "inspEndDate");
 
-        ParamUtil.setSessionAttr(request, "inspStartDate", inspStartDate);
-        ParamUtil.setSessionAttr(request, "inspEndDate", inspEndDate);
+        ParamUtil.setSessionAttr(request, INSPECTION_START_PERIOD, inspStartDate);
+        ParamUtil.setSessionAttr(request, INSPECTION_END_PERIOD, inspEndDate);
 
         List<SelfDecl> selfDeclByGroupId = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
 

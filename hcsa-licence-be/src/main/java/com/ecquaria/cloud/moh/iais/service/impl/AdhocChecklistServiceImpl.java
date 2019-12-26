@@ -75,7 +75,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.INSPECTION);
 
         List<ChecklistConfigDto> inspChecklist = new ArrayList<>();
-        ChecklistConfigDto commonConfig = hcsaChklClient.getMaxVersionCommonConfigByParams(type, chklModule).getEntity();
+        ChecklistConfigDto commonConfig = hcsaChklClient.getMaxVersionCommonConfig().getEntity();
         if (commonConfig != null){
             log.info("inspection checklist for common info: " + commonConfig.toString());
             inspChecklist.add(commonConfig);

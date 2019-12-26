@@ -36,42 +36,23 @@
 
           <div>
             <span id="error_configCustomValidation" name="iaisErrorMsg" class="error-msg"></span>
-          </div>
 
+          </div>
+      <br><br>
       <div class="form-horizontal">
         <div class="form-group">
 
-          <c:choose>
-            <c:when test="${operationType == 'doEdit'}">
-              <c:if test="${configSessionAttr.common eq true}">
-                <div class="panel-heading" id="headingOne" role="tab">
-                  <p>You are applying for <b>Common</b></p>
-                </div>
-              </c:if>
-              <c:if test="${configSessionAttr.common eq false}">
-                <c:if test="${configSessionAttr.svcSubType == null}">
-                  <p>You are applying for <b>${configSessionAttr.svcCode}</b></p>
-                </c:if>
-
-                <c:if test="${configSessionAttr.svcSubType != null}">
-                  <p>You are applying for <b>${configSessionAttr.svcCode} | ${configSessionAttr.svcSubType}</b></p>
-                </c:if>
-              </c:if>
-            </c:when>
-            <c:otherwise>
               <div class="col-xs-12">
-                Common  &nbsp; <input class="form-check-input"  id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
+                Common  &nbsp; <input class="form-check-input"  <c:if test="${configSessionAttr.common == true}"> checked="checked"</c:if> id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
               </div>
               <br><br>
               <div class="col-xs-12">
-                Service Name <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name"></iais:select>
+                Service Name <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name" value="${configSessionAttr.svcName}"></iais:select>
               </div>
 
               <div class="col-xs-12">
-                Service Sub Type <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Select Service Sub Type"></iais:select>
+                Service Sub Type <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Select Service Sub Type" value="${configSessionAttr.svcSubType}"></iais:select>
               </div>
-            </c:otherwise>
-          </c:choose>
 
           <div class="col-xs-12">
             Module <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Select Module" value="${configSessionAttr.module}"></iais:select>

@@ -99,4 +99,9 @@ public class HcsaChklServiceImpl implements HcsaChklService {
         return chklClient.getChecklistConfigById(id).getEntity();
     }
 
+    @Override
+    public Boolean isExistsRecord(ChecklistConfigDto configDto){
+        return chklClient.isExistsRecord(configDto).getEntity();
+    }
+
 }

@@ -38,6 +38,7 @@
     <div class="container">
       <div class="form-horizontal">
         <span id="error_configCustomValidation" name="iaisErrorMsg" class="error-msg"></span>
+        <br><br>
         <div class="form-group">
           <div class="col-xs-12">
             <td>
@@ -118,6 +119,7 @@
               <td>${config.eftEndDate}</td>
               <td>
                 <iais:link icon="form_edit" title="Edit" onclick="javascript:loadEditData('${config.id}');"/>
+                <iais:link icon="form_edit" title="Clone" onclick="javascript:cloneConfig('${config.id}');"/>
                 <iais:link icon="form_delete" title="Disable" onclick="javascript:ivActiveRecord('${config.id}');"/>
                 <iais:link icon="form_view" title="View" onclick="javascript:doView('${config.id}');"/>
               </td>
@@ -182,6 +184,11 @@
   function loadEditData(id){
       console.log("=========prepareEditConfig==>>>>>>>", id);
     SOP.Crud.cfxSubmit("mainForm", "loadEditData", id);
+  }
+
+  function cloneConfig(id){
+      console.log("=========prepareEditConfig==>>>>>>>", id);
+    SOP.Crud.cfxSubmit("mainForm", "cloneConfig", id);
   }
 
   function prepareAddConfig(){

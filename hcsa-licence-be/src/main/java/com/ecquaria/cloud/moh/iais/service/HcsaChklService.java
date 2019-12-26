@@ -96,4 +96,6 @@ public interface HcsaChklService {
 
 
     ChecklistConfigDto getChecklistConfigById(String id);
+
+    Boolean isExistsRecord(ChecklistConfigDto dto);
 }

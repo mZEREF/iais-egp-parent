@@ -30,22 +30,33 @@ public class HcsaChklConfigValidate implements CustomizeValidator {
         String eftEndDate = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE);
 
         String operationType = (String) ParamUtil.getSessionAttr(httpServletRequest, "operationType");
-        if (!"doEdit".equals(operationType)){
+        if (!"doEdit".equals(operationType) && !"doClone".equals(operationType)){
             if(StringUtils.isEmpty(common) && StringUtils.isEmpty(svcName)){
                 errMap.put("configCustomValidation", "You need to select one of the configuration types!");
                 return errMap;
             }
         }
 
-        if (!StringUtils.isEmpty(common) && (!StringUtils.isEmpty(svcName) || !StringUtils.isEmpty(svcSubType))){
-            errMap.put("configCustomValidation", "You can only choose between common and service.");
-            return errMap;
+        if (StringUtils.isEmpty(common)){
+            //create service
+            if (!StringUtils.isEmpty(svcName) && StringUtils.isEmpty(module) || StringUtils.isEmpty(type)){
+                errMap.put("configCustomValidation", "Module or type can not be null.");
+                return errMap;
+            }
+
+        }else {
+            //create common
+            if (!StringUtils.isEmpty(svcName) || !StringUtils.isEmpty(svcSubType)){
+                errMap.put("configCustomValidation", "You can only choose between common and service.");
+                return errMap;
+            }
+
+            if (!StringUtils.isEmpty(module) || !StringUtils.isEmpty(type)){
+                errMap.put("configCustomValidation", "When selecting common config, type and module is not required.");
+                return errMap;
+            }
         }
 
-        if (StringUtils.isEmpty(module) || StringUtils.isEmpty(type)){
-            errMap.put("configCustomValidation", "Module or type can not be null.");
-            return errMap;
-        }
 
         if (StringUtils.isEmpty(eftStartDate)){
             errMap.put("configCustomValidation", "Please select effective date.");

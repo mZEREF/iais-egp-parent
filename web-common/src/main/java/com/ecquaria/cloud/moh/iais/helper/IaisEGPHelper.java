@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.sqlite.date.FastDateFormat;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Slf4j
@@ -161,7 +163,7 @@ public final class IaisEGPHelper extends EGPHelper {
     * @author: yichen 
     */
     public static Date parseToDate(String val, String pattern) {
-        if(StringUtil.isEmpty(val) || pattern.isEmpty()){
+        if(StringUtils.isEmpty(val) || StringUtils.isEmpty(pattern)){
            throw new IaisRuntimeException("No has input for String to Date!");
         }
 
@@ -171,6 +173,22 @@ public final class IaisEGPHelper extends EGPHelper {
             throw new IaisRuntimeException(e.getMessage());
         }
     }
+
+    /**
+     * @description: format date
+     * @param:
+     * @return:
+     * @author: yichen
+     */
+    public static String parseToString(Date val, String pattern) {
+        if(val == null || StringUtils.isEmpty(pattern)){
+            throw new IaisRuntimeException("No has input for Date to String!");
+        }
+
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        return formatter.format(val);
+    }
+
 
     public static String genTokenForCallback(String submissionId, String serviceName) {
         String secKey = RedisCacheHelper.getInstance().get("iaisEdToken",

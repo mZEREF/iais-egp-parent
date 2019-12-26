@@ -18,4 +18,5 @@ public interface AppPremSelfDeclService {
 
     void saveSelfDeclAndInspectionDate(List<SelfDecl> selfDeclList, String groupId, Date inspStartDate, Date inspEndDate);
 
+    Date getBlockPeriodByAfterApp(String groupId, List<SelfDecl> selfDeclList);
 }

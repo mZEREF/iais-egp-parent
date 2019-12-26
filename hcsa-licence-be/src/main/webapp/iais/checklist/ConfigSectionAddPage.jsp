@@ -76,6 +76,9 @@
           <c:when test="${operationType == 'doEdit'}">
             <h2>Edit Section</h2>
           </c:when>
+          <c:when test="${operationType == 'doClone'}">
+            <h2>Clone Section</h2>
+          </c:when>
           <c:otherwise>
             <h2>Add Section</h2>
           </c:otherwise>

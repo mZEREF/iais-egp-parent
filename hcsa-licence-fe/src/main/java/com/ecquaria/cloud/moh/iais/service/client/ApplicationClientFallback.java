@@ -239,4 +239,11 @@ public class ApplicationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    FeignResponseEntity<ApplicationGroupDto> getApplicarionGroup(String appGroupId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

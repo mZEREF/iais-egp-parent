@@ -323,7 +323,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public ChecklistConfigDto getcommonCheckListDto(String configType, String module) {
-        ChecklistConfigDto commonckDto = hcsaChklClient.getMaxVersionCommonConfigByParams(configType,module).getEntity();
+        ChecklistConfigDto commonckDto = hcsaChklClient.getMaxVersionCommonConfig().getEntity();
         return commonckDto ;
     }
 

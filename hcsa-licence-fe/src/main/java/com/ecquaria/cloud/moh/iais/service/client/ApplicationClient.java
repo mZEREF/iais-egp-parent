@@ -144,4 +144,8 @@ public interface ApplicationClient  {
     @PostMapping(value = "/iais-inspection-fe/apppremncitemdtoc",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesPreInspectionNcItemDto> createAppNcItemDto(@RequestBody AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto);
+
+    @GetMapping(path = "/iais-application/application/grp/{groupId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationGroupDto> getApplicarionGroup(@PathVariable("groupId") String groupId);
+
 }

@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
@@ -110,9 +111,8 @@ public interface AppConfigClient {
                                                                         @PathVariable("module") String module,
                                                                         @PathVariable(value = "subTypeName", required = false) String subTypeName);
 
-    @GetMapping(value = {"/iais-hcsa-checklist/config/results-common-max-version/{type}/{module}"})
-    FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfigByParams(@PathVariable("type")String type,
-                                                                              @PathVariable("module") String module);
+    @GetMapping(value = {"/iais-hcsa-checklist/config/results-common-max-version"})
+    FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfig();
 
     @GetMapping(value = {"/iais-service-step/steps/{serviceId}"})
     FeignResponseEntity<List<HcsaServiceStepSchemeDto>> getServiceStepsByServiceId(@PathVariable(name ="serviceId") String serviceId);
@@ -133,6 +133,10 @@ public interface AppConfigClient {
     @PostMapping(value = "/iais-hcsa-service/pref-period/results",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(@RequestBody SearchParam searchParam);
+
+    @GetMapping(value = "/iais-hcsa-service/pref-period/{svcCode}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<HcsaServicePrefInspPeriodDto> getHcsaServicePrefInspPeriod(@PathVariable(name = "svcCode") String svcCode);
 
     @PostMapping(value = "/iais-hcsa-service/pref-period/after-app/max-period",
             consumes = MediaType.APPLICATION_JSON_VALUE)

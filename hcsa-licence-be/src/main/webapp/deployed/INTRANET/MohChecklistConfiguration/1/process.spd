@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="9" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="17" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
@@ -125,6 +125,20 @@
     <JavaCode defClass="" executor="" methodName="doView_OnStepProcess_0" name="doView_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="cloneConfig" x="500" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="cloneConfig_OnStepProcess_0" name="cloneConfig_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="backToPage" x="910" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="backToPage_OnStepProcess_0" name="backToPage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigDataPage" stageIndicator="" x="380" y="100">
@@ -198,9 +212,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareAddConfig" style="oblique">
    <position>{(620,220)(700,320)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/loadEditData" style="oblique">
-   <position>{(740,220)(700,320)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ConfigAddPage" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(700,320)(680,430)}</position>
@@ -304,9 +315,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/routeToItemProcess" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
    <position>{(880,850)(760,970)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ConfigAddPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(880,850)(680,430)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge7" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
    <position>{(850,1100)(550,1290)}</position>
   </SynchronousLink>
@@ -331,6 +339,33 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAddConfig" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(610,600)(620,220)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge8" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/loadEditData" style="oblique">
+   <position>{(740,220)(840,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/cloneConfig" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(520,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfigAddPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/cloneConfig" style="oblique">
+   <position>{(520,240)(680,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfigSectionInfo" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge8" style="oblique">
+   <position>{(840,460)(560,700)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/backToPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(880,850)(930,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge9" style="oblique">
+   <position>{(1620,50)(268,47)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/backToPage" style="rectanular">
+   <position>{(930,450)(1620,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge9" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(1620,460)(1620,50)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAddConfig" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond4" style="oblique">
+   <position>{(1620,460)(996,397)(620,220)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareAddConfig" componentIfTrue="/Steps/AutomaticStep/prepareConfigSectionInfo" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="590" y="580">
@@ -342,6 +377,9 @@
   <Condition componentIfFalse="/Merges/Merge/Merge5" componentIfTrue="/Steps/AutomaticStep/prepareConfigSectionInfo" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="1060" y="680">
    <Description/>
   </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareAddConfig" componentIfTrue="/Merges/Merge/Merge9" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="1600" y="440">
+   <Description/>
+  </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="710" y="100">
@@ -351,6 +389,7 @@
    <SwitchCase component="/Steps/AutomaticStep/deleteRecord" value="&quot;deleteRecord&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doView" value="&quot;doView&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/cloneConfig" value="&quot;cloneConfig&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="680" y="490">
    <Description/>
@@ -364,7 +403,7 @@
    <SwitchCase component="/Steps/AutomaticStep/removeSectionItem" value="&quot;removeSectionItem&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/removeSection" value="&quot;removeSection&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/routeToItemProcess" value="&quot;routeToItemProcess&quot;"/>
-   <SwitchCase component="/Pages/WebPage/ConfigAddPage" value="&quot;backLastPage&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/backToPage" value="&quot;backLastPage&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="770" y="1270">
    <Description/>
@@ -393,6 +432,12 @@
    <Description/>
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge7" type="Or" x="530" y="1270">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge8" type="Or" x="820" y="440">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge9" type="Or" x="1600" y="30">
    <Description/>
   </Merge>
  </Merges>
