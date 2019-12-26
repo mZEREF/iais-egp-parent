@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -40,7 +41,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<String> recDatesToString();
 
     @GetMapping(value = "/iais-application/rec-file-datas")
-    FeignResponseEntity<List<String>> recFileId();
+    FeignResponseEntity<Map<String, String>> recFileId();
 
     @PutMapping(path = "/iais-application/status")
     FeignResponseEntity<Void> updateStatus();

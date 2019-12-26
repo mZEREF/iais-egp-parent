@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -37,7 +38,7 @@ public class ApplicationClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<String> recFileId(){
+    public FeignResponseEntity<Map<String, String>> recFileId(){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
