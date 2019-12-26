@@ -39,6 +39,10 @@ public interface ApplicationClient  {
     @PutMapping(path = "/iais-application/status")
     FeignResponseEntity<Void> updateStatus();
 
+    @PutMapping(path = "/iais-application", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> updateApplication(@RequestBody ApplicationDto applicationDto);
+
     @PostMapping(path = "/iais-application/file-name",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String>  savedFileName(@RequestBody String fileName);
 

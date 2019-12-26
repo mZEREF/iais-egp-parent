@@ -36,6 +36,13 @@ public class ApplicationClientFallback {
          return entity;
     }
 
+    public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     public FeignResponseEntity<String> savedFileName(String fileName){
          FeignResponseEntity entity = new FeignResponseEntity<>();
          HttpHeaders headers = new HttpHeaders();
