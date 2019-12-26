@@ -41,7 +41,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<String> recDatesToString();
 
     @GetMapping(value = "/iais-application/rec-file-datas")
-    FeignResponseEntity<Map<String, String>> recFileId();
+    FeignResponseEntity<Map<String, Map<String, AppPremPreInspectionNcDocDto>>> recFileId();
 
     @PutMapping(path = "/iais-application/status")
     FeignResponseEntity<Void> updateStatus();

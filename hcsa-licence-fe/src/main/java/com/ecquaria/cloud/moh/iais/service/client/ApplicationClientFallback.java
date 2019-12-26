@@ -38,7 +38,7 @@ public class ApplicationClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<Map<String, String>> recFileId(){
+    public FeignResponseEntity<Map<String, Map<String, AppPremPreInspectionNcDocDto>>> recFileId(){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
