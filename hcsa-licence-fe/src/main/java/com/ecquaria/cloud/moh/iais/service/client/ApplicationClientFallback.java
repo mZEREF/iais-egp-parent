@@ -38,6 +38,13 @@ public class ApplicationClientFallback {
         return entity;
     }
 
+    public FeignResponseEntity<ApplicationDto> getApplicationById(String appId){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     public FeignResponseEntity<Map<String, Map<String, AppPremPreInspectionNcDocDto>>> recFileId(){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

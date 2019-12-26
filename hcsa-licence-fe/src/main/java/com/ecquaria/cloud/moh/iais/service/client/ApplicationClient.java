@@ -56,6 +56,10 @@ public interface ApplicationClient  {
     @GetMapping(path = "/iais-application/application/results-by-groupid/{groupid}")
     FeignResponseEntity<List<ApplicationDto>> listApplicationByGroupId(@PathVariable("groupid") String groupId);
 
+    @GetMapping(value = "/iais-application/applicationdto-id/{appId}", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationById(@PathVariable(name = "appId") String appId);
+
     @GetMapping(path = "/iais-submission/draft",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto>  draftNumberGet(@RequestParam("draftNumber") String draftNumber);
 
