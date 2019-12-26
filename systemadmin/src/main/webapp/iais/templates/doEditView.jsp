@@ -27,13 +27,13 @@
                             <label class="col-xs-12 col-md-4 control-label" for="messageType">Message Type:</label>
 
                             <div class="col-xs-8 col-sm-6 col-md-3">
-                                <iais:select name="messageType" id="messageType" options="messageTypeSelect" value="${MsgTemplateDto.messageType}"></iais:select>
+                                <iais:select name="messageType" id="messageType" options="messageTypeSelect"></iais:select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="templateName">Template Name</label>
                             <div class="col-xs-8 col-sm-6 col-md-6">
-                                <input id="templateName" type="text" value="${MsgTemplateDto.templateName}" name="templateName">
+                                <input id="templateName" type="text"  value="${MsgTemplateDto.templateName}" name="templateName">
                                 <span id="error_templateName" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -41,7 +41,7 @@
                             <label class="col-xs-12 col-md-4 control-label">Delivery Mode:</label>
 
                                 <div class="col-xs-8 col-sm-6 col-md-3">
-                                    <iais:select name="deliveryMode" id="deliveryMode" options="deliveryModeSelect" value="${MsgTemplateDto.deliveryMode}"></iais:select>
+                                    <iais:select name="deliveryMode" id="deliveryMode" options="deliveryModeSelect"></iais:select>
                                 </div>
                         </div>
                         <div class="form-group">

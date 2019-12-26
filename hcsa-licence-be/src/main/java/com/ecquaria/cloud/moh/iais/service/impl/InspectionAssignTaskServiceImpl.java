@@ -219,9 +219,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     td.setDateAssigned(new Date());
                     td.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
                     td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    td.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
                     td.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
-                    td.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
                     inspecTaskCreAndAssDto.setTaskDto(td);
                     inspecTaskCreAndAssDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     inspecTaskCreAndAssDto.setTaskDtos(commPools);
