@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -81,6 +82,9 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             appNcDocDto.setNcItemId(appNcItemDto.getId());
             appNcDocDtoList.add(appNcDocDto);
         }
+        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
+        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        applicationClient.updateApplication(applicationDto);
         applicationClient.saveAppNcDoc(appNcDocDtoList).getEntity();
     }
 
