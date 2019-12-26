@@ -30,7 +30,7 @@
                   <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
                       <div class="col-sm-6 control-label formtext ">
-                        <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Clinical Governance Officer</label>
+                        <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Principal Officer</label>
                         <span class="upload_controls"></span>
                       </div>
                       <div class="col-sm-5">
