@@ -49,6 +49,12 @@
         activeTab('${TAB_NO}');
     });
 
+    function doRenew(){
+        var licenceNo = $("input:checkbox:checked").val();
+        $("[name='crud_action_type']").val(licenceNo);
+        submit('lic','doRenew')
+    }
+
     function activeTab(tabNo){
         if(tabNo == 'inboxTab'){
             $('#'+tabNo+' a[href="#tabInbox"]').tab('show');

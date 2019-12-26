@@ -9,25 +9,25 @@
             <h3>Template Search</h3>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="codeCategory">Message Type:</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="codeCategory" name="msgType" type="text">
+                        <input id="msgType" name="msgType" type="text">
                     </div>
                 </iais:value>
             </div>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="description">Template Name:</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="templateName">Template Name:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="description" name="templateName" type="text">
+                        <input id="templateName" name="templateName" type="text">
                     </div>
                 </iais:value>
             </div>
             <div class="form-group">
                 <iais:value>
-                    <label class="col-xs-12 col-md-4 control-label" for="status">Delivery Mode:</label>
+                    <label class="col-xs-12 col-md-4 control-label" for="deliveryMode">Delivery Mode:</label>
                     <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="status" type="text" name="deliveryMode">
+                        <input id="deliveryMode" type="text" name="deliveryMode">
                     </div>
                 </iais:value>
             </div>

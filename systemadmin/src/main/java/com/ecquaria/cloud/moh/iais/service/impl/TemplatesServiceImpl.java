@@ -29,4 +29,9 @@ public class TemplatesServiceImpl implements TemplatesService {
     public MsgTemplateDto getMsgTemplate(String id) {
         return msgTemplateClient.getMsgTemplate(id).getEntity();
     }
+
+    @Override
+    public MsgTemplateDto updateMsgTemplate(MsgTemplateDto msgTemplateDto) {
+        return msgTemplateClient.updateMasterCode(msgTemplateDto).getEntity();
+    }
 }

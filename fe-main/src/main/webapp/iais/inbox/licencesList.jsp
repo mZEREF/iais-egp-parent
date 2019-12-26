@@ -4,7 +4,7 @@
             <input type="hidden" name="crud_action_type" value="">
             <input type="hidden" name="crud_action_value" value="">
             <div class="licence-btns">
-                <a class="btn btn-primary disabled" href="javascript:;">Renew</a>
+                <a class="btn btn-primary disabled" href="javascript:doRenew();">Renew</a>
                 <a class="btn btn-secondary disabled" href="javascript:;">Cease</a>
                 <a class="btn btn-secondary disabled" href="javascript:;">Amend</a>
             </div>
@@ -47,7 +47,7 @@
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                         <div class="form-check">
-                                            <input class="form-check-input licenceCheck" id="licence1" type="checkbox" name="licence1" aria-invalid="false">
+                                            <input class="form-check-input licenceCheck" id="licence1" type="checkbox" name="licenceNo" value="${licenceQuery.licenceNo}" aria-invalid="false">
                                             <label class="form-check-label" for="licence1"><span class="check-square"></span><a href="#">${licenceQuery.licenceNo}</a></label>
                                         </div>
                                     </td>

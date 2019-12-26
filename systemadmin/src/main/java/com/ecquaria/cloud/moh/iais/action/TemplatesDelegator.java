@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.mastercode.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -84,7 +84,7 @@ public class TemplatesDelegator {
 
     public void editTemplate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String msgId = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
+        String msgId = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_VALUE);
         if (!msgId.isEmpty()){
             MsgTemplateDto msgTemplateDto = templatesService.getMsgTemplate(msgId);
             String messageType = msgTemplateDto.getMessageType();
@@ -113,9 +113,9 @@ public class TemplatesDelegator {
 
     public void doEdit(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        String type = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_TYPE);
-        if (!MasterCodeConstants.EDIT_ACTION.equals(type)){
-            ParamUtil.setRequestAttr(request, MasterCodeConstants.ISVALID, MasterCodeConstants.YES);
+        String type = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_TYPE);
+        if (!SystemAdminBaseConstants.EDIT_ACTION.equals(type)){
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
             return;
         }
         MsgTemplateDto msgTemplateDto = (MsgTemplateDto) ParamUtil.getSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO);
@@ -123,48 +123,48 @@ public class TemplatesDelegator {
         ValidationResult validationResult =WebValidationHelper.validateProperty(msgTemplateDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,MasterCodeConstants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request, "isValid", "N");
+            ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             return;
         }
-
-        ParamUtil.setRequestAttr(request,MasterCodeConstants.ISVALID,MasterCodeConstants.YES);
+        templatesService.updateMsgTemplate(msgTemplateDto);
+        ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ISVALID,SystemAdminBaseConstants.YES);
     }
 
 
     public void searchTemplate(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        String msgType = ParamUtil.getString(request, "msgType");
-        String deliveryMode = ParamUtil.getString(request, "deliveryMode");
-        String templateName = ParamUtil.getString(request, "templateName");
-        String templateStartDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM)),
-                "yyyy-MM-dd");
-        String templateEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO)),
-                "yyyy-MM-dd");
+        String msgType = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
+        String deliveryMode = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
+        String templateName = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME);
+        String templateStartDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String templateEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)),
+                SystemAdminBaseConstants.DATE_FORMAT);
         Map<String,Object> templateMap = new HashMap<>();
         if (!StringUtil.isEmpty(msgType)){
             msgType = masterCodeService.findCodeKeyByDescription(msgType);
-            templateMap.put("msgType",msgType);
+            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType);
         }
         if(!StringUtil.isEmpty(deliveryMode)){
             deliveryMode = masterCodeService.findCodeKeyByDescription(deliveryMode);
-            templateMap.put("deliveryMode",deliveryMode);
+            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE,deliveryMode);
         }
         if(!StringUtil.isEmpty(templateName)){
-            templateMap.put("templateName",templateName);
+            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME,templateName);
         }
         if (!StringUtil.isEmpty(templateStartDate)){
-            templateMap.put( MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate);
+            templateMap.put( SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate);
         }
         if (!StringUtil.isEmpty(templateEndDate)){
-            templateMap.put( MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
+            templateMap.put( SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
         }
         filterParameter.setFilters(templateMap);
     }
 
     public void preView(BaseProcessClass bpc){
 
-        String msgId = ParamUtil.getString(bpc.request, MasterCodeConstants.CRUD_ACTION_VALUE);
+        String msgId = ParamUtil.getString(bpc.request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
         MsgTemplateDto msgTemplateDto = templatesService.getMsgTemplate(msgId);
         msgTemplateDto.setMessageType(MasterCodeUtil.getCodeDesc(msgTemplateDto.getMessageType()));
         msgTemplateDto.setDeliveryMode(MasterCodeUtil.getCodeDesc(msgTemplateDto.getDeliveryMode()));
@@ -173,11 +173,11 @@ public class TemplatesDelegator {
     }
 
     private void getValueFromPage(MsgTemplateDto msgTemplateDto, HttpServletRequest request) throws ParseException {
-        msgTemplateDto.setMessageType(ParamUtil.getString(request, "messageType"));
-        msgTemplateDto.setDeliveryMode(ParamUtil.getString(request, "deliveryMode"));
-        msgTemplateDto.setTemplateName(ParamUtil.getString(request, "templateName"));
-        msgTemplateDto.setMessageContent(ParamUtil.getString(request, "messageContent"));
-        msgTemplateDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM)));
-        msgTemplateDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO)));
+        msgTemplateDto.setMessageType(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE));
+        msgTemplateDto.setDeliveryMode(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE));
+        msgTemplateDto.setTemplateName(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME));
+        msgTemplateDto.setMessageContent(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_CONTENT));
+        msgTemplateDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)));
+        msgTemplateDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)));
     }
 }

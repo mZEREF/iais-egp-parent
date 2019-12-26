@@ -14,4 +14,5 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateQueryDto;
 public interface TemplatesService {
     SearchResult<MsgTemplateQueryDto> getTemplateResults(SearchParam param);
     MsgTemplateDto getMsgTemplate(String id);
+    MsgTemplateDto updateMsgTemplate(MsgTemplateDto msgTemplateDto);
 }
