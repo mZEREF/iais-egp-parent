@@ -32,7 +32,7 @@ public interface InsEmailClient {
     void recallEmailTemplate(@RequestBody String id);
 
     @GetMapping(path = "/iais-inspection/inspection-email/{appPremCorrId}",  consumes =  MediaType.APPLICATION_JSON_VALUE)
-    InspectionEmailTemplateDto getInspectionEmail(@PathVariable(value = "appPremCorrId") String appPremCorrId);
+    FeignResponseEntity<InspectionEmailTemplateDto> getInspectionEmail(@PathVariable(value = "appPremCorrId") String appPremCorrId);
 
     @GetMapping(value = "/applicationDto/{appPremCorrId}",  consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppPremCorrId(@PathVariable("appPremCorrId") String appPremCorrId);

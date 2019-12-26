@@ -65,7 +65,7 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Override
     public InspectionEmailTemplateDto getInsertEmail(String appPremCorrId) {
-        return insEmailClient.getInspectionEmail(appPremCorrId);
+        return insEmailClient.getInspectionEmail(appPremCorrId).getEntity();
     }
 
     @Override

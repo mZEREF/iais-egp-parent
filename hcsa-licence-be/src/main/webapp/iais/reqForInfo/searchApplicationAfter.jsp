@@ -111,7 +111,7 @@
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
-                                            <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
+                                            <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                             <td><a onclick="doAppInfo()">${pool.applicationNo}</a></td>
                                             <td><c:out value="${pool.applicationType}"/></td>
                                             <td><c:out value="${pool.licenceNo}"/></td>
@@ -126,7 +126,7 @@
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
                                             <td><iais:action style="text-align:center;">
-                                                <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.applicationNo}');">Request For Information</button>
+                                                <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.licPremId}');">ReqForInfo</button>
                                             </iais:action></td>
                                         </tr>
                                     </c:forEach>

@@ -40,7 +40,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <c:choose>
-                                                    <c:when test="${empty SearchResult.rows}">
+                                                    <c:when test="${empty licPreReqForInfoDtoList}">
                                                         <tr>
                                                             <td colspan="7">
                                                                 <iais:message key="ACK018" escape="true"></iais:message>
@@ -48,19 +48,19 @@
                                                         </tr>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
+                                                        <c:forEach var="pool" items="${licPreReqForInfoDtoList}" varStatus="status">
                                                             <tr>
-                                                                <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                                                                <td><c:out value="${pool.applicationType}"/></td>
-                                                                <td><c:out value="${pool.licenceNo}"/></td>
-                                                                <td><c:out value="${pool.hciCode}"/></td>
-                                                                <td><c:out value="${pool.hciCode}"/></td>
+                                                                <td class="row_no"><c:out value="${status.index + 1}"/></td>
+                                                                <td><c:out value="${pool.reqType}"/></td>
+                                                                <td><c:out value="${pool.officerRemarks}"/></td>
+                                                                <td><c:out value="${pool.userReply}"/></td>
+                                                                <td><c:out value="${pool.docName}"/></td>
                                                                 <td>
                                                                     <iais:action style="text-align:center;">
-                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doCancel('${pool.licenceNo}');" >Cancel</button>
+                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doCancel('${pool.licPremId}');" >Cancel</button>
                                                                     </iais:action>
                                                                     <iais:action style="text-align:center;">
-                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doAccept('${pool.licenceNo}');" >Accept</button>
+                                                                        <button type="button"  class="btn btn-default" onclick="javascript:doAccept('${pool.licPremId}');" >Accept</button>
                                                                     </iais:action>
                                                                 </td>
                                                             </tr>
@@ -91,7 +91,7 @@
                                                             <iais:row>
                                                                 <iais:field value="Select Category"/>
                                                                 <iais:value width="18">
-                                                                    <iais:select name="Select_category" options="licSvcTypeOption" firstOption="Please select" value="${licSvcTypeOption}" ></iais:select>
+                                                                    <iais:select name="Select_category" options="selectOptions" firstOption="Please select" value="${selectOptions}" ></iais:select>
                                                                 </iais:value>
                                                             </iais:row>
                                                             <iais:row>

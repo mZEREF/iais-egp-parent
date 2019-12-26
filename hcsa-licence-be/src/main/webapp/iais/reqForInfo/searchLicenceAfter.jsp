@@ -83,8 +83,6 @@
                             <thead>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
@@ -110,10 +108,8 @@
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
-                                            <td class="row_no"><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
-                                            <td><a onclick="doAppInfo()">${pool.applicationNo}</a></td>
-                                            <td><c:out value="${pool.applicationType}"/></td>
-                                            <td><c:out value="${pool.licenceNo}"/></td>
+                                            <td class="row_no"><c:out value="${status.index + 1}"/></td>
+                                            <td><a onclick="doAppInfo()">${pool.licenceNo}</a></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
                                             <td><c:out value="${pool.hciName}"/></td>
                                             <td><c:out value="${pool.blkNo}-${pool.floorNo}-${pool.unitNo}-${pool.streetName}-${pool.buildingName}"/></td>
@@ -126,7 +122,7 @@
 
                                             <td>
                                                 <iais:action style="text-align:center;">
-                                                    <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.applicationNo}');" >Request For Information</button>
+                                                    <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.licPremId}');" >ReqForInfo</button>
                                                 </iais:action>
                                             </td>
                                         </tr>

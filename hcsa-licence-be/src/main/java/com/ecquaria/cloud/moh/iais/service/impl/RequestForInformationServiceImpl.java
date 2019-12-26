@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -109,6 +110,28 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Override
     public List<String> getSvcNamesByType(String type) {
         return hcsaConfigClient.getHcsaServiceNameByType(type).getEntity();
+    }
+
+    @Override
+    public void createLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        requestForInformationClient.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
+    }
+
+    @Override
+    public List<LicPremisesReqForInfoDto> searchLicPremisesReqForInfo(String licPremId) {
+        return requestForInformationClient.searchLicPremisesReqForInfo(licPremId).getEntity();
+    }
+
+    @Override
+    public void deleteLicPremisesReqForInfo(String id) {
+        requestForInformationClient.deleteLicPremisesReqForInfo(id);
+
+    }
+
+    @Override
+    public void acceptLicPremisesReqForInfo(String id) {
+        requestForInformationClient.acceptLicPremisesReqForInfo(id);
+
     }
 
 

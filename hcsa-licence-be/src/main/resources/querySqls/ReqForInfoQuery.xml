@@ -33,8 +33,13 @@
                 lic.STATUS as STATUS,
                 lic.start_date as start_date,
                 lic.expiry_date as expiry_date,
-                licApp.APPLICATION_ID as APPLICATION_ID
+                licApp.APPLICATION_ID as APPLICATION_ID,
+                Prem.HCI_CODE,Prem.HCI_NAME,
+                Prem.BLK_NO, Prem.FLOOR_NO, Prem.UNIT_NO, Prem.STREET_NAME, Prem.BUILDING_NAME,
+                licPrem.ID as lic_prem_id
             FROM LICENCE AS lic
+            JOIN LIC_PREMISES licPrem ON licPrem.LICENCE_ID = lic.ID
+            JOIN PREMISES Prem ON Prem.ID = licPrem.PREMISES_ID
             JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
             WHERE 1=1
             <#if licence_status??> AND lic.STATUS = :licence_status</#if>
