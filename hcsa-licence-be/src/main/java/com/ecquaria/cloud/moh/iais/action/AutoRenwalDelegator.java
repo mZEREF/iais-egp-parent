@@ -10,9 +10,9 @@ import sop.webflow.rt.api.BaseProcessClass;
  * @author Wenkang
  * @date 2019/12/25 13:08
  */
-@Delegator("autoRenwalDelegator")
+@Delegator("autoOrNonAutoRenwalDelegator")
 @Slf4j
-public class AutoRenwalDelegator  {
+public class AutoRenwalDelegator {
 
     @Autowired
     private AutoRenwalService autoRenwalService;
@@ -28,7 +28,7 @@ public class AutoRenwalDelegator  {
     public void prepare(BaseProcessClass bpc){
         log.info("**** the  auto renwal  prepare start  ******");
 
-
+        autoRenwalService.startRenwal();
 
         log.info("**** the  auto renwal  prepare  end ******");
     }

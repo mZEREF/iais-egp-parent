@@ -2,22 +2,30 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.RestBridgeHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
@@ -54,6 +62,8 @@ public class UploadFileServiceImpl implements UploadFileService {
     private ApplicationClient applicationClient;
     @Autowired
     private EicGatewayClient eicGatewayClient;
+    @Autowired
+    private FileRepositoryClient fileRepositoryClient;
 
     @Override
     public Boolean saveFile(String  str) {
@@ -109,7 +119,18 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public String getData() {
 
-        return    applicationClient.fileAll().getEntity();
+        String entity = applicationClient.fileAll().getEntity();
+        try{
+            ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(entity, ApplicationListFileDto.class);
+            List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListFileDto.getAppGrpPrimaryDoc();
+            appSvcDoc(appSvcDoc,appGrpPrimaryDoc);
+        }catch (Exception e){
+            log.error("***************** there have a error is "+e+"***************");
+            log.error(e.getMessage(),e);
+        }
+
+        return    entity;
     }
 
     @Override
@@ -127,6 +148,66 @@ public class UploadFileServiceImpl implements UploadFileService {
         deleteFile();
     }
     /*****************compress*********/
+/*
+*
+*
+* file id */
+    private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc){
+
+        for(AppSvcDocDto every:appSvcDoc){
+            FileOutputStream outputStream=null;
+            byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
+            File file=new File(download+File.separator+every.getDocName());
+            try {
+              outputStream=new FileOutputStream(file);
+                outputStream.write(entity);
+
+            } catch (FileNotFoundException e) {
+
+                log.error(e.getMessage(),e);
+            } catch (IOException e) {
+                log.error(e.getMessage(),e);
+            }
+            finally {
+                if(outputStream!=null){
+                    try {
+                        outputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        for(AppGrpPrimaryDocDto every:appGrpPrimaryDoc){
+            String docName = every.getDocName();
+            byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
+            File file=new File(download+File.separator+ every.getDocName());
+            FileOutputStream fileOutputStream= null;
+            try {
+                fileOutputStream = new FileOutputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                fileOutputStream.write(entity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            finally {
+                if(fileOutputStream!=null){
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+    }
+
+
 
     private String compress(){
         long l=0L;

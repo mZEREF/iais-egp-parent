@@ -16,6 +16,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -147,5 +148,9 @@ public interface ApplicationClient  {
 
     @GetMapping(path = "/iais-application/application/grp/{groupId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> getApplicarionGroup(@PathVariable("groupId") String groupId);
+
+    @GetMapping(value = "/application-renwal-origin-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> applicationIsRenwalByOriginId();
+
 
 }
