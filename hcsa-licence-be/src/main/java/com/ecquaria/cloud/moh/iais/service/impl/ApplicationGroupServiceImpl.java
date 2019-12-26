@@ -57,7 +57,7 @@ public class ApplicationGroupServiceImpl implements ApplicationGroupService {
 
         SubmitReq req =EventBusHelper.getSubmitReq(eventApplicationGroupDto,systemAdminClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.SERVICE_NAME_LICENCESAVE,
+                EventBusConsts.OPERATION_APPLICATION_UPDATE,
                 "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",
                 callBackUrl, "sop",true,null);
         //

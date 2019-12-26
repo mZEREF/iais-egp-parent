@@ -123,7 +123,7 @@ public class LicenceServiceImpl implements LicenceService {
 
         SubmitReq req =EventBusHelper.getSubmitReq(eventBusLicenceGroupDtos,systemAdminClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
-                EventBusConsts.SERVICE_NAME_LICENCESAVE,
+                EventBusConsts.OPERATION_LICENCE_SAVE,
                 "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",
                 callBackUrl, "sop",true,null);
         //

@@ -137,7 +137,7 @@ public class LicenceApproveBatchjob {
                eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
                //step2 save licence to Fe DB
-               licenceGroupDtos =licenceService.createFESuperLicDto(licenceGroupDtos);
+              // licenceGroupDtos =licenceService.createFESuperLicDto(licenceGroupDtos);
            }
         //todo:send the email to admin for fail Data.
         //else{ rollback step1}
