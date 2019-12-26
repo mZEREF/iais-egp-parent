@@ -77,6 +77,8 @@ public class InspectionSearchDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appTypeOption", null);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectorOption", null);
+        ParamUtil.setSessionAttr(bpc.request, "commPools", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectorValue", null);
     }
 
     /**
