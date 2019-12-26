@@ -262,8 +262,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId,"tcu").getEntity();
         //AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
         //update
-        appPreRecommentdationDto.setStatus("CMSTAT003");
-        fillUpCheckListGetAppClient.updateAppRecom(appPreRecommentdationDto);
+        if(appPreRecommentdationDto!=null){
+            appPreRecommentdationDto.setStatus("CMSTAT003");
+            fillUpCheckListGetAppClient.updateAppRecom(appPreRecommentdationDto);
+            appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
+        }else{
+            appPreRecommentdationDto = new AppPremisesRecommendationDto();
+            appPreRecommentdationDto.setVersion(1);
+        }
         appPreRecommentdationDto.setAppPremCorreId(appPremCorrId);
 
         appPreRecommentdationDto.setRecomType("tcu");
@@ -282,7 +288,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         appPreRecommentdationDto.setRemarks(dto.getTcuRemark());
         appPreRecommentdationDto.setStatus("CMSTAT001");
         appPreRecommentdationDto.setRecomType("tcu");
-        appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
         appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         try {
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = null;
@@ -339,14 +344,19 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     public AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(InspectionFillCheckListDto dto,String appPremCorrId) {
-        AppPremPreInspectionNcDto ncDto =  fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
-        ncDto.setStatus("CMSTAT003");
-        fillUpCheckListGetAppClient.updateAppPreNc(ncDto);
+        AppPremPreInspectionNcDto ncDto =  new AppPremPreInspectionNcDto();
+        ncDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
+        if(ncDto!=null){
+            ncDto.setStatus("CMSTAT003");
+            fillUpCheckListGetAppClient.updateAppPreNc(ncDto);
+            ncDto.setVersion(1 + Integer.parseInt(ncDto.getVersion())+"");
+        }else{
+            ncDto =  new AppPremPreInspectionNcDto();
+            ncDto.setVersion(1+"");
+        }
         ncDto.setStatus("CMSTAT001");
         ncDto.setId(null);
-        ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
-        ncDto.setVersion(1 + Integer.parseInt(ncDto.getVersion())+"");
-        ncDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
+        ncDto.setAppPremCorrId(appPremCorrId);
         ncDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return ncDto;
     }

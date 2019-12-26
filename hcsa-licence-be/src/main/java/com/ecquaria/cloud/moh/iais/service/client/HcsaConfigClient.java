@@ -124,4 +124,11 @@ public interface HcsaConfigClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Boolean> savePrefInspPeriod(@RequestBody HcsaServicePrefInspPeriodDto period);
 
+    @RequestMapping(value = "/iais-hcsa-risk/legislativematrixstorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> saveLegislativeRiskMatrix(@RequestBody List<HcsaRiskLegislativeMatrixDto> finDtoList);
+
+    @RequestMapping(value = "/iais-hcsa-risk/legislativematrixstorageup",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> updateLegislativeRiskMatrix(@RequestBody List<HcsaRiskLegislativeMatrixDto> finDtoList);
+
+
 }
