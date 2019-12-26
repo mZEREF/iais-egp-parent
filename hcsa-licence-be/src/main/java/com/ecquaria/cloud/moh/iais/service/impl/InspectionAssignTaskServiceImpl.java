@@ -226,7 +226,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     inspectorCheckList.remove(0);
                     organizationClient.assignCommonPool(inspecTaskCreAndAssDto);
                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks, InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId());
-                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(), taskDto.getTaskKey(),null, null, td.getRoleId());
                     if(inspectorCheckList != null && inspectorCheckList.size() > 0){
                         for(int i = 0; i < inspectorCheckList.size(); i++){
                             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(), taskDto.getTaskKey(),null, null, td.getRoleId());
