@@ -37,6 +37,13 @@ public class ApplicationClientFallback {
         return entity;
     }
 
+    public FeignResponseEntity<String> recFileId(){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     public FeignResponseEntity<Void> updateStatus(){
          FeignResponseEntity entity = new FeignResponseEntity<>();
          HttpHeaders headers = new HttpHeaders();
