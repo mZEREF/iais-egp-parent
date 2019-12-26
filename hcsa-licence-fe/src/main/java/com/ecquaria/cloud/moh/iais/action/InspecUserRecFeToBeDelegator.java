@@ -1,11 +1,14 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.FeToBeRecFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.List;
 
 /**
  * Batch Job
@@ -39,10 +42,10 @@ public class InspecUserRecFeToBeDelegator {
         logAbout("inspecUserRecFeToBePre");
         String data = feToBeRecFileService.getRecData();
         if(!(StringUtil.isEmpty(data))){
-            feToBeRecFileService.getDocFile();
+            List<ApplicationDto> applicationDtos = feToBeRecFileService.getDocFile();
             feToBeRecFileService.createDataTxt(data);
             feToBeRecFileService.compressFile();
-            feToBeRecFileService.changeStatus();
+            feToBeRecFileService.changeStatus(applicationDtos);
         }
     }
 

@@ -23,6 +23,23 @@
         ]]>
     </sql>
 
+    <sql key = "IntranetUserQuery" remarks = "query IntranetUser sql">
+        <![CDATA[
+            SELECT
+            id,
+            USER_ID,
+			DISPLAY_NAME,
+			EMAIL_ADDR,
+			STATUS
+			FROM user_account as iu
+            WHERE 1=1
+            <#if id??> AND CHARINDEX(:id, iu.id) >0</#if>
+            <#if displayName??> AND iu.DISPLAY_NAME = :displayName</#if>
+            <#if email??> AND iu.EMAIL_ADDR = :email</#if>
+            <#if status??> AND iu.STATUS > :status</#if>
+        ]]>
+    </sql>
+
     <sql key = "findMasterCodeByDescription" remarks = "Find MasterCode By Description">
         <![CDATA[
             SELECT

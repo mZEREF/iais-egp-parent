@@ -24,10 +24,10 @@ public class INTRANET___MohIntranetUser___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preapreSwitch", this);
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch", this);
 	}
 	public void prepareCreate_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preapreCreate", this);
+		EngineHelper.delegate(DELEGATOR, "prepareCreate", this);
 	}
 	public void doCreate_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doCreate", this);
