@@ -1,5 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+
+import java.util.List;
+
 /**
  * @author Shicheng
  * @date 2019/12/26 14:56
@@ -39,7 +43,7 @@ public interface FeToBeRecFileService {
       * @return: void
       * @Descripation: get Doc PPT.... File
       */
-    void getDocFile();
+    List<ApplicationDto> getDocFile();
 
     /**
       * @author: shicheng
@@ -48,5 +52,5 @@ public interface FeToBeRecFileService {
       * @return: void
       * @Descripation: change App Status
       */
-    void changeStatus();
+    void changeStatus(List<ApplicationDto> applicationDtos);
 }

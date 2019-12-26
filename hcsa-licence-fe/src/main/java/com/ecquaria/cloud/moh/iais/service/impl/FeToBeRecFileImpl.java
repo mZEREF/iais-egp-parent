@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -24,6 +27,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.zip.CRC32;
@@ -121,18 +126,27 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     @Override
-    public void getDocFile() {
+    public List<ApplicationDto> getDocFile() {
         Map<String, Map<String, AppPremPreInspectionNcDocDto>> fileReportIds = applicationClient.recFileId().getEntity();
+        List<ApplicationDto> applicationDtos = new ArrayList<>();
         for(Map.Entry<String, Map<String, AppPremPreInspectionNcDocDto>> entry : fileReportIds.entrySet()){
             String appId = entry.getKey();
             Map<String, AppPremPreInspectionNcDocDto> mapValue = entry.getValue();
             getFileAndClassify(appId, mapValue);
+            ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+            applicationDtos.add(applicationDto);
         }
+        return applicationDtos;
     }
 
     @Override
-    public void changeStatus() {
-
+    public void changeStatus(List<ApplicationDto> applicationDtos) {
+        if(flag){
+            for(ApplicationDto aDto : applicationDtos){
+                aDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW);
+                applicationClient.updateApplication(aDto);
+            }
+        }
     }
 
     private void getFileAndClassify(String appId, Map<String, AppPremPreInspectionNcDocDto> mapValue) {
@@ -184,15 +198,15 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private String compress(){
-        long l=0L;
-        ZipOutputStream zos=null;
-        CheckedOutputStream cos=null;
-        OutputStream is=null;
+        long l = 0L;
+        ZipOutputStream zos = null;
+        CheckedOutputStream cos = null;
+        OutputStream is = null;
         try {
             l = System.currentTimeMillis();
-            is=new FileOutputStream(backups+File.separator+ l+".zip");
-            cos =new CheckedOutputStream(is,new CRC32());
-            zos =new ZipOutputStream(cos);
+            is = new FileOutputStream(backups + File.separator + l +".zip");
+            cos = new CheckedOutputStream(is,new CRC32());
+            zos = new ZipOutputStream(cos);
             File file =new File(download);
             zipFile(zos,file);
 
@@ -207,14 +221,14 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     log.error(e.getMessage(),e);
                 }
             }
-            if(cos!=null){
+            if(cos != null){
                 try {
                     cos.close();
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
                 }
             }
-            if(is!=null){
+            if(is != null){
                 try {
                     is.close();
                 } catch (IOException e) {
@@ -290,9 +304,8 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                 try {
                     FileInputStream is=new FileInputStream(file);
                     ByteArrayOutputStream by=new ByteArrayOutputStream();
-                    int count=0;
                     byte [] size=new byte[1024];
-                    count=is.read(size);
+                    int count = is.read(size);
                     while(count!=-1){
                         by.write(size,0,count);
                         count= is.read(size);
@@ -301,11 +314,11 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     is.close();
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    file.renameTo(new File(backups+File.separator+s+".zip"));
-                    String s1 = saveFileName(s+".zip",backups+File.separator+s+".zip");
-                    if(!s1.equals("SUCCESS")){
-                        new File(backups+File.separator+s+".zip").delete();
-                        flag=false;
+                    file.renameTo(new File(backups + File.separator + s + ".zip"));
+                    String s1 = saveFileName(s + ".zip",backups + File.separator + s + ".zip");
+                    if(!s1.equals(AppConsts.SUCCESS)){
+                        new File(backups + File.separator + s + ".zip").delete();
+                        flag = false;
                         break;
                     }
                 } catch (IOException e) {
@@ -334,13 +347,13 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     private String saveFileName(String fileName ,String filePath){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
-        processFileTrackDto.setProcessType("NEW");
+        processFileTrackDto.setProcessType(HcsaConsts.ROUTING_STAGE_INS);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
-        processFileTrackDto.setStatus(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
-        processFileTrackDto.setAuditTrailDto(intenet);
-        String s="FAIL";
+        processFileTrackDto.setStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
+        AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
+        processFileTrackDto.setAuditTrailDto(internet);
+        String s = AppConsts.FAIL;
         try {
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization()).getEntity();
