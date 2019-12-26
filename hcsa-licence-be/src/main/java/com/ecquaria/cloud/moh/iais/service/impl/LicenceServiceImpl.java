@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -117,10 +118,10 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public List<LicenceGroupDto> createSuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
+    public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         String   callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
 
-        SubmitReq req =EventBusHelper.getSubmitReq(licenceGroupDtos,systemAdminClient.getSeqId().getEntity(),
+        SubmitReq req =EventBusHelper.getSubmitReq(eventBusLicenceGroupDtos,systemAdminClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
                 "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",

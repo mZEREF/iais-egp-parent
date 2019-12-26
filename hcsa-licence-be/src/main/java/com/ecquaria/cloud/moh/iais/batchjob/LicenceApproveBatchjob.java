@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -17,7 +18,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.DocumentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -39,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import java.util.ArrayList;
@@ -112,15 +116,26 @@ public class LicenceApproveBatchjob {
                 }
             }
         }
-
+        //
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+        String eventRefNo = EventBusHelper.getEventRefNo();
+        EventBusLicenceGroupDtos eventBusLicenceGroupDtos = new EventBusLicenceGroupDtos();
+        eventBusLicenceGroupDtos.setEventRefNo(eventRefNo);
+        eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
+        eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
         //step1 create Licence to BE DB
-        licenceGroupDtos = licenceService.createSuperLicDto(licenceGroupDtos);
+         licenceService.createSuperLicDto(eventBusLicenceGroupDtos);
 
         //if create licence success
         //todo:update the success application group.
            if(success.size() > 0){
+               EventApplicationGroupDto eventApplicationGroupDto = new EventApplicationGroupDto();
+               eventApplicationGroupDto.setEventRefNo(eventRefNo);
+               eventApplicationGroupDto.setRollBackApplicationGroupDtos(success);
                success = updateStatusToGenerated(success);
-               success = applicationGroupService.updateApplicationGroups(success);
+               eventApplicationGroupDto.setApplicationGroupDtos(success);
+               eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
+               applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
                //step2 save licence to Fe DB
                licenceGroupDtos =licenceService.createFESuperLicDto(licenceGroupDtos);
            }
@@ -137,7 +152,7 @@ public class LicenceApproveBatchjob {
         List<ApplicationGroupDto> result = new ArrayList<>();
         for(ApplicationGroupDto applicationGroupDto : applicationGroupDtos){
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
-            applicationGroupDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET));
+            //applicationGroupDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET));
             result.add(applicationGroupDto);
         }
         return  result;
@@ -149,7 +164,7 @@ public class LicenceApproveBatchjob {
         if(isSuccess){
             success.add(applicationGroupDto);
             LicenceGroupDto licenceGroupDto = generateResult.getLicenceGroupDto();
-            licenceGroupDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET));
+           // licenceGroupDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET));
             licenceGroupDtos.add(licenceGroupDto);
         }else{
             Map<String,String> error = new HashMap();
