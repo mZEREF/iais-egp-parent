@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.service.TemplatesService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.bcel.generic.NEW;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -37,7 +36,12 @@ import java.util.Map;
 @Delegator(value = "templatesDelegator")
 public class TemplatesDelegator {
 
-    private FilterParameter filterParameter;
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(MsgTemplateQueryDto.class)
+            .searchAttr(MsgTemplateConstants.MSG_SEARCH_PARAM)
+            .resultAttr(MsgTemplateConstants.MSG_SEARCH_RESULT)
+            .sortField(MsgTemplateConstants.TEMPLATE_SORT_COLUM).sortType(SearchParam.ASCENDING).build();
+
     private final TemplatesService templatesService;
 
     @Autowired
@@ -52,15 +56,12 @@ public class TemplatesDelegator {
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(MsgTemplateConstants.AUDIT_TRAIL_NAME,
                 MsgTemplateConstants.AUDIT_TRAIL_NAME);
+        ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_SEARCH_RESULT, null);
+        ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO, null);
     }
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
-        filterParameter = new FilterParameter.Builder().build();
-        filterParameter.setClz(MsgTemplateQueryDto.class);
-        filterParameter.setSearchAttr(MsgTemplateConstants.MSG_SEARCH_PARAM);
-        filterParameter.setResultAttr(MsgTemplateConstants.MSG_SEARCH_RESULT);
-        filterParameter.setSortField(MsgTemplateConstants.TEMPLATE_SORT_COLUM);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
         QueryHelp.setMainSql(MsgTemplateConstants.MSG_TEMPLATE_FILE, MsgTemplateConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult searchResult = templatesService.getTemplateResults(searchParam);
@@ -84,12 +85,29 @@ public class TemplatesDelegator {
     public void editTemplate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String msgId = ParamUtil.getString(request,MasterCodeConstants.CRUD_ACTION_VALUE);
-        prepareSelectOption(bpc);
         if (!msgId.isEmpty()){
             MsgTemplateDto msgTemplateDto = templatesService.getMsgTemplate(msgId);
-            msgTemplateDto.setMessageType(MasterCodeUtil.getCodeDesc(msgTemplateDto.getMessageType()));
-            msgTemplateDto.setDeliveryMode(MasterCodeUtil.getCodeDesc(msgTemplateDto.getDeliveryMode()));
+            String messageType = msgTemplateDto.getMessageType();
+            String deliveryMode = msgTemplateDto.getDeliveryMode();
+            String messageTypeTxt = MasterCodeUtil.getCodeDesc(msgTemplateDto.getMessageType());
+            String deliveryModeTxt = MasterCodeUtil.getCodeDesc(msgTemplateDto.getDeliveryMode());
+            msgTemplateDto.setMessageType(messageType);
+            msgTemplateDto.setDeliveryMode(deliveryMode);
             ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_TEMPLATE_DTO, msgTemplateDto);
+            List<SelectOption> messageTypeSelectList = new ArrayList<>();
+            messageTypeSelectList.add(new SelectOption(messageType, messageTypeTxt));
+            messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
+            messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
+            messageTypeSelectList.add(new SelectOption("MTTP003", "Letter"));
+            messageTypeSelectList.add(new SelectOption("MTTP004", "Notification"));
+            ParamUtil.setRequestAttr(bpc.request, "messageTypeSelect", messageTypeSelectList);
+
+            List<SelectOption> deliveryModeSelectList = new ArrayList<>();
+            deliveryModeSelectList.add(new SelectOption(deliveryMode, deliveryModeTxt));
+            deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
+            deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
+            deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
+            ParamUtil.setRequestAttr(bpc.request, "deliveryModeSelect", deliveryModeSelectList);
         }
     }
 
@@ -123,9 +141,7 @@ public class TemplatesDelegator {
                 "yyyy-MM-dd");
         String templateEndDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO)),
                 "yyyy-MM-dd");
-
         Map<String,Object> templateMap = new HashMap<>();
-
         if (!StringUtil.isEmpty(msgType)){
             msgType = masterCodeService.findCodeKeyByDescription(msgType);
             templateMap.put("msgType",msgType);
@@ -154,21 +170,6 @@ public class TemplatesDelegator {
         msgTemplateDto.setDeliveryMode(MasterCodeUtil.getCodeDesc(msgTemplateDto.getDeliveryMode()));
         ParamUtil.setRequestAttr(bpc.request,MsgTemplateConstants.MSG_TEMPLATE_DTO, msgTemplateDto);
 
-    }
-
-    private void prepareSelectOption(BaseProcessClass bpc){
-        List<SelectOption> messageTypeSelectList = new ArrayList<>();
-        messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
-        messageTypeSelectList.add(new SelectOption("MTTP002", "Banner Alert"));
-        messageTypeSelectList.add(new SelectOption("MTTP003", "Letter"));
-        messageTypeSelectList.add(new SelectOption("MTTP004", "Notification"));
-        ParamUtil.setRequestAttr(bpc.request, "messageTypeSelect", messageTypeSelectList);
-
-        List<SelectOption> deliveryModeSelectList = new ArrayList<>();
-        deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
-        deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
-        deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
-        ParamUtil.setRequestAttr(bpc.request, "deliveryModeSelect", deliveryModeSelectList);
     }
 
     private void getValueFromPage(MsgTemplateDto msgTemplateDto, HttpServletRequest request) throws ParseException {
