@@ -75,6 +75,7 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", null);
+        ParamUtil.setSessionAttr(bpc.request, "commPools", null);
     }
 
     /**
