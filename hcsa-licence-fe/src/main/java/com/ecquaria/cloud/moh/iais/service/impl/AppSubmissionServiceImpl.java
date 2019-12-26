@@ -93,11 +93,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
             premisessTypes.add(appGrpPremisesDto.getPremisesType());
         }
+        String baseServiceCode = "";
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
+                baseServiceCode = appSvcRelatedInfoDto.getServiceCode();
+            }
+        }
+
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
             LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
-            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
-                licenceFeeDto.setBaseService(appSvcRelatedInfoDto.getServiceCode());
-            }
+            licenceFeeDto.setBaseService(baseServiceCode);
             licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
             licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
             licenceFeeDto.setRenewCount(1);

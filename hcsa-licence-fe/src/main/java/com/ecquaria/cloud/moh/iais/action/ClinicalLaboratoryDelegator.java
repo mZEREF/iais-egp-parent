@@ -86,8 +86,8 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
 
         //svc
-        ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST, null);
-        ParamUtil.setSessionAttr(bpc.request, ClinicalLaboratoryDelegator.ERRORMAP_GOVERNANCEOFFICERS, null);
+        ParamUtil.setSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, null);
+        ParamUtil.setSessionAttr(bpc.request, ERRORMAP_GOVERNANCEOFFICERS, null);
         ParamUtil.setSessionAttr(bpc.request, RELOADSVCDOC,  null);
 
         //ParamUtil.setSessionAttr(bpc.request, SERVICEPERSONNELCONFIG, null);
@@ -305,28 +305,25 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers start ...."));
-        ParamUtil.setSessionAttr(bpc.request, "CgoMandatoryCount", 0);
-        ParamUtil.setRequestAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, null);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        String psnType = "CGO";
+        int mandatoryCount = 0;
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
-        if(!StringUtil.isEmpty(currentSvcId) && !StringUtil.isEmpty(psnType)){
+        if(!StringUtil.isEmpty(currentSvcId)){
             //min and max count
-            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, psnType);
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
             if(hcsaSvcPersonnelList != null && hcsaSvcPersonnelList.size()>0){
                 HcsaSvcPersonnelDto hcsaSvcPersonnelDto  = hcsaSvcPersonnelList.get(0);
-                int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
-                if(appSvcRelatedInfoDto != null){
-                    List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                    if(appSvcCgoDtoList != null  && appSvcCgoDtoList.size()>mandatoryCount){
-                        mandatoryCount = appSvcCgoDtoList.size();
-                    }
-                }
-
-                ParamUtil.setSessionAttr(bpc.request, "CgoMandatoryCount", mandatoryCount);
+                mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
                 ParamUtil.setSessionAttr(bpc.request, "HcsaSvcPersonnel", hcsaSvcPersonnelDto);
             }
         }
+        if(appSvcRelatedInfoDto != null){
+            List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            if(appSvcCgoDtoList != null  && appSvcCgoDtoList.size()>mandatoryCount){
+                mandatoryCount = appSvcCgoDtoList.size();
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, "CgoMandatoryCount", mandatoryCount);
         List<SelectOption> cgoSelectList = new ArrayList<>();
         SelectOption sp0 = new SelectOption("-1", "Select Personnel");
         cgoSelectList.add(sp0);
@@ -414,26 +411,49 @@ public class ClinicalLaboratoryDelegator {
     public void preparePrincipalOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-
-        int mandatory = 0;
-        if(hcsaSvcPersonnelList != null && !hcsaSvcPersonnelList.isEmpty()){
-            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
+        List<HcsaSvcPersonnelDto> principalOfficerConfig  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+        List<HcsaSvcPersonnelDto> deputyPrincipalOfficerConfig   =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+        //todo
+        int mandatory = 1;
+        int deputyMandatory = 1;
+        if(principalOfficerConfig != null && !principalOfficerConfig.isEmpty()){
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = principalOfficerConfig.get(0);
             if(hcsaSvcPersonnelDto != null){
                 mandatory = hcsaSvcPersonnelDto.getMandatoryCount();
             }
         }
 
+        if(deputyPrincipalOfficerConfig != null && !deputyPrincipalOfficerConfig.isEmpty()){
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = deputyPrincipalOfficerConfig.get(0);
+            if(hcsaSvcPersonnelDto != null){
+                deputyMandatory = hcsaSvcPersonnelDto.getMandatoryCount();
+            }
+        }
+
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        List<AppSvcPrincipalOfficersDto> principalOfficersDtos = new ArrayList<>();
+        List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = new ArrayList<>();
         if(appSvcPrincipalOfficersDtos != null && ! appSvcPrincipalOfficersDtos.isEmpty()){
-            if(appSvcPrincipalOfficersDtos.size() > mandatory){
-                mandatory = appSvcPrincipalOfficersDtos.size();
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcPrincipalOfficersDtos){
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                    principalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                    deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                }
+            }
+            if(principalOfficersDtos.size() > mandatory){
+                mandatory = principalOfficersDtos.size();
+            }
+            if(deputyPrincipalOfficersDtos.size() > mandatory){
+                mandatory = deputyPrincipalOfficersDtos.size();
             }
         }
         //reload
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersMandatory", mandatory);
-        ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", appSvcPrincipalOfficersDtos);
+        ParamUtil.setRequestAttr(bpc.request, "DeputyPrincipalOfficersMandatory", deputyMandatory);
+        ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
+        ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
 
         List<SelectOption> assignSelectList = new ArrayList<>();
         SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);

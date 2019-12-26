@@ -466,8 +466,13 @@ public class NewApplicationDelegator {
      */
     public void doPayment(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
+        String switch2 = "loading";
+        String pmtStatus = (String) ParamUtil.getRequestAttr(bpc.request, "PmtStatus");
+        if(!StringUtil.isEmpty(pmtStatus) && "GIRO".equals(pmtStatus)){
+            switch2 = "ack";
+        }
         String result = bpc.request.getParameter("result");
-        String switch2 = "ack";
+
         if (!StringUtil.isEmpty(result)) {
             log.debug(StringUtil.changeForLog("payment result:" + result));
             String pmtRefNo = bpc.request.getParameter("reqRefNo");
@@ -481,8 +486,6 @@ public class NewApplicationDelegator {
                 appGrp.setPmtRefNo(pmtRefNo);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
-            }else {
-                switch2 = "loading";
             }
         }
 
@@ -520,12 +523,12 @@ public class NewApplicationDelegator {
         //do validate
        // Map<String, Map<String, String>> validateResult = doValidate(bpc);
         //save the app and appGroup
-        Map<String, String> map = doPreviewAndSumbit(bpc);
+       /* Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
             return;
-        }
+        }*/
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
@@ -804,6 +807,7 @@ public class NewApplicationDelegator {
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO);
             serviceConfigService.updatePaymentStatus(appGrp);
+            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", "GIRO");
         }
         log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
     }

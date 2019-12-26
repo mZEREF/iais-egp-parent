@@ -146,8 +146,12 @@
                 <div class="col-sm-4">
                   Deputy Principal Officer(Optional):
                 </div>
+                <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
                 <div class="col-sm-4" >
-                  <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect"  value="" ></iais:select>
+                  <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
+                    <c:set var="flag" value="1"/>
+                  </c:if>
+                  <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect"  value="${flag}" ></iais:select>
                   <br/>
                   <br/>
                   <br/>
@@ -156,6 +160,7 @@
                   <br/>
                   <br/>
                 </div>
+                </c:if>
               </div>
 
             </div>
@@ -167,9 +172,15 @@
         <div class="panel-heading " id="headingDeputy" role="tab">
           <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#deputyContent" aria-expanded="true" aria-controls="deputyContent">Deputy Principal Officer(Optional)</a></h4>
         </div>
-        <div class="deputy-content panel-collapse collapse" id="deputyContent" role="tabpanel" aria-labelledby="headingDeputy">
+        <div class="deputy-content panel-collapse collapse <c:if test="${DeputyPrincipalOfficersMandatory> 0}">in</c:if>" id="deputyContent" role="tabpanel" aria-labelledby="headingDeputy">
           <div class="panel-body">
             <%--<p class="text-right"><a href="application-premises.html"><i class="fa fa-pencil-square-o"></i>Edit</a></p>--%>
+
+        <c:if test="${DeputyPrincipalOfficersMandatory>0}">
+          <c:forEach begin="0" end="${DeputyPrincipalOfficersMandatory-1}" step="1" varStatus="status">
+            <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
+              <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
+            </c:if>
             <div class="panel-main-content">
               <div class="deputyPrincipalOfficers">
                 <h2>Deputy Principal Officer</h2>
@@ -181,10 +192,10 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <iais:select  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="" firstOption="Select Salution"></iais:select>
+                        <iais:select  name="deputySalutation" codeCategory="CATE_ID_SALUTATION" value="${deputy.salutation}" firstOption="Select Salution"></iais:select>
                       </div>
                       <div class="col-sm-4">
-                        <input name="deputyName"  type="text"  class="form-control control-input control-set-font control-font-normal" value=""  size="30">
+                        <input name="deputyName"  type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.name}"  size="30">
                         <span class="error-msg" name="iaisErrorMsg" id="error_deputyName"></span>
                       </div>
                     </div>
@@ -201,12 +212,12 @@
                       </div>
                       <div class="col-sm-4">
                         <div class="">
-                          <iais:select  name="deputyIdType" value="" options="IdTypeSelect"></iais:select>
+                          <iais:select  name="deputyIdType" value="${deputy.idType}" options="IdTypeSelect"></iais:select>
                           <span name="iaisErrorMsg" class="error-msg" id="error_deputyIdType"></span>
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input  name="deputyIdNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input  name="deputyIdNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
                         <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo"></span>
                       </div>
                     </div>
@@ -220,7 +231,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-5">
-                        <iais:select name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="" firstOption="Select Designation"></iais:select>
+                        <iais:select name="deputyDesignation" codeCategory="CATE_ID_DESIGNATION" value="${deputy.designation}" firstOption="Select Designation"></iais:select>
                         <span class="error-msg" id="error_deputyDesignation" name="iaisErrorMsg"></span>
                       </div>
                     </div>
@@ -234,7 +245,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input name="deputyMobileNo" type="text"   maxlength="8" class="form-control control-input control-set-font control-font-normal" value="${deputy.mobileNo}" size="30">
                         <span class="error-msg"  name="iaisErrorMsg"  id="error_deputyMobileNo"></span>
                       </div>
                     </div>
@@ -248,7 +259,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <input name="deputyEmailAddr" type="text" class="form-control control-input control-set-font control-font-normal" value="" size="30">
+                        <input name="deputyEmailAddr" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
                         <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr" ></span>
                       </div>
                     </div>
@@ -262,7 +273,7 @@
                         <span class="mandatory">*</span>
                       </div>
                       <div class="col-sm-4">
-                        <iais:select  name="modeOfMedAlert" value="" options="MedAlertSelect"></iais:select>
+                        <iais:select  name="modeOfMedAlert" value="${deputy.modeOfMedAlert}" options="MedAlertSelect"></iais:select>
                         <span class="error-msg" name="iaisErrorMsg" id="error_modeOfMedAlert" ></span>
                       </div>
                     </div>
@@ -274,6 +285,8 @@
                 <div class="row"></div>
               </div>
             </div>
+          </c:forEach>
+        </c:if>
           </div>
         </div>
       </div>
@@ -286,7 +299,7 @@
   $(document).ready(function () {
       poSelect();
       $('.poSelect').trigger('change');
-
+      $('.deputySelect').trigger('change');
   });
 
   var poSelect = function(){
