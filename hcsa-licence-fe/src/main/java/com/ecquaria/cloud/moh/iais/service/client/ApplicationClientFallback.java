@@ -23,12 +23,20 @@ import java.util.List;
  * @date 2019/11/26 14:29
  */
 public class ApplicationClientFallback {
-    public FeignResponseEntity<String>  fileAll(){
+    public FeignResponseEntity<String> fileAll(){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
+    public FeignResponseEntity<String> recDatesToString(){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     public FeignResponseEntity<Void> updateStatus(){
          FeignResponseEntity entity = new FeignResponseEntity<>();
          HttpHeaders headers = new HttpHeaders();

@@ -36,6 +36,9 @@ public interface ApplicationClient  {
     @GetMapping(path = "/iais-application/all-file")
     FeignResponseEntity<String> fileAll();
 
+    @GetMapping(value = "/iais-application/rec-datas")
+    FeignResponseEntity<String> recDatesToString();
+
     @PutMapping(path = "/iais-application/status")
     FeignResponseEntity<Void> updateStatus();
 
