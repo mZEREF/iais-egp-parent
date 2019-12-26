@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import com.ecquaria.cloud.moh.iais.service.TemplatesService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.bcel.generic.NEW;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -36,15 +37,14 @@ import java.util.Map;
 @Delegator(value = "templatesDelegator")
 public class TemplatesDelegator {
 
-    private final FilterParameter filterParameter;
+    private FilterParameter filterParameter;
     private final TemplatesService templatesService;
 
     @Autowired
     private MasterCodeService masterCodeService;
 
     @Autowired
-    private TemplatesDelegator(FilterParameter filterParameter, TemplatesService templatesService){
-        this.filterParameter = filterParameter;
+    private TemplatesDelegator(TemplatesService templatesService){
         this.templatesService = templatesService;
     }
 
@@ -56,6 +56,7 @@ public class TemplatesDelegator {
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
+        filterParameter = new FilterParameter.Builder().build();
         filterParameter.setClz(MsgTemplateQueryDto.class);
         filterParameter.setSearchAttr(MsgTemplateConstants.MSG_SEARCH_PARAM);
         filterParameter.setResultAttr(MsgTemplateConstants.MSG_SEARCH_RESULT);
