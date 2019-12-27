@@ -6,10 +6,15 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
-    <form class="form-horizontal" method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
+    <form class="form-horizontal" method="post" id="IntranetUserForm" action=<%=process.runtime.continueURL()%>>
+
         <%@ include file="/include/formHidden.jsp" %>
+        <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator"/>
+        <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ClinicalOfficerValidateDto"/>
+        <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <div class="row">
@@ -161,10 +166,31 @@
                                 <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a></div>
                             </div>
                             <div class="col-xs-10 col-sm-10">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('save')">SUBMIT</a></div>
+                                <div class="text-right text-center-mobile"><a type="button" class="btn btn-primary" data-toggle="modal" data-target="#createUser">SUBMIT</a></div>
                             </div>
                         </div>
                     </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="createUser" tabindex="-1" role="dialog" aria-labelledby="createUser" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span></div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" onclick="submit('save')">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Modal End-->
                 </div>
             </div>
         </div>
@@ -172,9 +198,12 @@
     <%@include file="/include/validation.jsp"%>
 </div>
 
-<script>
+<script type="text/javascript">
     function submit(action){
         $("[name='crud_action_type']").val(action);
-        $("#MasterCodeForm").submit();
+        $("#IntranetUserForm").submit();
+    }
+    function doCreate(){
+        submit('create');
     }
 </script>

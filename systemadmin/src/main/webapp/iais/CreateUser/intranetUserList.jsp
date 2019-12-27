@@ -49,4 +49,19 @@
     function doCreate(){
         submit('create');
     }
+
+
+    $("#MC_Search").click(function() {
+        submit('doSearch');
+    });
+
+    function doEdit(mcId){
+        $("[name='crud_action_value']").val(mcId);
+        submit('edit');
+    }
+
+    function doDelete(mcId){
+        $("[name='crud_action_value']").val(mcId);
+        submit('doDelete');
+    }
 </script>

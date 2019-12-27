@@ -9,8 +9,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author weilu
@@ -19,9 +18,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "iais-organization", configuration = FeignConfiguration.class, fallback = IntranetUserClientFallback.class)
 public interface IntranetUserClient {
 
-    @PostMapping(value = "/iais-orguser-be/intranet-user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> createIntranetUser(@RequestBody OrgUserDto user);
+    @PostMapping(value = "/iais-orguser-be/user-management", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> createOrgUserDto(@RequestBody OrgUserDto user);
 
     @PostMapping(value = "/iais-orguser-be/intranet-user-param", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<OrgUserQueryDto>> doQuery(@RequestBody SearchParam searchParam);
+
+    @PutMapping(value = "/iais-orguser-be" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<OrgUserDto> updateOrgUserDto(@RequestBody OrgUserDto orgUserDto);
+
+    @DeleteMapping(value = "/iais-orguser-be/{id}")
+    FeignResponseEntity<Void> delOrgUser (@PathVariable("id")String id);
+
+    @GetMapping(value = "/iais-orguser-be/users-account/{id}")
+    FeignResponseEntity<OrgUserDto> findIntranetUserById(@PathVariable("id")String id);
 }

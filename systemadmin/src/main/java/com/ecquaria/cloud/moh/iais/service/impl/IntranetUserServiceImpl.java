@@ -23,11 +23,27 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public void createIntranetUser(OrgUserDto orgUserDto) {
-
+        intranetUserClient.createOrgUserDto(orgUserDto);
     }
 
     @Override
     public SearchResult<OrgUserQueryDto> doQuery(SearchParam param) {
         return intranetUserClient.doQuery(param).getEntity();
+    }
+
+    @Override
+    public OrgUserDto updateOrgUser(OrgUserDto orgUserDto) {
+        return intranetUserClient.updateOrgUserDto(orgUserDto).getEntity();
+
+    }
+
+    @Override
+    public void delOrgUser(String id) {
+        intranetUserClient.delOrgUser(id);
+    }
+
+    @Override
+    public OrgUserDto findIntranetUserById(String id) {
+        return  intranetUserClient.findIntranetUserById(id).getEntity();
     }
 }

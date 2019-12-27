@@ -12,4 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 public interface IntranetUserService {
     void createIntranetUser(OrgUserDto orgUserDto);
     SearchResult<OrgUserQueryDto> doQuery(SearchParam param);
+    OrgUserDto updateOrgUser(OrgUserDto orgUserDto);
+    void delOrgUser(String id);
+    OrgUserDto findIntranetUserById(String id);
 }
