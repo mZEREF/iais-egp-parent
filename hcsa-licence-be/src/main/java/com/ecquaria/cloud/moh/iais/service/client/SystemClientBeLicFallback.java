@@ -19,12 +19,21 @@ public class SystemClientBeLicFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    FeignResponseEntity<String> getFileTypeAndStatus(String processType, String status){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     FeignResponseEntity<String> hclCodeByCode(String code){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
+
     FeignResponseEntity<String> licence( String hciCode,  String serviceCode,
                                        Integer yearLength,  Integer licenceSeq) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
