@@ -129,7 +129,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         String userId = loginContext.getUserId();
         for(OrgUserDto orgUserDto:orgUserDtos){
             if(userId.equals(orgUserDto.getId())){
-                inspecTaskCreAndAssDto.setInspectionLead(orgUserDto.getUserName());
+                inspecTaskCreAndAssDto.setInspectionLead(orgUserDto.getDisplayName());
             }
         }
     }
@@ -147,7 +147,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         } else {
             for(OrgUserDto oDto:orgUserDtos){
                 if(oDto.getId().equals(loginContext.getUserId())){
-                    SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                    SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
                     inspectorList.add(so);
                 }
             }
@@ -162,11 +162,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
         for(OrgUserDto oDto:orgUserDtos){
             if(!(oDto.getId().equals(loginContext.getUserId()))){
-                SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
                 inspectorList.add(so);
             } else {
                 if(AppConsts.TRUE.equals(flag)){
-                    SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                    SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
                     inspectorList.add(so);
                 }
             }

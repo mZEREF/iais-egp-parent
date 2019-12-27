@@ -170,11 +170,11 @@ public class InspectionServiceImpl implements InspectionService {
         }
         for(OrgUserDto oDto:orgUserDtoList){
             if(!(oDto.getId().equals(loginContext.getUserId()))){
-                SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
                 inspectorOption.add(so);
             } else {
                 if(AppConsts.TRUE.equals(flag)){
-                    SelectOption so = new SelectOption(oDto.getId(), oDto.getUserName());
+                    SelectOption so = new SelectOption(oDto.getId(), oDto.getDisplayName());
                     inspectorOption.add(so);
                 }
             }
@@ -205,7 +205,7 @@ public class InspectionServiceImpl implements InspectionService {
                 if(taskDtoList != null && taskDtoList.size() > 0){
                     value = getOptionValue(taskDtoList);
                 }
-                SelectOption so = new SelectOption(value, oDto.getUserName());
+                SelectOption so = new SelectOption(value, oDto.getDisplayName());
                 inspectorOption.add(so);
             }
         }
@@ -327,7 +327,7 @@ public class InspectionServiceImpl implements InspectionService {
                 List<String> ids = new ArrayList<>();
                 ids.add(tDto.getUserId());
                 List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
-                inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getUserName());
+                inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getDisplayName());
             }
             inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
             inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
@@ -361,7 +361,7 @@ public class InspectionServiceImpl implements InspectionService {
                     itplDto.setInspectionTypeName(iDto.getInspectionType() == 0? "Post":"Pre");
                     itplDto.setServiceEndDate(hcsaServiceDto.getEndDate());
                     itplDto.setInspectionDate(new Date());
-                    itplDto.setInspectorLead(orgUserDto.getUserName());
+                    itplDto.setInspectorLead(orgUserDto.getDisplayName());
                 }
             }
         }

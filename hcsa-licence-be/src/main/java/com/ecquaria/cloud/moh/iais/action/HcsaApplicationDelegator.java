@@ -150,7 +150,7 @@ public class HcsaApplicationDelegator {
             }
             for (int j = 0; j <userNameList.size() ; j++) {
                 if ((appSupDocDtos.get(i).getSubmittedBy()).equals(userNameList.get(j).getId())){
-                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getUserName());
+                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getDisplayName());
                 }
             }
         }
@@ -202,7 +202,7 @@ public class HcsaApplicationDelegator {
             String stageName=MasterCodeUtil.getCodeDesc(e.getAppStatus());
             String UserId=e.getActionby();
             OrgUserDto user=applicationViewService.getUserById(UserId);
-            String actionBy=user.getUserName();
+            String actionBy=user.getDisplayName();
             rollBackMap.put(actionBy+"("+stageName+")",e.getStageId());
          }
         }

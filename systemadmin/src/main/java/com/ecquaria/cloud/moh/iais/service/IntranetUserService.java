@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.IntranetUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 
@@ -11,6 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
  * @date 2019/12/25 17:40
  */
 public interface IntranetUserService {
-    void createIntranetUser(IntranetUserDto intranetUserDto);
+    void createIntranetUser(OrgUserDto orgUserDto);
     SearchResult<OrgUserQueryDto> doQuery(SearchParam param);
 }

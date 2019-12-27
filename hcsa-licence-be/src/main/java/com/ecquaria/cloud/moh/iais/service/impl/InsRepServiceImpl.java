@@ -88,7 +88,7 @@ public class InsRepServiceImpl implements InsRepService {
         List<OrgUserDto> orgUserDtos = taskService.getUsersByWorkGroupId(wkGrpId, AppConsts.COMMON_STATUS_ACTIVE);
         List<String> inspectors = new ArrayList<>();
         for(OrgUserDto orgUserDto :orgUserDtos){
-            inspectors.add(orgUserDto.getUserName());
+            inspectors.add(orgUserDto.getDisplayName());
         }
 
         //get the inspector who login in and create this report
@@ -96,13 +96,13 @@ public class InsRepServiceImpl implements InsRepService {
         String userId = loginContext.getUserId();
         listUserId.add(userId);
         List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-        String reportBy =  userList.get(0).getUserName();
+        String reportBy =  userList.get(0).getDisplayName();
         listUserId.clear();
         //get inspection lead
         String leadId = organizationClient.getInspectionLead(wkGrpId).getEntity();
         listUserId.add(leadId);
         List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-        String leadName = leadList.get(0).getUserName();
+        String leadName = leadList.get(0).getDisplayName();
 
         //get application type (new/renew)
         String appTypeCode = insRepClient.getAppType(appId).getEntity();

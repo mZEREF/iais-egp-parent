@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntrenetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.IntranetUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -76,8 +75,8 @@ public class MohIntranetUserDelegator {
         if(!"save".equals(actionType)){
             ParamUtil.setRequestAttr(bpc.request,IntrenetUserConstant.ISVALID,"true");
         }
-        IntranetUserDto intranetUserDto = prepareOrgUserDto(bpc);
-        intranetUserService.createIntranetUser(intranetUserDto);
+        OrgUserDto orgUserDto = prepareOrgUserDto(bpc);
+        intranetUserService.createIntranetUser(orgUserDto);
         ParamUtil.setRequestAttr(bpc.request,IntrenetUserConstant.ISVALID,"true");
         }
 
@@ -105,8 +104,8 @@ public class MohIntranetUserDelegator {
 
     }
 
-    private IntranetUserDto prepareOrgUserDto (BaseProcessClass bpc) throws ParseException {
-        IntranetUserDto intranetUserDto = new IntranetUserDto() ;
+    private OrgUserDto prepareOrgUserDto (BaseProcessClass bpc) throws ParseException {
+        OrgUserDto orgUserDto = new OrgUserDto() ;
         String userId = ParamUtil.getRequestString(bpc.request, IntrenetUserConstant.INTRANET_USERID);
         String displayName = ParamUtil.getRequestString(bpc.request, IntrenetUserConstant.INTRANET_DISPLAYNAME);
         String startDateStr = ParamUtil.getRequestString(bpc.request, IntrenetUserConstant.INTRANET_STARTDATE);
@@ -124,21 +123,23 @@ public class MohIntranetUserDelegator {
         String officeNo = ParamUtil.getRequestString(bpc.request, IntrenetUserConstant.INTRANET_OFFICETELNO);
         String remarks = ParamUtil.getRequestString(bpc.request, IntrenetUserConstant.INTRANET_REMARKS);
 
-        intranetUserDto.setUserId(userId);
-        intranetUserDto.setDisplayName(displayName);
-        intranetUserDto.setEffectiveFrom(startDate);
-        intranetUserDto.setEffectiveTo(endDate);
-        intranetUserDto.setSalutation(salutation);
-        intranetUserDto.setOrgId("29ABCF6D-770B-EA11-BE7D-000C29F371DC");
-        intranetUserDto.setDivision(division);
-        intranetUserDto.setBranchUnit(branch);
-        intranetUserDto.setEmailAddr(email);
-        intranetUserDto.setMobileNo(mobileNo);
-        intranetUserDto.setOfficeTelNo(officeNo);
-        intranetUserDto.setRemarks(remarks);
-        intranetUserDto.setStatus("CMSTAT001");
-        intranetUserDto.setUserDomain("intranet");
-        return intranetUserDto ;
+        orgUserDto.setUserId(userId);
+        orgUserDto.setFirstName(firstName);
+        orgUserDto.setLastName(lastName);
+        orgUserDto.setDisplayName(displayName);
+        orgUserDto.setEffectiveFrom(startDate);
+        orgUserDto.setEffectiveTo(endDate);
+        orgUserDto.setSalutation(salutation);
+        orgUserDto.setOrgId("29ABCF6D-770B-EA11-BE7D-000C29F371DC");
+        orgUserDto.setDivision(division);
+        orgUserDto.setBranchUnit(branch);
+        orgUserDto.setEmailAddr(email);
+        orgUserDto.setMobileNo(mobileNo);
+        orgUserDto.setOfficeTelNo(officeNo);
+        orgUserDto.setRemarks(remarks);
+        orgUserDto.setStatus("CMSTAT001");
+        orgUserDto.setUserDomain("intranet");
+        return orgUserDto ;
 
     }
 

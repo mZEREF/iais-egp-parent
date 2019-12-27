@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.IntranetUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
@@ -23,7 +22,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     private IntranetUserClient intranetUserClient ;
 
     @Override
-    public void createIntranetUser(IntranetUserDto intranetUserDto) {
+    public void createIntranetUser(OrgUserDto orgUserDto) {
 
     }
 
