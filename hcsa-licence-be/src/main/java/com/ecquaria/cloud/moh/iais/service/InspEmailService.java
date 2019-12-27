@@ -26,7 +26,7 @@ public interface InspEmailService {
     String insertEmailTemplate(InspectionEmailTemplateDto inspectionEmailTemplateDto);
     void recallEmailTemplate(String id);
     InspectionEmailTemplateDto getInsertEmail(String appPremCorrId);
-    ApplicationViewDto getAppViewByNo( String appNo);
+    ApplicationViewDto getAppViewByCorrelationId(String correlationId);
     InspectionEmailTemplateDto loadingEmailTemplate(String id);
     ApplicationDto getApplicationDtoByAppPremCorrId(String appPremCorrId);
     List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode, String svcType);

@@ -69,8 +69,8 @@ public class InspEmailServiceImpl implements InspEmailService {
     }
 
     @Override
-    public ApplicationViewDto getAppViewByNo(String appNo) {
-        return applicationClient.getAppViewByCorrelationId(appNo).getEntity();
+    public ApplicationViewDto getAppViewByCorrelationId(String correlationId) {
+        return applicationClient.getAppViewByCorrelationId(correlationId).getEntity();
     }
 
     @Override

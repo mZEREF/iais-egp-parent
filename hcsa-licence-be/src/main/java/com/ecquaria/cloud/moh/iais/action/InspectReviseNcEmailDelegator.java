@@ -286,9 +286,8 @@ public class InspectReviseNcEmailDelegator {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        String appNo = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
-        String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
+        String correlationId = taskDto.getRefNo();
+        String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 
@@ -372,11 +371,12 @@ public class InspectReviseNcEmailDelegator {
     String reloadRevEmail(HttpServletRequest request) throws IOException, TemplateException {
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, "taskDto");
-        String appNo = taskDto.getRefNo();
+        String correlationId = taskDto.getRefNo();
+        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
+        String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
         String licenseeId=inspEmailService.getAppInsRepDto(appNo).getLicenseeId();
         String licenseeName=inspEmailService.getLicenseeDtoById(licenseeId).getName();
-        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
-        String appPremCorrId=applicationViewDto.getAppPremisesCorrelationId();
+        String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         inspectionEmailTemplateDto.setAppPremCorrId(appPremCorrId);
         inspectionEmailTemplateDto.setApplicantName(licenseeName);

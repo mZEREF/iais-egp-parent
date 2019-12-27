@@ -85,8 +85,8 @@ public class InspectionMergeSendNcEmailDelegator {
             taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
-        String appNo = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByNo(appNo);
+        String correlationId = taskDto.getRefNo();
+        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByAppId(applicationViewDto.getApplicationDto().getId());
         StringBuilder mesContext=new StringBuilder();
         String oneEmail=inspEmailService.getInsertEmail(appPremisesCorrelationDtos.get(0).getId()).getMessageContent();
