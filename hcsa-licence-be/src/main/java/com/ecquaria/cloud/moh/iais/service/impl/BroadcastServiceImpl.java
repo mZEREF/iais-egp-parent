@@ -37,7 +37,7 @@ public class BroadcastServiceImpl implements BroadcastService {
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process) {
         String  callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
         String project ="hcsaLicenceBe";
-        String processName = "rountingASO";
+        String processName = "rountingASO_createTask";
         String step = "start";
         if(process!=null){
             project= process.getCurrentProject();
@@ -61,7 +61,7 @@ public class BroadcastServiceImpl implements BroadcastService {
     public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process) {
         String  callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
         String project ="hcsaLicenceBe";
-        String processName = "rountingASO";
+        String processName = "rountingASO_updateApplication";
         String step = "start";
         if(process!=null){
             project= process.getCurrentProject();
