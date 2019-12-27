@@ -77,7 +77,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         backups = sharedPath + "backupsRec";
         FileOutputStream fileOutputStream = null;
         FileOutputStream fileOutputStream2 = null;
-        String s = FileUtil.genMd5FileChecksum(data.getBytes());
         File d = new File(download);
         File b = new File(backups);
         if(!d.exists()){
@@ -86,7 +85,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         if(!b.exists()){
             b.mkdirs();
         }
-        File file = new File(download + File.separator + s + fileFormat);
+        File file = new File(download + File.separator + data + fileFormat);
         try {
             if(!file.exists()){
                 file.createNewFile();
@@ -152,13 +151,17 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     private void getFileAndClassify(String appId, Map<String, AppPremPreInspectionNcDocDto> mapValue) {
         for(Map.Entry<String, AppPremPreInspectionNcDocDto> entry : mapValue.entrySet()){
             String mapKey = entry.getKey();
-            String ItemId = FileUtil.genMd5FileChecksum(mapKey.getBytes());
-            String appIdMd5 = FileUtil.genMd5FileChecksum(appId.getBytes());
             AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto = entry.getValue();
             byte[] fileByte = fileRepoClient.getFileFormDataBase(appPremPreInspectionNcDocDto.getFileRepoId()).getEntity();
-            String s = FileUtil.genMd5FileChecksum(fileByte);
-            File file = new File(download + File.separator + appIdMd5 + File.separator + ItemId + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
-            File backupsFile = new File(backups + File.separator + appIdMd5 + File.separator + ItemId + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
+            String s;
+            try {
+                s = new String(fileByte, "UTF-8");
+            } catch (Exception e) {
+                log.error(e.getMessage(),e);
+                s = "";
+            }
+            File file = new File(download + File.separator + appId + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
+            File backupsFile = new File(backups + File.separator + appId + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
             writeFileByFileByte(file, backupsFile, fileByte);
         }
     }
@@ -170,8 +173,8 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             if(!file.exists()){
                 file.createNewFile();
             }
-            fileOutputStream2 =new FileOutputStream(backupsFile);
-            fileOutputStream =new FileOutputStream(file);
+            fileOutputStream2 = new FileOutputStream(backupsFile);
+            fileOutputStream = new FileOutputStream(file);
             fileOutputStream.write(fileByte);
             fileOutputStream2.write(fileByte);
 
@@ -179,7 +182,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             log.error(e.getMessage(),e);
         }
         finally {
-            if(fileOutputStream2!=null){
+            if(fileOutputStream2 != null){
                 try {
                     fileOutputStream2.close();
                 } catch (IOException e) {
@@ -204,11 +207,11 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         OutputStream is = null;
         try {
             l = System.currentTimeMillis();
-            is = new FileOutputStream(backups + File.separator + l +".zip");
-            cos = new CheckedOutputStream(is,new CRC32());
+            is = new FileOutputStream(backups + File.separator + l + ".zip");
+            cos = new CheckedOutputStream(is, new CRC32());
             zos = new ZipOutputStream(cos);
-            File file =new File(download);
-            zipFile(zos,file);
+            File file = new File(download);
+            zipFile(zos, file);
 
         } catch (IOException e) {
             log.error(e.getMessage(),e);
@@ -239,26 +242,26 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         return l+"";
     }
 
-    private void zipFile(ZipOutputStream zos,File file)  {
-        BufferedInputStream bis=null;
-        InputStream is=null;
+    private void zipFile(ZipOutputStream zos, File file)  {
+        BufferedInputStream bis = null;
+        InputStream is = null;
         try {
             if(file.isDirectory()){
-                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))+File.separator));
+                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName)) + File.separator));
                 for(File f: Objects.requireNonNull(file.listFiles())){
                     zipFile(zos,f);
                 }
             }
             else {
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
-                is=new FileInputStream(file.getPath());
-                bis =new BufferedInputStream(is);
+                is = new FileInputStream(file.getPath());
+                bis = new BufferedInputStream(is);
                 int count ;
-                byte [] b =new byte[1024];
-                count=bis.read(b);
+                byte [] b = new byte[1024];
+                count = bis.read(b);
                 while(count!=-1){
-                    zos.write(b,0,count);
-                    count=bis.read(b);
+                    zos.write(b,0, count);
+                    count = bis.read(b);
                 }
             }
         }catch (IOException e){
@@ -266,21 +269,21 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         }
         finally {
 
-            if(zos!=null){
+            if(zos != null){
                 try {
                     zos.close();
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
                 }
             }
-            if(bis!=null){
+            if(bis != null){
                 try {
                     bis.close();
                 } catch (IOException e) {
                     log.error(e.getMessage(),e);
                 }
             }
-            if(is!=null){
+            if(is != null){
                 try {
                     is.close();
                 } catch (IOException e) {
@@ -291,24 +294,24 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void rename(String fileNamesss)  {
-        flag=true;
-        File zipFile =new File(backups);
+        flag = true;
+        File zipFile = new File(backups);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
-                if (name.endsWith(fileNamesss+".zip")) {
+                if (name.endsWith(fileNamesss + ".zip")) {
                     return true;
                 }
                 return false;
             });
             for(File file:files){
                 try {
-                    FileInputStream is=new FileInputStream(file);
-                    ByteArrayOutputStream by=new ByteArrayOutputStream();
-                    byte [] size=new byte[1024];
+                    FileInputStream is = new FileInputStream(file);
+                    ByteArrayOutputStream by = new ByteArrayOutputStream();
+                    byte [] size = new byte[1024];
                     int count = is.read(size);
-                    while(count!=-1){
-                        by.write(size,0,count);
-                        count= is.read(size);
+                    while(count != -1){
+                        by.write(size,0, count);
+                        count = is.read(size);
                     }
                     by.close();
                     is.close();
@@ -329,7 +332,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void deleteFile(){
-        File file =new File(download);
+        File file = new File(download);
         if(file.isDirectory()){
             File[] files = file.listFiles((dir, name) -> {
                 if (name.endsWith(fileFormat)) {
@@ -358,7 +361,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization()).getEntity();
         }catch (Exception e){
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
             return s;
         }
         return s;
