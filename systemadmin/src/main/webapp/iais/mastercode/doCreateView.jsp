@@ -120,7 +120,27 @@
                                 <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a></div>
                             </div>
                             <div class="col-xs-10 col-sm-10">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('save')">SUBMIT</a></div>
+                                <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myCreateModal">SUBMIT</button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="myCreateModal" tabindex="-1" role="dialog" aria-labelledby="myCreateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span></div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" onclick="submit('save')">Confirm</button>
+                                </div>
                             </div>
                         </div>
                     </div>

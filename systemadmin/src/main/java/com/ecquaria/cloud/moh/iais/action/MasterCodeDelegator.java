@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstan
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -20,7 +21,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -74,6 +77,14 @@ public class MasterCodeDelegator {
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
         QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
+        List<MasterCodeQueryDto> masterCodeQueryDtoList = searchResult.getRows();
+        for (MasterCodeQueryDto masterCodeQueryDto:masterCodeQueryDtoList
+             ) {
+            if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())){
+                masterCodeQueryDto.setCodeValue("N.A");
+            }
+            masterCodeQueryDto.setStatus(MasterCodeUtil.getCodeDesc(masterCodeQueryDto.getStatus()));
+        }
 
         if(!StringUtil.isEmpty(searchResult)){
             ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, searchParam);
@@ -219,6 +230,7 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             return;
         }
+        masterCodeDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory()));
         masterCodeService.saveMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
 
@@ -237,6 +249,12 @@ public class MasterCodeDelegator {
         String masterCodeId = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_VALUE);
         if (!masterCodeId.isEmpty()){
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
+            List<SelectOption> mcStatusSelectList = new ArrayList<>();
+            mcStatusSelectList.add(new SelectOption(masterCodeDto.getStatus(), MasterCodeUtil.getCodeDesc(masterCodeDto.getStatus())));
+            mcStatusSelectList.add(new SelectOption("CMSTAT001", "Active"));
+            mcStatusSelectList.add(new SelectOption("CMSTAT002", "Deleted"));
+            mcStatusSelectList.add(new SelectOption("CMSTAT003", "Inactive"));
+            ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);
             ParamUtil.setSessionAttr(request,MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
         }
     }

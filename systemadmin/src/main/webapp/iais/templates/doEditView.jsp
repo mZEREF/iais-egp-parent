@@ -39,7 +39,6 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Delivery Mode:</label>
-
                                 <div class="col-xs-8 col-sm-6 col-md-3">
                                     <iais:select name="deliveryMode" id="deliveryMode" options="deliveryModeSelect"></iais:select>
                                 </div>
