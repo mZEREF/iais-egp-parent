@@ -111,10 +111,8 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     * @param: 
     * @return: 
     */
-    private void setCommonDeclSelfConfig(List<SelfDecl> selfDeclList,
-                                         List<String> premIdList,
-                                         String type, String module, String grpPremId){
-        ChecklistConfigDto commonConfig = appConfigClient.getMaxVersionCommonConfig().getEntity();
+    private void setCommonDeclSelfConfig(List<SelfDecl> selfDeclList,List<String> premIdList, String grpPremId){
+            ChecklistConfigDto commonConfig = appConfigClient.getMaxVersionCommonConfig().getEntity();
         SelfDecl commonSelfDecl = overlayCommon(premIdList, commonConfig.getId(), grpPremId);
         selfDeclList.add(commonSelfDecl);
     }
@@ -171,7 +169,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
                 premiseList.add(correId);
                 selfDeclList.add(selfDecl);
 
-                setCommonDeclSelfConfig(selfDeclList, premiseList, type, module, grpPremId);
+                setCommonDeclSelfConfig(selfDeclList, premiseList, grpPremId);
             }
         }
 
@@ -207,8 +205,10 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     private void setPremChecklistItem(List<PremCheckItem> premItemList, String configId, Boolean isCommon, String scopeId, String grpPremId){
         if (premItemList != null){
             SearchParam searchParam = new SearchParam(ChecklistQuestionDto.class.getName());
-            searchParam.addFilter("svc_type", "Self-Assessment", true);
             searchParam.addFilter("common", isCommon, true);
+            if (!isCommon){
+                searchParam.addFilter("svc_type", "Self-Assessment", true);
+            }
 
             if (configId != null){
                 searchParam.addFilter("configId", configId, true);

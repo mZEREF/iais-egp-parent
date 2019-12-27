@@ -72,7 +72,7 @@ public interface AppConfigClient {
     @RequestMapping(path = "/iais-hcsa-service/svc-doc-config-results",method = RequestMethod.GET)
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfig(@RequestParam(value = "string") String docMapJson);
 
-    @GetMapping(path = "/iais-hcsa-service/one-of-hcsa-service/{serviceId}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    @GetMapping(path = "/iais-hcsa-service/one-of-hcsa-service/{serviceId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaServiceDto> getHcsaServiceDtoByServiceId(@PathVariable(value = "serviceId") String serviceId);
 
     @GetMapping(path = "/iais-hcsa-checklist/config/id/{svcCode}")
@@ -111,7 +111,7 @@ public interface AppConfigClient {
                                                                         @PathVariable("module") String module,
                                                                         @PathVariable(value = "subTypeName", required = false) String subTypeName);
 
-    @GetMapping(value = {"/iais-hcsa-checklist/config/results-common-max-version"})
+    @GetMapping(path = "/iais-hcsa-checklist/common-config-max-version/results", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfig();
 
     @GetMapping(value = {"/iais-service-step/steps/{serviceId}"})

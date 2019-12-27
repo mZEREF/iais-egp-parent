@@ -35,7 +35,6 @@ public class AppPremSelfDeclDelegator {
     private static final String INSPECTION_END_PERIOD = "inspEndDate";
 
     private final AppPremSelfDeclService appPremSelfDesc;
-    private String groupId;
 
     @Autowired
     public AppPremSelfDeclDelegator(AppPremSelfDeclService appPremSelfDesc){
@@ -68,7 +67,7 @@ public class AppPremSelfDeclDelegator {
         HttpServletRequest request = bpc.request;
 
         String groupId = ParamUtil.getRequestString(request, "groupId");
-        this.groupId = groupId;
+        ParamUtil.setSessionAttr(request, "currentSelfDeclGroupId", groupId);
 
         log.info("assign to self decl group id ==>>>>> " + groupId);
 
@@ -204,7 +203,8 @@ public class AppPremSelfDeclDelegator {
         }
 
         if (errorMap != null && errorMap.isEmpty()){
-            appPremSelfDesc.saveSelfDeclAndInspectionDate(selfDeclList, this.groupId, startDate, endDate);
+            String groupId = (String) ParamUtil.getSessionAttr(request, "currentSelfDeclGroupId");
+            appPremSelfDesc.saveSelfDeclAndInspectionDate(selfDeclList, groupId, startDate, endDate);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
     }
