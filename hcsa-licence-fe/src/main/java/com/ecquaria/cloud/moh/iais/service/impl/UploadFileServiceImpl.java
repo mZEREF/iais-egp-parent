@@ -157,7 +157,14 @@ public class UploadFileServiceImpl implements UploadFileService {
         for(AppSvcDocDto every:appSvcDoc){
             FileOutputStream outputStream=null;
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file=new File(download+File.separator+every.getDocName());
+            File file=new File(download+File.separator+every.getFileRepoId()+every.getDocName());
+            if(!file.exists()){
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             try {
               outputStream=new FileOutputStream(file);
                 outputStream.write(entity);
@@ -179,9 +186,16 @@ public class UploadFileServiceImpl implements UploadFileService {
             }
         }
         for(AppGrpPrimaryDocDto every:appGrpPrimaryDoc){
-            String docName = every.getDocName();
+
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file=new File(download+File.separator+ every.getDocName());
+            File file=new File(download+File.separator+every.getFileRepoId()+ every.getDocName());
+           if(!file.exists()){
+               try {
+                   file.createNewFile();
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           }
             FileOutputStream fileOutputStream= null;
             try {
                 fileOutputStream = new FileOutputStream(file);
