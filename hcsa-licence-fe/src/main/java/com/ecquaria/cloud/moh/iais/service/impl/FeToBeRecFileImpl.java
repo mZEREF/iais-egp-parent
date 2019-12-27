@@ -141,7 +141,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     public void changeStatus(List<ApplicationDto> applicationDtos) {
         if(flag){
             for(ApplicationDto aDto : applicationDtos){
-                aDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW);
+                aDto.setStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
                 applicationClient.updateApplication(aDto);
             }
         }
