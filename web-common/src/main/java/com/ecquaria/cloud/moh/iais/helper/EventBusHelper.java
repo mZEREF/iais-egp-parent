@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
-import sop.webflow.rt.api.Process;
 
 /**
  * EventBusHelper
@@ -19,20 +18,13 @@ public class EventBusHelper {
     }
 
     public static  SubmitReq getSubmitReq(Object dto,String submissionId,String service,String operation,String sopUrl,String callBackUrl,
-                                   String userId,boolean wait,Process process){
+                                   String userId,boolean wait,String project,String process,String step){
         SubmitReq req = new SubmitReq();
         req.setSubmissionId(submissionId);
-        if(process!=null){
-            req.setProject(process.getCurrentProject());
-            req.setProcess(process.getCurrentProcessName());
-            req.setStep(process.getCurrentComponentName());
-            req.setCallbackUrl("https://"
-                    +process.getHttpRequest().getServerName()
-                    +process.getHttpRequest().getContextPath()
-                    +callBackUrl);
-        }else{
-            req.setCallbackUrl("https://"+callBackUrl);
-        }
+        req.setProject(project);
+        req.setProcess(process);
+        req.setStep(step);
+        req.setCallbackUrl("https://"+callBackUrl);
         req.setService(service);
         req.setOperation(operation);
         req.setSopUrl(sopUrl);

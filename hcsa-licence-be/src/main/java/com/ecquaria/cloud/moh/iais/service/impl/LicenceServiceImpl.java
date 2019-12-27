@@ -119,13 +119,16 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
-        String   callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+        String  callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+        String project ="hcsaLicenceBe";
+        String processName = "generateLicence";
+        String step = "start";
 
         SubmitReq req =EventBusHelper.getSubmitReq(eventBusLicenceGroupDtos,systemAdminClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
                 EventBusConsts.OPERATION_LICENCE_SAVE,
                 "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",
-                callBackUrl, "sop",true,null);
+                callBackUrl, "sop",true,project,processName,step);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
 

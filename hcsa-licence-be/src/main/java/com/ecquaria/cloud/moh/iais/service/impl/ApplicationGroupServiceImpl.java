@@ -53,13 +53,15 @@ public class ApplicationGroupServiceImpl implements ApplicationGroupService {
 
     @Override
     public EventApplicationGroupDto updateEventApplicationGroupDto(EventApplicationGroupDto eventApplicationGroupDto) {
-        String   callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
-
+        String  callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+        String project ="hcsaLicenceBe";
+        String processName = "generateLicence";
+        String step = "start";
         SubmitReq req =EventBusHelper.getSubmitReq(eventApplicationGroupDto,systemAdminClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_APPLICATION_UPDATE,
                 "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",
-                callBackUrl, "sop",true,null);
+                callBackUrl, "sop",true,project,processName,step);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
         return null;
