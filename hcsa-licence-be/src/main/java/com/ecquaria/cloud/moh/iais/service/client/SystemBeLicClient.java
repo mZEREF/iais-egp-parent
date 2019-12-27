@@ -31,7 +31,7 @@ public interface SystemBeLicClient {
 
     @GetMapping(value = "/file-type-status/{processType}/{status}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ProcessFileTrackDto> getFileTypeAndStatus
+    FeignResponseEntity<List<ProcessFileTrackDto>> getFileTypeAndStatus
             (@PathVariable(name = "processType") String processType, @PathVariable(name = "status") String status);
 
     @RequestMapping(path = "/hcl-code/{serviceCode}",method = RequestMethod.GET)
