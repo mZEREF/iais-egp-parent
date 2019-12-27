@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.action;
+package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
@@ -27,7 +27,7 @@ import java.util.List;
  **/
 @Delegator("inspectionSendRecDelegator")
 @Slf4j
-public class InspectionSendRecDelegator {
+public class InspectionSendRecBatchjob {
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
@@ -42,7 +42,7 @@ public class InspectionSendRecDelegator {
     private SystemBeLicClient systemBeLicClient;
 
     @Autowired
-    private InspectionSendRecDelegator(SystemBeLicClient systemBeLicClient, SystemParamConfig systemParamConfig, FillUpCheckListGetAppClient fillUpCheckListGetAppClient, InboxMsgService inboxMsgService){
+    private InspectionSendRecBatchjob(SystemBeLicClient systemBeLicClient, SystemParamConfig systemParamConfig, FillUpCheckListGetAppClient fillUpCheckListGetAppClient, InboxMsgService inboxMsgService){
         this.fillUpCheckListGetAppClient = fillUpCheckListGetAppClient;
         this.inboxMsgService = inboxMsgService;
         this.systemParamConfig = systemParamConfig;
