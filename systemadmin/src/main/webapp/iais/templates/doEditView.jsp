@@ -24,10 +24,10 @@
                             <h2>Edit Alert Notification Template</h2>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="messageType">Message Type:</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type:</label>
 
                             <div class="col-xs-8 col-sm-6 col-md-3">
-                                <iais:select name="messageType" id="messageType" options="messageTypeSelect"></iais:select>
+                                <iais:select name="msgType" id="msgType" options="messageTypeSelect"></iais:select>
                             </div>
                         </div>
                         <div class="form-group">

@@ -10,6 +10,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <%@ include file="mainContent.jsp" %>
+
 <script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=webroot%>js/initTinyMce.js"></script>
 <script>
