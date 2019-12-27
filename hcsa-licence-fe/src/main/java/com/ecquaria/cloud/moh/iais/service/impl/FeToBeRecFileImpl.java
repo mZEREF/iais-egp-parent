@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -214,28 +213,28 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             zipFile(zos, file);
 
         } catch (IOException e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
         finally {
-            if(zos!=null){
+            if(zos != null){
                 try {
                     zos.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage(),e);
+                    log.error(e.getMessage(), e);
                 }
             }
             if(cos != null){
                 try {
                     cos.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage(),e);
+                    log.error(e.getMessage(), e);
                 }
             }
             if(is != null){
                 try {
                     is.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage(),e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -249,7 +248,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             if(file.isDirectory()){
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName)) + File.separator));
                 for(File f: Objects.requireNonNull(file.listFiles())){
-                    zipFile(zos,f);
+                    zipFile(zos, f);
                 }
             }
             else {
@@ -259,13 +258,13 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                 int count ;
                 byte [] b = new byte[1024];
                 count = bis.read(b);
-                while(count!=-1){
+                while(count != -1){
                     zos.write(b,0, count);
                     count = bis.read(b);
                 }
             }
         }catch (IOException e){
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
         finally {
 
@@ -273,21 +272,21 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                 try {
                     zos.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage(),e);
+                    log.error(e.getMessage(), e);
                 }
             }
             if(bis != null){
                 try {
                     bis.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage(),e);
+                    log.error(e.getMessage(), e);
                 }
             }
             if(is != null){
                 try {
                     is.close();
                 } catch (IOException e) {
-                    log.error(e.getMessage(),e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -325,7 +324,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                         break;
                     }
                 } catch (IOException e) {
-                    log.error(e.getMessage(),e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -350,10 +349,10 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     private String saveFileName(String fileName ,String filePath){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
-        processFileTrackDto.setProcessType(HcsaConsts.ROUTING_STAGE_INS);
+        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
-        processFileTrackDto.setStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
+        processFileTrackDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
         processFileTrackDto.setAuditTrailDto(internet);
         String s = AppConsts.FAIL;
