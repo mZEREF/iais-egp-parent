@@ -52,7 +52,7 @@ public class InspecSaveBeRecByFeBatchjob {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         inspecSaveBeRecByService.deleteUnZipFile();
         inspecSaveBeRecByService.compressFile(processFileTrackDtos);
-        Boolean saveDataFlag = inspecSaveBeRecByService.saveData(intranet);
+        Boolean saveDataFlag = inspecSaveBeRecByService.saveData(intranet, processFileTrackDtos);
     }
 
     private void logAbout(String methodName){

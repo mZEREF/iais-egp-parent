@@ -196,7 +196,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos) {
         FileInputStream fileInputStream=null;
-        Boolean flag=false;
+        Boolean flag = false;
         try {
             File file =new File(download);
             if(file.isDirectory()){
