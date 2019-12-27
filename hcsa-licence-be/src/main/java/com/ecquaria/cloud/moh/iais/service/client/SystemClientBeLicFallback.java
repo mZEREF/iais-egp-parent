@@ -28,6 +28,13 @@ public class SystemClientBeLicFallback {
         return entity;
     }
 
+    FeignResponseEntity<ProcessFileTrackDto> updateApplication(ProcessFileTrackDto processFileTrackDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     FeignResponseEntity<String> hclCodeByCode(String code){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

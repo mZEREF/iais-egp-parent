@@ -34,8 +34,13 @@ public interface SystemBeLicClient {
     FeignResponseEntity<List<ProcessFileTrackDto>> getFileTypeAndStatus
             (@PathVariable(name = "processType") String processType, @PathVariable(name = "status") String status);
 
+    @PutMapping(value = "/uprocessfiletrack", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ProcessFileTrackDto> updateApplication(@RequestBody ProcessFileTrackDto processFileTrackDto);
+
     @RequestMapping(path = "/hcl-code/{serviceCode}",method = RequestMethod.GET)
     FeignResponseEntity<String> hclCodeByCode(@PathVariable(name = "serviceCode") String code);
+
     @RequestMapping(path = "/licence-number",method = RequestMethod.GET)
     FeignResponseEntity<String> licence(@RequestParam("hciCode") String hciCode, @RequestParam("serviceCode") String serviceCode,
                                         @RequestParam("yearLength") Integer yearLength, @RequestParam("licenceSeq") Integer licenceSeq) ;
