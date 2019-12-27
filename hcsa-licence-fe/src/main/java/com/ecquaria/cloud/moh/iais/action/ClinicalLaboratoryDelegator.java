@@ -1022,18 +1022,6 @@ public class ClinicalLaboratoryDelegator {
 
         ParamUtil.setRequestAttr(bpc.request, "ServicePersonnelMandatory", mandatory);
 
-        List<SelectOption> personnel = new ArrayList<>();
-        SelectOption personnelOp1 = new SelectOption("Radiology Professional", "Radiology Professional");
-        SelectOption personnelOp2 = new SelectOption("Medical Physicist", "Medical Physicist");
-        SelectOption personnelOp3 = new SelectOption("Radiation Safety Officer", "Radiation Safety Officer");
-        SelectOption personnelOp4 = new SelectOption("Registered Nurse", "Registered Nurse");
-        personnel.add(personnelOp1);
-        personnel.add(personnelOp2);
-        personnel.add(personnelOp3);
-        personnel.add(personnelOp4);
-        ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingPersonnel", (Serializable) personnel);
-
-
         List<SelectOption> designation = new ArrayList<>();
         SelectOption designationOp1 = new SelectOption("Diagnostic radiographer", "Diagnostic radiographer");
         SelectOption designationOp2 = new SelectOption("Radiation therapist", "Radiation therapist");
@@ -1096,7 +1084,7 @@ public class ClinicalLaboratoryDelegator {
 
         for(int i=0;i<appSvcPersonnelDtos.size();i++){
             String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
-            if("Registered Nurse".equals(personnelSel)){
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)){
                 String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if(StringUtil.isEmpty(name)){
@@ -1106,7 +1094,7 @@ public class ClinicalLaboratoryDelegator {
                     errorMap.put("regnNo"+i,"UC_CHKLMD001_ERR001");
                 }
             }
-            if("Radiology Professional".equals(personnelSel)){
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)){
                 String name = appSvcPersonnelDtos.get(i).getName();
                 String designation = appSvcPersonnelDtos.get(i).getDesignation();
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
@@ -1130,7 +1118,7 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
 
-            if("Medical Physicist".equals(personnelSel)){
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
                 String name = appSvcPersonnelDtos.get(i).getName();
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 String quaification = appSvcPersonnelDtos.get(i).getQuaification();
@@ -1149,7 +1137,7 @@ public class ClinicalLaboratoryDelegator {
                     errorMap.put("quaification"+i,"UC_CHKLMD001_ERR001");
                 }
             }
-            if("Radiation Safety Officer".equals(personnelSel)){
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)){
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if(StringUtil.isEmpty(name)){
                     errorMap.put("name"+i,"UC_CHKLMD001_ERR001");
@@ -1572,18 +1560,18 @@ public class ClinicalLaboratoryDelegator {
                 String professionalRegnNo = "";
 
 
-                if("Radiology Professional".equals(personnelSel)){
+                if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)){
                     designation = designations[i];
                     name = names[i];
                     qualification = qualifications[i];
                     wrkExpYear = wrkExpYears[i];
-                }else if("Medical Physicist".equals(personnelSel)){
+                }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
                     name = names[i];
                     qualification = qualifications[i];
                     wrkExpYear = wrkExpYears[i];
-                }else if("Radiation Safety Officer".equals(personnelSel)){
+                }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)){
                     name = names[i];
-                }else if("Registered Nurse".equals(personnelSel)){
+                }else if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)){
                     name = names[i];
                     professionalRegnNo = professionalRegnNos[i];
                 }
