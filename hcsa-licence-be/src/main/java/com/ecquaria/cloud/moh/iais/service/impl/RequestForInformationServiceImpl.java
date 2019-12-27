@@ -123,6 +123,11 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
+    public LicPremisesReqForInfoDto getLicPreReqForInfo(String id) {
+        return requestForInformationClient.getLicPreReqForInfo(id).getEntity();
+    }
+
+    @Override
     public void deleteLicPremisesReqForInfo(String id) {
         requestForInformationClient.deleteLicPremisesReqForInfo(id);
 

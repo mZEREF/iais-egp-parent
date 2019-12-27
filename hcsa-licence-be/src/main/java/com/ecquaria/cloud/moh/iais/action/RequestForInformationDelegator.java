@@ -344,7 +344,9 @@ public class RequestForInformationDelegator {
     public void doReqForInfo(BaseProcessClass bpc) {
         log.info("=======>>>>>doReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
         String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        ParamUtil.setRequestAttr(bpc.request,"reqInfoId",reqInfoId);
+        if(!StringUtil.isEmpty(reqInfoId)) {
+            ParamUtil.setRequestAttr(bpc.request, "reqInfoId", reqInfoId);
+        }
         // 		doReqForInfo->OnStepProcess
     }
     public void doCreateRequest(BaseProcessClass bpc) {
@@ -368,12 +370,12 @@ public class RequestForInformationDelegator {
 
         // 		doCreateRequest->OnStepProcess
     }
-    public void doRemind(BaseProcessClass bpc) {
-        log.info("=======>>>>>doRemind>>>>>>>>>>>>>>>>requestForInformation");
+    public void preNewRfi(BaseProcessClass bpc) {
+        log.info("=======>>>>>preNewRfi>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licPremId = (String) ParamUtil.getSessionAttr(request, "licPremId");
 
-        // 		doRemind->OnStepProcess
+        // 		preNewRfi->OnStepProcess
     }
     public void doCancel(BaseProcessClass bpc) {
         log.info("=======>>>>>doCancel>>>>>>>>>>>>>>>>requestForInformation");
@@ -386,5 +388,20 @@ public class RequestForInformationDelegator {
         String id = (String) ParamUtil.getRequestAttr(bpc.request, "reqInfoId");
         requestForInformationService.acceptLicPremisesReqForInfo(id);
         // 		doAccept->OnStepProcess
+    }
+    public void preViewRfi(BaseProcessClass bpc) {
+        log.info("=======>>>>>preViewRfi>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String id = (String) ParamUtil.getRequestAttr(bpc.request, "reqInfoId");
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
+        ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
+        // 		preViewRfi->OnStepProcess
+    }
+    public void preCancel(BaseProcessClass bpc) {
+        log.info("=======>>>>>preCancel>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        String licPremId = (String) ParamUtil.getSessionAttr(request, "licPremId");
+
+        // 		preCancel->OnStepProcess
     }
 }

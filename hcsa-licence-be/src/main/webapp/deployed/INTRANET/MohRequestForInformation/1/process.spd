@@ -65,58 +65,72 @@
     <JavaCode defClass="" executor="" methodName="doSearchApplicationAfter_OnStepProcess_0" name="doSearchApplicationAfter_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preAppInfo" x="1440" y="420">
+  <AutomaticStep defClass="" executor="" icon="" name="preAppInfo" x="1280" y="290">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preAppInfo_OnStepProcess_0" name="preAppInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preReqForInfo" x="1250" y="300">
+  <AutomaticStep defClass="" executor="" icon="" name="preReqForInfo" x="1430" y="410">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preReqForInfo_OnStepProcess_0" name="preReqForInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doReqForInfo" x="910" y="110">
+  <AutomaticStep defClass="" executor="" icon="" name="doReqForInfo" x="1660" y="140">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doReqForInfo_OnStepProcess_0" name="doReqForInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doRemind" x="1260" y="110">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doRemind_OnStepProcess_0" name="doRemind_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCreateRequest" x="1200" y="190">
+  <AutomaticStep defClass="" executor="" icon="" name="doCreateRequest" x="1790" y="460">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doCreateRequest_OnStepProcess_0" name="doCreateRequest_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCancel" x="1310" y="40">
+  <AutomaticStep defClass="" executor="" icon="" name="doCancel" x="1440" y="620">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doCancel_OnStepProcess_0" name="doCancel_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doAccept" x="1150" y="250">
+  <AutomaticStep defClass="" executor="" icon="" name="doAccept" x="1680" y="620">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doAccept_OnStepProcess_0" name="doAccept_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preNewRfi" x="1820" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preNewRfi_OnStepProcess_0" name="preNewRfi_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preViewRfi" x="1910" y="460">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preViewRfi_OnStepProcess_0" name="preViewRfi_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preCancel" x="1610" y="720">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preCancel_OnStepProcess_0" name="preCancel_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RFIPage" stageIndicator="" x="1080" y="300">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RFIPage" stageIndicator="" x="1560" y="280">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -152,7 +166,31 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="appInfoPage" stageIndicator="" x="1580" y="420">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="appInfoPage" stageIndicator="" x="1260" y="120">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="NewRFI" stageIndicator="" x="1670" y="300">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SuccessPage" stageIndicator="" x="1660" y="460">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewRFI" stageIndicator="" x="1910" y="610">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ScrapPage" stageIndicator="" x="1480" y="720">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -162,7 +200,7 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(1290,440)(1270,320)}</position>
+   <position>{(1320,430)(1450,430)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doBasicSearch" style="oblique">
    <position>{(260,270)(280,450)}</position>
@@ -213,22 +251,22 @@
    <position>{(1000,510)(1160,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(1160,440)(1290,440)}</position>
+   <position>{(1160,440)(1320,430)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preAppInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(1290,440)(1460,440)}</position>
+   <position>{(1320,430)(1300,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/appInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preAppInfo" style="oblique">
-   <position>{(1460,440)(1600,440)}</position>
+   <position>{(1300,310)(1280,140)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/RFIPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preReqForInfo" style="oblique">
-   <position>{(1270,320)(1100,320)}</position>
+   <position>{(1450,430)(1580,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doReqForInfo" linkstyle="Direct" name="" sourceName="/Pages/WebPage/RFIPage" style="oblique">
-   <position>{(1100,320)(930,130)}</position>
+   <position>{(1580,300)(1680,160)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preBasicSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(1290,440)(380,120)}</position>
+   <position>{(1320,430)(380,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(280,450)(720,380)}</position>
@@ -237,10 +275,10 @@
    <position>{(280,450)(700,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(1290,440)(720,380)}</position>
+   <position>{(1320,430)(720,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchApplication" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(1290,440)(700,510)}</position>
+   <position>{(1320,430)(700,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/searchLicencePage" style="oblique">
    <position>{(560,380)(660,300)}</position>
@@ -254,35 +292,56 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preBasicSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
    <position>{(660,600)(380,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRemind" style="oblique">
-   <position>{(1280,130)(1460,320)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ViewRFI" style="oblique">
+   <position>{(1930,630)(1940,750)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doReqForInfo" style="oblique">
-   <position>{(930,130)(1060,130)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCreateRequest" linkstyle="Direct" name="" sourceName="/Pages/WebPage/NewRFI" style="oblique">
+   <position>{(1690,320)(1810,480)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doRemind" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1060,130)(1280,130)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SuccessPage" style="oblique">
+   <position>{(1680,480)(1560,570)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doCreateRequest" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1060,130)(1220,210)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCreateRequest" style="oblique">
-   <position>{(1220,210)(1460,320)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doCancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1060,130)(1330,60)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(1940,750)(1630,740)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge2" style="oblique">
-   <position>{(1460,320)(1270,320)}</position>
+   <position>{(1560,570)(1450,430)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAccept" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1060,130)(1170,270)}</position>
+   <position>{(1940,750)(1700,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doAccept" style="oblique">
-   <position>{(1170,270)(1460,320)}</position>
+   <position>{(1700,640)(1560,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ScrapPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preCancel" style="oblique">
+   <position>{(1630,740)(1500,740)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch6" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doReqForInfo" style="oblique">
+   <position>{(1680,160)(1930,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preNewRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(1930,160)(1840,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewRfi" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(1930,160)(1930,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/NewRFI" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preNewRfi" style="oblique">
+   <position>{(1840,320)(1690,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCreateRequest" style="oblique">
+   <position>{(1810,480)(1680,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewRFI" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preViewRfi" style="oblique">
+   <position>{(1930,480)(1930,630)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCancel" style="oblique">
-   <position>{(1330,60)(1460,320)}</position>
+   <position>{(1460,640)(1560,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCancel" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ScrapPage" style="oblique">
+   <position>{(1500,740)(1460,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
+   <position>{(1940,750)(1560,570)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -294,7 +353,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicence" value="&quot;licenceAdv&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchApplication" value="&quot;applicationAdv&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preBasicSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1270" y="420">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preBasicSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1300" y="410">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/preAppInfo" value="&quot;appInfo&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preBasicSearch" value="&quot;back&quot;"/>
@@ -312,12 +371,16 @@
    <SwitchCase component="/Steps/AutomaticStep/doSearchApplication" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preBasicSearch" value="&quot;back&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doRemind" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="1040" y="110">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="1920" y="730">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/doRemind" value="&quot;remind&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doCreateRequest" value="&quot;submit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doCancel" value="&quot;cancel&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doAccept" value="&quot;accept&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preCancel" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Merges/Merge/Merge2" value="&quot;back&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preNewRfi" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="1910" y="140">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/preNewRfi" value="&quot;new&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preViewRfi" value="&quot;view&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
@@ -325,7 +388,7 @@
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1140" y="420">
    <Description/>
   </Merge>
-  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1440" y="300">
+  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1540" y="550">
    <Description/>
   </Merge>
  </Merges>
