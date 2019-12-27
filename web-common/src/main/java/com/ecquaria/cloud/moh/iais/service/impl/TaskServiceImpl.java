@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -70,7 +71,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId) throws FeignException {
+    public TaskDto getRoutingTask(ApplicationDto applicationDto, String statgId,String roleId,String correlationId) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
         TaskDto result = null;
         if(applicationDto == null  || StringUtil.isEmpty(statgId)){
@@ -94,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
             int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                     statgId,applicationDto.getApplicationType());
             result = TaskUtil.getTaskDto(statgId,TaskConsts.TASK_TYPE_MAIN_FLOW,
-                    applicationDto.getApplicationNo(),workGroupId,
+                    correlationId,workGroupId,
                     taskScoreDto.getUserId(),assignDate,score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
                     IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
@@ -148,18 +149,22 @@ public class TaskServiceImpl implements TaskService {
                 for(ApplicationDto applicationDto : applicationDtos){
                     int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             stageId,applicationDto.getApplicationType());
-                    TaskDto taskDto = TaskUtil.getUserTaskDto(stageId,
-                            applicationDto.getApplicationNo(),workGroupId,
-                            taskScoreDto.getUserId(),score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
-                            auditTrailDto);
-                    taskDtos.add(taskDto);
-                    //create history
-                    String appPremisesCorrelationId = getAppPremisesCorrelationId(appPremisesCorrelationDtos,applicationDto.getId());
-                    log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+appPremisesCorrelationId));
-                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
-                            createAppPremisesRoutingHistory(appPremisesCorrelationId,applicationDto.getStatus(),
-                                    stageId,null,roleId,auditTrailDto);
-                    appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
+                    List<String> appPremisesCorrelationIds = getAppPremisesCorrelationId(appPremisesCorrelationDtos,applicationDto.getId());
+                    if(!IaisCommonUtils.isEmpty(appPremisesCorrelationIds)){
+                        for (String id :appPremisesCorrelationIds ){
+                            TaskDto taskDto = TaskUtil.getUserTaskDto(stageId,
+                                    id,workGroupId,
+                                    taskScoreDto.getUserId(),score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
+                                    auditTrailDto);
+                            taskDtos.add(taskDto);
+                            //create history
+                            log.debug(StringUtil.changeForLog("the appPremisesCorrelationId is -->;"+id));
+                            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =
+                                    createAppPremisesRoutingHistory(id,applicationDto.getStatus(),
+                                            stageId,null,roleId,auditTrailDto);
+                            appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
+                        }
+                    }
                 }
                 result.setTaskDtoList(taskDtos);
                 result.setAppPremisesRoutingHistoryDtos(appPremisesRoutingHistoryDtos);
@@ -315,12 +320,11 @@ public class TaskServiceImpl implements TaskService {
         }
         return result;
     }
-    private String getAppPremisesCorrelationId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,String appId){
-        String result = null;
+    private List<String> getAppPremisesCorrelationId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,String appId){
+        List<String> result = new ArrayList<>();
         for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
             if(appId.equals(appPremisesCorrelationDto.getApplicationId())){
-                result = appPremisesCorrelationDto.getId();
-                break;
+                result.add(appPremisesCorrelationDto.getId());
             }
         }
         return  result;

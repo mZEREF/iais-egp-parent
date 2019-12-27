@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ApplicationViewService {
 
-    ApplicationViewDto searchByAppNo(String appNo);
+    ApplicationViewDto searchByCorrelationIdo(String correlationId);
 
     ApplicationDto getApplicaitonByAppNo(String appNo);
 

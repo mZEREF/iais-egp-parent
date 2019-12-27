@@ -33,7 +33,7 @@ public class ApplicationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<ApplicationDto> getAppByNo( String appNo){
+    FeignResponseEntity<ApplicationDto> getAppViewByCorrelationId( String correlationId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

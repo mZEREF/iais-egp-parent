@@ -24,9 +24,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Override
-    public ApplicationViewDto searchByAppNo(String appNo) {
+    public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
-        return applicationClient.getAppViewByNo(appNo).getEntity();
+        return applicationClient.getAppViewByNo(correlationId).getEntity();
     }
 
     @Override
