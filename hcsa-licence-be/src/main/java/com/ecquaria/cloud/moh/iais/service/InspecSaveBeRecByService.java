@@ -36,7 +36,7 @@ public interface InspecSaveBeRecByService {
       * @return: void
       * @Descripation: compress File
       */
-    void compressFile();
+    void compressFile(List<ProcessFileTrackDto> processFileTrackDtos);
 
     /**
       * @author: shicheng
