@@ -44,18 +44,13 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         dayList.add(180);
         List<JobRemindMsgTrackingDto> JobRemindMsgTrackingDto = hcsaLicenClient.listJob().getEntity();
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
-        Set<Map.Entry<String, List<LicenceDto>>> entries = entity.entrySet();
-        for(Map.Entry entry:entries){
-            List<LicenceDto> licenceDtos = entity.get(entry);
-            licenceToRemove(licenceDtos,JobRemindMsgTrackingDto);
-            for(int i=0;i<licenceDtos.size();i++){
-                String licenceNo = licenceDtos.get(i).getLicenceNo();
-
-
-
+        entity.forEach((k, v) -> {
+            licenceToRemove(v,JobRemindMsgTrackingDto);
+            for(int i=0;i<v.size();i++){
+                String licenceNo = v.get(i).getLicenceNo();
             }
+        });
 
-        }
 
     }
 
