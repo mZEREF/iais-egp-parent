@@ -39,7 +39,7 @@
                             </div>
                             <div class="col-sm-5">
                               <div class="">
-                                <iais:select cssClass="personnelSel"  name="personnelSel" options="NuclearMedicineImagingPersonnel"  value="${appSvcPersonnelDto.personnelSel}" firstOption="Please Select"></iais:select>
+                                <iais:select cssClass="personnelSel"  name="personnelSel"  codeCategory="CATE_ID_SERVICE_PERSONNEL_PSN_TYPE" value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
                                 <span class="error-msg" name="iaisErrorMsg" id=""></span>
                               </div>
                             </div>
@@ -174,25 +174,25 @@
           $personnelContentEle.find('div.personnel-wrkExpYear input[name="wrkExpYear"]').val('');
           $personnelContentEle.find('div.personnel-regnNo input[name="regnNo"]').val('');*/
 
-          if('Radiology Professional' == personnelSel){
+          if('SPPT001' == personnelSel){
               $personnelContentEle.find('div.personnel-designation').removeClass('hidden');
               $personnelContentEle.find('div.personnel-name').removeClass('hidden');
               $personnelContentEle.find('div.personnel-qualification').removeClass('hidden');
               $personnelContentEle.find('div.personnel-wrkExpYear').removeClass('hidden');
               $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
-          }else if('Medical Physicist' == personnelSel){
+          }else if('SPPT002' == personnelSel){
               $personnelContentEle.find('div.personnel-designation').addClass('hidden');
               $personnelContentEle.find('div.personnel-name').removeClass('hidden');
               $personnelContentEle.find('div.personnel-qualification').removeClass('hidden');
               $personnelContentEle.find('div.personnel-wrkExpYear').removeClass('hidden');
               $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
-          }else if('Radiation Safety Officer' == personnelSel){
+          }else if('SPPT003' == personnelSel){
               $personnelContentEle.find('div.personnel-designation').addClass('hidden');
               $personnelContentEle.find('div.personnel-name').removeClass('hidden');
               $personnelContentEle.find('div.personnel-qualification').addClass('hidden');
               $personnelContentEle.find('div.personnel-wrkExpYear').addClass('hidden');
               $personnelContentEle.find('div.personnel-regnNo ').addClass('hidden');
-          }else if('Registered Nurse' == personnelSel){
+          }else if('SPPT004' == personnelSel){
               $personnelContentEle.find('div.personnel-designation').addClass('hidden');
               $personnelContentEle.find('div.personnel-name').removeClass('hidden');
               $personnelContentEle.find('div.personnel-qualification').addClass('hidden');
