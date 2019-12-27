@@ -70,7 +70,7 @@ public class InspEmailServiceImpl implements InspEmailService {
 
     @Override
     public ApplicationViewDto getAppViewByNo(String appNo) {
-        return applicationClient.getAppViewByNo(appNo).getEntity();
+        return applicationClient.getAppViewByCorrelationId(appNo).getEntity();
     }
 
     @Override

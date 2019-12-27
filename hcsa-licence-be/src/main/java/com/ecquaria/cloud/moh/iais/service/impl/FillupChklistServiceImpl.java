@@ -89,7 +89,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public ApplicationViewDto getAppViewDto(String taskId){
         TaskDto taskDto = taskService.getTaskById(taskId);
         String refNo = taskDto.getRefNo();
-        ApplicationViewDto viewDto = applicationClient.getAppViewByNo(refNo).getEntity();
+        ApplicationViewDto viewDto = applicationClient.getAppViewByCorrelationId(refNo).getEntity();
         return viewDto;
     }
 

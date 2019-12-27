@@ -26,7 +26,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
-        return applicationClient.getAppViewByNo(correlationId).getEntity();
+        return applicationClient.getAppViewByCorrelationId(correlationId).getEntity();
     }
 
     @Override
