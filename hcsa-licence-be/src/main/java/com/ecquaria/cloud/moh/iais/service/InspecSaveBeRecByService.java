@@ -45,5 +45,5 @@ public interface InspecSaveBeRecByService {
       * @return: Boolean
       * @Descripation: save Data
       */
-    Boolean saveData(AuditTrailDto intranet);
+    Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos);
 }
