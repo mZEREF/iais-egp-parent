@@ -159,4 +159,12 @@ public class ApplicationClientFallback {
         return entity;
     }
 
+    public FeignResponseEntity<Void> saveInspecRecDate(ApplicationListFileDto applicationListFileDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+
 }
