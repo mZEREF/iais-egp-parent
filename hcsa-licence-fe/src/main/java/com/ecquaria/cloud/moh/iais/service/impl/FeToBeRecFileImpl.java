@@ -72,7 +72,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     @Override
     public void createDataTxt(String data) {
         fileName = "userRecFile";
-        download = sharedPath + "recFile";
+        download = sharedPath + fileName;
         backups = sharedPath + "backupsRec";
         FileOutputStream fileOutputStream = null;
         FileOutputStream fileOutputStream2 = null;
