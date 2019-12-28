@@ -935,17 +935,6 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the add premises html start ...."));
         String currentLength = ParamUtil.getRequestString(request, "currentLength");
         log.debug(StringUtil.changeForLog("currentLength : "+currentLength));
-        String premIndexNo = "prem";
-        Integer IndexNoCount = 0 ;
-        try {
-            IndexNoCount = Integer.parseInt(currentLength);
-            ParamUtil.setSessionAttr(request, "IndexNoCount", IndexNoCount);
-            premIndexNo = premIndexNo+currentLength;
-            log.debug(StringUtil.changeForLog("premIndexNo : "+premIndexNo));
-        }catch (Exception e){
-            return null;
-        }
-
 
         String sql = SqlMap.INSTANCE.getSql("premises", "premisesHtml").getSqlStr();
         Set<String> premType = (Set<String>) ParamUtil.getSessionAttr(request, PREMISESTYPE);
@@ -969,7 +958,7 @@ public class NewApplicationDelegator {
         Map<String,String> premisesOnSiteAttr = new HashMap<>();
         premisesOnSiteAttr.put("class", "premSelect");
         premisesOnSiteAttr.put("id", "premOnsiteSel");
-        premisesOnSiteAttr.put("name", premIndexNo+"premOnSiteSelect");
+        premisesOnSiteAttr.put("name", "premOnSiteSelect");
         premisesOnSiteAttr.put("style", "display: none;");
         String premOnSiteSelectStr = generateDropDownHtml(premisesOnSiteAttr, premisesOnSite, null);
 
@@ -978,7 +967,7 @@ public class NewApplicationDelegator {
         Map<String,String> premisesConvAttr = new HashMap<>();
         premisesConvAttr.put("class", "premSelect");
         premisesConvAttr.put("id", "premConSel");
-        premisesConvAttr.put("name", premIndexNo+"premConSelect");
+        premisesConvAttr.put("name", "premConSelect");
         premisesConvAttr.put("style", "display: none;");
         String premConvSelectStr = generateDropDownHtml(premisesConvAttr, premisesConv, null);
 
@@ -986,7 +975,7 @@ public class NewApplicationDelegator {
         List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
         Map<String,String> addrTypesAttr = new HashMap<>();
         addrTypesAttr.put("id", "siteAddressType");
-        addrTypesAttr.put("name", premIndexNo+"addrType");
+        addrTypesAttr.put("name", "siteAddressType");
         addrTypesAttr.put("style", "display: none;");
         String addrTypeSelectStr = generateDropDownHtml(addrTypesAttr, addrTypes, FIRESTOPTION);
 
@@ -994,13 +983,11 @@ public class NewApplicationDelegator {
         List<SelectOption> conAddrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
         Map<String,String> conAddrTypesAttr = new HashMap<>();
         conAddrTypesAttr.put("id", "siteAddressType");
-        conAddrTypesAttr.put("name", premIndexNo+"conveyanceAddrType");
+        conAddrTypesAttr.put("name", "conveyanceAddrType");
         conAddrTypesAttr.put("style", "display: none;");
         String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
 
-        //IndexNoCount
-        sql = sql.replace("(00)", IndexNoCount.toString());
-        sql = sql.replace("(0)", premIndexNo);
+
         sql = sql.replace("(1)", premTypeBuffer.toString());
         sql = sql.replace("(2)", premOnSiteSelectStr);
         sql = sql.replace("(3)", premConvSelectStr);
@@ -1488,76 +1475,75 @@ public class NewApplicationDelegator {
      */
     public List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
         List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
-        Integer count = (Integer) ParamUtil.getSessionAttr(request, "IndexNoCount");
-        for(int i =0 ; i<=count;i++){
+        int count = 0;
+        String [] premisesType = ParamUtil.getStrings(request, "premType");
+        if(premisesType != null){
+            count = premisesType.length;
+        }
+        //onsite
+        String [] premisesSelect = ParamUtil.getStrings(request, "premOnSiteSelect");
+        String [] hciName = ParamUtil.getStrings(request, "hciName");
+        String [] postalCode = ParamUtil.getStrings(request,  "postalCode");
+        String [] blkNo = ParamUtil.getStrings(request, "blkNo");
+        String [] streetName = ParamUtil.getStrings(request, "streetName");
+        String [] floorNo = ParamUtil.getStrings(request, "floorNo");
+        String [] unitNo = ParamUtil.getStrings(request, "unitNo");
+        String [] buildingName = ParamUtil.getStrings(request, "buildingName");
+        String [] siteAddressType = ParamUtil.getStrings(request, "siteAddressType");
+        String [] siteSafefyNo = ParamUtil.getStrings(request, "siteSafefyNo");
+        String [] offTelNo= ParamUtil.getStrings(request,"offTelNo");
+        String [] scdfRefNo = ParamUtil.getStrings(request, "siteSafefyNo");
+        String [] onsiteStartHH = ParamUtil.getStrings(request, "onsiteStartHH");
+        String [] onsiteStartMM = ParamUtil.getStrings(request, "onsiteStartMM");
+        String [] fireSafetyCertIssuedDateStr  = ParamUtil.getStrings(request, "fireSafetyCertIssuedDate");
+        //conveyance
+        String [] conPremisesSelect = ParamUtil.getStrings(request, "premConSelect");
+        String [] conVehicleNo = ParamUtil.getStrings(request, "conveyanceVehicleNo");
+        String [] conPostalCode = ParamUtil.getStrings(request,  "conveyancePostalCode");
+        String [] conBlkNo = ParamUtil.getStrings(request, "conveyanceBlockNo");
+        String [] conStreetName = ParamUtil.getStrings(request, "conveyanceStreetName");
+        String [] conFloorNo = ParamUtil.getStrings(request, "conveyanceFloorNo");
+        String [] conUnitNo = ParamUtil.getStrings(request, "conveyanceUnitNo");
+        String [] conBuildingName = ParamUtil.getStrings(request, "conveyanceBuildingName");
+        String [] conSiteAddressType = ParamUtil.getStrings(request, "conveyanceAddrType");
+        String [] conStartHH = ParamUtil.getStrings(request, "conStartHH");
+        String [] conStartMM = ParamUtil.getStrings(request, "conStartMM");
+        for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            String premisesIndexNo = "prem"+ i;
-            String premisesType = ParamUtil.getString(request, premisesIndexNo+"premType");
-            appGrpPremisesDto.setPremisesType(premisesType);
+            appGrpPremisesDto.setPremisesType(premisesType[i]);
             //wait to do
-            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
-                String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premOnSiteSelect");
-                String hciName = ParamUtil.getString(request, premisesIndexNo+"hciName");
-                String postalCode = ParamUtil.getString(request,  premisesIndexNo+"postalCode");
-                String blkNo = ParamUtil.getString(request, premisesIndexNo+"blkNo");
-                String streetName = ParamUtil.getString(request, premisesIndexNo+"streetName");
-                String floorNo = ParamUtil.getString(request, premisesIndexNo+"floorNo");
-                String unitNo = ParamUtil.getString(request, premisesIndexNo+"unitNo");
-                String buildingName = ParamUtil.getString(request, premisesIndexNo+"buildingName");
-                String siteAddressType = ParamUtil.getString(request, premisesIndexNo+"siteAddressType");
-                String siteSafefyNo = ParamUtil.getString(request, premisesIndexNo+"siteSafefyNo");
-                String addrType = ParamUtil.getString(request, premisesIndexNo+"addrType");
-                String offTelNo= ParamUtil.getString(request,premisesIndexNo+"offTelNo");
-                String scdfRefNo = ParamUtil.getString(request, premisesIndexNo+"siteSafefyNo");
-                String onsiteStartHH = ParamUtil.getString(request, premisesIndexNo + "onsiteStartHH");
-                String onsiteStartMM = ParamUtil.getString(request, premisesIndexNo + "onsiteStartMM");
-
-                String fireSafetyCertIssuedDateStr  = ParamUtil.getString(request, premisesIndexNo+"fireSafetyCertIssuedDate");
-                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr, "dd/mm/yyyy");
-                appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH);
-                appGrpPremisesDto.setOnsiteStartMM(onsiteStartMM);
-                appGrpPremisesDto.setPremisesSelect(premisesSelect);
-                appGrpPremisesDto.setHciName(hciName);
-                appGrpPremisesDto.setPostalCode(postalCode);
-                appGrpPremisesDto.setBlkNo(blkNo);
-                appGrpPremisesDto.setStreetName(streetName);
-                appGrpPremisesDto.setFloorNo(floorNo);
-                appGrpPremisesDto.setUnitNo(unitNo);
-                appGrpPremisesDto.setBuildingName(buildingName);
-                appGrpPremisesDto.setSiteSafefyNo(siteAddressType);
-                appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo);
-                appGrpPremisesDto.setAddrType(addrType);
-                appGrpPremisesDto.setOffTelNo(offTelNo);
-                appGrpPremisesDto.setScdfRefNo(scdfRefNo);
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])){
+                appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);
+                appGrpPremisesDto.setOnsiteStartMM(onsiteStartMM[i]);
+                appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
+                appGrpPremisesDto.setHciName(hciName[i]);
+                appGrpPremisesDto.setPostalCode(postalCode[i]);
+                appGrpPremisesDto.setBlkNo(blkNo[i]);
+                appGrpPremisesDto.setStreetName(streetName[i]);
+                appGrpPremisesDto.setFloorNo(floorNo[i]);
+                appGrpPremisesDto.setUnitNo(unitNo[i]);
+                appGrpPremisesDto.setBuildingName(buildingName[i]);
+                appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo[i]);
+                appGrpPremisesDto.setAddrType(siteAddressType[i]);
+                appGrpPremisesDto.setOffTelNo(offTelNo[i]);
+                appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
+                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], "dd/mm/yyyy");
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
-
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
-                String premisesSelect = ParamUtil.getString(request, premisesIndexNo+"premConSelect");
-                String vehicleNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceVehicleNo");
-                String postalCode = ParamUtil.getString(request,  premisesIndexNo+"conveyancePostalCode");
-                String blkNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceBlockNo");
-                String streetName = ParamUtil.getString(request, premisesIndexNo+"conveyanceStreetName");
-                String floorNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceFloorNo");
-                String unitNo = ParamUtil.getString(request, premisesIndexNo+"conveyanceUnitNo");
-                String buildingName = ParamUtil.getString(request, premisesIndexNo+"conveyanceBuildingName");
-                String siteAddressType = ParamUtil.getString(request, premisesIndexNo+"conveyanceAddrType");
-                String conStartHH = ParamUtil.getString(request, premisesIndexNo + "conStartHH");
-                String conStartMM = ParamUtil.getString(request, premisesIndexNo + "conStartMM");
-                appGrpPremisesDto.setConStartHH(conStartHH);
-                appGrpPremisesDto.setConStartMM(conStartMM);
-                appGrpPremisesDto.setPremisesSelect(premisesSelect);
-                appGrpPremisesDto.setConveyanceVehicleNo(vehicleNo);
-                appGrpPremisesDto.setConveyancePostalCode(postalCode);
-                appGrpPremisesDto.setConveyanceBlockNo(blkNo);
-                appGrpPremisesDto.setConveyanceStreetName(streetName);
-                appGrpPremisesDto.setConveyanceFloorNo(floorNo);
-                appGrpPremisesDto.setConveyanceUnitNo(unitNo);
-                appGrpPremisesDto.setConveyanceBuildingName(buildingName);
-                appGrpPremisesDto.setConveyanceAddressType(siteAddressType);
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
+                appGrpPremisesDto.setConStartHH(conStartHH[i]);
+                appGrpPremisesDto.setConStartMM(conStartMM[i]);
+                appGrpPremisesDto.setPremisesSelect(conPremisesSelect[i]);
+                appGrpPremisesDto.setConveyanceVehicleNo(conVehicleNo[i]);
+                appGrpPremisesDto.setConveyancePostalCode(conPostalCode[i]);
+                appGrpPremisesDto.setConveyanceBlockNo(conBlkNo[i]);
+                appGrpPremisesDto.setConveyanceStreetName(conStreetName[i]);
+                appGrpPremisesDto.setConveyanceFloorNo(conFloorNo[i]);
+                appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
+                appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
+                appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
             }
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
-
         return  appGrpPremisesDtoList;
     }
 

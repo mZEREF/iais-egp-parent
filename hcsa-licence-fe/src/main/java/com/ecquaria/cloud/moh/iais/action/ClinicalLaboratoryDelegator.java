@@ -1235,7 +1235,6 @@ public class ClinicalLaboratoryDelegator {
         if(hcsaSvcPersonnelDto ==null){
             return null;
         }
-        int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
         List<AppSvcCgoDto> appSvcCgoDtoList = new ArrayList<>();
         AppSvcCgoDto appSvcCgoDto = null;
 
@@ -1249,8 +1248,7 @@ public class ClinicalLaboratoryDelegator {
         String[] idType = ParamUtil.getStrings(request, "idType");
         String[] idNo = ParamUtil.getStrings(request, "idNo");
         String[] designation = ParamUtil.getStrings(request, "designation");
-        //String[] professionType = ParamUtil.getStrings(request, "professionType");
-        String[] professionRegoType = ParamUtil.getStrings(request, "professionRegoType");
+        String[] professionType = ParamUtil.getStrings(request, "professionRegoType");
         String[] professionRegoNo = ParamUtil.getStrings(request, "professionRegoNo");
         String[] specialty = ParamUtil.getStrings(request, "specialty");
         String[] specialtyOther = ParamUtil.getStrings(request, "specialtyOther");
@@ -1267,8 +1265,7 @@ public class ClinicalLaboratoryDelegator {
             appSvcCgoDto.setIdType(idType[i]);
             appSvcCgoDto.setIdNo(idNo[i]);
             appSvcCgoDto.setDesignation(designation[i]);
-            //appSvcCgoDto.setProfessionType(professionType[i]);
-            appSvcCgoDto.setProfessionRegoType(professionRegoType[i]);
+            appSvcCgoDto.setProfessionType(professionType[i]);
             appSvcCgoDto.setProfessionRegoNo(professionRegoNo[i]);
             String specialtyStr = specialty[i];
             appSvcCgoDto.setSpeciality(specialtyStr);
@@ -1380,9 +1377,9 @@ public class ClinicalLaboratoryDelegator {
                 if("-1".equals(speciality)){
                     errMap.put("speciality"+i,"UC_CHKLMD001_ERR002");
                 }
-                String professionRegoType = appSvcCgoList.get(i).getProfessionRegoType();
-                if(StringUtil.isEmpty(professionRegoType)){
-                    errMap.put("professionRegoType"+i,"UC_CHKLMD001_ERR002");
+                String professionType = appSvcCgoList.get(i).getProfessionType();
+                if(StringUtil.isEmpty(professionType)){
+                    errMap.put("professionType"+i,"UC_CHKLMD001_ERR002");
                 }
                 String designation = appSvcCgoList.get(i).getDesignation();
                 if(StringUtil.isEmpty(designation)){
