@@ -349,14 +349,14 @@ public class RequestForInformationDelegator {
         }
         // 		doReqForInfo->OnStepProcess
     }
-    public void doCreateRequest(BaseProcessClass bpc) {
+    public void doCreateRequest(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>doCreateRequest>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licPremId = (String) ParamUtil.getSessionAttr(request, "licPremId");
         StringBuilder officerRemarks=new StringBuilder();
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
-        licPremisesReqForInfoDto.setReqType("Ad hoc");
-        licPremisesReqForInfoDto.setDueDateSubmission(ParamUtil.getString(request,"Due_date"));
+        licPremisesReqForInfoDto.setReqType(RequestForInformationConstants.AD_HOC);
+        licPremisesReqForInfoDto.setDueDateSubmission(Formatter.parseDate(ParamUtil.getString(request, "Due_date")));
         officerRemarks.append(ParamUtil.getString(request,"rfiTitle")+" ");
         licPremisesReqForInfoDto.setLicPremId(licPremId);
         String[] reqType=ParamUtil.getStrings(request,"reqType");

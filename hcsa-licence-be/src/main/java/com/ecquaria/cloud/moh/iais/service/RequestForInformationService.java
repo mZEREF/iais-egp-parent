@@ -24,7 +24,7 @@ public interface RequestForInformationService {
     SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
     List<String> getSvcNamesByType(String type);
 
-    void createLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+    LicPremisesReqForInfoDto createLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     List<LicPremisesReqForInfoDto> searchLicPremisesReqForInfo(String licId);
     LicPremisesReqForInfoDto getLicPreReqForInfo(String id);
     void deleteLicPremisesReqForInfo(String id);

@@ -31,7 +31,7 @@ public interface RequestForInformationClient {
     FeignResponseEntity<SearchResult<RfiLicenceQueryDto>> searchRfiLicence(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/hcsa-reqForInfo/create-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    void createLicPremisesReqForInfo(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+    FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfo(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
     @GetMapping(value = "/hcsa-reqForInfo/licence-search-rfi/{licPremId}")
     FeignResponseEntity<List<LicPremisesReqForInfoDto>> searchLicPremisesReqForInfo(@PathVariable("licPremId")String licPremId);
