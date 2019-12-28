@@ -18,62 +18,45 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br>
-                    <h3>
-                        <span>Additional Request Information</span>
-                    </h3>
+                    <br><br>
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                             <div class="panel-body">
                                 <div class="panel-main-content">
                                     <iais:section title="" id = "supPoolList">
                                         <iais:row>
-                                            <iais:field value="Select Category"/>
-                                            <iais:value width="18">
-                                                <iais:select name="Select_category"  options="selectOptions" firstOption="Please select"  value="${selectOptions}" ></iais:select>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="RFI Title"/>
+                                            <iais:field value="Title :"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input id="rfiTitle" type="text" name="rfiTitle" >
+                                                    <span>${licPreReqForInfoDto.officerRemarks}</span>
                                                 </label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Licence No"/>
+                                            <iais:field value="Licence No :"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="licenceNo">
+                                                    <span>${licPreReqForInfoDto.licenceNo}</span>
                                                 </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Due Date :"/>
+                                            <iais:value width="18">
+                                                <iais:datePicker  name = "Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}"></iais:datePicker>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="radio" name="rfiType" value="Ad-hoc" />Ad-hoc
+                                                    <input type="checkbox" name="reqType" />Information
                                                 </label>
                                                 <label>
-                                                    <input type="radio" name="rfiType" value="Workflow" />Workflow
+                                                    <input type="checkbox" name="reqType" />Supporting Documents
                                                 </label>
                                             </iais:value>
                                         </iais:row>
 
-                                        <iais:row>
-                                            <iais:field value="File upload"/>
-                                            <iais:value width="18">
-                                                <label>
-                                                    <input type="checkbox" name="need_doc"  />Yes
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Due date for submission"/>
-                                            <iais:value width="18">
-                                                <iais:datePicker  name = "Due_date" ></iais:datePicker>
-                                            </iais:value>
-                                        </iais:row>
                                         <iais:action style="text-align:center;">
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAccept('${licPreReqForInfoDto.reqInfoId}')">Accept</button>
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doCancel('${licPreReqForInfoDto.reqInfoId}')">Cancel</button>

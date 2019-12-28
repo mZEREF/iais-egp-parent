@@ -361,12 +361,12 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setLicPremId(licPremId);
         String[] reqType=ParamUtil.getStrings(request,"reqType");
         boolean isNeedDoc;
-        if("true".equals(reqType[0])){
-            officerRemarks.append(" Information");
+        if("on".equals(reqType[0])){
+            officerRemarks.append(" :Information");
         }
-        if( "true".equals(reqType[1])){
+        if( "on".equals(reqType[1])){
             isNeedDoc=true;
-            officerRemarks.append(" Supporting documents");
+            officerRemarks.append(" :Supporting documents");
 
         }
         else {
@@ -375,8 +375,8 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
         licPremisesReqForInfoDto.setOfficerRemarks(officerRemarks.toString());
 
-        requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
-
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto1= requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
+        requestForInformationService.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1);
         // 		doCreateRequest->OnStepProcess
     }
     public void preNewRfi(BaseProcessClass bpc) {

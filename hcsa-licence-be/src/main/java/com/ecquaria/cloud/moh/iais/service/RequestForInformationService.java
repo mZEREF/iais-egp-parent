@@ -25,6 +25,7 @@ public interface RequestForInformationService {
     List<String> getSvcNamesByType(String type);
 
     LicPremisesReqForInfoDto createLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+    LicPremisesReqForInfoDto createLicPremisesReqForInfoFe(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     List<LicPremisesReqForInfoDto> searchLicPremisesReqForInfo(String licId);
     LicPremisesReqForInfoDto getLicPreReqForInfo(String id);
     void deleteLicPremisesReqForInfo(String id);

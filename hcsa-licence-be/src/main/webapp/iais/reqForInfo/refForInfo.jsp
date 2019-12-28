@@ -34,7 +34,7 @@
                                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="OFFICER_REMARKS" value="Officer Remarks"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="USER_REPLY" value="User Reply"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="DOCUMENT" value="Document"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="REQUEST_DATE" value="Start Date"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                             </tr>
                             </thead>

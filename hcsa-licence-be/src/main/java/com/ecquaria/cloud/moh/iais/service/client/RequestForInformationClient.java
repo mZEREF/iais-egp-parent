@@ -33,10 +33,13 @@ public interface RequestForInformationClient {
     @PostMapping(value = "/hcsa-reqForInfo/create-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfo(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
+    @PostMapping(value = "/hcsa-reqForInfo-fe/create-rfi-fe",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfoFe(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+
     @GetMapping(value = "/hcsa-reqForInfo/licence-search-rfi/{licPremId}")
     FeignResponseEntity<List<LicPremisesReqForInfoDto>> searchLicPremisesReqForInfo(@PathVariable("licPremId")String licPremId);
 
-    @GetMapping (value = "/licence-one-rfi/{reqForInfoId}")
+    @GetMapping (value = "/hcsa-reqForInfo/licence-one-rfi/{reqForInfoId}")
     FeignResponseEntity<LicPremisesReqForInfoDto> getLicPreReqForInfo(@PathVariable("reqForInfoId")String id);
 
     @DeleteMapping(value = "/hcsa-reqForInfo/licence-cancel-rfi",consumes = MediaType.APPLICATION_JSON_VALUE)
