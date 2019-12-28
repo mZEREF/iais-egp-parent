@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -19,93 +20,114 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
-public class HcsaChklFallback {
+public class HcsaChklFallback implements HcsaChklClient{
 
-    public FeignResponseEntity<String> inActiveConfig(String confId){
+
+    @Override
+    public FeignResponseEntity<String> inActiveConfig(String confId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<Boolean> inActiveItem(String itemId){
+    @Override
+    public FeignResponseEntity<Boolean> inActiveItem(String itemId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<SearchResult> listChecklistConfig(SearchParam searchParam){
+    @Override
+    public FeignResponseEntity<SearchResult<ChecklistConfigQueryDto>> listChecklistConfig(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<SearchResult<CheckItemQueryDto>> listChklItem(SearchParam searchParam){
+    @Override
+    public FeignResponseEntity<SearchResult<CheckItemQueryDto>> listChklItem(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<ChecklistItemDto>> listChklItemByItemId(List<String> itemIds){
+    @Override
+    public FeignResponseEntity<List<ChecklistItemDto>> listChklItemByItemId(List<String> itemIds) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-
-    public FeignResponseEntity<ChecklistItemDto> getChklItemById(String id){
+    @Override
+    public FeignResponseEntity<ChecklistItemDto> getChklItemById(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<String> saveChklItem(ChecklistItemDto itemDto){
+    @Override
+    public FeignResponseEntity<String> saveChklItem(ChecklistItemDto itemDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<String>> listRegulationClauseNo(){
+    @Override
+    public FeignResponseEntity<List<String>> listRegulationClauseNo() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<String> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos){
+    @Override
+    public FeignResponseEntity<String> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<Void> submitConfig(ChecklistConfigDto checklistConfigDto){
+    @Override
+    public FeignResponseEntity<String> submitConfig(ChecklistConfigDto checklistConfigDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<String>> listSubTypeName(){
+    @Override
+    public FeignResponseEntity<List<String>> listSubTypeName() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<String>> listServiceName(){
+    @Override
+    public FeignResponseEntity<List<String>> listServiceName() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<ChecklistConfigDto> getChecklistConfigById(String configId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<ChecklistQuestionDto>> getcheckListQuestionDtoList(String svcCode, String svcType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
@@ -113,41 +135,48 @@ public class HcsaChklFallback {
         return entity;
     }
 
-    public FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceById(List<String> serviceId) {
+    @Override
+    public FeignResponseEntity<HcsaChklSvcRegulationDto> getRegulationDtoById(String svcCode) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<HcsaChklSvcRegulationDto> getRegulationDtoById(String id) {
+    @Override
+    public FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceByIds(List<String> serviceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-
-    FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(String svcCode,
-                                                                        String type,
-                                                                        String module,
-                                                                        String subTypeName){
+    @Override
+    public FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(String svcCode, String type, String module) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(String svcCode,
-                                                                        String type,
-                                                                        String module){
+    @Override
+    public FeignResponseEntity<ChecklistConfigDto> getMaxVersionConfigByParams(String svcCode, String type, String module, String subTypeName) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfig(){
+    @Override
+    public FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfig() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> isExistsRecord(ChecklistConfigDto configDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

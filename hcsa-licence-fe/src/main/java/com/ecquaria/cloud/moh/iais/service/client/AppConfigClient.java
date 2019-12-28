@@ -132,13 +132,13 @@ public interface AppConfigClient {
     */
     @PostMapping(value = "/iais-hcsa-service/pref-period/results",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(@RequestBody SearchParam searchParam);
+    FeignResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(@RequestBody SearchParam searchParam);
 
     @GetMapping(value = "/iais-hcsa-service/pref-period/{svcCode}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<HcsaServicePrefInspPeriodDto> getHcsaServicePrefInspPeriod(@PathVariable(name = "svcCode") String svcCode);
+    FeignResponseEntity<HcsaServicePrefInspPeriodDto> getHcsaServicePrefInspPeriod(@PathVariable(name = "svcCode") String svcCode);
 
     @PostMapping(value = "/iais-hcsa-service/pref-period/after-app/max-period",
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Integer> getMaxAfterAppBySvcCodeList(@RequestBody List<String> svcCodeList);
+    FeignResponseEntity<Integer> getMaxAfterAppBySvcCodeList(@RequestBody List<String> svcCodeList);
 }

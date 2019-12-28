@@ -122,11 +122,11 @@ public interface HcsaConfigClient {
 
     @PostMapping(value = "/iais-hcsa-service/pref-period/reuslts",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(@RequestBody SearchParam searchParam);
+    FeignResponseEntity<SearchResult<HcsaServicePrefInspPeriodQueryDto>> getHcsaServicePrefInspPeriodList(@RequestBody SearchParam searchParam);
 
     @PutMapping(value = "/iais-hcsa-service/pref-period",
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Boolean> savePrefInspPeriod(@RequestBody HcsaServicePrefInspPeriodDto period);
+    FeignResponseEntity<Boolean> savePrefInspPeriod(@RequestBody HcsaServicePrefInspPeriodDto period);
 
     @RequestMapping(value = "/iais-hcsa-risk/legislativematrixstorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> saveLegislativeRiskMatrix(@RequestBody List<HcsaRiskLegislativeMatrixDto> finDtoList);
