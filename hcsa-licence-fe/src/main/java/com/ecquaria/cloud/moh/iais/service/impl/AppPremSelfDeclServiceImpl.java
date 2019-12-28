@@ -6,21 +6,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
-import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDeclGroup;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -39,7 +34,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author yichen
@@ -70,134 +64,250 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
     private String secretKey;
 
 
-    private String transformModule(String module) {
-        if (StringUtil.isEmpty(module)) {
-            return null;
-        }
 
-        String retStr = null;
-        switch (module) {
-            case "N":
-                retStr = "New";
-                break;
-            case "R":
-                retStr = "Renewal";
-                break;
-            default:
+    /**
+    * @author: yichen
+    * @description: Set service config
+    * @param:
+    * @return:
+    */
+    private void setServiceSelfDeclConfig(List<PremCheckItem> premItemList, List<String> confList,
+                                          String svcCode, String type, String module, String grpPremId){
+        for (AppSvcPremisesScopeDto premise : this.premScopeList){
+            String scopeId = premise.getId();
+            ChecklistConfigDto svcConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
+            if (svcConfig != null){
+                setPremChecklistItem(premItemList, svcConfig.getId(), false, scopeId, grpPremId);
+                confList.add(svcConfig.getId());
+            }
         }
+    }
 
-        return retStr;
+    /**
+    * @author: yichen
+    * @description: If there is a subtype, Then get the corresponding config
+    * @param:
+    * @return:
+    */
+    private void setSubTypeSelfDeclConfig(List<PremCheckItem> premItemList, List<String> confList, String svcCode, String type, String module, String grpPremId){
+        for (AppSvcPremisesScopeDto premise : this.premScopeList){
+            if (!premise.isSubsumedType()){
+                String scopeId = premise.getId();
+                String subTypeId = premise.getScopeName();
+                HcsaServiceSubTypeDto subType = appConfigClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
+                String subTypeName = subType.getSubtypeName();
+                ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
+                if (subTypeConfig != null){
+                    setPremChecklistItem(premItemList, subTypeConfig.getId(), false, scopeId, grpPremId);
+                    confList.add(subTypeConfig.getId());
+                }
+            }
+        }
+    }
+
+    /**
+    * @author: yichen
+    * @description: Set common config
+    * @param:
+    * @return:
+    */
+    private void setCommonDeclSelfConfig(List<SelfDecl> selfDeclList,List<String> premIdList, String grpPremId){
+            ChecklistConfigDto commonConfig = appConfigClient.getMaxVersionCommonConfig().getEntity();
+        SelfDecl commonSelfDecl = overlayCommon(premIdList, commonConfig.getId(), grpPremId);
+        selfDeclList.add(commonSelfDecl);
     }
 
     @Override
     /**
-     * @author: yichen
-     * @description: Selfdecl entity is Represent a tab in the web page, (Single)first common , (Multiple)then service, (Multiple)behind subtype
-     * @param: [groupId]
-     * @return: java.util.List<com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl>
-     */
-    public List<SelfDecl> getSelfDeclByGroupId(String groupId) {
+    * @author: yichen
+    * @description: Selfdecl entity is Represent a tab in the web page, (Single)first common , (Multiple)then service, (Multiple)behind subtype
+    * @param: [groupId]
+    * @return: java.util.List<com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl>
+    */
+    public List<SelfDecl> getSelfDeclByGroupId(String groupId){
+        // (S) Group , (M) application
         List<ApplicationDto> appList = applicationClient.listApplicationByGroupId(groupId).getEntity();
-        SelfDeclGroup selfDeclGroup = new SelfDeclGroup();
-        List<SelfAssessment> selfAssessmentList = new ArrayList<>();
-        for (ApplicationDto app : appList) {
-            SelfAssessment selfAssessment = new SelfAssessment();
-            SelfAssessment commonSelfAssessment = new SelfAssessment();
+        List<SelfDecl> selfDeclList = new ArrayList<>();
+        List<String> premiseList = new ArrayList<>();
 
-
+        for (ApplicationDto app : appList){
+            SelfDecl selfDecl = new SelfDecl();
+            List<String> confList = new ArrayList<>();
             String appId = app.getId();
             String svcId = app.getServiceId();
             String appType = app.getApplicationType();
             String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.SELF_ASSESSMENT);
-            String module = transformModule(MasterCodeUtil.getCodeDesc("APTY002").substring(0, 1));
+            String module = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
 
             HcsaServiceDto hcsa = appConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
             String svcCode = hcsa.getSvcCode();
-            String svcName = hcsa.getSvcName();
 
             // search inspection period
             HcsaServicePrefInspPeriodDto inspPeriod = appConfigClient.getHcsaServicePrefInspPeriod(svcCode).getEntity();
+            selfDecl.setPeriodDto(inspPeriod);
 
-
-            Map<String, List<PremCheckItem>> premiseAnswerMap = new HashMap<>(16);
-            List<AppPremisesCorrelationDto> correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+            String svcName = hcsa.getSvcName();
             List<PremCheckItem> premItemList = new ArrayList<>();
-            for (AppPremisesCorrelationDto corre : correlationList) {
+            Map<String, List<PremCheckItem>> premiseAnswerMap = new HashMap<>(16);
+            List<AppPremisesCorrelationDto>  correlationList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
+            for (AppPremisesCorrelationDto corre : correlationList){
                 String correId = corre.getId();
                 String grpPremId = corre.getAppGrpPremId();
 
-                ChecklistConfigDto commonConfig = appConfigClient.getMaxVersionCommonConfig().getEntity();
-                if (commonConfig != null){
-                    loadingAnswerItem(premItemList, commonConfig, grpPremId);
-                }
+                this.premScopeList = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
 
-                //service
-                ChecklistConfigDto svcConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
-                if (svcConfig != null) {
-                    loadingAnswerItem(premItemList, svcConfig, grpPremId);
-                }
+                setServiceSelfDeclConfig(premItemList, confList, svcCode, type, module, grpPremId);
+                setSubTypeSelfDeclConfig(premItemList, confList, svcCode, type, module, grpPremId);
 
-                //sub type
-                List<AppSvcPremisesScopeDto> premisesScopeList = applicationClient.getAppSvcPremisesScopeListByCorreId(correId).getEntity();
-                for (AppSvcPremisesScopeDto scope : premisesScopeList) {
-                    if (!scope.isSubsumedType()) {
-                        String subTypeId = scope.getScopeName();
-                        HcsaServiceSubTypeDto subType = appConfigClient.getHcsaServiceSubTypeById(subTypeId).getEntity();
-                        String subTypeName = subType.getSubtypeName();
-                        ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
-                        if (subTypeConfig != null) {
-                            loadingAnswerItem(premItemList, subTypeConfig, grpPremId);
-                        }
-                    }
-
-                }
-
+                selfDecl.setPremAnswerMap(premiseAnswerMap);
+                selfDecl.setSvcCode(svcCode);
+                selfDecl.setSvcName(svcName);
+                selfDecl.setConfIdList(confList);
+                selfDecl.setSvcId(svcId);
                 premiseAnswerMap.put(correId, premItemList);
-                selfAssessment.setInspAfterApp(inspPeriod.getPeriodAfterApp());
-                selfAssessment.setInspBeforeExp(inspPeriod.getPeriodBeforeExp());
-                selfAssessment.setPremAnswerMap(premiseAnswerMap);
-                selfAssessment.setSvcName(svcName);
-                selfAssessment.setSvcCode(svcCode);
-                selfAssessment.setAppType(appType);
-                selfAssessmentList.add(selfAssessment);
-            }
+                selfDecl.setPremAnswerMap(premiseAnswerMap);
+                premiseList.add(correId);
+                selfDeclList.add(selfDecl);
 
+                setCommonDeclSelfConfig(selfDeclList, premiseList, grpPremId);
+            }
         }
 
 
 
+        ascendOrderByCommon(selfDeclList);
+
+        return selfDeclList;
+    }
+
+    /**
+    * @author: yichen
+    * @description: The configuration for common is displayed in the first location of the TAB
+    * @param:
+    * @return:
+    */
+    private void ascendOrderByCommon(List<SelfDecl> selfDeclList){
+        selfDeclList.sort((s1, s2) -> {
+            if (s1.isCommon() ^ s2.isCommon()) {
+                return s1.isCommon() ? -1 : 1;
+            } else {
+                return 0;
+            }
+        });
+    }
+
+    /**
+    * @author: yichen
+    * @description: Load checklist
+    * @param:
+    * @return:
+    */
+    private void setPremChecklistItem(List<PremCheckItem> premItemList, String configId, Boolean isCommon, String scopeId, String grpPremId){
+        if (premItemList != null){
+            SearchParam searchParam = new SearchParam(ChecklistQuestionDto.class.getName());
+            searchParam.addFilter("common", isCommon, true);
+            if (!isCommon){
+                searchParam.addFilter("svc_type", "Self-Assessment", true);
+            }
+
+            if (configId != null){
+                searchParam.addFilter("configId", configId, true);
+            }
+
+            QueryHelp.setMainSql("applicationQuery", "listSelfDesc", searchParam);
+
+            if (grpPremId != null){
+                AppGrpPremisesDto addressDto = applicationClient.getAppGrpPremise(grpPremId).getEntity();
+                SearchResult<ChecklistQuestionDto> searchResult = appConfigClient.listSelfDescConfig(searchParam).getEntity();
+                List<ChecklistQuestionDto> rows = searchResult.getRows();
+                for (ChecklistQuestionDto question : rows){
+                    PremCheckItem premCheckItem = new PremCheckItem();
+                    premCheckItem.setChecklistItem(question.getChecklistItem());
+                    premCheckItem.setRegulation(question.getRegClauseNo());
+                    premCheckItem.setChecklistItemId(question.getItemId());
+
+                    if (addressDto != null){
+                        premCheckItem.setAddress(addressDto.getAddress());
+                    }
+
+                    String pkId = question.getId().substring(0, 10);   //from db section item id
+                    String itemId = question.getItemId().substring(0, 10);
+
+                    //Answer key, ensure uniqueness
+                    premCheckItem.setAnswerKey(pkId + itemId + scopeId);
+
+                    premItemList.add(premCheckItem);
+                }
+            }
 
 
-        selfDeclGroup.setSelfAssessmentList(selfAssessmentList);
-        return null;
+        }
     }
 
     @Override
+    /**
+    * @author: yichen
+    * @description: If the transaction for FE fails, the action saved to BE is not triggered.
+    * If BE fails, will be bactch-job synchronizes the data
+    * @param: [selfDeclList]
+    * @return: void
+    */
     public void saveSelfDeclAndInspectionDate(List<SelfDecl> selfDeclList, String groupId, Date inspStartDate, Date inspEndDate) {
+        //save fe after return data
+        List<String> contentJsonList = applicationClient.saveAllSelfDecl(selfDeclList).getEntity();
 
+        //route to be
+        if (contentJsonList != null && !contentJsonList.isEmpty()){
+            ApplicationGroupDto applicationGroupDto = new ApplicationGroupDto();
+            applicationGroupDto.setId(groupId);
+            applicationGroupDto.setPrefInspStartDate(inspStartDate);
+            applicationGroupDto.setPrefInspEndDate(inspEndDate);
+            applicationClient.doUpDate(applicationGroupDto);
+
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization()).getEntity();
+        }
     }
 
     @Override
     public Date getBlockPeriodByAfterApp(String groupId, List<SelfDecl> selfDeclList) {
-        return null;
-    }
-
-    private void loadingAnswerItem (List<PremCheckItem> premItemList, ChecklistConfigDto config, String grpPremId){
-        AppGrpPremisesDto addressDto = applicationClient.getAppGrpPremise(grpPremId).getEntity();
-        List<ChecklistSectionDto> sectionDtos = config.getSectionDtos();
-        for (ChecklistSectionDto section : sectionDtos) {
-            List<ChecklistItemDto> checklistItemDtos = section.getChecklistItemDtos();
-            for (ChecklistItemDto item : checklistItemDtos) {
-                PremCheckItem answerItem = new PremCheckItem();
-                answerItem.setAnswerKey(UUID.randomUUID().toString());
-                answerItem.setChecklistItem(item.getChecklistItem());
-                answerItem.setChecklistItemId(item.getItemId());
-                answerItem.setRegulation(item.getRegulationClause());
-                answerItem.setAddress(addressDto.getAddress());
-                premItemList.add(answerItem);
+        ApplicationGroupDto groupDto = applicationClient.getApplicarionGroup(groupId).getEntity();
+        int min = Integer.MAX_VALUE;
+        for (SelfDecl selfDecl : selfDeclList){
+            if (!selfDecl.isCommon()){
+                HcsaServicePrefInspPeriodDto periodDto = selfDecl.getPeriodDto();
+                min = Math.min(min, periodDto.getPeriodAfterApp());
             }
         }
+        Calendar c = Calendar.getInstance();
+        c.setTime(groupDto.getSubmitDt());
+        c.add(Calendar.DAY_OF_MONTH, min);
+
+        return c.getTime();
     }
 
+    private SelfDecl overlayCommon(List<String> premIdList, String configId, String grpPremId){
+        if (premIdList == null){
+            return null;
+        }
 
+        SelfDecl selfDecl = new SelfDecl();
+        List<PremCheckItem> premCheckItems = new ArrayList<>();
+        setPremChecklistItem(premCheckItems, configId, true, null, grpPremId);
+
+        Map<String, List<PremCheckItem>> premAnswerMap = new HashMap<>(16);
+
+        for (String s : premIdList){
+            premAnswerMap.put(s, premCheckItems);
+        }
+
+        selfDecl.setPremAnswerMap(premAnswerMap);
+        selfDecl.setCommon(true);
+
+        List<String> configList = new ArrayList<>();
+        configList.add(configId);
+
+        selfDecl.setConfIdList(configList);
+        return selfDecl;
+    }
 }
