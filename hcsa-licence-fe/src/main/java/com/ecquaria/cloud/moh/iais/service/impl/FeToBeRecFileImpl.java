@@ -130,7 +130,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         for(Map.Entry<String, Map<String, AppPremPreInspectionNcDocDto>> entry : fileReportIds.entrySet()){
             String appId = entry.getKey();
             Map<String, AppPremPreInspectionNcDocDto> mapValue = entry.getValue();
-            getFileAndClassify(appId, mapValue);
+            getFileAndClassify(mapValue);
             ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
             applicationDtos.add(applicationDto);
         }
@@ -147,7 +147,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         }
     }
 
-    private void getFileAndClassify(String appId, Map<String, AppPremPreInspectionNcDocDto> mapValue) {
+    private void getFileAndClassify(Map<String, AppPremPreInspectionNcDocDto> mapValue) {
         for(Map.Entry<String, AppPremPreInspectionNcDocDto> entry : mapValue.entrySet()){
             String mapKey = entry.getKey();
             AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto = entry.getValue();
@@ -159,8 +159,8 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                 log.error(e.getMessage(),e);
                 s = "";
             }
-            File file = new File(download + File.separator + appId + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
-            File backupsFile = new File(backups + File.separator + appId + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
+            File file = new File(download + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
+            File backupsFile = new File(backups + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
             writeFileByFileByte(file, backupsFile, fileByte);
         }
     }
