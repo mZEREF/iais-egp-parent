@@ -47,6 +47,7 @@ public class LicencEventBusCallBackDelegator {
         log.info(StringUtil.changeForLog("The LicenceService callBack start ..."));
         HttpServletRequest request = bpc.request;
         String submissionId = ParamUtil.getString(request,"submissionId");
+        log.info(StringUtil.changeForLog("The submissionId is-->:"+submissionId));
         String token = ParamUtil.getString(request, "token");
         String serviceName = ParamUtil.getString(request, "service");
         log.info(StringUtil.changeForLog("The serviceName is-->:"+serviceName));
@@ -58,11 +59,14 @@ public class LicencEventBusCallBackDelegator {
         log.info(StringUtil.changeForLog("The operation is-->:"+operation));
         Map<String, List<ServiceStatus>> map = client.getSubmissionStatus(AppConsts.REST_PROTOCOL_TYPE
                 + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
+        log.info(StringUtil.changeForLog("The map.size() is-->:"+map.size()));
         if (map.size() == 1) {
             boolean completed = true;
             boolean success = true;
             for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
                 for (ServiceStatus status : ent.getValue()) {
+                    log.info(StringUtil.changeForLog("The status is-->:"+status.getStatus()));
+                    log.info(StringUtil.changeForLog("The getErrorMsg is-->:"+status.getErrorMsg()));
                     if (!status.getStatus().equals(GlobalConstants.STATE_COMPLETED)) {
                         completed = false;
                     }
@@ -75,6 +79,8 @@ public class LicencEventBusCallBackDelegator {
                     break;
                 }
             }
+            log.info(StringUtil.changeForLog("The success is-->:"+success));
+            log.info(StringUtil.changeForLog("The completed is-->:"+completed));
             if (!success) {
                 client.setCompensation(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS,
                         submissionId, operation, "");
