@@ -90,10 +90,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
-
                     <div class="application-tab-footer">
                         <div class="row">
                             <div class="row">
