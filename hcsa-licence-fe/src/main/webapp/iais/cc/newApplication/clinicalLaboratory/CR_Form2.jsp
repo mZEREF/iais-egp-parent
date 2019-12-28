@@ -371,7 +371,7 @@
           </td>
         </tr>
         <hr/>
-        <c:if test="${'BLB'!=currentSvcCode || 'RDS'!=currentSvcCode}">
+        <c:if test="${'BLB'!=currentSvcCode && 'RDS'!=currentSvcCode && requestInformationConfig==null}">
         <tr id="addInfo">
           <td>
             <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Clinical Governance Officer</span>

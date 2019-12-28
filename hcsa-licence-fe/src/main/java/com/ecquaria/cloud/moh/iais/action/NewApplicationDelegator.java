@@ -74,6 +74,8 @@ public class NewApplicationDelegator {
     public static final String RELOADAPPGRPPRIMARYDOCMAP = "reloadAppGrpPrimaryDocMap";
     public static final String  APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
 
+    private static final String REQUESTINFORMATIONCONFIG  = "requestInformationConfig";
+
     public static final String FIRESTOPTION = "Please Select";
 
 
@@ -104,6 +106,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, null);
 
         //request For Information Loading
+        ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
         requestForInformationLoading(bpc);
         //for loading the draft by appId
         loadingDraft(bpc);
@@ -1083,6 +1086,7 @@ public class NewApplicationDelegator {
         if(!StringUtil.isEmpty(appNo)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,"test");
         }
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
     }
