@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -336,6 +337,8 @@ public class NewApplicationDelegator {
                     appGrpPrimaryDocDto.setRealDocSize(file.getSize());
                     long size = file.getSize() / 1024;
                     appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+                    String md5Code = FileUtil.genMd5FileChecksum(file.getBytes());
+                    appGrpPrimaryDocDto.setMd5Code(md5Code);
                     //if  common ==> set null
                     appGrpPrimaryDocDto.setPremisessName("");
                     appGrpPrimaryDocDto.setPremisessType("");
@@ -376,6 +379,8 @@ public class NewApplicationDelegator {
                         appGrpPrimaryDocDto.setRealDocSize(file.getSize());
                         long size = file.getSize() / 1024;
                         appGrpPrimaryDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+                        String md5Code = FileUtil.genMd5FileChecksum(file.getBytes());
+                        appGrpPrimaryDocDto.setMd5Code(md5Code);
                         appGrpPrimaryDocDto.setPremisessName(premisesIndexNo);
                         appGrpPrimaryDocDto.setPremisessType(appGrpPremisesDto.getPremisesType());
                         commonsMultipartFileMap.put(premisesIndexNo+prem.getId(), file);

@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -909,6 +910,8 @@ public class ClinicalLaboratoryDelegator {
                         appSvcDocDto.setDocName(file.getOriginalFilename());
                         long size = file.getSize()/1024;
                         appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+                        String md5Code = FileUtil.genMd5FileChecksum(file.getBytes());
+                        appSvcDocDto.setMd5Code(md5Code);
                         commonsMultipartFileMap.put(docConfigId, file);
                         //wait api change to get fileRepoId
                         appSvcDocDtoList.add(appSvcDocDto);
