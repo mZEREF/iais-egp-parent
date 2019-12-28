@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+
 import java.util.List;
 
 public interface ApplicationViewService {
@@ -22,4 +23,6 @@ public interface ApplicationViewService {
     List<HcsaSvcRoutingStageDto> getStage(String serviceId,String stageId);
 
     OrgUserDto getUserById(String userId);
+
+    String getWrkGrpName(String id);
 }
