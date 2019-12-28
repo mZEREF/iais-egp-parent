@@ -31,7 +31,7 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="bg-title">
-                            <h2>Master Code View</h2>
+                            <h2>Intranet User View</h2>
                         </div>
                         <%@ include file="doSearch.jsp" %>
                         <%@ include file="userList.jsp" %>
@@ -46,22 +46,23 @@
         $("[name='crud_action_type']").val(action);
         $("#IntranetUserForm").submit();
     }
+
+
     function doCreate(){
-        submit('create');
+        submit('save');
     }
 
-
-    $("#MC_Search").click(function() {
+    $("#IU_Search").click(function() {
         submit('doSearch');
     });
 
-    function doEdit(mcId){
-        $("[name='crud_action_value']").val(mcId);
+    function doEdit(Id){
+        $("[name='crud_action_value']").val(Id);
         submit('edit');
     }
 
-    function doDelete(mcId){
-        $("[name='crud_action_value']").val(mcId);
-        submit('doDelete');
+    function doDelete(Id){
+        $("[name='crud_action_value']").val(Id);
+        submit('delete');
     }
 </script>

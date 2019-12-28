@@ -34,6 +34,7 @@
 			FROM user_account as iu
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, iu.id) >0</#if>
+            <#if userId??> AND iu.USER_ID = :userId</#if>
             <#if displayName??> AND iu.DISPLAY_NAME = :displayName</#if>
             <#if email??> AND iu.EMAIL_ADDR = :email</#if>
             <#if status??> AND iu.STATUS > :status</#if>

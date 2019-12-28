@@ -16,7 +16,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohIntranetUser___1 extends BaseProcessClass {
 
-	private static final String DELEGATOR ="createUser";
+	private static final String DELEGATOR ="IntranetUser";
+	
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}

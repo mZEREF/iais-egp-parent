@@ -85,8 +85,8 @@
                         <div class="table-footnote">
                             <div class="row">
                                 <div class="col-xs-6 col-md-4">
-                                    <p class="count">${MasterCodeSearchResult.rowCount} out
-                                        of ${MasterCodeSearchParam.pageNo}</p>
+                                    <p class="count">${IntranetUserSearchResult.rowCount} out
+                                        of ${IntranetUserSearchParam.pageNo}</p>
                                 </div>
                                 <div class="col-xs-6 col-md-8 text-right">
                                     <div class="nav">

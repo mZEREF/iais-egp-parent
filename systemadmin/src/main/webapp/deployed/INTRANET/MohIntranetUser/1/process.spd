@@ -174,22 +174,25 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(220,570)(580,640)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(580,640)(63,641)(140,80)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/PrepareCreate" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="200" y="550">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;isValid&quot;" x="420" y="540">
+  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="420" y="540">
    <Description/>
   </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="560" y="60">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareCreate" value="&quot;create&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCreate" value="&quot;save&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareEdit" value="&quot;edit&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doDelete" value="&quot;delete&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doSearch" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;"/>
   </Switch>
