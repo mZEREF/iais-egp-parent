@@ -114,7 +114,11 @@
                                             <p><a id = "docBack" class="back" ><em class="fa fa-angle-left"></em> Back</a></p>
                                         </div>
                                         <div class="col-xs-12 col-sm-6">
-                                            <div class="button-group"><a class="btn btn-secondary" id = "previewSaveDraft">Save as Draft</a><a class="next btn btn-primary" id = "previewNext">SUBMIT & PAY </a></div>
+                                            <div class="button-group">
+                                                <c:if test="${requestInformationConfig==null}">
+                                                <a class="btn btn-secondary" id = "previewSaveDraft">Save as Draft</a>
+                                                </c:if>
+                                                <a class="next btn btn-primary" id = "previewNext">SUBMIT & PAY </a></div>
                                         </div>
                                     </div>
                                 </div>

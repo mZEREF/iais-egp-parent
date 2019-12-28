@@ -379,7 +379,11 @@
                       <p><a class="back hidden" href="#"><em class="fa fa-angle-left"></em> Back</a></p>
                     </div>
                     <div class="col-xs-12 col-sm-6">
-                      <div class="button-group"><a class="btn btn-secondary premiseSaveDraft" >Save as Draft</a><a class="btn btn-primary next premiseId" >Next</a></div>
+                      <div class="button-group">
+                        <c:if test="${requestInformationConfig==null}">
+                        <a class="btn btn-secondary premiseSaveDraft" >Save as Draft</a>
+                        </c:if>
+                        <a class="btn btn-primary next premiseId" >Next</a></div>
                     </div>
                   </div>
                 </div>

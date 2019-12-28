@@ -3,7 +3,10 @@
   <div class="row">
     <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
     <div class="col-xs-12 col-sm-6">
-      <div class="button-group"><a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
+      <div class="button-group">
+        <c:if test="${requestInformationConfig==null}">
+        <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
+        </c:if>
         <a class="next btn btn-primary" id = "Next">Next</a></div>
       <input name="nextStep" value="" type="hidden">
     </div>
