@@ -22,11 +22,11 @@ public class PrefDateRangePeriodServiceImpl implements PrefDateRangePeriodServic
 
     @Override
     public SearchResult<HcsaServicePrefInspPeriodQueryDto> getHcsaServicePrefInspPeriodList(SearchParam searchParam) {
-        return hcsaConfigClient.getHcsaServicePrefInspPeriodList(searchParam).getBody();
+        return hcsaConfigClient.getHcsaServicePrefInspPeriodList(searchParam).getEntity();
     }
 
     @Override
     public Boolean savePrefInspPeriod(HcsaServicePrefInspPeriodDto period) {
-        return hcsaConfigClient.savePrefInspPeriod(period).getBody();
+        return hcsaConfigClient.savePrefInspPeriod(period).getEntity();
     }
 }
