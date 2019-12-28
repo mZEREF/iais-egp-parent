@@ -200,13 +200,6 @@
                                                     <td colspan="5" align="center">
                                                         <p>No record found.</p>
                                                     </td>
-                                                    <td>
-                                                        <div class="file-upload-gp">
-                                                            <input id="selectedFile1" type="file"
-                                                                   style="display: none;">
-                                                            <a class="btn btn-file-upload btn-secondary">Upload</a>
-                                                        </div>
-                                                    </td>
                                                 </tr>
                                                 </tbody>
                                             </table>
