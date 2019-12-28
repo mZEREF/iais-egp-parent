@@ -132,7 +132,7 @@ public class LicenceServiceImpl implements LicenceService {
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
                 EventBusConsts.OPERATION_LICENCE_SAVE,
                 sopUrl,
-                callBackUrl, "sop",true,project,processName,step);
+                callBackUrl, EventBusConsts.SOP_USER_ID,true,project,processName,step);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
 

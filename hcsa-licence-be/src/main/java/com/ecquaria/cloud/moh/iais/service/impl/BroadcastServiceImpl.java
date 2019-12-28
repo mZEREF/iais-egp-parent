@@ -55,7 +55,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                 EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 sopUrl,
-                callBackUrl, "sop",false,project,processName,step);
+                callBackUrl, EventBusConsts.SOP_USER_ID,false,project,processName,step);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
         return null;
@@ -80,7 +80,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 sopUrl,
-                callBackUrl, "sop",false,project,processName,step);
+                callBackUrl, EventBusConsts.SOP_USER_ID,false,project,processName,step);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
         return null;
