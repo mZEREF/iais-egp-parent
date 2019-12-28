@@ -27,7 +27,7 @@
                         <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                             <div class="panel-body">
                                 <div class="panel-main-content">
-                                    <iais:section title="" id = "supPoolList">
+                                    <iais:section title="">
                                         <iais:row>
                                             <iais:field value="Title:"/>
                                             <iais:value width="18">
@@ -53,16 +53,16 @@
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="checkbox" name="reqType" value="Information" />Information
+                                                    <input type="checkbox" name="reqType" />Information
                                                 </label>
                                                 <label>
-                                                    <input type="checkbox" name="need_doc" value="Documents" />Supporting Documents
+                                                    <input type="checkbox" name="reqType" />Supporting Documents
                                                 </label>
                                             </iais:value>
                                         </iais:row>
-
                                         <iais:action style="text-align:center;">
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSubmit()">Submit</button>
+                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -76,7 +76,9 @@
     </div>
 </form>
 <script type="text/javascript">
-
+    function doBack(){
+        SOP.Crud.cfxSubmit("mainForm", "back");
+    }
     function doSubmit() {
         SOP.Crud.cfxSubmit("mainForm", "submit");
     }

@@ -23,8 +23,9 @@
                         <span>Request For Information List</span>
                     </h3>
                     <div class="table-gp">
-                        <iais:action style="text-align:center;">
+                        <iais:action style="text-align:left;">
                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doNew()">New</button>
+                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
                         </iais:action>
                         <table class="table">
                             <thead>
@@ -75,6 +76,9 @@
 <script type="text/javascript">
     function doNew(){
         SOP.Crud.cfxSubmit("mainForm", "new");
+    }
+    function doBack(){
+        SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doView(reqInfoId) {
         SOP.Crud.cfxSubmit("mainForm", "view",reqInfoId);

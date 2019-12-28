@@ -345,7 +345,7 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>doReqForInfo>>>>>>>>>>>>>>>>requestForInformation");
         String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(reqInfoId)) {
-            ParamUtil.setRequestAttr(bpc.request, "reqInfoId", reqInfoId);
+            ParamUtil.setSessionAttr(bpc.request, "reqInfoId", reqInfoId);
         }
         // 		doReqForInfo->OnStepProcess
     }
@@ -353,19 +353,28 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>doCreateRequest>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String licPremId = (String) ParamUtil.getSessionAttr(request, "licPremId");
+        StringBuilder officerRemarks=new StringBuilder();
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
-        licPremisesReqForInfoDto.setReqType(ParamUtil.getString(request,"Select_category"));
-        licPremisesReqForInfoDto.setOfficerRemarks(ParamUtil.getString(request,"message_instructions"));
+        licPremisesReqForInfoDto.setReqType("Ad hoc");
+        licPremisesReqForInfoDto.setDueDateSubmission(ParamUtil.getString(request,"Due_date"));
+        officerRemarks.append(ParamUtil.getString(request,"rfiTitle")+" ");
         licPremisesReqForInfoDto.setLicPremId(licPremId);
-        String isNeed=ParamUtil.getString(request,"need_doc");
+        String[] reqType=ParamUtil.getStrings(request,"reqType");
         boolean isNeedDoc;
-        if( "true".equals(isNeed)){
+        if("true".equals(reqType[0])){
+            officerRemarks.append(" Information");
+        }
+        if( "true".equals(reqType[1])){
             isNeedDoc=true;
+            officerRemarks.append(" Supporting documents");
+
         }
         else {
             isNeedDoc=false;
         }
         licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
+        licPremisesReqForInfoDto.setOfficerRemarks(officerRemarks.toString());
+
         requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
         // 		doCreateRequest->OnStepProcess
@@ -392,7 +401,7 @@ public class RequestForInformationDelegator {
     public void preViewRfi(BaseProcessClass bpc) {
         log.info("=======>>>>>preViewRfi>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String id = (String) ParamUtil.getRequestAttr(bpc.request, "reqInfoId");
+        String id = (String) ParamUtil.getSessionAttr(bpc.request, "reqInfoId");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		preViewRfi->OnStepProcess

@@ -37,11 +37,10 @@
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
 
-
+${content}
 
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <br><br><br><br><br><br>
-    <p> &nbsp&nbsp&nbsp&nbsp<textarea name="messageContent" cols=110" rows="40" class="wenbenkuang" id="htmlEditroArea" title="content" readonly >${content}</textarea></p>
 
     <input type="submit" class="backspace-icon" value="Back">
 </form>
