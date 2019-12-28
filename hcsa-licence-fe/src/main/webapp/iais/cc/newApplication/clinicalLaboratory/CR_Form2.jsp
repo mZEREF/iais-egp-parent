@@ -242,8 +242,8 @@
                                   </div>
                                   <div class="col-sm-5">
                                     <div class="professionRegoType">
-                                      <iais:select name="professionRegoType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionRegoType}" firstOption="Select professionRegoType"></iais:select>
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoType${status.index}"></span>
+                                      <iais:select name="professionRegoType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Select professionRegoType"></iais:select>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_professionType${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>

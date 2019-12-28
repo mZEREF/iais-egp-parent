@@ -5,9 +5,9 @@
 <div class="row premContent" id="mainPrem">
     <div class="col-xs-12">
       <div class="form-horizontal">
-        <div class="form-group premisesTypeDiv" id="(0)premisesType">
-          <label class="col-xs-12 col-md-4 control-label" for="(0)premisesType">What is your premises type? <span class="mandatory">*</span></label>
-          <input class="premTypeValue" type="hidden" name="(0)premType" value="">
+        <div class="form-group premisesTypeDiv" id="premisesType">
+          <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your premises type? <span class="mandatory">*</span></label>
+          <input class="premTypeValue" type="hidden" name="premType" value="">
           (1)
         </div>
         <div class="row">
@@ -41,8 +41,8 @@
           <div class="form-group">
             <label class="col-xs-11 col-md-4 control-label">Name of HCI <span class="mandatory">*</span></label>
             <div class="col-sm-7 col-md-6 col-xs-10">
-              <input type="text" id="sitePremiseName" name="(0)hciName" maxlength="100" autocomplete="off">
-              <span id="error_hciName(00)" name="iaisErrorMsg" class="error-msg"></span>
+              <input type="text" id="sitePremiseName" name="hciName" maxlength="100" autocomplete="off">
+              <span id="error_hciName" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group postalCodeDiv">
@@ -50,8 +50,8 @@
             <div class="col-sm-7 col-md-6 col-xs-10">
               <div class="form-group">
                 <div class="col-sm-7 col-md-6 col-xs-10">
-                  <input type="text" id="sitePostalCode" name="(0)postalCode" class="sitePostalCode" maxlength="6" autocomplete="off">
-                   <span  id="error_postalCode(00)" class="error-msg" name="iaisErrorMsg"></span>
+                  <input type="text" id="sitePostalCode" name="postalCode" class="sitePostalCode" maxlength="6" autocomplete="off">
+                   <span  id="error_postalCode" class="error-msg" name="iaisErrorMsg"></span>
                 </div>
                 <div class="col-xs-7 col-sm-6 col-md-6">
                   <p><a class="retrieveAddr">Retrieve your address</a></p>
@@ -70,14 +70,14 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Block / House No.</label>
             <div class="col-sm-4 col-md-2 col-xs-5">
-              <input type="text" id="siteBlockNo" name="(0)blkNo" class="siteBlockNo" maxlength="10" autocomplete="off">
+              <input type="text" id="siteBlockNo" name="blkNo" class="siteBlockNo" maxlength="10" autocomplete="off">
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
-              <input type="text" id="siteFloorNo" name="(0)floorNo" maxlength="3" autocomplete="off">
+              <input type="text" id="siteFloorNo" name="floorNo" maxlength="3" autocomplete="off">
               <p class="small-txt">(Optional)</p>
               <span class="error-msg"></span>
             </div>
@@ -85,7 +85,7 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
-              <input type="text" id="siteUnitNo" name="(0)unitNo" maxlength="5" autocomplete="off">
+              <input type="text" id="siteUnitNo" name="unitNo" maxlength="5" autocomplete="off">
               <p class="small-txt">(Optional)</p>
               <span class="error-msg"></span>
             </div>
@@ -93,7 +93,7 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Building Name</label>
             <div class="col-sm-7 col-md-6 col-xs-10 input-with-label">
-              <input type="text" id="siteBuildingName" name="(0)buildingName" class="siteBuildingName" maxlength="45" autocomplete="off">
+              <input type="text" id="siteBuildingName" name="buildingName" class="siteBuildingName" maxlength="45" autocomplete="off">
               <p class="small-txt">(Optional)</p>
               <span class="error-msg"></span>
             </div>
@@ -101,26 +101,26 @@
           <div class="form-group">
             <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
             <div class="col-sm-7 col-md-5 col-xs-10">
-              <input type="text" id="siteStreetName" name="(0)streetName" class="siteStreetName" maxlength="32" autocomplete="off">
+              <input type="text" id="siteStreetName" name="streetName" class="siteStreetName" maxlength="32" autocomplete="off">
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true">i</a></label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input id="siteSafefyNo" name="(0)siteSafefyNo" type="text" value="">
+              <input id="siteSafefyNo" name="siteSafefyNo" type="text" value="">
             </div>
           </div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Fire Safety Certificate Issued Date</label>
             <div class=" col-xs-7 col-sm-4 col-md-3">
-              <input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="(0)fireSafetyCertIssuedDate" id="-67713756688199" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_(0)fireSafetyCertIssuedDate" name="iaisErrorMsg" class="error-msg"></span>
+              <input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="fireSafetyCertIssuedDate" id="-67713756688199" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_fireSafetyCertIssuedDate" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Office Telephone No <span class="mandatory">*</span></label>
             <div class=" col-xs-7 col-sm-4 col-md-3">
-              <input type="text" name="(0)offTelNo" maxlength="8" autocomplete="off">
+              <input type="text" name="offTelNo" maxlength="8" autocomplete="off">
               <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo(00)"></span>
             </div>
           <div class="clear"></div></div>
@@ -134,9 +134,9 @@
               Operating Hours (Start) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="(0)onsiteStartHH" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="onsiteStartHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" name="(0)onsiteStartMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="onsiteStartMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="form-group">
@@ -182,14 +182,14 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Vehicle No. <span class="mandatory">*</span></label>
             <div class="col-sm-7 col-md-6 col-xs-10">
-              <input type="text" id="vehicleNo" name="(0)conveyanceVehicleNo" value="" maxlength="10" autocomplete="off">
+              <input type="text" id="vehicleNo" name="conveyanceVehicleNo" value="" maxlength="10" autocomplete="off">
               <span  class="error-msg"  name="iaisErrorMsg" id="error_conveyanceVehicleNo(00)"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group postalCodeDiv">
             <label class="col-xs-12 col-md-4 control-label">Postal Code <span class="mandatory">*</span></label>
             <div class="col-sm-4 col-md-2 col-xs-5">
-              <input type="text" id="conveyancePostalCode" name="(0)conveyancePostalCode" class="sitePostalCode" maxlength="6" autocomplete="off">
+              <input type="text" id="conveyancePostalCode" name="conveyancePostalCode" class="sitePostalCode" maxlength="6" autocomplete="off">
               <span  class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode(00)"></span>
             </div>
             <div class="col-xs-7 col-sm-6 col-md-4">
@@ -207,34 +207,34 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Block / House No.</label>
             <div class="col-sm-4 col-md-2 col-xs-5">
-              <input type="text" id="conveyanceBlockNo" name="(0)conveyanceBlockNo" class="conveyanceBlockNo" maxlength="10" autocomplete="off">
+              <input type="text" id="conveyanceBlockNo" name="conveyanceBlockNo" class="conveyanceBlockNo" maxlength="10" autocomplete="off">
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
-              <input type="text" id="conveyanceFloorNo" name="(0)conveyanceFloorNo" maxlength="3" autocomplete="off">
+              <input type="text" id="conveyanceFloorNo" name="conveyanceFloorNo" maxlength="3" autocomplete="off">
               <p class="small-txt">(Optional)</p>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
-              <input type="text" id="conveyanceUnitNo" name="(0)conveyanceUnitNo" maxlength="5" autocomplete="off">
+              <input type="text" id="conveyanceUnitNo" name="conveyanceUnitNo" maxlength="5" autocomplete="off">
               <p class="small-txt">(Optional)</p>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Building Name </label>
             <div class=" col-xs-11 col-sm-7 col-md-6 input-with-label">
-              <input type="text" id="conveyanceBuildingName" name="(0)conveyanceBuildingName" class="conveyanceBuildingName" maxlength="45" autocomplete="off">
+              <input type="text" id="conveyanceBuildingName" name="conveyanceBuildingName" class="conveyanceBuildingName" maxlength="45" autocomplete="off">
               <p class="small-txt">(Optional)</p>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
             <div class="col-sm-7 col-md-5 col-xs-10">
-              <input type="text" id="conveyanceStreetName" name="(0)conveyanceStreetName" class="conveyanceStreetName" maxlength="32" autocomplete="off">
+              <input type="text" id="conveyanceStreetName" name="conveyanceStreetName" class="conveyanceStreetName" maxlength="32" autocomplete="off">
               <span class="error-msg" name="iaisErrorMsg" id="error_streetName(00)"></span>
             </div>
           <div class="clear"></div></div>
@@ -243,9 +243,9 @@
               Operating Hours (Start) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="(0)conStartHH" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="conStartHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" name="(0)conStartMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="conStartMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="form-group">

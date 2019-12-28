@@ -36,7 +36,7 @@
                         <!--one -->
                         <tr>
                           <td>
-                            <div class="control-item-container parent-form-check" data-parent="<c:out value="${premIndexNo}${levelOne.index}${levelOneList.code}" />" >
+                            <div class="control-item-container parent-form-check" data-parent="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}" />" >
                               <input type="checkbox"
                              <c:if test="${reloadData[reloadIndexNo1] != null && reloadData[reloadIndexNo1] != ''}">
                               checked="checked"
@@ -44,7 +44,7 @@
                                      id="<c:out value="control--${levelOne.index}--${levelOne.index}" />"
                                      name="<c:out value="${premIndexNo}control--runtime--1" />" class="control-input"
                                      value="<c:out value="${checkIndexNo1}" />">
-                              <label  for="<c:out value="control--${levelOne.index}--${levelOne.index}" />" data-code="<c:out value="${premIndexNo}${levelOne.index}${levelOneList.code}" />" class="control-label control-set-font control-font-normal" />
+                              <label  for="<c:out value="control--${levelOne.index}--${levelOne.index}" />" data-code="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}" />" class="control-label control-set-font control-font-normal" />
                               <span class="check-square"></span><c:out value="${levelOneList.name}" />
                               </label>
                               <input class="checkValue" type="hidden" name="<c:out value="${checkIndexNo1}" />" value="<iais:mask name="${checkIndexNo1}" value="${levelOneList.id}"/>"/>
@@ -58,7 +58,7 @@
                             <!--two -->
                             <tr>
                               <td>
-                                <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="<c:out value="${premIndexNo}${levelTwo.index}${levelTwoList.code}"/>" data-child="<c:out value="${premIndexNo}${levelOne.index}${levelOneList.code}"/>" >
+                                <div class="control-item-container sub-form-check parent-form-check disabled" data-parent="<c:out value="${premIndexNo}${levelTwoList.type}${levelTwoList.name}"/>" data-child="<c:out value="${premIndexNo}${levelOneList.type}${levelOneList.name}"/>" >
                                   <input type="checkbox"
                                   <c:if test="${reloadData[reloadIndexNo2] != null && reloadData[reloadIndexNo2] != ''}">
                                          checked="checked"
@@ -80,7 +80,7 @@
                                 <c:set var="reloadIndexNo3" value="${currentServiceId}${premIndexNo}${levelThreeList.id}"/>
                                 <tr>
                                   <td>
-                                    <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="<c:out value="${premIndexNo}${levelThree.index}${levelThreeList.code}"/>" data-child="<c:out value="${premIndexNo}${levelTwo.index}${levelTwoList.code}"/>" >
+                                    <div class="control-item-container sub-form-check double parent-form-check disabled" data-parent="<c:out value="${premIndexNo}${levelThreeList.type}${levelThreeList.name}"/>" data-child="<c:out value="${premIndexNo}${levelTwoList.type}${levelTwoList.name}"/>" >
                                       <input type="checkbox"
                                       <c:if test="${reloadData[reloadIndexNo3] != null && reloadData[reloadIndexNo3] != ''}">
                                              checked="checked"
