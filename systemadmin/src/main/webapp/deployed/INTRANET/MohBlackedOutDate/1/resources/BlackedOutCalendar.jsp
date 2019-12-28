@@ -1,0 +1,1 @@
+<%@ include = "/iais/appointment/blkoutdate/BlackedOutCalendar.jsp" %>
