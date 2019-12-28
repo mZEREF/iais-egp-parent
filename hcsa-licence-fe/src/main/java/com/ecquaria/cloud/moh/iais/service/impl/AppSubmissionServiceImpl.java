@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
@@ -22,13 +23,12 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.Process;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * AppSubmisionServiceImpl
@@ -48,6 +48,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private ApplicationClient applicationClient;
     @Autowired
     private AppConfigClient appConfigClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Override
     public int hashCode() {
@@ -185,7 +187,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         req.setStep(process.getCurrentComponentName());
         req.setService("appsubmit");
         req.setOperation("Create");
-        req.setSopUrl("https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
+        req.setSopUrl("https://" + systemParamConfig.getInterServerName()
+                +  "/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
         req.setData(JsonUtil.parseToJson(appSubmissionDto));
         req.setCallbackUrl("https://"
                 +process.getHttpRequest().getServerName()
