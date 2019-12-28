@@ -24,7 +24,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	public SearchResult<ApptBlackoutDateQueryDto> doQuery(SearchParam searchParam) {
-		return null;
+		return onlineApptClient.doQuery(searchParam).getEntity();
 	}
 
 	@Override
