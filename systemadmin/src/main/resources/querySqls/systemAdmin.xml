@@ -171,7 +171,26 @@
             <#if esd??> AND effective_from > :esd</#if>
             <#if eed??> AND effective_to < :eed</#if>
         ]]>
-    </sql>
+    </sql >
 
+    <sql key="getBlackedOutDateList"  remarks="Get blacked out date list">
+        <![CDATA[
+            select T1.ID AS ID,
+            T1.SRC_SYSTEM_ID AS SRC_SYSTEM_ID,
+            T1.GROUP_SHORT_NAME AS GROUP_SHORT_NAME,
+            T1.START_DATE AS START_DATE,
+            T1.END_DATE AS END_DATE,
+            T1.[DESC] as [DESC]
+            from appt_blackout_date T1, appt_src_system T2
+            where T1.SRC_SYSTEM_ID = T2.ID
+            AND T1.STATUS = 'CMSTAT001'
+            AND T2.STATUS = 'CMSTAT001'
+            <#if id??> T1.ID = :id</#if>
+            <#if srcSystemId??> AND T1.SRC_SYSTEM_ID = :srcSystemId</#if>
+            <#if shortName??> AND T1.GROUP_SHORT_NAME = :shortName</#if>
+            <#if startDate??> AND T1.START_DATE = :startDate</#if>
+            <#if endDate??> AND T1.END_DATE = :endDate</#if>
+        ]]>
+    </sql>
 </sqls>
 
