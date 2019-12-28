@@ -12,6 +12,7 @@ import sop.webflow.rt.api.Process;
  */
 public interface AppSubmissionService {
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process);
+    public AppSubmissionDto submitRequestInformation(AppSubmissionDto appSubmissionDto, Process process);
 
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
 

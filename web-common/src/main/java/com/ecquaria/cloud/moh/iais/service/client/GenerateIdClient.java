@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @date 2019/11/23 16:15
  */
 @FeignClient(name = "system-admin", configuration = FeignConfiguration.class,
-        fallback = SystemAdminClientFallback.class)
-public interface SystemAdminClient {
+        fallback = GenerateIdClientFallback.class)
+public interface GenerateIdClient {
     @RequestMapping(path = "/system-parameter/new-sequence-id",method = RequestMethod.GET)
     FeignResponseEntity<String> getSeqId();
 

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -15,10 +16,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
@@ -58,12 +61,22 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Autowired
     private SystemAdminClient systemAdminClient;
+    @Autowired
+    private GenerateIdClient generateIdClient;
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appSubmissionDto= applicationClient.saveSubmision(appSubmissionDto).getEntity();
         //asynchronous save the other data.
         eventBus(appSubmissionDto, process);
+        return appSubmissionDto;
+    }
+
+    @Override
+    public AppSubmissionDto submitRequestInformation(AppSubmissionDto appSubmissionDto, Process process) {
+        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        //asynchronous save the other data.
+        informationEventBus(appSubmissionDto, process);
         return appSubmissionDto;
     }
 
@@ -177,6 +190,30 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
        return result;
    }
 
+   private void  informationEventBus(AppSubmissionDto appSubmissionDto, Process process){
+       //prepare request parameters
+       appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
+       String callBackUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+       String sopUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication";
+       String project ="hcsaApplicationFe";
+       String processName = "requestInfromationSubmit";
+       String step = "start";
+       if(process!=null){
+           project= process.getCurrentProject();
+           processName = process.getCurrentProcessName();
+           step = process.getCurrentComponentName();
+           callBackUrl =  process.getHttpRequest().getServerName()
+                   +process.getHttpRequest().getContextPath()
+                   +"/eservice/INTRANET/LicenceEventBusCallBack";
+       }
+       SubmitReq req = EventBusHelper.getSubmitReq(appSubmissionDto, generateIdClient.getSeqId().getEntity(),
+               EventBusConsts.SERVICE_NAME_APPSUBMIT,
+               EventBusConsts.OPERATION_REQUEST_INFORMATION,
+               sopUrl, callBackUrl, "sop",false,project,processName,step);
+       //
+       SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+   }
+
     private  void eventBus(AppSubmissionDto appSubmissionDto, Process process){
         //prepare request parameters
         appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
@@ -185,8 +222,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         req.setProject(process.getCurrentProject());
         req.setProcess(process.getCurrentProcessName());
         req.setStep(process.getCurrentComponentName());
-        req.setService("appsubmit");
-        req.setOperation("Create");
+        req.setService(EventBusConsts.SERVICE_NAME_APPSUBMIT);
+        req.setOperation(EventBusConsts.OPERATION_NEW_APP_SUBMIT);
         req.setSopUrl("https://" + systemParamConfig.getInterServerName()
                 +  "/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
         req.setData(JsonUtil.parseToJson(appSubmissionDto));

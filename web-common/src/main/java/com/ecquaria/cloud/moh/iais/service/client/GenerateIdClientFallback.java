@@ -4,13 +4,13 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 /**
- * SystemAdminClientFallback
+ * GenerateIdClientFallback
  *
  * @author suocheng
- * @date 12/24/2019
+ * @date 12/28/2019
  */
 
-public class SystemAdminClientFallback {
+public class GenerateIdClientFallback {
     public FeignResponseEntity<String> getSeqId(){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -17,9 +18,9 @@ import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FEEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
@@ -54,9 +55,11 @@ public class LicenceServiceImpl implements LicenceService {
     private FEEicGatewayClient feEicGatewayClient;
 
     @Autowired
-    private SystemAdminClient systemAdminClient;
+    private GenerateIdClient generateIdClient;
     @Autowired
     private SubmissionClient client;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -119,15 +122,16 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public List<LicenceGroupDto> createSuperLicDto(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
-        String  callBackUrl = "egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+        String callBackUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+        String sopUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/ApplicationView";
         String project ="hcsaLicenceBe";
         String processName = "generateLicence";
         String step = "start";
 
-        SubmitReq req =EventBusHelper.getSubmitReq(eventBusLicenceGroupDtos,systemAdminClient.getSeqId().getEntity(),
+        SubmitReq req =EventBusHelper.getSubmitReq(eventBusLicenceGroupDtos, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_LICENCESAVE,
                 EventBusConsts.OPERATION_LICENCE_SAVE,
-                "https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/ApplicationView",
+                sopUrl,
                 callBackUrl, "sop",true,project,processName,step);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
