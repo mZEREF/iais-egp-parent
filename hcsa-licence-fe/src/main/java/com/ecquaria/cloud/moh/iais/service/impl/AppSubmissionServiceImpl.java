@@ -191,9 +191,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 +  "/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
         req.setData(JsonUtil.parseToJson(appSubmissionDto));
         req.setCallbackUrl("https://"
-                +process.getHttpRequest().getServerName()
-                +process.getHttpRequest().getContextPath()
-                +"/eservice/INTERNET/HcsaApplicationEventBusCallBack");
+                + systemParamConfig.getInterServerName()
+                + "/hcsa-licence-web/eservice/INTERNET/HcsaApplicationEventBusCallBack");
         req.setUserId("SOP");
         req.setWait(false);
         req.addCallbackParam("token", IaisEGPHelper.genTokenForCallback(req.getSubmissionId(), req.getService()));
