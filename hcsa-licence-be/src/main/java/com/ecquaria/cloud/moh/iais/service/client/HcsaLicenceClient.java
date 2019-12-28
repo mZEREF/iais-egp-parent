@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -44,9 +45,10 @@ public interface HcsaLicenceClient {
             method = RequestMethod.POST)
     FeignResponseEntity<Map<String, List<LicenceDto>>> licenceRenwal(@RequestBody List<Integer>  days);
 
-    @GetMapping(value = "/list-job-msg-auto-renwal" ,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<JobRemindMsgTrackingDto>>  listJob();
 
     @PostMapping(value = "/hcsa-licence/resHcsaLicenceGroupFee")
     FeignResponseEntity<List<HcsaLicenceGroupFeeDto>> retrieveHcsaLicenceGroupFee(@RequestBody List<String> licenceIds);
+
+    @GetMapping(value = "/hcsa-licence/licence-id-premises-dto",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PremisesDto>> getPremisess(@RequestParam("licenceId") String licenceId);
 }

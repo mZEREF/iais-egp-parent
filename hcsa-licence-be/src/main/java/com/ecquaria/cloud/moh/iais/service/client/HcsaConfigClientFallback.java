@@ -190,14 +190,14 @@ public class HcsaConfigClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
-    FeignResponseEntity<HcsaRiskWeightageShowDto> getWeightageShow(@RequestBody List<HcsaServiceDto> svcList){
+    FeignResponseEntity<HcsaRiskWeightageShowDto> getWeightageShow( List<HcsaServiceDto> svcList){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<FeeDto> newFee(@RequestBody @Required List<LicenceFeeDto> dtos){
+    FeignResponseEntity<FeeDto> renewFee(List<LicenceFeeDto> dtos){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

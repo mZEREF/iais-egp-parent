@@ -94,4 +94,5 @@ public interface ApplicationClient {
     @PostMapping(value = "/iais-application/files-rec-inspec", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> saveInspecRecDate(@RequestBody ApplicationListFileDto applicationListFileDto);
+
 }

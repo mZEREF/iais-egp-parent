@@ -138,6 +138,6 @@ public interface HcsaConfigClient {
     FeignResponseEntity<HcsaRiskWeightageShowDto> getWeightageShow(@RequestBody List<HcsaServiceDto> svcList);
 
 
-    @PostMapping  (value = "/iais-hcsa-fee/calculate-fee", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FeeDto> newFee(@RequestBody @Required List<LicenceFeeDto> dtos);
+    @PostMapping  (value = "/iais-hcsa-fee/fee-renew", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<FeeDto> renewFee(@RequestBody @Required List<LicenceFeeDto> dtos);
 }

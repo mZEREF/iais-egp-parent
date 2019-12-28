@@ -84,7 +84,7 @@
                                                 <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status" >
                                                     <div class="panel panel-default svc-content">
 
-                                                        <div class="panel-heading <c:if test="${fn:contains(Msg.serviceId,hcsaServiceDto.id)}">incompleted</c:if> <c:if test="${fn:contains(Msg.serviceId,hcsaServiceDto.id)==false}">completed</c:if>  "  id="headingServiceInfo" role="tab">
+                                                        <div class="panel-heading  <c:if test="${fn:contains(Msg.serviceId,hcsaServiceDto.id)}">incompleted</c:if> <c:if test="${fn:contains(Msg.serviceId,hcsaServiceDto.id)==false}">completed</c:if>  "  id="headingServiceInfo" role="tab">
                                                             <h4 class="panel-title"><a class="svc-pannel-collapse"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information -- ${hcsaServiceDto.svcName}</a></h4>
                                                         </div>
 

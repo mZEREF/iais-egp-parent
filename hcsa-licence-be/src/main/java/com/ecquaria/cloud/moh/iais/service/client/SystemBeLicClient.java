@@ -61,4 +61,11 @@ public interface SystemBeLicClient {
     @PutMapping(value = "/iais-jobmsg-track", produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes =  MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<JobRemindMsgTrackingDto> updateJobRemindMsgTrackingDto(@RequestBody JobRemindMsgTrackingDto jobRemindMsgTrackingDto);
+
+    @PostMapping(value = "/data-mail-job" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> saveSendMailJob(@RequestBody JobRemindMsgTrackingDto jobRemindMsgTrackingDto);
+
+    @GetMapping(value = "/list-job-msg-auto-renwal" ,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<JobRemindMsgTrackingDto>>  listJob();
+
 }

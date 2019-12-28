@@ -733,20 +733,21 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
         //do validate
         Map<String,String> errList=new HashMap<>();
-        String crud_action_additional = bpc.request.getParameter("nextStep");
-        if("next".equals(crud_action_additional)){
-            errList =doValidateGovernanceOfficers(bpc.request);
-        }
-            if(!errList.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errList));
-                return;
-            }
+
 
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
+        String crud_action_additional = bpc.request.getParameter("nextStep");
+        if("next".equals(crud_action_additional)){
+            errList =doValidateGovernanceOfficers(bpc.request);
+        }
+        if(!errList.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errList));
+            return;
+        }
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
     }
 

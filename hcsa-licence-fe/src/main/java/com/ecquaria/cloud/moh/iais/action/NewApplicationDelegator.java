@@ -528,12 +528,12 @@ public class NewApplicationDelegator {
         //do validate
        // Map<String, Map<String, String>> validateResult = doValidate(bpc);
         //save the app and appGroup
-       /* Map<String, String> map = doPreviewAndSumbit(bpc);
+        Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
             return;
-        }*/
+        }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
@@ -564,6 +564,7 @@ public class NewApplicationDelegator {
 
 
     private Map<String,String> doPreviewAndSumbit( BaseProcessClass bpc){
+        StringBuilder sB=new StringBuilder();
         Map<String,String> previewAndSubmitMap=new HashMap<>();
         //
         Map<String, String> premissMap = doValidatePremiss(bpc);
@@ -582,7 +583,7 @@ public class NewApplicationDelegator {
 
         }
         //
-        Map<String, String> map = doCheckBox(bpc);
+        Map<String, String> map = doCheckBox(bpc,sB);
         if(!map.isEmpty()){
             previewAndSubmitMap.putAll(map);
 
@@ -597,12 +598,12 @@ public class NewApplicationDelegator {
         return previewAndSubmitMap;
     }
 
-    private Map<String,String> doCheckBox( BaseProcessClass bpc){
+    private Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB){
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Map<String,String> errorMap=new HashMap<>();
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        StringBuilder sB=new StringBuilder();
+
         for(int i=0;i< dto.size();i++ ){
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.get(i).getAppSvcLaboratoryDisciplinesDtoList();
             String serviceId = dto.get(i).getServiceId();
@@ -683,13 +684,38 @@ public class NewApplicationDelegator {
     private void doPO(Map map ,List<AppSvcPrincipalOfficersDto> list,String serviceId,StringBuilder sB){
         if(list==null){
             sB.append(serviceId);
-            map.put("PO","UC_CHKLMD001_ERR001");
-            map.put("serviceId",sB.toString());
+
             return;
         }
         boolean flag=false;
         for(int i=0;i<list.size();i++){
             String mobileNo = list.get(i).getMobileNo();
+            String emailAddr = list.get(i).getEmailAddr();
+            String modeOfMedAlert = list.get(i).getModeOfMedAlert();
+            String psnType = list.get(i).getPsnType();
+            String assignSelect = list.get(i).getAssignSelect();
+         /*   if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
+                if(StringUtil.isEmpty(modeOfMedAlert)){
+                    map.put("modeOfMedAlert"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+            }
+            if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
+                if(StringUtil.isEmpty(assignSelect)){
+                    map.put("assignSelect"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+            }*/
+            if(StringUtil.isEmpty(emailAddr)){
+                map.put("POeamilAddr"+i,"UC_CHKLMD001_ERR001");
+                flag=true;
+            }else {
+                if (!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
+                    map.put("POeamilAddr"+i,"CHKLMD001_ERR006");
+                    flag=true;
+                }
+            }
+
             if(StringUtil.isEmpty(mobileNo)){
                 map.put("POmobileNo"+i,"UC_CHKLMD001_ERR001");
                 flag=true;

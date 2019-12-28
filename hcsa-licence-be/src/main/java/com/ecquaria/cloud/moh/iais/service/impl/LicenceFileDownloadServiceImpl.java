@@ -194,8 +194,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         Boolean aBoolean = fileToDto(by.toString());
                         flag=aBoolean;
                         Boolean backups = backups(flag, filzz);
+                        if(aBoolean){
+                            changeStatus();
+                        }
                         if(backups&&filzz.exists()){
-                            filzz.delete();
+                          /*  filzz.delete();*/
                         }
                     }
                 }
@@ -218,6 +221,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     /*************************/
+    private void changeStatus(){
+
+      /*  applicationClient.updateStatus().getEntity();*/
+
+    }
+
+
+
         private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos)  {
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
