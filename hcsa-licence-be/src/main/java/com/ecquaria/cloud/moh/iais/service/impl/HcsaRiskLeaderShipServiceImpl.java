@@ -185,24 +185,6 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
             }
         }
         doUpdate(saveList);
-/*        for(HcsaRiskFinanceMatrixDto temp : dtoList){
-            if(StringUtil.isEmpty(temp.getId())){
-                if(isNeedUpdatePreviouds(temp,true)){
-                    updateList.add(temp);
-                }
-                if(isNeedUpdatePreviouds(temp,false)){
-                    updateList.add(temp);
-                }
-            }
-        }*/
-        //call api to save
-
-     /*   if(saveList!= null && !saveList.isEmpty()){
-            doSave(saveList);
-        }
-        if(updateList!=null&&!updateList.isEmpty()){
-            doUpdate(updateList);
-        }*/
     }
 
     public void doSave(List<HcsaRiskFinanceMatrixDto> saveList){
@@ -220,7 +202,11 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
             List<HcsaRiskLeadershipMatrixDto> lastversionList = getLastversionList(temp);
             if(lastversionList!=null && !lastversionList.isEmpty()){
                 for(HcsaRiskLeadershipMatrixDto lastversion:lastversionList){
-                    updateLastVersion(temp,lastversion);
+                    if(RiskConsts.AUDIT.equals(lastversion.getLsSourse())&&lastversion.isAdIsEdit()){
+                        updateLastVersion(temp,lastversion);
+                    }else if(RiskConsts.DISCIPLINARY.equals(lastversion.getLsSourse())&&lastversion.isDpIsEdit()){
+                        updateLastVersion(temp,lastversion);
+                    }
                 }
                 hcsaConfigClient.updateLeadershipRiskMatrix(lastversionList);
             }
@@ -237,11 +223,12 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
         if(lastversionList!=null && !lastversionList.isEmpty()){
             for(HcsaRiskLeadershipMatrixDto fin:lastversionList){
                 if(temp.isAdIsEdit()&&RiskConsts.AUDIT.equals(fin.getLsSourse())){
-                    returnList.add(fin);
+                    fin.setAdIsEdit(true);
                 }
                 if(temp.isDpIsEdit()&&RiskConsts.DISCIPLINARY.equals(fin.getLsSourse())){
-                    returnList.add(fin);
+                    fin.setDpIsEdit(true);
                 }
+                returnList.add(fin);
             }
         }
         return returnList;

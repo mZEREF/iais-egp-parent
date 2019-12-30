@@ -113,10 +113,28 @@ public class HcsaRiskFinancialConfigDelegator {
             String prEndDate = ParamUtil.getDate(request, fin.getServiceCode() + "prenddate");
             hcsaRiskService.getOneFinDto(fin,prsource,prthershold,prleftmod,prlefthigh,prrightlow,prrightmod,insource,inthershold
             ,inleftmod,inlefthigh,inrightlow,inrightmod,inStartDate,inEndDate,prStartDate,prEndDate);
+            clearErrFlag(fin);
         }
         financialShowDto.setFinanceList(finList);
         ParamUtil.setSessionAttr(request,RiskConsts.FINANCIALSHOWDTO,financialShowDto);
         return financialShowDto;
+    }
+
+    public void clearErrFlag(HcsaRiskFinanceMatrixDto fin){
+        fin.setInEffectiveEndDateerr(false);
+        fin.setInEffectiveStartDateerr(false);
+        fin.setInThersholderr(false);
+        fin.setInRightLowCaseCountherr(false);
+        fin.setInLeftModCaseCountherr(false);
+        fin.setInRightModCaseCountherr(false);
+        fin.setInLeftHighCaseCounterr(false);
+        fin.setPrEffectiveEndDateerr(false);
+        fin.setPrEffectiveStartDateerr(false);
+        fin.setPrThersholderr(false);
+        fin.setPrRightLowCaseCountherr(false);
+        fin.setPrLeftModCaseCountherr(false);
+        fin.setPrRightModCaseCountherr(false);
+        fin.setPrLeftHighCaseCounterr(false);
     }
     public HcsaRiskFinianceVadlidateDto getValueFromPage(HttpServletRequest request) {
         HcsaRiskFinianceVadlidateDto dto = new HcsaRiskFinianceVadlidateDto();

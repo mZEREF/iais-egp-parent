@@ -41,6 +41,7 @@
                                         <th>Legislative Breaches</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -58,24 +59,43 @@
                                             </td>
                                             <td>
                                                 <input type="text" id="<c:out value="${leg.serviceCode}"/>last" name="<c:out value="${leg.serviceCode}"/>last"value="<c:out value="${leg.doLastInp}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}lastInp" var = "lastInp"/>
+                                                <span class="error-msg" id="<c:out value="${lastInp}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <input type="text" id="<c:out value="${leg.serviceCode}"/>secLast" name="<c:out value="${leg.serviceCode}"/>secLast"value="<c:out value="${leg.doSecLastInp}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}secLastInp" var = "secLastInp"/>
+                                                <span class="error-msg" id="<c:out value="${secLastInp}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <input type="text" id="<c:out value="${leg.serviceCode}"/>fin" name="<c:out value="${leg.serviceCode}"/>fin"value="<c:out value="${leg.doFinancial}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}fin" var = "fin"/>
+                                                <span class="error-msg" id="<c:out value="${fin}"/>" name="iaisErrorMsg"></span>
                                             </td>
+
                                             <td>
                                                 <input type="text" id="<c:out value="${leg.serviceCode}"/>lea" name="<c:out value="${leg.serviceCode}"/>lea"value="<c:out value="${leg.doLeadship}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}lea" var = "lea"/>
+                                                <span class="error-msg" id="<c:out value="${lea}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <input type="text" id="<c:out value="${leg.serviceCode}"/>leg" name="<c:out value="${leg.serviceCode}"/>leg"value="<c:out value="${leg.doLegislative}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}leg" var = "legis"/>
+                                                <span class="error-msg" id="<c:out value="${legis}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <iais:datePicker id = "${leg.serviceCode}instartdate" name = "${leg.serviceCode}instartdate" value="${leg.doEffectiveDate}"></iais:datePicker>
+                                                <c:set value = "error_${leg.serviceCode}inEffDate" var = "inEffDate"/>
+                                                <span class="error-msg" id="<c:out value="${inEffDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <iais:datePicker id = "${leg.serviceCode}inenddate" name = "${leg.serviceCode}inenddate" value="${leg.doEndDate}"></iais:datePicker>
+                                                <c:set value = "error_${leg.serviceCode}inEndDate" var = "inEndDate"/>
+                                                <span class="error-msg" id="<c:out value="${inEndDate}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td>
+                                                <c:set value = "error_${leg.serviceCode}totalw" var = "totalw"/>
+                                                <span class="error-msg" id="<c:out value="${totalw}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                     </c:forEach>

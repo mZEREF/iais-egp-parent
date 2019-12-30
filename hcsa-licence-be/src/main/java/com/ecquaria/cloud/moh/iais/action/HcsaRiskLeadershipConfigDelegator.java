@@ -109,6 +109,7 @@ public class HcsaRiskLeadershipConfigDelegator {
             String prEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "prenddate");
             hcsaRiskLeaderShipService.getOneFinDto(fin,prsource,prthershold,prleftmod,prlefthigh,prrightlow,prrightmod,insource,inthershold
                     ,inleftmod,inlefthigh,inrightlow,inrightmod,inStartDate,inEndDate,prStartDate,prEndDate);
+            clearErrFlag(fin);
         }
         financialShowDto.setLeaderShipDtoList(finList);
         ParamUtil.setSessionAttr(request,"leaderShowDto",financialShowDto);
@@ -120,5 +121,20 @@ public class HcsaRiskLeadershipConfigDelegator {
         RiskLeaderShipShowDto financialShowDto = (RiskLeaderShipShowDto) ParamUtil.getSessionAttr(request, "leaderShowDto");
         getDataFrompage(request, financialShowDto);
         return dto;
+    }
+    public void clearErrFlag(HcsaRiskLeadershipMatrixDto fin) {
+        fin.setAdEffectiveEndDateerr(false);
+        fin.setAdEffectiveStartDateerr(false);
+        fin.setAdThersholderr(false);
+        fin.setAdRightLowCaseCountherr(false);
+        fin.setAdLeftModCaseCountherr(false);
+        fin.setAdRightModCaseCountherr(false);
+        fin.setAdLeftHighCaseCountherr(false);
+        fin.setDpEffectiveEndDateerr(false);
+        fin.setDpEffectiveStartDateerr(false);
+        fin.setDpThersholderr(false);
+        fin.setDpRightLowCaseCountherr(false);
+        fin.setDpLeftModCaseCountherr(false);
+        fin.setDpRightModCaseCountherr(false);
     }
 }

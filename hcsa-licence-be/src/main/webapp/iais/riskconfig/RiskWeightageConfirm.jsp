@@ -27,25 +27,24 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>Risk Configuration</h2>
+                        <h2>Risk Confirm</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Service Name</th>
-                                        <th>Threshold</th>
+                                        <th>Last Inspection</th>
+                                        <th>Second Last Inspection</th>
+                                        <th>Financial Scheme Audit</th>
+                                        <th>Leadership And Governance</th>
+                                        <th>Legislative Breaches</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th>Mininum Number of Cases</th>
-                                        <th>Maximun Number of Cases</th>
-                                        <th>Risk Rating</th>
-                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <span class="error-msg" id="error_All" name="iaisErrorMsg"></span>
-                                    <c:forEach var="leg" items="${legShowDto.legislativeList}" varStatus="status">
+                                    <c:forEach var="leg" items="${wightageDto.weightageDtoList}" varStatus="status">
                                         <tr>
                                             <td>
                                                 <c:choose>
@@ -58,63 +57,40 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${leg.svcCode}"/>inthershold" name="<c:out value="${leg.svcCode}"/>inthershold"value="<c:out value="${leg.doThershold}"></c:out>">
-                                                </p>
-                                                <c:set value = "error_${leg.svcCode}inThershold" var = "inther"/>
-                                                <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td><iais:datePicker id = "${leg.svcCode}instartdate" name = "${leg.svcCode}instartdate" value="${leg.doEffectiveDate}"></iais:datePicker>
-                                                <c:set value = "error_${leg.svcCode}inEffDate" var = "inEffdate"/>
-                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td><iais:datePicker id = "${leg.svcCode}inenddate" name = "${leg.svcCode}inenddate" value="${leg.doEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${leg.svcCode}inEndDate" var = "inEnddate"/>
-                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>last" name="<c:out value="${leg.serviceCode}"/>last"value="<c:out value="${leg.doLastInp}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}lastInp" var = "lastInp"/>
+                                                <span class="error-msg" id="<c:out value="${lastInp}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly maxlength="5" value="0">
-                                                </div></div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="5"value="${leg.doLeftModCaseCounth}">
-                                                </div>
-
-                                                </div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inlefthigh" name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="5"value="${leg.doLeftHighCaseCounth}">
-                                                </div>
-
-                                                </div>
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>secLast" name="<c:out value="${leg.serviceCode}"/>secLast"value="<c:out value="${leg.doSecLastInp}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}secLastInp" var = "secLastInp"/>
+                                                <span class="error-msg" id="<c:out value="${secLastInp}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightlow" name = "<c:out value="${leg.svcCode}"/>inrightlow"  maxlength="5" value="${leg.doRightLowCaseCounth}">
-                                                </div>
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>fin" name="<c:out value="${leg.serviceCode}"/>fin"value="<c:out value="${leg.doFinancial}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}fin" var = "fin"/>
+                                                <span class="error-msg" id="<c:out value="${fin}"/>" name="iaisErrorMsg"></span>
+                                            </td>
 
-                                                </div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inrightmod" name = "<c:out value="${leg.svcCode}"/>inrightmod"  maxlength="5"value="${leg.doRightModCaseCounth}">
-                                                </div>
-
-                                                </div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly  maxlength="5" value="999">
-                                                </div></div>
+                                            <td>
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>lea" name="<c:out value="${leg.serviceCode}"/>lea"value="<c:out value="${leg.doLeadship}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}lea" var = "lea"/>
+                                                <span class="error-msg" id="<c:out value="${lea}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <div style="width: 100px;margin-top: 15px;">Low</div>
-                                                <div style="width: 100px;margin-top: 45px;">Moderate</div>
-                                                <div style="width: 100px;margin-top: 45px;">High</div>
+                                                <input type="text" id="<c:out value="${leg.serviceCode}"/>leg" name="<c:out value="${leg.serviceCode}"/>leg"value="<c:out value="${leg.doLegislative}"></c:out>">
+                                                <c:set value = "error_${leg.serviceCode}leg" var = "legis"/>
+                                                <span class="error-msg" id="<c:out value="${legis}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <c:set value = "error_${leg.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${leg.svcCode}inLeftHighCaseCounth" var = "inlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${leg.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${leg.svcCode}inRightModCaseCounth" var = "inrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
+                                                <iais:datePicker id = "${leg.serviceCode}instartdate" name = "${leg.serviceCode}instartdate" value="${leg.doEffectiveDate}"></iais:datePicker>
+                                                <c:set value = "error_${leg.serviceCode}inEffDate" var = "inEffDate"/>
+                                                <span class="error-msg" id="<c:out value="${inEffDate}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td>
+                                                <iais:datePicker id = "${leg.serviceCode}inenddate" name = "${leg.serviceCode}inenddate" value="${leg.doEndDate}"></iais:datePicker>
+                                                <c:set value = "error_${leg.serviceCode}inEndDate" var = "inEndDate"/>
+                                                <span class="error-msg" id="<c:out value="${inEndDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -131,7 +107,7 @@
                                 <p><a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
                             </div>
                             <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Next</a></div>
+                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Submit</a></div>
                             </div>
                         </div>
                     </div>
@@ -144,10 +120,7 @@
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function doNext() {
-        SOP.Crud.cfxSubmit("mainForm","next");
+        SOP.Crud.cfxSubmit("mainForm","submit");
     }
 
-    function doBack(){
-        SOP.Crud.cfxSubmit("mainForm","backToMenu");
-    }
 </script>

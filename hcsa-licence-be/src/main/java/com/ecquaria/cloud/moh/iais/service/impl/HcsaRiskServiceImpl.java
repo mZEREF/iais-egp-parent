@@ -46,33 +46,17 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         List<HcsaRiskFinanceMatrixDto> saveList = new ArrayList<>();
         List<HcsaRiskFinanceMatrixDto> updateList = new ArrayList<>();
         for(HcsaRiskFinanceMatrixDto temp : dtoList){
-            if(temp.isInIsEdit()){
+            if(temp.isInIsEdit()||temp.isPrIsEdit()){
+                //in
                 saveList.add(getFinDto(temp,true,true));
                 saveList.add(getFinDto(temp,false,true));
-            }
-            if(temp.isPrIsEdit()){
+                //pr
                 saveList.add(getFinDto(temp,true,false));
                 saveList.add(getFinDto(temp,false,false));
             }
         }
-/*        for(HcsaRiskFinanceMatrixDto temp : dtoList){
-            if(StringUtil.isEmpty(temp.getId())){
-                if(isNeedUpdatePreviouds(temp,true)){
-                    updateList.add(temp);
-                }
-                if(isNeedUpdatePreviouds(temp,false)){
-                    updateList.add(temp);
-                }
-            }
-        }*/
-        //call api to save
         doUpdate(saveList);
-     /*   if(saveList!= null && !saveList.isEmpty()){
-            doSave(saveList);
-        }
-        if(updateList!=null&&!updateList.isEmpty()){
-            doUpdate(updateList);
-        }*/
+
     }
     public void doSave(List<HcsaRiskFinanceMatrixDto> saveList){
         for(HcsaRiskFinanceMatrixDto temp:saveList){
@@ -89,7 +73,12 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
             List<HcsaRiskFinanceMatrixDto> lastversionList = getLastversionList(temp);
             if(lastversionList!=null && !lastversionList.isEmpty()){
                 for(HcsaRiskFinanceMatrixDto lastversion:lastversionList){
-                    updateLastVersion(temp,lastversion);
+                    //panduan
+                    if(RiskConsts.INSTITUTION.equals(lastversion.getFinSource())&&lastversion.isInIsEdit()){
+                        updateLastVersion(temp,lastversion);
+                    }else if(RiskConsts.PRACTITIONER.equals(lastversion.getFinSource())&&lastversion.isPrIsEdit()){
+                        updateLastVersion(temp,lastversion);
+                    }
                 }
                 hcsaConfigClient.updateFinRiskMatrix(lastversionList);
             }
@@ -105,12 +94,15 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         List<HcsaRiskFinanceMatrixDto> returnList = new ArrayList<>();
         if(lastversionList!=null && !lastversionList.isEmpty()){
             for(HcsaRiskFinanceMatrixDto fin:lastversionList){
-                if(temp.isInIsEdit()&&"SOURCE001".equals(fin.getFinSource())){
-                    returnList.add(fin);
+                /*fin.setPrIsEdit(temp.isPrIsEdit());
+                fin.setInIsEdit(temp.isInIsEdit());*/
+                if(RiskConsts.INSTITUTION.equals(fin.getFinSource())&&temp.isInIsEdit()){
+                    fin.setInIsEdit(true);
+                }else if(RiskConsts.PRACTITIONER.equals(fin.getFinSource())&&temp.isPrIsEdit()){
+                    fin.setPrIsEdit(true);
                 }
-                if(temp.isPrIsEdit()&&"SOURCE002".equals(fin.getFinSource())){
-                    returnList.add(fin);
-                }
+                returnList.add(fin);
+
             }
         }
         return returnList;

@@ -10,5 +10,5 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageShowD
 public interface HcsaRiskWeightageService {
     HcsaRiskWeightageShowDto getWeightage();
     void getOneWdto(HcsaRiskWeightageDto wDto,String lastInp,String secLastInp,String finan,String leadership,String legislative,String inStartDate,String inEndDate);
-
+    void saveDto(HcsaRiskWeightageShowDto wShowDto);
 }

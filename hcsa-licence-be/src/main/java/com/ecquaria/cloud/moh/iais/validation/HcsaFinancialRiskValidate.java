@@ -62,31 +62,50 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }else{
             errMap.put("All","Please do some change");
         }
+        mergeList(editList,financeList);
+
         return errMap;
+    }
+    public void mergeList( List<HcsaRiskFinanceMatrixDto> editList,List<HcsaRiskFinanceMatrixDto> financeList){
+        if(editList!=null &&financeList!=null){
+            for(HcsaRiskFinanceMatrixDto fin:financeList){
+                for(HcsaRiskFinanceMatrixDto ed:editList){
+                    if(ed.getServiceCode().equals(fin.getServiceCode())){
+                        fin = ed;
+                    }
+                }
+            }
+        }
     }
     public void therholdVad(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto){
         if(StringUtil.isEmpty(fdto.getInThershold())){
             errMap.put(fdto.getServiceCode()+"inThershold","Thershold is mandatory");
+            fdto.setInThersholderr(true);
         }else{
             try {
                 Integer thold = Integer.parseInt(fdto.getInThershold());
                 if(thold<0 || thold>999){
                     errMap.put(fdto.getServiceCode()+"inThershold","Invalid Number");
+                    fdto.setInThersholderr(true);
                 }
             }catch (Exception e){
                 errMap.put(fdto.getServiceCode()+"inThershold","Invalid Number");
+                fdto.setInThersholderr(true);
             }
         }
         if(StringUtil.isEmpty(fdto.getPrThershold())){
             errMap.put(fdto.getServiceCode()+"prThershold","Thershold is mandatory");
+            fdto.setPrThersholderr(true);
         }else{
             try {
                 Integer thold = Integer.parseInt(fdto.getPrThershold());
                 if(thold<0 || thold>999){
                     errMap.put(fdto.getServiceCode()+"prThershold","Invalid Number");
+                    fdto.setPrThersholderr(true);
                 }
             }catch (Exception e){
                 errMap.put(fdto.getServiceCode()+"prThershold","Invalid Number");
+                fdto.setPrThersholderr(true);
             }
         }
     }
@@ -96,15 +115,15 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         numberCaseCounthVad(errMap,fdto);
     }
     public void numberCaseCounthVad(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto){
-        inLeftModVadAndinRightModVad(errMap,fdto.getInLeftModCaseCounth(),fdto.getInRightModCaseCounth(),fdto.getServiceCode(),true);
-        inLeftModVadAndinRightModVad(errMap,fdto.getPrLeftModCaseCounth(),fdto.getPrRightModCaseCounth(),fdto.getServiceCode(),false);
-        inRightLowVad(errMap,fdto.getInRightLowCaseCounth(),fdto.getInLeftModCaseCounth(),fdto.getServiceCode(),true);
-        inRightLowVad(errMap,fdto.getPrRightLowCaseCounth(),fdto.getPrLeftModCaseCounth(),fdto.getServiceCode(),false);
-        inLeftHighVad(errMap,fdto.getInLeftHighCaseCount(),fdto.getInRightModCaseCounth(),fdto.getServiceCode(),true);
-        inLeftHighVad(errMap,fdto.getPrLeftHighCaseCount(),fdto.getPrRightModCaseCounth(),fdto.getServiceCode(),false);
+        inLeftModVadAndinRightModVad(errMap,fdto.getInLeftModCaseCounth(),fdto.getInRightModCaseCounth(),fdto.getServiceCode(),true,fdto);
+        inLeftModVadAndinRightModVad(errMap,fdto.getPrLeftModCaseCounth(),fdto.getPrRightModCaseCounth(),fdto.getServiceCode(),false,fdto);
+        inRightLowVad(errMap,fdto.getInRightLowCaseCounth(),fdto.getInLeftModCaseCounth(),fdto.getServiceCode(),true,fdto);
+        inRightLowVad(errMap,fdto.getPrRightLowCaseCounth(),fdto.getPrLeftModCaseCounth(),fdto.getServiceCode(),false,fdto);
+        inLeftHighVad(errMap,fdto.getInLeftHighCaseCount(),fdto.getInRightModCaseCounth(),fdto.getServiceCode(),true,fdto);
+        inLeftHighVad(errMap,fdto.getPrLeftHighCaseCount(),fdto.getPrRightModCaseCounth(),fdto.getServiceCode(),false,fdto);
 
     }
-    public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,boolean isIn){
+    public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
         int numberFlag = 0;
@@ -114,16 +133,20 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if(inLeftModNum<0||inLeftModNum>999){
                     if(isIn){
                         errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                        fdto.setInLeftModCaseCountherr(true);
                     }else{
                         errMap.put(serviceCode+"prLeftModCaseCounth","Invalid Number");
+                        fdto.setPrLeftModCaseCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
                     errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                    fdto.setInLeftModCaseCountherr(true);
                 }else{
                     errMap.put(serviceCode+"prLeftModCaseCounth","Invalid Number");
+                    fdto.setPrLeftModCaseCountherr(true);
                 }
                 e.printStackTrace();
             }
@@ -133,23 +156,31 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                    fdto.setInRightModCaseCountherr(true);
                 }
                 numberFlag++;
             }catch (Exception e){
                 errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                fdto.setInRightModCaseCountherr(true);
                 e.printStackTrace();
             }
         }
         if(numberFlag == 2){
-            numberOrderVad(errMap,inLeftModNum,inRightModNum,serviceCode);
+            numberOrderVad(errMap,inLeftModNum,inRightModNum,serviceCode,isIn,fdto);
         }
     }
-    public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode){
-        if(lm>rm){
+    public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
+        if(lm>rm&&isIn){
             errMap.put(serviceCode+"inRightModCaseCounth","Minimun cases should be smaller than Maximun cases");
+            fdto.setInRightModCaseCountherr(true);
+            fdto.setInLeftModCaseCountherr(true);
+        }else if(lm>rm&&!isIn){
+            errMap.put(serviceCode+"prRightModCaseCounth","Minimun cases should be smaller than Maximun cases");
+            fdto.setPrRightModCaseCountherr(true);
+            fdto.setPrLeftModCaseCountherr(true);
         }
     }
-    public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode,boolean isIn){
+    public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
         Integer inLeftHighNum = 0;
         boolean inLeftHighNumFlag = true;
         boolean prLeftHighNumFlag = true;
@@ -161,9 +192,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                     if(isIn){
                         inLeftHighNumFlag = false;
                         errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                        fdto.setInRightLowCaseCountherr(true);
                     }else{
                         prLeftHighNumFlag = false;
                         errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                        fdto.setInRightLowCaseCountherr(false);
                     }
                 }
             }
@@ -171,9 +204,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             if(isIn){
                 inLeftHighNumFlag = false;
                 errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                fdto.setInRightLowCaseCountherr(true);
             }else{
                 prLeftHighNumFlag = false;
                 errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                fdto.setPrRightLowCaseCountherr(true);
             }
             e.printStackTrace();
         }
@@ -183,10 +218,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if(inRightModNum +1 != inLeftHighNum){
                     if(isIn&&inLeftHighNumFlag){
                         errMap.put(serviceCode + "inRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                        fdto.setInRightLowCaseCountherr(true);
                     }else if(!isIn&&prLeftHighNumFlag){
                         errMap.put(serviceCode + "prRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                        fdto.setPrRightLowCaseCountherr(true);
                     }
-
                 }
             }
         } catch (Exception e) {
@@ -194,7 +230,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }
 
     }
-    public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,boolean isIn){
+    public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
         Integer inRightLowNum = 0;
         boolean inRightLowNumFlag = true;
         boolean prRightLowNumFlag = true;
@@ -206,9 +242,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                     if(isIn){
                         inRightLowNumFlag = false;
                         errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                        fdto.setInRightLowCaseCountherr(true);
                     }else{
                         prRightLowNumFlag = false;
                         errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                        fdto.setPrRightLowCaseCountherr(true);
                     }
                 }
             }
@@ -217,9 +255,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             if(isIn){
                 inRightLowNumFlag = false;
                 errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                fdto.setInRightLowCaseCountherr(true);
             }else{
                 prRightLowNumFlag = false;
                 errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                fdto.setPrRightLowCaseCountherr(true);
             }
 
             e.printStackTrace();
@@ -231,10 +271,12 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                     if(isIn){
                         if(inRightLowNumFlag){
                             errMap.put(serviceCode + "inRightLowCaseCounth", "Low Maximun cases and Moderate Minimun can only differ by 1");
+                            fdto.setInRightLowCaseCountherr(true);
                         }
                     }else{
                         if(prRightLowNumFlag){
                             errMap.put(serviceCode + "prRightLowCaseCounth", "Low Maximun cases and Moderate Minimun can only differ by 1");
+                            fdto.setPrRightLowCaseCountherr(true);
                         }
                     }
                 }
@@ -249,28 +291,36 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         //in
         if(StringUtil.isEmpty(fdto.getInLeftModCaseCounth())){
             errMap.put(fdto.getServiceCode()+"inLeftModCaseCounth","CaseCounth is mandatory");
+            fdto.setInLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightModCaseCounth())){
             errMap.put(fdto.getServiceCode()+"inRightModCaseCounth()","CaseCounth is mandatory");
+            fdto.setInRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightLowCaseCounth())){
             errMap.put(fdto.getServiceCode()+"inRightLowCaseCounth","CaseCounth is mandatory");
+            fdto.setInRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInLeftHighCaseCount())){
             errMap.put(fdto.getServiceCode()+"inLeftHighCaseCounth","CaseCounth is mandatory");
+            fdto.setInLeftHighCaseCounterr(true);
         }
         //pr
         if(StringUtil.isEmpty(fdto.getPrLeftModCaseCounth())){
             errMap.put(fdto.getServiceCode()+"prLeftModCaseCounth","CaseCounth is mandatory");
+            fdto.setPrLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightModCaseCounth())){
             errMap.put(fdto.getServiceCode()+"prRightModCaseCounth()","CaseCounth is mandatory");
+            fdto.setPrRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightLowCaseCounth())){
             errMap.put(fdto.getServiceCode()+"prRightLowCaseCounth","CaseCounth is mandatory");
+            fdto.setPrRightLowCaseCountherr(true);
         }
-        if(StringUtil.isEmpty(fdto.getPrRightLowCaseCounth())){
+        if(StringUtil.isEmpty(fdto.getPrLeftHighCaseCount())){
             errMap.put(fdto.getServiceCode()+"prLeftHighCaseCounth","CaseCounth is mandatory");
+            fdto.setPrLeftHighCaseCounterr(true);
         }
     }
 
@@ -279,8 +329,8 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         String inEndDate = fdto.getInEffectiveEndDate();
         String prEffDate = fdto.getPrEffectiveStartDate();
         String prEndDate = fdto.getPrEffectiveEndDate();
-        boolean inDateFormatVad = doDateFormatVad(errMap,inEffDate,inEndDate,fdto.getServiceCode(),true);
-        boolean prDateFormatVad = doDateFormatVad(errMap,prEffDate,prEndDate,fdto.getServiceCode(),false);
+        boolean inDateFormatVad = doDateFormatVad(errMap,inEffDate,inEndDate,fdto.getServiceCode(),true,fdto);
+        boolean prDateFormatVad = doDateFormatVad(errMap,prEffDate,prEndDate,fdto.getServiceCode(),false,fdto);
         if(inDateFormatVad&&fdto.isInIsEdit()){
             doDateLogicVad(errMap,fdto,true);
         }
@@ -305,15 +355,15 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 prEditNumFlag = 1;
             }
             if (StringUtil.isEmpty(fdto.getId())) {
-                doUsualDateVad(inEffDate,inEndDate,fdto.getServiceCode(),errMap,true,inEditNumFlag,prEditNumFlag);
-                doUsualDateVad(prEffDate,prEndDate,fdto.getServiceCode(),errMap,false,inEditNumFlag,prEditNumFlag);
+                doUsualDateVad(inEffDate,inEndDate,fdto.getServiceCode(),errMap,true,inEditNumFlag,prEditNumFlag,fdto);
+                doUsualDateVad(prEffDate,prEndDate,fdto.getServiceCode(),errMap,false,inEditNumFlag,prEditNumFlag,fdto);
             } else {
                 boolean inDateFlag;
-                inDateFlag = doUsualDateVad(inEffDate,inEndDate,fdto.getServiceCode(),errMap,true,inEditNumFlag,prEditNumFlag);
+                inDateFlag = doUsualDateVad(inEffDate,inEndDate,fdto.getServiceCode(),errMap,true,inEditNumFlag,prEditNumFlag,fdto);
                 if(inDateFlag){
                     doSpecialDateFlag(errMap,fdto,true);
                 }
-                inDateFlag = doUsualDateVad(prEffDate,prEndDate,fdto.getServiceCode(),errMap,false,inEditNumFlag,prEditNumFlag);
+                inDateFlag = doUsualDateVad(prEffDate,prEndDate,fdto.getServiceCode(),errMap,false,inEditNumFlag,prEditNumFlag,fdto);
                 if(inDateFlag){
                     doSpecialDateFlag(errMap,fdto,true);
                 }
@@ -334,26 +384,30 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             Date basePrEndDate = Formatter.parseDate(fdto.getBasePrEffectiveEndDate());
             if(inEffDate.getTime()<baseInEffDate.getTime()){
                 errMap.put(fdto.getServiceCode() + "inEffDate", "EffectiveDate should later than Previous version");
+                fdto.setInEffectiveStartDateerr(true);
             }
             if(prEffDate.getTime()<basePrEffDate.getTime()){
                 errMap.put(fdto.getServiceCode() + "prEffDate", "EffectiveDate should later than Previous version");
+                fdto.setPrEffectiveStartDateerr(true);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public boolean doUsualDateVad(Date effDate,Date endDate,String serviceCode,Map<String, String> errMap,boolean isIn,int inEdit,int prEdit){
+    public boolean doUsualDateVad(Date effDate,Date endDate,String serviceCode,Map<String, String> errMap,boolean isIn,int inEdit,int prEdit,HcsaRiskFinanceMatrixDto fdto){
         boolean flag = true;
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
                     errMap.put(serviceCode + "inEffDate", "EffectiveDate should be furture time");
+                    fdto.setInEffectiveStartDateerr(true);
                 }
             }else {
                 if(prEdit == 1){
                     errMap.put(serviceCode + "prEffDate", "EffectiveDate should be furture time");
+                    fdto.setPrEffectiveStartDateerr(true);
                 }
             }
         } else if (endDate.getTime() < effDate.getTime()) {
@@ -361,23 +415,27 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             if(isIn){
                 if(inEdit == 1){
                     errMap.put(serviceCode + "inEndDate", "EffectiveDate should be ealier than EndDate");
+                    fdto.setInEffectiveEndDateerr(true);
                 }
             }else{
                 if(prEdit == 1){
                     errMap.put(serviceCode + "prEndDate", "EffectiveDate should be ealier than EndDate");
+                    fdto.setPrEffectiveEndDateerr(true);
                 }
             }
         }
         return flag;
     }
-    public boolean doDateFormatVad(Map<String, String> errMap,String strEffDate,String strEndDate,String serviceCode,boolean isIn){
+    public boolean doDateFormatVad(Map<String, String> errMap,String strEffDate,String strEndDate,String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
         boolean vadFlag = true;
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
             if(isIn){
                 errMap.put(serviceCode+"inEffDate","EffectiveDate is mandatory");
+                fdto.setInEffectiveStartDateerr(true);
             }else{
                 errMap.put(serviceCode+"prEffDate","EffectiveDate is mandatory");
+                fdto.setPrEffectiveStartDateerr(true);
             }
         }else{
            try {
@@ -385,8 +443,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
            }catch (Exception e){
                if(isIn){
                    errMap.put(serviceCode+"inEffDate","Date Format Error");
+                   fdto.setInEffectiveStartDateerr(true);
                }else{
                    errMap.put(serviceCode+"prEffDate","Date Format Error");
+                   fdto.setPrEffectiveStartDateerr(true);
                }
                vadFlag = false;
            }
@@ -395,8 +455,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             vadFlag = false;
             if(isIn){
                 errMap.put(serviceCode+"inEndDate","EndDate is mandatory");
+                fdto.setInEffectiveEndDateerr(true);
             }else{
                 errMap.put(serviceCode+"prEndDate","EndDate is mandatory");
+                fdto.setPrEffectiveEndDateerr(true);
             }
         }else{
             try {
@@ -405,8 +467,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 vadFlag = false;
                 if(isIn){
                     errMap.put(serviceCode+"inEndDate","Date Format Error");
+                    fdto.setInEffectiveEndDateerr(true);
                 }else{
                     errMap.put(serviceCode+"prEndDate","Date Format Error");
+                    fdto.setPrEffectiveEndDateerr(true);
                 }
                 return false;
             }

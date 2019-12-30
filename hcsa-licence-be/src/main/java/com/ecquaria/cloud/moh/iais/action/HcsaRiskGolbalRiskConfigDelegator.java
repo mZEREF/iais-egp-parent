@@ -19,14 +19,14 @@ import java.util.Map;
 
 /**
  * @Author: jiahao
- * @Date: 2019/12/26 13:28
+ * @Date: 2019/12/28 15:20
  */
-@Delegator(value = "hcsaRiskWeightageConfigDelegator")
+@Delegator(value = "hcsaRiskGolbalRiskConfigDelegator")
 @Slf4j
-public class HcsaRiskWeightageConfigDelegator {
+public class HcsaRiskGolbalRiskConfigDelegator {
     @Autowired
     HcsaRiskWeightageService hcsaRiskWeightageService;
-    public HcsaRiskWeightageConfigDelegator(HcsaRiskWeightageService hcsaRiskWeightageService){
+    public HcsaRiskGolbalRiskConfigDelegator(HcsaRiskWeightageService hcsaRiskWeightageService){
         this.hcsaRiskWeightageService = hcsaRiskWeightageService;
 
     }
