@@ -3,11 +3,12 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 /**
  * SystemAdminClient
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
         fallback = ComSystemAdminClientFallback.class)
 public interface ComSystemAdminClient {
-    @GetMapping(value = "/iais-orguser/users-by-loginId/{user_id}")
+    @GetMapping(value = "/iais-orguser-be/users-by-loginId/{user_id}")
     FeignResponseEntity<OrgUserDto> retrieveOrgUserAccount(@PathVariable("user_id") String userId);
     @GetMapping(value = "/iais-workgroup/wrkgroups/{userId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getWorkGrpsByUserId(@PathVariable(name = "userId") String userId);
