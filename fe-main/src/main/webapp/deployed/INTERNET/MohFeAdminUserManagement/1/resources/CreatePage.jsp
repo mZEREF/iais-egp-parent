@@ -1,1 +1,1 @@
-<%@include file="/iais/feadmin/userManage/update.jsp"%>
+<%@include file="/iais/feadmin/adminManage/update.jsp"%>
