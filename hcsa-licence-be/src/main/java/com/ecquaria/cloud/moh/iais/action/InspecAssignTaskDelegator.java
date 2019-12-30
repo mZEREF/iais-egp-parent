@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -131,14 +132,14 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
-        String applicationNo = ParamUtil.getMaskedString(bpc.request,"applicationNo");
+        String appCorrelationId = ParamUtil.getMaskedString(bpc.request,"appCorrelationId");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(!StringUtil.isEmpty(applicationNo) && !(AppConsts.NO.equals(applicationNo))){
+        if(!StringUtil.isEmpty(appCorrelationId) && !(AppConsts.NO.equals(appCorrelationId))){
             List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
             Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
-            String taskId = map.get(applicationNo);
-            inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(applicationNo, commPools, loginContext);
+            String taskId = map.get(appCorrelationId);
+            inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(appCorrelationId, commPools, loginContext);
             inspecTaskCreAndAssDto.setTaskId(taskId);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
         }
@@ -238,14 +239,14 @@ public class InspecAssignTaskDelegator {
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
         setMapTaskId(bpc, commPools);
-        String[] applicationNo_list = inspectionAssignTaskService.getApplicationNoListByPool(commPools);
-        if(applicationNo_list == null || applicationNo_list.length <= 0){
-            applicationNo_list = new String[]{SystemParameterConstants.PARAM_FALSE};
+        String[] appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
+        if(appCorrId_list == null || appCorrId_list.length <= 0){
+            appCorrId_list = new String[]{SystemParameterConstants.PARAM_FALSE};
         }
-        String applicationStr = SqlHelper.constructInCondition("T1.APPLICATION_NO",applicationNo_list.length);
+        String applicationStr = SqlHelper.constructInCondition("T1.ID", appCorrId_list.length);
         searchParam.addParam("applicationNo_list",applicationStr);
-        for (int i = 0 ; i<applicationNo_list.length; i++ ) {
-            searchParam.addFilter("T1.APPLICATION_NO"+i,applicationNo_list[i]);
+        for (int i = 0 ; i < appCorrId_list.length; i++ ) {
+            searchParam.addFilter("T1.ID" + i,appCorrId_list[i]);
         }
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no",application_no,true);
@@ -279,13 +280,13 @@ public class InspecAssignTaskDelegator {
     }
 
     private void setMapTaskId(BaseProcessClass bpc, List<TaskDto> commPools) {
-        Map<String, String> appNoTaskIdMap = new HashMap<>();
-        if(commPools != null || commPools.size() > 0){
+        Map<String, String> appCorrIdTaskIdMap = new HashMap<>();
+        if(IaisCommonUtils.isEmpty(commPools)){
             for(TaskDto td:commPools){
-                appNoTaskIdMap.put(td.getRefNo(), td.getId());
+                appCorrIdTaskIdMap.put(td.getRefNo(), td.getId());
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, "appNoTaskIdMap", (Serializable) appNoTaskIdMap);
+        ParamUtil.setSessionAttr(bpc.request, "appNoTaskIdMap", (Serializable) appCorrIdTaskIdMap);
     }
 
     /**

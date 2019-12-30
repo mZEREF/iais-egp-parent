@@ -29,11 +29,11 @@ public interface InspectionAssignTaskService {
     /**
       * @author: shicheng
       * @Date 2019/11/23
-      * @Param: applicationNo, commPools, loginContext
+      * @Param: appCorrelationId, commPools, loginContext
       * @return: InspecTaskCreAndAssQueryDto
       * @Descripation: Gets a single Common Pool of information for allocation
       */
-    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo, List<TaskDto> commPools, LoginContext loginContext);
+    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext);
 
     /**
       * @author: shicheng
@@ -51,7 +51,7 @@ public interface InspectionAssignTaskService {
       * @return: List<String>
       * @Descripation: get Application No By commPools
       */
-    String[] getApplicationNoListByPool(List<TaskDto> commPools);
+    String[] getAppCorrIdListByPool(List<TaskDto> commPools);
 
     /**
       * @author: shicheng
@@ -85,9 +85,9 @@ public interface InspectionAssignTaskService {
       * @Date 2019/12/5
       * @Param: applicationNo
       * @return: ApplicationViewDto
-      * @Descripation: search ApplicationViewDto By Application No
+      * @Descripation: search ApplicationViewDto By app premises correlation Id
       */
-    ApplicationViewDto searchByAppNo(String applicationNo);
+    ApplicationViewDto searchByAppCorrId(String correlationId);
 
     /**
       * @author: shicheng

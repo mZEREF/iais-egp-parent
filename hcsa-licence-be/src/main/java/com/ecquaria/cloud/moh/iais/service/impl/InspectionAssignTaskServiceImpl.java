@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -22,11 +21,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
@@ -73,9 +72,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Autowired
     private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
-    @Autowired
-    private ApplicationViewService applicationViewService;
-
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {
         List<TaskDto> taskDtoList = new ArrayList<>();
@@ -93,24 +89,21 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo, List<TaskDto> commPools, LoginContext loginContext) {
-        if(StringUtil.isEmpty(applicationNo)){
-            applicationNo = SystemParameterConstants.PARAM_FALSE;
-        }
+    public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext) {
         List<OrgUserDto> orgUserDtos = new ArrayList<>();
         for(TaskDto tDto:commPools){
-            if(applicationNo.equals(tDto.getRefNo())){
+            if(appCorrelationId.equals(tDto.getRefNo())){
                 orgUserDtos =  organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             }
         }
 
-        ApplicationDto applicationDto = getApplicationDtoByAppNo(applicationNo);
+        ApplicationDto applicationDto = searchByAppCorrId(appCorrelationId).getApplicationDto();
         AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(applicationDto.getId());
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
-        inspecTaskCreAndAssDto.setApplicationNo(applicationNo);
+        inspecTaskCreAndAssDto.setApplicationNo(applicationDto.getApplicationNo());
         inspecTaskCreAndAssDto.setApplicationType(applicationDto.getApplicationType());
         inspecTaskCreAndAssDto.setApplicationStatus(applicationDto.getStatus());
         inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
@@ -180,21 +173,21 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public String[] getApplicationNoListByPool(List<TaskDto> commPools) {
-        if(commPools == null || commPools.size() <= 0){
+    public String[] getAppCorrIdListByPool(List<TaskDto> commPools) {
+        if(IaisCommonUtils.isEmpty(commPools)){
             return null;
         }
-        Set<String> applicationNoSet = new HashSet<>();
+        Set<String> appCorrIdSet = new HashSet<>();
         for(TaskDto tDto:commPools){
-            applicationNoSet.add(tDto.getRefNo());
+            appCorrIdSet.add(tDto.getRefNo());
         }
-        List<String> applicationNoList = new ArrayList<>(applicationNoSet);
-        String[] applicationStrs = new String[applicationNoList.size()];
-        for(int i = 0; i < applicationStrs.length; i++){
-            applicationStrs[i] = applicationNoList.get(i);
+        List<String> appCorrIdList = new ArrayList<>(appCorrIdSet);
+        String[] appCorrIdStrs = new String[appCorrIdList.size()];
+        for(int i = 0; i < appCorrIdStrs.length; i++){
+            appCorrIdStrs[i] = appCorrIdList.get(i);
         }
 
-        return applicationStrs;
+        return appCorrIdStrs;
     }
 
     @Override
@@ -254,16 +247,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
         for(InspectionCommonPoolQueryDto icpqDto: searchResult.getRows()){
-            AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(icpqDto.getId());
+            AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(icpqDto.getApplicationId());
             icpqDto.setHciName(icpqDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
         }
         return searchResult;
     }
 
     @Override
-    public ApplicationViewDto searchByAppNo(String applicationNo) {
-        //return applicationClient.getAppViewByNo(applicationNo).getEntity();
-        return null;
+    public ApplicationViewDto searchByAppCorrId(String correlationId) {
+        return applicationClient.getAppViewByCorrelationId(correlationId).getEntity();
     }
 
     @Override
@@ -285,16 +277,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks) {
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
-        ApplicationViewDto applicationViewDto = searchByAppNo(inspecTaskCreAndAssDto.getApplicationNo());
+        ApplicationViewDto applicationViewDto = searchByAppCorrId(inspecTaskCreAndAssDto.getApplicationNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         appInspectionStatusClient.createAppInspectionStatusByAppDto(applicationDto);
         assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto);
-    }
-
-    private ApplicationDto updateApplication(ApplicationDto applicationDto, String appStatus) {
-        applicationDto.setStatus(appStatus);
-        applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return applicationViewService.updateApplicaiton(applicationDto);
     }
 
     private TaskDto getTaskDtoByPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
@@ -305,17 +291,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             }
         }
         return taskDto;
-    }
-
-    /**
-      * @author: shicheng
-      * @Date 2019/11/22
-      * @Param: appNo
-      * @return: ApplicationDto
-      * @Descripation: get ApplicationDto By Application No.
-      */
-    public ApplicationDto getApplicationDtoByAppNo(String appNo){
-        return inspectionTaskClient.getApplicationDtoByAppNo(appNo).getEntity();
     }
 
     /**
