@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -118,37 +119,43 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     @Override
-    public void compressFile() {
+    public void compressFile(Map<String, String> appIdItemIdMap) {
         String compress = compress();
-        rename(compress);
+        rename(compress, appIdItemIdMap);
         deleteFile();
     }
 
     @Override
-    public List<ApplicationDto> getDocFile() {
+    public Map<List<Map<String, String>>, List<ApplicationDto>> getDocFile() {
         Map<String, Map<String, AppPremPreInspectionNcDocDto>> fileReportIds = applicationClient.recFileId().getEntity();
         List<ApplicationDto> applicationDtos = new ArrayList<>();
+        List<Map<String, String>> appIdNcItemIdMaps = new ArrayList<>();
+        Map<List<Map<String, String>>, List<ApplicationDto>> appItemMap = new HashMap<>();
         for(Map.Entry<String, Map<String, AppPremPreInspectionNcDocDto>> entry : fileReportIds.entrySet()){
             String appId = entry.getKey();
             Map<String, AppPremPreInspectionNcDocDto> mapValue = entry.getValue();
-            getFileAndClassify(mapValue);
+            Map<String, String> appIdNcItemIdMap = getFileAndClassify(appId, mapValue);
             ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
             applicationDtos.add(applicationDto);
+            appIdNcItemIdMaps.add(appIdNcItemIdMap);
         }
-        return applicationDtos;
+        appItemMap.put(appIdNcItemIdMaps, applicationDtos);
+        return appItemMap;
     }
 
     @Override
-    public void changeStatus(List<ApplicationDto> applicationDtos) {
+    public void changeStatus(List<ApplicationDto> applicationDtos, AuditTrailDto internet) {
         if(flag){
             for(ApplicationDto aDto : applicationDtos){
                 aDto.setStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
+                aDto.setAuditTrailDto(internet);
                 applicationClient.updateApplication(aDto);
             }
         }
     }
 
-    private void getFileAndClassify(Map<String, AppPremPreInspectionNcDocDto> mapValue) {
+    private Map<String, String> getFileAndClassify(String appId, Map<String, AppPremPreInspectionNcDocDto> mapValue) {
+        Map<String, String> appIdNcItemIdMap = new HashMap<>();
         for(Map.Entry<String, AppPremPreInspectionNcDocDto> entry : mapValue.entrySet()){
             String mapKey = entry.getKey();
             AppPremPreInspectionNcDocDto appPremPreInspectionNcDocDto = entry.getValue();
@@ -162,8 +169,10 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             }
             File file = new File(download + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
             File backupsFile = new File(backups + File.separator + mapKey + File.separator + s, appPremPreInspectionNcDocDto.getDocName());
+            appIdNcItemIdMap.put(mapKey, appId);
             writeFileByFileByte(file, backupsFile, fileByte);
         }
+        return appIdNcItemIdMap;
     }
 
     private void writeFileByFileByte(File file, File backupsFile, byte[] fileByte) {
@@ -293,7 +302,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         }
     }
 
-    private void rename(String fileNamesss)  {
+    private void rename(String fileNamesss, Map<String, String> appIdItemIdMap)  {
         flag = true;
         File zipFile = new File(backups);
         if(zipFile.isDirectory()){
@@ -318,7 +327,8 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
                     file.renameTo(new File(backups + File.separator + s + ".zip"));
-                    String s1 = saveFileName(s + ".zip",backups + File.separator + s + ".zip");
+                    String appId = appIdItemIdMap.get(file.getName());
+                    String s1 = saveFileName(s + ".zip",backups + File.separator + s + ".zip", appId);
                     if(!s1.equals(AppConsts.SUCCESS)){
                         new File(backups + File.separator + s + ".zip").delete();
                         flag = false;
@@ -348,12 +358,13 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         }
     }
 
-    private String saveFileName(String fileName ,String filePath){
+    private String saveFileName(String fileName ,String filePath, String appId){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
+        processFileTrackDto.setRefId(appId);
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
         processFileTrackDto.setAuditTrailDto(internet);
         String s = AppConsts.FAIL;

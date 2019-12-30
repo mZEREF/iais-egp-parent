@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -34,7 +36,7 @@ public interface FeToBeRecFileService {
       * @return: void
       * @Descripation:
       */
-    void compressFile();
+    void compressFile(Map<String, String> appIdItemIdMap);
 
     /**
       * @author: shicheng
@@ -43,7 +45,7 @@ public interface FeToBeRecFileService {
       * @return: void
       * @Descripation: get Doc PPT.... File
       */
-    List<ApplicationDto> getDocFile();
+    Map<List<Map<String, String>>, List<ApplicationDto>> getDocFile();
 
     /**
       * @author: shicheng
@@ -52,5 +54,5 @@ public interface FeToBeRecFileService {
       * @return: void
       * @Descripation: change App Status
       */
-    void changeStatus(List<ApplicationDto> applicationDtos);
+    void changeStatus(List<ApplicationDto> applicationDtos, AuditTrailDto internet);
 }
