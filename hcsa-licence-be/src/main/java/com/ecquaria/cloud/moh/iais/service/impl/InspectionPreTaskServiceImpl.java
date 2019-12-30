@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,9 @@ import java.util.List;
  **/
 @Service
 public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
+
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Autowired
     private OrganizationClient organizationClient;
@@ -53,6 +57,12 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
+
+    @Override
+    public String getAppStatusByTaskId(TaskDto taskDto) {
+        ApplicationDto applicationDto = applicationClient.getAppByNo(taskDto.getRefNo()).getEntity();
+        return applicationDto.getStatus();
+    }
 
     @Override
     public List<SelectOption> getProcessDecOption() {

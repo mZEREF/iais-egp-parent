@@ -14,6 +14,15 @@ public interface InspectionPreTaskService {
     /**
       * @author: shicheng
       * @Date 2019/12/9
+      * @Param: taskDto
+      * @return: String
+      * @Descripation: get Application Status By Task Id
+      */
+    String getAppStatusByTaskId(TaskDto taskDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2019/12/9
       * @Param: null
       * @return: List<SelectOption>
       * @Descripation: get Processing Decision Option
