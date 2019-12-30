@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.annotation.EicService;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -148,7 +150,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos) {
-        String auditTrailStr = JsonUtil.parseToJson(intranet);
         Boolean saveFlag = false;
         List<String> textJson = new ArrayList<>();
         Boolean fileBoolean = false;
@@ -163,6 +164,13 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         if(file2.getName().equals(fileName)){
                             saveFlag = saveDataDtoAndFile(file2, intranet, aBoolean, textJson,
                                     fileBoolean);
+                            if(saveFlag){
+                                pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
+                                pDto.setAuditTrailDto(intranet);
+                                systemBeLicClient.updateProcessFileTrack(pDto);
+                                ApplicationDto applicationDto = applicationClient.getApplicationById(pDto.getRefId()).getEntity();
+                                boolean feSaveFlag = saveEicAndApp(pDto, "InspecSaveBeRecByImpl", applicationDto);
+                            }
                         }
                     }
 
@@ -172,6 +180,11 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             log.error(e.getMessage(),e);
         }
         return saveFlag;
+    }
+
+    @EicService
+    private boolean saveEicAndApp(ProcessFileTrackDto pDto, String inspecSaveBeRecByImpl, ApplicationDto applicationDto) {
+        return false;
     }
 
     private boolean saveDataDtoAndFile(File file2, AuditTrailDto intranet, Boolean aBoolean, List<String> textJson,
