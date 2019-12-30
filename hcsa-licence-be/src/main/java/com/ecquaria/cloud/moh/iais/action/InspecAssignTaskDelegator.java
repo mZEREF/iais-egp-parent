@@ -136,7 +136,7 @@ public class InspecAssignTaskDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!StringUtil.isEmpty(appCorrelationId) && !(AppConsts.NO.equals(appCorrelationId))){
             List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
-            Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appNoTaskIdMap");
+            Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appCorrIdTaskIdMap");
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
             String taskId = map.get(appCorrelationId);
             inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(appCorrelationId, commPools, loginContext);
@@ -244,7 +244,7 @@ public class InspecAssignTaskDelegator {
             appCorrId_list = new String[]{SystemParameterConstants.PARAM_FALSE};
         }
         String applicationStr = SqlHelper.constructInCondition("T1.ID", appCorrId_list.length);
-        searchParam.addParam("applicationNo_list",applicationStr);
+        searchParam.addParam("appCorrId_list",applicationStr);
         for (int i = 0 ; i < appCorrId_list.length; i++ ) {
             searchParam.addFilter("T1.ID" + i,appCorrId_list[i]);
         }
@@ -286,7 +286,7 @@ public class InspecAssignTaskDelegator {
                 appCorrIdTaskIdMap.put(td.getRefNo(), td.getId());
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, "appNoTaskIdMap", (Serializable) appCorrIdTaskIdMap);
+        ParamUtil.setSessionAttr(bpc.request, "appCorrIdTaskIdMap", (Serializable) appCorrIdTaskIdMap);
     }
 
     /**
