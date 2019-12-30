@@ -20,4 +20,5 @@ public class AppointmentDelegator {
     public void prepareDate(BaseProcessClass bpc){
 
     }
+
 }

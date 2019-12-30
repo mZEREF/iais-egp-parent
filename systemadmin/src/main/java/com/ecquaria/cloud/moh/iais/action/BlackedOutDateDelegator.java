@@ -3,9 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -59,16 +57,16 @@ public class BlackedOutDateDelegator {
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "getBlackedOutDateList", searchParam);
-        SearchResult<ApptBlackoutDateQueryDto> searchResult = appointmentService.doQuery(searchParam);
+//        SearchResult<ApptBlackoutDateQueryDto> searchResult = appointmentService.doQuery(searchParam);
 
-        SearchParam taskSearchParam = new SearchParam(TaskQueryDto.class.getName());
-        QueryHelp.setMainSql("systemAdmin", "getTaskByEachInspectionGroup", taskSearchParam);
-
-
+//        SearchParam taskSearchParam = new SearchParam(TaskQueryDto.class.getName());
+//        QueryHelp.setMainSql("systemAdmin", "getTaskByEachInspectionGroup", taskSearchParam);
 
 
-        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, searchParam);
-        ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, searchResult);
+
+
+//        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, searchParam);
+//        ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, searchResult);
     }
 
     /**

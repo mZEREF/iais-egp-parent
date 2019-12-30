@@ -16,6 +16,5 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 
-<form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-  <%@ include file="../common/mainContent.jsp" %>
-</>
+<%@ include file="../common/mainContent.jsp" %>
+
