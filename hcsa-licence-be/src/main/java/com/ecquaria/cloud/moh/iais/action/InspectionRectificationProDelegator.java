@@ -90,11 +90,12 @@ public class InspectionRectificationProDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
+
             //String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
             String taskId = "425810AB-8D1D-EA11-BE7D-000C29F371DC";
             taskDto = taskService.getTaskById(taskId);
-            //ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            ApplicationDto applicationDto = applicationClient.getAppByNo(taskDto.getRefNo()).getEntity();
+            applicationViewDto = applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = inspectionRectificationProService.getAppHistoryByTask(applicationDto.getId(), InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION);
             inspectionPreTaskDto.setReMarks(appPremisesRoutingHistoryDto.getInternalRemarks());
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
