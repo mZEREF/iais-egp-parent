@@ -1,12 +1,15 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.client.rbac.ClientUser;
+import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -15,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.xhtmlrenderer.util.XMLUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -42,7 +46,9 @@ public class MohIntranetUserDelegator {
 
 
     @Autowired
-    private IntranetUserService intranetUserService ;
+    private IntranetUserService intranetUserService;
+    @Autowired
+    private UserClient userClient;
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
@@ -55,20 +61,20 @@ public class MohIntranetUserDelegator {
     public void prepareData (BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(bpc.request,"orgUserDto",null);
-
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery",searchParam);
-        SearchResult searchResult = intranetUserService.doQuery(searchParam);
-        if(!StringUtil.isEmpty(searchResult)){
-            ParamUtil.setSessionAttr(request,IntranetUserConstant.SEARCH_PARAM, searchParam);
-            ParamUtil.setRequestAttr(request,IntranetUserConstant.SEARCH_RESULT, searchResult);
-            ParamUtil.setRequestAttr(request,"pageCount", searchResult.getPageCount(searchParam.getPageSize()));
-        }
-
+//        SearchResult searchResult = intranetUserService.doQuery(searchParam);
+//        if(!StringUtil.isEmpty(searchResult)){
+//            ParamUtil.setSessionAttr(request,IntranetUserConstant.SEARCH_PARAM, searchParam);
+//            ParamUtil.setRequestAttr(request,IntranetUserConstant.SEARCH_RESULT, searchResult);
+//            ParamUtil.setRequestAttr(request,"pageCount", searchResult.getPageCount(searchParam.getPageSize()));
+//        }
     }
+
     public void prepareSwitch(BaseProcessClass bpc){
 
     }
+
     public void prepareCreate(BaseProcessClass bpc) throws ParseException {
         OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.SEARCH_RESULT);
         ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);
@@ -90,10 +96,14 @@ public class MohIntranetUserDelegator {
             ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);
             return;
         }
-        intranetUserService.createIntranetUser(orgUserDto);
+//        intranetUserService.createIntranetUser(orgUserDto);
+        ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
+        clientUser.setUserDomain(orgUserDto.getUserDomain());
+        clientUser.setId(orgUserDto.getUserId());
+        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        userClient.createClientUser(clientUser);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
         }
-
 
     public void prepareEdit(BaseProcessClass bpc){
         String id = ParamUtil.getString(bpc.request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
@@ -101,7 +111,6 @@ public class MohIntranetUserDelegator {
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
             ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
         }
-
     }
 
     public void doEdit(BaseProcessClass bpc) throws ParseException {
@@ -127,14 +136,23 @@ public class MohIntranetUserDelegator {
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
     }
 
-
     public void doDelete(BaseProcessClass bpc){
-        String actionType = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
+        String crud_action_deactivate = ParamUtil.getString(bpc.request, "crud_action_deactivate");
         String id = ParamUtil.getString(bpc.request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
+        if("doDeactivate".equals(crud_action_deactivate)){
+            OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+            intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
+            intranetUserService.updateOrgUser(intranetUserById);
+            return;
+        }else if ("doReactivate".equals(crud_action_deactivate)){
+            OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+            intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+            intranetUserService.updateOrgUser(intranetUserById);
+            return;
+        }
+        String actionType = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
         intranetUserService.delOrgUser(id);
     }
-
-
 
     public void doSearch(BaseProcessClass bpc){
         String displayName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DISPLAYNAME);
@@ -163,11 +181,6 @@ public class MohIntranetUserDelegator {
         filterParameter.setPageNo(pageNo);
     }
 
-    public void deactivate (BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        
-    }
-
     private OrgUserDto prepareOrgUserDto (BaseProcessClass bpc) throws ParseException {
         OrgUserDto orgUserDto = new OrgUserDto() ;
         String userId = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_USERID);
@@ -191,13 +204,13 @@ public class MohIntranetUserDelegator {
         orgUserDto.setFirstName(firstName);
         orgUserDto.setLastName(lastName);
         orgUserDto.setDisplayName(displayName);
-        orgUserDto.setEffectiveFrom(startDate);
-        orgUserDto.setEffectiveTo(endDate);
+        orgUserDto.setAccountActivateDatetime(startDate);
+        orgUserDto.setAccountDeactivateDatetime(endDate);
         orgUserDto.setSalutation(salutation);
         orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
         orgUserDto.setDivision(division);
         orgUserDto.setBranchUnit(branch);
-        orgUserDto.setEmailAddr(email);
+        orgUserDto.setEmail(email);
         orgUserDto.setMobileNo(mobileNo);
         orgUserDto.setOfficeTelNo(officeNo);
         orgUserDto.setRemarks(remarks);
@@ -205,5 +218,4 @@ public class MohIntranetUserDelegator {
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
         return orgUserDto ;
     }
-
 }
