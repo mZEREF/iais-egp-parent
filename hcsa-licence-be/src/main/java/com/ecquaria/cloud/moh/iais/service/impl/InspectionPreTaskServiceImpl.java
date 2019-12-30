@@ -60,7 +60,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Override
     public String getAppStatusByTaskId(TaskDto taskDto) {
-        ApplicationDto applicationDto = applicationClient.getAppByNo(taskDto.getRefNo()).getEntity();
+        ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         return applicationDto.getStatus();
     }
 
