@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
@@ -23,16 +24,22 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * ServiceConfigServiceImpl
@@ -41,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @date 10/14/2019
  */
 @Service
+@Slf4j
 public class ServiceConfigServiceImpl implements ServiceConfigService {
     @Autowired
     private FileRepoClient fileRepoClient;
@@ -50,6 +58,10 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     private SystemAdminClient systemAdminClient;
     @Autowired
     private ApplicationClient applicationClient;
+
+    @Value("${iais.syncFileTracking.shared.path}")
+    private String sharedPath;
+
     @Override
     public List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids) {
 
@@ -92,9 +104,17 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public String saveFileToRepo(MultipartFile file) throws IOException {
+        //move file
+        moveFile(file.getOriginalFilename(), sharedPath, file.getBytes());
+        //
+        FileRepoDto fileRepoDto = new FileRepoDto();
+        fileRepoDto.setFileName(file.getOriginalFilename());
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        String auditTrailStr = JsonUtil.parseToJson(auditTrailDto);
-        FeignResponseEntity<String> re = fileRepoClient.saveFiles(file, auditTrailStr);
+        fileRepoDto.setAuditTrailDto(auditTrailDto);
+        fileRepoDto.setRelativePath(sharedPath);
+        String fileRepoStr = JsonUtil.parseToJson(fileRepoDto);
+        //todo wait job ok => change method
+        FeignResponseEntity<String> re = fileRepoClient.saveFiles(file, fileRepoStr);
         String str = "";
         if (re.getStatusCode() == HttpStatus.SC_OK) {
             str = re.getEntity();
@@ -182,5 +202,18 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         return appConfigClient.serviceCorrelation().getEntity();
     }
 
+    private void moveFile(String fileName, String path, byte[] fileData) throws IOException {
+        File file = new File(path+"/"+fileName);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            fos.write(fileData);
+        } catch (FileNotFoundException e) {
+            log.error(StringUtil.changeForLog("file not found"));
+        }finally {
+            fos.close();
+        }
+
+    }
 
 }
