@@ -32,7 +32,7 @@
                                             <iais:field value="Title:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input id="rfiTitle" type="text" name="rfiTitle" >
+                                                    <textarea id="rfiTitle" type="text" name="rfiTitle" ></textarea>
                                                 </label>
                                             </iais:value>
                                         </iais:row>

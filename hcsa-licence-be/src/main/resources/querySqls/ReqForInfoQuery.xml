@@ -33,6 +33,7 @@
                 lic.STATUS as STATUS,
                 lic.start_date as start_date,
                 lic.expiry_date as expiry_date,
+                lic.licensee_id,
                 licApp.APPLICATION_ID as APPLICATION_ID,
                 Prem.HCI_CODE,Prem.HCI_NAME,
                 Prem.BLK_NO, Prem.FLOOR_NO, Prem.UNIT_NO, Prem.STREET_NAME, Prem.BUILDING_NAME,

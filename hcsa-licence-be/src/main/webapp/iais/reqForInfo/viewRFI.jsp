@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="egov-cloud" uri="ecquaria/sop/egov-cloud" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -49,15 +50,38 @@
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="checkbox" name="reqType" />Information
+                                                    <input type="checkbox" name="reqType" checked/>Information
                                                 </label>
                                                 <label>
                                                     <input type="checkbox" name="reqType" />Supporting Documents
                                                 </label>
                                             </iais:value>
                                         </iais:row>
+                                        <H3></H3>
+                                        <iais:row style="text-align:center;">
+                                            <iais:value width="18">
+                                                <label>
+                                                    <span>${licPreReqForInfoDto.officerRemarks}</span>
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row style="text-align:center;">
+                                            <iais:value width="18">
+                                                <label>
+                                                    <textarea rows="10" cols="100">${licPreReqForInfoDto.userReply}</textarea>
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row >
+                                            <iais:value width="18">
+                                                <label>
+                                                    <input type="text" value="${licPreReqForInfoDto.docName}">
+                                                </label>
+                                            </iais:value>
+                                        </iais:row>
 
                                         <iais:action style="text-align:center;">
+                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAccept('${licPreReqForInfoDto.reqInfoId}')">Accept</button>
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doCancel('${licPreReqForInfoDto.reqInfoId}')">Cancel</button>
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
                                         </iais:action>
@@ -75,7 +99,9 @@
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
-
+    function doAccept(reqInfoId) {
+        SOP.Crud.cfxSubmit("mainForm", "accept",reqInfoId);
+    }
     function doCancel(reqInfoId) {
         SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);
     }

@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -32,8 +33,7 @@
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="OFFICER_REMARKS" value="Officer Remarks"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="USER_REPLY" value="User Reply"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="Email" value="Email"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="REQUEST_DATE" value="Start Date"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                             </tr>
@@ -52,9 +52,8 @@
                                         <tr>
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                             <td><c:out value="${pool.licenceNo}"/></td>
-                                            <td><c:out value="${pool.officerRemarks}"/></td>
-                                            <td><c:out value="${pool.replyUser}"/></td>
-                                            <td><c:out value="${pool.requestDate}"/></td>
+                                            <td><c:out value=""/></td>
+                                            <td><c:out value="${pool.requestDate}" />/></td>
                                             <td>
                                                 <iais:action style="text-align:center;">
                                                     <button type="button"  class="btn btn-default" onclick="javascript:doView('${pool.reqInfoId}');" >View</button>

@@ -274,7 +274,8 @@ public class RequestForInformationDelegator {
                     reqForInfoSearchListDto.setStreetName(rfiLicenceQueryDto.getStreetName());
                     reqForInfoSearchListDto.setFloorNo(rfiLicenceQueryDto.getFloorNo());
                     reqForInfoSearchListDto.setLicPremId(rfiLicenceQueryDto.getLicPremId());
-
+                    LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(rfiLicenceQueryDto.getLicenseeId());
+                    reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
                     if(!StringUtil.isEmpty(service_licence_type)){
                         boolean isAdd=false;
                         List<String> svcNames=requestForInformationService.getSvcNamesByType(service_licence_type);
@@ -362,11 +363,11 @@ public class RequestForInformationDelegator {
         String[] reqType=ParamUtil.getStrings(request,"reqType");
         boolean isNeedDoc;
         if("on".equals(reqType[0])){
-            officerRemarks.append(" :Information");
+            officerRemarks.append(" |Information");
         }
         if( "on".equals(reqType[1])){
             isNeedDoc=true;
-            officerRemarks.append(" :Supporting documents");
+            officerRemarks.append(" |Supporting documents");
 
         }
         else {
@@ -390,13 +391,13 @@ public class RequestForInformationDelegator {
     public void doCancel(BaseProcessClass bpc) {
         log.info("=======>>>>>doCancel>>>>>>>>>>>>>>>>requestForInformation");
         String id = (String) ParamUtil.getRequestAttr(bpc.request, "reqInfoId");
-        requestForInformationService.acceptLicPremisesReqForInfo(id);
+        requestForInformationService.deleteLicPremisesReqForInfo(id);
         // 		doCancel->OnStepProcess
     }
     public void doAccept(BaseProcessClass bpc) {
         log.info("=======>>>>>doAccept>>>>>>>>>>>>>>>>requestForInformation");
         String id = (String) ParamUtil.getRequestAttr(bpc.request, "reqInfoId");
-        requestForInformationService.deleteLicPremisesReqForInfo(id);
+        requestForInformationService.acceptLicPremisesReqForInfo(id);
         // 		doAccept->OnStepProcess
     }
     public void preViewRfi(BaseProcessClass bpc) {
@@ -404,14 +405,17 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String id = (String) ParamUtil.getSessionAttr(bpc.request, "reqInfoId");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
+        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]);
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		preViewRfi->OnStepProcess
     }
     public void preCancel(BaseProcessClass bpc) {
         log.info("=======>>>>>preCancel>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String licPremId = (String) ParamUtil.getSessionAttr(request, "licPremId");
-
+        String id = (String) ParamUtil.getSessionAttr(bpc.request, "reqInfoId");
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
+        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]);
+        ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		preCancel->OnStepProcess
     }
 }
