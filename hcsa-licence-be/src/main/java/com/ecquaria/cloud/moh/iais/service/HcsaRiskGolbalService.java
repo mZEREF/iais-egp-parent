@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GolbalRiskShowDto;
+
+import java.util.List;
 
 /**
  * @Author: jiahao
@@ -8,4 +11,5 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GolbalRiskShowDto;
  */
 public interface HcsaRiskGolbalService {
     GolbalRiskShowDto getGolbalRiskShowDto();
+    List<SelectOption> getAutoOp();
 }

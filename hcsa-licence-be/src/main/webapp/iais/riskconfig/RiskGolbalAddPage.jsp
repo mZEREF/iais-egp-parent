@@ -15,7 +15,7 @@
 %>
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaRiskFinancialConfigDelegator"/>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaRiskLegislativeConfigDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.HcsaRiskFinianceVadlidateDto"/>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
@@ -34,169 +34,65 @@
                                     <thead>
                                     <tr>
                                         <th>Service Name</th>
-                                        <th>Threshold</th>
-                                        <th>Source</th>
+                                        <th>Maximum Licence Tenure</th>
+                                        <th>Last Inspection was more than (X Years)</th>
+                                        <th>Eligible for auto renewal</th>
+                                        <th>Type of Inspection Required(New)</th>
+                                        <th>Pre/Post Licensing Inspection(New)</th>
+                                        <th>Type of Inspection Required(Renew)</th>
+                                        <th>Pre/Post Licensing Inspection(Renew)</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th>Mininum Number of Cases</th>
-                                        <th>Maximun Number of Cases</th>
-                                        <th>Risk Rating</th>
-                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <span class="error-msg" id="error_All" name="iaisErrorMsg"></span>
-                                    <c:forEach var="fin" items="${financialShowDto.financeList}" varStatus="status">
+                                    <c:forEach var="go" items="${golbalShowDto.goalbalTotalList}" varStatus="status">
                                         <tr>
                                             <td>
-                                                <c:set value = "error_${fin.serviceCode}both" var = "errboth"/>
-                                                <span class="error-msg" id="<c:out value="${errboth}"/>" name="iaisErrorMsg"></span>
                                                 <c:choose>
-                                                    <c:when test="${fin.inIsEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
+                                                    <c:when test="${go.totalEdit}">
+                                                        <p><b>${go.serviceName}</b></p>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <p>${fin.serviceName}</p>
+                                                        <p>${go.serviceName}</p>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <p><input type="text" id="<c:out value="${fin.serviceCode}"/>inthershold" name="<c:out value="${fin.serviceCode}"/>inthershold"value="<c:out value="${fin.inThershold}"></c:out>">
-                                                </p>
-                                                <c:set value = "error_${fin.serviceCode}inThershold" var = "inther"/>
-                                                <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <input type="hidden" id="<c:out value="${fin.serviceCode}"></c:out>insource" name="<c:out value="${fin.serviceCode}"></c:out>insource" value="SOURCE001">
-                                                <p>Institution</p>
-                                            </td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}instartdate" name = "${fin.serviceCode}instartdate" value="${fin.inEffectiveStartDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.serviceCode}inEffDate" var = "inEffdate"/>
-                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}inenddate" name = "${fin.serviceCode}inenddate" value="${fin.inEffectiveEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.serviceCode}inEndDate" var = "inEnddate"/>
-                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly maxlength="5" value="0">
-                                                </div></div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.inLeftModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inleftmod" name = "<c:out value="${fin.serviceCode}"/>inleftmod" maxlength="5"value="${fin.inLeftModCaseCounth}">
-                                                </div>
-
-                                                </div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.inLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inlefthigh" name = "<c:out value="${fin.serviceCode}"/>inlefthigh" maxlength="5"value="${fin.inLeftHighCaseCount}">
-                                                </div>
-
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text"  style="color: <c:if test="${fin.inRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inrightlow" name = "<c:out value="${fin.serviceCode}"/>inrightlow"  maxlength="5" value="${fin.inRightLowCaseCounth}">
-                                                </div>
-
-                                                </div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.inRightModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>inrightmod" name = "<c:out value="${fin.serviceCode}"/>inrightmod"  maxlength="5"value="${fin.inRightModCaseCounth}">
-                                                </div>
-
-                                                </div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly  maxlength="5" value="999">
-                                                </div></div>
-                                            </td>
-                                            <td>
-                                                <div style="width: 100px;margin-top: 15px;">Low</div>
-                                                <div style="width: 100px;margin-top: 45px;">Moderate</div>
-                                                <div style="width: 100px;margin-top: 45px;">High</div>
-                                            </td>
-                                            <td>
-                                                <c:set value = "error_${fin.serviceCode}inLeftModCaseCounth" var = "inleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}inLeftHighCaseCounth" var = "inlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}inRightLowCaseCounth" var = "inrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}inRightModCaseCounth" var = "inrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${fin.prIsEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <p>${fin.serviceName}</p>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <p><input type="text" id="<c:out value="${fin.serviceCode}"/>prthershold" name="<c:out value="${fin.serviceCode}"/>prthershold" value="<c:out value="${fin.prThershold}"></c:out>"></p>
-                                                <c:set value = "error_${fin.serviceCode}prThershold" var = "prther"/>
-                                                <span class="error-msg" id="<c:out value="${prther}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td>
-                                                <input type="hidden" id="<c:out value="${fin.serviceCode}"></c:out>prsource" name="<c:out value="${fin.serviceCode}"></c:out>prsource" value="SOURCE002">
-                                                <p>Practitioner</p>
+                                                <input type="text" id="<c:out value="${go.serviceCode}"/>maxLic" name="<c:out value="${go.serviceCode}"/>last"value="<c:out value="${go.doMaxLic}"></c:out>">
 
                                             </td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}prstartdate" name = "${fin.serviceCode}prstartdate" value="${fin.prEffectiveStartDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.serviceCode}prEffDate" var = "prEffDate"/>
-                                                <span class="error-msg" id="<c:out value="${prEffDate}"/>" name="iaisErrorMsg"></span>
-                                            </td>
-                                            <td><iais:datePicker id = "${fin.serviceCode}prenddate" name = "${fin.serviceCode}prenddate" value="${fin.prEffectiveEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.serviceCode}prEndDate" var = "prEndDate"/>
-                                                <span class="error-msg" id="<c:out value="${prEndDate}"/>" name="iaisErrorMsg"></span>
+                                            <td>
+                                                <input type="text" id="<c:out value="${go.serviceCode}"/>doLast" name="<c:out value="${go.serviceCode}"/>secLast"value="<c:out value="${go.doLastInspection}"></c:out>">
+
                                             </td>
                                             <td>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly maxlength="5" value="0">
-                                                </div></div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prLeftModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prleftmod" name = "<c:out value="${fin.serviceCode}"/>prleftmod"  maxlength="5"value="${fin.prLeftModCaseCounth}">
-                                                </div>
+                                                <input type="text" id="<c:out value="${go.serviceCode}"/>autoRenew" name="<c:out value="${go.serviceCode}"/>fin"value="<c:out value="${go.doAutoRenew}"></c:out>">
 
-                                                </div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prLeftHighCaseCounterr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prlefthigh" name = "<c:out value="${fin.serviceCode}"/>prlefthigh"  maxlength="5"value="${fin.prLeftHighCaseCount}">
-                                                </div>
+                                            </td>
 
-                                                </div>
+                                            <td>
+                                                <input type="text" id="<c:out value="${go.serviceCode}"/>newInpT" name="<c:out value="${go.serviceCode}"/>lea"value="<c:out value="${go.donewInspectType}"></c:out>">
+
                                             </td>
                                             <td>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prRightLowCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prrightlow" name = "<c:out value="${fin.serviceCode}"/>prrightlow" maxlength="5" value="${fin.prRightLowCaseCounth}">
-                                                </div>
+                                                <input type="text" id="<c:out value="${go.serviceCode}"/>newIsp" name="<c:out value="${go.serviceCode}"/>leg"value="<c:out value="${go.donewIsPreInspect}"></c:out>">
 
-                                                </div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="color: <c:if test="${fin.prRightModCaseCountherr}">red</c:if>" id="<c:out value="${fin.serviceCode}"/>prrightlmod" name = "<c:out value="${fin.serviceCode}"/>prrightmod" maxlength="5"value="${fin.prRightModCaseCounth}">
-                                                </div>
-
-                                                </div>
-                                                <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly value="999">
-                                                </div></div>
                                             </td>
                                             <td>
-                                                <div style="width: 100px;margin-top: 15px;">Low</div>
-                                                <div style="width: 100px;margin-top: 45px;">Moderate</div>
-                                                <div style="width: 100px;margin-top: 45px;">High</div>
+                                                <input type="text" id="<c:out value="${go.serviceCode}"/>renewInpT" name="<c:out value="${go.serviceCode}"/>lea"value="<c:out value="${go.dorenewInspectType}"></c:out>">
+
                                             </td>
                                             <td>
-                                                <c:set value = "error_${fin.serviceCode}prRightModCaseCounth" var = "prrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${prrightmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}prRightLowCaseCounth" var = "prrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}prLeftHighCaseCounth" var = "prlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${prlefthigh}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.serviceCode}prLeftModCaseCounth" var = "prleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${prleftmod}"/>" name="iaisErrorMsg"></span>
+                                                <input type="text" id="<c:out value="${go.serviceCode}"/>renewIsp" name="<c:out value="${go.serviceCode}"/>leg"value="<c:out value="${go.dorenewIsPreInspect}"></c:out>">
+
+                                            </td>
+                                            <td>
+                                                <iais:datePicker id = "${go.serviceCode}instartdate" name = "${go.serviceCode}instartdate" value="${go.doEffectiveDate}"></iais:datePicker>
+
+                                            </td>
+                                            <td>
+                                                <iais:datePicker id = "${go.serviceCode}inenddate" name = "${go.serviceCode}inenddate" value="${go.doEndDate}"></iais:datePicker>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -228,7 +124,6 @@
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","next");
     }
-
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm","backToMenu");
     }

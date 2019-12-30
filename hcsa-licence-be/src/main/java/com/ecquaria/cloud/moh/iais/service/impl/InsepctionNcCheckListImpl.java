@@ -177,12 +177,13 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         String appPremCorrId = null;
         if (taskDto != null) {
             String refNo = taskDto.getRefNo();
-            ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
+            /*ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
             String appId = appDto.getId();
             appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
             if (appCorrDtolist != null && !appCorrDtolist.isEmpty()) {
                 appPremCorrId = appCorrDtolist.get(0).getId();
-            }
+            }*/
+            appPremCorrId = taskDto.getRefNo();
         }
         Map<String, Object> appCklMap = new HashMap<>();
         appCklMap.put("appPremId", appPremCorrId);

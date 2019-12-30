@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
@@ -100,7 +99,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String appPremCorrId = null;
         String serviceCode = null;
         if(taskDto!=null){
-            String refNo = taskDto.getRefNo();
+            /*String refNo = taskDto.getRefNo();
             ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
             String serviceId = appDto.getServiceId();
             HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
@@ -109,7 +108,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
             if(appCorrDtolist!=null && !appCorrDtolist.isEmpty()){
                 appPremCorrId = appCorrDtolist.get(0).getId();
-            }
+            }*/
+            appPremCorrId = taskDto.getRefNo();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
         InspectionFillCheckListDto infillCheckListDto = new InspectionFillCheckListDto();
@@ -499,17 +499,16 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String serviceCode = null;
         if(taskDto!=null){
             String refNo = taskDto.getRefNo();
-            //ApplicationViewDto appDto = RestApiUtil.getByPathParam("hcsa-config:8883/iais-application/application/{AppNo}",refNo, ApplicationViewDto.class);
-            ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
+            /*ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
             String serviceId = appDto.getServiceId();
             HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
             serviceCode = svcDto.getSvcCode();
             String appId = appDto.getId();
             appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
-            //appCorrDtolist = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-application/application/correlations/{appid}",appId,AppPremisesCorrelationDto.class);
             if(appCorrDtolist!=null && !appCorrDtolist.isEmpty()){
                 appPremCorrId = appCorrDtolist.get(0).getId();
-            }
+            }*/
+            appPremCorrId = taskDto.getRefNo();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
         AppPremisesPreInspectChklDto chklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,cDtoList.get(0).getConfigId()).getEntity();
