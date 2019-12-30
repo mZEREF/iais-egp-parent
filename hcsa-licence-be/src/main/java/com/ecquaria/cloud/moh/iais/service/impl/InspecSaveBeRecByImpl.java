@@ -1,15 +1,26 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -20,6 +31,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.CRC32;
@@ -44,10 +57,16 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Autowired
     private SystemBeLicClient systemBeLicClient;
 
+    @Autowired
+    private ApplicationClient applicationClient;
+
+    @Autowired
+    private FileRepoClient fileRepoClient;
+
     @Override
     public List<ProcessFileTrackDto> getFileTypeAndStatus(String applicationStatusFeToBeRectification, String commonStatusActive) {
         List<ProcessFileTrackDto> processFileTrackDtos = systemBeLicClient.getFileTypeAndStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION,
-                AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS).getEntity();
         return processFileTrackDtos;
     }
 
@@ -88,47 +107,11 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                             zipFile = new ZipFile(pDto.getFilePath());
                             for (Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements(); ) {
                                 ZipEntry zipEntry = entries.nextElement();
-                                zipFile(zipEntry, os, bos, zipFile, bis, cos);
+                                String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
+                                zipFile(zipEntry, os, bos, zipFile, bis, cos, fileName);
                             }
                         } catch (IOException e) {
                             log.error(e.getMessage(), e);
-                        } finally {
-                            if (cos != null) {
-                                try {
-                                    cos.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
-
-                            if (bis != null) {
-                                try {
-                                    bis.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
-                            if (bos != null) {
-                                try {
-                                    bos.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
-                            if (os != null) {
-                                try {
-                                    os.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
-                            if (zipFile != null) {
-                                try {
-                                    zipFile.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
                         }
                     }
                 }
@@ -136,10 +119,10 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         }
     }
 
-    private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos)  {
+    private void zipFile(ZipEntry zipEntry, OutputStream os, BufferedOutputStream bos, ZipFile zipFile, BufferedInputStream bis, CheckedInputStream cos, String fileName)  {
         try {
             if(!zipEntry.getName().endsWith(File.separator)){
-                File file =new File(compressPath + File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
+                File file = new File(compressPath + File.separator + zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)) + File.separator + fileName);
                 if(!file.exists()){
                     file.mkdirs();
                 }
@@ -147,7 +130,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 bos = new BufferedOutputStream(os);
                 InputStream is = zipFile.getInputStream(zipEntry);
                 bis = new BufferedInputStream(is);
-                cos = new CheckedInputStream(bis,new CRC32());
+                cos = new CheckedInputStream(bis, new CRC32());
                 byte[] b = new byte[1024];
                 int count = cos.read(b);
                 while(count != -1){
@@ -159,83 +142,118 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         }catch (IOException e){
             log.error(e.getMessage(), e);
-        }finally {
-            if(cos != null){
-                try {
-                    cos.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-            if(bis != null){
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if(bos != null){
-                try {
-                    bos.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if(os != null){
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-
         }
-
     }
 
     @Override
     public Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos) {
-        FileInputStream fileInputStream=null;
-        Boolean flag = false;
+        String auditTrailStr = JsonUtil.parseToJson(intranet);
+        Boolean saveFlag = false;
+        List<String> textJson = new ArrayList<>();
+        Boolean fileBoolean = false;
+        Boolean aBoolean = false;
         try {
-            File file =new File(download);
+            File file = new File(download);
             if(file.isDirectory()){
                 File[] files = file.listFiles();
-                for(File file2:files){
-                    if(file2.isFile() && file2.getName().endsWith(fileFormat)){
-                        fileInputStream = new FileInputStream(file2);
-                        ByteArrayOutputStream by = new ByteArrayOutputStream();
-                        byte [] size = new byte[1024];
-                        int count = fileInputStream.read(size);
-                        while(count != -1){
-                            by.write(size,0,count);
-                            count = fileInputStream.read(size);
-                        }
-                        Boolean aBoolean = fileToDto(by.toString(), intranet, processFileTrackDtos);
-                        flag = aBoolean;
-                        if(!aBoolean){
-                            file.delete();
+                for(ProcessFileTrackDto pDto:processFileTrackDtos){
+                    String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
+                    for(File file2:files){
+                        if(file2.getName().equals(fileName)){
+                            saveFlag = saveDataDtoAndFile(file2, intranet, aBoolean, textJson, fileBoolean, auditTrailStr);
                         }
                     }
+
                 }
             }
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
-        finally {
-            if(fileInputStream != null){
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
+        return saveFlag;
+    }
+
+    private boolean saveDataDtoAndFile(File file2, AuditTrailDto intranet, Boolean aBoolean, List<String> textJson,
+                                       Boolean fileBoolean, String auditTrailStr) {
+        boolean saveFlag = false;
+        try {
+            if(file2.isDirectory()){
+                File[] files2 = file2.listFiles();
+                for(File file3:files2){
+                    if(file3.isFile() && file3.getName().endsWith(fileFormat)){
+                        FileInputStream fileInputStream = new FileInputStream(file3);
+                        ByteArrayOutputStream by = new ByteArrayOutputStream();
+                        byte[] size = new byte[1024];
+                        int count = fileInputStream.read(size);
+                        while(count != -1){
+                            by.write(size,0, count);
+                            count = fileInputStream.read(size);
+                        }
+                        aBoolean = fileToDto(by.toString(), intranet);
+                        textJson.add(by.toString());
+                    }
+                }
+                for(File file3:files2){
+                    if(file3.isDirectory()) {
+                        for(String s:textJson) {
+                            fileBoolean = saveUploadFile(s, file3, auditTrailStr);
+                        }
+                    }
+                }
+                if(aBoolean && fileBoolean){
+                    saveFlag = true;
+                }
+            }
+        } catch(Exception e) {
+            log.error(e.getMessage(),e);
+            saveFlag = false;
+        }
+        return saveFlag;
+    }
+
+    private boolean saveUploadFile(String toString, File file, String auditTrailStr) {
+        ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(toString, ApplicationListFileDto.class);
+        boolean flag = false;
+        List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = applicationListFileDto.getAppPremPreInspectionNcDocDtos();
+        if(!(IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos))) {
+            for (AppPremPreInspectionNcDocDto aItemDocDto : appPremPreInspectionNcDocDtos) {
+                if(file.getName().equals(aItemDocDto.getNcItemId())){
+                    flag = saveFileByNcItemId(aItemDocDto.getFileRepoId(), file, auditTrailStr);
                 }
             }
         }
         return flag;
     }
 
-    private Boolean fileToDto(String toString, AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos) {
-        return true;
+    private boolean saveFileByNcItemId(String fileReportId, File file, String auditTrailStr) {
+        boolean flag = false;
+        if(file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File file2 : files) {
+                FileItem fileItem = null;
+                try {
+                    fileItem = new DiskFileItem("selectedFile", Files.probeContentType(file2.toPath()), false, file2.getName(), (int) file2.length(), file2.getParentFile());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    InputStream input = new FileInputStream(file2);
+                    OutputStream os = fileItem.getOutputStream();
+                    IOUtils.copy(input, os);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+                flag = fileRepoClient.saveFiles(multipartFile, auditTrailStr, fileReportId).hasErrors();
+            }
+        }
+        return flag;
+    }
+
+    private Boolean fileToDto(String toString, AuditTrailDto intranet) {
+        ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(toString, ApplicationListFileDto.class);
+        applicationListFileDto.setAuditTrailDto(intranet);
+        boolean saveFlag = applicationClient.saveInspecRecDate(applicationListFileDto).getStatusCode() == 200;
+        return saveFlag;
     }
 
     private void deleteFile(File file){

@@ -3,8 +3,10 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecSaveBeRecByService;
@@ -48,11 +50,15 @@ public class InspecSaveBeRecByFeBatchjob {
     public void inspecSaveBeRecByFePre(BaseProcessClass bpc){
         logAbout("inspecSaveBeRecByFePre");
         List<ProcessFileTrackDto> processFileTrackDtos = inspecSaveBeRecByService.getFileTypeAndStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION,
-                AppConsts.COMMON_STATUS_ACTIVE);
+                ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         inspecSaveBeRecByService.deleteUnZipFile();
-        inspecSaveBeRecByService.compressFile(processFileTrackDtos);
-        Boolean saveDataFlag = inspecSaveBeRecByService.saveData(intranet, processFileTrackDtos);
+        Boolean saveDataFlag = false;
+        if(!(IaisCommonUtils.isEmpty(processFileTrackDtos))) {
+            inspecSaveBeRecByService.compressFile(processFileTrackDtos);
+            saveDataFlag = inspecSaveBeRecByService.saveData(intranet, processFileTrackDtos);
+        }
+
     }
 
     private void logAbout(String methodName){
