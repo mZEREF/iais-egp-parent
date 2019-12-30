@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -16,26 +17,35 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppliGrpPremisesD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -53,9 +63,9 @@ import java.util.zip.ZipFile;
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
     @Value("${iais.syncFileTracking.shared.path}")
-    private    String sharedPath;
+    private     String sharedPath;
     private     String download;
-    private    String backups;
+    private     String backups;
     private     String fileFormat=".text";
     private     String compressPath;
 
@@ -63,9 +73,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private ApplicationClient applicationClient;
     @Autowired
     private SystemBeLicClient systemClient;
-    @Override
-    public void compress(){
+    @Autowired
+    private FileRepoClient fileRepoClient;
 
+    @Override
+    public void compress(List<ApplicationDto> listApplicationDto){
         if(new File(backups).isDirectory()){
             File[] files = new File(backups).listFiles();
             for(File fil:files){
@@ -76,8 +88,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     map.put("fileName",name);
                     map.put("filePath",path);
 
-                    Boolean aBoolean = systemClient.isFileExistence(map).getEntity();
-                    if(aBoolean){
+                    ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
+                    if(processFileTrackDto!=null){
                         ZipFile zipFile=null;
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
@@ -135,8 +147,18 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                  /*   if(fil.exists()&&aBoolean){
                         fil.delete();
                     }*/
+                    try {
+
+                       this.download(processFileTrackDto,listApplicationDto);
+                        //save success
+                    }catch (Exception e){
+                        //save bad
+
+                    continue;
+                    }
 
                 }
+
             }
 
         }
@@ -148,6 +170,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         List<ApplicationDto> byPathParam =   applicationClient. getApplicationDto().getEntity();
         return byPathParam;
+    }
+
+    @Override
+    public Boolean changeFeApplicationStatus() {
+
+
+
+        return null;
     }
 
     @Override
@@ -172,7 +202,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     @Override
-    public Boolean  download() {
+    public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto) {
         FileInputStream fileInputStream=null;
         Boolean flag=false;
         try {
@@ -191,15 +221,15 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             count= fileInputStream.read(size);
                         }
 
-                        Boolean aBoolean = fileToDto(by.toString());
+                        Boolean aBoolean = fileToDto(by.toString(), listApplicationDto);
                         flag=aBoolean;
-                        Boolean backups = backups(flag, filzz);
+                      /*  Boolean backups = backups(flag, filzz);*/
                         if(aBoolean){
-                            changeStatus();
+                            processFileTrackDto.setStatus("save_success");
+                            changeStatus(processFileTrackDto);
+                            saveFileRepo();
                         }
-                        if(backups&&filzz.exists()){
-                          /*  filzz.delete();*/
-                        }
+
                     }
                 }
             }
@@ -221,10 +251,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     /*************************/
-    private void changeStatus(){
-
+    /*
+    * to update fe data
+    * */
+    private void changeStatus( ProcessFileTrackDto processFileTrackDto){
       /*  applicationClient.updateStatus().getEntity();*/
 
+        systemClient.updateProcessFileTrack(processFileTrackDto);
     }
 
 
@@ -351,7 +384,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
          }
     }
 
-    private Boolean fileToDto(String str){
+    private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto){
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
@@ -407,7 +440,124 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         applicationListDto.setAuditTrailDto(intranet);
-       return applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
+        if(applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200){
+            List<ApplicationDto> applicationDtos = this.listApplication();
+            listApplicationDto.addAll(applicationDtos);
+        }
+
+        return applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
 
     }
+
+    /*
+    *
+    * save file to fileRepro*/
+    private void saveFileRepo(){
+        boolean aBoolean=false;
+        File file =new File(download+File.separator+"files");
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        if(file.isDirectory()){
+            File[] files = file.listFiles();
+            for(File f:files){
+                if(f.isFile()){
+                    try {
+                        StringBuilder fileName=new StringBuilder();
+                        String[] split = f.getName().split("@");
+                        for(int i=1;i<split.length;i++){
+                            fileName.append(split[i]);
+                        }
+                        FileItem fileItem = null;
+                        try {
+                            fileItem = new DiskFileItem("selectedFile", Files.probeContentType(f.toPath()),
+                                    false, fileName.toString(), (int) f.length(), f.getParentFile());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            InputStream input = new FileInputStream(f);
+                            OutputStream os = fileItem.getOutputStream();
+                            IOUtils.copy(input, os);
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+
+                        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
+                        FileRepoDto fileRepoDto = new FileRepoDto();
+                        fileRepoDto.setId(split[0]);
+                        fileRepoDto.setAuditTrailDto(intranet);
+                        fileRepoDto.setFileName(fileName.toString());
+                        fileRepoDto.setRelativePath(download);
+                        aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
+
+                        if(aBoolean){
+                            removeFilePath(f);
+                        }
+                    }catch (Exception e){
+                        continue;
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    /*
+    * copy file to other folder
+    * */
+    private void  removeFilePath(File file){
+        File f=new File(download);
+        if(!f.exists()){
+            f.mkdirs();
+        }
+        if(file.isFile()){
+            String path = file.getPath();
+            String name = file.getName();
+            FileInputStream fileInputStream=null;
+            FileOutputStream fileOutputStream=null;
+            try {
+                fileInputStream=new FileInputStream(file);
+                File newFile=new File(download+File.separator+name);
+               fileOutputStream=new FileOutputStream(newFile);
+                byte[] length=new byte[1024];
+                int count =0;
+                count=fileInputStream.read(length);
+                while(count!=-1){
+                    fileOutputStream.write(length,0,count);
+                    count=fileInputStream.read(length);
+                }
+
+            }  catch (IOException e) {
+                e.printStackTrace();
+            }
+            finally {
+                if(fileInputStream!=null){
+                    try {
+                        fileInputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            if(fileOutputStream!=null){
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            }
+
+        }
+        if(file.exists()){
+            file.delete();
+        }
+
+    }
+
 }

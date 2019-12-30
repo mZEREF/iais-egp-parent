@@ -27,7 +27,7 @@ import java.util.Map;
         fallback = SystemClientBeLicFallback.class)
 public interface SystemBeLicClient {
     @RequestMapping(path = "/file-existence",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Boolean> isFileExistence(@RequestBody Map<String,String> map);
+    FeignResponseEntity<ProcessFileTrackDto> isFileExistence(@RequestBody Map<String,String> map);
 
     @GetMapping(value = "/file-type-status/{processType}/{status}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)

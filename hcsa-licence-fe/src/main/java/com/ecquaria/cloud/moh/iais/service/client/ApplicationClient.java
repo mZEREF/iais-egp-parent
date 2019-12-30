@@ -43,7 +43,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<Map<String, Map<String, AppPremPreInspectionNcDocDto>>> recFileId();
 
     @PutMapping(path = "/iais-application/status")
-    FeignResponseEntity<Void> updateStatus();
+    FeignResponseEntity<Void> updateStatus(@RequestParam("status") String status);
 
     @PutMapping(path = "/iais-application", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)

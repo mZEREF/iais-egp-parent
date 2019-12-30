@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequ
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -618,6 +619,10 @@ public class NewApplicationDelegator {
             previewAndSubmitMap.put("document","UC_CHKLMD001_ERR001");
 
         }
+        if(!StringUtil.isEmpty(sB.toString())){
+            previewAndSubmitMap.put("serviceId",sB.toString());
+        }
+
         return previewAndSubmitMap;
     }
 
@@ -637,6 +642,8 @@ public class NewApplicationDelegator {
             doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.get(i).getAppSvcPrincipalOfficersDtoList();
             doPO(errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
+            List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.get(i).getAppSvcPersonnelDtoList();
+            doAppSvcPersonnelDtoList(errorMap,appSvcPersonnelDtoList,serviceId,sB);
 
         }
 
@@ -645,16 +652,102 @@ public class NewApplicationDelegator {
     }
 
     private void dolabory(Map map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
-        if(list==null){
+        if(list!=null&&list.isEmpty()){
 
         }
     }
 
+
+    private void doAppSvcPersonnelDtoList(Map map,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String serviceId, StringBuilder sB){
+        if(appSvcPersonnelDtos==null){
+
+            return;
+        }
+
+        boolean flag =false;
+        for(int i=0;i<appSvcPersonnelDtos.size();i++){
+            String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)){
+                String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if(StringUtil.isEmpty(name)){
+                    map.put("name"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+                if(StringUtil.isEmpty(profRegNo)){
+                    map.put("regnNo"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+            }
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                String designation = appSvcPersonnelDtos.get(i).getDesignation();
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                String qualification = appSvcPersonnelDtos.get(i).getQuaification();
+
+                if(StringUtil.isEmpty(name)){
+                    map.put("name"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+                if(StringUtil.isEmpty(designation)){
+                    map.put("designation"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+                if(StringUtil.isEmpty(wrkExpYear)){
+                    map.put("wrkExpYear"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }else {
+                    if(!wrkExpYear.matches("^[0-9]*$")){
+                        map.put("wrkExpYear"+i,"CHKLMD001_ERR003");
+                        flag=true;
+                    }
+                }
+                if(StringUtil.isEmpty(qualification)){
+                    map.put("qualification"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+            }
+
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
+                String quaification = appSvcPersonnelDtos.get(i).getQuaification();
+                if(StringUtil.isEmpty(name)){
+                    map.put("name"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+                if(StringUtil.isEmpty(wrkExpYear)){
+                    map.put("wrkExpYear"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+                else {
+                    if(!wrkExpYear.matches("^[0-9]*$")){
+                        map.put("wrkExpYear"+i,"CHKLMD001_ERR003");
+                        flag=true;
+                    }
+                }
+                if(StringUtil.isEmpty(quaification)){
+                    map.put("quaification"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+            }
+            if(ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)){
+                String name = appSvcPersonnelDtos.get(i).getName();
+                if(StringUtil.isEmpty(name)){
+                    map.put("name"+i,"UC_CHKLMD001_ERR001");
+                    flag=true;
+                }
+            }
+        if(flag){
+            sB.append(serviceId);
+        }
+        }
+
+    }
     private void doAppSvcCgoDto(Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
         if(list==null){
-            sB.append(serviceId);
-            map.put("cgo","UC_CHKLMD001_ERR001");
-            map.put("serviceId",sB.toString());
+
+
             return;
         }
         boolean flag =false;
@@ -691,7 +784,7 @@ public class NewApplicationDelegator {
             }
             if( flag ){
                 sB.append(serviceId);
-                map.put("serviceId",sB.toString());
+
             }
 
         }
@@ -707,7 +800,7 @@ public class NewApplicationDelegator {
     private void doPO(Map map ,List<AppSvcPrincipalOfficersDto> list,String serviceId,StringBuilder sB){
         if(list==null){
             sB.append(serviceId);
-
+            map.put("PO","UC_CHKLMD001_ERR001");
             return;
         }
         boolean flag=false;
@@ -717,7 +810,7 @@ public class NewApplicationDelegator {
             String modeOfMedAlert = list.get(i).getModeOfMedAlert();
             String psnType = list.get(i).getPsnType();
             String assignSelect = list.get(i).getAssignSelect();
-         /*   if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
+            if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
                 if(StringUtil.isEmpty(modeOfMedAlert)){
                     map.put("modeOfMedAlert"+i,"UC_CHKLMD001_ERR001");
                     flag=true;
@@ -728,7 +821,7 @@ public class NewApplicationDelegator {
                     map.put("assignSelect"+i,"UC_CHKLMD001_ERR001");
                     flag=true;
                 }
-            }*/
+            }
             if(StringUtil.isEmpty(emailAddr)){
                 map.put("POeamilAddr"+i,"UC_CHKLMD001_ERR001");
                 flag=true;
@@ -802,7 +895,7 @@ public class NewApplicationDelegator {
             }
             if(flag){
                 sB.append(serviceId);
-                map.put("serviceId", sB.toString());
+
             }
 
         }

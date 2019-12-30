@@ -15,6 +15,8 @@ import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +31,14 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class LicenceFileDownloadDelegator {
     @Autowired
     private TaskService taskService;
-
+    private  List<ApplicationDto> list=new ArrayList<>();
     @Autowired
     private BroadcastService broadcastService;
 
     @Autowired
     private LicenceFileDownloadService licenceFileDownloadService;
     public  void start (BaseProcessClass bpc){
-
+        list.clear();
         logAbout("start");
 
     }
@@ -45,15 +47,14 @@ public class LicenceFileDownloadDelegator {
          logAbout("preparetionData");
         licenceFileDownloadService.delete();
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
-        licenceFileDownloadService.compress();
-        Boolean download = licenceFileDownloadService.download();
-        if(download){
-            List<ApplicationDto> applicationDtos = licenceFileDownloadService.listApplication();
-            for(ApplicationDto applicationDto:applicationDtos){
+
+             licenceFileDownloadService.compress(list);
+
+            for(ApplicationDto applicationDto:list){
                 applicationDto.setAuditTrailDto(intranet);
-            }
+
             //event bus update the data
-            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos,HcsaConsts.ROUTING_STAGE_ASO,RoleConsts.USER_ROLE_ASO,intranet);
+            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(list,HcsaConsts.ROUTING_STAGE_ASO,RoleConsts.USER_ROLE_ASO,intranet);
             if(taskHistoryDto!=null){
                 BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
                 BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();

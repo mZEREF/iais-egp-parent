@@ -14,7 +14,7 @@ import java.util.Map;
  * @date 2019/11/28 10:28
  */
 public class SystemClientBeLicFallback {
-    FeignResponseEntity<Boolean> isFileExistence( Map<String,String> map){
+    FeignResponseEntity<ProcessFileTrackDto> isFileExistence( Map<String,String> map){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

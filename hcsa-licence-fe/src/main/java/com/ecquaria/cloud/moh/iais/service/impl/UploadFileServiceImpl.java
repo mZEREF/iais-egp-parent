@@ -136,7 +136,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public String  changeStatus() {
         if(flag){
-            applicationClient.updateStatus().getEntity();
+            applicationClient.updateStatus("SUCCESS_ZIP").getEntity();
         }
 
         return "";
@@ -157,7 +157,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         for(AppSvcDocDto every:appSvcDoc){
             FileOutputStream outputStream=null;
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file=new File(download+File.separator+every.getFileRepoId()+every.getDocName());
+            File file=new File(download+File.separator+"files"+File.separator+every.getFileRepoId()+"@"+every.getDocName());
             if(!file.exists()){
                 try {
                     file.createNewFile();
@@ -188,7 +188,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         for(AppGrpPrimaryDocDto every:appGrpPrimaryDoc){
 
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file=new File(download+File.separator+every.getFileRepoId()+ every.getDocName());
+            File file=new File(download+File.separator+"files"+every.getFileRepoId()+"@"+ every.getDocName());
            if(!file.exists()){
                try {
                    file.createNewFile();

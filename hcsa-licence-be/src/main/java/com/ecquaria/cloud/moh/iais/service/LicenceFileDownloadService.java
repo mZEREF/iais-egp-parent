@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 
 import java.util.List;
 
@@ -10,7 +11,9 @@ import java.util.List;
  */
 public interface LicenceFileDownloadService {
     void delete();
-    Boolean  download();
-    void compress();
+    Boolean  download(ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto);
+    void compress(List<ApplicationDto> list);
     List<ApplicationDto> listApplication();
+
+    Boolean changeFeApplicationStatus();
 }

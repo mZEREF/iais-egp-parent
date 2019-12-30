@@ -1084,7 +1084,7 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doServicePersonnel end ...."));
     }
 
-    private void doValidatetionServicePerson(Map <String,String> errorMap,List<AppSvcPersonnelDto> appSvcPersonnelDtos){
+    private static void doValidatetionServicePerson(Map <String,String> errorMap,List<AppSvcPersonnelDto> appSvcPersonnelDtos){
 
         for(int i=0;i<appSvcPersonnelDtos.size();i++){
             String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();

@@ -53,19 +53,34 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         entity.forEach((k, v) -> {
             licenceToRemove(v,JobRemindMsgTrackingDto);
             for(int i=0;i<v.size();i++){
+
                 String licenceNo = v.get(i).getLicenceNo();
-                isNoAuto(v.get(i));
+
+                boolean autoOrNon = isAutoOrNon(licenceNo);
+
+                if(!autoOrNon){
+
+                    isAuto(v.get(i));
+
+                }else {
+
+                    isNoAuto(v.get(i));
+
+                }
+
 
             }
         });
 
-        }
+    }
 
 
 
 
     /****************/
-
+/*
+* use organization id
+* */
     private OrganizationDto getOrganizationBy(String id){
 
         return  organizationClient.getOrganizationById(id).getEntity();
@@ -73,8 +88,11 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     }
 
 
-
-    private boolean isAutoOrNon(){
+    /*
+    * if true is auto
+    * else non auto
+    * */
+    private boolean isAutoOrNon(String licenceId){
 
 
         return false;
@@ -109,6 +127,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         String svcName = licenceDto.getSvcName();
 
+        OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOrganizationId());
+
         Date expiryDate = licenceDto.getExpiryDate();
 
         String id = licenceDto.getId();
@@ -130,24 +150,36 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     * */
     private void isAuto(LicenceDto licenceDto ){
         /*Name of Service*/
+
+        OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOrganizationId());
+
         String svcName = licenceDto.getSvcName();
         Date expiryDate = licenceDto.getExpiryDate();
+        String licenceNo = licenceDto.getLicenceNo();
+        String[] split = licenceNo.split("/");
 
         Double total=0.0;
         String id = licenceDto.getId();
-        List<String> list1 = useLicenceIdFindHciNameAndAddress(id);
 
-
+        List<String> useLicenceIdFindHciNameAndAddress = useLicenceIdFindHciNameAndAddress(id);
 
         Integer isMigrated = licenceDto.getIsMigrated();
         List<String> list=new ArrayList<>();
         List<LicenceFeeDto> licenceFeeDtos=new ArrayList<>();
         list.add(id);
         List<HcsaLicenceGroupFeeDto> entity = hcsaLicenClient.retrieveHcsaLicenceGroupFee(list).getEntity();
+
+        List<PremisesDto> premisesDtoList = hcsaLicenClient.getPremisess(id).getEntity();
+        List<String> premises=new ArrayList<>();
+        for(PremisesDto premisesDto:premisesDtoList){
+            premises.add(premisesDto.getPremisesType());
+        }
         LicenceFeeDto licenceFeeDto=new LicenceFeeDto();
         licenceFeeDto.setLicenceId(id);
         if(!entity.isEmpty()){
+
             for(HcsaLicenceGroupFeeDto every:entity){
+
                 double amount = every.getAmount();
                 int count = every.getCount();
                 Date expiryDate1 = every.getExpiryDate();
@@ -155,9 +187,11 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 licenceFeeDto.setOldAmount(amount);
                 licenceFeeDto.setRenewCount(count);
                 licenceFeeDto.setGroupId(groupId);
-                licenceDto.setExpiryDate(expiryDate1);
-                licenceDto.setIsGrpLic(isMigrated);
-
+                licenceFeeDto.setExpiryDate(expiryDate1);
+                licenceFeeDto.setServiceCode(split[2]);
+                licenceFeeDto.setServiceName(svcName);
+                licenceFeeDto.setBaseService(split[2]);
+                licenceFeeDto.setPremises(premises);
 
             }
             licenceFeeDtos.add(licenceFeeDto);
@@ -165,6 +199,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
              total = feeDto.getTotal();
 
         }
+
+        for(String every:useLicenceIdFindHciNameAndAddress){
+
+
+        }
+
 
     }
 
@@ -224,5 +264,4 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             }
         return nameAndAddress;
        }
-
 }
