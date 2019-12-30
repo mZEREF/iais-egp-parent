@@ -211,7 +211,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         } catch (FileNotFoundException e) {
             log.error(StringUtil.changeForLog("file not found"));
         }finally {
-            fos.close();
+            if(fos!= null){
+                fos.close();
+            }
         }
 
     }
