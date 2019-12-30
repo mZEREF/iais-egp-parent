@@ -88,9 +88,9 @@ public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	// 		PrepareErrorAck->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareErrorAck", this);
 	}
-	public void doErrorAck_OnStepProcess_0() throws Exception {
-	// 		doErrorAck->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doErrorAck", this);
+	public void doRequestInformationSubmit_OnStepProcess_0() throws Exception {
+	// 		doRequestInformationSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doRequestInformationSubmit", this);
 	}
 	
 
