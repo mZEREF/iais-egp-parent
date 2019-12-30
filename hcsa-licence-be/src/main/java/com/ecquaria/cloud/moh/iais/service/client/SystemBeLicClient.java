@@ -36,7 +36,7 @@ public interface SystemBeLicClient {
 
     @PutMapping(value = "/uprocessfiletrack", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ProcessFileTrackDto> updateApplication(@RequestBody ProcessFileTrackDto processFileTrackDto);
+    FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(@RequestBody ProcessFileTrackDto processFileTrackDto);
 
     @RequestMapping(path = "/hcl-code/{serviceCode}",method = RequestMethod.GET)
     FeignResponseEntity<String> hclCodeByCode(@PathVariable(name = "serviceCode") String code);
