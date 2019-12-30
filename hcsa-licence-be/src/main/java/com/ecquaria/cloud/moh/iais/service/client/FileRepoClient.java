@@ -24,8 +24,7 @@ public interface FileRepoClient {
     @RequestMapping(method = RequestMethod.POST, produces =  MediaType.APPLICATION_JSON_VALUE ,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     FeignResponseEntity<String> saveFiles(@RequestPart("selectedFile") MultipartFile file,
-                                          @RequestParam("audittrail") String auditTrailStr,
-                                          @RequestParam(value="respId", required = false) String respId);
+                                          @RequestParam("filerepoInfo") String fileRepoInfo);
     @GetMapping(value = "/{guid}")
     FeignResponseEntity<byte[]> getFileFormDataBase(@PathVariable(name = "guid") String guid);
 }
