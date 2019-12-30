@@ -95,4 +95,8 @@ public interface ApplicationClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> saveInspecRecDate(@RequestBody ApplicationListFileDto applicationListFileDto);
 
+    @GetMapping(value = "/iais-inspection/appdto/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationById(@PathVariable(name = "id") String id);
+
 }
