@@ -1,1 +1,1 @@
-<%@ include = "/iais/appointment/blkoutdate/BlackedOutCalendar.jsp" %>
+<%@include file = "/iais/appointment/blkoutdate/BlackedOutCalendar.jsp"%>

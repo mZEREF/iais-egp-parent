@@ -1,1 +1,1 @@
-<%@ include = "/iais/appointment/Acknowledge.jsp" %>
+<%@ include file = "/iais/appointment/Acknowledge.jsp" %>

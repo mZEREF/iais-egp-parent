@@ -181,7 +181,8 @@
             T1.GROUP_SHORT_NAME AS GROUP_SHORT_NAME,
             T1.START_DATE AS START_DATE,
             T1.END_DATE AS END_DATE,
-            T1.[DESC] as [DESC]
+            T1.[DESC] as [DESC],
+            T1.STATUS as STATUS
             from appt_blackout_date T1, appt_src_system T2
             where T1.SRC_SYSTEM_ID = T2.ID
             AND T1.STATUS = 'CMSTAT001'
