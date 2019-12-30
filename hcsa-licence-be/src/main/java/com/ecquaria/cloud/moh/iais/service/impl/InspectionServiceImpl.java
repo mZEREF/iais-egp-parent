@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListD
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -105,19 +106,19 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public String[] getApplicationNoListByPool(List<TaskDto> commPools) {
-        if(commPools == null || commPools.size() <= 0){
+        if(IaisCommonUtils.isEmpty(commPools)){
             return null;
         }
-        Set<String> applicationNoSet = new HashSet<>();
+        Set<String> appCorrIdSet = new HashSet<>();
         for(TaskDto tDto:commPools){
-            applicationNoSet.add(tDto.getRefNo());
+            appCorrIdSet.add(tDto.getRefNo());
         }
-        List<String> applicationNoList = new ArrayList<>(applicationNoSet);
-        String[] applicationStrs = new String[applicationNoList.size()];
-        for(int i = 0; i < applicationStrs.length; i++){
-            applicationStrs[i] = applicationNoList.get(i);
+        List<String> appCorrIdList = new ArrayList<>(appCorrIdSet);
+        String[] appCorrIdStrs = new String[appCorrIdList.size()];
+        for(int i = 0; i < appCorrIdStrs.length; i++){
+            appCorrIdStrs[i] = appCorrIdList.get(i);
         }
-        return applicationStrs;
+        return appCorrIdStrs;
     }
 
     @Override
@@ -129,7 +130,7 @@ public class InspectionServiceImpl implements InspectionService {
     @Transactional(rollbackFor = Exception.class)
     public void routingTaskByPool(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks) {
         TaskDto taskDto = getTaskDtoByPool(commPools, inspectionTaskPoolListDto);
-        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppNo(inspectionTaskPoolListDto.getApplicationNo());
+        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         //create history, update application, update/create inspection status
         assignTaskForInspectors(inspectionTaskPoolListDto, commPools, internalRemarks, applicationDto, taskDto, applicationViewDto);
@@ -185,7 +186,7 @@ public class InspectionServiceImpl implements InspectionService {
     @Override
     public List<SelectOption> getInspectorOptionByLogin(LoginContext loginContext, List<String> workGroupIds) {
         List<SelectOption> inspectorOption = new ArrayList<>();
-        if(workGroupIds == null || workGroupIds.size() <= 0){
+        if(IaisCommonUtils.isEmpty(workGroupIds)){
             return null;
         }
         List<String> userIdList = new ArrayList<>();
@@ -194,14 +195,14 @@ public class InspectionServiceImpl implements InspectionService {
             userIdList = getUserIdList(orgUserDtoList, userIdList);
         }
         List<OrgUserDto> orgUserDtos = new ArrayList<>();
-        if(userIdList != null && !(userIdList.isEmpty())){
+        if(IaisCommonUtils.isEmpty(userIdList)){
             orgUserDtos = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
         }
         if(orgUserDtos != null && !(orgUserDtos.isEmpty())){
             for(OrgUserDto oDto:orgUserDtos){
                 List<TaskDto> taskDtoList = organizationClient.getTasksByUserId(oDto.getId()).getEntity();
                 String value = AppConsts.NO;
-                if(taskDtoList != null && taskDtoList.size() > 0){
+                if(IaisCommonUtils.isEmpty(taskDtoList)){
                     value = getOptionValue(taskDtoList);
                 }
                 SelectOption so = new SelectOption(value, oDto.getDisplayName());
@@ -215,7 +216,7 @@ public class InspectionServiceImpl implements InspectionService {
     private String getOptionValue(List<TaskDto> taskDtoList) {
         String value = taskDtoList.get(0).getRefNo();
         taskDtoList.remove(0);
-        if(taskDtoList != null && taskDtoList.size() > 0) {
+        if(IaisCommonUtils.isEmpty(taskDtoList)) {
             for (TaskDto tDto : taskDtoList) {
                 value = value + "," + tDto.getRefNo();
             }
@@ -339,12 +340,12 @@ public class InspectionServiceImpl implements InspectionService {
     @Override
     public SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools, LoginContext loginContext) {
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = new ArrayList<>();
-        if(commPools == null || commPools.size() <= 0){
+        if(IaisCommonUtils.isEmpty(commPools)){
             return null;
         }
         for(TaskDto tDto:commPools){
             InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
-            inspectionTaskPoolListDto.setApplicationNo(tDto.getRefNo());
+            inspectionTaskPoolListDto.setAppCorrelationId(tDto.getRefNo());
             inspectionTaskPoolListDto.setTaskId(tDto.getId());
             if(StringUtil.isEmpty(tDto.getUserId())){
                 inspectionTaskPoolListDto.setInspectorName("");
@@ -378,6 +379,7 @@ public class InspectionServiceImpl implements InspectionService {
                     HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(iDto.getServiceId());
                     itplDto.setServiceName(hcsaServiceDto.getSvcName());
                     itplDto.setApplicationStatus(iDto.getApplicationStatus());
+                    itplDto.setApplicationNo(iDto.getApplicationNo());
                     itplDto.setApplicationType(iDto.getApplicationType());
                     itplDto.setHciCode(iDto.getHciCode());
                     AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(iDto.getId());

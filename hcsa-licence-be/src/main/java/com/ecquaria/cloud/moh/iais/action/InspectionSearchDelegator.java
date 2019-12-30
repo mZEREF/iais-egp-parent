@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -150,26 +151,26 @@ public class InspectionSearchDelegator {
         String inspectorValue = ParamUtil.getMaskedString(bpc.request, "inspector_name");
 
         List<TaskDto> commPools = getCommPoolByGroupWordId(workGroupIds);
-        String[] applicationNo_list = inspectionService.getApplicationNoListByPool(commPools);
-        if(applicationNo_list == null || applicationNo_list.length == 0){
-            applicationNo_list = new String[]{SystemParameterConstants.PARAM_FALSE};
+        String[] appCorrId_list = inspectionService.getApplicationNoListByPool(commPools);
+        if(appCorrId_list == null || appCorrId_list.length == 0){
+            appCorrId_list = new String[]{SystemParameterConstants.PARAM_FALSE};
         }
-        String applicationStr = SqlHelper.constructInCondition("T1.APPLICATION_NO",applicationNo_list.length);
-        searchParam.addParam("applicationNo_list", applicationStr);
-        for (int i = 0; i<applicationNo_list.length; i++ ) {
-            searchParam.addFilter("T1.APPLICATION_NO"+i, applicationNo_list[i]);
+        String applicationStr = SqlHelper.constructInCondition("T1.ID", appCorrId_list.length);
+        searchParam.addParam("appCorrId_list", applicationStr);
+        for (int i = 0; i < appCorrId_list.length; i++ ) {
+            searchParam.addFilter("T1.ID" + i, appCorrId_list[i]);
         }
 
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no", application_no,true);
         }
-        String[] appNoStrs;
+        String[] appCorIdStrs;
         if(!(StringUtil.isEmpty(inspectorValue))) {
-            appNoStrs = inspectorValue.split(",");
-            String appNoStr = SqlHelper.constructInCondition("T5.APPLICATION_NO", appNoStrs.length);
-            searchParam.addParam("appNo_list",appNoStr);
-            for (int i = 0; i < appNoStrs.length; i++) {
-                searchParam.addFilter("T5.APPLICATION_NO"+i, appNoStrs[i]);
+            appCorIdStrs = inspectorValue.split(",");
+            String appNoStr = SqlHelper.constructInCondition("T5.ID", appCorIdStrs.length);
+            searchParam.addParam("appCorId_list", appNoStr);
+            for (int i = 0; i < appCorIdStrs.length; i++) {
+                searchParam.addFilter("T5.ID" + i, appCorIdStrs[i]);
             }
         }
         if(!StringUtil.isEmpty(application_type)){
@@ -199,7 +200,7 @@ public class InspectionSearchDelegator {
 
     private List<TaskDto> getCommPoolByGroupWordId(List<String> workGroupIds) {
         List<TaskDto> taskDtoList = new ArrayList<>();
-        if(workGroupIds == null || workGroupIds.size() <= 0){
+        if(IaisCommonUtils.isEmpty(workGroupIds)){
             return null;
         }
         for(String workGrpId:workGroupIds){
@@ -308,7 +309,7 @@ public class InspectionSearchDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
-                ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+                ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
             }
         }else{
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
