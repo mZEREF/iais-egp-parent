@@ -11,4 +11,4 @@
     String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
-<%@ include file="mainContent.jsp" %>
+<%@ include file="common/mainContent.jsp" %>

@@ -17,5 +17,5 @@
 %>
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-
+  <%@ include file="../common/mainContent.jsp" %>
 </>
