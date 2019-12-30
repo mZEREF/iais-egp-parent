@@ -80,7 +80,7 @@
                 JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
                 JOIN (SELECT COUNT(ID) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T5 ON t4.ID = T5.app_grp_id
                 WHERE 1 = 1
-                <#if applicationNo_list??> and ${applicationNo_list} </#if>
+                <#if remises_corr_id_in??> and CONVERT(NVARCHAR(36), T2.ID) IN ${remises_corr_id_in} </#if>
                 <#if application_no??> and T1.APPLICATION_NO = :application_no</#if>
                 <#if application_type??> and T1.APP_TYPE = :application_type</#if>
                 <#if hci_code??> and charindex(:hci_code, T3.HCI_CODE) >0 </#if>
@@ -104,7 +104,7 @@
                 JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
                 JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
                 WHERE 1 = 1
-                <#if applicationNo_list??> and ${applicationNo_list} </#if>
+                <#if remises_corr_id_in??> and CONVERT(NVARCHAR(36), T2.ID) IN ${remises_corr_id_in} </#if>
                 <#if groupNo??> and T4.GROUP_NO = :groupNo</#if>
                 <#if application_type??> and T1.APP_TYPE = :application_type</#if>
                 <#if hci_code??> and charindex(:hci_code, T3.HCI_CODE) >0 </#if>
