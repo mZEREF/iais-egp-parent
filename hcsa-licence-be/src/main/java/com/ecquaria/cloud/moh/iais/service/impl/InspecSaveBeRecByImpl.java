@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -160,7 +161,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                     String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
                     for(File file2:files){
                         if(file2.getName().equals(fileName)){
-                            saveFlag = saveDataDtoAndFile(file2, intranet, aBoolean, textJson, fileBoolean, auditTrailStr);
+                            saveFlag = saveDataDtoAndFile(file2, intranet, aBoolean, textJson,
+                                    fileBoolean);
                         }
                     }
 
@@ -173,7 +175,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     private boolean saveDataDtoAndFile(File file2, AuditTrailDto intranet, Boolean aBoolean, List<String> textJson,
-                                       Boolean fileBoolean, String auditTrailStr) {
+                                       Boolean fileBoolean) {
         boolean saveFlag = false;
         try {
             if(file2.isDirectory()){
@@ -195,7 +197,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 for(File file3:files2){
                     if(file3.isDirectory()) {
                         for(String s:textJson) {
-                            fileBoolean = saveUploadFile(s, file3, auditTrailStr);
+                            fileBoolean = saveUploadFile(s, file3, intranet);
                         }
                     }
                 }
@@ -210,28 +212,29 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         return saveFlag;
     }
 
-    private boolean saveUploadFile(String toString, File file, String auditTrailStr) {
+    private boolean saveUploadFile(String toString, File file, AuditTrailDto intranet) {
         ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(toString, ApplicationListFileDto.class);
         boolean flag = false;
         List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos = applicationListFileDto.getAppPremPreInspectionNcDocDtos();
         if(!(IaisCommonUtils.isEmpty(appPremPreInspectionNcDocDtos))) {
             for (AppPremPreInspectionNcDocDto aItemDocDto : appPremPreInspectionNcDocDtos) {
                 if(file.getName().equals(aItemDocDto.getNcItemId())){
-                    flag = saveFileByNcItemId(aItemDocDto.getFileRepoId(), file, auditTrailStr);
+                    flag = saveFileByNcItemId(aItemDocDto.getFileRepoId(), file, intranet);
                 }
             }
         }
         return flag;
     }
 
-    private boolean saveFileByNcItemId(String fileReportId, File file, String auditTrailStr) {
+    private boolean saveFileByNcItemId(String fileReportId, File file, AuditTrailDto intranet) {
         boolean flag = false;
         if(file.isDirectory()) {
             File[] files = file.listFiles();
             for (File file2 : files) {
                 FileItem fileItem = null;
                 try {
-                    fileItem = new DiskFileItem("selectedFile", Files.probeContentType(file2.toPath()), false, file2.getName(), (int) file2.length(), file2.getParentFile());
+                    fileItem = new DiskFileItem("selectedFile", Files.probeContentType(file2.toPath()),
+                            false, file2.getName(), (int) file2.length(), file2.getParentFile());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -243,7 +246,12 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                     ex.printStackTrace();
                 }
                 MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
-                flag = fileRepoClient.saveFiles(multipartFile, auditTrailStr, fileReportId).hasErrors();
+                FileRepoDto fileRepoDto = new FileRepoDto();
+                fileRepoDto.setId(fileReportId);
+                fileRepoDto.setAuditTrailDto(intranet);
+                fileRepoDto.setFileName(file.getName());
+                fileRepoDto.setRelativePath(download);
+                flag = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
             }
         }
         return flag;
