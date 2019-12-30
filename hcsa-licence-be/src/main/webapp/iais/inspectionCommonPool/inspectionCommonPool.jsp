@@ -19,7 +19,7 @@
 <form method="post" id="mainPoolForm" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
   <input type="hidden" name="inspectionPoolType" value="">
-  <input type="hidden" id="applicationNo" name="applicationNo" value="">
+  <input type="hidden" id="appCorrelationId" name="appCorrelationId" value="">
   <br>
   <br>
   <br>
@@ -122,8 +122,8 @@
                         <td><iais:code code="${pool.applicationType}"/></td>
                         <td><c:out value="${pool.hciCode}"/></td>
                         <td><c:out value="${pool.hciName}"/></td>
-                        <td><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></td>
-                        <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectionCommonPoolAssign('<iais:mask name="applicationNo" value="${pool.applicationNo}"/>');">Assign</button></td>
+                        <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
+                        <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectionCommonPoolAssign('<iais:mask name="appCorrelationId" value="${pool.id}"/>');">Assign</button></td>
                       </tr>
                     </c:forEach>
                   </c:otherwise>
@@ -139,8 +139,8 @@
 </div>
 <script type="text/javascript">
 
-    function doInspectionCommonPoolAssign(applicationNo) {
-        $("#applicationNo").val(applicationNo);
+    function doInspectionCommonPoolAssign(appCorrelationId) {
+        $("#appCorrelationId").val(appCorrelationId);
         inspectionCommonPoolSubmit('assign');
     }
 
