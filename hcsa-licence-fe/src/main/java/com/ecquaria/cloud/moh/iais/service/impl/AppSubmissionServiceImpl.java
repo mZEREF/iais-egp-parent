@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
@@ -73,11 +74,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public AppSubmissionDto submitRequestInformation(AppSubmissionDto appSubmissionDto, Process process) {
-        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+    public AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process) {
+        appSubmissionRequestInformationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         //asynchronous save the other data.
-        informationEventBus(appSubmissionDto, process);
-        return appSubmissionDto;
+        informationEventBus(appSubmissionRequestInformationDto, process);
+        return appSubmissionRequestInformationDto.getAppSubmissionDto();
     }
 
     @Override
@@ -190,9 +191,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
        return result;
    }
 
-   private void  informationEventBus(AppSubmissionDto appSubmissionDto, Process process){
+   private void  informationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process){
        //prepare request parameters
-       appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
+       appSubmissionRequestInformationDto.setEventRefNo(EventBusHelper.getEventRefNo());
        String callBackUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
        String sopUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication";
        String project ="hcsaApplicationFe";
@@ -206,7 +207,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                    +process.getHttpRequest().getContextPath()
                    +"/eservice/INTRANET/LicenceEventBusCallBack";
        }
-       SubmitReq req = EventBusHelper.getSubmitReq(appSubmissionDto, generateIdClient.getSeqId().getEntity(),
+       SubmitReq req = EventBusHelper.getSubmitReq(appSubmissionRequestInformationDto, generateIdClient.getSeqId().getEntity(),
                EventBusConsts.SERVICE_NAME_APPSUBMIT,
                EventBusConsts.OPERATION_REQUEST_INFORMATION,
                sopUrl, callBackUrl, "sop",false,project,processName,step);

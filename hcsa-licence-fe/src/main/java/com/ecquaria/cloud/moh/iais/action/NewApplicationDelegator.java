@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
@@ -51,6 +52,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -68,6 +70,7 @@ public class NewApplicationDelegator {
     public static final String CURRENTSVCCODE = "currentSvcCode";
     private static final String PREMISESTYPE = "premisesType";
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
+    public static final String OLDAPPSUBMISSIONDTO = "oldAppSubmissionDto";
     public static final String COMMONHCSASVCDOCCONFIGDTO = "commonHcsaSvcDocConfigDto";
     public static final String PREMHCSASVCDOCCONFIGDTO = "premHcsaSvcDocConfigDto";
     public static final String RELOADAPPGRPPRIMARYDOCMAP = "reloadAppGrpPrimaryDocMap";
@@ -90,7 +93,7 @@ public class NewApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void doStart(BaseProcessClass bpc) {
+    public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
@@ -528,8 +531,12 @@ public class NewApplicationDelegator {
     public void doRequestInformationSubmit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionDto, bpc.process);
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
+        AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
+        appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
+        appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
+        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
+       // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
     }
 
@@ -816,9 +823,15 @@ public class NewApplicationDelegator {
         if (StringUtil.isEmpty(crudActionValue)) {
             crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         }
-        if ("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue)
-                || "doSubmit".equals(crudActionValue)) {
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
+        if ("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue)) {
             switch2 = crudActionValue;
+        }else if("doSubmit".equals(crudActionValue)){
+             if(requestInformationConfig == null){
+                 switch2 = crudActionValue;
+             }else{
+                 switch2 = "information";
+             }
         }
         ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
         log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));
@@ -1080,12 +1093,14 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
 
-    private void requestForInformationLoading(BaseProcessClass bpc) {
+    private void requestForInformationLoading(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         String appNo = ParamUtil.getString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,"test");
         }
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
