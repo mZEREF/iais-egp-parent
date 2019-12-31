@@ -6,8 +6,8 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
  *description:
  */
 
+import com.ecquaria.cloud.moh.iais.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.excel.annotation.ExcelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -83,20 +83,19 @@ public final class ExcelReader {
         }
     }
 
-    private static <T> T setField(Class<T> clazz, List<String> rowDatas) {
+    public static <T> T setField(Class<T> clazz, List<String> rowDatas) {
         try {
             T obj = clazz.newInstance();
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
-                ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-                if (excelProperty != null){
+                if (field.isAnnotationPresent(ExcelProperty.class)){
+                    ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
                     int index = excelProperty.index();
                     String format = excelProperty.format();
                     Object value = getFieldValue(field, rowDatas.get(index), format);
                     field.setAccessible(true);
                     field.set(obj, value);
                 }
-
             }
             return obj;
         } catch (InstantiationException | IllegalAccessException e) {
