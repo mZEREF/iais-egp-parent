@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
-import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
+import com.ecquaria.cloud.moh.iais.annotation.ExcelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
