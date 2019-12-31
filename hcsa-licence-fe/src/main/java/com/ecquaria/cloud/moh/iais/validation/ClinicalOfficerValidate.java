@@ -61,9 +61,9 @@ public class ClinicalOfficerValidate implements CustomizeValidator {
                 if(StringUtil.isEmpty(professionRegoNo)){
                     map.put("professionRegoNo"+i,"cannot be blank ");
                 }
-                String professionRegoType = appSvcCgoList.get(i).getProfessionRegoType();
-                if(StringUtil.isEmpty(professionRegoType)){
-                    map.put("professionRegoType"+i,"select one ");
+                String professionType = appSvcCgoList.get(i).getProfessionType();
+                if(StringUtil.isEmpty(professionType)){
+                    map.put("professionType"+i,"select one ");
                 }
                 String speciality = appSvcCgoList.get(i).getSpeciality();
                 if(StringUtil.isEmpty(speciality)){
