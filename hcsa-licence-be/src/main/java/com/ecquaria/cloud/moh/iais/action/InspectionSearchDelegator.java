@@ -248,7 +248,6 @@ public class InspectionSearchDelegator {
         List<TaskDto> commPools =(List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         QueryHelp.setMainSql("inspectionQuery", "assignInspectorSupper",searchParam);
-        String json = JsonUtil.parseToJson(searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
         SearchResult<InspectionTaskPoolListDto> searchResult2 = inspectionService.getOtherDataForSr(searchResult, commPools, loginContext);
         if(!(loginContext.getCurRoleId().equals(RoleConsts.USER_ROLE_INSPECTION_LEAD))){
