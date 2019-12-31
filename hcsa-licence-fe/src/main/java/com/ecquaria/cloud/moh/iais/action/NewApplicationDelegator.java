@@ -1611,9 +1611,8 @@ public class NewApplicationDelegator {
         String [] unitNo = ParamUtil.getStrings(request, "unitNo");
         String [] buildingName = ParamUtil.getStrings(request, "buildingName");
         String [] siteAddressType = ParamUtil.getStrings(request, "siteAddressType");
-        String [] siteSafefyNo = ParamUtil.getStrings(request, "siteSafefyNo");
         String [] offTelNo= ParamUtil.getStrings(request,"offTelNo");
-        String [] scdfRefNo = ParamUtil.getStrings(request, "siteSafefyNo");
+        String [] scdfRefNo = ParamUtil.getStrings(request, "scdfRefNo");
         String [] onsiteStartHH = ParamUtil.getStrings(request, "onsiteStartHH");
         String [] onsiteStartMM = ParamUtil.getStrings(request, "onsiteStartMM");
         String [] fireSafetyCertIssuedDateStr  = ParamUtil.getStrings(request, "fireSafetyCertIssuedDate");
@@ -1644,10 +1643,9 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setFloorNo(floorNo[i]);
                 appGrpPremisesDto.setUnitNo(unitNo[i]);
                 appGrpPremisesDto.setBuildingName(buildingName[i]);
-                appGrpPremisesDto.setSiteSafefyNo(siteSafefyNo[i]);
+                appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
                 appGrpPremisesDto.setAddrType(siteAddressType[i]);
                 appGrpPremisesDto.setOffTelNo(offTelNo[i]);
-                appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
                 Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], "dd/mm/yyyy");
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){

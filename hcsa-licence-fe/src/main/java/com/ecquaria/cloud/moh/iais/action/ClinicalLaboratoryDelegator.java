@@ -1248,7 +1248,7 @@ public class ClinicalLaboratoryDelegator {
         String[] idType = ParamUtil.getStrings(request, "idType");
         String[] idNo = ParamUtil.getStrings(request, "idNo");
         String[] designation = ParamUtil.getStrings(request, "designation");
-        String[] professionType = ParamUtil.getStrings(request, "professionRegoType");
+        String[] professionType = ParamUtil.getStrings(request, "professionType");
         String[] professionRegoNo = ParamUtil.getStrings(request, "professionRegoNo");
         String[] specialty = ParamUtil.getStrings(request, "specialty");
         String[] specialtyOther = ParamUtil.getStrings(request, "specialtyOther");
