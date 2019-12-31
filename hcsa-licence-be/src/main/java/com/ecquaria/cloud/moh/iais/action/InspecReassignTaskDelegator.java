@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -19,7 +18,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -162,16 +167,16 @@ public class InspecReassignTaskDelegator {
 
         List<TaskDto> ReassignPools = getReassignPoolByGroupWordId(workGroupIds);
 
-        String[] applicationNo_list = inspectionService.getApplicationNoListByPool(ReassignPools);
-        if (applicationNo_list == null || applicationNo_list.length == 0) {
-            applicationNo_list = new String[]{SystemParameterConstants.PARAM_FALSE};
+        List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(ReassignPools);
+        StringBuilder sb = new StringBuilder("(");
+        for(int i = 0; i < appCorrId_list.size(); i++){
+            sb.append(":appCorrId" + i).append(",");
         }
-        String applicationStr = SqlHelper.constructInCondition("T1.APPLICATION_NO", applicationNo_list.length);
-        searchParam.addParam("applicationNo_list", applicationStr);
-        for (int i = 0; i < applicationNo_list.length; i++) {
-            searchParam.addFilter("T1.APPLICATION_NO" + i, applicationNo_list[i]);
+        String inSql = sb.substring(0, sb.length() - 1) + ")";
+        searchParam.addParam("appCorrId_list", inSql);
+        for(int i = 0; i < appCorrId_list.size(); i++){
+            searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
         }
-
         if (!StringUtil.isEmpty(application_no)) {
             searchParam.addFilter("application_no", application_no, true);
         }

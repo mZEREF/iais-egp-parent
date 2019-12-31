@@ -53,7 +53,7 @@ public interface InspectionService {
      * @return: String[]
      * @Descripation: get Application No By InspectionTaskPoolListDto
      */
-    String[] getApplicationNoListByPool(List<TaskDto> commPools);
+    List<String> getApplicationNoListByPool(List<TaskDto> commPools);
 
     /**
      * @author: shicheng

@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -151,16 +150,16 @@ public class InspectionSearchDelegator {
         String inspectorValue = ParamUtil.getMaskedString(bpc.request, "inspector_name");
 
         List<TaskDto> commPools = getCommPoolByGroupWordId(workGroupIds);
-        String[] appCorrId_list = inspectionService.getApplicationNoListByPool(commPools);
-        if(appCorrId_list == null || appCorrId_list.length == 0){
-            appCorrId_list = new String[]{SystemParameterConstants.PARAM_FALSE};
+        List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(commPools);
+        StringBuilder sb = new StringBuilder("(");
+        for(int i = 0; i < appCorrId_list.size(); i++){
+            sb.append(":appCorrId" + i).append(",");
         }
-        String applicationStr = SqlHelper.constructInCondition("T1.ID", appCorrId_list.length);
-        searchParam.addParam("appCorrId_list", applicationStr);
-        for (int i = 0; i < appCorrId_list.length; i++ ) {
-            searchParam.addFilter("T1.ID" + i, appCorrId_list[i]);
+        String inSql = sb.substring(0, sb.length() - 1) + ")";
+        searchParam.addParam("appCorrId_list", inSql);
+        for(int i = 0; i < appCorrId_list.size(); i++){
+            searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
         }
-
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no", application_no,true);
         }
