@@ -151,6 +151,7 @@ public class TaskServiceImpl implements TaskService {
                     int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             stageId,applicationDto.getApplicationType());
                     List<String> appPremisesCorrelationIds = getAppPremisesCorrelationId(appPremisesCorrelationDtos,applicationDto.getId());
+                    log.info("-----------"+appPremisesCorrelationIds+"---------------");
                     if(!IaisCommonUtils.isEmpty(appPremisesCorrelationIds)){
                         for (String id :appPremisesCorrelationIds ){
                             TaskDto taskDto = TaskUtil.getUserTaskDto(stageId,
