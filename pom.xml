@@ -22,7 +22,7 @@
         <org.codehaus.mojo.version>1.4</org.codehaus.mojo.version>
         <spring.boot.version>1.5.13.RELEASE</spring.boot.version>
         <biz.paluch.maven.configurator.version>1.0.1</biz.paluch.maven.configurator.version>
-        <jacoco.version>0.8.4</jacoco.version>
+        <jacoco.version>0.8.5</jacoco.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <jacoco.out.ut.file>jacoco-ut.exec</jacoco.out.ut.file>
