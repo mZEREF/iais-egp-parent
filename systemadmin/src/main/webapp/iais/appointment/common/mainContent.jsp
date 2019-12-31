@@ -6,6 +6,7 @@
 
 <script src='/system-admin-web/iais/appointment/fullcalendar/core/main.js'></script>
 <script src='/system-admin-web/iais/appointment/fullcalendar/interaction/main.js'></script>
+<script src='/system-admin-web/iais/appointment/fullcalendar/calendar/fullcalendar.min.js'></script>
 <script src='/system-admin-web/iais/appointment/fullcalendar/daygrid/main.js'></script>
 <script src='/system-admin-web/iais/appointment/fullcalendar/timegrid/main.js'></script>
 <script src='/system-admin-web/iais/appointment/fullcalendar/list/main.js'></script>
