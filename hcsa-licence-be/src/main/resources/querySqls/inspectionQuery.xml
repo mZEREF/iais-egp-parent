@@ -41,7 +41,7 @@
             ) T5
             WHERE 1 = 1
             <#if application_no??> and T5.APPLICATION_NO = :application_no</#if>
-            <#if appCorId_list??> and ${appCorId_list} </#if>
+            <#if appCorId_list??> and CONVERT(NVARCHAR(36), T5.ID) IN ${appCorId_list} </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and T5.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
