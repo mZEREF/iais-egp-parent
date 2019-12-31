@@ -1201,7 +1201,7 @@ public class ClinicalLaboratoryDelegator {
         //Professional Regn Type
         List<SelectOption> proRegnTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSIONAL_TYPE);
         Map<String,String> proRegnTypeAttr = new HashMap<>();
-        proRegnTypeAttr.put("name", "professionRegoType");
+        proRegnTypeAttr.put("name", "professionType");
         proRegnTypeAttr.put("style", "display: none;");
         String proRegnTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(proRegnTypeAttr, proRegnTypeList, NewApplicationDelegator.FIRESTOPTION);
 
