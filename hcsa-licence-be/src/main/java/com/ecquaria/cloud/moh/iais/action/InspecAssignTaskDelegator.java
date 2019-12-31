@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -323,6 +324,7 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorQuery2 start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         QueryHelp.setMainSql("inspectionQuery", "assignInspector",searchParam);
+        String json = JsonUtil.parseToJson(searchParam);
         SearchResult<InspectionCommonPoolQueryDto> searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
         searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
