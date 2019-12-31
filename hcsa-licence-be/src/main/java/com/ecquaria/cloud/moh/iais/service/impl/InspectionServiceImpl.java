@@ -372,7 +372,7 @@ public class InspectionServiceImpl implements InspectionService {
     private List<InspectionTaskPoolListDto> inputOtherData(List<InspectionSubPoolQueryDto> rows, List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList, OrgUserDto orgUserDto) {
         for(InspectionSubPoolQueryDto iDto: rows){
             for(InspectionTaskPoolListDto itplDto:inspectionTaskPoolListDtoList){
-                if((iDto.getApplicationNo()).equals(itplDto.getApplicationNo())){
+                if((iDto.getId()).equals(itplDto.getAppCorrelationId())){
                     itplDto.setServiceId(iDto.getServiceId());
                     HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(iDto.getServiceId());
                     itplDto.setServiceName(hcsaServiceDto.getSvcName());
@@ -380,7 +380,7 @@ public class InspectionServiceImpl implements InspectionService {
                     itplDto.setApplicationNo(iDto.getApplicationNo());
                     itplDto.setApplicationType(iDto.getApplicationType());
                     itplDto.setHciCode(iDto.getHciCode());
-                    AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(iDto.getId());
+                    AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(iDto.getApplicationId());
                     itplDto.setHciName(iDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
                     itplDto.setSubmitDt(iDto.getSubmitDt());
                     itplDto.setApplicationType(iDto.getApplicationType());

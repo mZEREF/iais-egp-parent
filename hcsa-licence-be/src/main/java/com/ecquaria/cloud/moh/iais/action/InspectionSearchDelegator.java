@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import lombok.extern.slf4j.Slf4j;
@@ -166,10 +165,14 @@ public class InspectionSearchDelegator {
         String[] appCorIdStrs;
         if(!(StringUtil.isEmpty(inspectorValue))) {
             appCorIdStrs = inspectorValue.split(",");
-            String appNoStr = SqlHelper.constructInCondition("T5.ID", appCorIdStrs.length);
-            searchParam.addParam("appCorId_list", appNoStr);
-            for (int i = 0; i < appCorIdStrs.length; i++) {
-                searchParam.addFilter("T5.ID" + i, appCorIdStrs[i]);
+            StringBuilder sb2 = new StringBuilder("(");
+            for(int i = 0; i < appCorIdStrs.length; i++){
+                sb.append(":appCorId" + i).append(",");
+            }
+            String inSql2 = sb.substring(0, sb2.length() - 1) + ")";
+            searchParam.addParam("appCorId_list", inSql2);
+            for(int i = 0; i < appCorIdStrs.length; i++){
+                searchParam.addFilter("appCorId" + i, appCorIdStrs[i]);
             }
         }
         if(!StringUtil.isEmpty(application_type)){

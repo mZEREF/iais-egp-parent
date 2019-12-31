@@ -143,19 +143,21 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                 }
                             }
                         }
+
+                        try {
+
+                            this.download(processFileTrackDto,listApplicationDto);
+                            //save success
+                        }catch (Exception e){
+                            //save bad
+
+                            continue;
+                        }
                     }
                  /*   if(fil.exists()&&aBoolean){
                         fil.delete();
                     }*/
-                    try {
 
-                       this.download(processFileTrackDto,listApplicationDto);
-                        //save success
-                    }catch (Exception e){
-                        //save bad
-
-                    continue;
-                    }
 
                 }
 
@@ -225,9 +227,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         flag=aBoolean;
                       /*  Boolean backups = backups(flag, filzz);*/
                         if(aBoolean){
-                            processFileTrackDto.setStatus("save_success");
-                            changeStatus(processFileTrackDto);
-                            saveFileRepo();
+                            if(processFileTrackDto!=null){
+                                processFileTrackDto.setStatus("save_success");
+                                changeStatus(processFileTrackDto);
+                                saveFileRepo();
+                            }
                         }
 
                     }
