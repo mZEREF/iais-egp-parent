@@ -16,12 +16,15 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.ecquaria.cloud.pwd.util.PasswordConfig;
+import com.ecquaria.cloud.pwd.util.PasswordConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xhtmlrenderer.util.XMLUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.crypto.Cipher;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,19 +66,19 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request,"orgUserDto",null);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery",searchParam);
-//        SearchResult searchResult = intranetUserService.doQuery(searchParam);
-//        if(!StringUtil.isEmpty(searchResult)){
-//            ParamUtil.setSessionAttr(request,IntranetUserConstant.SEARCH_PARAM, searchParam);
-//            ParamUtil.setRequestAttr(request,IntranetUserConstant.SEARCH_RESULT, searchResult);
-//            ParamUtil.setRequestAttr(request,"pageCount", searchResult.getPageCount(searchParam.getPageSize()));
-//        }
+        SearchResult searchResult = intranetUserService.doQuery(searchParam);
+        if(!StringUtil.isEmpty(searchResult)){
+            ParamUtil.setSessionAttr(request,IntranetUserConstant.SEARCH_PARAM, searchParam);
+            ParamUtil.setRequestAttr(request,IntranetUserConstant.SEARCH_RESULT, searchResult);
+            ParamUtil.setRequestAttr(request,"pageCount", searchResult.getPageCount(searchParam.getPageSize()));
+        }
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
 
     }
 
-    public void prepareCreate(BaseProcessClass bpc) throws ParseException {
+    public void prepareCreate(BaseProcessClass bpc){
         OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.SEARCH_RESULT);
         ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);
     }
@@ -96,12 +99,8 @@ public class MohIntranetUserDelegator {
             ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);
             return;
         }
-//        intranetUserService.createIntranetUser(orgUserDto);
-        ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
-        clientUser.setUserDomain(orgUserDto.getUserDomain());
-        clientUser.setId(orgUserDto.getUserId());
-        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-        userClient.createClientUser(clientUser);
+        intranetUserService.createIntranetUser(orgUserDto);
+        saveEgpUser(orgUserDto);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
         }
 
@@ -133,6 +132,7 @@ public class MohIntranetUserDelegator {
             return;
         }
         OrgUserDto orgUserDtoUpdate = intranetUserService.updateOrgUser(orgUserDto);
+        editEgpUser(orgUserDto);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
     }
 
@@ -150,8 +150,9 @@ public class MohIntranetUserDelegator {
             intranetUserService.updateOrgUser(intranetUserById);
             return;
         }
-        String actionType = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
-        intranetUserService.delOrgUser(id);
+        OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+        intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
+        intranetUserService.updateOrgUser(intranetUserById);
     }
 
     public void doSearch(BaseProcessClass bpc){
@@ -217,5 +218,42 @@ public class MohIntranetUserDelegator {
         orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
         return orgUserDto ;
+    }
+
+    private void saveEgpUser(OrgUserDto orgUserDto){
+        ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
+        clientUser.setUserDomain(orgUserDto.getUserDomain());
+        clientUser.setId(orgUserDto.getUserId());
+        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        clientUser.setEmail("caijing@ecquaria.com");
+        clientUser.setPassword("$2a$12$9BoiUcgPb67FlFnxktVbVOLpTCaDtF30gSpo8sYEI5UBFuUNkb5HO");
+        clientUser.setPasswordChallengeQuestion("A");
+        clientUser.setPasswordChallengeAnswer("A");
+        intranetUserService.saveEgpUser(clientUser);
+    }
+
+    private void editEgpUser(OrgUserDto orgUserDto){
+        ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
+        clientUser.setUserDomain("intranet");
+        clientUser.setId("test3");
+        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        clientUser.setEmail("caijing@ecquaria.com");
+        clientUser.setPasswordChallengeQuestion("A");
+        clientUser.setEmail("35518@qq.com");
+        clientUser.setPasswordChallengeAnswer("A");
+        clientUser.setAccountActivateDatetime(new Date());
+        /*
+        {
+              "userDomain": "intranet",
+              "accountStatus": "A",
+              "accountActivateDatetime": "2019-12-31T07:55:51.090Z",
+              "displayName": "test3",
+              "email": "35518@qq.com",
+              "id": "test3",
+              "passwordChallengeAnswer": "s",
+              "passwordChallengeQuestion": "s"
+}
+         */
+        intranetUserService.updateEgpUser(clientUser);
     }
 }

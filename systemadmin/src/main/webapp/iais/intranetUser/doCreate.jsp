@@ -12,8 +12,13 @@
     <form class="form-horizontal" method="post" id="IntranetUserForm" action=<%=process.runtime.continueURL()%>>
 
         <%@ include file="/include/formHidden.jsp" %>
+        <%--Validation fields Start--%>
+        <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.MohIntranetUserDelegator"/>
+        <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
+        <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+
         <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator"/>
-        <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ClinicalOfficerValidateDto"/>
+        <input type="hidden" name="valEntity" id="valEntity" value="D:com.ecquaria.cloud.moh.iais.validation.IntranetUserDtoValidate.java"/>
         <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -199,7 +204,7 @@
 
 
     function doCreate(){
-        submit('save');
+        submit('doSave');
     }
 
 </script>

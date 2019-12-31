@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Autowired
     private IntranetUserClient intranetUserClient ;
+    @Autowired
+    private EgpUserClient egpUserClient;
 
     @Override
     public void createIntranetUser(OrgUserDto orgUserDto) {
@@ -45,5 +49,24 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public OrgUserDto findIntranetUserById(String id) {
         return  intranetUserClient.findIntranetUserById(id).getEntity();
+    }
+
+    @Override
+    public Boolean UserIsExist(String userId) {
+        OrgUserDto entity = intranetUserClient.retrieveOneOrgUserAccount(userId).getEntity();
+        if(entity!=null){
+            return true;
+        }
+           return false;
+    }
+
+    @Override
+    public ClientUser saveEgpUser(ClientUser clientUser) {
+        return egpUserClient.createClientUser(clientUser).getEntity();
+    }
+
+    @Override
+    public ClientUser updateEgpUser(ClientUser clientUser) {
+        return egpUserClient.updateClientUser(clientUser).getEntity();
     }
 }

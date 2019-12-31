@@ -20,16 +20,6 @@
                             <h2>Edit Intranet User</h2>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="userId">User ID.</label>
-                            <span style="color:red">*</span>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="userId" type="text" name="userId" value="${orgUserDto.userId}">
-                                    <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name.</label>
                             <span style="color:red">*</span>
                             <iais:value>
@@ -202,6 +192,6 @@
         $("#InternetUserEditForm").submit();
     }
     function doCreate(){
-        submit('save');
+        submit('doSave');
     }
 </script>

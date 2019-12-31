@@ -65,14 +65,14 @@
     <JavaCode defClass="" executor="" methodName="doDelete_OnStepProcess_0" name="doDelete_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSorting" x="760" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="doSorting" x="730" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSorting_OnStepProcess_0" name="doSorting_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPaging" x="860" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="doPaging" x="800" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -127,10 +127,10 @@
    <position>{(580,80)(670,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSorting" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(780,220)}</position>
+   <position>{(580,80)(750,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPaging" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(880,220)}</position>
+   <position>{(580,80)(820,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/doCreatePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCreate" style="oblique">
    <position>{(210,210)(210,340)}</position>
@@ -163,10 +163,10 @@
    <position>{(670,220)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSorting" style="oblique">
-   <position>{(780,220)(580,640)}</position>
+   <position>{(750,220)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPaging" style="oblique">
-   <position>{(880,220)(580,640)}</position>
+   <position>{(820,220)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
    <position>{(440,560)(580,640)}</position>
@@ -189,9 +189,9 @@
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="560" y="60">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareCreate" value="&quot;save&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareEdit" value="&quot;edit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doDelete" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCreate" value="&quot;doSave&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEdit" value="&quot;doEdit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doDelete" value="&quot;doDelete&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;"/>

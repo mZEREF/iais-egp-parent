@@ -48,7 +48,7 @@
     }
 
     function doCreate(){
-        submit('save');
+        submit('doSave');
     }
 
     $("#IU_Search").click(function() {
@@ -57,29 +57,29 @@
 
     function doEdit(Id){
         $("[name='crud_action_value']").val(Id);
-        submit('edit');
+        submit('doEdit');
     }
 
     function doDelete(Id){
         $("[name='crud_action_value']").val(Id);
-        submit('delete');
+        submit('doDelete');
     }
 
     function doDeactivate(Id) {
         $("[name='crud_action_value']").val(Id);
         $("[name='crud_action_deactivate']").val('doDeactivate');
-        submit('delete');
+        submit('doDelete');
     }
 
     function doReactivate(Id) {
         $("[name='crud_action_value']").val(Id);
         $("[name='crud_action_deactivate']").val('doReactivate');
-        submit('delete');
+        submit('doDelete');
     }
 
-    function getPageValue(pageNo){
-        SOP.Crud.cfxSubmit("IntranetUserForm","changePage",pageNo);
-    }
+    // function getPageValue(pageNo){
+    //     SOP.Crud.cfxSubmit("IntranetUserForm","changePage",pageNo);
+    // }
 
     <%--$(function () {--%>
     <%--    doPage(${IntranetUserSearchParam.pageNo});--%>
