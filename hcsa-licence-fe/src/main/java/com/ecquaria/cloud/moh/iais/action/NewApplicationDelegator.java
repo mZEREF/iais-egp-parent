@@ -33,18 +33,6 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.ecquaria.sz.commons.util.FileUtil;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +44,19 @@ import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * NewApplicationDelegator
@@ -78,7 +79,7 @@ public class NewApplicationDelegator {
     public static final String  APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
 
     private static final String REQUESTINFORMATIONCONFIG  = "requestInformationConfig";
-
+    public static final String ACKMESSAGE = "AckMessage";
     public static final String FIRESTOPTION = "Please Select";
 
 
@@ -498,6 +499,10 @@ public class NewApplicationDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
             }
+        }
+
+        if("ack".equals(switch2)){
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "payment success !!!");
         }
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
@@ -1231,6 +1236,7 @@ public class NewApplicationDelegator {
         if(serviceConfigIds == null || serviceConfigIds.isEmpty()){
             log.debug(StringUtil.changeForLog("service id is empty"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "errorAck");
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "You have encountered some problems, please contact the administrator !!!");
             return false;
         }
 

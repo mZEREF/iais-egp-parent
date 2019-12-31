@@ -11,7 +11,7 @@
     <div class="main-content">
         <div class="container">
             <div class="row center">
-                <h3>payment success !!!</h3>
+                <h3>${AckMessage}</h3>
             </div>
         </div>
     </div>
