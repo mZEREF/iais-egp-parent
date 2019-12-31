@@ -57,6 +57,9 @@ public interface HcsaChklClient {
     @PostMapping(path = "/iais-hcsa-checklist/item/items-clone", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);
 
+    @PostMapping(path = "/iais-hcsa-checklist/item/items-upload", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> submitUploadItem(List<ChecklistItemDto> checklistItemList);
+
     @PostMapping(path = "/iais-hcsa-checklist/config", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> submitConfig(ChecklistConfigDto checklistConfigDto);
 

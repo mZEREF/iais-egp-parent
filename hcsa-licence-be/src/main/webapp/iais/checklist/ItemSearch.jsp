@@ -150,7 +150,7 @@
                                                                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareClone();">Clone ChecklistItem</a>
                                                                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
                                                                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doUploadFile('regulation');">Upload Regulation</a>
-                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doUploadFile('item');">Upload Checklist Item</a>
+                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doUploadFile('checklistItem');">Upload Checklist Item</a>
                                                             </c:otherwise>
                                                         </c:choose>
 

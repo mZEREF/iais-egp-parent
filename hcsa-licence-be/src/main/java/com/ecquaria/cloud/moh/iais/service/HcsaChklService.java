@@ -101,4 +101,6 @@ public interface HcsaChklService {
     Boolean isExistsRecord(ChecklistConfigDto dto);
 
     Boolean submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList);
+
+    Boolean submitUploadItem(List<ChecklistItemDto> checklistItemExcelList);
 }

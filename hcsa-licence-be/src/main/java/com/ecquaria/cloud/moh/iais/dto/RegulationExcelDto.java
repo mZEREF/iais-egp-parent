@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
-import com.ecquaria.cloud.moh.iais.annotation.ExcelProperty;
+import com.ecquaria.cloud.moh.iais.helper.excel.annotation.ExcelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,12 +14,13 @@ import lombok.ToString;
 @Setter
 @ToString
 public class RegulationExcelDto {
-    @ExcelProperty( index = 0)
+
+    @ExcelProperty(index = 0)
     private Integer sn;
 
-    @ExcelProperty( index = 1)
+    @ExcelProperty(index = 1)
     private String clauseNo;
 
-    @ExcelProperty( index = 3)
+    @ExcelProperty(index = 2)
     private String clause;
 }

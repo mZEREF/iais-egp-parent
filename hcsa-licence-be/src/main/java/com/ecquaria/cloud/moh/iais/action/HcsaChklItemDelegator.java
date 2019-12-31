@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.dto.RegulationExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -107,9 +106,10 @@ public class HcsaChklItemDelegator {
      */
     public void preUploadData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute("chklFileUploadAttr");
-        System.out.println("mulReq ======>>>>>>>>" + mulReq);
+        String value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+
+        ParamUtil.setSessionAttr(request, "switchUploadPage", value);
+
 
     }
 
@@ -122,15 +122,34 @@ public class HcsaChklItemDelegator {
      */
     public void submitUploadData(BaseProcessClass bpc) throws Exception {
         HttpServletRequest request = bpc.request;
-        String value = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+        String value = (String) ParamUtil.getSessionAttr(request, "switchUploadPage");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
         if (!file.isEmpty()){
             File toFile = FileUtils.multipartFileToFile(file);
-            List<HcsaChklSvcRegulationDto> regulationExcelList = ExcelReader.excelReader(toFile, HcsaChklSvcRegulationDto.class);
-            log.debug("submitUploadRegulation =======>>>>>>>>>>>>>>");
-            hcsaChklService.submitUploadRegulation(null);
+
+            if ("regulation".equals(value)){
+                List<HcsaChklSvcRegulationDto> regulationExcelList = ExcelReader.excelReader(toFile, HcsaChklSvcRegulationDto.class);
+                if (regulationExcelList != null && !regulationExcelList.isEmpty()){
+                    log.debug("submitUploadRegulation =======>>>>>>>>>>>>>>");
+                    hcsaChklService.submitUploadRegulation(regulationExcelList);
+                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+                }
+            }else if ("checklistItem".equals(value)){
+                List<ChecklistItemDto> checklistItemExcelList = ExcelReader.excelReader(toFile, ChecklistItemDto.class);
+                if (checklistItemExcelList != null && !checklistItemExcelList.isEmpty()){
+                    hcsaChklService.submitUploadItem(checklistItemExcelList);
+                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+                }
+
+            }
+
+
+
             FileUtils.delteTempFile(toFile);
+
+        }else {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         }
 
     }

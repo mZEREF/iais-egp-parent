@@ -96,6 +96,14 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
+    public FeignResponseEntity<Boolean> submitUploadItem(List<ChecklistItemDto> checklistItemList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<String> submitConfig(ChecklistConfigDto checklistConfigDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

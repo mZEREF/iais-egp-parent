@@ -110,4 +110,10 @@ public class HcsaChklServiceImpl implements HcsaChklService {
         return chklClient.submitHcsaChklSvcRegulation(regulationExcelList).getEntity();
     }
 
+    @Override
+    public Boolean submitUploadItem(List<ChecklistItemDto> checklistItemExcelList) {
+        return chklClient.submitUploadItem(checklistItemExcelList).getEntity();
+    }
+
+
 }

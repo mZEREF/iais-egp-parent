@@ -6,7 +6,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
  *description:
  */
 
-import com.ecquaria.cloud.moh.iais.annotation.ExcelProperty;
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -88,6 +88,7 @@ public final class ExcelReader {
             T obj = clazz.newInstance();
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
+                // Use iais project folder ExcelProperty Annotation Class
                 if (field.isAnnotationPresent(ExcelProperty.class)){
                     ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
                     int index = excelProperty.index();
