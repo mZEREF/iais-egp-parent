@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryD
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -20,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import lombok.extern.slf4j.Slf4j;
@@ -166,10 +166,14 @@ public class InspectionSearchDelegator {
         String[] appCorIdStrs;
         if(!(StringUtil.isEmpty(inspectorValue))) {
             appCorIdStrs = inspectorValue.split(",");
-            String appNoStr = SqlHelper.constructInCondition("T5.ID", appCorIdStrs.length);
-            searchParam.addParam("appCorId_list", appNoStr);
-            for (int i = 0; i < appCorIdStrs.length; i++) {
-                searchParam.addFilter("T5.ID" + i, appCorIdStrs[i]);
+            StringBuilder sb2 = new StringBuilder("(");
+            for(int i = 0; i < appCorIdStrs.length; i++){
+                sb.append(":appCorId" + i).append(",");
+            }
+            String inSql2 = sb.substring(0, sb2.length() - 1) + ")";
+            searchParam.addParam("appCorId_list", inSql2);
+            for(int i = 0; i < appCorIdStrs.length; i++){
+                searchParam.addFilter("appCorId" + i, appCorIdStrs[i]);
             }
         }
         if(!StringUtil.isEmpty(application_type)){
@@ -244,6 +248,7 @@ public class InspectionSearchDelegator {
         List<TaskDto> commPools =(List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         QueryHelp.setMainSql("inspectionQuery", "assignInspectorSupper",searchParam);
+        String json = JsonUtil.parseToJson(searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
         SearchResult<InspectionTaskPoolListDto> searchResult2 = inspectionService.getOtherDataForSr(searchResult, commPools, loginContext);
         if(!(loginContext.getCurRoleId().equals(RoleConsts.USER_ROLE_INSPECTION_LEAD))){
