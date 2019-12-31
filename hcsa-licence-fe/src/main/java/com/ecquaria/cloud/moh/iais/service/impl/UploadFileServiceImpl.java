@@ -289,30 +289,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         }catch (IOException e){
             log.error(e.getMessage(),e);
         }
-        finally {
 
-            if(zos!=null){
-                try {
-                    zos.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-            if(bis!=null){
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-            if(is!=null){
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-        }
     }
 
     private void rename(String fileNamesss)  {
@@ -376,6 +353,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setProcessType("NEW");
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
+        processFileTrackDto.setRefId("BE30AB5D-A92A-EA11-BE7D-000C29F371DC");
         processFileTrackDto.setStatus(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
