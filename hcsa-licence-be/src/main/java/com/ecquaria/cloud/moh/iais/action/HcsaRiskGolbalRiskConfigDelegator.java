@@ -4,18 +4,18 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskTotalDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GolbalRiskShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.HcsaRiskFinianceVadlidateDto;
+import com.ecquaria.cloud.moh.iais.dto.HcsaRiskGolbalVadlidateDto;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskGolbalService;
-import com.ecquaria.cloud.moh.iais.validation.HcsaWeightageRiskValidate;
+import com.ecquaria.cloud.moh.iais.validation.HcsaGolbalValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -42,11 +42,14 @@ public class HcsaRiskGolbalRiskConfigDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
-        //HcsaRiskWeightageShowDto wightageDto = hcsaRiskWeightageService.getWeightage();
         GolbalRiskShowDto showDto = hcsaRiskGolbalService.getGolbalRiskShowDto();
         List<SelectOption> autoRenewOp = hcsaRiskGolbalService.getAutoOp();
+        List<SelectOption> inpTypeOp = hcsaRiskGolbalService.inpTypeOp();
+        List<SelectOption> PreOrPostOp = hcsaRiskGolbalService.PreOrPostOp();
+        ParamUtil.setSessionAttr(request, "autoRenewOp", (Serializable) autoRenewOp);
         ParamUtil.setSessionAttr(request, "golbalShowDto", showDto);
-
+        ParamUtil.setSessionAttr(request, "inpTypeOp", (Serializable)inpTypeOp);
+        ParamUtil.setSessionAttr(request, "PreOrPostOp", (Serializable)PreOrPostOp);
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -63,9 +66,9 @@ public class HcsaRiskGolbalRiskConfigDelegator {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
         HttpServletRequest request = bpc.request;
         GolbalRiskShowDto golbalShowDto = (GolbalRiskShowDto)ParamUtil.getSessionAttr(request, "golbalShowDto");
-        //golbalShowDto = getDataFrompage(request, golbalShowDto);
-        HcsaWeightageRiskValidate weightageRiskValidate = new HcsaWeightageRiskValidate();
-        Map<String, String> errMap = weightageRiskValidate.validate(request);
+        golbalShowDto = getDataFrompage(request, golbalShowDto);
+        HcsaGolbalValidate golBalvad = new HcsaGolbalValidate();
+        Map<String, String> errMap = golBalvad.validate(request);
         if(errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, "isValid", "N");
         }else{
@@ -80,7 +83,7 @@ public class HcsaRiskGolbalRiskConfigDelegator {
         HttpServletRequest request = bpc.request;
         GolbalRiskShowDto golbalShowDto = (GolbalRiskShowDto)ParamUtil.getSessionAttr(request, "golbalShowDto");
        // hcsaRiskWeightageService.saveDto(wightageDto);
-
+        hcsaRiskGolbalService.saveDto(golbalShowDto);
 
     }
 
@@ -89,26 +92,27 @@ public class HcsaRiskGolbalRiskConfigDelegator {
         HttpServletRequest request = bpc.request;
     }
 
-    public HcsaRiskWeightageShowDto getDataFrompage(HttpServletRequest request, GolbalRiskShowDto golbalRiskShowDto) {
+    public GolbalRiskShowDto getDataFrompage(HttpServletRequest request, GolbalRiskShowDto golbalRiskShowDto) {
         List<GobalRiskTotalDto> finList = golbalRiskShowDto.getGoalbalTotalList();
         for (GobalRiskTotalDto fin : finList) {
-            String lastInp = ParamUtil.getString(request, fin.getServiceCode() + "last");
-            String secLastInp = ParamUtil.getString(request, fin.getServiceCode() + "secLast");
-            String finan = ParamUtil.getString(request, fin.getServiceCode() + "fin");
-            String leadership = ParamUtil.getString(request, fin.getServiceCode() + "lea");
-            String legislative = ParamUtil.getString(request, fin.getServiceCode() + "leg");
-            String inStartDate = ParamUtil.getDate(request, fin.getServiceCode() + "instartdate");
+            String maxLic = ParamUtil.getString(request, fin.getServiceCode() + "maxLic");
+            String doLast = ParamUtil.getString(request, fin.getServiceCode() + "doLast");
+            String autoreop = ParamUtil.getString(request, fin.getServiceCode() + "autoreop");
+            String newinpTypeOps = ParamUtil.getString(request, fin.getServiceCode() + "newinpTypeOps");
+            String newPreOrPostOps = ParamUtil.getString(request, fin.getServiceCode() + "newPreOrPostOps");
+            String renewinpTypeOps = ParamUtil.getString(request, fin.getServiceCode() + "renewinpTypeOps");
+            String renewPreOrPostOps = ParamUtil.getString(request, fin.getServiceCode() + "renewPreOrPostOps");
+            String instartdate = ParamUtil.getDate(request, fin.getServiceCode() + "instartdate");
             String inEndDate = ParamUtil.getDate(request, fin.getServiceCode() + "inenddate");
-            //hcsaRiskWeightageService.getOneWdto(fin,lastInp,secLastInp,finan,leadership,legislative,inStartDate,inEndDate);
+            hcsaRiskGolbalService.setGolShowDto(fin,maxLic,doLast,autoreop,newinpTypeOps,newPreOrPostOps,renewinpTypeOps,renewPreOrPostOps,instartdate,inEndDate);
         }
-        //weightageShowDto.setWeightageDtoList(finList);
-        //ParamUtil.setSessionAttr(request, "wightageDto", weightageShowDto);
-        return null;
+        ParamUtil.setSessionAttr(request, "golbalRiskShowDto", golbalRiskShowDto);
+        return golbalRiskShowDto;
     }
-    public HcsaRiskFinianceVadlidateDto getValueFromPage(HttpServletRequest request) {
-        HcsaRiskFinianceVadlidateDto dto = new HcsaRiskFinianceVadlidateDto();
-        HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto)ParamUtil.getSessionAttr(request, "wightageDto");
-        //getDataFrompage(request, wightageDto);
+    public HcsaRiskGolbalVadlidateDto getValueFromPage(HttpServletRequest request) {
+        HcsaRiskGolbalVadlidateDto dto = new HcsaRiskGolbalVadlidateDto();
+        GolbalRiskShowDto golbalShowDto = (GolbalRiskShowDto)ParamUtil.getSessionAttr(request, "golbalShowDto");
+        getDataFrompage(request, golbalShowDto);
         return dto;
     }
 }

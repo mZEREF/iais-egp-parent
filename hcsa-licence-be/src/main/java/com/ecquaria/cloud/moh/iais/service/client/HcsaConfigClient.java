@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GolbalRiskShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGlobalDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGolbalExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLeadershipMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLegislativeMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageDto;
@@ -132,7 +134,7 @@ public interface HcsaConfigClient {
     @RequestMapping(value = "/iais-hcsa-risk/legislativematrixstorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> saveLegislativeRiskMatrix(@RequestBody List<HcsaRiskLegislativeMatrixDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/legislativematrixstorageup",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/iais-hcsa-risk/legislativematrixstorageup",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> updateLegislativeRiskMatrix(@RequestBody List<HcsaRiskLegislativeMatrixDto> finDtoList);
 
     @RequestMapping(value = "/iais-hcsa-risk/weightageshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -147,14 +149,38 @@ public interface HcsaConfigClient {
 
     @PutMapping(value = "/iais-hcsa-risk/WeightageMatrixup",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaRiskWeightageDto>> saveWeightageMatrixList(@RequestBody List<HcsaRiskWeightageDto> finDtoList);
+    FeignResponseEntity<List<HcsaRiskWeightageDto>> updateWeightageMatrixList(@RequestBody List<HcsaRiskWeightageDto> finDtoList);
 
     @PostMapping(value = "/iais-hcsa-risk/WeightageMatrixStorage",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaRiskWeightageDto>> updateWeightageMatrixList(@RequestBody List<HcsaRiskWeightageDto> finDtoList);
+    FeignResponseEntity<List<HcsaRiskWeightageDto>> saveWeightageMatrixList(@RequestBody List<HcsaRiskWeightageDto> finDtoList);
 
     @RequestMapping(value = "/iais-hcsa-risk/golbalshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<GolbalRiskShowDto> getgolbalshow(@RequestBody List<HcsaServiceDto> svcList);
+
+    @GetMapping(value = "/iais-hcsa-risk/golbalRiskMatraix/{serviceCode}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaRiskGlobalDto> getRiskGolbalRiskMatraixBySvcCode(@PathVariable("serviceCode")String serviceCode);
+
+    @GetMapping(value = "/iais-hcsa-risk/golbalextbyid{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaRiskGlobalDto> getRiskGolbalextDtoById(@PathVariable("id")String id);
+
+    @RequestMapping(value = "/iais-hcsa-risk/golbalrisktorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskGlobalDto>> saveGoalbalMatrixList(@RequestBody List<HcsaRiskGlobalDto> finDtoList);
+
+    @RequestMapping(value = "/iais-hcsa-risk/golbalriskupdate",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskGlobalDto>> udpateGoalbalMatrixList(@RequestBody List<HcsaRiskGlobalDto> finDtoList);
+
+    @RequestMapping(value = "/iais-hcsa-risk/golbalextrisktorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskGolbalExtDto>> saveGoalbalExtMatrixList(@RequestBody List<HcsaRiskGolbalExtDto> finDtoList);
+
+    @RequestMapping(value = "/iais-hcsa-risk/golbalextriskupdate",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskGolbalExtDto>> updateGoalbalExtMatrixList(@RequestBody List<HcsaRiskGolbalExtDto> finDtoList);
+
+    @RequestMapping(value = "/iais-hcsa-risk/singlegolbalextriskstorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaRiskGlobalDto> saveGoalbalMatrix(@RequestBody HcsaRiskGlobalDto finDtoList);
+
+    @RequestMapping(value = "/iais-hcsa-risk/singlegolbalextriskup",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaRiskGlobalDto> udpateGoalbalMatrix(@RequestBody HcsaRiskGlobalDto finDtoList);
 
 
 }
