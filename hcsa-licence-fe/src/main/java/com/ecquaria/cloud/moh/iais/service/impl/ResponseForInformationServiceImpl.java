@@ -1,0 +1,35 @@
+package com.ecquaria.cloud.moh.iais.service.impl;
+
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.ResponseForInformationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * ResponseForInformationServiceImpl
+ *
+ * @author junyu
+ * @date 2019/12/30
+ */
+@Service
+@Slf4j
+public class ResponseForInformationServiceImpl implements ResponseForInformationService {
+    @Autowired
+    ResponseForInformationClient responseForInformationClient;
+
+
+
+    @Override
+    public List<LicPremisesReqForInfoDto> searchLicPreRfiBylicenseeId(String licenseeId) {
+        return responseForInformationClient.searchLicPreRfiBylicenseeId(licenseeId).getEntity();
+    }
+
+    @Override
+    public LicPremisesReqForInfoDto getLicPreReqForInfo(String id) {
+        return responseForInformationClient.getLicPreReqForInfo(id).getEntity();
+    }
+}
