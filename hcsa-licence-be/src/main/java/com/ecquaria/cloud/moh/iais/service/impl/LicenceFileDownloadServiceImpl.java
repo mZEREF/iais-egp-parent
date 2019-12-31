@@ -257,7 +257,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
       /*  applicationClient.updateStatus().getEntity();*/
 
-        systemClient.updateProcessFileTrack(processFileTrackDto);
+       /* systemClient.updateProcessFileTrack(processFileTrackDto);*/
     }
 
 
