@@ -173,21 +173,19 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public String[] getAppCorrIdListByPool(List<TaskDto> commPools) {
+    public List<String> getAppCorrIdListByPool(List<TaskDto> commPools) {
         if(IaisCommonUtils.isEmpty(commPools)){
-            return null;
+            List<String> appCorrIdList = new ArrayList<>();
+            appCorrIdList.add("0");
+            return appCorrIdList;
         }
         Set<String> appCorrIdSet = new HashSet<>();
         for(TaskDto tDto:commPools){
             appCorrIdSet.add(tDto.getRefNo());
         }
         List<String> appCorrIdList = new ArrayList<>(appCorrIdSet);
-        String[] appCorrIdStrs = new String[appCorrIdList.size()];
-        for(int i = 0; i < appCorrIdStrs.length; i++){
-            appCorrIdStrs[i] = appCorrIdList.get(i);
-        }
 
-        return appCorrIdStrs;
+        return appCorrIdList;
     }
 
     @Override

@@ -51,7 +51,7 @@ public interface InspectionAssignTaskService {
       * @return: List<String>
       * @Descripation: get Application No By commPools
       */
-    String[] getAppCorrIdListByPool(List<TaskDto> commPools);
+    List<String> getAppCorrIdListByPool(List<TaskDto> commPools);
 
     /**
       * @author: shicheng
