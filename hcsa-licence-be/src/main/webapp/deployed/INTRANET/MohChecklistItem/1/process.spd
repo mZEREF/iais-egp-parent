@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="13" minorVersion="0" name="MohChecklistItem" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="15" minorVersion="0" name="MohChecklistItem" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" stageIndicatorTemplate="" transaction="enable" viewFormUrl="">
  <WebServices/>
  <RestServices/>
  <Steps>
@@ -127,6 +127,20 @@
     <JavaCode defClass="" executor="" methodName="configToChecklist_OnStepProcess_0" name="configToChecklist_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preUploadData" x="1240" y="140">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preUploadData_OnStepProcess_0" name="preUploadData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="submitUploadData" x="1300" y="420">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submitUploadData_OnStepProcess_0" name="submitUploadData_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ItemSearch" stageIndicator="" x="430" y="40">
@@ -159,6 +173,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="UploadPage" stageIndicator="" x="1280" y="250">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Conditions>
@@ -169,6 +189,9 @@
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/editCloneItem" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="1060" y="700">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/preUploadData" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="1310" y="530">
    <Description/>
   </Condition>
  </Conditions>
@@ -182,6 +205,7 @@
    <SwitchCase component="/Steps/AutomaticStep/prepareAddItem" value="&quot;prepareAddItem&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareEditItem" value="&quot;prepareEditItem&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/configToChecklist" value="&quot;configToChecklist&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preUploadData" value="&quot;preUploadData&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1240" y="510">
    <Description/>
@@ -316,6 +340,24 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/editCloneItem" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
    <position>{(1080,720)(770,722)(1060,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preUploadData" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(1230,60)(1260,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/UploadPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preUploadData" style="oblique">
+   <position>{(1260,160)(1300,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/submitUploadData" linkstyle="Direct" name="" sourceName="/Pages/WebPage/UploadPage" style="oblique">
+   <position>{(1300,270)(1320,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/submitUploadData" style="rectanular">
+   <position>{(1320,440)(1330,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(1330,550)(740,790)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preUploadData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(1330,550)(1435,552)(1260,160)}</position>
   </SynchronousLink>
  </Links>
  <BatFlowsSelected batFlowsName="" batFlowsSelected="false" conditions="" mandatoryConditions=""/>

@@ -15,25 +15,32 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.dto.RegulationExcelDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,6 +95,44 @@ public class HcsaChklItemDelegator {
         String crudAction = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.debug("*******************crudAction-->:" + crudAction);
         log.debug("The prepareSwitch end ...");
+    }
+
+
+
+    /**
+     * @AutoStep: uploadRegulation
+     * @param:
+     * @return:
+     * @author: yichen
+     */
+    public void preUploadData(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute("chklFileUploadAttr");
+        System.out.println("mulReq ======>>>>>>>>" + mulReq);
+
+    }
+
+
+    /**
+     * @AutoStep: uploadRegulation
+     * @param:
+     * @return:
+     * @author: yichen
+     */
+    public void submitUploadData(BaseProcessClass bpc) throws Exception {
+        HttpServletRequest request = bpc.request;
+        String value = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        MultipartFile file = mulReq.getFile("selectedFile");
+        if (!file.isEmpty()){
+            File toFile = FileUtils.multipartFileToFile(file);
+            List<HcsaChklSvcRegulationDto> regulationExcelList = ExcelReader.excelReader(toFile, HcsaChklSvcRegulationDto.class);
+            log.debug("submitUploadRegulation =======>>>>>>>>>>>>>>");
+            hcsaChklService.submitUploadRegulation(null);
+            FileUtils.delteTempFile(toFile);
+        }
+
     }
 
     /**

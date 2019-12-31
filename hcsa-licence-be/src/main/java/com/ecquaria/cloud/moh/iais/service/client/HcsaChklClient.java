@@ -94,4 +94,7 @@ public interface HcsaChklClient {
 
     @PostMapping(path = "/iais-hcsa-checklist/config/record/validation", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> isExistsRecord(@RequestBody ChecklistConfigDto configDto);
+
+    @PostMapping(value = "/iais-hcsa-checklist//regulation/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> submitHcsaChklSvcRegulation(@RequestBody List<HcsaChklSvcRegulationDto> regulationList);
 }

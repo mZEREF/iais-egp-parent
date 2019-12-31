@@ -135,6 +135,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison start ...."));
+        log.info("---------------"+applicationDtos+"--------"+stageId);
         TaskHistoryDto result = new TaskHistoryDto();
         if(applicationDtos != null && applicationDtos.size() > 0){
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);

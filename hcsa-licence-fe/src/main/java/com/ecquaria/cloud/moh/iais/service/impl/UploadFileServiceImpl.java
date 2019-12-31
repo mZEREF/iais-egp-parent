@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.RestBridgeHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
@@ -24,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.zip.CRC32;
@@ -56,8 +54,6 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
 
-    @Autowired
-    private RestBridgeHelper restBridgeHelper;
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired

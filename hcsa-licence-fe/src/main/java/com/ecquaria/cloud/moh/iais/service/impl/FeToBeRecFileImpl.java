@@ -278,27 +278,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         }
         finally {
 
-            if(zos != null){
-                try {
-                    zos.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if(bis != null){
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if(is != null){
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
         }
     }
 

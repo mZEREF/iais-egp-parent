@@ -149,6 +149,8 @@
                                                                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddItem();">Add ChecklistItem</a>
                                                                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareClone();">Clone ChecklistItem</a>
                                                                 <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
+                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doUploadFile('regulation');">Upload Regulation</a>
+                                                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doUploadFile('item');">Upload Checklist Item</a>
                                                             </c:otherwise>
                                                         </c:choose>
 
@@ -190,6 +192,10 @@
 <script type="text/javascript">
     function doSearch(){
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
+    }
+
+    function doUploadFile(value){
+        SOP.Crud.cfxSubmit("mainForm", "preUploadData", value);
     }
 
     function disable(itemId){

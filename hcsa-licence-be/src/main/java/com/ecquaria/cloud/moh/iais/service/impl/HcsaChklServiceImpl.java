@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
@@ -102,6 +103,11 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     @Override
     public Boolean isExistsRecord(ChecklistConfigDto configDto){
         return chklClient.isExistsRecord(configDto).getEntity();
+    }
+
+    @Override
+    public Boolean submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList) {
+        return chklClient.submitHcsaChklSvcRegulation(regulationExcelList).getEntity();
     }
 
 }
