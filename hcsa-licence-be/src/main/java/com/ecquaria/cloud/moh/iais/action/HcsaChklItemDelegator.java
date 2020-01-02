@@ -7,9 +7,7 @@ package com.ecquaria.cloud.moh.iais.action;
  */
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -18,7 +16,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.message.MessageContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -27,9 +27,9 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +46,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Delegator(value = "hcsaChklItemDelegator")
 @Slf4j
 public class HcsaChklItemDelegator {
+
+    private static final String REGULATION = "regulation";
+    private static final String CHECKLIST_ITEM = "checklistItem";
 
     private HcsaChklService hcsaChklService;
     private FilterParameter filterParameter = new FilterParameter.Builder()
@@ -113,9 +117,8 @@ public class HcsaChklItemDelegator {
 
     }
 
-
     /**
-     * @AutoStep: uploadRegulation
+     * @AutoStep: submitUploadData
      * @param:
      * @return:
      * @author: yichen
@@ -125,32 +128,83 @@ public class HcsaChklItemDelegator {
         String value = (String) ParamUtil.getSessionAttr(request, "switchUploadPage");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
-        if (!file.isEmpty()){
-            File toFile = FileUtils.multipartFileToFile(file);
 
-            if ("regulation".equals(value)){
-                List<HcsaChklSvcRegulationDto> regulationExcelList = ExcelReader.excelReader(toFile, HcsaChklSvcRegulationDto.class);
-                if (regulationExcelList != null && !regulationExcelList.isEmpty()){
-                    log.debug("submitUploadRegulation =======>>>>>>>>>>>>>>");
-                    hcsaChklService.submitUploadRegulation(regulationExcelList);
-                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-                }
-            }else if ("checklistItem".equals(value)){
-                List<ChecklistItemDto> checklistItemExcelList = ExcelReader.excelReader(toFile, ChecklistItemDto.class);
-                if (checklistItemExcelList != null && !checklistItemExcelList.isEmpty()){
-                    hcsaChklService.submitUploadItem(checklistItemExcelList);
-                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-                }
-
-            }
-
-
-
-            FileUtils.delteTempFile(toFile);
-
-        }else {
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+        Map<String, String> errorMap = new HashMap<>();
+        if (file == null){
+            errorMap.put("fileUploadError", "GENERAL_ERR0004");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
         }
+
+        String originalFileName = file.getOriginalFilename();
+        if (!originalFileName.endsWith(".xlsx")){
+            errorMap.put("fileUploadError", "GENERAL_ERR0005");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
+        }
+
+        Double size = Double.valueOf(file.getSize() / 1024 / 1024);
+
+        if (Math.ceil(size) > 10){
+            errorMap.put("fileUploadError", "GENERAL_ERR0004");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
+        }
+
+        String json = "";
+        int reduceSize = 0;
+        File toFile = FileUtils.multipartFileToFile(file);
+        try {
+            switch (value){
+                case REGULATION:
+
+
+                    List<HcsaChklSvcRegulationDto> regulationDtoList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
+                    List<HcsaChklSvcRegulationDto> passRegulationDtoList = regulationDtoList.stream().distinct().collect(Collectors.toList());
+                    reduceSize = regulationDtoList.size() - passRegulationDtoList.size();
+
+                    if (reduceSize > 0){
+                        errorMap.put("fileUploadError", "Please remove the same data from Excel.");
+                        ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                        return;
+                    }
+                    json = hcsaChklService.submitUploadRegulation(passRegulationDtoList);
+                    break;
+                case CHECKLIST_ITEM:
+                    List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
+                    List<ChecklistItemDto> passItemDtoList =  checklistItemDtoList.stream().distinct().collect(Collectors.toList());
+                    reduceSize = checklistItemDtoList.size() - passItemDtoList.size();
+                    if (reduceSize > 0){
+                        errorMap.put("fileUploadError", "Please remove the same data from Excel.");
+                        ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                        return;
+                    }
+
+                    json  = hcsaChklService.submitUploadItem(null);
+                    break;
+                default:
+            }
+        }catch (IaisRuntimeException e){
+            errorMap.put("fileUploadError", "CHKL_ERR011");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
+        }
+
+        List<MessageContent> messageContentList = JsonUtil.parseToList(json, MessageContent.class);
+        for (MessageContent messageContent : messageContentList){
+            String msg = MessageUtil.getMessageDesc(messageContent.getResult());
+            messageContent.setResult(msg);
+        }
+
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+        ParamUtil.setRequestAttr(request, "messageContent", messageContentList);
+        FileUtils.delteTempFile(toFile);
 
     }
 
@@ -164,7 +218,7 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!HcsaChecklistConstants.ACTION_SAVE_ITEM.equals(currentAction)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
         }
 
@@ -192,11 +246,23 @@ public class HcsaChklItemDelegator {
             errorMap.put("cloneRecords", "Please add item to be clone.");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
-        }else {
-            hcsaChklService.submitCloneItem(chklItemDtos);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+            return;
         }
 
+
+        String json = hcsaChklService.submitCloneItem(chklItemDtos);
+        List<MessageContent> messageContentList = JsonUtil.parseToList(json, MessageContent.class);
+        if (messageContentList != null && ! messageContentList.isEmpty()){
+            for (MessageContent messageContent : messageContentList){
+                String msg = MessageUtil.getMessageDesc(messageContent.getResult());
+                messageContent.setResult(msg);
+            }
+
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            ParamUtil.setRequestAttr(request, "messageContent", messageContentList);
+            return;
+        }
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
     }
 
 
@@ -207,22 +273,24 @@ public class HcsaChklItemDelegator {
     private void doSubmitOrUpdate(HttpServletRequest request){
         ChecklistItemDto itemDto =  requestChklItemDto(request);
 
-        AuditTrailDto auditTrailDto = new AuditTrailDto();
-        auditTrailDto.setMohUserId(AppConsts.USER_ID_ANONYMOUS);
+        itemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
-        itemDto.setAuditTrailDto(auditTrailDto);
-
+        //Field calibration
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "save");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
-        }else {
-            hcsaChklService.saveChklItem(itemDto);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-
         }
 
+        //Business check
+        Map<String,String> errorMap = hcsaChklService.saveChklItem(itemDto);
+        if (errorMap != null && !errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+        }else {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+        }
     }
 
     /**
@@ -330,7 +398,7 @@ public class HcsaChklItemDelegator {
 
         ChecklistItemDto itemDto = requestChklItemDto(request);
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "save");
+        ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "clone");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -391,7 +459,7 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      * description: Verify that the added id already exists for the same section
      */
-    public void configToChecklist(BaseProcessClass bpc){
+        public void configToChecklist(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
         ChecklistConfigDto currentConfig = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);

@@ -39,24 +39,6 @@
     <div class="container">
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="form-horizontal">
-          <div class="form-group">
-            <div class="col-xs-5 col-md-3">
-              <iais:field value="Regulation Clause Number" required="true"></iais:field>
-              <div class="col-xs-5 col-md-3">
-                <iais:select name="regulationClauseNo"  options="clauseSelect" firstOption="Select Clause Number"  value="${itemRequestAttr.regulationClauseNo}"></iais:select>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-xs-5 col-md-3">
-              <iais:field value="Regulation" required="true"></iais:field>
-              <div class="col-xs-5 col-md-3">
-                <input type="text" name="regulationClause"  value="${itemRequestAttr.regulationClause}" />
-              </div>
-            </div>
-          </div>
-
 
           <div class="form-group">
             <div class="col-xs-5 col-md-3">

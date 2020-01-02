@@ -32,12 +32,20 @@
 
   <br><br>
   <span id="error_cloneRecords" name="iaisErrorMsg" class="error-msg"></span>
+
   <div class="main-content">
     <div class="container">
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
 
         <div class="tab-content">
           <div class="row">
+
+            <c:if test="${messageContent != null}">
+              <c:forEach var = "msg" items="${messageContent}">
+                <b>${msg.subject}: ${msg.result}<b><br>
+              </c:forEach>
+            </c:if>
+            <br><br>
             <div class="col-xs-12">
               <div class="components">
                 <h2 class="component-title">Clone &amp; Result</h2>

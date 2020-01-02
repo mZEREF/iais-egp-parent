@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -8,6 +9,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * @author: yichen
@@ -54,5 +56,10 @@ public final class FileUtils {
             del.delete();
         }
 
+    }
+
+    public static <T> List<T> transformToJavaBean(File file, Class<?> clz){
+        List<?> objects = ExcelReader.excelReader(file, clz);
+        return (List<T>) objects;
     }
 }

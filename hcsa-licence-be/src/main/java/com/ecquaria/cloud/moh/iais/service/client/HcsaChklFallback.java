@@ -19,6 +19,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 
 public class HcsaChklFallback implements HcsaChklClient{
 
@@ -72,7 +73,7 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<String> saveChklItem(ChecklistItemDto itemDto) {
+    public FeignResponseEntity<Map<String, String>> saveChklItem(ChecklistItemDto itemDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -96,7 +97,7 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<Boolean> submitUploadItem(List<ChecklistItemDto> checklistItemList) {
+    public FeignResponseEntity<String> submitUploadItem(List<ChecklistItemDto> checklistItemList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -192,7 +193,7 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<Boolean> submitHcsaChklSvcRegulation(List<HcsaChklSvcRegulationDto> regulationList) {
+    public FeignResponseEntity<String> submitHcsaChklSvcRegulation(List<HcsaChklSvcRegulationDto> regulationList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

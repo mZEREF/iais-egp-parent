@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -64,8 +65,8 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
 
     @Override
-    public void saveChklItem(ChecklistItemDto itemDto) {
-        chklClient.saveChklItem(itemDto);
+    public Map<String, String> saveChklItem(ChecklistItemDto itemDto) {
+       return chklClient.saveChklItem(itemDto).getEntity();
     }
 
     @Override
@@ -76,8 +77,8 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
 
     @Override
-    public void submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
-        chklClient.submitCloneItem(hcsaChklItemDtos);
+    public String submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {
+        return chklClient.submitCloneItem(hcsaChklItemDtos).getEntity();
     }
 
     @Override
@@ -106,12 +107,12 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
-    public Boolean submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList) {
+    public String submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList) {
         return chklClient.submitHcsaChklSvcRegulation(regulationExcelList).getEntity();
     }
 
     @Override
-    public Boolean submitUploadItem(List<ChecklistItemDto> checklistItemExcelList) {
+    public String submitUploadItem(List<ChecklistItemDto> checklistItemExcelList) {
         return chklClient.submitUploadItem(checklistItemExcelList).getEntity();
     }
 

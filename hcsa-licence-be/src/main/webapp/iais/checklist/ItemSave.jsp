@@ -34,7 +34,8 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="itemId" value="<iais:mask name="itemId" value="${itemRequestAttr.itemId}"/><%--don't remove--%>">
-
+    <br><br>
+    <span id="error_question" name="iaisErrorMsg" class="error-msg"></span>
     <div class="main-content">
         <div class="container">
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
@@ -52,17 +53,6 @@
 
                     <div class="form-group">
                         <div class="col-xs-5 col-md-3">
-                            <iais:field value="Regulation" required="true"></iais:field>
-                            <div class="col-xs-5 col-md-3">
-                                <input type="text" name="regulationClause"  value="${itemRequestAttr.regulationClause}" />
-                                <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <div class="col-xs-5 col-md-3">
                             <iais:field value="Checklist Item" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
                                 <input type="text" name="checklistItem" value="${itemRequestAttr.checklistItem}" />
@@ -72,17 +62,15 @@
                     </div>
 
                     <%--the updating page no need to change status--%>
-                    <c:if test="${btnTag eq 'SubmitButton'}">
-                        <div class="form-group">
+                    <div class="form-group">
+                        <div class="col-xs-5 col-md-3">
+                            <iais:field value="Status" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
-                                <iais:field value="Status" required="true"></iais:field>
-                                <div class="col-xs-5 col-md-3">
-                                    <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status" value="${itemRequestAttr.status}"></iais:select>
-                                    <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
+                                <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status" value="${itemRequestAttr.status}"></iais:select>
+                                <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
-                    </c:if>
+                    </div>
 
                     <div class="form-group">
                         <div class="col-xs-5 col-md-3">

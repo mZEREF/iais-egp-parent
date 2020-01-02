@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
  */
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -36,15 +37,32 @@ public final class ExcelReader {
     public static String EXCEL_TYPE_HSSF			= "xls";
     public static String EXCEL_TYPE_XSSF			= "xlsx";
 
-    public static <T> List<T> excelReader(File file, Class<T> clazz) {
+    public static <T> List<T> excelReader(File file, Class<T> clazz) throws IaisRuntimeException {
+        boolean canConver = canConvert(file, clazz);
+        if (!canConver){
+            throw new IaisRuntimeException("Excel conversion JavaBean failed");
+        }
+
         List<List<String>> result = parse(file);
         return result.stream().map(x -> setField(clazz, x)).collect(Collectors.toList());
+    }
+
+    private static boolean canConvert(File file, Class clazz) {
+        Sheet sheet = parseFile(file);
+        String sheetName = sheet.getSheetName();
+        String beanName = clazz.getSimpleName();
+        if (!sheetName.equals(beanName)){
+            return false;
+        }
+
+        return true;
     }
 
     public static List<List<String>> parse(File file) {
         Sheet sheet = parseFile(file);
         int rowCount = sheet.getPhysicalNumberOfRows();
         int cellCount = sheet.getRow(0).getPhysicalNumberOfCells();
+
         List<List<String>> result = new ArrayList<>();
         for (int i = 1; i < rowCount; i++) {
             List<String> cellResult = new ArrayList<>();
@@ -103,6 +121,10 @@ public final class ExcelReader {
             throw new IllegalArgumentException(e);
         }
     }
+
+   public static String getCellName(Sheet sheet, int cellIndex){
+       return sheet.getRow(0).getCell(cellIndex).toString();
+   }
 
    public static String getCellValue(Sheet sheet, int rowIndex, int cellIndex) {
         return getCellValue(sheet.getRow(rowIndex).getCell(cellIndex));
@@ -174,5 +196,7 @@ public final class ExcelReader {
         }
         return val;
     }
+
+
 
 }

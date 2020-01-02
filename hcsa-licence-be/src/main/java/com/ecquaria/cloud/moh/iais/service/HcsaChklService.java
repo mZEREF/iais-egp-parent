@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulati
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface HcsaChklService {
@@ -60,7 +61,7 @@ public interface HcsaChklService {
      * backend method: saveChecklistItem
      * @param itemDto
      */
-    void saveChklItem(ChecklistItemDto itemDto);
+    Map<String, String> saveChklItem(ChecklistItemDto itemDto);
 
     /**
      * list de-weight regulation clause number
@@ -74,7 +75,7 @@ public interface HcsaChklService {
      * backend method: saveCloneItem
      * @param checklistItemDtos
      */
-    void submitCloneItem(List<ChecklistItemDto> checklistItemDtos);
+    String submitCloneItem(List<ChecklistItemDto> checklistItemDtos);
 
     /**
      * submit single config to backend, backend need clean to uuid of each section obj then generate by db
@@ -100,7 +101,7 @@ public interface HcsaChklService {
 
     Boolean isExistsRecord(ChecklistConfigDto dto);
 
-    Boolean submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList);
+    String submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList);
 
-    Boolean submitUploadItem(List<ChecklistItemDto> checklistItemExcelList);
+    String submitUploadItem(List<ChecklistItemDto> checklistItemExcelList);
 }

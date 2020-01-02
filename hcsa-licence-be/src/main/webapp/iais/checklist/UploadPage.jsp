@@ -19,15 +19,19 @@
 <style>
 </style>
 
-<form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
-<%@ include file="/include/formHidden.jsp" %>
-  <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaChklItemDelegator"/>
-  <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.validation.HcsaChklItemValidate"/>
-  <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
 
 
   <div class="main-content">
-    <div class="container">
+
+    <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
+      <%@ include file="/include/formHidden.jsp" %>
+      <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaChklItemDelegator"/>
+      <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.validation.HcsaChklItemValidate"/>
+      <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+
+
+      <br><br><br>
+      <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
       <div class="row">
 
         <br><br><br>
@@ -38,26 +42,22 @@
                 <div class="document-info-list">
                   <ul>
                     <li>
-                      <p>The maximum file size for each upload is 4MB. </p>
+                      <p>The maximum file size for each upload is 10MB. </p>
                     </li>
                     <li>
-                      <p>Acceptable file formats are PDF, JPG and PNG. </p>
-                    </li>
-                    <li>
-                      <p>All files are mandatory.</p>
+                      <p>Acceptable file formats are XLSX. </p>
                     </li>
                   </ul>
                 </div>
 
-
                 <div class="document-upload-gp">
-                  <h2>PRIMARY DOCUMENTS</h2>
+                  <c:if test="${switchUploadPage eq 'checklistItem'}">
+                    <h2>Checklist Item Upload</h2>
+                  </c:if>
+                  <c:if test="${switchUploadPage eq 'regulation'}">
+                    <h2>Checklist Regulation Upload</h2>
+                  </c:if>
                   <div class="document-upload-list">
-                    <h3>Fire Safety Certificate (FSC) from SCDF</h3>
-                    <p><a href="#" target="_blank">Preview</a></p>
-                  </div>
-                  <div class="document-upload-list">
-                    <h3>Urban Redevelopmenet Authority (URA) grant of written permission</h3>
                     <div class="file-upload-gp">
                       <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
                     </div>
@@ -79,11 +79,12 @@
           </div>
         </div>
       </div>
-    </div>
+
+    </form>
   </div>
 
-</form>
 <script src=/systemadmin/js/CommonUtils.js'></script>
+<%@include file="/include/validation.jsp"%>
 <script>
 
     $('#selectedFile').change(function () {
