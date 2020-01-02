@@ -1833,7 +1833,7 @@ public class NewApplicationDelegator {
         return sBuffer.toString();
     }
 
-    public Map<String,List<HcsaSvcPersonnelDto>> getSvcAllPsnConfig(HttpServletRequest request){
+    public Map<String,List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request){
         Map<String,List<HcsaSvcPersonnelDto>> svcAllPsnConfig = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, SERVICEALLPSNCONFIGMAP);
         if(svcAllPsnConfig == null){
             AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
