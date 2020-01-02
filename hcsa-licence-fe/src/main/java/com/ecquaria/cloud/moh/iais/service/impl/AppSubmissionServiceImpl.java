@@ -69,16 +69,23 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appSubmissionDto= applicationClient.saveSubmision(appSubmissionDto).getEntity();
         //asynchronous save the other data.
-        eventBus(appSubmissionDto, process);
+        if(!AppConsts.IS_LOCAL_DEBUG){
+            eventBus(appSubmissionDto, process);
+        }
         return appSubmissionDto;
     }
 
     @Override
     public AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process) {
         appSubmissionRequestInformationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
         //asynchronous save the other data.
-        informationEventBus(appSubmissionRequestInformationDto, process);
-        return appSubmissionRequestInformationDto.getAppSubmissionDto();
+        if(!AppConsts.IS_LOCAL_DEBUG){
+            informationEventBus(appSubmissionRequestInformationDto, process);
+        }else{
+            appSubmissionDto = applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto).getEntity();
+        }
+        return appSubmissionDto;
     }
 
     @Override

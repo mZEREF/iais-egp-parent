@@ -8,16 +8,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfDecl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.HttpHeaders;
 
 /**
  * @author Wenkang
@@ -80,35 +78,41 @@ public class ApplicationClientFallback {
      return entity;
     }
 
-    public FeignResponseEntity<AppSubmissionDto>  draftNumberGet( String draftNumber){
+    public FeignResponseEntity<AppSubmissionDto>  draftNumberGet(String draftNumber){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto){
+    public FeignResponseEntity<AppSubmissionDto> saveSubmision(AppSubmissionDto appSubmissionDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+    public FeignResponseEntity<AppSubmissionDto> saveReqeustInformationSubmision( AppSubmissionRequestInformationDto appSubmissionRequestInformationDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<String>  getServiceIdByCode(@PathVariable(name = "code")String svcCode){
+    public FeignResponseEntity<String>  getServiceIdByCode(String svcCode){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId){
+    public FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation( String appId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    public FeignResponseEntity<String> doUpDate(@RequestBody ApplicationGroupDto applicationGroupDto){
+    public FeignResponseEntity<String> doUpDate( ApplicationGroupDto applicationGroupDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
