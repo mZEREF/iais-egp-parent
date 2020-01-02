@@ -74,9 +74,13 @@
                                         </iais:row>
                                         <iais:row >
                                             <iais:value width="18">
-                                                <label>
-                                                    <input type="text" value="${licPreReqForInfoDto.docName}">
-                                                </label>
+                                                <span  style="margin-right: 5px; cursor: pointer;" uploadid="157795250964805646132380337285">
+                                                    <input type="button" class="ico_att" style="margin:0 3px 0 0!important;margin:0 3px 2px 0;">
+                                                    <input ext="control"  type="hidden" value="${licPreReqForInfoDto.docName}" filename="${licPreReqForInfoDto.docName}" filesize="${licPreReqForInfoDto.docSize}" disabled="">
+                                                    <span ui-type="filename"  class="">${licPreReqForInfoDto.docName}</span>&nbsp;
+                                                    <span  name="206432" class="addrtitle">(${licPreReqForInfoDto.docSize/1024}K)</span>
+                                                </span>
+
                                             </iais:value>
                                         </iais:row>
 

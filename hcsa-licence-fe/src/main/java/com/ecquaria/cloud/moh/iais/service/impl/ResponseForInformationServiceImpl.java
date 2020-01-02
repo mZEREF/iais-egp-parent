@@ -34,4 +34,11 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     public LicPremisesReqForInfoDto getLicPreReqForInfo(String id) {
         return responseForInformationClient.getLicPreReqForInfo(id).getEntity();
     }
+
+
+
+    @Override
+    public void deleteLicPremisesReqForInfoFe(String id) {
+        responseForInformationClient.deleteLicPremisesReqForInfo(id);
+    }
 }

@@ -62,9 +62,12 @@ public class ResponseForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String id = (String) ParamUtil.getSessionAttr(request, "reqInfoId");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
-        //File uploadFile= ParamUtil.getString(request, "uploadFile");
-        String userReply=ParamUtil.getString(request,"userReply");
+        //File uploadFile= ParamUtil.getString(request, "UploadFile");
         //fileRepoClient.saveFiles()
+        String userReply=ParamUtil.getString(request,"userReply");
+        licPremisesReqForInfoDto.setUserReply(userReply);
+        //responseForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
+        responseForInformationService.deleteLicPremisesReqForInfoFe(licPremisesReqForInfoDto.getReqInfoId());
         // 		doSubmit->OnStepProcess
     }
 }

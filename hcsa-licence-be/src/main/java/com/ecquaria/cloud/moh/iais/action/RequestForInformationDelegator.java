@@ -15,14 +15,17 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +51,14 @@ public class RequestForInformationDelegator {
     @Autowired
     ApplicationViewService applicationViewService;
 
+    @Autowired
+    private EicGatewayClient gatewayClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
 
     FilterParameter licenceParameter = new FilterParameter.Builder()
             .clz(RfiLicenceQueryDto.class)
@@ -373,7 +384,8 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setOfficerRemarks(officerRemarks.toString());
 
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
-        requestForInformationService.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1, signature.date(), signature.authorization()).getEntity();
         // 		doCreateRequest->OnStepProcess
     }
     public void preNewRfi(BaseProcessClass bpc) {
@@ -385,14 +397,14 @@ public class RequestForInformationDelegator {
     }
     public void doCancel(BaseProcessClass bpc) {
         log.info("=======>>>>>doCancel>>>>>>>>>>>>>>>>requestForInformation");
-        String id = (String) ParamUtil.getRequestAttr(bpc.request, "reqInfoId");
-        requestForInformationService.deleteLicPremisesReqForInfo(id);
+        String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        requestForInformationService.deleteLicPremisesReqForInfo(reqInfoId);
         // 		doCancel->OnStepProcess
     }
     public void doAccept(BaseProcessClass bpc) {
         log.info("=======>>>>>doAccept>>>>>>>>>>>>>>>>requestForInformation");
-        String id = (String) ParamUtil.getRequestAttr(bpc.request, "reqInfoId");
-        requestForInformationService.acceptLicPremisesReqForInfo(id);
+        String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        requestForInformationService.acceptLicPremisesReqForInfo(reqInfoId);
         // 		doAccept->OnStepProcess
     }
     public void preViewRfi(BaseProcessClass bpc) {

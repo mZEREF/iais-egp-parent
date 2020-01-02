@@ -33,8 +33,6 @@ public interface RequestForInformationClient {
     @PostMapping(value = "/hcsa-reqForInfo/create-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfo(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
-    @PostMapping(value = "/hcsa-resForInfo-fe/create-rfi-fe",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfoFe(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
     @GetMapping(value = "/hcsa-reqForInfo/licence-search-rfi/{licPremId}")
     FeignResponseEntity<List<LicPremisesReqForInfoDto>> searchLicPremisesReqForInfo(@PathVariable("licPremId")String licPremId);
@@ -47,4 +45,7 @@ public interface RequestForInformationClient {
 
     @PostMapping(value = "/hcsa-reqForInfo/licence-accept-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     void acceptLicPremisesReqForInfo(@RequestBody String id);
+    @PostMapping(value = "/hcsa-reqForInfo/update-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicPremisesReqForInfoDto> updateLicPremisesReqForInfoFe(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+
 }

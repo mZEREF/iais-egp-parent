@@ -75,14 +75,20 @@
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
                                             <iais:row>
                                                 <iais:value width="18">
-                                                    <label>
-                                                        <input name="uploadFile" type="file" >
-                                                    </label>
+                                                    <span class="compose_toolbtn qmEditorAttach dragAndDropTrap_box">
+                                                        <span sizelimit="50" title="Add files less than 50M as attachments" id="AttachFrame" onmouseover="getTop().addClass(getTop().finds('a',this)[0],'underline');" onmouseout="getTop().rmClass(getTop().finds('a',this)[0],'underline');" onmousedown="getTop().LogKV('compose|toolbar|entrance|attach');" style="position: relative;">
+                                                            <span style="top: 0px; left: 0px; position: absolute; cursor: pointer; width: 66px; height: 16px; overflow: hidden; background-color: rgb(255, 255, 255); zoom: 1; opacity: 0; z-index: 1;">
+                                                                <input type="file" title=" " name="UploadFile" multiple="" style="font-family: Times; position: absolute; cursor: pointer; width: 2000px; height: 600px; right: 0px;">
+                                                            </span>
+                                                            <a class="compose_toolbtn_text ico_att" onclick="return false;" onmousedown="getTop().LogKV('compose|toolbar|entrance|attach');return false;" hidefocus="">
+                                                                <span id="sAddAtt1">Attachment</span>
+                                                            </a>
+                                                        </span>
+                                                        <a class="ico_moreupload" id="moreupload"></a>
+                                                    </span>
                                                 </iais:value>
                                             </iais:row>
                                         </c:if>
-
-
                                         <iais:action style="text-align:center;">
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSubmit('${licPreReqForInfoDto.reqInfoId}')">Proceed to Submit</button>
