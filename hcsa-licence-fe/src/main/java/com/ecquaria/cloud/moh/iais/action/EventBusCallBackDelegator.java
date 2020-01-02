@@ -36,6 +36,7 @@ public class EventBusCallBackDelegator {
     public void callBack(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String submissionId = ParamUtil.getString(request,"submissionId");
+        log.info("Submission Id ==> " + submissionId);
         String token = ParamUtil.getString(request, "token");
         String serviceName = ParamUtil.getString(request, "service");
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
@@ -46,6 +47,7 @@ public class EventBusCallBackDelegator {
         Map<String, List<ServiceStatus>> map = client.getSubmissionStatus(AppConsts.REST_PROTOCOL_TYPE
                         + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
         if (map.size() == 1) {
+            log.info("Got records from DB");
             boolean completed = true;
             boolean success = true;
             for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
@@ -67,6 +69,6 @@ public class EventBusCallBackDelegator {
                         submissionId, operation, "");
             }
         }
-
+        log.info("Complete");
     }
 }
