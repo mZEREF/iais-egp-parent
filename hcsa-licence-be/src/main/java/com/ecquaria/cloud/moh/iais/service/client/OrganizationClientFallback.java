@@ -115,7 +115,7 @@ public class OrganizationClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<String> getInspectionLead(String workGroupId){
+    public FeignResponseEntity<List<String>> getInspectionLead(String workGroupId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

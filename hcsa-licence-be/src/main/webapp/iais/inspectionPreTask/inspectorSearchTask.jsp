@@ -148,7 +148,11 @@
                         <td><fmt:formatDate value='${pool.inspectionDate}' pattern='dd/MM/yyyy' /></td>
                         <td><iais:code code="${pool.applicationStatus}"/></td>
                         <td><c:out value="${pool.inspectorName}"/></td>
-                        <td><c:out value="${pool.inspectorLead}"/></td>
+                        <td>
+                          <c:forEach var="lead" items="${pool.inspectorLeads}">
+                            <c:out value="${lead}"/>&nbsp;
+                          </c:forEach>
+                        </td>
                         <td><button type="button"  class="btn btn-default" onclick="javascript:doInspectorSearchTaskAssign('<iais:mask name="taskId" value="${pool.taskId}"/>');">Assign</button></td>
                       </tr>
                     </c:forEach>

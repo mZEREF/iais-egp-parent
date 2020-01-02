@@ -89,11 +89,16 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext) {
+    public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext,
+                                                            InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
         List<OrgUserDto> orgUserDtos = new ArrayList<>();
+        String workGroupId = "";
         for(TaskDto tDto:commPools){
             if(appCorrelationId.equals(tDto.getRefNo())){
                 orgUserDtos =  organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            }
+            if(inspecTaskCreAndAssDto.getTaskId().equals(tDto.getId())){
+                workGroupId = tDto.getWkGrpId();
             }
         }
 
@@ -102,7 +107,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
-        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
         inspecTaskCreAndAssDto.setApplicationNo(applicationDto.getApplicationNo());
         inspecTaskCreAndAssDto.setApplicationType(applicationDto.getApplicationType());
         inspecTaskCreAndAssDto.setApplicationStatus(applicationDto.getStatus());
@@ -114,17 +118,24 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssDto.setSubmitDt(applicationGroupDto.getSubmitDt());
         //set inspector checkbox list
         setInspectorByOrgUserDto(inspecTaskCreAndAssDto, orgUserDtos, loginContext);
-        setInspectorLeadName(inspecTaskCreAndAssDto, orgUserDtos, loginContext);
+        setInspectorLeadName(inspecTaskCreAndAssDto, orgUserDtos, workGroupId);
         return inspecTaskCreAndAssDto;
     }
 
-    private void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, LoginContext loginContext) {
-        String userId = loginContext.getUserId();
-        for(OrgUserDto orgUserDto:orgUserDtos){
-            if(userId.equals(orgUserDto.getId())){
-                inspecTaskCreAndAssDto.setInspectionLead(orgUserDto.getDisplayName());
+    private void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, String workGroupId) {
+        if(StringUtil.isEmpty(workGroupId)){
+            return;
+        }
+        List<String> leadNames = new ArrayList<>();
+        List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+        for(String id : leadIds){
+            for(OrgUserDto oDto : orgUserDtos){
+                if(id.equals(oDto.getId())){
+                    leadNames.add(oDto.getDisplayName());
+                }
             }
         }
+        inspecTaskCreAndAssDto.setInspectionLeads(leadNames);
     }
 
     private void setInspectorByOrgUserDto(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, LoginContext loginContext) {

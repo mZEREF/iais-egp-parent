@@ -33,7 +33,7 @@ public interface InspectionAssignTaskService {
       * @return: InspecTaskCreAndAssQueryDto
       * @Descripation: Gets a single Common Pool of information for allocation
       */
-    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext);
+    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
 
     /**
       * @author: shicheng

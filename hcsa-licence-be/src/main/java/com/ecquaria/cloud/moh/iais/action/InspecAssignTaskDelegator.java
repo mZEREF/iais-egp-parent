@@ -137,8 +137,9 @@ public class InspecAssignTaskDelegator {
             Map<String, String> map = (Map<String, String>)ParamUtil.getSessionAttr(bpc.request, "appCorrIdTaskIdMap");
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", null);
             String taskId = map.get(appCorrelationId);
-            inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(appCorrelationId, commPools, loginContext);
+            inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
             inspecTaskCreAndAssDto.setTaskId(taskId);
+            inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(appCorrelationId, commPools, loginContext, inspecTaskCreAndAssDto);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
         }
 

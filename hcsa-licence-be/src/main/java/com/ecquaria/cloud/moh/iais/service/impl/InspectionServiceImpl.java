@@ -355,13 +355,13 @@ public class InspectionServiceImpl implements InspectionService {
                 inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getDisplayName());
             }
             inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
+            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            List<String> leadName = getWorkGroupLeadsByGroupId(inspectionTaskPoolListDto.getWorkGroupId(), orgUserDtos);
+            inspectionTaskPoolListDto.setInspectorLeads(leadName);
             inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
         }
-        List<String> ids = new ArrayList<>();
-        ids.add(loginContext.getUserId());
-        List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
-        OrgUserDto orgUserDto = orgUserDtos.get(0);
-        inspectionTaskPoolListDtoList = inputOtherData(searchResult.getRows(), inspectionTaskPoolListDtoList, orgUserDto);
+
+        inspectionTaskPoolListDtoList = inputOtherData(searchResult.getRows(), inspectionTaskPoolListDtoList);
 
         SearchResult<InspectionTaskPoolListDto> searchResult2 = new SearchResult<>();
         searchResult2.setRows(inspectionTaskPoolListDtoList);
@@ -369,7 +369,7 @@ public class InspectionServiceImpl implements InspectionService {
         return searchResult2;
     }
 
-    private List<InspectionTaskPoolListDto> inputOtherData(List<InspectionSubPoolQueryDto> rows, List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList, OrgUserDto orgUserDto) {
+    private List<InspectionTaskPoolListDto> inputOtherData(List<InspectionSubPoolQueryDto> rows, List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList) {
         for(InspectionSubPoolQueryDto iDto: rows){
             for(InspectionTaskPoolListDto itplDto:inspectionTaskPoolListDtoList){
                 if((iDto.getId()).equals(itplDto.getAppCorrelationId())){
@@ -387,11 +387,25 @@ public class InspectionServiceImpl implements InspectionService {
                     itplDto.setInspectionTypeName(iDto.getInspectionType() == 0? "Post":"Pre");
                     itplDto.setServiceEndDate(hcsaServiceDto.getEndDate());
                     itplDto.setInspectionDate(new Date());
-                    itplDto.setInspectorLead(orgUserDto.getDisplayName());
                 }
             }
         }
         return inspectionTaskPoolListDtoList;
+    }
+
+    private List<String> getWorkGroupLeadsByGroupId(String workGroupId, List<OrgUserDto> orgUserDtos) {
+        List<String> leadName = new ArrayList<>();
+        if(!(StringUtil.isEmpty(workGroupId))){
+            List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+            for(String id : leadIds){
+                for(OrgUserDto oDto : orgUserDtos){
+                    if(id.equals(oDto.getId())){
+                        leadName.add(oDto.getDisplayName());
+                    }
+                }
+            }
+        }
+        return leadName;
     }
 
     @Override
