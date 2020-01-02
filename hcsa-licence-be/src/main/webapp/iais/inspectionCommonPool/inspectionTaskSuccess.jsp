@@ -68,6 +68,16 @@
                           <label><c:out value="${inspecTaskCreAndAssDto.submitDt}"/></label>
                         </iais:value>
                       </iais:row>
+                      <c:if test="${inspecTaskCreAndAssDto.inspectionLeads == null}">
+                        <iais:row>
+                          <iais:field value="Inspection Lead"/>
+                          <iais:value width="7">
+                            <c:forEach var="lead" items="${inspecTaskCreAndAssDto.inspectionLeads}">
+                              <label><c:out value="${lead}"/></label>&nbsp;
+                            </c:forEach>
+                          </iais:value>
+                        </iais:row>
+                      </c:if>
                       <iais:row>
                         <iais:field value="Inspection Type"/>
                         <iais:value width="7">
