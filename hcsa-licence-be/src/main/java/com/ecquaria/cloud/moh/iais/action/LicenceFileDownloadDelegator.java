@@ -50,9 +50,9 @@ public class LicenceFileDownloadDelegator {
 
              licenceFileDownloadService.compress(list);
 
-            for(ApplicationDto applicationDto:list){
+            for(ApplicationDto applicationDto:list) {
                 applicationDto.setAuditTrailDto(intranet);
-
+            }
             //event bus update the data
             TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(list,HcsaConsts.ROUTING_STAGE_ASO,RoleConsts.USER_ROLE_ASO,intranet);
             if(taskHistoryDto!=null){
@@ -69,7 +69,6 @@ public class LicenceFileDownloadDelegator {
                 broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null);
             }
 
-        }
 
     }
 /*******************************/

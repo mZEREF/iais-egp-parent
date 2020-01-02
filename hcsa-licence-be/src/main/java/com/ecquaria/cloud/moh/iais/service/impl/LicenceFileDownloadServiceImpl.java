@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
@@ -260,6 +261,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     * */
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
       /*  applicationClient.updateStatus().getEntity();*/
+        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
+        processFileTrackDto.setAuditTrailDto(batchJobDto);
+
 
        /* systemClient.updateProcessFileTrack(processFileTrackDto);*/
     }
