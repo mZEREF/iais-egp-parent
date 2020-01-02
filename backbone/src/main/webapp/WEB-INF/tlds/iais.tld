@@ -551,6 +551,11 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>needDisabled</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
       <name>autocomplete</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>

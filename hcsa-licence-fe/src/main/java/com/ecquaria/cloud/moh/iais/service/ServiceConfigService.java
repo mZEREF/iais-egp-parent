@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,4 +44,7 @@ public interface ServiceConfigService {
     List<HcsaServiceDto> getServicesInActive();
     public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(String serviceId);
     List<HcsaServiceCorrelationDto> getCorrelation();
+    List<HcsaSvcPersonnelDto> getSvcAllPsnConfig(List<HcsaServiceStepSchemeDto> svcStep, String svcId);
+    Map<String,List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(List<HcsaServiceStepSchemeDto> svcStep, List<String> svcIds);
+    List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(List<String> svcIds);
 }

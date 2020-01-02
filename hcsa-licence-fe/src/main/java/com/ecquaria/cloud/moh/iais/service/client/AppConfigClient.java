@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
@@ -141,4 +142,10 @@ public interface AppConfigClient {
     @PostMapping(value = "/iais-hcsa-service/pref-period/after-app/max-period",
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getMaxAfterAppBySvcCodeList(@RequestBody List<String> svcCodeList);
+
+    @PostMapping(value = "/iais-hcsa-service/all-specific-service-id-type",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity< List<HcsaSvcPersonnelDto>>  getServiceSpecificPerson(@RequestBody List<SpecicalPersonDto> list);
+
+    @PostMapping(value = {"/iais-service-step/steps/serviceIds"}, produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceStepSchemeDto>> getServiceStepsByServiceIds(@RequestBody List<String> serviceIds);
 }

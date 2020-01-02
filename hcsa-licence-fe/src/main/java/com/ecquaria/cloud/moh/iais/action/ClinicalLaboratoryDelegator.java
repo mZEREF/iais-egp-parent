@@ -1231,10 +1231,10 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS,null);
-        HcsaSvcPersonnelDto hcsaSvcPersonnelDto  = (HcsaSvcPersonnelDto) ParamUtil.getSessionAttr(request, "HcsaSvcPersonnel");
+        /*HcsaSvcPersonnelDto hcsaSvcPersonnelDto  = (HcsaSvcPersonnelDto) ParamUtil.getSessionAttr(request, "HcsaSvcPersonnel");
         if(hcsaSvcPersonnelDto ==null){
             return null;
-        }
+        }*/
         List<AppSvcCgoDto> appSvcCgoDtoList = new ArrayList<>();
         AppSvcCgoDto appSvcCgoDto = null;
 

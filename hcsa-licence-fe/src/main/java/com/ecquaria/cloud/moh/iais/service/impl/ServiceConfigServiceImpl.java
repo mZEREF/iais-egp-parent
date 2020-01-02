@@ -1,12 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -218,4 +220,42 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     }
 
+    @Override
+    public List<HcsaSvcPersonnelDto> getSvcAllPsnConfig(List<HcsaServiceStepSchemeDto> svcStep, String svcId) {
+        List<SpecicalPersonDto> specicalPersonDtos =new ArrayList<>();
+        SpecicalPersonDto specicalPersonDto = new SpecicalPersonDto();
+        List<String> psnTypes = new ArrayList<>();
+        for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:svcStep){
+            if(svcId.equals(hcsaServiceStepSchemeDto.getServiceId())){
+                String stepCode = hcsaServiceStepSchemeDto.getStepCode();
+                if(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(stepCode)){
+                    psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
+                }else if(HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(stepCode)){
+                    psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                    psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                }else if(HcsaConsts.STEP_SERVICE_PERSONNEL.equals(stepCode)){
+                    psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+                }
+            }
+        }
+        specicalPersonDto.setServiceId(svcId);
+        specicalPersonDto.setType(psnTypes);
+        specicalPersonDtos.add(specicalPersonDto);
+        return appConfigClient.getServiceSpecificPerson(specicalPersonDtos).getEntity();
+    }
+
+    @Override
+    public Map<String,List<HcsaSvcPersonnelDto>>  getAllSvcAllPsnConfig(List<HcsaServiceStepSchemeDto> svcStep, List<String> svcIds) {
+        Map<String,List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = new HashMap<>();
+        for(String svcId:svcIds){
+            List<HcsaSvcPersonnelDto> oneSvcAllPsnConfig = getSvcAllPsnConfig(svcStep, svcId);
+            allSvcAllPsnConfig.put(svcId, oneSvcAllPsnConfig);
+        }
+        return allSvcAllPsnConfig;
+    }
+
+    @Override
+    public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(List<String> svcIds) {
+        return appConfigClient.getServiceStepsByServiceIds(svcIds).getEntity();
+    }
 }

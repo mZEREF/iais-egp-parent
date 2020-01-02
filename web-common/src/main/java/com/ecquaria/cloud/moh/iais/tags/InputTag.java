@@ -20,6 +20,7 @@ public class InputTag extends DivTagSupport{
     private String autocomplete;
     private String maxLength;
     private boolean needErrorSpan;
+    private boolean needDisabled;
 
     public InputTag() {
         super();
@@ -36,6 +37,7 @@ public class InputTag extends DivTagSupport{
         autocomplete = "off";
         maxLength = null;
         needErrorSpan = true;
+        needDisabled = false;
     }
 
     @Override
@@ -71,6 +73,9 @@ public class InputTag extends DivTagSupport{
         }
         if(!StringUtil.isEmpty(autocomplete)){
             html.append(" autocomplete=\"").append(autocomplete).append("\"");
+        }
+        if(needDisabled){
+            html.append(" disabled=\"true\" ");
         }
         html.append(">");
 
@@ -116,4 +121,5 @@ public class InputTag extends DivTagSupport{
     public void setMaxLength(String maxLength) {
         this.maxLength = maxLength;
     }
+    public void setNeedDisabled(boolean needDisabled){ this.needDisabled = needDisabled;}
 }

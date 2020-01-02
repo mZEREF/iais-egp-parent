@@ -18,7 +18,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -81,6 +83,7 @@ public class NewApplicationDelegator {
 
     private static final String REQUESTINFORMATIONCONFIG  = "requestInformationConfig";
     public static final String ACKMESSAGE = "AckMessage";
+    public static final String SERVICEALLPSNCONFIGMAP = "ServiceAllPsnConfigMap";
     public static final String FIRESTOPTION = "Please Select";
 
 
@@ -255,13 +258,7 @@ public class NewApplicationDelegator {
      */
     public void preparePreview(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do preparePreview start ...."));
-       /* AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        Map<String, AppSvcRelatedInfoDto> appSvcRelatedInfoMap = (Map<String, AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request, ClinicalLaboratoryDelegator.APPSVCRELATEDINFOMAP);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>();
-        appSvcRelatedInfoMap.keySet().forEach(key -> appSvcRelatedInfoDtoList.add(appSvcRelatedInfoMap.get(key)));
-        appSvcRelatedInfoDtoList.add(appSvcRelatedInfoMap.get("35F99D15-820B-EA11-BE7D-000C29F371DC"));
-        appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);*/
+
         log.debug(StringUtil.changeForLog("the do preparePreview end ...."));
     }
 
@@ -284,6 +281,7 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPremises start ...."));
+
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
@@ -1718,6 +1716,9 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, ERRORMAP_PREMISES, null);
         ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, null);
 
+        //init svc conifg
+        Map<String,List<HcsaSvcPersonnelDto>> svcConfigInfo =  null;
+        ParamUtil.setSessionAttr(bpc.request, SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);
 
     }
 
@@ -1831,5 +1832,22 @@ public class NewApplicationDelegator {
                 .append("</div>");
         return sBuffer.toString();
     }
+
+    public Map<String,List<HcsaSvcPersonnelDto>> getSvcAllPsnConfig(HttpServletRequest request){
+        Map<String,List<HcsaSvcPersonnelDto>> svcAllPsnConfig = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, SERVICEALLPSNCONFIGMAP);
+        if(svcAllPsnConfig == null){
+            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            List<String> svcIds = new ArrayList<>();
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                svcIds.add(appSvcRelatedInfoDto.getServiceId());
+            }
+            List<HcsaServiceStepSchemeDto>  svcStepConfigs = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcIds);
+            svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
+        }
+        return svcAllPsnConfig;
+    }
+
+
 }
 
