@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -92,44 +91,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String applicationNo, List<TaskDto> commPools, LoginContext loginContext) {
-        if(StringUtil.isEmpty(applicationNo)){
-            applicationNo = SystemParameterConstants.PARAM_FALSE;
-        }
-        List<OrgUserDto> orgUserDtos = new ArrayList<>();
-        for(TaskDto tDto:commPools){
-            if(applicationNo.equals(tDto.getRefNo())){
-                orgUserDtos =  organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-            }
-        }
-
-        ApplicationDto applicationDto = getApplicationDtoByAppNo(applicationNo);
-        AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(applicationDto.getId());
-        HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
-        ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
-
-        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
-        inspecTaskCreAndAssDto.setApplicationNo(applicationNo);
-        inspecTaskCreAndAssDto.setApplicationType(applicationDto.getApplicationType());
-        inspecTaskCreAndAssDto.setApplicationStatus(applicationDto.getStatus());
-        inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
-        inspecTaskCreAndAssDto.setHciCode(appGrpPremisesDto.getHciCode());
-        inspecTaskCreAndAssDto.setServiceName(hcsaServiceDto.getSvcName());
-        inspecTaskCreAndAssDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Post":"Pre");
-        inspecTaskCreAndAssDto.setInspectionType(applicationGroupDto.getIsPreInspection());
-        inspecTaskCreAndAssDto.setSubmitDt(applicationGroupDto.getSubmitDt());
-        //set inspector checkbox list
-        setInspectorByOrgUserDto(inspecTaskCreAndAssDto, orgUserDtos, loginContext);
-        setInspectorLeadName(inspecTaskCreAndAssDto, orgUserDtos, loginContext);
-        return inspecTaskCreAndAssDto;
-    }
-
-    private void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, LoginContext loginContext) {
-        String userId = loginContext.getUserId();
-        for(OrgUserDto orgUserDto:orgUserDtos){
-            if(userId.equals(orgUserDto.getId())){
-                inspecTaskCreAndAssDto.setInspectionLead(orgUserDto.getDisplayName());
-            }
-        }
+        return null;
     }
 
     private void setInspectorByOrgUserDto(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, LoginContext loginContext) {
