@@ -271,7 +271,7 @@
                             " # " + res.rows[i].floorNo + "-" + res.rows[i].unitNo + ", " + res.rows[i].postalCode;
                         $('#advfilter'+divid).append('<div class="col-xs-12 col-lg-12">' +
                             '<div class="col-xs-1  col-lg-1 app-in-group-head"></div>' +
-                            '<div class="col-xs-2  col-lg-2 app-in-group-second"><a href='+url[res.rows[i].applicationNo]+'>'+res.rows[i].applicationNo+'</a></div>' +
+                            '<div class="col-xs-2  col-lg-2 app-in-group-second"><a href='+url[res.rows[i].refNo]+'>'+res.rows[i].applicationNo+'</a></div>' +
                             '<div class="col-xs-2  col-lg-2">'+res.rows[i].serviceId+'</div>' +
                             '<div class="col-xs-2  col-lg-2">'+res.rows[i].applicationNo+'</div>' +
                             '<div class="col-xs-2  col-lg-2">'+res.rows[i].status+'</div>' +
