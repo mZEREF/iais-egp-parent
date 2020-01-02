@@ -361,7 +361,7 @@ public class InspectionServiceImpl implements InspectionService {
                     itplDto.setInspectionTypeName(iDto.getInspectionType() == 0? "Post":"Pre");
                     itplDto.setServiceEndDate(hcsaServiceDto.getEndDate());
                     itplDto.setInspectionDate(new Date());
-                    itplDto.setInspectorLead(orgUserDto.getDisplayName());
+                    //itplDto.setInspectorLead(orgUserDto.getDisplayName());
                 }
             }
         }
