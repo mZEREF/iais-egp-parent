@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -23,6 +24,8 @@ import java.util.List;
 public class ResponseForInformationDelegator {
     @Autowired
     ResponseForInformationService responseForInformationService;
+    @Autowired
+    FileRepoClient fileRepoClient;
 
     public void start(BaseProcessClass bpc)  {
         HttpServletRequest request=bpc.request;
@@ -56,6 +59,12 @@ public class ResponseForInformationDelegator {
     }
 
     public void doSubmit(BaseProcessClass bpc) {
+        HttpServletRequest request=bpc.request;
+        String id = (String) ParamUtil.getSessionAttr(request, "reqInfoId");
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
+        //File uploadFile= ParamUtil.getString(request, "uploadFile");
+        String userReply=ParamUtil.getString(request,"userReply");
+        //fileRepoClient.saveFiles()
         // 		doSubmit->OnStepProcess
     }
 }

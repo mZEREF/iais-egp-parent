@@ -53,7 +53,7 @@
                                         <iais:row>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="checkbox" name="reqType" />Information
+                                                    <input type="checkbox"  />Information
                                                 </label>
                                                 <label>
                                                     <input type="checkbox" name="reqType" />Supporting Documents

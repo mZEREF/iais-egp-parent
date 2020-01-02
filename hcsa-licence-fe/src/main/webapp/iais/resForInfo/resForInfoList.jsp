@@ -76,7 +76,7 @@
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doView(reqInfoId) {
-        SOP.Crud.cfxSubmit("mainForm", "view",reqInfoId);
+        SOP.Crud.cfxSubmit("mainForm", "detail",reqInfoId);
     }
 
 </script>

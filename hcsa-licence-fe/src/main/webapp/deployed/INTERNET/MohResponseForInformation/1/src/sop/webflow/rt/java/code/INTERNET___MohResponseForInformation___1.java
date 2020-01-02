@@ -16,7 +16,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohResponseForInformation___1 extends BaseProcessClass {
 
-	private static final String DELEGATOR ="InspectReviseNcEmailDelegator";
+	private static final String DELEGATOR ="responseForInformationDelegator";
 
 
 	public void doRFI_OnStepProcess_0() throws Exception {

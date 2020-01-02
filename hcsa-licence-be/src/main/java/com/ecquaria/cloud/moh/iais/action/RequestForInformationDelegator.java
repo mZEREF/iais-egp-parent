@@ -360,25 +360,20 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setDueDateSubmission(Formatter.parseDate(ParamUtil.getString(request, "Due_date")));
         officerRemarks.append(ParamUtil.getString(request,"rfiTitle")+" ");
         licPremisesReqForInfoDto.setLicPremId(licPremId);
-        String[] reqType=ParamUtil.getStrings(request,"reqType");
-        boolean isNeedDoc;
-        if("on".equals(reqType[0])){
-            officerRemarks.append(" |Information");
-        }
-        if( "on".equals(reqType[1])){
-            isNeedDoc=true;
-            officerRemarks.append(" |Supporting documents");
-
-        }
-        else {
-            isNeedDoc=false;
+        String reqType=ParamUtil.getString(request,"reqType");
+        boolean isNeedDoc=false;
+        officerRemarks.append(" |Information");
+        if(!StringUtil.isEmpty(reqType)) {
+            if ("on".equals(reqType)) {
+                isNeedDoc = true;
+                officerRemarks.append(" |Supporting documents");
+            }
         }
         licPremisesReqForInfoDto.setNeedDocument(isNeedDoc);
         licPremisesReqForInfoDto.setOfficerRemarks(officerRemarks.toString());
-        if("on".equals(reqType[0])||"on".equals(reqType[1])) {
-            LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
-            //requestForInformationService.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1);
-        }
+
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
+        requestForInformationService.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1);
         // 		doCreateRequest->OnStepProcess
     }
     public void preNewRfi(BaseProcessClass bpc) {

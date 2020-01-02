@@ -298,8 +298,8 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SuccessPage" style="oblique">
    <position>{(1700,480)(1560,520)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preCancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1930,750)(1630,740)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(1930,750)(1460,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge2" style="oblique">
    <position>{(1560,520)(1450,430)}</position>
@@ -333,9 +333,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCancel" style="oblique">
    <position>{(1460,640)(1560,520)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doCancel" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ScrapPage" style="oblique">
-   <position>{(1500,740)(1460,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
    <position>{(1930,750)(1560,520)}</position>
@@ -389,8 +386,8 @@
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge2" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="1910" y="730">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/doAccept" value="&quot;accept&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preCancel" value="&quot;cancel&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge2" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doCancel" value="&quot;cancel&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge3" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="1910" y="100">
    <Description/>

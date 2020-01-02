@@ -14,7 +14,7 @@
     <JavaCode defClass="" executor="" methodName="doBack_OnStepProcess_0" name="doBack_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preRFI" x="224" y="112">
+  <AutomaticStep defClass="" executor="" icon="" name="preRFI" x="230" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -28,7 +28,7 @@
     <JavaCode defClass="" executor="" methodName="doSubmit_OnStepProcess_0" name="doSubmit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doRFI" x="524" y="112">
+  <AutomaticStep defClass="" executor="" icon="" name="doRFI" x="610" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -43,13 +43,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RFIPage" stageIndicator="" x="374" y="112">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RFIPage" stageIndicator="" x="370" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RfiDetailPage" stageIndicator="" x="674" y="112">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RfiDetailPage" stageIndicator="" x="720" y="110">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -59,7 +59,7 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Pages/WebPage/RFIPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preRFI" style="oblique">
-   <position>{(244,132)(394,132)}</position>
+   <position>{(250,120)(390,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doBack" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(844,272)(544,272)}</position>
@@ -77,19 +77,22 @@
    <position>{(1144,132)(844,272)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/RfiDetailPage" style="oblique">
-   <position>{(694,132)(844,132)}</position>
+   <position>{(740,130)(844,132)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/RfiDetailPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRFI" style="oblique">
-   <position>{(544,132)(694,132)}</position>
+   <position>{(630,120)(740,130)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doRFI" linkstyle="Direct" name="" sourceName="/Pages/WebPage/RFIPage" style="oblique">
-   <position>{(394,132)(544,132)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doRFI" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(515,150)(630,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preRFI" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doBack" style="oblique">
-   <position>{(544,272)(244,132)}</position>
+   <position>{(544,272)(250,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preRFI" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
-   <position>{(120,120)(244,132)}</position>
+   <position>{(120,120)(250,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/RFIPage" style="oblique">
+   <position>{(390,120)(515,150)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -98,6 +101,10 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/doSubmit" value="&quot;submit&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doRFI" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="470" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/doRFI" value="&quot;detail&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

@@ -68,21 +68,23 @@
                                         <iais:row style="text-align:center;">
                                             <iais:value width="18">
                                                 <label>
-                                                    <textarea rows="10" cols="100">${licPreReqForInfoDto.userReply}</textarea>
+                                                    <textarea name="userReply" rows="10" cols="100">${licPreReqForInfoDto.userReply}</textarea>
                                                 </label>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:row >
-                                            <iais:value width="18">
-                                                <label>
-                                                    <input type="text" value="${licPreReqForInfoDto.docName}">
-                                                </label>
-                                            </iais:value>
-                                        </iais:row>
+                                        <c:if test="${licPreReqForInfoDto.needDocument}">
+                                            <iais:row>
+                                                <iais:value width="18">
+                                                    <label>
+                                                        <input name="uploadFile" type="file" >
+                                                    </label>
+                                                </iais:value>
+                                            </iais:row>
+                                        </c:if>
+
 
                                         <iais:action style="text-align:center;">
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doSubmit('${licPreReqForInfoDto.reqInfoId}')">Proceed to Submit</button>
                                         </iais:action>
                                     </iais:section>

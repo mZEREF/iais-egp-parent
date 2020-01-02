@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.ResponseForInformationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ import java.util.List;
 public class ResponseForInformationServiceImpl implements ResponseForInformationService {
     @Autowired
     ResponseForInformationClient responseForInformationClient;
-
+    @Autowired
+    FileRepoClient fileRepoClient;
 
 
     @Override
