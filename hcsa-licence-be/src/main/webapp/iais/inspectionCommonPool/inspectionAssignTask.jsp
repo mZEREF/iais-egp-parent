@@ -71,7 +71,7 @@
                           <label><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></label>
                         </iais:value>
                       </iais:row>
-                      <c:if test="${inspecTaskCreAndAssDto.inspectionLeads == null}">
+                      <c:if test="${inspecTaskCreAndAssDto.inspectionLeads != null}">
                         <iais:row>
                           <iais:field value="Inspection Lead"/>
                           <iais:value width="7">

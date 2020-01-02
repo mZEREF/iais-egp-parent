@@ -68,7 +68,7 @@
                           <label><c:out value="${inspecTaskCreAndAssDto.submitDt}"/></label>
                         </iais:value>
                       </iais:row>
-                      <c:if test="${inspecTaskCreAndAssDto.inspectionLeads == null}">
+                      <c:if test="${inspecTaskCreAndAssDto.inspectionLeads != null}">
                         <iais:row>
                           <iais:field value="Inspection Lead"/>
                           <iais:value width="7">

@@ -134,8 +134,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorStep1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectionAllotTaskInspectorPoolPage" style="rectanular">
    <position>{(680,120)(930,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/InspectionAllotTaskInspectorPoolPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
-   <position>{(1170,120)(1254,30)(770,30)(680,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
+   <position>{(1170,120)(1254,30)(532,30)(460,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorStep1" style="rectanular">
    <position>{(930,120)(1170,120)}</position>
@@ -206,13 +206,13 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="inspectionPoolType" name="InspectionAllotTaskInspectorSwitch1" x="1150" y="100">
    <Description/>
-   <SwitchCase component="/Pages/WebPage/InspectionAllotTaskInspectorPoolPage" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorAssign" value="&quot;assign&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSuccess" value="&quot;success&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorConfirm" value="&quot;confirm&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorPage" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSort" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSearch" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorPre" value=""/>
   </Switch>
  </Switches>
  <Branches/>
