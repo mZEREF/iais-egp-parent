@@ -193,14 +193,14 @@ public class InspectionServiceImpl implements InspectionService {
             userIdList = getUserIdList(orgUserDtoList, userIdList);
         }
         List<OrgUserDto> orgUserDtos = new ArrayList<>();
-        if(IaisCommonUtils.isEmpty(userIdList)){
+        if(!IaisCommonUtils.isEmpty(userIdList)){
             orgUserDtos = organizationClient.retrieveOrgUserAccount(userIdList).getEntity();
         }
         if(orgUserDtos != null && !(orgUserDtos.isEmpty())){
             for(OrgUserDto oDto:orgUserDtos){
                 List<TaskDto> taskDtoList = organizationClient.getTasksByUserId(oDto.getId()).getEntity();
                 String value = AppConsts.NO;
-                if(IaisCommonUtils.isEmpty(taskDtoList)){
+                if(!IaisCommonUtils.isEmpty(taskDtoList)){
                     value = getOptionValue(taskDtoList);
                 }
                 SelectOption so = new SelectOption(value, oDto.getDisplayName());
@@ -214,7 +214,7 @@ public class InspectionServiceImpl implements InspectionService {
     private String getOptionValue(List<TaskDto> taskDtoList) {
         String value = taskDtoList.get(0).getRefNo();
         taskDtoList.remove(0);
-        if(IaisCommonUtils.isEmpty(taskDtoList)) {
+        if(!IaisCommonUtils.isEmpty(taskDtoList)) {
             for (TaskDto tDto : taskDtoList) {
                 value = value + "," + tDto.getRefNo();
             }

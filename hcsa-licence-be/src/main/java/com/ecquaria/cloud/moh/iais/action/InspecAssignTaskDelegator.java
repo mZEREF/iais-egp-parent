@@ -281,7 +281,7 @@ public class InspecAssignTaskDelegator {
 
     private void setMapTaskId(BaseProcessClass bpc, List<TaskDto> commPools) {
         Map<String, String> appCorrIdTaskIdMap = new HashMap<>();
-        if(IaisCommonUtils.isEmpty(commPools)){
+        if(!IaisCommonUtils.isEmpty(commPools)){
             for(TaskDto td:commPools){
                 appCorrIdTaskIdMap.put(td.getRefNo(), td.getId());
             }
