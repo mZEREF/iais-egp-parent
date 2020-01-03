@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
@@ -69,9 +70,7 @@ public class BackendInboxDelegator {
             curRole = loginContext.getCurRoleId();
         }
 
-        ParamUtil.setSessionAttr(bpc.request, "curRole", curRole);
-
-        ParamUtil.setRequestAttr(bpc.request, "roleIds", selectOptionArrayList);
+        ParamUtil.setSessionAttr(bpc.request, "roleIds", (Serializable) selectOptionArrayList);
         AuditTrailHelper.auditFunction("Inspection Sup Assign", "Sup Assign Task");
 
     }
@@ -100,8 +99,7 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
         searchParam = getSearchParam(bpc);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String curRole = loginContext.getCurRoleId();
-        commPools = getCommPoolBygetUserId(loginContext.getUserId(),curRole);
+        commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption();
@@ -114,7 +112,7 @@ public class BackendInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
-
+        ParamUtil.setSessionAttr(bpc.request, "curRole", loginContext.getCurRoleId());
         String swithtype = (String)ParamUtil.getRequestAttr(bpc.request, "SearchSwitchType");
         if(swithtype == null || swithtype ==""){
             ParamUtil.setRequestAttr(bpc.request, "SearchSwitchType","search");
@@ -156,6 +154,11 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
         searchParam = getSearchParam(bpc);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if(ParamUtil.getString(bpc.request, "roleIds")!= null){
+            String curRole = ParamUtil.getRequestString(bpc.request, "roleIds");
+            ParamUtil.setSessionAttr(bpc.request,"curRole",curRole);
+            loginContext.setCurRoleId(curRole);
+        }
         application_no = ParamUtil.getString(bpc.request, "application_no");
         application_type = ParamUtil.getString(bpc.request, "application_type");
         application_status = ParamUtil.getString(bpc.request, "application_status");
@@ -335,6 +338,7 @@ public class BackendInboxDelegator {
                 Date date = new Date(lt);
                 String newdate = newformat.format(date);
                 item.setSubmitDate(newdate);
+                item.setPaymentstatus(MasterCodeUtil.getCodeDesc(item.getPaymentstatus()));
             }
 
             ParamUtil.setRequestAttr(bpc.request, "supTaskSearchResult", searchResult3);
@@ -342,7 +346,7 @@ public class BackendInboxDelegator {
         }else{
             ParamUtil.setRequestAttr(bpc.request, "supTaskSearchResult", null);
         }
-
+        ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
         Map<String,String> appNoUrl = new HashMap<>();
         if(commPools != null && commPools.size() >0){
             for (TaskDto item:commPools

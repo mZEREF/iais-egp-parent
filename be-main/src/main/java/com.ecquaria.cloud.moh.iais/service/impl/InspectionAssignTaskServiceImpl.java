@@ -242,6 +242,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto);
     }
 
+    @Override
+    public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId) {
+        return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+    }
+
     private ApplicationDto updateApplication(ApplicationDto applicationDto, String appStatus) {
         applicationDto.setStatus(appStatus);
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -298,18 +303,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public ApplicationDto getApplicationDtoByAppNo(String appNo){
         return inspectionTaskClient.getApplicationDtoByAppNo(appNo).getEntity();
     }
-
-    /**
-      * @author: shicheng
-      * @Date 2019/11/22
-      * @Param: serviceId
-      * @return: HcsaServiceDto
-      * @Descripation: get HcsaServiceDto By Service Id
-      */
-    public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
-        return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
-    }
-
     /**
       * @author: shicheng
       * @Date 2019/11/23

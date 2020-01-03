@@ -2,10 +2,13 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +33,8 @@ import java.util.Map;
 public class BackendAjaxController {
     @Autowired
     InspectionService inspectionService;
-
+    @Autowired
+    InspectionAssignTaskService inspectionAssignTaskService;
     @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
@@ -44,9 +48,17 @@ public class BackendAjaxController {
 
             QueryHelp.setMainSql("inspectionQuery", "AppByGroupAjax", searchParamAjax);
             SearchResult<InspectionAppInGroupQueryDto> ajaxResult = inspectionService.searchInspectionBeAppGroupAjax(searchParamAjax);
-            for(InspectionAppInGroupQueryDto iDto : ajaxResult.getRows()){
-                //String colour = get
+            Map<String,String> serviceNameMap = new HashMap<>();
+            for (InspectionAppInGroupQueryDto item:ajaxResult.getRows()
+                 ) {
+                HcsaServiceDto hcsaServiceDto = inspectionAssignTaskService.getHcsaServiceDtoByServiceId(item.getServiceId());
+                serviceNameMap.put(hcsaServiceDto.getId(),hcsaServiceDto.getSvcName());
+                item.setStatus(MasterCodeUtil.getCodeDesc(item.getStatus()));
+                if(item.getHciCode()==null){
+                    item.setHciCode("N/A");
+                }
             }
+            map.put("serviceName", serviceNameMap);
             map.put("appNoUrl", appNoUrl);
             map.put("ajaxResult", ajaxResult);
             map.put("result", "Success");
