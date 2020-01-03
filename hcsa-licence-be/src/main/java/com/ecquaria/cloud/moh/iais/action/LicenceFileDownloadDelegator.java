@@ -32,6 +32,7 @@ public class LicenceFileDownloadDelegator {
     @Autowired
     private TaskService taskService;
     private  List<ApplicationDto> list=new ArrayList<>();
+    private List<ApplicationDto> requestForInfList=new ArrayList<>();
     @Autowired
     private BroadcastService broadcastService;
 
@@ -39,6 +40,7 @@ public class LicenceFileDownloadDelegator {
     private LicenceFileDownloadService licenceFileDownloadService;
     public  void start (BaseProcessClass bpc){
         list.clear();
+        requestForInfList.clear();
         logAbout("start");
 
     }
@@ -49,6 +51,8 @@ public class LicenceFileDownloadDelegator {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
 
              licenceFileDownloadService.compress(list);
+
+             licenceFileDownloadService.requestForInfList(requestForInfList);
 
             for(ApplicationDto applicationDto:list) {
                 applicationDto.setAuditTrailDto(intranet);

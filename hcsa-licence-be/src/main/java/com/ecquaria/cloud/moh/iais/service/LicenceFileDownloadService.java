@@ -14,6 +14,6 @@ public interface LicenceFileDownloadService {
     Boolean  download(ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto);
     void compress(List<ApplicationDto> list);
     List<ApplicationDto> listApplication();
-
+    void requestForInfList(List<ApplicationDto> list);
     Boolean changeFeApplicationStatus();
 }

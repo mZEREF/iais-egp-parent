@@ -176,11 +176,22 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     @Override
+    public void requestForInfList(List<ApplicationDto> list) {
+
+        List<ApplicationDto> entity = applicationClient.getRequesForInfList().getEntity();
+        list.addAll(entity);
+
+    }
+
+    @Override
     public Boolean changeFeApplicationStatus() {
-
-
-
-        return null;
+        int status = applicationClient.updateStatus("AGST002").getStatusCode();
+        if(status==200){
+            return true;
+        }else if(status==500){
+            return false;
+        }
+        return false;
     }
 
     @Override
@@ -201,7 +212,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(!file.mkdirs()){
             file.mkdirs();
         }
-        deleteFile(file);
+
     }
 
     @Override
@@ -231,6 +242,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             if(processFileTrackDto!=null){
                                 processFileTrackDto.setStatus("save_success");
                                 changeStatus(processFileTrackDto);
+
+                           /*     Boolean aBoolean1 = changeFeApplicationStatus();*/
+
                                 saveFileRepo();
                             }
                         }
@@ -264,9 +278,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
         processFileTrackDto.setAuditTrailDto(batchJobDto);
-
-
+        processFileTrackDto.setStatus("APTY003");
        /* systemClient.updateProcessFileTrack(processFileTrackDto);*/
+
     }
 
 
@@ -380,18 +394,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
 
-    private void deleteFile(File file){
-         if(file.isDirectory()){
-             File[] files = file.listFiles();
-             for(File f:files){
-                 deleteFile(f);
-             }
-         }else{
-             if(file.exists()&&file.getName().endsWith(fileFormat)){
-                 file.delete();
-             }
-         }
-    }
 
     private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto){
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
