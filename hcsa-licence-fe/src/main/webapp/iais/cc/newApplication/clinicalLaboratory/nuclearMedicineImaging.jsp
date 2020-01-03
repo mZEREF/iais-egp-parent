@@ -35,11 +35,12 @@
                           <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-5 control-label formtext ">
                               <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Select Service Personnel</label>
+                              <span class="mandatory">*</span>
                               <span class="upload_controls"></span>
                             </div>
                             <div class="col-sm-5">
                               <div class="">
-                                <iais:select cssClass="personnelSel"  name="personnelSel"  codeCategory="CATE_ID_SERVICE_PERSONNEL_PSN_TYPE" value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
+                                <iais:select cssClass="personnelSel"  name="personnelSel" options="ServicePersonnelType" value="${appSvcPersonnelDto.personnelType}" firstOption="Please Select"></iais:select>
                                 <span class="error-msg" name="iaisErrorMsg" id=""></span>
                               </div>
                             </div>

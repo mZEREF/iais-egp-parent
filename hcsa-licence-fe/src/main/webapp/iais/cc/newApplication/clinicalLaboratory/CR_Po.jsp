@@ -144,10 +144,23 @@
               </c:if>
               <div class="row">
                 <div class="col-sm-4">
+                  <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
+                </div>
+              </div>
+              <br/>
+              <br/>
+              <div class="row">
+                <div class="col-sm-4">
                   Deputy Principal Officer(Optional):
                 </div>
                 <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
                 <div class="col-sm-4" >
+                  <c:if test="${ReloadPrincipalOfficers ==null ||ReloadPrincipalOfficers.size()==0}">
+                    <c:set var="flag" value="-1"/>
+                  </c:if>
+                  <c:if test="${ReloadPrincipalOfficers !=null && ReloadPrincipalOfficers.size()>0}">
+                    <c:set var="flag" value="0"/>
+                  </c:if>
                   <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
                     <c:set var="flag" value="1"/>
                   </c:if>
@@ -182,8 +195,10 @@
               <c:set var="deputy" value="${ReloadDeputyPrincipalOfficers[status.index]}"/>
             </c:if>
             <div class="panel-main-content">
+              <c:if test="${status.first}">
+              <h2>Deputy Principal Officer</h2>
+              </c:if>
               <div class="deputyPrincipalOfficers">
-                <h2>Deputy Principal Officer</h2>
                 <div class="row">
                   <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
@@ -287,6 +302,11 @@
             </div>
           </c:forEach>
         </c:if>
+              <div class="row">
+                <div class="col-sm-6">
+                  <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
+                </div>
+              </div>
           </div>
         </div>
       </div>
@@ -324,5 +344,43 @@
 
     });
 
+
+    $('#addPoBtn').click(function () {
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/principal-officer-html',
+            'dataType':'text',
+            'type':'GET',
+            'success':function (data) {
+                console.log("suc");
+                $('.po-content:last').after(data);
+
+                poSelect();
+
+            },
+            'error':function (data) {
+                console.log("err");
+            }
+        });
+
+    });
+
+  $('#addDpoBtn').click(function () {
+      $.ajax({
+          'url':'${pageContext.request.contextPath}/deputy-principal-officer-html',
+          'dataType':'text',
+          'type':'GET',
+          'success':function (data) {
+              console.log("suc");
+              $('.deputyPrincipalOfficers:last').after(data);
+
+              poSelect();
+
+          },
+          'error':function (data) {
+              console.log("err");
+          }
+      });
+
+  });
 
 </script>

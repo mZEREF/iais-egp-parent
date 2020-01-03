@@ -68,10 +68,9 @@ public class ClinicalLaboratoryDelegator {
     public static final String  GOVERNANCEOFFICERSDTO = "GovernanceOfficersDto";
     public static final String  GOVERNANCEOFFICERSDTOLIST = "GovernanceOfficersList";
     public static final String  APPSVCRELATEDINFODTO ="AppSvcRelatedInfoDto";
-    //public static final String  APPSVCRELATEDINFOMAP = "AppsvcRelatedInfoMap";
     public static final String  ERRORMAP_GOVERNANCEOFFICERS = "errorMap_governanceOfficers";
     public static final String  RELOADSVCDOC = "ReloadSvcDoc";
-    //public static final String  SERVICEPERSONNELCONFIG = "ServicePersonnelConfig";
+    public static final String  SERVICEPERSONNELTYPE = "ServicePersonnelType";
 
 
     //dropdown
@@ -332,14 +331,8 @@ public class ClinicalLaboratoryDelegator {
         cgoSelectList.add(sp1);
         ParamUtil.setSessionAttr(bpc.request, "CgoSelectList", (Serializable) cgoSelectList);
 
-        List<SelectOption> idTypeSelectList = new ArrayList<>();
-        SelectOption idType0 = new SelectOption("-1", "Select Personnel");
-        idTypeSelectList.add(idType0);
-        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
-        idTypeSelectList.add(idType1);
-        SelectOption idType2 = new SelectOption("FIN", "FIN");
-        idTypeSelectList.add(idType2);
-        ParamUtil.setSessionAttr(bpc.request, DROPWOWN_IDTYPESELECT, (Serializable) idTypeSelectList);
+        List<SelectOption> idTypeSelectList = getIdTypeSelOp();
+        ParamUtil.setRequestAttr(bpc.request, DROPWOWN_IDTYPESELECT, idTypeSelectList);
 
         List<HcsaServiceDto> hcsaServiceDtoList= (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         String currentSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
@@ -446,8 +439,8 @@ public class ClinicalLaboratoryDelegator {
             if(principalOfficersDtos.size() > mandatory){
                 mandatory = principalOfficersDtos.size();
             }
-            if(deputyPrincipalOfficersDtos.size() > mandatory){
-                mandatory = deputyPrincipalOfficersDtos.size();
+            if(deputyPrincipalOfficersDtos.size() > deputyMandatory){
+                deputyMandatory = deputyPrincipalOfficersDtos.size();
             }
         }
         //reload
@@ -456,22 +449,11 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
         ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
 
-        List<SelectOption> assignSelectList = new ArrayList<>();
-        SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
-        SelectOption assignOp2 = new SelectOption("newOfficer", "I'd like to add a new personnel");
-        assignSelectList.add(assignOp1);
-        assignSelectList.add(assignOp2);
+        List<SelectOption> assignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
 
-        List<SelectOption> MedAlertSelectList = new ArrayList<>();
-        SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
-        MedAlertSelectList.add(idType0);
-        SelectOption idType1 = new SelectOption("Email", "Email");
-        MedAlertSelectList.add(idType1);
-        SelectOption idType2 = new SelectOption("SMS", "SMS");
-        MedAlertSelectList.add(idType2);
+        List<SelectOption> MedAlertSelectList = getMedAlertSelectList(true);
         ParamUtil.setRequestAttr(bpc.request, "MedAlertSelect", MedAlertSelectList);
-
 
         List<SelectOption> deputyFlagSelect = new ArrayList<>();
         SelectOption deputyFlagOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
@@ -1003,9 +985,8 @@ public class ClinicalLaboratoryDelegator {
     public void prepareServicePersonnel(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
-        //List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList  =serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
-
         int mandatory = 0;
         if(hcsaSvcPersonnelList != null && !hcsaSvcPersonnelList.isEmpty()){
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
@@ -1025,6 +1006,11 @@ public class ClinicalLaboratoryDelegator {
         }
 
         ParamUtil.setRequestAttr(bpc.request, "ServicePersonnelMandatory", mandatory);
+
+
+        List<SelectOption> personnelTypeSel = genPersonnelTypeSel(currentSvcCod);
+        ParamUtil.setRequestAttr(bpc.request, SERVICEPERSONNELTYPE, personnelTypeSel);
+
 
         List<SelectOption> designation = new ArrayList<>();
         SelectOption designationOp1 = new SelectOption("Diagnostic radiographer", "Diagnostic radiographer");
@@ -1053,22 +1039,24 @@ public class ClinicalLaboratoryDelegator {
 
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
-        if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
-            appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request);
-            appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
+        List<String> personnelTypeList = new ArrayList<>();
+        List<SelectOption> personnelTypeSel = genPersonnelTypeSel(currentSvcCod);
+        for(SelectOption sp:personnelTypeSel){
+            personnelTypeList.add(sp.getValue());
         }
 
+        appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList);
+        appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtos);
 
-        //:todo
-        if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)){
+       /* if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
 
-        }
-        if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)){
+        }else if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)){
 
-        }
-        if(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)){
-
-        }
+        }else if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)){
+            //:todo
+        }else if(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)){
+            //:todo
+        }*/
 
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
 
@@ -1185,7 +1173,7 @@ public class ClinicalLaboratoryDelegator {
         String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
 
         //ID Type
-        List<SelectOption> idTypeList = (List<SelectOption>) ParamUtil.getSessionAttr(request, DROPWOWN_IDTYPESELECT);
+        List<SelectOption> idTypeList = getIdTypeSelOp();
         Map<String,String>  idTypeAttr = new HashMap<>();
         idTypeAttr.put("name", "idType");
         idTypeAttr.put("style", "display: none;");
@@ -1287,50 +1275,58 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request){
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = new ArrayList<>();
-        AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
-        String assignSelect = ParamUtil.getString(request, "assignSelect");
         String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
-        String salutation = ParamUtil.getString(request, "salutation");
-        String name = ParamUtil.getString(request, "name");
-        String idType = ParamUtil.getString(request, "idType");
-        String idNo = ParamUtil.getString(request, "idNo");
-        String designation = ParamUtil.getString(request, "designation");
-        String mobileNo = ParamUtil.getString(request, "mobileNo");
-        String officeTelNo = ParamUtil.getString(request, "officeTelNo");
-        String emailAddress = ParamUtil.getString(request, "emailAddress");
-        poDto.setAssignSelect(assignSelect);
-        poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-        poDto.setSalutation(salutation);
-        poDto.setName(name);
-        poDto.setIdType(idType);
-        poDto.setIdNo(idNo);
-        poDto.setOfficeTelNo(officeTelNo);
-        poDto.setDesignation(designation);
-        poDto.setMobileNo(mobileNo);
-        poDto.setEmailAddr(emailAddress);
-        appSvcPrincipalOfficersDtos.add(poDto);
+
+        String [] assignSelect = ParamUtil.getStrings(request, "assignSelect");
+        String [] salutation = ParamUtil.getStrings(request, "salutation");
+        String [] name = ParamUtil.getStrings(request, "name");
+        String [] idType = ParamUtil.getStrings(request, "idType");
+        String [] idNo = ParamUtil.getStrings(request, "idNo");
+        String [] designation = ParamUtil.getStrings(request, "designation");
+        String [] mobileNo = ParamUtil.getStrings(request, "mobileNo");
+        String [] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
+        String [] emailAddress = ParamUtil.getStrings(request, "emailAddress");
+        if(assignSelect!=null && assignSelect.length>0){
+            for(int i=0 ;i<assignSelect.length;i++){
+                AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
+                poDto.setAssignSelect(assignSelect[i]);
+                poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                poDto.setSalutation(salutation[i]);
+                poDto.setName(name[i]);
+                poDto.setIdType(idType[i]);
+                poDto.setIdNo(idNo[i]);
+                poDto.setOfficeTelNo(officeTelNo[i]);
+                poDto.setDesignation(designation[i]);
+                poDto.setMobileNo(mobileNo[i]);
+                poDto.setEmailAddr(emailAddress[i]);
+                appSvcPrincipalOfficersDtos.add(poDto);
+            }
+        }
+        //depo
         if("1".equals(deputySelect)){
-            String deputySalutation = ParamUtil.getString(request, "deputySalutation");
-            String deputyDesignation = ParamUtil.getString(request, "deputyDesignation");
-            String deputyName = ParamUtil.getString(request, "deputyName");
-            String deputyIdType = ParamUtil.getString(request, "deputyIdType");
-            String deputyIdNo = ParamUtil.getString(request, "deputyIdNo");
-            String deputyMobileNo = ParamUtil.getString(request, "deputyMobileNo");
-
-            String modeOfMedAlert = ParamUtil.getString(request, "modeOfMedAlert");
-            String deputyEmailAddr = ParamUtil.getString(request, "deputyEmailAddr");
-            AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
-            dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-            dpoDto.setDesignation(deputyDesignation);
-            dpoDto.setEmailAddr(deputyEmailAddr);
-            dpoDto.setSalutation(deputySalutation);
-            dpoDto.setName(deputyName);
-            dpoDto.setIdType(deputyIdType);
-            dpoDto.setIdNo(deputyIdNo);
-            dpoDto.setMobileNo(deputyMobileNo);
-
-            dpoDto.setModeOfMedAlert(modeOfMedAlert);
-            appSvcPrincipalOfficersDtos.add(dpoDto);
+            String [] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
+            String [] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
+            String [] deputyName = ParamUtil.getStrings(request, "deputyName");
+            String [] deputyIdType = ParamUtil.getStrings(request, "deputyIdType");
+            String [] deputyIdNo = ParamUtil.getStrings(request, "deputyIdNo");
+            String [] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
+            String [] modeOfMedAlert = ParamUtil.getStrings(request, "modeOfMedAlert");
+            String [] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
+            if(deputyDesignation != null && deputyDesignation.length>0){
+                for(int i=0 ;i <deputyDesignation.length;i++){
+                    AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
+                    dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                    dpoDto.setDesignation(deputyDesignation[i]);
+                    dpoDto.setEmailAddr(deputyEmailAddr[i]);
+                    dpoDto.setSalutation(deputySalutation[i]);
+                    dpoDto.setName(deputyName[i]);
+                    dpoDto.setIdType(deputyIdType[i]);
+                    dpoDto.setIdNo(deputyIdNo[i]);
+                    dpoDto.setMobileNo(deputyMobileNo[i]);
+                    dpoDto.setModeOfMedAlert(modeOfMedAlert[i]);
+                    appSvcPrincipalOfficersDtos.add(dpoDto);
+                }
+            }
         }
 
         return  appSvcPrincipalOfficersDtos;
@@ -1537,7 +1533,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
 
-    public List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request){
+    public List<AppSvcPersonnelDto> genAppSvcPersonnelDtoList(HttpServletRequest request, List<String> personnelTypeList){
         List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
         String [] personnelSels =  ParamUtil.getStrings(request, "personnelSel");
         String [] designations = ParamUtil.getStrings(request, "designation");
@@ -1550,7 +1546,7 @@ public class ClinicalLaboratoryDelegator {
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
                 String personnelSel = personnelSels[i];
                 appSvcPersonnelDto.setPersonnelType(personnelSel);
-                if(StringUtil.isEmpty(personnelSel)){
+                if(StringUtil.isEmpty(personnelSel) || !personnelTypeList.contains(personnelSel)){
                     appSvcPersonnelDtos.add(appSvcPersonnelDto);
                     continue;
                 }
@@ -1591,7 +1587,8 @@ public class ClinicalLaboratoryDelegator {
     public @ResponseBody String addNuclearMedicineImagingHtml(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html start ...."));
         String sql = SqlMap.INSTANCE.getSql("servicePersonnel", "NuclearMedicineImaging").getSqlStr();
-        List<SelectOption> personnel = (List) ParamUtil.getSessionAttr(request, "NuclearMedicineImagingPersonnel");
+        String currentSvcCod = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
+        List<SelectOption> personnel = genPersonnelTypeSel(currentSvcCod);
         Map<String,String> personnelAttr = new HashMap<>();
         personnelAttr.put("name", "personnelSel");
         personnelAttr.put("class", "personnelSel");
@@ -1607,8 +1604,159 @@ public class ClinicalLaboratoryDelegator {
         sql = sql.replace("(1)", personnelSelectStr);
         sql = sql.replace("(2)", designationSelectStr);
 
-        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html start ...."));
+        log.debug(StringUtil.changeForLog("the add NuclearMedicineImaging html end ...."));
         return sql;
+    }
+
+    private List<SelectOption> genPersonnelTypeSel(String currentSvcCod){
+        List<SelectOption> personnelTypeSel = new ArrayList<>();
+        if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(currentSvcCod)){
+            SelectOption personnelTypeOp1 = new SelectOption("SPPT001", "Radiology Professional");
+            SelectOption personnelTypeOp2 = new SelectOption("SPPT002", "Medical Physicist");
+            SelectOption personnelTypeOp3 = new SelectOption("SPPT003", "Radiation Safety Officer");
+            SelectOption personnelTypeOp4 = new SelectOption("SPPT004", "Registered Nurse");
+            personnelTypeSel.add(personnelTypeOp1);
+            personnelTypeSel.add(personnelTypeOp2);
+            personnelTypeSel.add(personnelTypeOp3);
+            personnelTypeSel.add(personnelTypeOp4);
+        }else if(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(currentSvcCod)){
+            SelectOption personnelTypeOp2 = new SelectOption("SPPT002", "Medical Physicist");
+            SelectOption personnelTypeOp3 = new SelectOption("SPPT003", "Radiation Safety Officer");
+            personnelTypeSel.add(personnelTypeOp2);
+            personnelTypeSel.add(personnelTypeOp3);
+        }else if(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(currentSvcCod)){
+
+        }else if(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(currentSvcCod)){
+
+        }
+        return personnelTypeSel;
+    }
+
+
+    @RequestMapping(value = "/principal-officer-html", method = RequestMethod.GET)
+    public @ResponseBody String addPrincipalOfficeHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the add addPrincipalOfficeHtml html start ...."));
+        String svcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generatePrincipalOfficersHtml").getSqlStr();
+
+        //assign select
+        List<SelectOption> assignPrincipalOfficerSel = getAssignPrincipalOfficerSel(svcId, false);
+        Map<String,String> assignPrincipalOfficerAttr = new HashMap<>();
+        assignPrincipalOfficerAttr.put("name", "assignSelect");
+        assignPrincipalOfficerAttr.put("class", "poSelect");
+        assignPrincipalOfficerAttr.put("style", "display: none;");
+        String principalOfficerSelStr = NewApplicationDelegator.generateDropDownHtml(assignPrincipalOfficerAttr, assignPrincipalOfficerSel, NewApplicationDelegator.FIRESTOPTION);
+
+        //salutation
+        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        Map<String,String> salutationAttr = new HashMap<>();
+        salutationAttr.put("name", "salutation");
+        salutationAttr.put("style", "display: none;");
+        String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+
+        //ID Type
+        List<SelectOption> idTypeList = getIdTypeSelOp();
+        Map<String,String>  idTypeAttr = new HashMap<>();
+        idTypeAttr.put("name", "idType");
+        idTypeAttr.put("style", "display: none;");
+        String idTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(idTypeAttr, idTypeList, null);
+
+        //Designation
+        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+        Map<String,String> designationAttr = new HashMap<>();
+        designationAttr.put("name", "designation");
+        designationAttr.put("style", "display: none;");
+        String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+
+        sql = sql.replace("(1)", principalOfficerSelStr);
+        sql = sql.replace("(2)", salutationSelectStr);
+        sql = sql.replace("(3)", idTypeSelectStr);
+        sql = sql.replace("(4)", designationSelectStr);
+
+        log.debug(StringUtil.changeForLog("the add addPrincipalOfficeHtml html end ...."));
+        return sql;
+    }
+
+
+    @RequestMapping(value = "/deputy-principal-officer-html", method = RequestMethod.GET)
+    public @ResponseBody String addDeputyPrincipalOfficeHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html start ...."));
+        String sql = SqlMap.INSTANCE.getSql("principalOfficers", "generateDeputyPrincipalOfficersHtml").getSqlStr();
+
+        //salutation
+        List<SelectOption> salutationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        Map<String,String> salutationAttr = new HashMap<>();
+        salutationAttr.put("name", "deputySalutation");
+        salutationAttr.put("style", "display: none;");
+        String salutationSelectStr = NewApplicationDelegator.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION);
+
+        //ID Type
+        List<SelectOption> idTypeList = getIdTypeSelOp();
+        Map<String,String>  idTypeAttr = new HashMap<>();
+        idTypeAttr.put("name", "deputyIdType");
+        idTypeAttr.put("style", "display: none;");
+        String idTypeSelectStr = NewApplicationDelegator.generateDropDownHtml(idTypeAttr, idTypeList, null);
+
+        //Designation
+        List<SelectOption> designationList= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DESIGNATION);
+        Map<String,String> designationAttr = new HashMap<>();
+        designationAttr.put("name", "deputyDesignation");
+        designationAttr.put("style", "display: none;");
+        String designationSelectStr = NewApplicationDelegator.generateDropDownHtml(designationAttr, designationList, NewApplicationDelegator.FIRESTOPTION);
+
+        //MedAlert
+        List<SelectOption> medAlertSelectList = getMedAlertSelectList(false);
+        Map<String,String> medAlertSelectAttr = new HashMap<>();
+        medAlertSelectAttr.put("name", "modeOfMedAlert");
+        medAlertSelectAttr.put("style", "display: none;");
+        String medAlertSelectStr = NewApplicationDelegator.generateDropDownHtml(medAlertSelectAttr, medAlertSelectList, NewApplicationDelegator.FIRESTOPTION);
+
+        sql = sql.replace("(1)", salutationSelectStr);
+        sql = sql.replace("(2)", idTypeSelectStr);
+        sql = sql.replace("(3)", designationSelectStr);
+        sql = sql.replace("(4)", medAlertSelectStr);
+
+        log.debug(StringUtil.changeForLog("the add addDeputyPrincipalOfficeHtml html end ...."));
+        return sql;
+    }
+
+
+    private List<SelectOption> getAssignPrincipalOfficerSel(String svcId, boolean needFirstOpt){
+        List<SelectOption> assignSelectList = new ArrayList<>();
+        if(needFirstOpt){
+            SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+            assignSelectList.add(assignOp1);
+        }
+        SelectOption assignOp2 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        assignSelectList.add(assignOp2);
+        //todo his
+
+
+        return  assignSelectList;
+    }
+
+    private List<SelectOption> getIdTypeSelOp(){
+        List<SelectOption> idTypeSelectList = new ArrayList<>();
+        SelectOption idType0 = new SelectOption("-1", "Select Personnel");
+        idTypeSelectList.add(idType0);
+        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
+        idTypeSelectList.add(idType1);
+        SelectOption idType2 = new SelectOption("FIN", "FIN");
+        idTypeSelectList.add(idType2);
+        return idTypeSelectList;
+    }
+
+    private List<SelectOption> getMedAlertSelectList(boolean needFirstOp){
+        List<SelectOption> MedAlertSelectList = new ArrayList<>();
+        if(needFirstOp){
+            SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
+            MedAlertSelectList.add(idType0);
+        }
+        SelectOption idType1 = new SelectOption("Email", "Email");
+        MedAlertSelectList.add(idType1);
+        SelectOption idType2 = new SelectOption("SMS", "SMS");
+        MedAlertSelectList.add(idType2);
+        return MedAlertSelectList;
     }
 
 

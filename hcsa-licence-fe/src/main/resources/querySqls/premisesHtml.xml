@@ -2,13 +2,18 @@
 <sqls catalog="premises">
     <sql key="premisesHtml" cached="no" remarks="generate Governance Officer Html">
         <![CDATA[
-<div class="row premContent" id="mainPrem">
+<div class="row premContent underLine" id="mainPrem">
     <div class="col-xs-12">
       <div class="form-horizontal">
         <div class="form-group premisesTypeDiv" id="premisesType">
           <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your premises type? <span class="mandatory">*</span></label>
           <input class="premTypeValue" type="hidden" name="premType" value="">
           (1)
+          <div class="col-xs-6 col-md-2">
+            <div class="form-check">
+                <b class=" removeBtn">X</b>
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="col-xs-12 col-md-4"></div>

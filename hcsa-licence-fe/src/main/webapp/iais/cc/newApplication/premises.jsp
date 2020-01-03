@@ -5,6 +5,21 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+<style>
+  .removeBtn{
+    color:red;
+    cursor: pointer;
+  }
+  .new-premise-form-conv{
+    border-top:1px solid #BABABA;
+    padding-top:40px;
+  }
+  .underLine{
+    border-top:1px solid #BABABA;
+    padding-top:40px;
+  }
+</style>
+
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -29,13 +44,10 @@
                       <p>Premises are your service operation sites that can either be at a fixed address<strong> - &#34;on-site&#34;</strong>, or in a mobile clinic or ambulance<strong> - &#34;conveyance&#34;</strong>.</p>
                     </div>
                   </div>
-                  <c:if test="${requestInformationConfig==null}">
-                    <button id="addPremBtn" type="button">Add Premises</button>
-                  </c:if>
                 </div>
                 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
                   <c:set value="${errorMap_premises[premIndexNo]}" var="errMsg"/>
-                  <div class="row premContent" id="mainPrem">
+                  <div class="row premContent <c:if test="${!status.first}">underLine</c:if>" id="mainPrem">
                     <c:set var="onSite" value="<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>" ></c:set>
                     <c:set var="conv" value="<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>" ></c:set>
                     <div class="col-xs-12">
@@ -68,6 +80,13 @@
                             </div>
                           </c:forEach>
 
+                          <c:if test="${!status.first && requestInformationConfig==null}">
+                          <div class="col-xs-6 col-md-2">
+                            <div class="form-check">
+                              <b class="removeBtn">X</b>
+                            </div>
+                          </div>
+                          </c:if>
                         </div>
                         <div class="row">
                           <div class="col-xs-12 col-md-4"></div>
@@ -371,6 +390,13 @@
                     </div>
                   </div>
                 </c:forEach>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <c:if test="${requestInformationConfig==null}">
+                      <button id="addPremBtn" type="button">Add Premises</button>
+                    </c:if>
+                  </div>
+                </div>
                 <div class="application-tab-footer">
                   <div class="row">
                     <div class="col-xs-12 col-sm-6 ">
@@ -433,6 +459,8 @@
         premSelect();
 
         retrieveAddr();
+
+        removePremises();
 
         //Binding method
         $('.premiseId').click(function(){
@@ -585,6 +613,8 @@ var retrieveAddr = function(){
 
                 premSelect();
 
+                removePremises();
+
                 retrieveAddr();
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy"
@@ -596,6 +626,14 @@ var retrieveAddr = function(){
             }
         });
     });
+
+  var removePremises = function () {
+      $('.removeBtn').click(function () {
+          $removeEle= $(this).closest('div.premContent');
+          $removeEle.remove();
+      });
+
+  }
 
 </script>
 
