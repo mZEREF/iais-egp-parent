@@ -24,7 +24,7 @@
                             <li class="complete" role="presentation"><a href="#tabDocuments"
                                                                         aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li class="complete" role="presentation"><a href="#tabInspection"
+                            <li id="ApplicationViewInspection" class="complete" role="presentation" style="display: block"><a href="#tabInspection"
                                                                         aria-controls="tabInspection" role="tab"
                                                                         data-toggle="tab">Inspection</a></li>
                             <li class="incomplete" role="presentation"><a href="#tabProcessing"
@@ -496,7 +496,7 @@
                                                             </select>
                                                         </td>
                                                     </tr>
-                                                    <tr id="lienceStartDate" class="hidden">
+                                                    <tr id="lienceStartDate">
                                                         <td>
                                                             <span>Lience Start Date</span>
                                                         </td>
@@ -587,7 +587,18 @@
     </div>
 </form>
 
+
 <script type="text/javascript">
+    $(document).ready(function(){
+        if('${applicationViewDto.applicationDto.status}' == 'APST003'||'${applicationViewDto.applicationDto.status}' == 'APST012'){
+            $('#ApplicationViewInspection').css('display','none');
+        }
+    });
+
+
+
+
+
     $("#submitButton").click(function () {
         var textarea = $("#internalRemarksId").val();
         if (textarea == "") {
@@ -615,12 +626,12 @@
 
 
     $('#verifiedDropdown').change(function verifiedChange() {
-        var verified= $("[name='verified']").val();
-        if(verified=="PROCLSD") {
-            $('#lienceStartDate').removeClass('hidden');
-        }else{
-            $('#lienceStartDate').addClass('hidden');
-        }
+        //var verified= $("[name='verified']").val();
+        // if(verified=="PROCLSD") {
+        //     $('#lienceStartDate').removeClass('hidden');
+        // }else{
+        //     $('#lienceStartDate').addClass('hidden');
+        // }
     });
 </script>
 

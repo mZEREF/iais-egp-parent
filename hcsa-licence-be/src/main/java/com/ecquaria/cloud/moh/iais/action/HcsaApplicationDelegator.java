@@ -180,8 +180,13 @@ public class HcsaApplicationDelegator {
 //            }
             String statusUpdate=MasterCodeUtil.getCodeDesc(applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getAppStatus());
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setAppStatus(statusUpdate);
-            String workingGroupName=applicationViewService.getWrkGrpName(applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getWrkGrpId());
-            applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup(workingGroupName);
+            String workGroupId = applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getWrkGrpId();
+            if (!StringUtil.isEmpty(workGroupId)){
+                String workingGroupName=applicationViewService.getWrkGrpName(workGroupId);
+                if (!StringUtil.isEmpty(workingGroupName)){
+                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup(workingGroupName);
+                }
+            }
         }
 
         //   rollback
@@ -201,7 +206,7 @@ public class HcsaApplicationDelegator {
 
         //add special stages
 
-        routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
+     //   routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
         routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");

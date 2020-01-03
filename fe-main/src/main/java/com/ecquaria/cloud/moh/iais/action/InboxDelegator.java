@@ -36,7 +36,7 @@ import java.util.Map;
 
 @Slf4j
 @Delegator("inboxDelegator")
-public class InboxDelegator {
+public class    InboxDelegator {
 
 
     @Autowired

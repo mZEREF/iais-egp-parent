@@ -68,7 +68,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public String getWrkGrpName(String id) {
-        WorkingGroupDto workingGroupDto=organizationClient.getWrkGrpById(id).getEntity();
+        WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(id).getEntity();
         return workingGroupDto.getGroupName();
     }
 
