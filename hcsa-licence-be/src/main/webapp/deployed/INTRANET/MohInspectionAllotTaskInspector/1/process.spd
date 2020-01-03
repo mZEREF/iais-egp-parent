@@ -212,7 +212,7 @@
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorPage" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSort" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSearch" value="&quot;search&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorPre" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorPre" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
