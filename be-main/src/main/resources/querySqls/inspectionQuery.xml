@@ -73,7 +73,7 @@
     </sql>
     <sql key="AppGroup"  remarks="query AppGroup items">
         <![CDATA[
-                SELECT DISTINCT T4.ID, T4.GROUP_NO, T1.APP_TYPE, T4.SUBMIT_DT, T4.PMT_STATUS, T5.COU
+                SELECT DISTINCT T4.ID, T4.GROUP_NO, T1.APP_TYPE, T4.SUBMIT_DT, T4.PMT_STATUS, T5.COU,T2.ID as COR_ID
                 FROM APPLICATION T1
                 JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
                 JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
