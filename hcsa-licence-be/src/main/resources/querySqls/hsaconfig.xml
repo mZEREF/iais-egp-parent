@@ -54,7 +54,7 @@
              <#if common??> and svc.is_common = :common</#if>
              <#if module??> and svc.module = :module</#if>
              <#if type??> and svc.[type] = :type</#if>
-             <#if svcSubType??> and hss.subtype_name = :svcSubType</#if>
+             <#if svcSubType??> and svc.svc_subtype_name = :svcSubType</#if>
         ]]>
 
     </sql>

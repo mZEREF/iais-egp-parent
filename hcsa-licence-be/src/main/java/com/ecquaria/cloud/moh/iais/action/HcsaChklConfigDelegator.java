@@ -82,6 +82,8 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH, null);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT, null);
         ParamUtil.setSessionAttr(request, "addedItemIdList", null);
         ParamUtil.setSessionAttr(request, "actionBtn", null);
 
