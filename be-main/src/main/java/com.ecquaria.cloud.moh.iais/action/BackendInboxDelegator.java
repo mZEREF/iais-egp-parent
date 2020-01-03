@@ -88,9 +88,6 @@ public class BackendInboxDelegator {
         hci_name = "";
         hci_address = "";
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String curRole = loginContext.getCurRoleId();
-        commPools = getCommPoolBygetUserId(loginContext.getUserId(),curRole);
     }
 
     /**
@@ -103,7 +100,8 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
         searchParam = getSearchParam(bpc);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-
+        String curRole = loginContext.getCurRoleId();
+        commPools = getCommPoolBygetUserId(loginContext.getUserId(),curRole);
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption();
