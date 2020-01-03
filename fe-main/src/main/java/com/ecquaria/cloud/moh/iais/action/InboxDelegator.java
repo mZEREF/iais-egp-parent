@@ -55,7 +55,7 @@ public class    InboxDelegator {
             .clz(InboxAppQueryDto.class)
             .searchAttr(InboxConst.APP_PARAM)
             .resultAttr(InboxConst.APP_RESULT)
-            .sortField("CREATED_DT").build();
+            .sortField("CREATED_DT").sortType(InboxConst.DESCENDING).build();
 
     private FilterParameter inboxParameter = new FilterParameter.Builder()
             .clz(InboxQueryDto.class)
@@ -305,9 +305,8 @@ public class    InboxDelegator {
     public void doDraft(BaseProcessClass bpc) throws IOException {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
-        String appNo = ParamUtil.getString(request, "app_action_type");
-        String action = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
-        log.debug("The prepareEdit start---"+action+"--"+appNo);
+        String appNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
+        String action = ParamUtil.getString(request, InboxConst.SWITCH_ACTION);
 //        String draftNo = inboxService.getDraftNumber(appNo);
         StringBuffer url = new StringBuffer();
         url.append("https://").append(bpc.request.getServerName())

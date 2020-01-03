@@ -26,7 +26,7 @@
         }
 
     }
-
+    doDraft
     function doSearchApp(){
         $("[name='crud_action_value']").val("app");
         submit('app','doSearch');
@@ -70,7 +70,7 @@
 
     function doDraft(appNo){
         if (appNo.indexOf("DN") !== -1 ||appNo.indexOf("DR") !== -1) {
-            $("[name='app_action_type']").val(appNo);
+            $("[name='crud_action_value']").val(appNo);
             submit('app','doDraft');
         }
     }
