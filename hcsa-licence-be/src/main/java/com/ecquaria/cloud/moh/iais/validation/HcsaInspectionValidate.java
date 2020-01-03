@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         InspectionShowDto showDto = (InspectionShowDto) ParamUtil.getSessionAttr(request,"inShowDto");
         Map<String, String> errMap = new HashMap<>();
         List<HcsaRiskInspectionMatrixDto> iDtoList = showDto.getInspectionDtoList();
-        List<HcsaRiskInspectionMatrixDto> editList = showDto.getInspectionDtoList();
+        List<HcsaRiskInspectionMatrixDto> editList = new ArrayList<>();
         for(HcsaRiskInspectionMatrixDto temp:iDtoList){
             if(temp.isCaEdit()||temp.isMjEdit()||temp.isMiEdit()){
                 editList.add(temp);

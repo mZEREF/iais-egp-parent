@@ -201,23 +201,23 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
-                        fdto.setInRightLowCaseCountherr(true);
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
+                        fdto.setInLeftHighCaseCounterr(true);
                     }else{
                         prLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
-                        fdto.setInRightLowCaseCountherr(false);
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
+                        fdto.setPrLeftHighCaseCounterr(true);
                     }
                 }
             }
         } catch (Exception e) {
             if(isIn){
                 inLeftHighNumFlag = false;
-                errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
                 fdto.setInRightLowCaseCountherr(true);
             }else{
                 prLeftHighNumFlag = false;
-                errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
                 fdto.setPrRightLowCaseCountherr(true);
             }
             e.printStackTrace();
@@ -227,10 +227,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
                     if(isIn&&inLeftHighNumFlag){
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
                         fdto.setInRightLowCaseCountherr(true);
                     }else if(!isIn&&prLeftHighNumFlag){
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
                         fdto.setPrRightLowCaseCountherr(true);
                     }
                 }

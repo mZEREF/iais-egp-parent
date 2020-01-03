@@ -182,11 +182,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
                         fdto.setAdRightLowCaseCountherr(true);
                     }else{
                         prLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
                         fdto.setDpRightLowCaseCountherr(true);
                     }
                 }
@@ -194,11 +194,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         } catch (Exception e) {
             if(isIn){
                 inLeftHighNumFlag = false;
-                errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
                 fdto.setAdRightLowCaseCountherr(true);
             }else{
                 prLeftHighNumFlag = false;
-                errMap.put(serviceCode + "prRightLowCaseCounth", "Invalid Number");
+                errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
                 fdto.setDpRightLowCaseCountherr(true);
             }
             e.printStackTrace();
@@ -208,10 +208,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
                     if(isIn&&inLeftHighNumFlag){
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "High Maximun cases and Moderate Minimax can only differ by 1");
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximun cases and Moderate Minimax can only differ by 1");
                         fdto.setAdRightLowCaseCountherr(true);
                     }else if(!isIn&&prLeftHighNumFlag){
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "High Maximun cases and Moderate Minimax can only differ by 1");
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", "High Maximun cases and Moderate Minimax can only differ by 1");
                         fdto.setDpRightLowCaseCountherr(true);
                     }
                 }

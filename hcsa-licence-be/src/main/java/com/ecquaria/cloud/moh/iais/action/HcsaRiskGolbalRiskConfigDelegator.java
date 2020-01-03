@@ -102,8 +102,8 @@ public class HcsaRiskGolbalRiskConfigDelegator {
             String newPreOrPostOps = ParamUtil.getString(request, fin.getServiceCode() + "newPreOrPostOps");
             String renewinpTypeOps = ParamUtil.getString(request, fin.getServiceCode() + "renewinpTypeOps");
             String renewPreOrPostOps = ParamUtil.getString(request, fin.getServiceCode() + "renewPreOrPostOps");
-            String instartdate = ParamUtil.getDate(request, fin.getServiceCode() + "instartdate");
-            String inEndDate = ParamUtil.getDate(request, fin.getServiceCode() + "inenddate");
+            String instartdate = ParamUtil.getString(request, fin.getServiceCode() + "instartdate");
+            String inEndDate = ParamUtil.getString(request, fin.getServiceCode() + "inenddate");
             hcsaRiskGolbalService.setGolShowDto(fin,maxLic,doLast,autoreop,newinpTypeOps,newPreOrPostOps,renewinpTypeOps,renewPreOrPostOps,instartdate,inEndDate);
         }
         ParamUtil.setSessionAttr(request, "golbalShowDto", golbalRiskShowDto);

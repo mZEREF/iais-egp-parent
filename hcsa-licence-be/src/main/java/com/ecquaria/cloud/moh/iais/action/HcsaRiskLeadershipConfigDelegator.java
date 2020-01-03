@@ -103,10 +103,10 @@ public class HcsaRiskLeadershipConfigDelegator {
             String inlefthigh = ParamUtil.getString(request, fin.getSvcCode() + "inlefthigh");
             String inrightlow = ParamUtil.getString(request, fin.getSvcCode() + "inrightlow");
             String inrightmod = ParamUtil.getString(request, fin.getSvcCode() + "inrightmod");
-            String inStartDate = ParamUtil.getDate(request, fin.getSvcCode() + "instartdate");
-            String inEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "inenddate");
-            String prStartDate = ParamUtil.getDate(request, fin.getSvcCode() + "prstartdate");
-            String prEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "prenddate");
+            String inStartDate = ParamUtil.getString(request, fin.getSvcCode() + "instartdate");
+            String inEndDate = ParamUtil.getString(request, fin.getSvcCode() + "inenddate");
+            String prStartDate = ParamUtil.getString(request, fin.getSvcCode() + "prstartdate");
+            String prEndDate = ParamUtil.getString(request, fin.getSvcCode() + "prenddate");
             hcsaRiskLeaderShipService.getOneFinDto(fin,prsource,prthershold,prleftmod,prlefthigh,prrightlow,prrightmod,insource,inthershold
                     ,inleftmod,inlefthigh,inrightlow,inrightmod,inStartDate,inEndDate,prStartDate,prEndDate);
             clearErrFlag(fin);

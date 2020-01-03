@@ -101,20 +101,20 @@ public class HcsaRiskIndividualConfigDelegator {
             String mjlefthigh = ParamUtil.getString(request, fin.getSvcCode() + "mjlefthigh");
             String mjrightlow = ParamUtil.getString(request, fin.getSvcCode() + "mjrightlow");
             String mjrightmod = ParamUtil.getString(request, fin.getSvcCode() + "mjrightmod");
-            String mjStartDate = ParamUtil.getDate(request, fin.getSvcCode() + "mjstartdate");
-            String mjEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "mjenddate");
+            String mjStartDate = ParamUtil.getString(request, fin.getSvcCode() + "mjstartdate");
+            String mjEndDate = ParamUtil.getString(request, fin.getSvcCode() + "mjenddate");
             String caleftmod = ParamUtil.getString(request, fin.getSvcCode() + "caleftmod");
             String calefthigh = ParamUtil.getString(request, fin.getSvcCode() + "calefthigh");
             String carightlow = ParamUtil.getString(request, fin.getSvcCode() + "carightlow");
             String carightmod = ParamUtil.getString(request, fin.getSvcCode() + "carightmod");
-            String caStartDate = ParamUtil.getDate(request, fin.getSvcCode() + "castartdate");
-            String caEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "caenddate");
+            String caStartDate = ParamUtil.getString(request, fin.getSvcCode() + "castartdate");
+            String caEndDate = ParamUtil.getString(request, fin.getSvcCode() + "caenddate");
             String mileftmod = ParamUtil.getString(request, fin.getSvcCode() + "mileftmod");
             String milefthigh = ParamUtil.getString(request, fin.getSvcCode() + "milefthigh");
             String mirightlow = ParamUtil.getString(request, fin.getSvcCode() + "mirightlow");
             String mirightmod = ParamUtil.getString(request, fin.getSvcCode() + "mirightmod");
-            String miStartDate = ParamUtil.getDate(request, fin.getSvcCode() + "mistartdate");
-            String miEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "mienddate");
+            String miStartDate = ParamUtil.getString(request, fin.getSvcCode() + "mistartdate");
+            String miEndDate = ParamUtil.getString(request, fin.getSvcCode() + "mienddate");
             hcsaRiskInspectionService.getOneFinDto(fin,caleftmod,calefthigh,carightlow,carightmod,caStartDate,caEndDate
                     ,mileftmod,milefthigh,mirightlow,mirightmod,miStartDate,miEndDate
                     ,mjleftmod,mjlefthigh,mjrightlow,mjrightmod,mjStartDate,mjEndDate);

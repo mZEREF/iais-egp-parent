@@ -93,8 +93,8 @@ public class HcsaRiskWeightageConfigDelegator {
             String finan = ParamUtil.getString(request, fin.getServiceCode() + "fin");
             String leadership = ParamUtil.getString(request, fin.getServiceCode() + "lea");
             String legislative = ParamUtil.getString(request, fin.getServiceCode() + "leg");
-            String inStartDate = ParamUtil.getDate(request, fin.getServiceCode() + "instartdate");
-            String inEndDate = ParamUtil.getDate(request, fin.getServiceCode() + "inenddate");
+            String inStartDate = ParamUtil.getString(request, fin.getServiceCode() + "instartdate");
+            String inEndDate = ParamUtil.getString(request, fin.getServiceCode() + "inenddate");
             hcsaRiskWeightageService.getOneWdto(fin,lastInp,secLastInp,finan,leadership,legislative,inStartDate,inEndDate);
         }
         weightageShowDto.setWeightageDtoList(finList);

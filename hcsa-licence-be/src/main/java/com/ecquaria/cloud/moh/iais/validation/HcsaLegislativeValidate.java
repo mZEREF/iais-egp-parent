@@ -168,19 +168,19 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inLeftHighNum = Integer.parseInt(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     inLeftHighNumFlag = false;
-                    errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                    errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
                 }
             }
         } catch (Exception e) {
             inLeftHighNumFlag = false;
-            errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+            errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
             e.printStackTrace();
         }
         try {
             if(!StringUtil.isEmpty(inRightMod)){
                 inRightModNum = Integer.parseInt(inRightMod);
                 if((inRightModNum +1 != inLeftHighNum)&&inLeftHighNumFlag){
-                    errMap.put(serviceCode + "inRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                    errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
                 }
             }
         } catch (Exception e) {

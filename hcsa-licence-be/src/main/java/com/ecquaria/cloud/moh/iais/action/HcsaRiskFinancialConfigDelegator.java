@@ -107,10 +107,10 @@ public class HcsaRiskFinancialConfigDelegator {
             String inlefthigh = ParamUtil.getString(request, fin.getServiceCode() + "inlefthigh");
             String inrightlow = ParamUtil.getString(request, fin.getServiceCode() + "inrightlow");
             String inrightmod = ParamUtil.getString(request, fin.getServiceCode() + "inrightmod");
-            String inStartDate = ParamUtil.getDate(request, fin.getServiceCode() + "instartdate");
-            String inEndDate = ParamUtil.getDate(request, fin.getServiceCode() + "inenddate");
-            String prStartDate = ParamUtil.getDate(request, fin.getServiceCode() + "prstartdate");
-            String prEndDate = ParamUtil.getDate(request, fin.getServiceCode() + "prenddate");
+            String inStartDate = ParamUtil.getString(request, fin.getServiceCode() + "instartdate");
+            String inEndDate = ParamUtil.getString(request, fin.getServiceCode() + "inenddate");
+            String prStartDate = ParamUtil.getString(request, fin.getServiceCode() + "prstartdate");
+            String prEndDate = ParamUtil.getString(request, fin.getServiceCode() + "prenddate");
             hcsaRiskService.getOneFinDto(fin,prsource,prthershold,prleftmod,prlefthigh,prrightlow,prrightmod,insource,inthershold
             ,inleftmod,inlefthigh,inrightlow,inrightmod,inStartDate,inEndDate,prStartDate,prEndDate);
             clearErrFlag(fin);

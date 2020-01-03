@@ -177,14 +177,14 @@
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
                                             <td>
-                                                <c:set value = "error_${fin.svcCode}miRightModCaseCounth" var = "mirightmod"/>
-                                                <span class="error-msg" id="<c:out value="${mirightmod}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}miRightLowCaseCounth" var = "mirightlow"/>
-                                                <span class="error-msg" id="<c:out value="${mirightlow}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}miLeftHighCaseCounth" var = "milefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${milefthigh}"/>" name="iaisErrorMsg"></span>
-                                                <c:set value = "error_${fin.svcCode}miLeftModCaseCounth" var = "mileftmod"/>
-                                                <span class="error-msg" id="<c:out value="${mileftmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.svcCode}mjRightModCaseCounth" var = "mjrightmod"/>
+                                                <span class="error-msg" id="<c:out value="${mjrightmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.svcCode}mjRightLowCaseCounth" var = "mjrightlow"/>
+                                                <span class="error-msg" id="<c:out value="${mjrightlow}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.svcCode}mjLeftHighCaseCounth" var = "mjlefthigh"/>
+                                                <span class="error-msg" id="<c:out value="${mjlefthigh}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.svcCode}mjLeftModCaseCounth" var = "mjleftmod"/>
+                                                <span class="error-msg" id="<c:out value="${mjleftmod}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
 
@@ -248,13 +248,13 @@
                                             </td>
                                             <td>
                                                 <c:set value = "error_${fin.svcCode}mjRightModCaseCounth" var = "mjrightmod"/>
-                                                <span class="error-msg" id="<c:out value="${prrightmod}"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="${mjrightmod}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${fin.svcCode}mjRightLowCaseCounth" var = "mjrightlow"/>
-                                                <span class="error-msg" id="<c:out value="${prrightlow}"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="${mjrightlow}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${fin.svcCode}mjLeftHighCaseCounth" var = "mjlefthigh"/>
-                                                <span class="error-msg" id="<c:out value="${prlefthigh}"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="${mjlefthigh}"/>" name="iaisErrorMsg"></span>
                                                 <c:set value = "error_${fin.svcCode}mjLeftModCaseCounth" var = "mjleftmod"/>
-                                                <span class="error-msg" id="<c:out value="${prleftmod}"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="${mjleftmod}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                     </c:forEach>

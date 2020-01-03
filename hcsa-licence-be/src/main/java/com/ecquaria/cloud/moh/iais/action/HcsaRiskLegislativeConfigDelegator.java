@@ -93,8 +93,8 @@ public class HcsaRiskLegislativeConfigDelegator {
             String inlefthigh = ParamUtil.getString(request, fin.getSvcCode() + "inlefthigh");
             String inrightlow = ParamUtil.getString(request, fin.getSvcCode() + "inrightlow");
             String inrightmod = ParamUtil.getString(request, fin.getSvcCode() + "inrightmod");
-            String inStartDate = ParamUtil.getDate(request, fin.getSvcCode() + "instartdate");
-            String inEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "inenddate");
+            String inStartDate = ParamUtil.getString(request, fin.getSvcCode() + "instartdate");
+            String inEndDate = ParamUtil.getString(request, fin.getSvcCode() + "inenddate");
             hcsaRiskLegislativeService.getOneFinDto(fin,inthershold
                     ,inleftmod,inlefthigh,inrightlow,inrightmod,inStartDate,inEndDate);
         }
