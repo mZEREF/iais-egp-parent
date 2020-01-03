@@ -153,7 +153,6 @@ public class MasterCodeDelegator {
         }
         filterParameter.setFilters(masterCodeMap);
     }
-
     /**
      * AutoStep: doSorting
      *
