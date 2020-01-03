@@ -162,8 +162,8 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
         Double leaInp = Double.parseDouble(temp.getDoLeadship());
         Double legInp = Double.parseDouble(temp.getDoLegislative());
         Double total = lastInp+seclastInp+finInp+leaInp+legInp;
-        if(total!=1){
-            errMap.put(temp.getServiceCode()+"totalw", "The total weight should be 1");
+        if(total!=1.0D){
+            //errMap.put(temp.getServiceCode()+"totalw", "The total weight should be 1");
         }
     }
 

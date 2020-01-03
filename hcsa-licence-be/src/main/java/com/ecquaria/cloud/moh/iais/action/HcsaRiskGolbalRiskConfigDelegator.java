@@ -106,7 +106,7 @@ public class HcsaRiskGolbalRiskConfigDelegator {
             String inEndDate = ParamUtil.getDate(request, fin.getServiceCode() + "inenddate");
             hcsaRiskGolbalService.setGolShowDto(fin,maxLic,doLast,autoreop,newinpTypeOps,newPreOrPostOps,renewinpTypeOps,renewPreOrPostOps,instartdate,inEndDate);
         }
-        ParamUtil.setSessionAttr(request, "golbalRiskShowDto", golbalRiskShowDto);
+        ParamUtil.setSessionAttr(request, "golbalShowDto", golbalRiskShowDto);
         return golbalRiskShowDto;
     }
     public HcsaRiskGolbalVadlidateDto getValueFromPage(HttpServletRequest request) {

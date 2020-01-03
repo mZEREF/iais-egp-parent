@@ -151,28 +151,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <p><a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Submit</a></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 </form>
 <script type="text/javascript">
-    function doNext() {
-        SOP.Crud.cfxSubmit("mainForm","submit");
-    }
-
-    function doBack(){
-        SOP.Crud.cfxSubmit("mainForm","back");
-    }
 </script>

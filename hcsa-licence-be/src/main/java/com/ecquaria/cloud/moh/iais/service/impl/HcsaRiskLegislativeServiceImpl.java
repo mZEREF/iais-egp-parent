@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLegislativeService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
@@ -119,18 +120,18 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
     public void saveDto(RiskLegislativeShowDto dto) {
         List<HcsaRiskLegislativeMatrixDto> dtoList = dto.getLegislativeList();
         List<HcsaRiskLegislativeMatrixDto> saveList = new ArrayList<>();
-        List<HcsaRiskLegislativeMatrixDto> updateList = new ArrayList<>();
         for(HcsaRiskLegislativeMatrixDto temp : dtoList){
             if(temp.isEdit()){
                 saveList.add(getFinDto(temp,true));
+                saveList.add(getFinDto(temp,false));
             }
         }
-        doUpdate(saveList);
+        doUpdate(saveList,dtoList);
     }
 
-    public void doUpdate(List<HcsaRiskLegislativeMatrixDto> updateList){
+    public void doUpdate(List<HcsaRiskLegislativeMatrixDto> updateList, List<HcsaRiskLegislativeMatrixDto> dtoList){
         //get last version form db
-        for(HcsaRiskLegislativeMatrixDto temp:updateList){
+        for(HcsaRiskLegislativeMatrixDto temp:dtoList){
             List<HcsaRiskLegislativeMatrixDto> lastversionList = getLastversionList(temp);
             if(lastversionList!=null && !lastversionList.isEmpty()){
                 for(HcsaRiskLegislativeMatrixDto lastversion:lastversionList){
@@ -146,17 +147,22 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
     }
 
     public void updateLastVersion(HcsaRiskLegislativeMatrixDto newFin,HcsaRiskLegislativeMatrixDto dbFin){
-        if ("CRRR003".equals(dbFin.getRiskRating())) {
-            dbFin.setEndDate(newFin.getEffectiveDate());
-            if (dbFin.getEndDate().getTime() < System.currentTimeMillis()) {
-                dbFin.setStatus("CMSTAT003");
+        try {
+            if ("CRRR003".equals(dbFin.getRiskRating())) {
+                dbFin.setEndDate(Formatter.parseDate(newFin.getDoEffectiveDate()));
+                if (dbFin.getEndDate().getTime() < System.currentTimeMillis()) {
+                    dbFin.setStatus("CMSTAT003");
+                }
+            } else if ("CRRR001".equals(dbFin.getRiskRating())) {
+                dbFin.setEndDate(Formatter.parseDate(newFin.getDoEffectiveDate()));
+                if (dbFin.getEndDate().getTime() < System.currentTimeMillis()) {
+                    dbFin.setStatus("CMSTAT003");
+                }
             }
-        } else if ("CRRR001".equals(dbFin.getRiskRating())) {
-            dbFin.setEndDate(newFin.getEffectiveDate());
-            if (dbFin.getEndDate().getTime() < System.currentTimeMillis()) {
-                dbFin.setStatus("CMSTAT003");
-            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     public List<HcsaRiskLegislativeMatrixDto> getLastversionList(HcsaRiskLegislativeMatrixDto temp){
@@ -174,6 +180,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
 
     public HcsaRiskLegislativeMatrixDto getFinDto(HcsaRiskLegislativeMatrixDto dto,boolean isLow){
         HcsaRiskLegislativeMatrixDto finDto = new HcsaRiskLegislativeMatrixDto();
+        finDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         finDto.setSvcCode(dto.getSvcCode());
         finDto.setStatus("CMSTAT001");
         finDto.setEdit(dto.isEdit());

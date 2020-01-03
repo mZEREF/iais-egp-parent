@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
                 saveList.add(getFinDto(temp,false,false));
             }
         }
-        doUpdate(saveList);
+        doUpdate(saveList,dtoList);
 
     }
     public void doSave(List<HcsaRiskFinanceMatrixDto> saveList){
@@ -66,9 +67,9 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         //save
     }
 
-    public void doUpdate(List<HcsaRiskFinanceMatrixDto> updateList){
+    public void doUpdate(List<HcsaRiskFinanceMatrixDto> updateList,List<HcsaRiskFinanceMatrixDto> dtoList){
         //get last version form db
-        for(HcsaRiskFinanceMatrixDto temp:updateList){
+        for(HcsaRiskFinanceMatrixDto temp:dtoList){
             //List<HcsaRiskFinanceMatrixDto> lastversionList= hcsaConfigClient.getFinianceRiskBySvcCode(temp.getServiceCode()).getEntity();
             List<HcsaRiskFinanceMatrixDto> lastversionList = getLastversionList(temp);
             if(lastversionList!=null && !lastversionList.isEmpty()){
@@ -94,8 +95,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         List<HcsaRiskFinanceMatrixDto> returnList = new ArrayList<>();
         if(lastversionList!=null && !lastversionList.isEmpty()){
             for(HcsaRiskFinanceMatrixDto fin:lastversionList){
-                /*fin.setPrIsEdit(temp.isPrIsEdit());
-                fin.setInIsEdit(temp.isInIsEdit());*/
+
                 if(RiskConsts.INSTITUTION.equals(fin.getFinSource())&&temp.isInIsEdit()){
                     fin.setInIsEdit(true);
                 }else if(RiskConsts.PRACTITIONER.equals(fin.getFinSource())&&temp.isPrIsEdit()){
@@ -108,31 +108,36 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
         return returnList;
     }
     public void updateLastVersion(HcsaRiskFinanceMatrixDto newFin,HcsaRiskFinanceMatrixDto dbFin){
-        if("SOURCE001".equals(dbFin.getFinSource())){
-            if("CRRR003".equals(dbFin.getRiskRating())){
-                dbFin.setEndDate(newFin.getEffectiveDate());
-                if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
-                    dbFin.setStatus("CMSTAT003");
+        try {
+            if("SOURCE001".equals(dbFin.getFinSource())){
+                if("CRRR003".equals(dbFin.getRiskRating())){
+                    dbFin.setEndDate(Formatter.parseDate(newFin.getInEffectiveStartDate()));
+                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                        dbFin.setStatus("CMSTAT003");
+                    }
+                }else if("CRRR001".equals(dbFin.getRiskRating())){
+                    dbFin.setEndDate(Formatter.parseDate(newFin.getInEffectiveStartDate()));
+                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                        dbFin.setStatus("CMSTAT003");
+                    }
                 }
-            }else if("CRRR001".equals(dbFin.getRiskRating())){
-                dbFin.setEndDate(newFin.getEffectiveDate());
-                if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
-                    dbFin.setStatus("CMSTAT003");
+            }else if("SOURCE002".equals(dbFin.getFinSource())){
+                if("CRRR003".equals(dbFin.getRiskRating())){
+                    dbFin.setEndDate(Formatter.parseDate(newFin.getPrEffectiveStartDate()));
+                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                        dbFin.setStatus("CMSTAT003");
+                    }
+                }else if("CRRR001".equals(dbFin.getRiskRating())){
+                    dbFin.setEndDate(Formatter.parseDate(newFin.getPrEffectiveStartDate()));
+                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                        dbFin.setStatus("CMSTAT003");
+                    }
                 }
             }
-        }else if("SOURCE002".equals(dbFin.getFinSource())){
-            if("CRRR003".equals(dbFin.getRiskRating())){
-                dbFin.setEndDate(newFin.getEffectiveDate());
-                if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
-                    dbFin.setStatus("CMSTAT003");
-                }
-            }else if("CRRR001".equals(dbFin.getRiskRating())){
-                dbFin.setEndDate(newFin.getEffectiveDate());
-                if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
-                    dbFin.setStatus("CMSTAT003");
-                }
-            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     public boolean isNeedUpdatePreviouds(HcsaRiskFinanceMatrixDto dto,boolean isIn){
@@ -169,6 +174,7 @@ public class HcsaRiskServiceImpl implements HcsaRiskService {
     }
     public HcsaRiskFinanceMatrixDto getFinDto(HcsaRiskFinanceMatrixDto dto,boolean isLow,boolean isIn){
         HcsaRiskFinanceMatrixDto finDto = new HcsaRiskFinanceMatrixDto();
+        finDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         finDto.setServiceCode(dto.getServiceCode());
         finDto.setInIsEdit(dto.isInIsEdit());
         finDto.setPrIsEdit(dto.isPrIsEdit());

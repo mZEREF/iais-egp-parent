@@ -15,7 +15,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohIndividualConfig___1 extends BaseProcessClass {
 
-	private static final String DELEGATOR ="hcsaRiskFinancialConfigDelegator";
+	private static final String DELEGATOR ="hcsaRiskIndividualConfigDelegator";
 	public void step1_OnStepProcess_0() throws Exception {
 	// 		Step1->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);

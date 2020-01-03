@@ -76,7 +76,6 @@ public class HcsaRiskWeightageConfigDelegator {
         HttpServletRequest request = bpc.request;
         HcsaRiskWeightageShowDto wightageDto = (HcsaRiskWeightageShowDto)ParamUtil.getSessionAttr(request, "wightageDto");
         hcsaRiskWeightageService.saveDto(wightageDto);
-        //hcsaRiskLegislativeService.saveDto(legislativeShowDto);
 
 
     }

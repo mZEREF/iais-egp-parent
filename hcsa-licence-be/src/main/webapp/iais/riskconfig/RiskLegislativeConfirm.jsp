@@ -15,7 +15,7 @@
 %>
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaRiskFinancialConfigDelegator"/>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaRiskLegislativeConfigDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.HcsaRiskFinianceVadlidateDto"/>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
@@ -27,7 +27,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
-                        <h2>Confirm</h2>
+                        <h2>Risk Configuration</h2>
                         <div class="gray-content-box">
                             <div class="table-gp">
                                 <table class="table">
@@ -44,6 +44,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <span class="error-msg" id="error_All" name="iaisErrorMsg"></span>
                                     <c:forEach var="leg" items="${legShowDto.legislativeList}" varStatus="status">
                                         <tr>
                                             <td>
@@ -59,10 +60,16 @@
                                             <td>
                                                 <p><input type="text" id="<c:out value="${leg.svcCode}"/>inthershold" name="<c:out value="${leg.svcCode}"/>inthershold"value="<c:out value="${leg.doThershold}"></c:out>">
                                                 </p>
+                                                <c:set value = "error_${leg.svcCode}inThershold" var = "inther"/>
+                                                <span class="error-msg" id="<c:out value="${inther}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td><c:out value="${leg.doEffectiveDate}"/>
+                                            <td><iais:datePicker id = "${leg.svcCode}instartdate" name = "${leg.svcCode}instartdate" value="${leg.doEffectiveDate}"></iais:datePicker>
+                                                <c:set value = "error_${leg.svcCode}inEffDate" var = "inEffdate"/>
+                                                <span class="error-msg" id="<c:out value="${inEffdate}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                            <td><c:out value="${leg.doEndDate}"/>
+                                            <td><iais:datePicker id = "${leg.svcCode}inenddate" name = "${leg.svcCode}inenddate" value="${leg.doEndDate}"></iais:datePicker>
+                                                <c:set value = "error_${leg.svcCode}inEndDate" var = "inEnddate"/>
+                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
@@ -100,6 +107,14 @@
                                                 <div style="width: 100px;margin-top: 45px;">High</div>
                                             </td>
                                             <td>
+                                                <c:set value = "error_${leg.svcCode}inLeftModCaseCounth" var = "inleftmod"/>
+                                                <span class="error-msg" id="<c:out value="${inleftmod}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${leg.svcCode}inLeftHighCaseCounth" var = "inlefthigh"/>
+                                                <span class="error-msg" id="<c:out value="${inlefthigh}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${leg.svcCode}inRightLowCaseCounth" var = "inrightlow"/>
+                                                <span class="error-msg" id="<c:out value="${inrightlow}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${leg.svcCode}inRightModCaseCounth" var = "inrightmod"/>
+                                                <span class="error-msg" id="<c:out value="${inrightmod}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -116,7 +131,7 @@
                                 <p><a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
                             </div>
                             <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Next</a></div>
+                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Submit</a></div>
                             </div>
                         </div>
                     </div>

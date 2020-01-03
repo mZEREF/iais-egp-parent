@@ -155,13 +155,23 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             try {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
-                    errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
-                    fdto.setInRightModCaseCountherr(true);
+                    if(isIn){
+                        errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                        fdto.setInRightModCaseCountherr(true);
+                    }else{
+                        errMap.put(serviceCode+"prRightModCaseCounth","Invalid Number");
+                        fdto.setPrRightModCaseCountherr(true);
+                    }
                 }
                 numberFlag++;
             }catch (Exception e){
-                errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
-                fdto.setInRightModCaseCountherr(true);
+                if(isIn){
+                    errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                    fdto.setInRightModCaseCountherr(true);
+                }else{
+                    errMap.put(serviceCode+"prRightModCaseCounth","Invalid Number");
+                    fdto.setPrRightModCaseCountherr(true);
+                }
                 e.printStackTrace();
             }
         }
@@ -365,7 +375,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 }
                 inDateFlag = doUsualDateVad(prEffDate,prEndDate,fdto.getServiceCode(),errMap,false,inEditNumFlag,prEditNumFlag,fdto);
                 if(inDateFlag){
-                    doSpecialDateFlag(errMap,fdto,true);
+                    doSpecialDateFlag(errMap,fdto,false);
                 }
             }
         } catch (Exception e) {
@@ -382,11 +392,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             Date baseInEndDate = Formatter.parseDate(fdto.getBaseInEffectiveEndDate());
             Date basePrEffDate = Formatter.parseDate(fdto.getBasePrEffectiveStartDate());
             Date basePrEndDate = Formatter.parseDate(fdto.getBasePrEffectiveEndDate());
-            if(inEffDate.getTime()<baseInEffDate.getTime()){
+            if(inEffDate.getTime()<baseInEffDate.getTime()&&isIn){
                 errMap.put(fdto.getServiceCode() + "inEffDate", "EffectiveDate should later than Previous version");
                 fdto.setInEffectiveStartDateerr(true);
             }
-            if(prEffDate.getTime()<basePrEffDate.getTime()){
+            if(prEffDate.getTime()<basePrEffDate.getTime()&&!isIn){
                 errMap.put(fdto.getServiceCode() + "prEffDate", "EffectiveDate should later than Previous version");
                 fdto.setPrEffectiveStartDateerr(true);
             }

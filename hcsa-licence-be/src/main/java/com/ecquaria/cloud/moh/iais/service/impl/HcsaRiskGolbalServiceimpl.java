@@ -134,17 +134,17 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             fin.setEdit(false);
         }else{
             fin.setEdit(true);
+            fin.setDoMaxLic(maxLic);
+            fin.setDoLastInspection(doLast);
+            fin.setDoAutoRenew(autoreop);
+            fin.setDonewInspectType(newinpTypeOps);
+            fin.setDonewIsPreInspect(newPreOrPostOps);
+            fin.setDonewIsPreInspect(newPreOrPostOps);
+            fin.setDorenewInspectType(renewinpTypeOps);
+            fin.setDorenewIsPreInspect(renewPreOrPostOps);
+            fin.setDoEffectiveDate(instartdate);
+            fin.setDoEndDate(inEndDate);
         }
-        fin.setDoMaxLic(maxLic);
-        fin.setDoLastInspection(doLast);
-        fin.setDoAutoRenew(autoreop);
-        fin.setDonewInspectType(newinpTypeOps);
-        fin.setDonewIsPreInspect(newPreOrPostOps);
-        fin.setDonewIsPreInspect(newPreOrPostOps);
-        fin.setDorenewInspectType(renewinpTypeOps);
-        fin.setDorenewIsPreInspect(renewPreOrPostOps);
-        fin.setDoEffectiveDate(instartdate);
-        fin.setDoEndDate(inEndDate);
     }
 
     @Override
@@ -176,7 +176,11 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
     }
 
     private void create(HcsaRiskGlobalDto golDto, List<HcsaRiskGolbalExtDto> extDtoList) {
-        golDto.setVersion(golDto.getVersion()+1);
+        if(golDto.getVersion()!=null){
+            golDto.setVersion(golDto.getVersion()+1);
+        }else{
+            golDto.setVersion(1);
+        }
         golDto.setId(null);
         golDto = hcsaConfigClient.saveGoalbalMatrix(golDto).getEntity();
         String golId = golDto.getId();

@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.util.CopyUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,47 +96,64 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
     @Override
     public void saveDto(HcsaRiskWeightageShowDto wShowDto) {
         List<HcsaRiskWeightageDto> weightageDtoList = wShowDto.getWeightageDtoList();
+        HcsaRiskWeightageShowDto saveShowDto = null;
+        try {
+            saveShowDto = (HcsaRiskWeightageShowDto)CopyUtil.copyMutableObject(wShowDto);
+        }catch (CloneNotSupportedException C){
+
+        }
         List<HcsaRiskWeightageDto> saveList = new ArrayList<>();
+        HcsaRiskWeightageDto sWeiDto = null;
         for(HcsaRiskWeightageDto temp:weightageDtoList){
             if(temp.isEdit()){
-                getWeiDto(temp,RiskConsts.LAST_INSPECTION);
-                saveList.add(temp);
-                getWeiDto(temp,RiskConsts.SEC_LASTINSPECTION);
-                saveList.add(temp);
-                getWeiDto(temp,RiskConsts.FINANCIAL_SCHEME_AUDIT);
-                saveList.add(temp);
-                getWeiDto(temp,RiskConsts.LEADERSHIP_AND_GOVERNANCE);
-                saveList.add(temp);
-                getWeiDto(temp,RiskConsts.LEGISLATIVE_BREACHES);
-                saveList.add(temp);
+                sWeiDto = getWeiDto(temp,RiskConsts.LAST_INSPECTION);
+                saveList.add(sWeiDto);
+                sWeiDto = getWeiDto(temp,RiskConsts.SEC_LASTINSPECTION);
+                saveList.add(sWeiDto);
+                sWeiDto = getWeiDto(temp,RiskConsts.FINANCIAL_SCHEME_AUDIT);
+                saveList.add(sWeiDto);
+                sWeiDto = getWeiDto(temp,RiskConsts.LEADERSHIP_AND_GOVERNANCE);
+                saveList.add(sWeiDto);
+                sWeiDto = getWeiDto(temp,RiskConsts.LEGISLATIVE_BREACHES);
+                saveList.add(sWeiDto);
             }
         }
-        doUpdate(saveList);
+        doUpdate(saveList,saveShowDto.getWeightageDtoList());
     }
 
-    private void getWeiDto(HcsaRiskWeightageDto temp,String type) {
+    private HcsaRiskWeightageDto getWeiDto(HcsaRiskWeightageDto temp,String type) {
+        HcsaRiskWeightageDto dto = null;
         try {
-            if(RiskConsts.LAST_INSPECTION.equals(type)){
-                temp.setRiskWeightage(Double.parseDouble(temp.getDoLastInp()));
-            }else if(RiskConsts.SEC_LASTINSPECTION.equals(type)){
-                temp.setRiskWeightage(Double.parseDouble(temp.getDoSecLastInp()));
-            }else if(RiskConsts.FINANCIAL_SCHEME_AUDIT.equals(type)){
-                temp.setRiskWeightage(Double.parseDouble(temp.getDoFinancial()));
-            }else if(RiskConsts.LEADERSHIP_AND_GOVERNANCE.equals(type)){
-                temp.setRiskWeightage(Double.parseDouble(temp.getDoLeadship()));
-            }else if(RiskConsts.LEGISLATIVE_BREACHES.equals(type)){
-                temp.setRiskWeightage(Double.parseDouble(temp.getDoLegislative()));
-            }
+            dto = (HcsaRiskWeightageDto)CopyUtil.copyMutableObject(temp);
         }catch (Exception e){
             e.printStackTrace();
         }
-
+        try {
+            if(RiskConsts.LAST_INSPECTION.equals(type)){
+                dto.setRiskWeightage(Double.parseDouble(temp.getDoLastInp()));
+            }else if(RiskConsts.SEC_LASTINSPECTION.equals(type)){
+                dto.setRiskWeightage(Double.parseDouble(temp.getDoSecLastInp()));
+            }else if(RiskConsts.FINANCIAL_SCHEME_AUDIT.equals(type)){
+                dto.setRiskWeightage(Double.parseDouble(temp.getDoFinancial()));
+            }else if(RiskConsts.LEADERSHIP_AND_GOVERNANCE.equals(type)){
+                dto.setRiskWeightage(Double.parseDouble(temp.getDoLeadship()));
+            }else if(RiskConsts.LEGISLATIVE_BREACHES.equals(type)){
+                dto.setRiskWeightage(Double.parseDouble(temp.getDoLegislative()));
+            }
+            dto.setEndDate(Formatter.parseDate(temp.getDoEndDate()));
+            dto.setEffectiveDate(Formatter.parseDate(temp.getDoEffectiveDate()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return dto;
     }
 
-    public void doUpdate(List<HcsaRiskWeightageDto> updateList){
-        for(HcsaRiskWeightageDto temp:updateList){
+    public void doUpdate(List<HcsaRiskWeightageDto> updateList,List<HcsaRiskWeightageDto> weightageDtoList){
+        for(HcsaRiskWeightageDto temp:weightageDtoList){
             List<HcsaRiskWeightageDto> weightageLeastVersionList = hcsaConfigClient.getWeightageRiskBySvcCode(temp.getServiceCode()).getEntity();
-            updateLastVersion(weightageLeastVersionList,temp);
+            if(temp.isEdit()){
+                weightageLeastVersionList = updateLastVersion(weightageLeastVersionList,temp);
+            }
             hcsaConfigClient.updateWeightageMatrixList(weightageLeastVersionList);
         }
         for(HcsaRiskWeightageDto temp:updateList){
@@ -144,13 +162,12 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         hcsaConfigClient.saveWeightageMatrixList(updateList);
     }
 
-    private void updateLastVersion(List<HcsaRiskWeightageDto> weightageLeastVersionList, HcsaRiskWeightageDto temp) {
+    private List<HcsaRiskWeightageDto> updateLastVersion(List<HcsaRiskWeightageDto> weightageLeastVersionList, HcsaRiskWeightageDto temp) {
         HcsaRiskWeightageDto wei = weightageLeastVersionList.get(0);
         Date lastversionEndDate = null;
         String status = null;
         try {
             Date doeffDate = Formatter.parseDate(temp.getDoEffectiveDate());
-            lastversionEndDate = doeffDate;
             if(wei.getEndDate().getTime()<System.currentTimeMillis()){
                 status = "CMSTAT003";
             }else{
@@ -158,11 +175,12 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
             }
 
             for(HcsaRiskWeightageDto weightage :weightageLeastVersionList){
-                weightage.setEndDate(lastversionEndDate);
+                weightage.setEndDate(doeffDate);
                 weightage.setStatus(status);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
+        return weightageLeastVersionList;
     }
 }

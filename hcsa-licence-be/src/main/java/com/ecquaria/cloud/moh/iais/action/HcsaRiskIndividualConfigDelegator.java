@@ -4,17 +4,22 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatrixDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
+import com.ecquaria.cloud.moh.iais.dto.HcsaInspectionValidateDto;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.HcsaRiskInspectionService;
+import com.ecquaria.cloud.moh.iais.validation.HcsaInspectionValidate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -23,10 +28,10 @@ import java.util.List;
 @Delegator(value = "hcsaRiskIndividualConfigDelegator")
 @Slf4j
 public class HcsaRiskIndividualConfigDelegator {
-    private HcsaRiskService hcsaRiskService;
+    private HcsaRiskInspectionService hcsaRiskInspectionService;
     @Autowired
-    public HcsaRiskIndividualConfigDelegator(HcsaRiskService hcsaRiskService){
-        this.hcsaRiskService = hcsaRiskService;
+    public HcsaRiskIndividualConfigDelegator(HcsaRiskInspectionService hcsaRiskInspectionService){
+        this.hcsaRiskInspectionService = hcsaRiskInspectionService;
     }
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
@@ -37,19 +42,13 @@ public class HcsaRiskIndividualConfigDelegator {
     public void init(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the init start ...."));
         HttpServletRequest request = bpc.request;
-        RiskFinancialShowDto financialShowDto = hcsaRiskService.getfinancialShowDto();
-        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO, financialShowDto);
-        ;
+        InspectionShowDto showDto = hcsaRiskInspectionService.getInspectionShowDto();
+        ParamUtil.setSessionAttr(request,"inShowDto",showDto);
     }
 
     public void prepare(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfig start ...."));
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        String common = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
-        String type = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
-        String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
-        String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
 
     }
 
@@ -61,24 +60,26 @@ public class HcsaRiskIndividualConfigDelegator {
         String type = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
         String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
-        RiskFinancialShowDto financialShowDto = hcsaRiskService.getfinancialShowDto();
-        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO, financialShowDto);
+
+
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "next");
     }
 
     public void doNext(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doNext start ...."));
         HttpServletRequest request = bpc.request;
-        RiskFinancialShowDto financialShowDto = (RiskFinancialShowDto) ParamUtil.getSessionAttr(request, RiskConsts.FINANCIALSHOWDTO);
-        getDataFrompage(request, financialShowDto);
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        String common = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
-        String type = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
-        String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
-        String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
-
+        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,"inShowDto");
+        getDataFrompage(request, showDto);
         //do validation
-
+        ParamUtil.setSessionAttr(request,"inShowDto",showDto);
+        HcsaInspectionValidate inspectionValidate = new HcsaInspectionValidate();
+        Map<String, String> errMap = inspectionValidate.validate(request);
+        if(errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request, "isValid", "N");
+        }else{
+            ParamUtil.setRequestAttr(request, "isValid", "Y");
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+        }
 
     }
 
@@ -92,31 +93,56 @@ public class HcsaRiskIndividualConfigDelegator {
         HttpServletRequest request = bpc.request;
     }
 
-    public RiskFinancialShowDto getDataFrompage(HttpServletRequest request, RiskFinancialShowDto financialShowDto) {
-        List<HcsaRiskFinanceMatrixDto> finList = financialShowDto.getFinanceList();
-
-        boolean isInEdit = false;
-        boolean isPrEdit = false;
-        for (HcsaRiskFinanceMatrixDto fin : finList) {
+    public InspectionShowDto getDataFrompage(HttpServletRequest request, InspectionShowDto financialShowDto) {
+        List<HcsaRiskInspectionMatrixDto> finList = financialShowDto.getInspectionDtoList();
+        for (HcsaRiskInspectionMatrixDto fin : finList) {
             HcsaRiskFinanceMatrixDto newFinDto = new HcsaRiskFinanceMatrixDto();
-            String prsource = ParamUtil.getString(request, fin.getServiceCode() + "prsource");
-            String prthershold = ParamUtil.getString(request, fin.getServiceCode() + "prthershold");
-            String prleftlow = ParamUtil.getString(request, fin.getServiceCode() + "prleftlow");
-            String prleftmod = ParamUtil.getString(request, fin.getServiceCode() + "prleftmod");
-            String prlefthigh = ParamUtil.getString(request, fin.getServiceCode() + "prlefthigh");
-            String prrightlow = ParamUtil.getString(request, fin.getServiceCode() + "prrightlow");
-            String prrightmod = ParamUtil.getString(request, fin.getServiceCode() + "prrightmod");
-            String prrighthigh = ParamUtil.getString(request, fin.getServiceCode() + "prrighthigh");
-            String insource = ParamUtil.getString(request, fin.getServiceCode() + "insource");
-            String inthershold = ParamUtil.getString(request, fin.getServiceCode() + "inthershold");
-            String inleftlow = ParamUtil.getString(request, fin.getServiceCode() + "inleftlow");
-            String inleftmod = ParamUtil.getString(request, fin.getServiceCode() + "inleftmod");
-            String inlefthigh = ParamUtil.getString(request, fin.getServiceCode() + "inlefthigh");
-            String inrightlow = ParamUtil.getString(request, fin.getServiceCode() + "inrightlow");
-            String inrightmod = ParamUtil.getString(request, fin.getServiceCode() + "inrightmod");
-            String inrighthigh = ParamUtil.getString(request, fin.getServiceCode() + "inrighthigh");
-
+            String mjleftmod = ParamUtil.getString(request, fin.getSvcCode() + "mjleftmod");
+            String mjlefthigh = ParamUtil.getString(request, fin.getSvcCode() + "mjlefthigh");
+            String mjrightlow = ParamUtil.getString(request, fin.getSvcCode() + "mjrightlow");
+            String mjrightmod = ParamUtil.getString(request, fin.getSvcCode() + "mjrightmod");
+            String mjStartDate = ParamUtil.getDate(request, fin.getSvcCode() + "mjstartdate");
+            String mjEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "mjenddate");
+            String caleftmod = ParamUtil.getString(request, fin.getSvcCode() + "caleftmod");
+            String calefthigh = ParamUtil.getString(request, fin.getSvcCode() + "calefthigh");
+            String carightlow = ParamUtil.getString(request, fin.getSvcCode() + "carightlow");
+            String carightmod = ParamUtil.getString(request, fin.getSvcCode() + "carightmod");
+            String caStartDate = ParamUtil.getDate(request, fin.getSvcCode() + "castartdate");
+            String caEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "caenddate");
+            String mileftmod = ParamUtil.getString(request, fin.getSvcCode() + "mileftmod");
+            String milefthigh = ParamUtil.getString(request, fin.getSvcCode() + "milefthigh");
+            String mirightlow = ParamUtil.getString(request, fin.getSvcCode() + "mirightlow");
+            String mirightmod = ParamUtil.getString(request, fin.getSvcCode() + "mirightmod");
+            String miStartDate = ParamUtil.getDate(request, fin.getSvcCode() + "mistartdate");
+            String miEndDate = ParamUtil.getDate(request, fin.getSvcCode() + "mienddate");
+            hcsaRiskInspectionService.getOneFinDto(fin,caleftmod,calefthigh,carightlow,carightmod,caStartDate,caEndDate
+                    ,mileftmod,milefthigh,mirightlow,mirightmod,miStartDate,miEndDate
+                    ,mjleftmod,mjlefthigh,mjrightlow,mjrightmod,mjStartDate,mjEndDate);
+            clearErrFlag(fin);
         }
-        return null;
+        financialShowDto.setInspectionDtoList(finList);
+        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO,financialShowDto);
+        return financialShowDto;
+    }
+
+    public void clearErrFlag(HcsaRiskInspectionMatrixDto fin){
+        fin.setDoCaRightLowCountherr(false);
+        fin.setDoCaLeftModCountherr(false);
+        fin.setDoCaRightModCountherr(false);
+        fin.setDoCaLeftHighCountherr(false);
+        fin.setDoMiRightLowCountherr(false);
+        fin.setDoMiLeftModCountherr(false);
+        fin.setDoMiRightModCountherr(false);
+        fin.setDoMiLeftHighCountherr(false);
+        fin.setDoMjRightLowCountherr(false);
+        fin.setDoMjLeftModCountherr(false);
+        fin.setDoMjRightModCountherr(false);
+        fin.setDoMjLeftHighCountherr(false);
+    }
+    public HcsaInspectionValidateDto getValueFromPage(HttpServletRequest request) {
+        HcsaInspectionValidateDto dto = new HcsaInspectionValidateDto();
+        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,"inShowDto");
+        getDataFrompage(request, showDto);
+        return dto;
     }
 }
