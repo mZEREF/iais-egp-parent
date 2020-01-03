@@ -72,17 +72,18 @@
                                                 </label>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:row >
-                                            <iais:value width="18">
+                                        <c:if test="${licPreReqForInfoDto.needDocument}">
+                                            <iais:row >
+                                                <iais:value width="18">
                                                 <span  style="margin-right: 5px; cursor: pointer;" uploadid="157795250964805646132380337285">
                                                     <input type="button" class="ico_att" style="margin:0 3px 0 0!important;margin:0 3px 2px 0;">
                                                     <input ext="control"  type="hidden" value="${licPreReqForInfoDto.docName}" filename="${licPreReqForInfoDto.docName}" filesize="${licPreReqForInfoDto.docSize}" disabled="">
                                                     <span ui-type="filename"  class="">${licPreReqForInfoDto.docName}</span>&nbsp;
                                                     <span  name="206432" class="addrtitle">(${licPreReqForInfoDto.docSize/1024}K)</span>
                                                 </span>
-
-                                            </iais:value>
-                                        </iais:row>
+                                                </iais:value>
+                                            </iais:row>
+                                        </c:if>
 
                                         <iais:action style="text-align:center;">
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAccept('${licPreReqForInfoDto.reqInfoId}')">Accept</button>

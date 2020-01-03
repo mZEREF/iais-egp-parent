@@ -22,7 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FEEicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +31,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +54,7 @@ public class RequestForInformationDelegator {
     ApplicationViewService applicationViewService;
 
     @Autowired
-    private EicGatewayClient gatewayClient;
+    private FEEicGatewayClient gatewayClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -368,7 +370,17 @@ public class RequestForInformationDelegator {
         StringBuilder officerRemarks=new StringBuilder();
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
         licPremisesReqForInfoDto.setReqType(RequestForInformationConstants.AD_HOC);
-        licPremisesReqForInfoDto.setDueDateSubmission(Formatter.parseDate(ParamUtil.getString(request, "Due_date")));
+        String date=ParamUtil.getString(request, "Due_date");
+        Date dueDate;
+        Calendar calendar = Calendar.getInstance();
+        if(!StringUtil.isEmpty(date)){
+            dueDate= Formatter.parseDate(date);
+        }
+        else {
+            calendar.add(Calendar.DATE,7);
+            dueDate =calendar.getTime();
+        }
+        licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
         officerRemarks.append(ParamUtil.getString(request,"rfiTitle")+" ");
         licPremisesReqForInfoDto.setLicPremId(licPremId);
         String reqType=ParamUtil.getString(request,"reqType");
@@ -385,6 +397,7 @@ public class RequestForInformationDelegator {
 
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        licPremisesReqForInfoDto1.setAction("create");
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1, signature.date(), signature.authorization()).getEntity();
         // 		doCreateRequest->OnStepProcess
     }
@@ -399,6 +412,11 @@ public class RequestForInformationDelegator {
         log.info("=======>>>>>doCancel>>>>>>>>>>>>>>>>requestForInformation");
         String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         requestForInformationService.deleteLicPremisesReqForInfo(reqInfoId);
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
+        licPremisesReqForInfoDto.setReqInfoId(reqInfoId);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        licPremisesReqForInfoDto.setAction("delete");
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto, signature.date(), signature.authorization()).getEntity();
         // 		doCancel->OnStepProcess
     }
     public void doAccept(BaseProcessClass bpc) {
