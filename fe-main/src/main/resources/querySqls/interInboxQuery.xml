@@ -41,8 +41,11 @@
          WHERE 1=1
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
+            <#if serviceType??> AND B.service_id = :serviceType</#if>
             <#if appNo??> AND B.application_no = :appNo</#if>
-            <#if appStatus??> AND B .status = :appStatus</#if>
+            <#if appStatus??> AND B.status = :appStatus</#if>
+            <#if createDtStart??> AND B .created_dt > :createDtStart</#if>
+            <#if createDtEnd??> AND B .created_dt < :createDtEnd</#if>
         ]]>
     </sql>
 
@@ -52,11 +55,20 @@
                 lic.id,
                 lic.licence_no,
                 lic.svc_name,
+                lic.status,
                 lic.start_date,
-                lic.expiry_date
+                lic.expiry_date,
+                (pre.BLK_NO+' '+pre.STREET_NAME+' '+ pre.BUILDING_NAME+' # '+pre.FLOOR_NO+'-'+pre.UNIT_NO+','+pre.POSTAL_CODE) AS premise
             FROM LICENCE AS lic
-            WHERE 1=1
+            JOIN lic_premises AS licpre ON lic.ID = licpre.LICENCE_ID
+            JOIN premises AS pre ON licpre.PREMISES_ID = pre.ID
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
+            <#if serviceType??> AND lic.svc_name = :serviceType</#if>
+            <#if licStatus??> AND lic.status = :licStatus</#if>
+            <#if fStartDate??> AND lic.start_date > :fStartDate</#if>
+            <#if eStartDate??> AND lic.start_date < :eStartDate</#if>
+            <#if fExpiryDate??> AND lic.expiry_date > :fExpiryDate</#if>
+            <#if eExpiryDate??> AND lic.expiry_date < :eExpiryDate</#if>
             <#if licNo??> AND lic.licence_no = :licNo</#if>
         ]]>
     </sql>

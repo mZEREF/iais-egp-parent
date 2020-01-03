@@ -27,21 +27,22 @@
 
     }
 
+    function doSearchApp(){
+        $("[name='crud_action_value']").val("app");
+        submit('app','doSearch');
+    }
+
+    function doSearchLic(){
+        $("[name='crud_action_value']").val("lic");
+        submit('lic','doSearch');
+    }
+
     $("#inboxType").change(function() {
         submit('inbox','doSearch');
     });
 
     $("#inboxService").change(function() {
         submit('inbox','doSearch');
-    });
-
-    $("#appType").change(function() {
-        submit('app','doSearch')
-    });
-
-
-    $("#appStatus").change(function() {
-        submit('app','doSearch')
     });
 
     $(function () {
@@ -62,7 +63,7 @@
             $('#'+tabNo+' a[href="#tabApp"]').tab('show');
         }else if (tabNo == 'licTab') {
             console.log("Lic Tab")
-            $('#'+tabNo+' a[href="#tabLicence"]').tab('show');
+            $('#'+tabNo+' a[href="#tabLic"]').tab('show');
         }
 
     }

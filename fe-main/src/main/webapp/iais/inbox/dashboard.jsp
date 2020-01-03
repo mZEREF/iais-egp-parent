@@ -48,12 +48,12 @@
                             <p class="dashboard-txt">Licences Eligible <br> for Renewal</p></a></div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabApplication" href="javascript:;">
+                        <div class="dashboard-tile"><a data-tab="#tabApp" href="javascript:;">
                             <h1 class="dashboard-count">2</h1>
                             <p class="dashboard-txt">Application Drafts</p></a></div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabLicence" href="javascript:;">
+                        <div class="dashboard-tile"><a data-tab="#tabLic" href="javascript:;">
                             <h1 class="dashboard-count">3</h1>
                             <p class="dashboard-txt">Licences Ready <br> for Printing</p></a></div>
                     </div>

@@ -1,21 +1,75 @@
-<div class="tab-pane" id="tabLicence" role="tabpanel">
-    <div class="tab-search license-search clearfix">
+<div class="tab-pane" id="tabLic" role="tabpanel">
+    <div class="tab-search">
         <form class="form-inline" method="post" id="licenceForm" action=<%=process.runtime.continueURL()%>>
             <input type="hidden" name="crud_action_type" value="">
             <input type="hidden" name="crud_action_value" value="">
-            <div class="licence-btns">
-                <a class="btn btn-primary disabled" href="javascript:doRenew();">Renew</a>
-                <a class="btn btn-secondary disabled" href="javascript:;">Cease</a>
-                <a class="btn btn-secondary disabled" href="javascript:;">Amend</a>
+            <div class="row">
+                <div class="col-md-12">
+                    <iais:value>
+                        <label class="col-xs-5 col-md-5" for="licNoPath">Search By Licence No or Path of:</label>
+                        <div class="col-xs-5 col-md-56">
+                            <input id="licNoPath" name="licNoPath" type="text">
+                        </div>
+                    </iais:value>
+                </div>
             </div>
-            <div class="search-wrap">
-                <iais:value>
-                    <div class="input-group">
-                        <input class="form-control" id="licenseAdvancedSearch" type="text" placeholder="Licence no." name="licenseAdvancedSearch" aria-label="licenseAdvancedSearch"><span class="input-group-btn">
-                                  <button class="btn btn-default buttonsearch" title="Search by keywords" onclick="searchLicenceNo()"><em class="fa fa-search"></em></button></span>
+            <div class="row" style="margin-bottom: 14px">
+                <div class="col-md-12" >
+                    <iais:value>
+                        <label class="col-xs-5 col-md-5" for="licType">Service Type:</label>
+                        <div class="col-xs-5 col-md-5">
+                            <iais:select name="licType" id="licType" options="licType" firstOption="All"></iais:select>
+                        </div>
+                    </iais:value>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 14px">
+                <div class="col-md-12">
+                    <iais:value>
+                        <label class="col-xs-5 col-md-5" for="licStatus">Licence Status:</label>
+                        <div class="col-xs-5 col-md-5">
+                            <iais:select name="licStatus" id="licStatus" options="licStatus" firstOption="All"></iais:select>
+                        </div>
+                    </iais:value>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 14px">
+                <div class="col-md-12">
+                    <iais:value>
+                        <label class="col-md-3" for="fStartDate">Licence Start Date:</label>
+                        <div class="col-md-3" >
+                            <iais:datePicker id="fStartDate" name="fStartDate"/>
+                        </div>
+                        <div class="col-xs-1 col-md-1">
+                            <span>TO</span>
+                        </div>
+                        <div class="col-md-3">
+                            <iais:datePicker id="eStartDate" name="eStartDate" />
+                        </div>
+                    </iais:value>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <iais:value>
+                        <label class="col-xs-3 col-md-3">Licence Expiry Date:</label>
+                        <div class="col-xs-3 col-md-3">
+                            <iais:datePicker id="fExpiryDate" name="fExpiryDate"/>
+                        </div>
+                    </iais:value>
+                    <div class="col-xs-1 col-md-1">
+                        <span>TO</span>
                     </div>
-                </iais:value>
-            </div><a class="btn btn-default advanced-search" href="#">Advanced Search</a>
+                    <iais:value>
+                        <div class="col-xs-3 col-md-3">
+                            <iais:datePicker id="eExpiryDate" name="eExpiryDate" />
+                        </div>
+                    </iais:value>
+                    <div class="col-xs-2 col-md-2">
+                        <button type="button" class="btn btn-primary" onclick="doSearchLic()">SUBMIT</button>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
     <div class="row">
@@ -57,11 +111,11 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Status</p>
-                                        <p>Active</p>
+                                        <p>${licenceQuery.status}</p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Premises</p>
-                                        <p>111 North Bridge Rd. <br> # 07-04, 179098</p>
+                                        <p>${licenceQuery.premise}</p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Start Date</p>
