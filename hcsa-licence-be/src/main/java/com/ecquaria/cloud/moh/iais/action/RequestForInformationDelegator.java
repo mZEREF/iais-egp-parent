@@ -414,8 +414,8 @@ public class RequestForInformationDelegator {
         requestForInformationService.deleteLicPremisesReqForInfo(reqInfoId);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
         licPremisesReqForInfoDto.setReqInfoId(reqInfoId);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         licPremisesReqForInfoDto.setAction("delete");
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto, signature.date(), signature.authorization()).getEntity();
         // 		doCancel->OnStepProcess
     }
