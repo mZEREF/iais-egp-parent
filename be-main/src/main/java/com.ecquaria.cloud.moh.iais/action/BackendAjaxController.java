@@ -44,7 +44,9 @@ public class BackendAjaxController {
 
             QueryHelp.setMainSql("inspectionQuery", "AppByGroupAjax", searchParamAjax);
             SearchResult<InspectionAppInGroupQueryDto> ajaxResult = inspectionService.searchInspectionBeAppGroupAjax(searchParamAjax);
-
+            for(InspectionAppInGroupQueryDto iDto : ajaxResult.getRows()){
+                //String colour = get
+            }
             map.put("appNoUrl", appNoUrl);
             map.put("ajaxResult", ajaxResult);
             map.put("result", "Success");
