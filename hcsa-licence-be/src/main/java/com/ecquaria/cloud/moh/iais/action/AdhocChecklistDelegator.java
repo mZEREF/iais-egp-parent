@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -89,15 +90,13 @@ public class AdhocChecklistDelegator {
         AuditTrailHelper.auditFunction("Pre-Inspection",
                 "Adhoc Checklist");
 
-        /*boolean isIntranet = AccessUtil.isIntranet(IaisEGPHelper.getCurrentAuditTrailDto());
+        boolean isIntranet = AccessUtil.isIntranet(IaisEGPHelper.getCurrentAuditTrailDto());
         if (!isIntranet){
 
             return;
         }
 
-        String taskId = ParamUtil.getMaskedString(request, "taskId");*/
-
-        String taskId = "4E032AF9-C110-EA11-BE7D-000C29F371DC";
+        String taskId = ParamUtil.getMaskedString(request, "taskId");
 
         log.info("doInspectorSearchTaskAssign task id ====>>>>> " + taskId);
         if (taskId == null) {
