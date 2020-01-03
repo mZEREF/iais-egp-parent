@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Map;
 
 @FeignClient(name = "hcsa-config", configuration = {FeignConfiguration.class},
         fallback = HcsaChklFallback.class)
@@ -50,7 +49,7 @@ public interface HcsaChklClient {
     FeignResponseEntity<ChecklistItemDto> getChklItemById(@PathVariable(value = "id") String id);
 
     @PostMapping(path = "/iais-hcsa-checklist/item", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, String>> saveChklItem(ChecklistItemDto itemDto);
+    FeignResponseEntity<String> saveChklItem(ChecklistItemDto itemDto);
 
     @GetMapping(path = "/iais-hcsa-checklist/regulation/regulation-clauses-distinct")
     FeignResponseEntity<List<String>> listRegulationClauseNo();

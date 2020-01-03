@@ -73,7 +73,7 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<Map<String, String>> saveChklItem(ChecklistItemDto itemDto) {
+    public FeignResponseEntity<String> saveChklItem(ChecklistItemDto itemDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

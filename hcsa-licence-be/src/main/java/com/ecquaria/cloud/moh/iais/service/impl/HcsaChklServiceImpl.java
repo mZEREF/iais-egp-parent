@@ -65,7 +65,7 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
 
     @Override
-    public Map<String, String> saveChklItem(ChecklistItemDto itemDto) {
+    public String saveChklItem(ChecklistItemDto itemDto) {
        return chklClient.saveChklItem(itemDto).getEntity();
     }
 

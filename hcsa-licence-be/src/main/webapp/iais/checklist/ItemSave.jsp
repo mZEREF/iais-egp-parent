@@ -38,6 +38,11 @@
     <span id="error_question" name="iaisErrorMsg" class="error-msg"></span>
     <div class="main-content">
         <div class="container">
+
+            <c:if test="${messageContent != null}">
+                ${messageContent.result}
+            </c:if>
+
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="form-horizontal">
 

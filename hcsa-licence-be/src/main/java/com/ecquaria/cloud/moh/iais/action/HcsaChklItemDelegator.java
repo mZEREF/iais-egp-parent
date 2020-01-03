@@ -125,6 +125,11 @@ public class HcsaChklItemDelegator {
      */
     public void submitUploadData(BaseProcessClass bpc) throws Exception {
         HttpServletRequest request = bpc.request;
+        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("doBack".equals(currentAction)){
+            return;
+        }
+
         String value = (String) ParamUtil.getSessionAttr(request, "switchUploadPage");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
@@ -224,7 +229,6 @@ public class HcsaChklItemDelegator {
 
         try {
             doSubmitOrUpdate(request);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
         }catch (IaisRuntimeException e){
             throw new IaisRuntimeException(e.getMessage());
         }
@@ -281,12 +285,17 @@ public class HcsaChklItemDelegator {
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            return;
         }
 
         //Business check
-        Map<String,String> errorMap = hcsaChklService.saveChklItem(itemDto);
-        if (errorMap != null && !errorMap.isEmpty()){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        String jsonStr = hcsaChklService.saveChklItem(itemDto);
+        MessageContent messageContent = JsonUtil.parseToObject(jsonStr, MessageContent.class);
+        if (messageContent != null){
+            String msg = MessageUtil.getMessageDesc(messageContent.getResult());
+            messageContent.setResult(msg);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+            ParamUtil.setRequestAttr(request, "messageContent", messageContent);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
         }else {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
@@ -317,7 +326,6 @@ public class HcsaChklItemDelegator {
      */
     public void viewCloneData(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
 
         String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
         if(checkBoxItemId == null || checkBoxItemId.length <= 0){
@@ -396,7 +404,13 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-        ChecklistItemDto itemDto = requestChklItemDto(request);
+        ChecklistItemDto itemDto = (ChecklistItemDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR);
+        String chklItem = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM);
+        String riskLevel = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_RISK_LEVEL);
+        String answerType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE);
+        itemDto.setAnswerType(answerType);
+        itemDto.setRiskLevel(riskLevel);
+        itemDto.setChecklistItem(chklItem);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "clone");
         if(validationResult != null && validationResult.isHasErrors()){
@@ -418,14 +432,13 @@ public class HcsaChklItemDelegator {
                     it.setStatus(itemDto.getStatus());
                     it.setRegulationClauseNo(itemDto.getRegulationClauseNo());
                 }
-
             }
 
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, (Serializable) chklItemDtos);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
         }
-
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
     }
 
      /**
@@ -499,8 +512,12 @@ public class HcsaChklItemDelegator {
     private void loadSingleItemData(HttpServletRequest request){
         String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(itemId)){
-            ChecklistItemDto itemDto = hcsaChklService.getChklItemById(itemId);
-            ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
+            List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR);
+            for (ChecklistItemDto itemDto : chklItemDtos){
+                if (itemId.equals(itemDto.getItemId())){
+                    ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
+                }
+            }
         }
     }
 

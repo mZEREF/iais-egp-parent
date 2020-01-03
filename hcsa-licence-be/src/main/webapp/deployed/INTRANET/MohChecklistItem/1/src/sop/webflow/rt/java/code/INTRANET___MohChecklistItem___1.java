@@ -82,6 +82,10 @@ public class INTRANET___MohChecklistItem___1 extends BaseProcessClass {
 	public void submitUploadData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "submitUploadData", this);
 	}
+
+	public void doPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doPage", this);
+	}
 	
 	
 }

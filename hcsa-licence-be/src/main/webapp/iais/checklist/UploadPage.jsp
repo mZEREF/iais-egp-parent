@@ -19,12 +19,12 @@
 <style>
 </style>
 
-
-
   <div class="main-content">
-
     <form  method="post" id="mainForm" enctype="multipart/form-data"  action=<%=process.runtime.continueURL()%>>
       <%@ include file="/include/formHidden.jsp" %>
+      <input type="hidden" name="crud_action_type" value="">
+      <input type="hidden" name="crud_action_value" value="">
+      <input type="hidden" name="crud_action_additional" value="">
       <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaChklItemDelegator"/>
       <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.validation.HcsaChklItemValidate"/>
       <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
@@ -83,17 +83,18 @@
     </form>
   </div>
 
-<script src=/systemadmin/js/CommonUtils.js'></script>
 <%@include file="/include/validation.jsp"%>
 <script>
+    $('#docBack').click(function () {
+        SOP.Crud.cfxSubmit("mainForm", "doBack");
+    });
 
     $('#selectedFile').change(function () {
         var file = $(this).val();
 
     });
 
-
     $('#docNext').click(function () {
-        SOP.Crud.cfxSubmit("mainForm", "submitUploadData");
+        SOP.Crud.cfxSubmit("mainForm", "doUpload");
     });
 </script>

@@ -154,6 +154,8 @@
                                    onclick="javascript: configToChecklist();">Add to Config</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doSearch();">Search</a>
+                                <a class="btn btn-primary next" href="javascript:void(0);"
+                                   onclick="javascript: cancelConfig();">Cancel</a>
                               </c:when>
                               <c:otherwise>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
@@ -192,6 +194,10 @@
 
 <%@include file="/include/validation.jsp" %>
 <script type="text/javascript">
+    function cancelConfig() {
+        SOP.Crud.cfxSubmit("mainForm", "cancelConfig");
+    }
+
     function doSearch() {
         SOP.Crud.cfxSubmit("mainForm", "doSearch");
     }

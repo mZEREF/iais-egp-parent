@@ -61,7 +61,7 @@ public interface HcsaChklService {
      * backend method: saveChecklistItem
      * @param itemDto
      */
-    Map<String, String> saveChklItem(ChecklistItemDto itemDto);
+    String saveChklItem(ChecklistItemDto itemDto);
 
     /**
      * list de-weight regulation clause number

@@ -39,6 +39,7 @@
     <div class="container">
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="form-horizontal">
+          <div class="form-group">
 
           <div class="form-group">
             <div class="col-xs-5 col-md-3">
