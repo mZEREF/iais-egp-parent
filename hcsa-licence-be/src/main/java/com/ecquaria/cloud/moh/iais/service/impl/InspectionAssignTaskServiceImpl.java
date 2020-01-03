@@ -39,7 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -218,15 +217,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
             for(TaskDto td:commPools) {
                 if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())) {
-                    td.setUserId(inspectorCheckList.get(0).getValue());
-                    td.setDateAssigned(new Date());
-                    td.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                    td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
                     td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    td.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
                     inspecTaskCreAndAssDto.setTaskDto(td);
                     inspecTaskCreAndAssDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     inspecTaskCreAndAssDto.setTaskDtos(commPools);
-                    inspectorCheckList.remove(0);
+                    inspecTaskCreAndAssDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
                     organizationClient.assignCommonPool(inspecTaskCreAndAssDto);
                     createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),internalRemarks, InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId());
                     if(inspectorCheckList != null && inspectorCheckList.size() > 0){
