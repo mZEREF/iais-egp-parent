@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLegislativeMat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.HcsaRiskFinianceVadlidateDto;
+import com.ecquaria.cloud.moh.iais.dto.HcsaRiskLegislativeValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLegislativeService;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
@@ -97,16 +97,23 @@ public class HcsaRiskLegislativeConfigDelegator {
             String inEndDate = ParamUtil.getString(request, fin.getSvcCode() + "inenddate");
             hcsaRiskLegislativeService.getOneFinDto(fin,inthershold
                     ,inleftmod,inlefthigh,inrightlow,inrightmod,inStartDate,inEndDate);
+            clearErrFlag(fin);
         }
         financialShowDto.setLegislativeList(finList);
         ParamUtil.setSessionAttr(request, "legShowDto",financialShowDto);
         return financialShowDto;
     }
-    public HcsaRiskFinianceVadlidateDto getValueFromPage(HttpServletRequest request) {
-        HcsaRiskFinianceVadlidateDto dto = new HcsaRiskFinianceVadlidateDto();
+    public HcsaRiskLegislativeValidateDto getValueFromPage(HttpServletRequest request) {
+        HcsaRiskLegislativeValidateDto dto = new HcsaRiskLegislativeValidateDto();
         RiskLegislativeShowDto legislativeShowDto = (RiskLegislativeShowDto) ParamUtil.getSessionAttr(request, "legShowDto");
         getDataFrompage(request, legislativeShowDto);
         return dto;
+    }
+    public void clearErrFlag(HcsaRiskLegislativeMatrixDto fin){
+        fin.setDoLeftHighCaseCountherr(false);
+        fin.setDoRightLowCaseCountherr(false);
+        fin.setDoLeftModCaseCountherr(false);
+        fin.setDoRightModCaseCountherr(false);
     }
 
 }

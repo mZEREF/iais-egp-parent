@@ -13,9 +13,9 @@ package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___MohIndividualConfig___1 extends BaseProcessClass {
+public class INTRANET___MohLicTenureRiskSubConfig___1 extends BaseProcessClass {
 
-	private static final String DELEGATOR ="hcsaRiskIndividualConfigDelegator";
+	private static final String DELEGATOR ="hcsaRiskLicenceTenureConfigDelegator";
 	public void step1_OnStepProcess_0() throws Exception {
 	// 		Step1->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);

@@ -8,11 +8,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GolbalRiskShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGlobalDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGolbalExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLeadershipMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLegislativeMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.LicenceTenShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
@@ -185,6 +187,18 @@ public interface HcsaConfigClient {
 
     @RequestMapping(value = "/iais-hcsa-risk/inspectionshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspectionShowDto> getInspectionshow(@RequestBody List<HcsaServiceDto> svcList);
+
+    @RequestMapping(value = "/iais-hcsa-risk/InspectionMatrixStorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> saveInspectionMatrix(@RequestBody List<HcsaRiskInspectionMatrixDto> finDtoList);
+
+    @RequestMapping(value = "/iais-hcsa-risk/singlegolbalextriskup",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> udpateInspectionMatrix(@RequestBody List<HcsaRiskInspectionMatrixDto> finDtoList);
+
+    @GetMapping(value = "/iais-hcsa-risk/riskInspection{svcCode}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> getInspectionBySvcCode(@PathVariable("svcCode")String serviceCode);
+
+    @RequestMapping(value = "/iais-hcsa-risk/licencetenureshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceTenShowDto> getLicenceTenureShow(@RequestBody List<HcsaServiceDto> svcList);
 
 
 }

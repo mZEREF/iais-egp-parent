@@ -68,8 +68,8 @@
                                                 <span class="error-msg" id="<c:out value="${caEffdate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}caenddate" name = "${fin.svcCode}caenddate" value="${fin.doCaEndDate}"></iais:datePicker>
-                                                <c:set value = "error_${fin.svcCode}caEndDate" var = "inEnddate"/>
-                                                <span class="error-msg" id="<c:out value="${inEnddate}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${fin.svcCode}caEndDate" var = "caEnddate"/>
+                                                <span class="error-msg" id="<c:out value="${caEnddate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
                                                 <div><div style="width: 100px;">
@@ -135,7 +135,7 @@
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}mjstartdate" name = "${fin.svcCode}mjstartdate" value="${fin.doMjEffectiveDate}"></iais:datePicker>
                                                 <c:set value = "error_${fin.svcCode}mjEffDate" var = "mjEffDate"/>
-                                                <span class="error-msg" id="<c:out value="${prEffDate}"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="${mjEffDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}mjenddate" name = "${fin.svcCode}mjenddate" value="${fin.doMjEndDate}"></iais:datePicker>
                                                 <c:set value = "error_${fin.svcCode}mjEndDate" var = "mjEndDate"/>
@@ -205,7 +205,7 @@
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}mjstartdate" name = "${fin.svcCode}mistartdate" value="${fin.doMiEffectiveDate}"></iais:datePicker>
                                                 <c:set value = "error_${fin.svcCode}miEffDate" var = "miEffDate"/>
-                                                <span class="error-msg" id="<c:out value="${prEffDate}"/>" name="iaisErrorMsg"></span>
+                                                <span class="error-msg" id="<c:out value="${miEffDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td><iais:datePicker id = "${fin.svcCode}mienddate" name = "${fin.svcCode}mienddate" value="${fin.doMiEndDate}"></iais:datePicker>
                                                 <c:set value = "error_${fin.svcCode}miEndDate" var = "miEndDate"/>

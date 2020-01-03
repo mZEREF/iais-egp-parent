@@ -214,11 +214,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             if(isIn){
                 inLeftHighNumFlag = false;
                 errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
-                fdto.setInRightLowCaseCountherr(true);
+                fdto.setInLeftHighCaseCounterr(true);
             }else{
                 prLeftHighNumFlag = false;
                 errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
-                fdto.setPrRightLowCaseCountherr(true);
+                fdto.setPrLeftHighCaseCounterr(true);
             }
             e.printStackTrace();
         }
@@ -228,10 +228,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if(inRightModNum +1 != inLeftHighNum){
                     if(isIn&&inLeftHighNumFlag){
                         errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
-                        fdto.setInRightLowCaseCountherr(true);
+                        fdto.setInLeftHighCaseCounterr(true);
                     }else if(!isIn&&prLeftHighNumFlag){
                         errMap.put(serviceCode + "prLeftHighCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
-                        fdto.setPrRightLowCaseCountherr(true);
+                        fdto.setPrLeftHighCaseCounterr(true);
                     }
                 }
             }

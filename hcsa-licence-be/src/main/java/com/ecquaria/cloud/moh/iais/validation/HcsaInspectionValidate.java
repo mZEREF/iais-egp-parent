@@ -255,15 +255,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                     if("C".equals(level)){
                         caLeftHighNumFlag = false;
                         errMap.put(serviceCode + "caRightLowCaseCounth", "Invalid Number");
-                        fdto.setDoCaRightLowCountherr(true);
+                        fdto.setDoCaLeftHighCountherr(true);
                     }else if("I".equals(level)){
                         miLeftHighNumFlag = false;
                         errMap.put(serviceCode + "miRightLowCaseCounth", "Invalid Number");
-                        fdto.setDoMiRightLowCountherr(false);
+                        fdto.setDoMiLeftHighCountherr(false);
                     }else if("A".equals(level)){
                         mjLeftHighNumFlag = false;
                         errMap.put(serviceCode + "mjRightLowCaseCounth", "Invalid Number");
-                        fdto.setDoMjRightLowCountherr(false);
+                        fdto.setDoMjLeftHighCountherr(false);
                     }
                 }
             }
@@ -271,15 +271,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             if("C".equals(level)){
                 caLeftHighNumFlag = false;
                 errMap.put(serviceCode + "caRightLowCaseCounth", "Invalid Number");
-                fdto.setDoCaRightLowCountherr(true);
+                fdto.setDoCaLeftHighCountherr(true);
             }else if("I".equals(level)){
                 miLeftHighNumFlag = false;
                 errMap.put(serviceCode + "miRightLowCaseCounth", "Invalid Number");
-                fdto.setDoMiRightLowCountherr(true);
+                fdto.setDoMiLeftHighCountherr(true);
              }else if("A".equals(level)){
                 mjLeftHighNumFlag = false;
                 errMap.put(serviceCode + "mjRightLowCaseCounth", "Invalid Number");
-                fdto.setDoMjRightLowCountherr(true);
+                fdto.setDoMjLeftHighCountherr(true);
             }
             e.printStackTrace();
         }
@@ -289,13 +289,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if(inRightModNum +1 != inLeftHighNum){
                     if("C".equals(level)&&caLeftHighNumFlag){
                         errMap.put(serviceCode + "caRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
-                        fdto.setDoCaRightLowCountherr(true);
+                        fdto.setDoCaLeftHighCountherr(true);
                     }else if("I".equals(level)&&miLeftHighNumFlag){
                         errMap.put(serviceCode + "miRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
-                        fdto.setDoMiRightLowCountherr(true);
+                        fdto.setDoMiLeftHighCountherr(true);
                     }else if("A".equals(level)&&mjLeftHighNumFlag){
                         errMap.put(serviceCode + "mjRightLowCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
-                        fdto.setDoMjRightLowCountherr(true);
+                        fdto.setDoMjLeftHighCountherr(true);
                     }
                 }
             }

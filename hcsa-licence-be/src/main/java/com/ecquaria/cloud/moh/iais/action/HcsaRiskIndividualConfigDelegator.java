@@ -91,6 +91,8 @@ public class HcsaRiskIndividualConfigDelegator {
     public void backToMenu(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the backToMenu start ...."));
         HttpServletRequest request = bpc.request;
+        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,"inShowDto");
+        hcsaRiskInspectionService.saveDto(showDto);
     }
 
     public InspectionShowDto getDataFrompage(HttpServletRequest request, InspectionShowDto financialShowDto) {

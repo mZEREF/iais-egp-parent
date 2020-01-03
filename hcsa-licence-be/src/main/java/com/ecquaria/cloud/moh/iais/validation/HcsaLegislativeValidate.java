@@ -39,8 +39,24 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         }else{
             errMap.put("All","Please do some change");
         }
+        mergeList(editList,financeList);
         return errMap;
+
     }
+
+
+    public void mergeList(List<HcsaRiskLegislativeMatrixDto> editList, List<HcsaRiskLegislativeMatrixDto> financeList){
+        if(editList!=null &&financeList!=null){
+            for(HcsaRiskLegislativeMatrixDto fin:financeList){
+                for(HcsaRiskLegislativeMatrixDto ed:editList){
+                    if(ed.getSvcCode().equals(fin.getSvcCode())){
+                        fin = ed;
+                    }
+                }
+            }
+        }
+    }
+
     public void dateVad(Map<String, String> errMap,HcsaRiskLegislativeMatrixDto fdto){
         String inEffDate = fdto.getDoEffectiveDate();
         String inEndDate = fdto.getDoEndDate();
@@ -154,12 +170,12 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         numberCaseCounthVad(errMap,fdto);
     }
     public void numberCaseCounthVad(Map<String, String> errMap,HcsaRiskLegislativeMatrixDto fdto){
-        inLeftModVadAndinRightModVad(errMap,fdto.getDoLeftModCaseCounth(),fdto.getDoRightModCaseCounth(),fdto.getSvcCode());
-        inRightLowVad(errMap,fdto.getDoRightLowCaseCounth(),fdto.getDoLeftModCaseCounth(),fdto.getSvcCode());
-        inLeftHighVad(errMap,fdto.getDoLeftHighCaseCounth(),fdto.getDoRightModCaseCounth(),fdto.getSvcCode());
+        inLeftModVadAndinRightModVad(errMap,fdto.getDoLeftModCaseCounth(),fdto.getDoRightModCaseCounth(),fdto.getSvcCode(),fdto);
+        inRightLowVad(errMap,fdto.getDoRightLowCaseCounth(),fdto.getDoLeftModCaseCounth(),fdto.getSvcCode(),fdto);
+        inLeftHighVad(errMap,fdto.getDoLeftHighCaseCounth(),fdto.getDoRightModCaseCounth(),fdto.getSvcCode(),fdto);
 
     }
-    public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode){
+    public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
         Integer inLeftHighNum = 0;
         boolean inLeftHighNumFlag = true;
         Integer inRightModNum = 0;
@@ -169,11 +185,13 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     inLeftHighNumFlag = false;
                     errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
+                    fdto.setDoLeftHighCaseCountherr(true);
                 }
             }
         } catch (Exception e) {
             inLeftHighNumFlag = false;
             errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
+            fdto.setDoLeftHighCaseCountherr(true);
             e.printStackTrace();
         }
         try {
@@ -181,6 +199,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if((inRightModNum +1 != inLeftHighNum)&&inLeftHighNumFlag){
                     errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximun cases and Moderate Minimun can only differ by 1");
+                    fdto.setDoLeftHighCaseCountherr(true);
                 }
             }
         } catch (Exception e) {
@@ -188,7 +207,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         }
 
     }
-    public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode){
+    public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
         Integer inRightLowNum = 0;
         boolean inrightflag = true;
         Integer inLeftModNum = 0;
@@ -198,12 +217,14 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     inrightflag = false;
                     errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                    fdto.setDoRightModCaseCountherr(true);
                 }
             }
         } catch (Exception e) {
             // TODO: handle exception
                 inrightflag = false;
                 errMap.put(serviceCode + "inRightLowCaseCounth", "Invalid Number");
+                fdto.setDoRightLowCaseCountherr(true);
             e.printStackTrace();
         }
         try {
@@ -219,7 +240,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
 
     }
 
-    public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode){
+    public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
         int numberFlag = 0;
@@ -228,10 +249,12 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum<0||inLeftModNum>999){
                         errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                        fdto.setDoLeftModCaseCountherr(true);
                 }
                 numberFlag++;
             }catch (Exception e){
                     errMap.put(serviceCode+"inLeftModCaseCounth","Invalid Number");
+                    fdto.setDoLeftModCaseCountherr(true);
                 e.printStackTrace();
             }
         }
@@ -240,35 +263,43 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inRightModNum = Integer.parseInt(inRightMod);
                 if(inRightModNum<0 || inRightModNum >999){
                     errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                    fdto.setDoRightModCaseCountherr(true);
                 }
                 numberFlag++;
             }catch (Exception e){
                 errMap.put(serviceCode+"inRightModCaseCounth","Invalid Number");
+                fdto.setDoRightModCaseCountherr(true);
                 e.printStackTrace();
             }
         }
         if(numberFlag == 2){
-            numberOrderVad(errMap,inLeftModNum,inRightModNum,serviceCode);
+            numberOrderVad(errMap,inLeftModNum,inRightModNum,serviceCode,fdto);
         }
     }
-    public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode){
+    public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
         if(lm>rm){
             errMap.put(serviceCode+"inRightModCaseCounth","Minimun cases should be smaller than Maximun cases");
+            fdto.setDoLeftModCaseCountherr(true);
+            fdto.setDoRightModCaseCountherr(true);
         }
     }
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskLegislativeMatrixDto fdto){
         //in
         if(StringUtil.isEmpty(fdto.getDoLeftModCaseCounth())){
             errMap.put(fdto.getSvcCode()+"inLeftModCaseCounth","CaseCounth is mandatory");
+            fdto.setDoLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getDoRightModCaseCounth())){
             errMap.put(fdto.getSvcCode()+"inRightModCaseCounth()","CaseCounth is mandatory");
+            fdto.setDoRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getDoRightLowCaseCounth())){
             errMap.put(fdto.getSvcCode()+"inRightLowCaseCounth","CaseCounth is mandatory");
+            fdto.setDoRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getDoLeftHighCaseCounth())){
             errMap.put(fdto.getSvcCode()+"inLeftHighCaseCounth","CaseCounth is mandatory");
+            fdto.setDoLeftModCaseCountherr(true);
         }
     }
 }

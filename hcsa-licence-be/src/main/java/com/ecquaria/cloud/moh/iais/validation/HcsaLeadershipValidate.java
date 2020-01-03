@@ -183,11 +183,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                     if(isIn){
                         inLeftHighNumFlag = false;
                         errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
-                        fdto.setAdRightLowCaseCountherr(true);
+                        fdto.setAdLeftHighCaseCountherr(true);
                     }else{
                         prLeftHighNumFlag = false;
                         errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
-                        fdto.setDpRightLowCaseCountherr(true);
+                        fdto.setDpLeftHighCaseCountherr(true);
                     }
                 }
             }
@@ -195,11 +195,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             if(isIn){
                 inLeftHighNumFlag = false;
                 errMap.put(serviceCode + "inLeftHighCaseCounth", "Invalid Number");
-                fdto.setAdRightLowCaseCountherr(true);
+                fdto.setAdLeftHighCaseCountherr(true);
             }else{
                 prLeftHighNumFlag = false;
                 errMap.put(serviceCode + "prLeftHighCaseCounth", "Invalid Number");
-                fdto.setDpRightLowCaseCountherr(true);
+                fdto.setDpLeftHighCaseCountherr(true);
             }
             e.printStackTrace();
         }
@@ -209,10 +209,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 if(inRightModNum +1 != inLeftHighNum){
                     if(isIn&&inLeftHighNumFlag){
                         errMap.put(serviceCode + "inLeftHighCaseCounth", "High Maximun cases and Moderate Minimax can only differ by 1");
-                        fdto.setAdRightLowCaseCountherr(true);
+                        fdto.setAdLeftHighCaseCountherr(true);
                     }else if(!isIn&&prLeftHighNumFlag){
                         errMap.put(serviceCode + "prLeftHighCaseCounth", "High Maximun cases and Moderate Minimax can only differ by 1");
-                        fdto.setDpRightLowCaseCountherr(true);
+                        fdto.setDpLeftHighCaseCountherr(true);
                     }
                 }
             }

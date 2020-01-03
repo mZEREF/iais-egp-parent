@@ -1,15 +1,20 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskInspectionService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -179,4 +184,177 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
         fin.setDoCaLeftHighCounth(calefthigh);
         return editNum;
     }
+
+    @Override
+    public void saveDto(InspectionShowDto showDto) {
+        List<HcsaRiskInspectionMatrixDto> dtoList = showDto.getInspectionDtoList();
+        List<HcsaRiskInspectionMatrixDto> saveList = new ArrayList<>();
+        List<HcsaRiskInspectionMatrixDto> updateList = new ArrayList<>();
+        for(HcsaRiskInspectionMatrixDto temp : dtoList){
+            if(temp.isCaEdit()||temp.isMjEdit()||temp.isMiEdit()){
+                saveList.add(getFinDto(temp,true,"C"));
+                saveList.add(getFinDto(temp,false,"C"));
+                saveList.add(getFinDto(temp,true,"I"));
+                saveList.add(getFinDto(temp,false,"I"));
+                saveList.add(getFinDto(temp,true,"A"));
+                saveList.add(getFinDto(temp,true,"A"));
+            }
+        }
+        doUpdate(saveList,dtoList);
+    }
+
+
+
+
+    public void doUpdate(List<HcsaRiskInspectionMatrixDto> updateList,List<HcsaRiskInspectionMatrixDto> dtoList){
+        //get last version form db
+        for(HcsaRiskInspectionMatrixDto temp:dtoList){
+            //List<HcsaRiskFinanceMatrixDto> lastversionList= hcsaConfigClient.getFinianceRiskBySvcCode(temp.getServiceCode()).getEntity();
+            List<HcsaRiskInspectionMatrixDto> lastversionList = getLastversionList(temp);
+            if(lastversionList!=null && !lastversionList.isEmpty()){
+                for(HcsaRiskInspectionMatrixDto lastversion:lastversionList){
+                    if("C".equals(lastversion.getRiskLevel())&&lastversion.isCaEdit()){
+                        updateLastVersion(temp,lastversion);
+                    }else if("I".equals(lastversion.getRiskLevel())&&lastversion.isMiEdit()){
+                        updateLastVersion(temp,lastversion);
+                    }else if("A".equals(lastversion.getRiskLevel())&&lastversion.isMjEdit()){
+                        updateLastVersion(temp,lastversion);
+                    }
+                }
+                hcsaConfigClient.udpateInspectionMatrix(lastversionList);
+            }
+        }
+        for(HcsaRiskInspectionMatrixDto temp:updateList){
+            temp.setId(null);
+        }
+        hcsaConfigClient.saveInspectionMatrix(updateList);
+    }
+    public void updateLastVersion(HcsaRiskInspectionMatrixDto newFin,HcsaRiskInspectionMatrixDto dbFin){
+        try {
+            if("C".equals(dbFin.getRiskLevel())){
+                if("CRRR003".equals(dbFin.getRiskRating())){
+                    dbFin.setEndDate(Formatter.parseDate(newFin.getDoCaEffectiveDate()));
+                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                        dbFin.setStatus("CMSTAT003");
+                    }
+                }else if("CRRR001".equals(dbFin.getRiskRating())){
+                    dbFin.setEndDate(Formatter.parseDate(newFin.getDoCaEffectiveDate()));
+                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                        dbFin.setStatus("CMSTAT003");
+                    }
+                }
+            }else if("I".equals(dbFin.getRiskLevel())){
+                if("CRRR003".equals(dbFin.getRiskRating())){
+                    dbFin.setEndDate(Formatter.parseDate(newFin.getDoMiEffectiveDate()));
+                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                        dbFin.setStatus("CMSTAT003");
+                    }
+                }else if("CRRR001".equals(dbFin.getRiskRating())){
+                    dbFin.setEndDate(Formatter.parseDate(newFin.getDoMiEffectiveDate()));
+                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                        dbFin.setStatus("CMSTAT003");
+                    }
+                }else if("J".equals(dbFin.getRiskLevel())){
+                    dbFin.setEndDate(Formatter.parseDate(newFin.getDoMjEffectiveDate()));
+                    if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
+                        dbFin.setStatus("CMSTAT003");
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public List<HcsaRiskInspectionMatrixDto> getLastversionList(HcsaRiskInspectionMatrixDto temp){
+        List<HcsaRiskInspectionMatrixDto> lastversionList= hcsaConfigClient.getInspectionBySvcCode(temp.getSvcCode()).getEntity();
+        List<HcsaRiskInspectionMatrixDto> returnList = new ArrayList<>();
+        if(lastversionList!=null && !lastversionList.isEmpty()){
+            for(HcsaRiskInspectionMatrixDto fin:lastversionList){
+                if(temp.isCaEdit()&&"C".equals(fin.getRiskLevel())){
+                    fin.setCaEdit(true);
+                }
+                if(temp.isMiEdit()&&"I".equals(fin.getRiskLevel())){
+                    fin.setMiEdit(true);
+                }
+                if(temp.isMjEdit()&&"A".equals(fin.getRiskLevel())){
+                    fin.setMjEdit(true);
+                }
+                returnList.add(fin);
+            }
+        }
+        return returnList;
+    }
+
+    public HcsaRiskInspectionMatrixDto getFinDto(HcsaRiskInspectionMatrixDto dto,boolean isLow,String level){
+        HcsaRiskInspectionMatrixDto finDto = new HcsaRiskInspectionMatrixDto();
+        finDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        finDto.setSvcCode(dto.getSvcCode());
+        finDto.setStatus("CMSTAT001");
+        finDto.setCaEdit(dto.isCaEdit());
+        finDto.setMiEdit(dto.isMiEdit());
+        finDto.setMjEdit(dto.isMjEdit());
+        if(StringUtil.isEmpty(dto.getVersion())){
+            finDto.setVersion(1);
+        }else{
+            finDto.setVersion(dto.getVersion()+1);
+        }
+        Date effDate = null;
+        Date endDate = null;
+        if("C".equals(level)) {
+            finDto.setRiskLevel("C");
+            try {
+                effDate = Formatter.parseDate(dto.getDoCaEffectiveDate());
+                endDate = Formatter.parseDate(dto.getDoCaEndDate());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            finDto.setEffectiveDate(effDate);
+            finDto.setEndDate(endDate);
+            if (isLow) {
+                finDto.setNcCountTh(Integer.parseInt(dto.getDoCaLeftModCounth()));
+                finDto.setRiskRating(RiskConsts.LOW);
+            } else {
+                finDto.setNcCountTh(Integer.parseInt(dto.getDoCaRightModCounth()));
+                finDto.setRiskRating(RiskConsts.HIGH);
+            }
+        }else if("I".equals(level)){
+            finDto.setRiskLevel("I");
+            try {
+                effDate = Formatter.parseDate(dto.getDoMiEffectiveDate());
+                endDate = Formatter.parseDate(dto.getDoMiEndDate());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            finDto.setEffectiveDate(effDate);
+            finDto.setEndDate(endDate);
+            if(isLow){
+                finDto.setNcCountTh(Integer.parseInt(dto.getDoMiLeftModCounth()));
+                finDto.setRiskRating(RiskConsts.LOW);
+            }else{
+                finDto.setNcCountTh(Integer.parseInt(dto.getDoMiRightModCounth()));
+                finDto.setRiskRating(RiskConsts.HIGH);
+            }
+        }else if("A".equals(level)){
+            finDto.setRiskLevel("A");
+            try {
+                effDate = Formatter.parseDate(dto.getDoMjEffectiveDate());
+                endDate = Formatter.parseDate(dto.getDoMjEndDate());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            finDto.setEffectiveDate(effDate);
+            finDto.setEndDate(endDate);
+            if(isLow){
+                finDto.setNcCountTh(Integer.parseInt(dto.getDoMjLeftModCounth()));
+                finDto.setRiskRating(RiskConsts.LOW);
+            }else{
+                finDto.setNcCountTh(Integer.parseInt(dto.getDoMjRightModCounth()));
+                finDto.setRiskRating(RiskConsts.HIGH);
+            }
+        }
+        return finDto;
+    }
+
 }
