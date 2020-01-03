@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
   //handle to the Engine APIs
@@ -66,7 +67,7 @@
                       <iais:row>
                         <iais:field value="Submission Date"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspecTaskCreAndAssDto.submitDt}"/></label>
+                          <label><fmt:formatDate value='${inspecTaskCreAndAssDto.submitDt}' pattern='dd/MM/yyyy' /></label>
                         </iais:value>
                       </iais:row>
                       <c:if test="${inspecTaskCreAndAssDto.inspectionLeads != null}">

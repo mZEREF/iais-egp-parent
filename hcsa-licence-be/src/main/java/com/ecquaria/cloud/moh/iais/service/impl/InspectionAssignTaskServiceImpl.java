@@ -108,6 +108,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
         inspecTaskCreAndAssDto.setApplicationNo(applicationDto.getApplicationNo());
+        inspecTaskCreAndAssDto.setAppCorrelationId(appCorrelationId);
         inspecTaskCreAndAssDto.setApplicationType(applicationDto.getApplicationType());
         inspecTaskCreAndAssDto.setApplicationStatus(applicationDto.getStatus());
         inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
@@ -286,7 +287,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks) {
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
-        ApplicationViewDto applicationViewDto = searchByAppCorrId(inspecTaskCreAndAssDto.getApplicationNo());
+        ApplicationViewDto applicationViewDto = searchByAppCorrId(inspecTaskCreAndAssDto.getAppCorrelationId());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         appInspectionStatusClient.createAppInspectionStatusByAppDto(applicationDto);
         assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto);
