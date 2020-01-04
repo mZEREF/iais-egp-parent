@@ -91,6 +91,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
+                        String s = sharedPath+File.separator+System.currentTimeMillis() + "";
                         ZipFile zipFile=null;
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
@@ -100,7 +101,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             zipFile =new ZipFile(path);
                             for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
                                 ZipEntry zipEntry = entries.nextElement();
-                                zipFile(zipEntry,os,bos,zipFile,bis,cos);
+                                zipFile(zipEntry,os,bos,zipFile,bis,cos,s);
                             }
 
                         } catch (IOException e) {
@@ -147,7 +148,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                         try {
 
-                            this.download(processFileTrackDto,listApplicationDto);
+                            this.download(processFileTrackDto,listApplicationDto,s);
                             //save success
                         }catch (Exception e){
                             //save bad
@@ -216,11 +217,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     @Override
-    public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto) {
+    public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,String fileName) {
         FileInputStream fileInputStream=null;
         Boolean flag=false;
         try {
-            File file =new File(download);
+            File file =new File(download+File.separator+fileName);
             if(file.isDirectory()){
                 File[] files = file.listFiles();
                 for(File  filzz:files){
@@ -279,22 +280,22 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus("APTY003");
-        systemClient.updateProcessFileTrack(processFileTrackDto);
+       /* systemClient.updateProcessFileTrack(processFileTrackDto);*/
 
     }
 
 
 
-        private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos)  {
-            long l = System.currentTimeMillis();
-            String fileName=l+"";
+        private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName)  {
+
+
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
-                    File file =new File(fileName+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
+                    File file =new File(compressPath+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(fileName+File.separator+zipEntry.getName());
+                    os=new FileOutputStream(compressPath+File.separator+zipEntry.getName());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -309,7 +310,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(fileName+File.separator+zipEntry.getName()).mkdirs();
+                    new File(compressPath+File.separator+zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 
