@@ -279,20 +279,22 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus("APTY003");
-       /* systemClient.updateProcessFileTrack(processFileTrackDto);*/
+        systemClient.updateProcessFileTrack(processFileTrackDto);
 
     }
 
 
 
         private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos)  {
+            long l = System.currentTimeMillis();
+            String fileName=l+"";
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
-                    File file =new File(compressPath+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
+                    File file =new File(fileName+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(compressPath+File.separator+zipEntry.getName());
+                    os=new FileOutputStream(fileName+File.separator+zipEntry.getName());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -307,7 +309,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(compressPath+File.separator+zipEntry.getName()).mkdirs();
+                    new File(fileName+File.separator+zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 
