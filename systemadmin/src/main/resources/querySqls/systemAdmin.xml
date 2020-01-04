@@ -213,5 +213,15 @@
             and task.task_status in('TSTATUS001', 'TSTATUS002')
         ]]>
     </sql>
+    <sql key="getHolidayList"  remarks="Get public holiday">
+        <![CDATA[
+            select
+            id,FROM_DATE,TO_DATE,DESCRIPTION,STATUS
+            from public_holiday
+            WHERE  status = 'CMSTAT001'
+            <#if description??> AND DESCRIPTION like :description</#if>
+            <#if year??> AND (FROM_DATE like :year or TO_DATE like :year)</#if>
+        ]]>
+    </sql>
 </sqls>
 
