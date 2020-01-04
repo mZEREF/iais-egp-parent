@@ -92,7 +92,7 @@ public interface HcsaChklClient {
                                 @PathVariable("module") String module,
                                 @PathVariable(value = "subTypeName", required = false) String subTypeName);
 
-    @GetMapping(value = {"/iais-hcsa-checklist/config/results-common-max-version"})
+    @GetMapping(path = "/iais-hcsa-checklist/common-config-max-version/results", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ChecklistConfigDto> getMaxVersionCommonConfig();
 
     @PostMapping(path = "/iais-hcsa-checklist/config/record/validation", consumes = MediaType.APPLICATION_JSON_VALUE)
