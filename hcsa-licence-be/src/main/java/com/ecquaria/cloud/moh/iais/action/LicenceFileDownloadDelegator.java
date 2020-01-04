@@ -59,6 +59,8 @@ public class LicenceFileDownloadDelegator {
             }
             //event bus update the data
             TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(list,HcsaConsts.ROUTING_STAGE_ASO,RoleConsts.USER_ROLE_ASO,intranet);
+
+
             if(taskHistoryDto!=null){
                 BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
                 BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
@@ -72,6 +74,7 @@ public class LicenceFileDownloadDelegator {
                 broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null);
                 broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null);
             }
+
 
 
     }

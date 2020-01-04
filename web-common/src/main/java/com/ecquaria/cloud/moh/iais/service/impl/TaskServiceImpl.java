@@ -181,6 +181,29 @@ public class TaskServiceImpl implements TaskService {
         return  result;
     }
 
+    public TaskHistoryDto getRoutingTaskForRequestForInformation(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation start ...."));
+        log.info("---------------"+applicationDtos+"--------"+stageId);
+        TaskHistoryDto result = new TaskHistoryDto();
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+                for(ApplicationDto applicationDto : applicationDtos) {
+                    //get the last version applicationDto
+                    ApplicationDto lastApplicationDto;
+                    //appPremisesCorrelation
+                    //history
+
+
+                }
+
+        }else{
+            log.error(StringUtil.changeForLog("The applicationDtos is null"));
+        }
+
+        log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation end ...."));
+        return  result;
+    }
+
+
 
 //    public void routingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos,String stageId,String roleId,AuditTrailDto auditTrailDto) throws FeignException {
 //        log.debug(StringUtil.changeForLog("the do routingTaskOneUserForSubmisison start ...."));
