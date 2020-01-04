@@ -1,57 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionReport" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspectionReport" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="50" y="170">
+  <StartStep defClass="" executor="" icon="" name="Step1" x="80" y="120">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportPre" x="240" y="340">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectionReportInit" x="20" y="340">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionReportInit" x="40" y="260">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="inspectionReportInit_OnStepProcess_0" name="inspectionReportInit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportSave" x="610" y="340">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportPre" x="200" y="260">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectorReportPre_OnStepProcess_0" name="inspectorReportPre_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportSave" x="420" y="120">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="inspectorReportSave_OnStepProcess_0" name="inspectorReportSave_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Comfirm" x="470" y="170">
+  <AutomaticStep defClass="" executor="" icon="" name="Step5" x="620" y="260">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="comfirm_OnStepProcess_0" name="comfirm_OnStepProcess_0"/>
-   </OnStepProcess>
+   <OnStepProcess/>
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorReportPage" stageIndicator="" x="240" y="170">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectorReportPage" stageIndicator="" x="190" y="120">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Success" stageIndicator="" x="640" y="170">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ComfirmPage" stageIndicator="" x="460" y="350">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="610" y="120">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -60,42 +52,37 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionReportInit" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
-   <position>{(70,190)(40,360)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionReportInit" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
+   <position>{(100,140)(60,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionReportInit" style="rectanular">
+   <position>{(60,280)(220,280)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/InspectorReportPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorReportPre" style="oblique">
-   <position>{(260,360)(260,190)}</position>
+   <position>{(220,280)(210,140)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionReportInit" style="oblique">
-   <position>{(40,360)(260,360)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportSave" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectorReportPage" style="rectanular">
+   <position>{(210,140)(440,140)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Success" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorReportSave" style="oblique">
-   <position>{(630,360)(660,190)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportPre" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(480,280)(220,280)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Comfirm" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InspectorReportPage" style="oblique">
-   <position>{(260,190)(490,190)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step5" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(480,280)(640,280)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportSave" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(500,560)(630,360)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorReportSave" style="oblique">
+   <position>{(440,140)(480,280)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ComfirmPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Comfirm" style="oblique">
-   <position>{(490,190)(480,370)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ComfirmPage" style="oblique">
-   <position>{(480,370)(500,560)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/InspectorReportPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(500,560)(260,190)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step5" style="rectanular">
+   <position>{(640,280)(630,140)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
- <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/InspectorReportSave" executor="" icon="" leftOperand="confirmAction" name="Switch1" x="480" y="540">
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspectorReportPre" componentIfTrue="/Steps/AutomaticStep/Step5" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="460" y="260">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/InspectorReportSave" value="&quot;submit&quot;"/>
-   <SwitchCase component="/Pages/WebPage/InspectorReportPage" value="&quot;back&quot;"/>
-  </Switch>
- </Switches>
+  </Condition>
+ </Conditions>
+ <Switches/>
  <Branches/>
  <Merges/>
  <StudioLabels/>

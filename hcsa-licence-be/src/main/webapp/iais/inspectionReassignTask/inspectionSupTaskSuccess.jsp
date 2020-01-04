@@ -87,7 +87,7 @@
                       <iais:row>
                         <iais:field value="Inspection Lead"/>
                         <iais:value width="7">
-                          <label><c:out value="${inspectionTaskPoolListDto.inspectorLead}"/></label>
+                          <label><c:out value="${inspectionTaskPoolListDto.inspectorLeads}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>

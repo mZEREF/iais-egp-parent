@@ -2,6 +2,7 @@
     <input type="hidden" name="confirmAction" value="">
     <div class="tab-pane" id="tabInspection" role="tabpanel">
         <div class="alert alert-info" role="alert">
+            <h1>SUCCESS TO AO1</h1>
             <p><span><strong>Section A (HCI Details)</strong></span></p>
         </div>
         <div class="row">
@@ -350,23 +351,5 @@
             </div>
         </div>
     </div>
-    <button type="button" onclick="doSubmit()">submit</button>
-    <button type="button" onclick="doBack()">back</button>
 </form>
-
-<script type="text/javascript">
-    function doBack() {
-        submit('back');
-    }
-
-    function doSubmit() {
-        submit('submit');
-    }
-    function submit(action){
-        $("[name='confirmAction']").val(action);
-        var mainPoolForm = document.getElementById('mainForm1');
-        mainPoolForm.submit();
-
-    }
-</script>
 

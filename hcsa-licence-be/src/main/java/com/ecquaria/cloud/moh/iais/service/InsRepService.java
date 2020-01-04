@@ -17,7 +17,7 @@ import java.util.List;
 public interface InsRepService {
 
     InspectionReportDto getInsRepDto (TaskDto taskDto, ApplicationViewDto applicationViewDto , LoginContext loginContext);
-    Boolean saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
+    void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     ApplicationViewDto getApplicationViewDto (String appNo);
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
     String  getRobackUserId(String appId,String stageId);

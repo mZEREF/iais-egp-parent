@@ -76,14 +76,13 @@ public class InsReportAoDelegator {
         String taskId;
         taskId = (String)ParamUtil.getSessionAttr(bpc.request, "taskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
+            taskId = "46DFF858-2D2D-EA11-BE7D-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
-        String appNo = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appNo);
-        String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        String correlationId = taskDto.getRefNo();
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, "report").getEntity();
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, "report").getEntity();
         String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
         Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
         String option  = recomInNumber + chronoUnit;

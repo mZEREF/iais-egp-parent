@@ -105,7 +105,7 @@ public class MohIntranetUserDelegator {
         }
 
     public void prepareEdit(BaseProcessClass bpc){
-        String id = ParamUtil.getString(bpc.request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
+        String id = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
         if(id!=null){
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
             ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
@@ -138,7 +138,7 @@ public class MohIntranetUserDelegator {
 
     public void doDelete(BaseProcessClass bpc){
         String crud_action_deactivate = ParamUtil.getString(bpc.request, "crud_action_deactivate");
-        String id = ParamUtil.getString(bpc.request, SystemAdminBaseConstants.CRUD_ACTION_VALUE);
+        String id = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
         if("doDeactivate".equals(crud_action_deactivate)){
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
             intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
@@ -234,12 +234,8 @@ public class MohIntranetUserDelegator {
 
     private void editEgpUser(OrgUserDto orgUserDto){
         ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
-        clientUser.setUserDomain("intranet");
-        clientUser.setId("test3");
         clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
-        clientUser.setEmail("caijing@ecquaria.com");
         clientUser.setPasswordChallengeQuestion("A");
-        clientUser.setEmail("35518@qq.com");
         clientUser.setPasswordChallengeAnswer("A");
         clientUser.setAccountActivateDatetime(new Date());
         /*
@@ -252,7 +248,7 @@ public class MohIntranetUserDelegator {
               "id": "test3",
               "passwordChallengeAnswer": "s",
               "passwordChallengeQuestion": "s"
-}
+         }
          */
         intranetUserService.updateEgpUser(clientUser);
     }

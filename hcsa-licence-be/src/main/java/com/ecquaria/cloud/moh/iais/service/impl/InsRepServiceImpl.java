@@ -85,7 +85,7 @@ public class InsRepServiceImpl implements InsRepService {
     public InspectionReportDto getInsRepDto(TaskDto taskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
         //inspection report application dto
-        AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
+//        AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
         //get all the inspectors by the same groupId
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
@@ -129,18 +129,18 @@ public class InsRepServiceImpl implements InsRepService {
         }
 
         //serviceId transform serviceCode
-        List<String> list = new ArrayList<>();
-        list.add(appInsRepDto.getServiceId());
-        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
-        String svcName = "";
-        String svcCode = "";
-        if(listHcsaServices!=null && !listHcsaServices.isEmpty()) {
-            for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
-                svcName = hcsaServiceDto.getSvcName();
-                svcCode = hcsaServiceDto.getSvcCode();
-            }
-        }
-
+//        List<String> list = new ArrayList<>();
+//        list.add(appInsRepDto.getServiceId());
+//        List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
+//        String svcName = "";
+//        String svcCode = "";
+//        if(listHcsaServices!=null && !listHcsaServices.isEmpty()) {
+//            for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
+//                svcName = hcsaServiceDto.getSvcName();
+//                svcCode = hcsaServiceDto.getSvcCode();
+//            }
+//        }
+        String svcCode = "CLB";
         //get configId
         List<ChecklistQuestionDto> listChecklistQuestionDtos = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
         List<ReportNcRegulationDto> listReportNcRegulationDto = new ArrayList<>();
@@ -204,11 +204,11 @@ public class InsRepServiceImpl implements InsRepService {
         }
         riskResult.add("Others");
 
-        inspectionReportDto.setServiceName(svcName);
-        inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
-        inspectionReportDto.setHciName(appInsRepDto.getHciName());
-        inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
-        inspectionReportDto.setPrincipalOfficer(appInsRepDto.getPrincipalOfficer());
+//        inspectionReportDto.setServiceName(svcName);
+//        inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
+//        inspectionReportDto.setHciName(appInsRepDto.getHciName());
+//        inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
+//        inspectionReportDto.setPrincipalOfficer(appInsRepDto.getPrincipalOfficer());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
         inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
         inspectionReportDto.setNcRectification(listReportNcRectifiedDto);
@@ -228,8 +228,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public Boolean saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
-        try {
+    public void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
             String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
             Integer version = 1;
             AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, "report").getEntity();
@@ -241,17 +240,11 @@ public class InsRepServiceImpl implements InsRepService {
             }
             appPremisesRecommendationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01);
             insRepClient.saveData(appPremisesRecommendationDto);
-        } catch (Exception e) {
-            log.error(StringUtil.changeForLog("Error when Submit Assign Task Project: "), e);
-            return false;
-        }
-        return true;
-
     }
 
     @Override
-    public ApplicationViewDto getApplicationViewDto(String appNo) {
-        ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appNo).getEntity();
+    public ApplicationViewDto getApplicationViewDto(String correlationId) {
+        ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(correlationId).getEntity();
         return applicationViewDto;
     }
 

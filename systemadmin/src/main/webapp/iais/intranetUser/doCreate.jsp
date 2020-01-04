@@ -17,9 +17,8 @@
         <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
         <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
 
-        <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator"/>
-        <input type="hidden" name="valEntity" id="valEntity" value="D:com.ecquaria.cloud.moh.iais.validation.IntranetUserDtoValidate.java"/>
-        <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+<%--        <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator"/>--%>
+<%--        <input type="hidden" name="valProfiles" id="valProfiles" value=""/>--%>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <div class="row">
@@ -70,7 +69,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <select name="salutation">
-                                        <option>---Please Select---</option>
+                                        <option value="">---Please Select---</option>
                                         <option value="Mr">Mr</option>
                                         <option value="Ms">Ms</option>
                                         <option value="Mrs">Mrs</option>

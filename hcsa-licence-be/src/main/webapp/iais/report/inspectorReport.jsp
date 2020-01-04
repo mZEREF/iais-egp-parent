@@ -10,6 +10,7 @@
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="confirmAction" value="">
     <div class="tab-pane" id="tabInspection" role="tabpanel">
         <div class="alert alert-info" role="alert">
@@ -335,6 +336,7 @@
                             <div>
                                 <td class="col-xs-4">
                                     <input name="remarks" type="text" value="${appPremisesRecommendationDto.remarks}">
+                                    <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </td>
                             </div>
                             <td class="col-xs-4">
@@ -383,6 +385,7 @@
         </button>
     </div>
 <%--    <button type="submit">confirm</button>--%>
+    <%@include file="/include/validation.jsp"%>
 </form>
 
 <script type="text/javascript">
