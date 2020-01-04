@@ -249,14 +249,20 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         String appPremCorrId = icqDtoList.get(0).getAppPreCorreId();
         String configId = icqDtoList.get(0).getConfigId();
         //AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
+
         AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
+        if(appDto!=null ){
+            appDto.setStatus("CMSTAT003");
+            fillUpCheckListGetAppClient.updateAppPreInspChkl(appDto);
+            appDto.setVersion(1 + Integer.parseInt(appDto.getVersion())+"");
+        }else{
+            appDto= new AppPremisesPreInspectChklDto();
+            appDto.setVersion(1+"");
+        }
         //update
-        appDto.setStatus("CMSTAT003");
-        fillUpCheckListGetAppClient.updateAppPreInspChkl(appDto);
         appDto.setId(null);
         appDto.setAppPremCorrId(dto.getCheckList().get(0).getAppPreCorreId());
         appDto.setAppPremCorrId(appPremCorrId);
-        appDto.setVersion(1 + Integer.parseInt(appDto.getVersion())+"");
         appDto.setChkLstConfId(configId);
         appDto.setStatus("CMSTAT001");
         appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

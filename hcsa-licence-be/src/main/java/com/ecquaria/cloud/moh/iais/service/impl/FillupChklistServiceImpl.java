@@ -595,10 +595,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),preInspecRemarks, InspectionConstants.PROCESS_DECI_PENDING_MYSELF_FOR_CHECKLIST_VERIFY, RoleConsts.USER_ROLE_INSPECTIOR);
+        taskDto.setSlaDateCompleted(new Date());
         taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        taskDto.setSlaDateCompleted(new Date());
         //create
         TaskDto updatedtaskDto = taskService.updateTask(taskDto);
         updatedtaskDto.setId(null);
@@ -608,11 +608,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         List<ApplicationDto> applicationDtos = new ArrayList<>();
         applicationDtos.add(applicationDto);
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
-        String workGroupId = null;
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0) {
-            workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
+            updatedtaskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
         }
-        updatedtaskDto.setWkGrpId(workGroupId);
         List<TaskDto> createTaskDtoList = new ArrayList<>();
         createTaskDtoList.add(updatedtaskDto);
         taskService.createTasks(createTaskDtoList);

@@ -49,7 +49,6 @@ public class InspectionNcCheckListDelegator {
     @Autowired
     InspectionAssignTaskService inspectionAssignTaskService;
     @Autowired
-
     private ApplicationViewService applicationViewService;
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
@@ -69,8 +68,9 @@ public class InspectionNcCheckListDelegator {
         HttpServletRequest request = bpc.request;
         //String taskId = ParamUtil.getString(request,"TaskId");
         String taskId = ParamUtil.getRequestString(request,"taskId");
+        //String taskId = "38CDA333-BC2E-EA11-BE7D-000C29F371DC";
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
+            taskId = "38CDA333-BC2E-EA11-BE7D-000C29F371DC";
         }
         String serviceType = "Inspection";
 /*        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
@@ -92,6 +92,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,"fillCheckListDto",insepectionNcCheckListDto);
         ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);*/
+        TaskDto taskDto = taskService.getTaskById(taskId);
         CheckListDraftDto checkListDraftDto = fillupChklistService.getDraftByTaskId(taskId,serviceType);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         InspectionFillCheckListDto cDto = null;
@@ -111,6 +112,7 @@ public class InspectionNcCheckListDelegator {
         if(adchklDto==null){
             adchklDto = fillupChklistService.getAdhoc(cDto.getCheckList().get(0).getAppPreCorreId());
         }
+        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
         ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
         ParamUtil.setSessionAttr(request,"commonDto",commonDto);
