@@ -67,7 +67,7 @@ public class    InboxDelegator {
             .clz(InboxLicenceQueryDto.class)
             .searchAttr(InboxConst.LIC_PARAM)
             .resultAttr(InboxConst.LIC_RESULT)
-            .sortField("licence_no").sortType(InboxConst.DESCENDING).build();
+            .sortField("START_DATE").sortType(InboxConst.DESCENDING).build();
 
 
     /**
@@ -232,14 +232,10 @@ public class    InboxDelegator {
                 appParameter.setFilters(appSearchMap);
                 appParameter.setPageNo(1);
             }
-            /**
-             * MESSAGE
-             */
             String inboxType = ParamUtil.getString(request,InboxConst.MESSAGE_TYPE);
             String inboxService = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
             String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
             Map<String,Object> inboxSearchMap = new HashMap<>();
-
             if (inboxType != null || inboxService != null || msgSubject != null){
                 ParamUtil.setRequestAttr(request,"TAB_NO", "inboxTab");
             }
@@ -254,16 +250,6 @@ public class    InboxDelegator {
             }
             inboxParameter.setFilters(inboxSearchMap);
             inboxParameter.setPageNo(1);
-
-            /**
-             * APPLICATION
-             */
-
-
-            /**
-             * LICENCE
-             */
-
         }
     }
 
@@ -294,7 +280,6 @@ public class    InboxDelegator {
     public void prepareSwitchStep(BaseProcessClass bpc){
         log.debug("The prepareSwitch start ...");
         String switchAction = ParamUtil.getString(bpc.request, InboxConst.SWITCH_ACTION);
-        log.debug("***crudAction***:" + switchAction);
         log.debug("The prepareSwitch end ...");
     }
 
@@ -316,8 +301,6 @@ public class    InboxDelegator {
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
-
-
     /**
      *
      * @param bpc

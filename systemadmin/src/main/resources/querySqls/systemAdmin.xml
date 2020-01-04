@@ -13,7 +13,7 @@
                    effective_to,
                    version
             FROM CM_MASTER_CODE as mc
-            WHERE iu.STATUS != 'CMSTAT002'
+            WHERE mc.STATUS != 'CMSTAT002'
             <#if id??> AND CHARINDEX(:id, mc.master_code_id) >0</#if>
             <#if codeCategory??> AND mc.code_category = :codeCategory</#if>
             <#if codeDescription??> AND mc.code_description = :codeDescription</#if>
