@@ -87,6 +87,7 @@ public class BackendInboxDelegator {
         hci_name = "";
         hci_address = "";
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+        searchParam = getSearchParam(bpc,true);
     }
 
     /**
@@ -338,6 +339,7 @@ public class BackendInboxDelegator {
                 String newdate = newformat.format(date);
                 item.setSubmitDate(newdate);
                 item.setPaymentstatus(MasterCodeUtil.getCodeDesc(item.getPaymentstatus()));
+                item.setApplicationType(MasterCodeUtil.getCodeDesc(item.getApplicationType()));
             }
 
             ParamUtil.setRequestAttr(bpc.request, "supTaskSearchResult", searchResult3);
