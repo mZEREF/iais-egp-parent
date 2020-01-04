@@ -20,29 +20,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +45,15 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 
 /**
@@ -77,6 +76,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private SystemBeLicClient systemClient;
     @Autowired
     private FileRepoClient fileRepoClient;
+
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @Override
     public void compress(List<ApplicationDto> listApplicationDto){
@@ -194,6 +196,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             return false;
         }
         return false;
+    }
+
+    @Override
+    public List<TaskDto> getTasksByRefNo(String refNo) {
+        return organizationClient.getTaskByAppNo(refNo).getEntity();
+
     }
 
     @Override

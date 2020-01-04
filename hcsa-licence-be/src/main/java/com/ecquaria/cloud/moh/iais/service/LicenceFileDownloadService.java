@@ -2,7 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
-
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import java.util.List;
 
 /**
@@ -16,4 +16,5 @@ public interface LicenceFileDownloadService {
     List<ApplicationDto> listApplication();
     void requestForInfList(List<ApplicationDto> list);
     Boolean changeFeApplicationStatus();
+    public List<TaskDto> getTasksByRefNo(String refNo);
 }

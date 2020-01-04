@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import java.util.List;
 import lombok.Getter;
@@ -15,6 +16,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TaskHistoryDto {
+
     private List<TaskDto> taskDtoList;
     private List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos;
+
+    //for Request information add
+    private List<ApplicationDto> applicationDtos;
+    private List<ApplicationDto> rollBackApplicationDtos;
 }
