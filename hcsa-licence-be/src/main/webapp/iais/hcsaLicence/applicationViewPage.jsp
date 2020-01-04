@@ -68,7 +68,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationDto.applicationType}</td>
+                                                        <td>${applicationViewDto.applicationType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Service Type</td>
@@ -517,6 +517,19 @@
                                                             </select>
                                                         </td>
                                                     </tr>
+                                                    <tr id="recomedationDropdown" class="hidden">
+                                                        <td>
+                                                            <span>Recomedation:</span>
+                                                        </td>
+                                                        <td>
+                                                            <select name="recomedation" class="table-select">
+                                                                <option>---select---</option>
+                                                                <c:forEach items="${applicationViewDto.recomeDation}" var="recomedation">
+                                                                    <option><c:out value="${recomedation}"></c:out></option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
                                                 </table>
                                                 <div align="center">
                                                     <button id="submitButton" type="submit" class="btn btn-primary">
@@ -592,6 +605,7 @@
     $(document).ready(function(){
         if('${applicationViewDto.applicationDto.status}' == 'APST003'||'${applicationViewDto.applicationDto.status}' == 'APST012'){
             $('#ApplicationViewInspection').css('display','none');
+            $('#verifiedDropdown').removeClass('hidden');
         }
     });
 

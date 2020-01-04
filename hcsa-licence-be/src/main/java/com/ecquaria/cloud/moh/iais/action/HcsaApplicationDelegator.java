@@ -14,6 +14,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -33,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +78,8 @@ public class HcsaApplicationDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
 
     public void routingTask(BaseProcessClass bpc) throws FeignException {
@@ -165,17 +170,19 @@ public class HcsaApplicationDelegator {
 
 // History
 
-//        List<String> actionByList=new ArrayList<>();
+        List<String> actionByList=new ArrayList<>();
 //        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
 //             ) {
 //            String actionBy=appPremisesRoutingHistoryDto.getActionby();
 //            actionByList.add(actionBy);
 //        }
-//        List<OrgUserDto> actionByRealNameList=applicationViewService.getUserNameById(actionByList);
+        List<OrgUserDto> actionByRealNameList=applicationViewService.getUserNameById(actionByList);
         for (int i = 0; i <applicationViewDto.getAppPremisesRoutingHistoryDtoList().size(); i++) {
 //            for (int j = 0; j <actionByRealNameList.size() ; j++) {
 //                if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(actionByRealNameList.get(j).getId())){
-//                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(actionByRealNameList.get(j).getUserName());
+//                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(actionByRealNameList.get(j).getDisplayName());
+//                }else{
+//                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby("-");
 //                }
 //            }
             String statusUpdate=MasterCodeUtil.getCodeDesc(applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getAppStatus());
@@ -228,6 +235,29 @@ public class HcsaApplicationDelegator {
 
         }
         applicationViewDto.setVerified(routingStage);
+
+        //recomeDation
+        HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
+        String svcCode=hcsaServiceDto.getSvcCode();
+        RiskAcceptiionDto riskAcceptiionDto=new RiskAcceptiionDto();
+        riskAcceptiionDto.setScvCode(svcCode);
+        List<RiskAcceptiionDto> listRiskAcceptiionDto = new ArrayList<>();
+        listRiskAcceptiionDto.add(riskAcceptiionDto);
+        List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
+        List<String> riskResult = new ArrayList<>();
+        if(listRiskResultDto!=null && !listRiskResultDto.isEmpty()){
+            for(RiskResultDto riskResultDto :listRiskResultDto){
+                String dateType = riskResultDto.getDateType();
+                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
+                String count = String.valueOf(riskResultDto.getTimeCount());
+                String recommTime = count+codeDesc;
+                riskResult.add(recommTime);
+            }
+        }
+        applicationViewDto.setRecomeDation(riskResult);
+
+
+
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
