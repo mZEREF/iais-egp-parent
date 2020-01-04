@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptSrcSystemDto;
 
 /**
  * @author anonymity
@@ -13,10 +12,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptSrcSystemDto;
 public interface AppointmentService {
 	SearchResult<ApptBlackoutDateQueryDto> doQuery(SearchParam searchParam);
 
-	void getAssignTaskInspectionDateByGroup();
-
-
-	Boolean createBlackedOutCalendar(ApptSrcSystemDto srcSystemDto);
+	Boolean createBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto);
 
 	Boolean updateBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto);
+
+	Boolean inActiveBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto);
 }

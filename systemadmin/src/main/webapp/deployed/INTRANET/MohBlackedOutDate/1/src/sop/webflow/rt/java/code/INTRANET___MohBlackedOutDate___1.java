@@ -46,5 +46,8 @@ public class INTRANET___MohBlackedOutDate___1 extends BaseProcessClass {
 	public void updateBlackedOutCalendar_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "updateBlackedOutCalendar", this);
 	}
+	public void step1_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "startStep", this);
+	}
 
 }

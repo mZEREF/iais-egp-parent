@@ -2,12 +2,14 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
@@ -22,4 +24,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface OnlineApptClient {
     @PostMapping(value = "/iais-appointment/blacked-out-date/results", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<ApptBlackoutDateQueryDto>> doQuery(@RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/iais-appointment/blacked-out-date/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<Boolean> createBlackedOutCalendar(@RequestBody ApptBlackoutDateDto blackoutDateDto);
+
+	@PutMapping(value = "/iais-appointment/blacked-out-date/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<Boolean> updateBlackedOutCalendar(@RequestBody ApptBlackoutDateDto blackoutDateDto);
+
+    @PostMapping(value = "/iais-appointment/blacked-out-date/status", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> inActiveBlackedOutCalendar(@RequestBody ApptBlackoutDateDto blackoutDateDto);
 }

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
@@ -68,5 +69,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public ClientUser updateEgpUser(ClientUser clientUser) {
         return egpUserClient.updateClientUser(clientUser).getEntity();
+    }
+
+    @Override
+    public SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(SearchParam searchParam) {
+        return intranetUserClient.getWorkingGroupBySearchParam(searchParam).getEntity();
     }
 }

@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author weilu
@@ -21,4 +23,5 @@ public interface IntranetUserService {
     ClientUser saveEgpUser(ClientUser clientUser);
     ClientUser updateEgpUser(ClientUser clientUser);
 
+    SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(@RequestBody SearchParam searchParam);
 }
