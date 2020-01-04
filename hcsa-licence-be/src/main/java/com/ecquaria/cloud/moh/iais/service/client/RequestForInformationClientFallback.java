@@ -60,7 +60,7 @@ public class RequestForInformationClientFallback implements RequestForInformatio
     }
 
     @Override
-    public void acceptLicPremisesReqForInfo(String id) {
+    public void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

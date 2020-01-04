@@ -35,7 +35,7 @@ public class ResponseForInformationClientFallback implements ResponseForInformat
     }
 
     @Override
-    public void deleteLicPremisesReqForInfo(String id) {
+    public void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

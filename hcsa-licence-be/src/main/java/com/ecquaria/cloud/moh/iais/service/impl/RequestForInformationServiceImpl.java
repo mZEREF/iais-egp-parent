@@ -136,8 +136,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public void acceptLicPremisesReqForInfo(String id) {
-        requestForInformationClient.acceptLicPremisesReqForInfo(id);
+    public void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        requestForInformationClient.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
     }
 

@@ -38,7 +38,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
 
     @Override
-    public void deleteLicPremisesReqForInfoFe(String id) {
-        responseForInformationClient.deleteLicPremisesReqForInfo(id);
+    public void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        responseForInformationClient.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
     }
 }

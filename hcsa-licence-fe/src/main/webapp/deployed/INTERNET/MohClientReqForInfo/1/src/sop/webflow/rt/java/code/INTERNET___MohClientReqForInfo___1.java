@@ -38,6 +38,11 @@ public class INTERNET___MohClientReqForInfo___1 extends BaseProcessClass {
 // 		doBack->OnStepProcess
 	}
 
+	public void doSubmit_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doSubmit", this); 
+// 		doSubmit->OnStepProcess
+	}
+
 	public void doDetail_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doDetail", this); 
 // 		doDetail->OnStepProcess

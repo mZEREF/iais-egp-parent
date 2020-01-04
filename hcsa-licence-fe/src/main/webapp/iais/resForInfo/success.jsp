@@ -7,7 +7,7 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-internet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <input type="hidden" name="crud_action_type" value="">

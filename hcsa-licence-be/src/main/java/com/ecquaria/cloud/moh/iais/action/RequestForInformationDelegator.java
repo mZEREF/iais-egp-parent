@@ -422,7 +422,8 @@ public class RequestForInformationDelegator {
     public void doAccept(BaseProcessClass bpc) {
         log.info("=======>>>>>doAccept>>>>>>>>>>>>>>>>requestForInformation");
         String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        requestForInformationService.acceptLicPremisesReqForInfo(reqInfoId);
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
+        requestForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
         // 		doAccept->OnStepProcess
     }
     public void preViewRfi(BaseProcessClass bpc) {

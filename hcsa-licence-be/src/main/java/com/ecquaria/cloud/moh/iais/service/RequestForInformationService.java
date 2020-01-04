@@ -28,6 +28,6 @@ public interface RequestForInformationService {
     List<LicPremisesReqForInfoDto> searchLicPremisesReqForInfo(String licPremId);
     LicPremisesReqForInfoDto getLicPreReqForInfo(String id);
     void deleteLicPremisesReqForInfo(String id);
-    void acceptLicPremisesReqForInfo(String id);
+    void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
 }
