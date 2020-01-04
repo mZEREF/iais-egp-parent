@@ -71,10 +71,27 @@
 
 </form>
 <script type="text/javascript">
+    function configGolbalRisk() {
+        SOP.Crud.cfxSubmit("mainForm","golbalRiskConfig");
+    }
+    function configIndividualRisk() {
+        SOP.Crud.cfxSubmit("mainForm","indivdualConfig");
+    }
     function configFinancialRisk() {
         SOP.Crud.cfxSubmit("mainForm","financialConig");
     }
-
+    function configLegislativeRisk() {
+        SOP.Crud.cfxSubmit("mainForm","legistlativeConfig");
+    }
+    function configWeightageRisk() {
+        SOP.Crud.cfxSubmit("mainForm","weightageConfig");
+    }
+    function configLecenceTenure() {
+        SOP.Crud.cfxSubmit("mainForm","licTenureConfig");
+    }
+    function configLeadershipRisk(){
+        SOP.Crud.cfxSubmit("mainForm","leadershipConfig");
+    }
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm","backLastPage");
     }
