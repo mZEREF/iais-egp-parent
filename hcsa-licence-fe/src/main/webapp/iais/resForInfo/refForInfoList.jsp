@@ -25,7 +25,7 @@
                     </h3>
                     <div class="table-gp">
                         <iais:action style="text-align:left;">
-                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
+                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="">Back</button>
                         </iais:action>
                         <table class="table">
                             <thead>
@@ -33,13 +33,13 @@
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="REQUEST_DATE " value="Start Date ,Time"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="REQUEST_DATE" value="Start Date"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="REQUESTER_ID" value="Requester ID"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                             </tr>
                             </thead>
                             <tbody>
                             <c:choose>
-                                <c:when test="${empty licPreReqForInfoDtoList}">
+                                <c:when test="${empty reqForInfoSearchList}">
                                     <tr>
                                         <td colspan="7">
                                             <iais:message key="ACK018" escape="true"></iais:message>

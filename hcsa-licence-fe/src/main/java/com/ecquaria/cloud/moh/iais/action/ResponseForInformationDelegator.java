@@ -4,10 +4,14 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +31,7 @@ public class ResponseForInformationDelegator {
     @Autowired
     FileRepoClient fileRepoClient;
 
-    public void start(BaseProcessClass bpc)  {
+    public void Start(BaseProcessClass bpc)  {
         HttpServletRequest request=bpc.request;
         String licenseeId = ParamUtil.getString(request,"licenseeId");
         if(StringUtil.isEmpty(licenseeId)){
@@ -37,7 +41,7 @@ public class ResponseForInformationDelegator {
         // 		Start->OnStepProcess
     }
 
-    public void preRFI(BaseProcessClass bpc)  {
+    public void preRfi(BaseProcessClass bpc)  {
         HttpServletRequest request=bpc.request;
         String licenseeId = (String) ParamUtil.getSessionAttr(request,"licenseeId");
         List<LicPremisesReqForInfoDto> reqForInfoSearchListDtos=responseForInformationService.searchLicPreRfiBylicenseeId(licenseeId);
@@ -45,9 +49,9 @@ public class ResponseForInformationDelegator {
         // 		preRFI->OnStepProcess
     }
 
-    public void doRFI(BaseProcessClass bpc) {
+    public void preDetail(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
-        String id = (String) ParamUtil.getSessionAttr(bpc.request, "reqInfoId");
+        String id =  ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
         licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]);
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
@@ -58,11 +62,29 @@ public class ResponseForInformationDelegator {
         // 		doBack->OnStepProcess
     }
 
-    public void doSubmit(BaseProcessClass bpc) {
+    public void doDetail(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
-        String id = (String) ParamUtil.getSessionAttr(request, "reqInfoId");
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String id = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
-        //File uploadFile= ParamUtil.getString(request, "UploadFile");
+        CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
+//        if(file != null && file.getSize() != 0){
+//            if (!StringUtil.isEmpty(file.getOriginalFilename())) {
+//                file.getFileItem().setFieldName("selectedFile");
+//                licPremisesReqForInfoDto.setSvcComDocId(comm.getId());
+//                licPremisesReqForInfoDto.setDocName(file.getOriginalFilename());
+//                long size = file.getSize() / 1024;
+//                licPremisesReqForInfoDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+//                String md5Code = FileUtil.genMd5FileChecksum(file.getBytes());
+//                licPremisesReqForInfoDto.setMd5Code(md5Code);
+//                //if  common ==> set null
+//                licPremisesReqForInfoDto.setPremisessName("");
+//                licPremisesReqForInfoDto.setPremisessType("");
+//                commonsMultipartFileMap.put(comm.getId(), file);
+//
+//            }
+//        }
+
         //fileRepoClient.saveFiles()
         String userReply=ParamUtil.getString(request,"userReply");
         licPremisesReqForInfoDto.setUserReply(userReply);
