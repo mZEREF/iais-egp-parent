@@ -91,8 +91,7 @@ public class InspectionRectificationProDelegator {
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
 
-            //String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
-            String taskId = "425810AB-8D1D-EA11-BE7D-000C29F371DC";
+            String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
             taskDto = taskService.getTaskById(taskId);
             applicationViewDto = applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
