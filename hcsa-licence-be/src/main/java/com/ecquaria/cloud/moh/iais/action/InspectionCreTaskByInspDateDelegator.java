@@ -78,7 +78,7 @@ public class InspectionCreTaskByInspDateDelegator {
                 applicationDtos.add(applicationDto);
                 List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
                 hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-                List<TaskDto> taskDtos = getTaskByHistoryTasks(applicationDto);
+                List<TaskDto> taskDtos = getTaskByHistoryTasks(aRecoDto.getAppPremCorreId());
                 createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount());
             }
         }
@@ -122,8 +122,8 @@ public class InspectionCreTaskByInspDateDelegator {
         taskService.createTasks(taskDtoList);
     }
 
-    private List<TaskDto> getTaskByHistoryTasks(ApplicationDto applicationDto) {
-        List<TaskDto> taskDtos = organizationClient.getTaskByAppNo(applicationDto.getApplicationNo()).getEntity();
+    private List<TaskDto> getTaskByHistoryTasks(String appCorrId) {
+        List<TaskDto> taskDtos = organizationClient.getTaskByAppNo(appCorrId).getEntity();
         if(taskDtos == null || taskDtos.isEmpty()){
             return null;
         }
