@@ -80,11 +80,11 @@ public class InspecEmailDelegator {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-        String taskId = ParamUtil.getString(request,"TaskId");
-        if(StringUtil.isEmpty(taskId)){
-            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
-        }
+        String taskId = ParamUtil.getString(request,"taskId");
         TaskDto taskDto = taskService.getTaskById(taskId);
+        if(StringUtil.isEmpty(taskDto)){
+            taskDto= (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
+        }
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
         String appNo=applicationViewDto.getApplicationDto().getApplicationNo();

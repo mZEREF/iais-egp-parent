@@ -79,11 +79,11 @@ public class InspectionMergeSendNcEmailDelegator {
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String taskId = ParamUtil.getString(request,"TaskId");
-        if(StringUtil.isEmpty(taskId)){
-            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
-        }
+        String taskId = ParamUtil.getString(request,"taskId");
         TaskDto taskDto = taskService.getTaskById(taskId);
+        if(StringUtil.isEmpty(taskDto)){
+            taskDto= (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
+        }
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByAppId(applicationViewDto.getApplicationDto().getId());
