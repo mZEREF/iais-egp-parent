@@ -449,6 +449,9 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
         ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
 
+        List<SelectOption> IdTypeSelect = getIdTypeSelOp();
+        ParamUtil.setRequestAttr(bpc.request, "IdTypeSelect", IdTypeSelect);
+
         List<SelectOption> assignSelectList = getAssignPrincipalOfficerSel(currentSvcId, true);
         ParamUtil.setRequestAttr(bpc.request, "PrincipalOfficersAssignSelect", assignSelectList);
 
