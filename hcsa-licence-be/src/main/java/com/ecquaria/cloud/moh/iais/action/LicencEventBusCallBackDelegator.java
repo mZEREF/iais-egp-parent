@@ -60,7 +60,7 @@ public class LicencEventBusCallBackDelegator {
         Map<String, List<ServiceStatus>> map = client.getSubmissionStatus(AppConsts.REST_PROTOCOL_TYPE
                 + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
         log.info(StringUtil.changeForLog("The map.size() is-->:"+map.size()));
-        if (map.size() == 1) {
+        if (map.size() > 0) {
             boolean completed = true;
             boolean success = true;
             for (Map.Entry<String, List<ServiceStatus>> ent : map.entrySet()) {
