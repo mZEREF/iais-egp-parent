@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -57,10 +58,15 @@ public final class IaisEGPHelper extends EGPHelper {
         }
         User user = SessionManager.getInstance(request).getCurrentUser();
         HttpSession session = request.getSession();
+
         if (user != null) {
             dto.setNricNumber(user.getId());
             dto.setMohUserId(user.getId());
             dto.setMohUserGuid(AppConsts.USER_ID_ANONYMOUS);
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (loginContext != null) {
+                dto.setMohUserGuid(loginContext.getUserId());
+            }
             dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
             dto.setOperationType(AppConsts.USER_DOMAIN_INTRANET.equals(user.getUserDomain()) ?
                     AuditTrailConsts.OPERATION_TYPE_INTRANET : AuditTrailConsts.OPERATION_TYPE_INTERNET);
