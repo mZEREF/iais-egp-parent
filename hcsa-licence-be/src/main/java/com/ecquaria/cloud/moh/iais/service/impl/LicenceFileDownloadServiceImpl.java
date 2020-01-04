@@ -221,7 +221,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         FileInputStream fileInputStream=null;
         Boolean flag=false;
         try {
-            File file =new File(download+File.separator+fileName);
+            File file =new File(fileName);
             if(file.isDirectory()){
                 File[] files = file.listFiles();
                 for(File  filzz:files){
@@ -280,7 +280,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus("APTY003");
-       /* systemClient.updateProcessFileTrack(processFileTrackDto);*/
+        systemClient.updateProcessFileTrack(processFileTrackDto);
 
     }
 
@@ -291,11 +291,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
-                    File file =new File(compressPath+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
+                    File file =new File(fileName+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(compressPath+File.separator+zipEntry.getName());
+                    os=new FileOutputStream(fileName+File.separator+zipEntry.getName());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -310,7 +310,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(compressPath+File.separator+zipEntry.getName()).mkdirs();
+                    new File(fileName+File.separator+zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 

@@ -100,7 +100,7 @@ public interface ApplicationClient {
             produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationById(@PathVariable(name = "id") String id);
 
-    @GetMapping(value = "/list-request-inf-application-dto",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-application/list-request-inf-application-dto",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto >> getRequesForInfList();
 
     @PutMapping(path = "/iais-application/status")
