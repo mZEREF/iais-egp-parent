@@ -112,7 +112,7 @@ public class BackendInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
-        ParamUtil.setSessionAttr(bpc.request, "curRole", loginContext.getCurRoleId());
+        ParamUtil.setRequestAttr(bpc.request, "curRole", loginContext.getCurRoleId());
         String swithtype = (String)ParamUtil.getRequestAttr(bpc.request, "SearchSwitchType");
         if(swithtype == null || swithtype ==""){
             ParamUtil.setRequestAttr(bpc.request, "SearchSwitchType","search");
@@ -156,7 +156,6 @@ public class BackendInboxDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(ParamUtil.getString(bpc.request, "roleIds")!= null){
             String curRole = ParamUtil.getRequestString(bpc.request, "roleIds");
-            ParamUtil.setSessionAttr(bpc.request,"curRole",curRole);
             loginContext.setCurRoleId(curRole);
         }
         application_no = ParamUtil.getString(bpc.request, "application_no");
@@ -223,7 +222,7 @@ public class BackendInboxDelegator {
         String curRole = ParamUtil.getRequestString(bpc.request, "roleIds");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         loginContext.setCurRoleId(curRole);
-        ParamUtil.setSessionAttr(bpc.request, "curRole", curRole);
+        commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
     }
 
     private List<TaskDto> getCommPoolBygetUserId(String getUserId, String curRole) {
