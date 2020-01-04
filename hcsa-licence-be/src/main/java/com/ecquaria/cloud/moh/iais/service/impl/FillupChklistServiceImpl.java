@@ -114,7 +114,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
             String svcId = appViewDto.getApplicationDto().getServiceId();
             HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
-            String svcCode = svcDto.getSvcCode();
+            serviceCode = svcDto.getSvcCode();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
         InspectionFillCheckListDto infillCheckListDto = new InspectionFillCheckListDto();
@@ -518,7 +518,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
             String svcId = appViewDto.getApplicationDto().getServiceId();
             HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
-            String svcCode = svcDto.getSvcCode();
+            serviceCode = svcDto.getSvcCode();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
         AppPremisesPreInspectChklDto chklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,cDtoList.get(0).getConfigId()).getEntity();
