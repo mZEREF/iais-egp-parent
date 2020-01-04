@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
@@ -110,6 +111,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 appPremCorrId = appCorrDtolist.get(0).getId();
             }*/
             appPremCorrId = taskDto.getRefNo();
+            ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
+            String svcId = appViewDto.getApplicationDto().getServiceId();
+            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
+            String svcCode = svcDto.getSvcCode();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
         InspectionFillCheckListDto infillCheckListDto = new InspectionFillCheckListDto();
@@ -509,6 +514,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 appPremCorrId = appCorrDtolist.get(0).getId();
             }*/
             appPremCorrId = taskDto.getRefNo();
+
+            ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
+            String svcId = appViewDto.getApplicationDto().getServiceId();
+            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
+            String svcCode = svcDto.getSvcCode();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
         AppPremisesPreInspectChklDto chklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,cDtoList.get(0).getConfigId()).getEntity();
