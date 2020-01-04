@@ -605,7 +605,7 @@
     $(document).ready(function(){
         if('${applicationViewDto.applicationDto.status}' == 'APST003'||'${applicationViewDto.applicationDto.status}' == 'APST012'){
             $('#ApplicationViewInspection').css('display','none');
-            $('#verifiedDropdown').removeClass('hidden');
+            $('#recomedationDropdown').removeClass('hidden');
         }
     });
 
