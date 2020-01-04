@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -70,6 +71,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     public String getWrkGrpName(String id) {
         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(id).getEntity();
         return workingGroupDto.getGroupName();
+    }
+
+    @Override
+    public HcsaServiceDto getHcsaServiceDtoById(String id) {
+        return hcsaConfigClient.getHcsaServiceDtoByServiceId(id).getEntity();
     }
 
 
