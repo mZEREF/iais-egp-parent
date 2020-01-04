@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -75,6 +76,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     @Override
     public void routingTask(TaskDto taskDto, String preInspecRemarks) {
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
+        taskDto.setSlaDateCompleted(new Date());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), applicationDto.getStatus(), taskDto.getTaskKey(), preInspecRemarks, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, RoleConsts.USER_ROLE_INSPECTIOR);
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
@@ -82,6 +84,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
         for(TaskDto tDto : taskDtoList){
             if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
+                tDto.setSlaDateCompleted(new Date());
                 tDto.setSlaRemainInDays(taskService.remainDays(taskDto));
                 tDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
                 tDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
