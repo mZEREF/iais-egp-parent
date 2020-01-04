@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloudfeign.FeignException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +54,7 @@ public class LicenceFileDownloadDelegator {
 
     }
 
-    public  void prepareData(BaseProcessClass bpc) throws FeignException {
+    public  void prepareData(BaseProcessClass bpc) throws Exception {
          logAbout("preparetionData");
         licenceFileDownloadService.delete();
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
@@ -67,11 +66,12 @@ public class LicenceFileDownloadDelegator {
             for(ApplicationDto applicationDto:list) {
                 applicationDto.setAuditTrailDto(intranet);
             }
-            //event bus update the data
+            //event bus update the data for new applicaiton
             TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(list,HcsaConsts.ROUTING_STAGE_ASO,RoleConsts.USER_ROLE_ASO,intranet);
-
-
-            if(taskHistoryDto!=null){
+            //for reqeust for information
+            TaskHistoryDto requestTaskHistoryDto  = getRoutingTaskForRequestForInformation(requestForInfList,intranet);
+            //
+            if(taskHistoryDto!=null || requestTaskHistoryDto!=null){
                 BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
                 BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
                 broadcastOrganizationDto.setAuditTrailDto(intranet);
@@ -79,13 +79,25 @@ public class LicenceFileDownloadDelegator {
                 String eventRefNo = EventBusHelper.getEventRefNo();
                 broadcastOrganizationDto.setEventRefNo(eventRefNo);
                 broadcastApplicationDto.setEventRefNo(eventRefNo);
-                broadcastOrganizationDto.setOneSubmitTaskList(taskHistoryDto.getTaskDtoList());
-                broadcastApplicationDto.setOneSubmitTaskHistoryList(taskHistoryDto.getAppPremisesRoutingHistoryDtos());
+
+                List<TaskDto> onSubmitTaskList = new ArrayList<>();
+                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
+                if(taskHistoryDto!=null){
+                    onSubmitTaskList.addAll(taskHistoryDto.getTaskDtoList());
+                    appPremisesRoutingHistoryDtos.addAll(taskHistoryDto.getAppPremisesRoutingHistoryDtos());
+                }
+                if(requestTaskHistoryDto!=null){
+                    onSubmitTaskList.addAll(requestTaskHistoryDto.getTaskDtoList());
+                    appPremisesRoutingHistoryDtos.addAll(requestTaskHistoryDto.getAppPremisesRoutingHistoryDtos());
+                    broadcastApplicationDto.setApplicationDtos(requestTaskHistoryDto.getApplicationDtos());
+                    broadcastApplicationDto.setRollBackApplicationDtos(requestTaskHistoryDto.getRollBackApplicationDtos());
+                }
+                broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
+                broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
                 broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null);
                 broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null);
+
             }
-
-
 
     }
 /*******************************/
