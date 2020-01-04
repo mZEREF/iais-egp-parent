@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -67,5 +68,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         return feEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization()).getEntity();
+    }
+
+    @Override
+    public List<RequestInformationSubmitDto> getRequestInformationSubmitDtos(List<ApplicationDto> applicationDtos) {
+        return  applicationClient.getRequestInformationSubmitDto(applicationDtos).getEntity();
     }
 }

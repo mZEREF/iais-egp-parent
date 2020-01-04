@@ -14,9 +14,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 /**
  * ApplicationClient
@@ -105,6 +105,9 @@ public interface ApplicationClient {
 
     @PutMapping(path = "/iais-application/status")
     FeignResponseEntity<Void> updateStatus(@RequestParam("status") String status);
+
+    @PostMapping (path = "/iais-broadcast/RequestInformationSubmitDtos",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<RequestInformationSubmitDto>> getRequestInformationSubmitDto(@RequestBody List<ApplicationDto> applicationDtos);
 
 
 }

@@ -14,11 +14,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 
 /**
  * ApplicationClientFallback
@@ -174,6 +174,12 @@ public class ApplicationClientFallback {
     }
 
     FeignResponseEntity<List<ApplicationDto >> getRequesForInfList(){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+    FeignResponseEntity<List<RequestInformationSubmitDto>> getRequestInformationSubmitDto(List<ApplicationDto> applicationDtos){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

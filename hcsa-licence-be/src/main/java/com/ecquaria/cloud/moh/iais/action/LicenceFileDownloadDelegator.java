@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -15,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloudfeign.FeignException;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -81,5 +81,18 @@ public class LicenceFileDownloadDelegator {
 /*******************************/
     private void logAbout(String name){
         log.debug(StringUtil.changeForLog("****The***** " +name +" ******Start ****"));
+    }
+
+    private TaskHistoryDto getRoutingTaskForRequestForInformation(List<ApplicationDto> applicationDtos) throws FeignException {
+        log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation start ...."));
+        TaskHistoryDto result = new TaskHistoryDto();
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+
+        }else{
+            log.error(StringUtil.changeForLog("The applicationDtos is null"));
+        }
+
+        log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation end ...."));
+        return  result;
     }
 }
