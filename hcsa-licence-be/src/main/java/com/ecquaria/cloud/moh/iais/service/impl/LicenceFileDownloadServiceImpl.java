@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
@@ -221,7 +222,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         FileInputStream fileInputStream=null;
         Boolean flag=false;
         try {
-            File file =new File(fileName);
+            File file =new File(download);
+            if(!file.exists()){
+                file.mkdirs();
+            }
             if(file.isDirectory()){
                 File[] files = file.listFiles();
                 for(File  filzz:files){
@@ -279,7 +283,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
         processFileTrackDto.setAuditTrailDto(batchJobDto);
-        processFileTrackDto.setStatus("APTY003");
+        processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
         systemClient.updateProcessFileTrack(processFileTrackDto);
 
     }
@@ -291,11 +295,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
-                    File file =new File(fileName+File.separator+zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)));
+
+                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
+                    File file =new File(compressPath+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(fileName+File.separator+zipEntry.getName());
+                    os=new FileOutputStream(compressPath+File.separator+zipEntry.getName());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -310,7 +316,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(fileName+File.separator+zipEntry.getName()).mkdirs();
+                    new File(compressPath+File.separator+zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 
@@ -348,53 +354,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         }
 
-
-
-
-    private Boolean  backups(Boolean aBoolean ,File file){
-            Boolean flag=false;
-        if(aBoolean){
-            if(!new File(backups).exists()){
-                new File(backups).mkdirs();
-            }
-            File newFile=new File(backups+File.separator+file.getName());
-            FileInputStream fileInputStream = null;
-            FileOutputStream fileOutputStream = null;
-            try {
-                 fileInputStream=new FileInputStream(file);
-               fileOutputStream=new FileOutputStream(newFile);
-                int cout =0;
-                byte [] size=new byte[1024];
-               cout= fileInputStream.read(size);
-               while(cout!=-1){
-                   fileOutputStream.write(size,0,cout);
-                   cout= fileInputStream.read(size);
-               }
-
-                flag=true;
-
-            } catch (IOException e) {
-                log.error(e.getMessage(),e);
-            }
-            finally {
-                if (fileInputStream!=null){
-                    try {
-                        fileInputStream.close();
-                    } catch (IOException e) {
-                        log.error(e.getMessage(),e);
-                    }
-                }
-                if(fileOutputStream!=null){
-                    try {
-                        fileOutputStream.close();
-                    } catch (IOException e) {
-                        log.error(e.getMessage(),e);
-                    }
-                }
-            }
-        }
-        return flag;
-    }
 
 
 
@@ -456,7 +415,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setAuditTrailDto(intranet);
         if(applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200){
             List<ApplicationDto> applicationDtos = this.listApplication();
-            listApplicationDto.addAll(applicationDtos);
+            for(ApplicationDto every :application){
+                if(every.getStatus().equals("APST007")){
+                    listApplicationDto.add(every);
+                }
+
+            }
+
         }
 
         return applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;

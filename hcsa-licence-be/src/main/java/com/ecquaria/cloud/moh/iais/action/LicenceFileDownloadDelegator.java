@@ -52,7 +52,7 @@ public class LicenceFileDownloadDelegator {
 
              licenceFileDownloadService.compress(list);
 
-             licenceFileDownloadService.requestForInfList(requestForInfList);
+           /*  licenceFileDownloadService.requestForInfList(requestForInfList);*/
 
             for(ApplicationDto applicationDto:list) {
                 applicationDto.setAuditTrailDto(intranet);

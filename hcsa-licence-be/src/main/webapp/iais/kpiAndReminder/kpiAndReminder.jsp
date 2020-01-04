@@ -41,11 +41,10 @@
                <label class="col-xs-12 col-md-4 control-label">Service</label>
                 <div class="col-xs-8 col-sm-6 col-md-5">
                   <select name="service" >
-                      <option>Clinical Laboratory</option>
-                      <option>Tissue Banking</option>
-                      <option>Blood Banking</option>
-                      <option>Nuclear Medicine</option>
-                      <option>Radiology Service</option>
+                    <option >Select one</option>
+                    <c:forEach items="${hcsaServiceDtos}" var="hcsaServiceDto">
+                      <option >${hcsaServiceDto.svcDesc}</option>
+                    </c:forEach>
                   </select>
                 </div>
            </div>

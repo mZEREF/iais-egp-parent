@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
@@ -346,11 +347,11 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     private String saveFileName(String fileName ,String filePath){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
-        processFileTrackDto.setProcessType("NEW");
+        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
         processFileTrackDto.setRefId("BE30AB5D-A92A-EA11-BE7D-000C29F371DC");
-        processFileTrackDto.setStatus(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
         String s="FAIL";

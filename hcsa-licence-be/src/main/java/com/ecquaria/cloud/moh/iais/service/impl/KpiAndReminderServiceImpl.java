@@ -1,12 +1,16 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +23,8 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
 
     private static final String  MODULE_NAME="new";
     private static final String SERVICE="Clinical Laboratory";
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
     @Override
     public void saveKpiAndReminder(HttpServletRequest request) {
@@ -34,7 +40,8 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
 
     @Override
     public void  getKpiAndReminder(HttpServletRequest request) {
-
+        List<HcsaServiceDto> entity = hcsaConfigClient.getActiveServices().getEntity();
+        request.setAttribute("hcsaServiceDtos",entity);
 
     }
 
