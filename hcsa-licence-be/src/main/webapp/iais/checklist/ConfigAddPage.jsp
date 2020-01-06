@@ -43,38 +43,35 @@
         <div class="form-group">
 
               <div class="col-xs-12">
-                Common  &nbsp; <input class="form-check-input"  <c:if test="${configSessionAttr.common == true}"> checked="checked"</c:if> id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
+                Common  &nbsp; <input class="form-check-input"  <c:if test="${common == true}"> checked="checked"</c:if> id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
               </div>
               <br><br>
               <div class="col-xs-12">
-                Service Name <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name" value="${configSessionAttr.svcName}"></iais:select>
+                Service Name <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name" value="${svcName}"></iais:select>
               </div>
 
               <div class="col-xs-12">
-                Service Sub Type <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Select Service Sub Type" value="${configSessionAttr.svcSubType}"></iais:select>
+                Service Sub Type <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Select Service Sub Type" value="${svcSubType}"></iais:select>
               </div>
 
           <div class="col-xs-12">
-            Module <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Select Module" value="${configSessionAttr.module}"></iais:select>
+            Module <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Select Module" value="${module}"></iais:select>
           </div>
 
           <div class="col-xs-12">
-            Type <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Select Type" value="${configSessionAttr.type}"></iais:select>
+            Type <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Select Type" value="${type}"></iais:select>
           </div>
 
 
           <div class="col-xs-12">
-            Effective Start Date <iais:datePicker name = "eftStartDate" value=""></iais:datePicker>
+            Effective Start Date <iais:datePicker name = "eftStartDate" value="${eftStartDate}"></iais:datePicker>
           </div>
 
           <div class="col-xs-12">
-            Effective End Date <iais:datePicker name = "eftEndDate" value=""></iais:datePicker>
+            Effective End Date <iais:datePicker name = "eftEndDate" value="${eftEndDate}"></iais:datePicker>
           </div>
 
         </div>
-
-
-
 
       </div>
 
@@ -84,7 +81,9 @@
             <p><a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
           </div>
           <div class="col-xs-12 col-sm-6">
-            <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Next</a></div>
+            <div class="text-right text-center-mobile">
+              <a class="btn btn-primary next"  onclick="javascript: doNext();">Next</a>
+            </div>
           </div>
         </div>
       </div>
@@ -95,7 +94,6 @@
 
 <%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
-
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","nextPage");
     }
