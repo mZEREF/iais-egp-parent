@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -77,6 +79,9 @@ public class InspectionServiceImpl implements InspectionService {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
     @Override
     public List<SelectOption> getAppTypeOption() {
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, ApplicationConsts.APPLICATION_TYPE_RENEWAL, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE});
@@ -108,7 +113,7 @@ public class InspectionServiceImpl implements InspectionService {
     public List<String> getApplicationNoListByPool(List<TaskDto> commPools) {
         if(IaisCommonUtils.isEmpty(commPools)){
             List<String> appCorrIdList = new ArrayList<>();
-            appCorrIdList.add("0");
+            appCorrIdList.add(AppConsts.NO);
             return appCorrIdList;
         }
         Set<String> appCorrIdSet = new HashSet<>();
@@ -386,7 +391,12 @@ public class InspectionServiceImpl implements InspectionService {
                     itplDto.setApplicationType(iDto.getApplicationType());
                     itplDto.setInspectionTypeName(iDto.getInspectionType() == 0? "Post":"Pre");
                     itplDto.setServiceEndDate(hcsaServiceDto.getEndDate());
-                    itplDto.setInspectionDate(new Date());
+                    AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(itplDto.getAppCorrelationId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                    if(appPremisesRecommendationDto != null){
+                        itplDto.setInspectionDate(appPremisesRecommendationDto.getRecomInDate());
+                    } else {
+                        itplDto.setInspectionDate(null);
+                    }
                 }
             }
         }
