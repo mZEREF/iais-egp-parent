@@ -193,12 +193,6 @@
         ]]>
     </sql>
 
-    <sql key="getInspectionTaskDateByCurrentGroup"  remarks="Get blacked out date list">
-        <![CDATA[
-
-        ]]>
-    </sql>
-
     <sql key="getWorkingGroupByUserId">
         <![CDATA[
             select T3.ID AS id,

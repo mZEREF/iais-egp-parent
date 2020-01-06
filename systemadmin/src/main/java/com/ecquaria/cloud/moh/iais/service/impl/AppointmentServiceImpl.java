@@ -5,10 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OnlineApptClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: Hc
@@ -20,6 +24,9 @@ import org.springframework.stereotype.Service;
 public class AppointmentServiceImpl implements AppointmentService {
 	@Autowired
 	private OnlineApptClient onlineApptClient;
+
+	@Autowired
+	private ApplicationBeClient applicationBeClient;
 
 	@Override
 	public SearchResult<ApptBlackoutDateQueryDto> doQuery(SearchParam searchParam) {
@@ -40,4 +47,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 	public Boolean inActiveBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto) {
 		return onlineApptClient.inActiveBlackedOutCalendar(blackoutDateDto).getEntity();
 	}
+
+	@Override
+	public List<Date> getRecomInDateByTaskRefNum(List<String> taskRefNum){
+		return applicationBeClient.getRecomInDateByTaskRefNum(taskRefNum).getEntity();
+	}
+
 }

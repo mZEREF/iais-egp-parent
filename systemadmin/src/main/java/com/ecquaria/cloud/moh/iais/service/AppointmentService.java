@@ -6,6 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * @author anonymity
  */
@@ -17,4 +20,7 @@ public interface AppointmentService {
 	Boolean updateBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto);
 
 	Boolean inActiveBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto);
+
+	List<Date> getRecomInDateByTaskRefNum(List<String> taskRefNum);
+
 }

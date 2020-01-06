@@ -15,12 +15,11 @@
 %>
 
 <webui:setLayout name="iais-intranet"/>
+
 <style>
-
-.dropYear{
-  display: inline;
-}
-
+  .nice-select{
+    width: 30%;
+  }
 </style>
 
 <div class="main-content">
