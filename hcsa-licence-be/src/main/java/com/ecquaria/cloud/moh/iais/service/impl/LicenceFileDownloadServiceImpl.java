@@ -97,7 +97,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
                         String s = sharedPath+File.separator+System.currentTimeMillis() + "";
-
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
                         BufferedOutputStream bos=null;

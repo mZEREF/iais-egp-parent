@@ -239,7 +239,17 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     private void deleteFile(){
         File file =new File(download);
+        File fileRepPath=new File(download+File.separator+"files");
+        MiscUtil.checkDirs(fileRepPath);
         MiscUtil.checkDirs(file);
+        if(fileRepPath.isDirectory()){
+            File[] files = fileRepPath.listFiles();
+            for(File f :files){
+                if(f.exists()&&f.isFile()){
+                    MiscUtil.deleteFile(f);
+                }
+            }
+        }
         if(file.isDirectory()){
             File[] files = file.listFiles((dir, name) -> {
                 if (name.endsWith(fileFormat)) {
@@ -248,7 +258,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                 return false;
             });
             for(File f:files){
-                if(f.exists()){
+                if(f.exists()&&f.isFile()){
                     MiscUtil.deleteFile(f);
                 }
             }
