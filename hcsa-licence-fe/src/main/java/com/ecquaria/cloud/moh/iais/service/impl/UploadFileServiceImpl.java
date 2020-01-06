@@ -173,13 +173,13 @@ public class UploadFileServiceImpl implements UploadFileService {
         log.info("-----------start zipFile---------------------");
         if (file.isDirectory()) {
             zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))+File.separator));
+            zos.closeEntry();
             for(File f: Objects.requireNonNull(file.listFiles())){
                 zipFile(zos,f);
             }
         } else {
-            try (InputStream is = new FileInputStream(file);
-                 BufferedInputStream bis = new BufferedInputStream(is)) {
-
+            try (
+                 BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                 int count ;
                 byte [] b =new byte[1024];
@@ -188,6 +188,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                     zos.write(b,0,count);
                     count=bis.read(b);
                 }
+                zos.closeEntry();
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
