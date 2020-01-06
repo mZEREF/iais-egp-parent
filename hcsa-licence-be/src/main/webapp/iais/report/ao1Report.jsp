@@ -358,19 +358,10 @@
             </div>
         </div>
     </div>
-    <div align="right">
-        <button id="approveButton" type="submit" class="btn btn-primary" onclick="doSubmit()">
-            Approve
-        </button>
+    <div class="modal-footer">
+        <button id="backButton" type="submit" onclick="doBack()" class="btn btn-primary">Back</button>
+        <button id="approveButton" type="submit" class="btn btn-primary" onclick="doSubmit()">Approve</button>
     </div>
-
-    <div align="right">
-        <button id="backButton" type="submit" onclick="doBack()" class="btn btn-primary">
-            Back
-        </button>
-    </div>
-<%--    <button type="submit" onclick="doSubmit()">approve</button>--%>
-<%--    <button type="submit" onclick="doBack()">back</button>--%>
 </form>
 
 <script type="text/javascript">

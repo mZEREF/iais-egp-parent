@@ -89,45 +89,35 @@
                                             <iais:row>
                                                 <iais:field value="Inspection Lead"/>
                                                 <iais:value width="7">
-                                                    <label><c:out
-                                                            value="${inspectionTaskPoolListDto.inspectorFlag}"/></label>
+                                                    <label><c:out value="${inspectionTaskPoolListDto.inspectorLeads}"/></label>
                                                 </iais:value>
                                             </iais:row>
-                                            <iais:row>
-                                                <iais:field value="Inspector"/>
-                                                <iais:value width="18">
-<%--                                                    <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">--%>
-<%--                                                        <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}"--%>
-<%--                                                                   var="name">--%>
-<%--                                                            <input type="checkbox" name="inspectorCheck"--%>
-<%--                                                                   id="inspectorCheck"--%>
-<%--                                                                   value="<c:out value="${name.value}"/>"/><label><c:out--%>
-<%--                                                                value="${name.text}"/></label>--%>
-<%--                                                        </c:forEach>--%>
-<%--                                                    </c:if>--%>
-<%--                                                    <c:if test="${inspectionTaskPoolListDto.inspectorCheck != null}">--%>
-<%--                                                        <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}"--%>
-<%--                                                                   var="name">--%>
-<%--                                                            <input type="" name="inspectorCheck"--%>
-<%--                                                                   id="inspectorCheck"--%>
-<%--                                                                   value="<c:out value="${name.value}"/>"--%>
-<%--                                                                    <c:forEach--%>
-<%--                                                                            items="${inspectionTaskPoolListDto.inspectorCheck}"--%>
-<%--                                                                            var="checkName">--%>
-<%--                                                                        <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>--%>
-<%--                                                                    </c:forEach>--%>
-<%--                                                            /><label><c:out value="${name.text}"/></label>--%>
-<%--                                                        </c:forEach>--%>
-<%--                                                    </c:if>--%>
-                                                    <iais:select name="inspectorCheck" options="inspectorOption" firstOption="Please select" value="${inspectorOption}" ></iais:select>
-                                                    <br><span class="error-msg" name="iaisErrorMsg"
-                                                              id="error_inspectorCheck"></span>
-                                                </iais:value>
-                                            </iais:row>
+
+
+                                                <iais:row>
+                                                    <iais:field value="Inspector" required="true"/>
+                                                    <iais:value width="10">
+                                                        <c:if test="${inspectionReassignTaskDto.inspectorCheck == null}">
+                                                        <iais:select name="inspectorCheck" options="inspectorOption" firstOption="Please select" value="${inspectorOption}"></iais:select>
+                                                        </c:if>
+                                                        <c:if test="${inspectionReassignTaskDto.inspectorCheck != null}">
+                                                            <c:forEach items="${inspectionReassignTaskDto.inspectorCheck}" var="name">
+                                                            <iais:select name="inspectorCheck" options="inspectorOption" firstOption="Please select" value="${name.value}"></iais:select>
+                                                            </c:forEach>
+                                                        </c:if>
+                                                        <br><span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span>
+                                                    </iais:value>
+                                                </iais:row>
+
+
+
+
+
                                             <iais:row>
                                                 <iais:field value="Reassign Reason"/>
                                                 <iais:value width="10">
-                                                    <iais:input type="text" name="reassignReason" value="${reassignReason}"/>
+                                                    <iais:input type="text" name="reassignRemarks" value="${inspectionReassignTaskDto.reassignRemarks}"/>
+                                                    <br><span class="error-msg" name="iaisErrorMsg" id="error_reassignRemarks"></span>
                                                 </iais:value>
                                             </iais:row>
                                             <iais:row>

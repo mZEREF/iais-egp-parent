@@ -371,6 +371,7 @@
                                                </select>
                                            </p>
                                         </span>
+                                <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>

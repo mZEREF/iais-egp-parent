@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -85,7 +86,7 @@ public class InsRepServiceImpl implements InsRepService {
     public InspectionReportDto getInsRepDto(TaskDto taskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
         //inspection report application dto
-//        AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
+        //AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
         //get all the inspectors by the same groupId
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
@@ -231,14 +232,14 @@ public class InsRepServiceImpl implements InsRepService {
     public void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
             String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
             Integer version = 1;
-            AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, "report").getEntity();
+            AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
             if(oldAppPremisesRecommendationDto==null){
                 appPremisesRecommendationDto.setVersion(version);
             }else{
                  version = oldAppPremisesRecommendationDto.getVersion() + 1;
                 appPremisesRecommendationDto.setVersion(version);
             }
-            appPremisesRecommendationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01);
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             insRepClient.saveData(appPremisesRecommendationDto);
     }
 

@@ -95,7 +95,7 @@
                       <iais:row>
                         <iais:field value="Inspector"/>
                         <iais:value width="10">
-                          <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="name">
+                          <c:forEach items="${inspectionReassignTaskDto.inspectorCheck}" var="name">
                             <label><c:out value="${name.text}"/></label>
                           </c:forEach>
                         </iais:value>
@@ -103,7 +103,7 @@
                       <iais:row>
                         <iais:field value="Reassign Reason"/>
                         <iais:value width="10">
-                            <label><c:out value="${reassignReason}"/></label>
+                            <label><c:out value="${inspectionReassignTaskDto.reassignRemarks}"/></label>
                         </iais:value>
                       </iais:row>
                       <iais:row>

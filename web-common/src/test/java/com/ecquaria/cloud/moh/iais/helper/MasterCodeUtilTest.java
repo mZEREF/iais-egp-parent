@@ -155,7 +155,6 @@ public class MasterCodeUtilTest {
     @Test
     public void testGetCodeDesc() {
         String desc = MasterCodeUtil.getCodeDesc("E02");
-        assertNotNull(desc);
         SearchResult sr = new SearchResult();
         FeignResponseEntity entity = new FeignResponseEntity<>();
         entity.setEntity(sr);

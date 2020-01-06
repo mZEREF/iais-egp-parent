@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReassignTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -86,6 +87,7 @@ public class InspecReassignTaskDelegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "reassignReason", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionReassignTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "workGroupIds", null);
@@ -308,11 +310,11 @@ public class InspecReassignTaskDelegator {
      */
     public void inspectionSupSearchValidate(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchValidate start ...."));
-        InspectionTaskPoolListDto inspectionTaskPoolListDto = getValueFromPage(bpc);
+        InspectionReassignTaskDto inspectionReassignTaskDto = getValueFromPage(bpc);
+        InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
-        String reassignReason = ParamUtil.getString(bpc.request, "reassignReason");
         if (!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))) {
-            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionTaskPoolListDto, "create");
+            ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionReassignTaskDto, "create");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -325,20 +327,28 @@ public class InspecReassignTaskDelegator {
             ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
         }
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
-        ParamUtil.setSessionAttr(bpc.request, "reassignReason", reassignReason);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionReassignTaskDto", inspectionReassignTaskDto);
     }
 
-    public InspectionTaskPoolListDto getValueFromPage(BaseProcessClass bpc) {
-        InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
-        String[] nameValue = ParamUtil.getStrings(bpc.request, "inspectorCheck");
+    public InspectionReassignTaskDto getValueFromPage(BaseProcessClass bpc) {
+        InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
+        InspectionReassignTaskDto inspectionReassignTaskDto = new InspectionReassignTaskDto();
+        String reassignRemarks = ParamUtil.getString(bpc.request, "reassignRemarks");
+        inspectionReassignTaskDto.setReassignRemarks(reassignRemarks);
+        String inspectorCheck = ParamUtil.getString(bpc.request, "inspectorCheck");
+        String[] nameValue = {};
+        if(!StringUtil.isEmpty(inspectorCheck)){
+            nameValue = new String[]{inspectorCheck};
+        }else {
+            nameValue = null;
+        }
         if (nameValue == null || nameValue.length < 0) {
-            inspectionTaskPoolListDto.setInspectorCheck(null);
+            inspectionReassignTaskDto.setInspectorCheck(null);
         } else {
             List<SelectOption> inspectorCheckList = inspectionService.getCheckInspector(nameValue, inspectionTaskPoolListDto);
-            inspectionTaskPoolListDto.setInspectorCheck(inspectorCheckList);
+            inspectionReassignTaskDto.setInspectorCheck(inspectorCheckList);
         }
-        return inspectionTaskPoolListDto;
-
+        return inspectionReassignTaskDto;
     }
 
     /**
@@ -351,10 +361,12 @@ public class InspecReassignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchQuery2 start ...."));
         String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
         String inspectorCheck = ParamUtil.getRequestString(bpc.request, "inspectorCheck");
+        InspectionReassignTaskDto inspectionReassignTaskDto = (InspectionReassignTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionReassignTaskDto");
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
         ParamUtil.setSessionAttr(bpc.request, "taskId", taskId);
         ParamUtil.setSessionAttr(bpc.request, "inspectorCheck", inspectorCheck);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionReassignTaskDto", inspectionReassignTaskDto);
     }
 
     /**
@@ -366,11 +378,13 @@ public class InspecReassignTaskDelegator {
     public void inspectionSupSearchConfirm(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchConfirm start ...."));
         String inspectorCheck = ParamUtil.getRequestString(bpc.request, "inspectorCheck");
+        InspectionReassignTaskDto inspectionReassignTaskDto = (InspectionReassignTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionReassignTaskDto");
         String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectorCheck", inspectorCheck);
         ParamUtil.setSessionAttr(bpc.request, "taskId", taskId);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionReassignTaskDto", inspectionReassignTaskDto);
     }
     /**
      * StartStep: InspectionInboxSearchQuery
@@ -378,14 +392,13 @@ public class InspecReassignTaskDelegator {
      * @param bpc
      * @throws
      */
-    public void inspectionSupSearchSuccess(BaseProcessClass bpc) throws FeignException {
+    public void inspectionSupSearchSuccess(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchSuccess start ...."));
-        String reassignReason = (String) ParamUtil.getSessionAttr(bpc.request, "reassignReason");
+        InspectionReassignTaskDto inspectionReassignTaskDto = (InspectionReassignTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionReassignTaskDto");
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto) ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
-        List<TaskDto> ReassignPools = (List<TaskDto>) ParamUtil.getSessionAttr(bpc.request, "ReassignPools");
-        String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
-//        inspectionService.routingTaskByPool(inspectionTaskPoolListDto, ReassignPools, reassignReason);
-        routingTask(bpc);
+        //inspectionService.routingTaskByPool(inspectionTaskPoolListDto, ReassignPools, reassignReason);
+        String reassignRemarks = inspectionReassignTaskDto.getReassignRemarks();
+        routingTask(bpc,reassignRemarks);
         ParamUtil.setSessionAttr(bpc.request, "inspectionTaskPoolListDto", inspectionTaskPoolListDto);
     }
 
@@ -401,7 +414,7 @@ public class InspecReassignTaskDelegator {
 
 
 
-    private void routingTask(BaseProcessClass bpc) throws FeignException {
+    private void routingTask(BaseProcessClass bpc,String reassignRemarks){
         //String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
         String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
         String userId = ParamUtil.getRequestString(bpc.request, "inspectorCheck");
@@ -412,14 +425,14 @@ public class InspecReassignTaskDelegator {
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
         String stageId = taskDto.getTaskKey();
         //remove this task and create the history
-//        removeTask(taskDto);
-        createAppPremisesRoutingHistory(appPremisesCorrelationId,appStatus,stageId,null,null, RoleConsts.USER_ROLE_INSPECTIOR);
+        removeTask(taskDto);
+        createAppPremisesRoutingHistory(appPremisesCorrelationId,appStatus,stageId,reassignRemarks,InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_REASSIGN, RoleConsts.USER_ROLE_INSPECTIOR);
         // send the task
         if(!StringUtil.isEmpty(stageId)) {
             String inspectorCheck = ParamUtil.getRequestString(bpc.request, "inspectorCheck");
             //add history for next stage start
-            updateTask(taskDto,userId);
-            createAppPremisesRoutingHistory(appPremisesCorrelationId,appStatus,stageId,null,null, RoleConsts.USER_ROLE_INSPECTIOR);
+            createTask(taskDto,userId);
+            createAppPremisesRoutingHistory(appPremisesCorrelationId,appStatus,stageId,reassignRemarks,InspectionConstants.PROCESS_DECI_SUPER_USER_POOL_REASSIGN, RoleConsts.USER_ROLE_INSPECTIOR);
         }
     }
 
@@ -440,12 +453,12 @@ public class InspecReassignTaskDelegator {
         taskService.createTasks(list);
     }
 
-    private void updateTask(TaskDto taskDto,String userId) {
-        taskDto.setUserId(userId);
-        taskDto.setDateAssigned(new Date());
-        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        taskService.updateTask(taskDto);
-    }
+//    private void updateTask(TaskDto taskDto,String userId) {
+//        taskDto.setUserId(userId);
+//        taskDto.setDateAssigned(new Date());
+//        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        taskService.updateTask(taskDto);
+//    }
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
                                                                          String stageId, String internalRemarks, String processDec,String roleId) {
