@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GolbalRiskShowDto;
@@ -200,5 +201,8 @@ public interface HcsaConfigClient {
     @RequestMapping(value = "/iais-hcsa-risk/licencetenureshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceTenShowDto> getLicenceTenureShow(@RequestBody List<HcsaServiceDto> svcList);
 
-
+    @RequestMapping(value = "/kpi-reminder/module-name-service-code",method = RequestMethod.GET)
+    FeignResponseEntity<List<String>> getModuleName(@RequestParam("serviceCode") String serviceCode);
+    @RequestMapping(value = "/kpi-reminder/result-service-and-module")
+    FeignResponseEntity<HcsaSvcKpiDto> searchResult(@RequestParam("service") String serviceCode, @RequestParam("module") String module);
 }

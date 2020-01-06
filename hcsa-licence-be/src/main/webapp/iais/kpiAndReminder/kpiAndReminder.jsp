@@ -43,7 +43,7 @@
                   <select name="service" >
                     <option >Select one</option>
                     <c:forEach items="${hcsaServiceDtos}" var="hcsaServiceDto">
-                      <option >${hcsaServiceDto.svcDesc}</option>
+                      <option value="${hcsaServiceDto.svcCode}">${hcsaServiceDto.svcDesc}</option>
                     </c:forEach>
                   </select>
                 </div>

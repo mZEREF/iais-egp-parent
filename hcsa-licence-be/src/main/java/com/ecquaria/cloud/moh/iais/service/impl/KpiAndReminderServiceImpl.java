@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,12 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
     @Override
     public void  getKpiAndReminder(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.getActiveServices().getEntity();
+        String parameter = request.getParameter("module");
+        String service = request.getParameter("service");
+        FeignResponseEntity<List<String>> moduleName = hcsaConfigClient.getModuleName(parameter);
+        FeignResponseEntity<HcsaSvcKpiDto> hcsaSvcKpiDtoFeignResponseEntity = hcsaConfigClient.searchResult(service, parameter);
+
+        request.setAttribute("module",moduleName);
         request.setAttribute("hcsaServiceDtos",entity);
 
     }

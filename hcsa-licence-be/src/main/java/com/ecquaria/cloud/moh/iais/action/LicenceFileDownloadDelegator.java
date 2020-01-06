@@ -59,7 +59,7 @@ public class LicenceFileDownloadDelegator {
         licenceFileDownloadService.delete();
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
 
-             licenceFileDownloadService.compress(list);
+             licenceFileDownloadService.compress(list,requestForInfList);
 
            /*  licenceFileDownloadService.requestForInfList(requestForInfList);*/
 

@@ -64,9 +64,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public Boolean saveFile(String  str) {
-        fileName = "folder";
-        download = sharedPath + "folder";
-        backups = sharedPath + "backups";
+
         FileOutputStream fileOutputStream = null;
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
         File d=new File(download);
@@ -115,7 +113,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public String getData() {
-
+        fileName = "folder";
+        download = sharedPath + "folder";
+        backups = sharedPath + "backups";
         String entity = applicationClient.fileAll().getEntity();
         try{
             ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(entity, ApplicationListFileDto.class);
@@ -141,7 +141,9 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public void compressFile(){
         String compress = compress();
+        log.info("-------------compress() end --------------");
         rename(compress);
+
         deleteFile();
     }
     /*****************compress*********/
@@ -221,6 +223,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 
     private String compress(){
+        log.info("------------ start compress() -----------------------");
         long l=0L;
         ZipOutputStream zos=null;
         CheckedOutputStream cos=null;
@@ -228,11 +231,12 @@ public class UploadFileServiceImpl implements UploadFileService {
         try {
             l = System.currentTimeMillis();
             is=new FileOutputStream(backups+File.separator+ l+".zip");
+            log.info("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------");
             cos =new CheckedOutputStream(is,new CRC32());
              zos =new ZipOutputStream(cos);
             File file =new File(download);
             zipFile(zos,file);
-
+    log.info("----------------end zipFile ---------------------");
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
@@ -262,6 +266,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         return l+"";
     }
     private void zipFile(ZipOutputStream zos,File file)  {
+        log.info("-----------start zipFile---------------------");
         BufferedInputStream bis=null;
         InputStream is=null;
         try {
@@ -286,10 +291,27 @@ public class UploadFileServiceImpl implements UploadFileService {
         }catch (IOException e){
             log.error(e.getMessage(),e);
         }
+        finally {
+            if(bis!=null){
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+            if(is!=null){
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
 
     }
 
     private void rename(String fileNamesss)  {
+        log.info("--------------rename start ---------------------");
         flag=true;
         File zipFile =new File(backups);
        if(zipFile.isDirectory()){
@@ -315,6 +337,9 @@ public class UploadFileServiceImpl implements UploadFileService {
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
                    file.renameTo(new File(backups+File.separator+s+".zip"));
+
+                   log.info("----------- new zip file name is"+backups+File.separator+s+".zip");
+
                    String s1 = saveFileName(s+".zip",backups+File.separator+s+".zip");
                    if(!s1.equals("SUCCESS")){
                        new File(backups+File.separator+s+".zip").delete();

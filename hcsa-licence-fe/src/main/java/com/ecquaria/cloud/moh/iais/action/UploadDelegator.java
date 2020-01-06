@@ -31,9 +31,13 @@ public class UploadDelegator {
     public void preparetionData (BaseProcessClass bpc){
         logAbout("preparetionData");
         String data = uploadFileService.getData();
+        log.info("------------------- getData  end --------------");
         uploadFileService.saveFile(data);
+        log.info("------------------- saveFile  end --------------");
         uploadFileService.compressFile();
+        log.info("------------------- compressFile  end --------------");
         uploadFileService.changeStatus();
+        log.info("------------------- changeStatus  end --------------");
 
     }
 

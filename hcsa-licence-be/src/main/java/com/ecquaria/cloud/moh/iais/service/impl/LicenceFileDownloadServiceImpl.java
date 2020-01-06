@@ -38,9 +38,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -63,8 +66,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-    @Value("${iais.syncFileTracking.shared.path}")
-    private     String sharedPath;
+   /* @Value("${iais.syncFileTracking.shared.path}")*/
+    private     String sharedPath="D:";
     private     String download;
     private     String backups;
     private     String fileFormat=".text";
@@ -76,12 +79,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private SystemBeLicClient systemClient;
     @Autowired
     private FileRepoClient fileRepoClient;
-
     @Autowired
     private OrganizationClient organizationClient;
 
     @Override
-    public void compress(List<ApplicationDto> listApplicationDto){
+    public void compress(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList){
         if(new File(backups).isDirectory()){
             File[] files = new File(backups).listFiles();
             for(File fil:files){
@@ -151,7 +153,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                         try {
 
-                            this.download(processFileTrackDto,listApplicationDto,s);
+                            this.download(processFileTrackDto,listApplicationDto, requestForInfList,s);
                             //save success
                         }catch (Exception e){
                             //save bad
@@ -171,7 +173,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
 
     }
-
+    //todo  delete file
     @Override
     public List<ApplicationDto> listApplication() {
 
@@ -226,7 +228,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     @Override
-    public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,String fileName) {
+    public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName) {
         FileInputStream fileInputStream=null;
         Boolean flag=false;
         try {
@@ -248,7 +250,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             count= fileInputStream.read(size);
                         }
 
-                        Boolean aBoolean = fileToDto(by.toString(), listApplicationDto);
+                        Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList);
                         flag=aBoolean;
                       /*  Boolean backups = backups(flag, filzz);*/
                         if(aBoolean){
@@ -304,7 +306,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
 
-                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
+                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf("/"));
                     File file =new File(compressPath+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();
@@ -365,7 +367,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-    private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto){
+    private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList){
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
         List<AppGrpPersonnelDto> appGrpPersonnel = applicationListDto.getAppGrpPersonnel();
@@ -422,13 +424,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         applicationListDto.setAuditTrailDto(intranet);
         if(applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200){
-            List<ApplicationDto> applicationDtos = this.listApplication();
-            for(ApplicationDto every :application){
-                if(every.getStatus().equals("APST007")){
-                    listApplicationDto.add(every);
-                }
+            requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);
 
-            }
 
         }
 
@@ -436,6 +433,40 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     }
 
+
+    private void requeOrNew( List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> dtoList,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList) {
+        Map<String,List<ApplicationDto>> map=new HashMap<>();
+        for (ApplicationGroupDto applicationGroupDto : applicationGroup) {
+            List<ApplicationDto> list=new ArrayList<>();
+            for (ApplicationDto applicationDto : dtoList) {
+                if (applicationGroupDto.getId().equals(applicationDto.getAppGrpId())) {
+                    list.add(applicationDto);
+                }
+
+            }
+            map.put(applicationGroupDto.getId(),list);
+        }
+
+        map.forEach((k,v)->{
+                         int j=0;
+                        for(ApplicationDto applicationDto :v){
+                            int i=v.size();
+
+                            if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)){
+                                j++;
+                            }
+                            if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION)){
+                                requestForInfList.add(applicationDto);
+                            }
+                            if(j==i){ listApplicationDto.addAll(v); }
+
+                        }
+
+
+               });
+
+
+    }
     /*
     *
     * save file to fileRepro*/

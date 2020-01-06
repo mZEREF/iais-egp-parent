@@ -11,8 +11,8 @@ import java.util.List;
  */
 public interface LicenceFileDownloadService {
     void delete();
-    Boolean  download(ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,String fileName);
-    void compress(List<ApplicationDto> list);
+    Boolean  download(ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName);
+    void compress(List<ApplicationDto> list,List<ApplicationDto> requestForInfList);
     List<ApplicationDto> listApplication();
     void requestForInfList(List<ApplicationDto> list);
     Boolean changeFeApplicationStatus();
