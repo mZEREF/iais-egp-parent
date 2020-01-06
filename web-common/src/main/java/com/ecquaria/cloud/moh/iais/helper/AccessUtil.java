@@ -17,6 +17,7 @@ import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
@@ -63,6 +64,17 @@ public class AccessUtil {
    */
     public static boolean isAdministrator(){
         return true;
+    }
+
+    public static boolean isSpecifiedRole(String role) {
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        if (request == null) {
+            return false;
+        }
+
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+
+        return role.equals(loginContext.getCurRoleId());
     }
 
     private AccessUtil() {
