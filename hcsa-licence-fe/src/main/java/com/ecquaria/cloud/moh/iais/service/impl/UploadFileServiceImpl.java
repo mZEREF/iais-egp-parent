@@ -168,17 +168,18 @@ public class UploadFileServiceImpl implements UploadFileService {
 
         return l+"";
     }
-    private void zipFile(ZipOutputStream zos,File file)  {
+
+    private void zipFile(ZipOutputStream zos,File file) throws IOException {
         log.info("-----------start zipFile---------------------");
-        try (InputStream is = new FileInputStream(file.getPath());
-             BufferedInputStream bis = new BufferedInputStream(is)) {
-            if(file.isDirectory()){
-                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))+File.separator));
-                for(File f: Objects.requireNonNull(file.listFiles())){
-                    zipFile(zos,f);
-                }
+        if (file.isDirectory()) {
+            zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))+File.separator));
+            for(File f: Objects.requireNonNull(file.listFiles())){
+                zipFile(zos,f);
             }
-            else {
+        } else {
+            try (InputStream is = new FileInputStream(file);
+                 BufferedInputStream bis = new BufferedInputStream(is)) {
+
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
                 int count ;
                 byte [] b =new byte[1024];
@@ -187,9 +188,9 @@ public class UploadFileServiceImpl implements UploadFileService {
                     zos.write(b,0,count);
                     count=bis.read(b);
                 }
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
             }
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
         }
 
     }
