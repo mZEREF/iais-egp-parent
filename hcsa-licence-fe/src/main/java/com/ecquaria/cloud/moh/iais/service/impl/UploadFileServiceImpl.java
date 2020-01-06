@@ -218,12 +218,12 @@ public class UploadFileServiceImpl implements UploadFileService {
                     is.close();
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
-                   file.renameTo(MiscUtil.generateFile(backups, s + ".zip"));
+                   File curFile = MiscUtil.generateFile(backups, s + ".zip");
+                   file.renameTo(curFile);
                    log.info("----------- new zip file name is"+backups+File.separator+s+".zip");
                    String s1 = saveFileName(s+".zip",backups + File.separator+s+".zip");
                    if(!s1.equals("SUCCESS")){
-                       File f = MiscUtil.generateFile(backups, s+".zip");
-                       MiscUtil.deleteFile(f);
+                       MiscUtil.deleteFile(curFile);
                        flag=false;
                        break;
                    }
