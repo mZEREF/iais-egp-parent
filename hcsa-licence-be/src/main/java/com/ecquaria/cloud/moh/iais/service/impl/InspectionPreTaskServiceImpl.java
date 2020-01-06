@@ -121,7 +121,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
             appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
             appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            fillUpCheckListGetAppClient.updateAppRecom(appPremisesRecommendationDto);
+            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
         }
     }
 
