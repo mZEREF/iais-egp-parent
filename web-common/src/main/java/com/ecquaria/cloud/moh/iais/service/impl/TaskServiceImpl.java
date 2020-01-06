@@ -20,16 +20,16 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -275,7 +275,9 @@ public class TaskServiceImpl implements TaskService {
         }
         return hcsaSvcStageWorkingGroupDtos;
     }
-    private TaskDto getUserIdForWorkGroup(String workGroupId) throws FeignException {
+
+    @Override
+    public TaskDto getUserIdForWorkGroup(String workGroupId) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup start ...."));
         TaskDto result = null;
         if(StringUtil.isEmpty(workGroupId)){

@@ -10,10 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloudfeign.FeignException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * TaskService
@@ -64,4 +62,13 @@ public interface TaskService {
     public Map<String, Object> getEmailNotifyList();
 
     List<String> getDistincTaskRefNumByCurrentGroup(String wrkGroupId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/1/6
+      * @Param:
+      * @return:
+      * @Descripation: get  lowest score User Id By workGroupId
+      */
+    TaskDto getUserIdForWorkGroup(String workGroupId) throws FeignException;
 }
