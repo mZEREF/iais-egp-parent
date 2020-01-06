@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
@@ -19,7 +20,6 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,18 +64,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public Boolean saveFile(String  str) {
-
-
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
-        File d=new File(download);
-        File b=new File(backups);
-        if(!d.exists()){
-            d.mkdirs();
-        }
-        if(!b.exists()){
-            b.mkdirs();
-        }
-        File file=new File(download+ File.separator+s+fileFormat);
+        File file=MiscUtil.generateFile(download, s+fileFormat);
         try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
              FileOutputStream fileOutputStream  =new FileOutputStream(file);) {
             if(!file.exists()){
@@ -134,70 +124,41 @@ public class UploadFileServiceImpl implements UploadFileService {
 *
 * file id */
     private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc){
-
         for(AppSvcDocDto every:appSvcDoc){
-
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file=new File(download+File.separator+"files", every.getFileRepoId()+"@"+every.getDocName());
-            if(!file.exists()){
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-            try ( FileOutputStream outputStream=new FileOutputStream(file);) {
-
+            File file = MiscUtil.generateFile(download + File.separator + "files",
+                    every.getFileRepoId() + "@" + every.getDocName());
+            try (FileOutputStream outputStream=new FileOutputStream(file)) {
               outputStream.write(entity);
-
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
             }
 
         }
         for(AppGrpPrimaryDocDto every:appGrpPrimaryDoc){
-
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file=new File(download+File.separator+"files",every.getFileRepoId()+"@"+ every.getDocName());
-           if(!file.exists()){
-               try {
-                   file.createNewFile();
-               } catch (IOException e) {
-                   log.error(e.getMessage(),e);
-               }
-           }
-
+            File file = MiscUtil.generateFile(download+File.separator+"files",
+                    every.getFileRepoId()+"@"+ every.getDocName());
             try (FileOutputStream fileOutputStream=new FileOutputStream(file);) {
-
                 fileOutputStream.write(entity);
             } catch (Exception e) {
                 log.error(e.getMessage(),e);
             }
-
         }
-
     }
-
-
 
     private String compress(){
         log.info("------------ start compress() -----------------------");
         long l=0L;
-
-
-
-        try (
-                OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
+        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
                CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
-               ZipOutputStream zos=new ZipOutputStream(cos);
-               ) {
+               ZipOutputStream zos=new ZipOutputStream(cos)) {
             l = System.currentTimeMillis();
-
             log.info("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------");
-
-            File file =new File(download);
-            zipFile(zos,file);
-    log.info("----------------end zipFile ---------------------");
+            File file = new File(download);
+            MiscUtil.checkDirs(file);
+            zipFile(zos, file);
+            log.info("----------------end zipFile ---------------------");
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
@@ -232,9 +193,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     private void rename(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
-        flag=true;
+        flag = true;
         File zipFile =new File(backups);
-       if(zipFile.isDirectory()){
+        MiscUtil.checkDirs(zipFile);
+        if(zipFile.isDirectory()){
            File[] files = zipFile.listFiles((dir, name) -> {
                if (name.endsWith(fileNamesss+".zip")) {
                    return true;
@@ -256,13 +218,12 @@ public class UploadFileServiceImpl implements UploadFileService {
                     is.close();
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
-                   file.renameTo(new File(backups+File.separator+s+".zip"));
-
+                   file.renameTo(MiscUtil.generateFile(backups, s + ".zip"));
                    log.info("----------- new zip file name is"+backups+File.separator+s+".zip");
-
-                   String s1 = saveFileName(s+".zip",backups+File.separator+s+".zip");
+                   String s1 = saveFileName(s+".zip",backups + File.separator+s+".zip");
                    if(!s1.equals("SUCCESS")){
-                       new File(backups+File.separator+s+".zip").delete();
+                       File f = MiscUtil.generateFile(backups, s+".zip");
+                       MiscUtil.deleteFile(f);
                        flag=false;
                        break;
                    }
@@ -270,11 +231,12 @@ public class UploadFileServiceImpl implements UploadFileService {
                    log.error(e.getMessage(),e);
                }
            }
-       }
+        }
     }
 
     private void deleteFile(){
         File file =new File(download);
+        MiscUtil.checkDirs(file);
         if(file.isDirectory()){
             File[] files = file.listFiles((dir, name) -> {
                 if (name.endsWith(fileFormat)) {
@@ -284,7 +246,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             });
             for(File f:files){
                 if(f.exists()){
-                    f.delete();
+                    MiscUtil.deleteFile(f);
                 }
             }
         }
@@ -308,8 +270,6 @@ public class UploadFileServiceImpl implements UploadFileService {
             return s;
         }
 
-            return s;
-
-
+        return s;
     }
 }
