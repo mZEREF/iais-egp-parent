@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -82,8 +81,8 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
-    public void submitConfig(ChecklistConfigDto checklistConfigDto) {
-        chklClient.submitConfig(checklistConfigDto);
+    public ChecklistConfigDto submitConfig(ChecklistConfigDto checklistConfigDto) {
+        return chklClient.submitConfig(checklistConfigDto).getEntity();
     }
 
     @Override

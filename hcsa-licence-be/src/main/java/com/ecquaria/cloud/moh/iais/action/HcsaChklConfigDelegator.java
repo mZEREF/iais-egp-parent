@@ -97,6 +97,7 @@ public class HcsaChklConfigDelegator {
     public void prepare(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request, "h2TitleAttr", null);
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, null);
@@ -506,7 +507,11 @@ public class HcsaChklConfigDelegator {
             configDto.setType(MasterCodeUtil.getCodeDesc(type));
             configDto.setModule(MasterCodeUtil.getCodeDesc(module));
             generateOrderIndex(request, configDto.getSectionDtos());
-            hcsaChklService.submitConfig(configDto);
+
+            ParamUtil.setSessionAttr(request, "h2TitleAttr", "Checklist Config Acknowledgement Page");
+            ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(configDto);
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigDto);
+
         }
     }
 
@@ -701,7 +706,9 @@ public class HcsaChklConfigDelegator {
                     configDto.setId(null);
                 }
 
-                hcsaChklService.submitConfig(configDto);
+                ParamUtil.setSessionAttr(request, "h2TitleAttr", "Checklist Config Acknowledgement Page");
+                ChecklistConfigDto checklistConfigDto = hcsaChklService.submitConfig(configDto);
+                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, checklistConfigDto);
             }
 
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX, null);

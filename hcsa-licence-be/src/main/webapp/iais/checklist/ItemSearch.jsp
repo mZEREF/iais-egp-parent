@@ -211,7 +211,11 @@
     }
 
     function configToChecklist() {
-        SOP.Crud.cfxSubmit("mainForm", "configToChecklist");
+        var checkBoxLen = $('input[type=checkbox]:checked').length;
+
+        if (checkBoxLen > 0){
+            SOP.Crud.cfxSubmit("mainForm", "configToChecklist")
+        }
     }
 
     function prepareAddItem() {

@@ -9,8 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloudfeign.FeignException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * TaskService
@@ -59,4 +62,6 @@ public interface TaskService {
     int remainDays(TaskDto taskDto);
 
     public Map<String, Object> getEmailNotifyList();
+
+    List<String> getDistincTaskRefNumByCurrentGroup(String wrkGroupId);
 }

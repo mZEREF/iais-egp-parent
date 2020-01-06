@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -343,6 +345,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Map<String, Object> getEmailNotifyList(){
         return taskOrganizationClient.getEmailNotifyList().getEntity();
+    }
+
+    @Override
+    public List<String> getDistincTaskRefNumByCurrentGroup(String wrkGroupId) {
+        List<TaskDto> commPoolByGroupWordId =  getCommPoolByGroupWordId(wrkGroupId);
+        List<String> taskRefNumList = new ArrayList<>();
+        commPoolByGroupWordId.stream().forEach(i -> taskRefNumList.add(i.getRefNo()));
+        return taskRefNumList.stream().distinct().collect(Collectors.toList());
     }
 
 }

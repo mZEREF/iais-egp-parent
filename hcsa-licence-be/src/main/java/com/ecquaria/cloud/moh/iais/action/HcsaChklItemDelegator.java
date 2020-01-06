@@ -478,6 +478,7 @@ public class HcsaChklItemDelegator {
         ChecklistConfigDto currentConfig = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
         String[] checkBoxItemId = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
         if (checkBoxItemId == null || checkBoxItemId.length == 0){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
 
@@ -496,7 +497,7 @@ public class HcsaChklItemDelegator {
                             Map<String,String> errorMap = new HashMap<>();
                             errorMap.put("configCustomValidation", "CHKL_ERR007");
 
-                            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,"N");
+                            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                             return;
                         }
@@ -506,7 +507,7 @@ public class HcsaChklItemDelegator {
             }
         }
 
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,"Y");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
     }
 
     private void loadSingleItemData(HttpServletRequest request){

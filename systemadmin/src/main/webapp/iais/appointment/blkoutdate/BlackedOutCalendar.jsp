@@ -14,7 +14,7 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 
-<%--<webui:setLayout name="iais-intranet"/>--%>
+<webui:setLayout name="iais-intranet"/>
 <style>
 
 .dropYear{
@@ -134,6 +134,8 @@
 
   </form>
 </div>
+
+<%@include file="/include/validation.jsp"%>
 <script>
   addBtnId.onclick = function(){
       SOP.Crud.cfxSubmit("mainForm", "preCreate");

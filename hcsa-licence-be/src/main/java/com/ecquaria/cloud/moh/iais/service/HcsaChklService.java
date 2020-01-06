@@ -16,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulati
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public interface HcsaChklService {
@@ -82,7 +81,7 @@ public interface HcsaChklService {
      * backend method: submitConfigInfo
      * @param checklistConfigDto
      */
-    void submitConfig(ChecklistConfigDto checklistConfigDto);
+    ChecklistConfigDto submitConfig(ChecklistConfigDto checklistConfigDto);
 
     /**
      *

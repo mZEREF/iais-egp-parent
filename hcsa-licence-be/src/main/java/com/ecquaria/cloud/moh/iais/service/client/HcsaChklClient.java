@@ -61,7 +61,7 @@ public interface HcsaChklClient {
     FeignResponseEntity<String> submitUploadItem(List<ChecklistItemDto> checklistItemList);
 
     @PostMapping(path = "/iais-hcsa-checklist/config", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> submitConfig(ChecklistConfigDto checklistConfigDto);
+    FeignResponseEntity<ChecklistConfigDto> submitConfig(ChecklistConfigDto checklistConfigDto);
 
     @GetMapping(path = "/iais-hcsa-service/subtype-name-results")
     FeignResponseEntity<List<String>> listSubTypeName();
