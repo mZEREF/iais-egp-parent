@@ -83,12 +83,20 @@ public class LicenceFileDownloadDelegator {
                 List<TaskDto> onSubmitTaskList = new ArrayList<>();
                 List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = new ArrayList<>();
                 if(taskHistoryDto!=null){
-                    onSubmitTaskList.addAll(taskHistoryDto.getTaskDtoList());
-                    appPremisesRoutingHistoryDtos.addAll(taskHistoryDto.getAppPremisesRoutingHistoryDtos());
+                    if(!IaisCommonUtils.isEmpty(taskHistoryDto.getTaskDtoList())){
+                        onSubmitTaskList.addAll(taskHistoryDto.getTaskDtoList());
+                    }
+                    if(!IaisCommonUtils.isEmpty(taskHistoryDto.getAppPremisesRoutingHistoryDtos())){
+                        appPremisesRoutingHistoryDtos.addAll(taskHistoryDto.getAppPremisesRoutingHistoryDtos());
+                    }
                 }
                 if(requestTaskHistoryDto!=null){
-                    onSubmitTaskList.addAll(requestTaskHistoryDto.getTaskDtoList());
-                    appPremisesRoutingHistoryDtos.addAll(requestTaskHistoryDto.getAppPremisesRoutingHistoryDtos());
+                    if(!IaisCommonUtils.isEmpty(requestTaskHistoryDto.getTaskDtoList())){
+                        onSubmitTaskList.addAll(requestTaskHistoryDto.getTaskDtoList());
+                    }
+                    if(!IaisCommonUtils.isEmpty(requestTaskHistoryDto.getAppPremisesRoutingHistoryDtos())){
+                        appPremisesRoutingHistoryDtos.addAll(requestTaskHistoryDto.getAppPremisesRoutingHistoryDtos());
+                    }
                     broadcastApplicationDto.setApplicationDtos(requestTaskHistoryDto.getApplicationDtos());
                     broadcastApplicationDto.setRollBackApplicationDtos(requestTaskHistoryDto.getRollBackApplicationDtos());
                 }
