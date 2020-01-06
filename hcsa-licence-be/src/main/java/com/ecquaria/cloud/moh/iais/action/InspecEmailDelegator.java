@@ -80,7 +80,7 @@ public class InspecEmailDelegator {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-        String taskId = ParamUtil.getString(request,"taskId");
+        String taskId = ParamUtil.getRequestString(request,"taskId");
         TaskDto taskDto = taskService.getTaskById(taskId);
         if(StringUtil.isEmpty(taskDto)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");

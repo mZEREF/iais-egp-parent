@@ -40,6 +40,15 @@ public class ResponseForInformationClientFallback implements ResponseForInformat
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
     }
+
+    @Override
+    public FeignResponseEntity<LicPremisesReqForInfoDto> updateLicPremisesReqForInfoFe(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     @Override
     public FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfoFe(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

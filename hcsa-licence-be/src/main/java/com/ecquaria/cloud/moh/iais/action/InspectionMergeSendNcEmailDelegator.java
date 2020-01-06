@@ -79,7 +79,7 @@ public class InspectionMergeSendNcEmailDelegator {
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String taskId = ParamUtil.getString(request,"taskId");
+        String taskId = ParamUtil.getRequestString(request,"taskId");
         TaskDto taskDto = taskService.getTaskById(taskId);
         if(StringUtil.isEmpty(taskDto)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");

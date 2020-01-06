@@ -111,6 +111,7 @@ public class ResponseForInformationDelegator {
         licPremisesReqForInfoDto.setReplyDate(new Date());
         licPremisesReqForInfoDto.setReplyUser(licPremisesReqForInfoDto.getLicenseeId());
         licPremisesReqForInfoDto.setUserReply(userReply);
+        responseForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
         // 		doSubmit->OnStepProcess
     }

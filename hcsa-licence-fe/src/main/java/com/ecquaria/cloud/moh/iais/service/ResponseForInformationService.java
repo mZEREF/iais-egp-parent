@@ -15,4 +15,5 @@ public interface ResponseForInformationService {
     List<LicPremisesReqForInfoDto> searchLicPreRfiBylicenseeId(String licenseeId);
     LicPremisesReqForInfoDto getLicPreReqForInfo(String id);
     void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+    LicPremisesReqForInfoDto updateLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 }
