@@ -29,12 +29,12 @@ public interface FEEicGatewayClient {
     FeignResponseEntity<List<LicenceGroupDto>> createLicence(@RequestBody List<LicenceGroupDto> licenceGroupDtoList,
                                                              @RequestHeader("date") String date,
                                                              @RequestHeader("authorization") String authorization);
-    @RequestMapping(value = "/hcsa-application/iais-application",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/iais-application/",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> updateApplication(@RequestBody ApplicationDto applicationDto,
                                                           @RequestHeader("date") String date,
                                                           @RequestHeader("authorization") String authorization);
 
-    @RequestMapping(value = "/inter-inbox/iais-inter-inbox/message",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/iais-inter-inbox-message/",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InterMessageDto> saveInboxMessage(@RequestBody InterMessageDto interInboxDto,
                                                           @RequestHeader("date") String date,
                                                           @RequestHeader("authorization") String authorization);

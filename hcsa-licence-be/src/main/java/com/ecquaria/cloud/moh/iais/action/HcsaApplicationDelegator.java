@@ -581,6 +581,7 @@ public class HcsaApplicationDelegator {
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
         interMessageDto.setProcessUrl(url);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setUserId(applicationViewDto.getSubmitBy());
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
