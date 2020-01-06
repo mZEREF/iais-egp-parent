@@ -65,7 +65,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public Boolean saveFile(String  str) {
 
-        FileOutputStream fileOutputStream = null;
+
         String s = FileUtil.genMd5FileChecksum(str.getBytes());
         File d=new File(download);
         File b=new File(backups);
@@ -76,14 +76,12 @@ public class UploadFileServiceImpl implements UploadFileService {
             b.mkdirs();
         }
         File file=new File(download+ File.separator+s+fileFormat);
-
-        FileOutputStream fileInputStream = null;
-        try {
+        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
+             FileOutputStream fileOutputStream  =new FileOutputStream(file);) {
             if(!file.exists()){
                 file.createNewFile();
             }
-            fileInputStream =new FileOutputStream(backups+File.separator+file.getName());
-            fileOutputStream =new FileOutputStream(file);
+
             fileOutputStream.write(str.getBytes());
             fileInputStream.write(str.getBytes());
 
@@ -91,23 +89,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             log.error(e.getMessage(),e);
             return false;
         }
-        finally {
-           if(fileInputStream!=null){
-               try {
-                   fileInputStream.close();
-               } catch (IOException e) {
-                   log.error(e.getMessage(),e);
 
-               }
-           }
-           if(fileOutputStream!=null){
-               try {
-                   fileOutputStream.close();
-               } catch (IOException e) {
-                   log.error(e.getMessage(),e);
-               }
-           }
-        }
         return true;
     }
 
@@ -154,68 +136,44 @@ public class UploadFileServiceImpl implements UploadFileService {
     private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc){
 
         for(AppSvcDocDto every:appSvcDoc){
-            FileOutputStream outputStream=null;
+
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file=new File(download+File.separator+"files"+File.separator+every.getFileRepoId()+"@"+every.getDocName());
+            File file=new File(download+File.separator+"files", every.getFileRepoId()+"@"+every.getDocName());
             if(!file.exists()){
                 try {
                     file.createNewFile();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(),e);
                 }
             }
-            try {
-              outputStream=new FileOutputStream(file);
-                outputStream.write(entity);
+            try ( FileOutputStream outputStream=new FileOutputStream(file);) {
 
-            } catch (FileNotFoundException e) {
+              outputStream.write(entity);
 
-                log.error(e.getMessage(),e);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error(e.getMessage(),e);
             }
-            finally {
-                if(outputStream!=null){
-                    try {
-                        outputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+
         }
         for(AppGrpPrimaryDocDto every:appGrpPrimaryDoc){
 
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file=new File(download+File.separator+"files"+File.separator+every.getFileRepoId()+"@"+ every.getDocName());
+            File file=new File(download+File.separator+"files",every.getFileRepoId()+"@"+ every.getDocName());
            if(!file.exists()){
                try {
                    file.createNewFile();
                } catch (IOException e) {
-                   e.printStackTrace();
+                   log.error(e.getMessage(),e);
                }
            }
-            FileOutputStream fileOutputStream= null;
-            try {
-                fileOutputStream = new FileOutputStream(file);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            try {
+
+            try (FileOutputStream fileOutputStream=new FileOutputStream(file);) {
+
                 fileOutputStream.write(entity);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                log.error(e.getMessage(),e);
             }
 
-            finally {
-                if(fileOutputStream!=null){
-                    try {
-                        fileOutputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
         }
 
     }
@@ -225,51 +183,31 @@ public class UploadFileServiceImpl implements UploadFileService {
     private String compress(){
         log.info("------------ start compress() -----------------------");
         long l=0L;
-        ZipOutputStream zos=null;
-        CheckedOutputStream cos=null;
-        OutputStream is=null;
-        try {
+
+
+
+        try (
+                OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
+               CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
+               ZipOutputStream zos=new ZipOutputStream(cos);
+               ) {
             l = System.currentTimeMillis();
-            is=new FileOutputStream(backups+File.separator+ l+".zip");
+
             log.info("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------");
-            cos =new CheckedOutputStream(is,new CRC32());
-             zos =new ZipOutputStream(cos);
+
             File file =new File(download);
             zipFile(zos,file);
     log.info("----------------end zipFile ---------------------");
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
-        finally {
-            if(zos!=null){
-                try {
-                    zos.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-            if(cos!=null){
-                try {
-                    cos.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-            if(is!=null){
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-        }
+
         return l+"";
     }
     private void zipFile(ZipOutputStream zos,File file)  {
         log.info("-----------start zipFile---------------------");
-        BufferedInputStream bis=null;
-        InputStream is=null;
-        try {
+        try (InputStream is = new FileInputStream(file.getPath());
+             BufferedInputStream bis = new BufferedInputStream(is)) {
             if(file.isDirectory()){
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))+File.separator));
                 for(File f: Objects.requireNonNull(file.listFiles())){
@@ -278,8 +216,6 @@ public class UploadFileServiceImpl implements UploadFileService {
             }
             else {
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
-               is=new FileInputStream(file.getPath());
-                 bis =new BufferedInputStream(is);
                 int count ;
                 byte [] b =new byte[1024];
                 count=bis.read(b);
@@ -288,24 +224,8 @@ public class UploadFileServiceImpl implements UploadFileService {
                     count=bis.read(b);
                 }
             }
-        }catch (IOException e){
+        }catch (Exception e){
             log.error(e.getMessage(),e);
-        }
-        finally {
-            if(bis!=null){
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
-            if(is!=null){
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
         }
 
     }
