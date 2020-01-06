@@ -152,11 +152,11 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     private String compress(){
         log.info("------------ start compress() -----------------------");
-        long l=0L;
+        long l=   System.currentTimeMillis();
         try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
                CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
                ZipOutputStream zos=new ZipOutputStream(cos)) {
-            l = System.currentTimeMillis();
+
             log.info("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------");
             File file = new File(download);
             MiscUtil.checkDirs(file);
