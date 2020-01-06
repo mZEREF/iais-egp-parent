@@ -180,7 +180,6 @@ public class PublicHolidayDelegate {
      */
     public void doCreateValidation(BaseProcessClass bpc) throws ParseException {
         PublicHolidayDto publicHolidayDto = new PublicHolidayDto();
-        publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         publicHolidayDto.setDescription(ParamUtil.getRequestString(bpc.request,"Description"));
         publicHolidayDto.setFromDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "sub_date")));
         publicHolidayDto.setToDate(Formatter.parseDate(ParamUtil.getString(bpc.request, "to_date")));
@@ -192,6 +191,7 @@ public class PublicHolidayDelegate {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IntranetUserConstant.FALSE);
         }else{
+            publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             PublicHolidayDto resDto = publicHolidayService.createHoliday(publicHolidayDto);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IntranetUserConstant.TRUE);
         }
