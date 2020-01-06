@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ApplicationBeClientFallback implements ApplicationBeClient{
 	@Override
-	public FeignResponseEntity<List<Date>> getRecomInDateByTaskRefNum(List<String> taskRefNum) {
+	public FeignResponseEntity<List<Date>> getInspectionRecomInDateByCorreId(List<String> taskRefNum) {
 		FeignResponseEntity entity = new FeignResponseEntity<>();
 		HttpHeaders headers = new HttpHeaders();
 		entity.setHeaders(headers);

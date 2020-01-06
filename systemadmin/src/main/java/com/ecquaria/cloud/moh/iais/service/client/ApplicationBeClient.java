@@ -17,6 +17,6 @@ import java.util.List;
  */
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class, fallback = ApplicationBeClientFallback.class)
 public interface ApplicationBeClient {
-	@PostMapping(value = "/iais-application-be/app-prem-recommendation/date", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-	FeignResponseEntity<List<Date>> getRecomInDateByTaskRefNum(@RequestBody List<String> taskRefNum);
+	@PostMapping(value = "/iais-application-be/inspection/date", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<List<Date>> getInspectionRecomInDateByCorreId(@RequestBody List<String> taskRefNum);
 }

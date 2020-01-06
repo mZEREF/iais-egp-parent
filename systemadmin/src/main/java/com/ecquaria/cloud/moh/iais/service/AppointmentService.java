@@ -21,6 +21,6 @@ public interface AppointmentService {
 
 	Boolean inActiveBlackedOutCalendar(ApptBlackoutDateDto blackoutDateDto);
 
-	List<Date> getRecomInDateByTaskRefNum(List<String> taskRefNum);
+	List<Date> getInspectionRecomInDateByCorreId(List<String> taskRefNum);
 
 }

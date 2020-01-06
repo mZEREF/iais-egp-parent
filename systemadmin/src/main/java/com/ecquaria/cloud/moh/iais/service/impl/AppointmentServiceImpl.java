@@ -49,8 +49,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 	}
 
 	@Override
-	public List<Date> getRecomInDateByTaskRefNum(List<String> taskRefNum){
-		return applicationBeClient.getRecomInDateByTaskRefNum(taskRefNum).getEntity();
+	public List<Date> getInspectionRecomInDateByCorreId(List<String> taskRefNum){
+		return applicationBeClient.getInspectionRecomInDateByCorreId(taskRefNum).getEntity();
 	}
 
 }

@@ -14,17 +14,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -90,11 +89,10 @@ public class AdhocChecklistDelegator {
         AuditTrailHelper.auditFunction("Pre-Inspection",
                 "Adhoc Checklist");
 
-        boolean isIntranet = AccessUtil.isIntranet(IaisEGPHelper.getCurrentAuditTrailDto());
+       /* boolean isIntranet = AccessUtil.isIntranet(IaisEGPHelper.getCurrentAuditTrailDto());
         if (!isIntranet){
-
             return;
-        }
+        }*/
 
         String taskId = ParamUtil.getMaskedString(request, "taskId");
 
@@ -106,12 +104,14 @@ public class AdhocChecklistDelegator {
         TaskDto task = taskService.getTaskById(taskId);
 
         if (task != null){
-            String appNo = task.getRefNo();
-            ApplicationDto application = applicationViewService.getApplicaitonByAppNo(appNo);
-            List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(application);
-
-            log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
-            ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
+            String refNo = task.getRefNo();
+            ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(refNo);
+            if (applicationViewDto != null){
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
+                log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
+                ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
+            }
         }
     }
 
