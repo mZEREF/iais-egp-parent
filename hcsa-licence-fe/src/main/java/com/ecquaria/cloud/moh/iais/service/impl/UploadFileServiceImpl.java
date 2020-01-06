@@ -71,7 +71,6 @@ public class UploadFileServiceImpl implements UploadFileService {
             if(!file.exists()){
                 file.createNewFile();
             }
-
             fileOutputStream.write(str.getBytes());
             fileInputStream.write(str.getBytes());
 
@@ -79,7 +78,6 @@ public class UploadFileServiceImpl implements UploadFileService {
             log.error(e.getMessage(),e);
             return false;
         }
-
         return true;
     }
 
@@ -124,6 +122,11 @@ public class UploadFileServiceImpl implements UploadFileService {
 *
 * file id */
     private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc){
+        //if path is not exists create path
+            File fileRepPath=new File(download+File.separator+"files");
+            if(!fileRepPath.exists()){
+                fileRepPath.mkdirs();
+            }
         for(AppSvcDocDto every:appSvcDoc){
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
             File file = MiscUtil.generateFile(download + File.separator + "files",

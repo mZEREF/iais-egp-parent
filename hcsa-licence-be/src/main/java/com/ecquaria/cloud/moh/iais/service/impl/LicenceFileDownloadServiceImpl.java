@@ -97,13 +97,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
                         String s = sharedPath+File.separator+System.currentTimeMillis() + "";
-                        ZipFile zipFile=null;
+
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
                         BufferedOutputStream bos=null;
                         OutputStream os=null;
-                        try {
-                            zipFile =new ZipFile(path);
+                        try (ZipFile zipFile=new ZipFile(path);)  {
                             for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
                                 ZipEntry zipEntry = entries.nextElement();
                                 zipFile(zipEntry,os,bos,zipFile,bis,cos,s);
@@ -142,13 +141,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                                     log.error(e.getMessage());
                                 }
                             }
-                            if(zipFile!=null){
-                                try {
-                                    zipFile.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
+
                         }
 
                         try {
