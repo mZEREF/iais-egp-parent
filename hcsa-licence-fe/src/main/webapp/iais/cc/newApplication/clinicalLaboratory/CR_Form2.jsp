@@ -206,6 +206,7 @@
                                     <div class="">
                                       <iais:input maxLength="9" type="text" name="idNo" value="${currentCgo.idNo}"></iais:input>
                                       <span class="error-msg" name="iaisErrorMSg" id="error_idNo${status.index}"></span>
+                                      <span class="error-msg" name="iaisErrorMSg" id="error_idNo"></span>
                                     </div>
                                   </div>
                                 </div>

@@ -623,7 +623,6 @@ public class NewApplicationDelegator {
         documentValid(bpc.request,documentMap);
         if(!documentMap.isEmpty()){
             previewAndSubmitMap.put("document","UC_CHKLMD001_ERR001");
-
         }
         if(!StringUtil.isEmpty(sB.toString())){
             previewAndSubmitMap.put("serviceId",sB.toString());
@@ -632,24 +631,27 @@ public class NewApplicationDelegator {
         return previewAndSubmitMap;
     }
 
+    //todo
+
     private Map<String,String> doCheckBox( BaseProcessClass bpc,StringBuilder sB){
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Map<String,String> errorMap=new HashMap<>();
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-
+        Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
         for(int i=0;i< dto.size();i++ ){
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.get(i).getAppSvcLaboratoryDisciplinesDtoList();
             String serviceId = dto.get(i).getServiceId();
+            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.get(i).getAppSvcLaboratoryDisciplinesDtoList();
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = allSvcAllPsnConfig.get(serviceId);
             dolabory(errorMap,appSvcLaboratoryDisciplinesDtoList,serviceId,sB);
             List<AppSvcCgoDto> appSvcCgoDtoList = dto.get(i).getAppSvcCgoDtoList();
-            doAppSvcCgoDto(errorMap,appSvcCgoDtoList,serviceId,sB);
+            doAppSvcCgoDto(hcsaSvcPersonnelDtos,errorMap,appSvcCgoDtoList,serviceId,sB);
             List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.get(i).getAppSvcDisciplineAllocationDtoList();
             doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.get(i).getAppSvcPrincipalOfficersDtoList();
-            doPO(errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
+            doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
             List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.get(i).getAppSvcPersonnelDtoList();
-            doAppSvcPersonnelDtoList(errorMap,appSvcPersonnelDtoList,serviceId,sB);
+            doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos,errorMap,appSvcPersonnelDtoList,serviceId,sB);
 
         }
 
@@ -657,18 +659,28 @@ public class NewApplicationDelegator {
         return  errorMap;
     }
 
-    private void dolabory(Map map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
+    private void dolabory(Map<String,String> map ,List<AppSvcLaboratoryDisciplinesDto> list,String serviceId, StringBuilder sB){
         if(list!=null&&list.isEmpty()){
 
         }
     }
 
 
-    private void doAppSvcPersonnelDtoList(Map map,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String serviceId, StringBuilder sB){
+    private void doAppSvcPersonnelDtoList(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos ,Map map,List<AppSvcPersonnelDto> appSvcPersonnelDtos,String serviceId, StringBuilder sB){
         if(appSvcPersonnelDtos==null){
+            if(hcsaSvcPersonnelDtos!=null){
+                for(HcsaSvcPersonnelDto every:hcsaSvcPersonnelDtos){
+                    String psnType = every.getPsnType();
+                    if(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL.equals(psnType)){
+                        sB.append(serviceId);
+                        return;
+                    }
+                }
+            }
 
             return;
         }
+
 
         boolean flag =false;
         for(int i=0;i<appSvcPersonnelDtos.size();i++){
@@ -750,12 +762,22 @@ public class NewApplicationDelegator {
         }
 
     }
-    private void doAppSvcCgoDto(Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
-        if(list==null){
+    private void doAppSvcCgoDto(  List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
+     if(list==null){
+         if(hcsaSvcPersonnelDtos!=null){
+             for(HcsaSvcPersonnelDto every:hcsaSvcPersonnelDtos){
+                 String psnType = every.getPsnType();
+                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)){
+                     sB.append(serviceId);
+                     return;
+                 }
+             }
+         }
+
+         return;
+     }
 
 
-            return;
-        }
         boolean flag =false;
         for(int i=0;i<list.size();i++ ){
             String assignSelect = list.get(i).getAssignSelect();
@@ -797,20 +819,33 @@ public class NewApplicationDelegator {
     }
 
 
-    private void doSvcDis(Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
+    private void doSvcDis( Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
         if(list==null){
 
         }
     }
 
-    private void doPO(Map map ,List<AppSvcPrincipalOfficersDto> list,String serviceId,StringBuilder sB){
-        if(list==null){
-            sB.append(serviceId);
-            map.put("PO","UC_CHKLMD001_ERR001");
-            return;
-        }
+    private void doPO( List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcPrincipalOfficersDto> list,String serviceId,StringBuilder sB){
+     if(list==null){
+         if(hcsaSvcPersonnelDtos!=null){
+             for(HcsaSvcPersonnelDto every :hcsaSvcPersonnelDtos){
+                 String psnType = every.getPsnType();
+                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
+                     sB.append(serviceId);
+                     return;
+                 }
+             }
+         }
+
+         return;
+     }
+
+
         boolean flag=false;
+        StringBuilder stringBuilder=new StringBuilder();
+
         for(int i=0;i<list.size();i++){
+            StringBuilder stringBuilder1=new StringBuilder();
             String mobileNo = list.get(i).getMobileNo();
             String emailAddr = list.get(i).getEmailAddr();
             String modeOfMedAlert = list.get(i).getModeOfMedAlert();
@@ -873,6 +908,8 @@ public class NewApplicationDelegator {
                     if(!b){
                         map.put("POidNo"+i,"CHKLMD001_ERR005");
                         flag=true;
+                    }else {
+                        stringBuilder1.append(idType).append(idNo);
                     }
                 }
                 if("NRIC".equals(idType)){
@@ -880,6 +917,8 @@ public class NewApplicationDelegator {
                     if(!b1){
                         map.put("POidNo"+i,"CHKLMD001_ERR005");
                         flag=true;
+                    }else {
+                        stringBuilder1.append(idType).append(idNo);
                     }
                 }
 
@@ -897,6 +936,11 @@ public class NewApplicationDelegator {
             String name = list.get(i).getName();
             if(StringUtil.isEmpty(name)){
                 map.put("POname"+i,"UC_CHKLMD001_ERR001");
+                flag=true;
+            }
+            String s = stringBuilder.toString();
+            if(s.contains(stringBuilder1.toString())){
+                map.put("POidNo","error");
                 flag=true;
             }
             if(flag){
@@ -1560,7 +1604,6 @@ public class NewApplicationDelegator {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         oneErrorMap.put("deputyMobileNo", "CHKLMD001_ERR004");
                     }
-
                 }
                 if(StringUtil.isEmpty(emailAddr)){
                     oneErrorMap.put("deputyEmailAddr","UC_CHKLMD001_ERR001");

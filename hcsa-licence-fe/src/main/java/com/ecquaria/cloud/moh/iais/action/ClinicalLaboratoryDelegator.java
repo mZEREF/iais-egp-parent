@@ -1359,7 +1359,9 @@ public class ClinicalLaboratoryDelegator {
         }
 
         Map<String,String> errMap = new HashMap<>();
+        StringBuilder stringBuilder =new StringBuilder();
         for(int i=0;i<appSvcCgoList.size();i++ ){
+            StringBuilder stringBuilder1=new StringBuilder();
             String assignSelect = appSvcCgoList.get(i).getAssignSelect();
             if("-1".equals(assignSelect)){
                 errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR002");
@@ -1398,12 +1400,15 @@ public class ClinicalLaboratoryDelegator {
                         if(!b){
                             errMap.put("idNo"+i,"CHKLMD001_ERR005");
                         }
+                        stringBuilder1.append(idTyp).append(idNo);
+
                     }
                     if("NRIC".equals(idTyp)){
                         boolean b1 = SgNoValidator.validateNric(idNo);
                         if(!b1){
                             errMap.put("idNo"+i,"CHKLMD001_ERR005");
                         }
+                            stringBuilder1.append(idTyp).append(idNo);
 
                     }
 
@@ -1440,6 +1445,15 @@ public class ClinicalLaboratoryDelegator {
                         errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
                     }
                 }
+                String s = stringBuilder.toString();
+                if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                    if(s.contains(stringBuilder1.toString())){
+                        errMap.put("idNo","UC_CHKLMD001_ERR002");
+                    }else {
+                        stringBuilder.append(stringBuilder1.toString());
+                    }
+                }
+
             }
 
         }
