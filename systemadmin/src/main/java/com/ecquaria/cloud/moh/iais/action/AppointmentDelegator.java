@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -13,9 +15,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class AppointmentDelegator {
 
-    public void doStart(BaseProcessClass bpc){
+    @Autowired
+    IntranetUserClient intranetUserClient;
 
-    }
 
     public void prepareDate(BaseProcessClass bpc){
 

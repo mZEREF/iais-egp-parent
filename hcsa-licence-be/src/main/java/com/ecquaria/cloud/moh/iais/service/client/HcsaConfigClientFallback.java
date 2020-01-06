@@ -92,6 +92,14 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
     }
 
     @Override
+    public FeignResponseEntity<Integer> getManHour(String serviceId, String stageId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<HcsaSvcStageWorkloadDto>> listHcsaSvcStageWorkloadEntity(String code) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

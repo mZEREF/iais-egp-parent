@@ -46,4 +46,6 @@ public interface InspectionPreTaskService {
       * @Descripation: routing back
       */
     void routingBack(TaskDto taskDto, String reMarks);
+
+    void getAppointmentDate(TaskDto taskDto);
 }

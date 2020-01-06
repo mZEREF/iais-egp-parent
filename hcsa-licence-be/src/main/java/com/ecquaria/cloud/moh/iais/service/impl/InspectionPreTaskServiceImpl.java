@@ -1,14 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -23,17 +23,11 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Shicheng
@@ -70,6 +64,11 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
+    private HcsaConfigClient hcsaConfigClient;
+
+    private AppointmentClient appointmentClient;
+
+    @Autowired
     private InboxMsgService inboxMsgService;
 
     @Autowired
@@ -98,8 +97,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
         applicationViewDto.setApplicationDto(applicationDto1);
         List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
-        for(TaskDto tDto : taskDtoList){
-            if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
+        for (TaskDto tDto : taskDtoList) {
+            if (tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
                 tDto.setSlaDateCompleted(new Date());
                 tDto.setSlaRemainInDays(taskService.remainDays(taskDto));
                 tDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
@@ -111,7 +110,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         //todo:call inspection date
 
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-        if(appPremisesRecommendationDto == null){
+        if (appPremisesRecommendationDto == null) {
             appPremisesRecommendationDto = new AppPremisesRecommendationDto();
             appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
             appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -135,6 +134,71 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         }
     }
 
+    @Override
+    public void getAppointmentDate(TaskDto taskDto) {
+        String applicationNo = taskDto.getRefNo();
+        List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(applicationNo).getEntity();
+        Integer inspectorNum = taskDtoList.size();
+        ApplicationDto applicationDto = applicationClient.getAppByNo(applicationNo).getEntity();
+        String serviceId = applicationDto.getServiceId();
+        String stageId = taskDto.getId();
+        Integer manHour = hcsaConfigClient.getManHour(serviceId, stageId).getEntity();
+        /**
+         * Working hours
+         */
+        Integer preManHour = (int) Math.ceil((double) manHour / inspectorNum);
+        List<PublicHolidayDto> publicHolidayDtoList = appointmentClient.getActiveHoliday().getEntity();
+        List<Date> invalidDateList = new ArrayList<>();
+        for (PublicHolidayDto publicHolidayDto : publicHolidayDtoList) {
+            List<Date> calculateDateList = getBetweenDays(publicHolidayDto.getFromDate(), publicHolidayDto.getToDate());
+            for (Date calculateDate : calculateDateList) {
+                invalidDateList.add(calculateDate);
+            }
+        }
+        List<ApptBlackoutDateDto> apptBlackoutDateDtoList = appointmentClient.getAllByShortName(taskDto.getWkGrpId()).getEntity();
+        for (ApptBlackoutDateDto apptBlackoutDateDto : apptBlackoutDateDtoList) {
+            List<Date> calculateDateList = getBetweenDays(apptBlackoutDateDto.getStartDate(), apptBlackoutDateDto.getEndDate());
+            for (Date calculateDate : calculateDateList) {
+                invalidDateList.add(calculateDate);
+            }
+        }
+        List<Date> scheduleDateList = new ArrayList<>();
+        for (Date scheduleDate : scheduleDateList) {
+            Iterator<Date> it = invalidDateList.iterator();
+            while (it.hasNext()) {
+                if (it.next().getTime() == scheduleDate.getTime()) {
+                    it.remove();
+                }
+            }
+        }
+        /**
+         * TODO 2020-01-06 Loading start date and end date from shicheng
+         */
+    }
+
+    /**
+     * @param start
+     * @param end
+     * @return Calculate the date between two days
+     */
+    private static List<Date> getBetweenDays(Date start, Date end) {
+        List<Date> result = new ArrayList<>();
+        Calendar tempStart = Calendar.getInstance();
+        tempStart.setTime(start);
+        tempStart.add(Calendar.DAY_OF_YEAR, 1);
+        Calendar tempEnd = Calendar.getInstance();
+        tempEnd.setTime(end);
+        tempEnd.add(Calendar.DAY_OF_YEAR, 1);
+        result.add(start);
+        while (tempStart.before(tempEnd)) {
+            result.add(tempStart.getTime());
+            tempStart.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        return result;
+    }
+
+    private void updateInspectionStatus(ApplicationDto applicationDto) {
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
     @Override
     public void routingBack(TaskDto taskDto, String reMarks) {
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
