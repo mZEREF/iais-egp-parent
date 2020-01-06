@@ -51,13 +51,25 @@
     <JavaCode defClass="" executor="" methodName="doWithdraw_OnStepProcess_0" name="doWithdraw_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doDraft" x="820" y="300">
+  <AutomaticStep defClass="" executor="" icon="" name="doDraft" x="900" y="280">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doDraft_OnStepProcess_0" name="doDraft_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="MenuControl" processname="MohInterInboxMenuControl" project="INTERNET" version="-1" x="780" y="350">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="requestForChange" processname="MohRequestForChange" project="INTERNET" version="-1" x="900" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="inboxView" stageIndicator="" x="400" y="100">
@@ -109,7 +121,16 @@
    <position>{(700,310)(620,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
-   <position>{(720,120)(840,320)}</position>
+   <position>{(720,120)(920,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/MenuControl" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
+   <position>{(720,120)(800,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/MenuControl" style="rectanular">
+   <position>{(800,370)(620,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/requestForChange" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
+   <position>{(720,120)(920,430)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -121,10 +142,13 @@
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doWithdraw" value="&quot;doWithdraw&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doDraft" value="&quot;doDraft&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/MenuControl" value="&quot;topMenu&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/requestForChange" value="&quot;doRfc&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
  <Merges>
+
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="600" y="500">
    <Description/>
   </Merge>
