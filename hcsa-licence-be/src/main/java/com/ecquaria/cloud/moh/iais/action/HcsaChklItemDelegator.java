@@ -418,8 +418,6 @@ public class HcsaChklItemDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
         }else {
-            Map<String,String> successMap = new HashMap<>(16);
-            successMap.put("edit item","suceess");
             List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR);
 
             for(ChecklistItemDto it : chklItemDtos){
@@ -436,7 +434,6 @@ public class HcsaChklItemDelegator {
 
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, (Serializable) chklItemDtos);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMAP,successMap);
         }
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
     }
@@ -611,7 +608,7 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-        CheckItemQueryDto itemQueryDto = new CheckItemQueryDto();
+        ChecklistItemDto itemDto = new ChecklistItemDto();
 
         String clause = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
         String desc = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
@@ -620,12 +617,20 @@ public class HcsaChklItemDelegator {
         String answerType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE);
         String riskLevel = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_RISK_LEVEL);
 
-        itemQueryDto.setRegulationClauseNo(clause);
-        itemQueryDto.setRegulationClause(desc);
-        itemQueryDto.setChecklistItem(chklItem);
-        itemQueryDto.setStatus(status);
-        itemQueryDto.setRiskLevel(riskLevel);
-        itemQueryDto.setAnswerType(answerType);
+        itemDto.setRegulationClauseNo(clause);
+        itemDto.setRegulationClause(desc);
+        itemDto.setChecklistItem(chklItem);
+        itemDto.setStatus(status);
+        itemDto.setRiskLevel(riskLevel);
+        itemDto.setAnswerType(answerType);
+
+        ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "search");
+        if(validationResult != null && validationResult.isHasErrors()){
+            Map<String,String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            return;
+        }
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 

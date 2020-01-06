@@ -37,6 +37,7 @@
             <label class="col-xs-4 col-md-2 control-label">Regulation Clause Number</label>
             <div class="col-xs-5 col-md-3">
               <input type="text" name="regulationClauseNo" value=""/>
+              <span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
 
@@ -44,6 +45,7 @@
             <label class="col-xs-4 col-md-2 control-label">Regulation</label>
             <div class="col-xs-5 col-md-3">
               <input type="text" name="regulationClause" value=""/>
+              <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
 
@@ -51,6 +53,7 @@
             <label class="col-xs-4 col-md-2 control-label">Checklist Item</label>
             <div class="col-xs-5 col-md-3">
               <input type="text" name="checklistItem" value=""/>
+              <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
 
