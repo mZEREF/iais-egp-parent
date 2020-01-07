@@ -31,7 +31,7 @@ public interface InspEmailService {
     ApplicationDto getApplicationDtoByAppPremCorrId(String appPremCorrId);
     List<ChecklistQuestionDto> getcheckListQuestionDtoList(String svcCode, String svcType);
     Map<String, String > SendAndSaveEmail(EmailDto emailDto);
-    AppInsRepDto getAppInsRepDto(String appNo);
+    AppInsRepDto getAppInsRepDto(String appCorrId);
     List<AppPremisesCorrelationDto>getAppPremisesCorrelationsByAppId(String appId);
     List<NcAnswerDto> getNcAnswerDtoList(InspectionFillCheckListDto cDto, InspectionFillCheckListDto commonDto,
                                          AdCheckListShowDto adchklDto,List<NcAnswerDto> acDtoList);

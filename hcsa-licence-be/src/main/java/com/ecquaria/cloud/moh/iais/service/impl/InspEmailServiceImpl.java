@@ -87,8 +87,8 @@ public class InspEmailServiceImpl implements InspEmailService {
         return hcsaChklClient.getcheckListQuestionDtoList(svcCode,"Inspection").getEntity();
     }
     @Override
-    public AppInsRepDto getAppInsRepDto(String appNo){
-        return insRepClient.getAppInsRepDto(appNo).getEntity();
+    public AppInsRepDto getAppInsRepDto(String appCorrId){
+        return insRepClient.getAppInsRepDto(appCorrId).getEntity();
     }
 
     @Override
