@@ -3,25 +3,33 @@
         <form class="form-inline" method="post" id="inboxForm" action=<%=process.runtime.continueURL()%>>
             <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
             <input type="hidden" name="crud_action_type" value="">
+            <input type="hidden" name="form_pageTab" value="">
+            <input type="hidden" name="inboxFrom_pageNo" value="">
+            <input type="hidden" name="inboxFrom_pageSize" value="">
             <input type="hidden" name="crud_action_value" value="">
             <div class="form-group">
                 <label class="control-label" for="inboxType">Type</label>
                 <div class="col-xs-12 col-md-8 col-lg-9">
-                    <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect" firstOption="Select an type"></iais:select>
+                    <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect"
+                                 firstOption="Select an type"></iais:select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label" for="inboxService">Service</label>
                 <div class="col-xs-12 col-md-8 col-lg-9">
-                    <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect" firstOption="Select an service"></iais:select>
+                    <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect"
+                                 firstOption="Select an service"></iais:select>
                 </div>
             </div>
             <div class="form-group large right-side">
                 <div class="search-wrap">
                     <iais:value>
                         <div class="input-group">
-                            <input class="form-control" id="inboxAdvancedSearch" type="text" placeholder="Message Subject." name="inboxAdvancedSearch" aria-label="inboxAdvancedSearch"><span class="input-group-btn">
-                                <button class="btn btn-default buttonsearch" title="Search by keywords" onclick="searchBySubject()"><em class="fa fa-search"></em></button></span>
+                            <input class="form-control" id="inboxAdvancedSearch" type="text"
+                                   placeholder="Message Subject." name="inboxAdvancedSearch"
+                                   aria-label="inboxAdvancedSearch"><span class="input-group-btn">
+                                <button class="btn btn-default buttonsearch" title="Search by keywords"
+                                        onclick="searchBySubject()"><em class="fa fa-search"></em></button></span>
                         </div>
                     </iais:value>
                 </div>
@@ -51,7 +59,7 @@
                             </tr>
                         </c:when>
                         <c:otherwise>
-                            <c:forEach var = "inboxQuery" items = "${inboxResult.rows}" varStatus="status">
+                            <c:forEach var="inboxQuery" items="${inboxResult.rows}" varStatus="status">
                                 <tr>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Subject</p>
@@ -71,27 +79,59 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Date</p>
-                                        <p><fmt:formatDate value="${inboxQuery.createdAt}" pattern="MM/dd/yyyy HH:mm:ss" /></p>
+                                        <p><fmt:formatDate value="${inboxQuery.createdAt}"
+                                                           pattern="MM/dd/yyyy HH:mm:ss"/></p>
                                     </td>
                                 </tr>
                             </c:forEach>
                         </c:otherwise>
                     </c:choose>
                     </tbody>
-                </table>
-                <div class="table-footnote">
-                    <div class="row">
-                        <div class="col-xs-6 col-md-4">
-                            <p class="count">${inboxResult.rowCount} out of ${inboxParam.pageNo}</p>
+                    <tfoot>
+                    <div class="row table-info-display">
+                        <div class="col-md-4 text-left">
+                            <p class="col-md-5 count table-count" style="margin-top:7px;">${inboxResult.rowCount} out
+                                of ${inboxParam.pageNo}</p>
+                            <div class="col-md-1">
+                                <select class="table-select" id="inboxContentSelect">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-xs-6 col-md-8 text-right">
+                        <div class="col-md-8 text-right">
                             <div class="nav">
-                                <ul class="msgPagination">
+                                <ul class="pagination" style="margin-top:7px;">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                                    <span aria-hidden="true">
+                                                        <i class="fa fa-chevron-left" onclick="doSubPageNo('inbox')"></i>
+                                                    </span>
+                                        </a>
+                                    </li>
+                                    <li><a href="#">${inboxPageNo}</a></li>
+                                    <c:if test="${inboxPageCount > 1}">
+                                        <li><a href="#">${inboxPageNo + 1}</a></li>
+                                    </c:if>
+                                    <c:if test="${inboxPageCount > 2}">
+                                        <li><a href="#">${inboxPageNo + 2}</a></li>
+                                    </c:if>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                                    <span aria-hidden="true">
+                                                        <i class="fa fa-chevron-right" onclick="doAddPageNo('inbox')"></i>
+                                                    </span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                </div>
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>

@@ -40,7 +40,7 @@ import java.util.Map;
 
 @Slf4j
 @Delegator("inboxDelegator")
-public class    InboxDelegator {
+public class InboxDelegator {
 
 
     @Autowired
@@ -70,6 +70,9 @@ public class    InboxDelegator {
             .resultAttr(InboxConst.LIC_RESULT)
             .sortField("START_DATE").sortType(InboxConst.DESCENDING).build();
 
+    private int inboxPageCount;
+    private int appPageCount;
+    private int licPageCount;
 
     /**
      *
@@ -108,7 +111,7 @@ public class    InboxDelegator {
         if(!StringUtil.isEmpty(inboxResult)){
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
-            ParamUtil.setRequestAttr(request,"pageCount", inboxResult.getPageCount(inboxParam.getPageSize()));
+            pagingJump(bpc,inboxParam.getPageNo(),inboxResult.getPageCount(inboxParam.getPageSize()),"inboxPageNo");
         }
         /**
          * Application SearchResult
@@ -134,7 +137,7 @@ public class    InboxDelegator {
         if(!StringUtil.isEmpty(appResult)){
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
-            ParamUtil.setRequestAttr(request,"pageCount", appResult.getPageCount(appParam.getPageSize()));
+            pagingJump(bpc,appParam.getPageNo(),appResult.getPageCount(appParam.getPageSize()),"appPageNo");
         }
         /**
          * Licence SearchResult
@@ -150,7 +153,7 @@ public class    InboxDelegator {
         if(!StringUtil.isEmpty(licResult)){
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);
             ParamUtil.setRequestAttr(request,InboxConst.LIC_RESULT, licResult);
-            ParamUtil.setRequestAttr(request,"pageCount", licResult.getPageCount(licParam.getPageSize()));
+            pagingJump(bpc,licParam.getPageNo(),licResult.getPageCount(licParam.getPageSize()),"licPageNo");
         }
 
     }
@@ -163,7 +166,7 @@ public class    InboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> DoSearch"));
         HttpServletRequest request = bpc.request;
         String switchAction = ParamUtil.getString(request, InboxConst.SWITCH_ACTION);
-        String tabPage = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
+        String tabPage = ParamUtil.getString(request, "form_pageTab");
         if(switchAction.equals(InboxConst.SEARCH_INBOX)){
             if ("lic".equals(tabPage)){
                 ParamUtil.setRequestAttr(request,"TAB_NO", "licTab");
@@ -234,25 +237,25 @@ public class    InboxDelegator {
                 }
                 appParameter.setFilters(appSearchMap);
                 appParameter.setPageNo(1);
-            }
-            String inboxType = ParamUtil.getString(request,InboxConst.MESSAGE_TYPE);
-            String inboxService = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
-            String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
-            Map<String,Object> inboxSearchMap = new HashMap<>();
-            if (inboxType != null || inboxService != null || msgSubject != null){
+            }else {
+                String inboxType = ParamUtil.getString(request,InboxConst.MESSAGE_TYPE);
+                String inboxService = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
+                String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
+                Map<String,Object> inboxSearchMap = new HashMap<>();
                 ParamUtil.setRequestAttr(request,"TAB_NO", "inboxTab");
+                if(inboxType != null && !inboxType.equals(InboxConst.SEARCH_ALL)){
+                    inboxSearchMap.put("messageType",inboxType);
+                }
+                if(inboxService != null && !inboxService.equals(InboxConst.SEARCH_ALL)){
+                    inboxSearchMap.put("interService",inboxService);
+                }
+                if(msgSubject != null){
+                    inboxSearchMap.put("msgSubject",msgSubject);
+                }
+                inboxParameter.setFilters(inboxSearchMap);
+                inboxParameter.setPageNo(1);
             }
-            if(inboxType != null && !inboxType.equals(InboxConst.SEARCH_ALL)){
-                inboxSearchMap.put("messageType",inboxType);
-            }
-            if(inboxService != null && !inboxService.equals(InboxConst.SEARCH_ALL)){
-                inboxSearchMap.put("interService",inboxService);
-            }
-            if(msgSubject != null){
-                inboxSearchMap.put("msgSubject",msgSubject);
-            }
-            inboxParameter.setFilters(inboxSearchMap);
-            inboxParameter.setPageNo(1);
+
         }
     }
 
@@ -269,11 +272,38 @@ public class    InboxDelegator {
 
     public void doPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> DoPage"));
-        int pageNo = ParamUtil.getInt(bpc.request,InboxConst.CRUD_ACTION_VALUE);
-        log.debug(StringUtil.changeForLog("PageNo ....") + pageNo);
-        inboxParameter.setPageNo(pageNo);
-
-
+        String tabPage = ParamUtil.getString(bpc.request,"form_pageTab");
+        if ("app".equals(tabPage)){
+            int pageNo = ParamUtil.getInt(bpc.request,"appFrom_pageNo");
+            int pageSize = ParamUtil.getInt(bpc.request,"appFrom_pageSize");
+            ParamUtil.setRequestAttr(bpc.request,"TAB_NO", "appTab");
+            if (!StringUtil.isEmpty(pageNo)){
+                toPageNo(pageNo,appPageCount,appParameter);
+            }
+            if (!StringUtil.isEmpty(pageSize)) {
+                appParameter.setPageSize(pageSize);
+            }
+        }else if ("lic".equals(tabPage)){
+            ParamUtil.setRequestAttr(bpc.request,"TAB_NO", "licTab");
+            int pageNo = ParamUtil.getInt(bpc.request,"licFrom_pageNo");
+            int pageSize = ParamUtil.getInt(bpc.request,"licFrom_pageSize");
+            if (!StringUtil.isEmpty(pageNo)){
+                toPageNo(pageNo,licPageCount,licenceParameter);
+            }
+            if (!StringUtil.isEmpty(pageSize)) {
+                licenceParameter.setPageSize(pageSize);
+            }
+        }else if ("inbox".equals(tabPage)){
+            ParamUtil.setRequestAttr(bpc.request,"TAB_NO", "inboxTab");
+            int pageNo = ParamUtil.getInt(bpc.request,"inboxFrom_pageNo");
+            int pageSize = ParamUtil.getInt(bpc.request,"inboxFrom_pageSize");
+            if (!StringUtil.isEmpty(pageNo)){
+                toPageNo(pageNo,inboxPageCount,inboxParameter);
+            }
+            if (!StringUtil.isEmpty(pageSize)) {
+                inboxParameter.setPageSize(pageSize);
+            }
+        }
     }
     /**
      *
@@ -304,6 +334,40 @@ public class    InboxDelegator {
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
+
+    private void toPageNo(int pageNo,int pageCount,FilterParameter filterParameter){
+        if (!StringUtil.isEmpty(pageNo)){
+            if (pageNo == pageCount + 1){
+                filterParameter.setPageNo(pageCount);
+            }else if (pageNo == 0){
+                filterParameter.setPageNo(1);
+            }
+            else{
+                filterParameter.setPageNo(pageNo);
+            }
+        }
+    }
+
+    private void pagingJump(BaseProcessClass bpc,int pageNo,int pageCount,String fromPageNo){
+        if (pageNo<3){
+            ParamUtil.setRequestAttr(bpc.request,fromPageNo, 1);
+        }else if (pageNo + 3 > pageCount){
+            ParamUtil.setRequestAttr(bpc.request,fromPageNo, pageCount-2);
+        }else {
+            ParamUtil.setRequestAttr(bpc.request,fromPageNo, pageNo);
+        }
+        if ("inboxPageNo".equals(fromPageNo)){
+            inboxPageCount = pageCount;
+            ParamUtil.setRequestAttr(bpc.request,"inboxPageCount", inboxPageCount);
+        }else if ("appPageNo".equals(fromPageNo)){
+            appPageCount = pageCount;
+            ParamUtil.setRequestAttr(bpc.request,"appPageCount", appPageCount);
+        }else{
+            licPageCount = pageCount;
+            ParamUtil.setRequestAttr(bpc.request,"licPageCount", licPageCount);
+
+        }
+    }
     /**
      *
      * @param bpc
@@ -312,10 +376,8 @@ public class    InboxDelegator {
     private void prepareSelectOption(BaseProcessClass bpc){
         List<SelectOption> inboxServiceSelectList = new ArrayList<>();
         inboxServiceSelectList.add(new SelectOption("All", "All"));
-        inboxServiceSelectList.add(new SelectOption("Blood Banking", "Blood Banking"));
-        inboxServiceSelectList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
-        inboxServiceSelectList.add(new SelectOption("Radiological Service", "Radiological Service"));
-        inboxServiceSelectList.add(new SelectOption("Nuclear Medicine (Assay)", "Nuclear Medicine (Assay)"));
+        inboxServiceSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
+        inboxServiceSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
         ParamUtil.setRequestAttr(bpc.request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = new ArrayList<>();
@@ -348,11 +410,14 @@ public class    InboxDelegator {
         appServiceTypeSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
         ParamUtil.setRequestAttr(bpc.request, "appServiceType", appServiceTypeSelectList);
 
+        List<SelectOption> selectDraftApplicationSelectList = new ArrayList<>();
+        selectDraftApplicationSelectList.add(new SelectOption("Reload", "Reload"));
+        selectDraftApplicationSelectList.add(new SelectOption("Delete", "Delete"));
+        ParamUtil.setRequestAttr(bpc.request, "selectDraftApplication", selectDraftApplicationSelectList);
+
         List<SelectOption> selectApplicationSelectList = new ArrayList<>();
-        selectApplicationSelectList.add(new SelectOption("All", "All"));
-        selectApplicationSelectList.add(new SelectOption("Edit", "Edit"));
+        selectApplicationSelectList.add(new SelectOption("Recall", "Recall"));
         selectApplicationSelectList.add(new SelectOption("Withdraw", "Withdraw"));
-        selectApplicationSelectList.add(new SelectOption("Make Payment", "Make Payment"));
         ParamUtil.setRequestAttr(bpc.request, "selectApplication", selectApplicationSelectList);
 
 
@@ -366,8 +431,6 @@ public class    InboxDelegator {
         LicenceTypeList.add(new SelectOption("Clinical Laboratory", "Clinical Laboratory"));
         LicenceTypeList.add(new SelectOption("Blood Transfusion Service", "Blood Transfusion"));
         ParamUtil.setRequestAttr(bpc.request, "licType", LicenceTypeList);
-
-
     }
 
 }

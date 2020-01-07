@@ -2,6 +2,9 @@
     <div class="tab-search">
         <form class="form-inline" method="post" id="licenceForm" action=<%=process.runtime.continueURL()%>>
             <input type="hidden" name="crud_action_type" value="">
+            <input type="hidden" name="form_pageTab" value="">
+            <input type="hidden" name="licFrom_pageNo" value="">
+            <input type="hidden" name="licFrom_pageSize" value="">
             <input type="hidden" name="crud_action_value" value="">
             <div class="row">
                 <div class="col-md-12">
@@ -130,20 +133,51 @@
                         </c:otherwise>
                     </c:choose>
                     </tbody>
-                </table>
-                <div class="table-footnote">
-                    <div class="row">
-                        <div class="col-xs-6 col-md-4">
-                            <p class="count">${licResult.rowCount} out of ${licParam.pageNo}</p>
+                    <tfoot>
+                    <div class="row table-info-display">
+                        <div class="col-md-4 text-left">
+                            <p class="col-md-5 count table-count" style="margin-top:7px;">${licResult.rowCount} out
+                                of ${licParam.pageNo}</p>
+                            <div class="col-md-1">
+                                <select class="table-select" id="licContentSelect">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-xs-6 col-md-8 text-right">
+                        <div class="col-md-8 text-right">
                             <div class="nav">
-                                <ul class="pagination">
+                                <ul class="pagination" style="margin-top:7px;">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                                <span aria-hidden="true">
+                                                    <i class="fa fa-chevron-left" onclick="doSubPageNo('lic')"></i>
+                                                </span>
+                                        </a>
+                                    </li>
+                                    <li><a href="#">${licPageNo}</a></li>
+                                    <c:if test="${licPageCount > 1}">
+                                        <li><a href="#">${licPageNo + 1}</a></li>
+                                    </c:if>
+                                    <c:if test="${licPageCount > 2}">
+                                        <li><a href="#">${licPageNo + 2}</a></li>
+                                    </c:if>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                                <span aria-hidden="true">
+                                                    <i class="fa fa-chevron-right" onclick="doAddPageNo('lic')"></i>
+                                                </span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                </div>
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>

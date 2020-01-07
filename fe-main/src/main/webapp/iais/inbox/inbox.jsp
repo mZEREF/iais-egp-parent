@@ -16,24 +16,24 @@
     function submit(pageTab,action){
         if(pageTab == "inbox"){
             $("[name='crud_action_type']").val(action);
+            $("[name='form_pageTab']").val("inbox");
             $("#inboxForm").submit();
         }else if (pageTab == "app") {
             $("[name='crud_action_type']").val(action);
+            $("[name='form_pageTab']").val("app");
             $("#appForm").submit();
         }else if (pageTab == "lic") {
             $("[name='crud_action_type']").val(action);
+            $("[name='form_pageTab']").val("lic");
             $("#licenceForm").submit();
         }
-
     }
-    doDraft
+
     function doSearchApp(){
-        $("[name='crud_action_value']").val("app");
         submit('app','doSearch');
     }
 
     function doSearchLic(){
-        $("[name='crud_action_value']").val("lic");
         submit('lic','doSearch');
     }
 
@@ -45,16 +45,75 @@
         submit('inbox','doSearch');
     });
 
-    $(function () {
-        console.log('${TAB_NO}');
-        activeTab('${TAB_NO}');
+    $("#appContentSelect").change(function () {
+        $("[name='appFrom_pageNo']").val(1);
+        $("[name='appFrom_pageSize']").val(this.value);
+        submit('app','doPage');
     });
 
-    function doRenew(){
-        var licenceNo = $("input:checkbox:checked").val();
-        $("[name='crud_action_type']").val(licenceNo);
-        submit('lic','doRenew')
+    $("#inboxContentSelect").change(function () {
+        $("[name='inboxFrom_pageNo']").val(1);
+        $("[name='inboxFrom_pageSize']").val(this.value);
+        submit('inbox','doPage');
+    });
+
+    $("#licContentSelect").change(function () {
+        $("[name='licFrom_pageNo']").val(1);
+        $("[name='licFrom_pageSize']").val(this.value);
+        submit('lic','doPage');
+    });
+
+    function doAddPageNo(fromName){
+        if ('app' == fromName) {
+            $("[name='appFrom_pageNo']").val('${appParam.pageNo + 1}');
+            $("[name='appFrom_pageSize']").val(10);
+            submit('app','doPage');
+        }
+        if ('inbox' == fromName){
+            $("[name='inboxFrom_pageNo']").val('${appParam.pageNo + 1}');
+            $("[name='inboxFrom_pageSize']").val(10);
+            submit('inbox','doPage');
+        }
+        if ('lic' == fromName){
+            $("[name='licFrom_pageNo']").val('${appParam.pageNo + 1}');
+            $("[name='licFrom_pageSize']").val(10);
+            submit('lic','doPage');
+        }
+
+    };
+
+    function doSubPageNo(fromName){
+        if ('app' == fromName) {
+            $("[name='appFrom_pageNo']").val('${appParam.pageNo - 1}');
+            $("[name='appFrom_pageSize']").val(10);
+            submit('app','doPage');
+        }
+        if ('inbox' == fromName){
+            $("[name='inboxFrom_pageNo']").val('${appParam.pageNo - 1}');
+            $("[name='inboxFrom_pageSize']").val(10);
+            submit('inbox','doPage');
+        }
+        if ('lic' == fromName){
+            $("[name='licFrom_pageNo']").val('${appParam.pageNo - 1}');
+            $("[name='licFrom_pageSize']").val(10);
+            submit('lic','doPage');
+        }
+    };
+
+    function doDraftAction(appNo,val){
+        var action = val;
+        if ("Reload" == action){
+            $("[name='crud_action_value']").val(appNo);
+            submit('app','doDraft');
+        }
+        if ("Delete" == action) {
+            $("[name='crud_action_value']").val(appNo);
+        }
     }
+
+    $(function () {
+        activeTab('${TAB_NO}');
+    });
 
     function activeTab(tabNo){
         if(tabNo == 'inboxTab'){
@@ -62,10 +121,14 @@
         }else if(tabNo == 'appTab'){
             $('#'+tabNo+' a[href="#tabApp"]').tab('show');
         }else if (tabNo == 'licTab') {
-            console.log("Lic Tab")
             $('#'+tabNo+' a[href="#tabLic"]').tab('show');
         }
+    }
 
+    function doRenew(){
+        var licenceNo = $("input:checkbox:checked").val();
+        $("[name='crud_action_value']").val(licenceNo);
+        submit('lic','doRenew')
     }
 
     function doDraft(appNo){
