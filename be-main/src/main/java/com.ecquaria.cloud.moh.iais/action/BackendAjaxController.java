@@ -49,14 +49,15 @@ public class BackendAjaxController {
             QueryHelp.setMainSql("inspectionQuery", "AppByGroupAjax", searchParamAjax);
             SearchResult<InspectionAppInGroupQueryDto> ajaxResult = inspectionService.searchInspectionBeAppGroupAjax(searchParamAjax);
             Map<String,String> serviceNameMap = new HashMap<>();
-            for (InspectionAppInGroupQueryDto item:ajaxResult.getRows()
-                 ) {
+            for (InspectionAppInGroupQueryDto item:ajaxResult.getRows()) {
                 HcsaServiceDto hcsaServiceDto = inspectionAssignTaskService.getHcsaServiceDtoByServiceId(item.getServiceId());
                 serviceNameMap.put(hcsaServiceDto.getId(),hcsaServiceDto.getSvcName());
                 item.setStatus(MasterCodeUtil.getCodeDesc(item.getStatus()));
                 if(item.getHciCode()==null){
                     item.setHciCode("N/A");
                 }
+                String timeLimitWarningColour = getTimeLimitWarningColourByTask(item);
+                item.setTimeLimitWarning(timeLimitWarningColour);
             }
             map.put("serviceName", serviceNameMap);
             map.put("appNoUrl", appNoUrl);
@@ -66,6 +67,11 @@ public class BackendAjaxController {
             map.put("result", "Fail");
         }
         return map;
+    }
+
+    private String getTimeLimitWarningColourByTask(InspectionAppInGroupQueryDto item) {
+        String colour = "black";
+        return colour;
     }
 
     @RequestMapping(value = "setCurrentRole.do", method = RequestMethod.POST)
