@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -176,6 +177,8 @@ public class InspectEmailAo1Delegator {
 
         log.info("=======>>>>>sendEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = loginContext.getUserId();
         ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
         String serviceId=applicationViewDto.getApplicationDto().getServiceId();
@@ -207,7 +210,7 @@ public class InspectEmailAo1Delegator {
             appInspectionStatusClient.update(appInspectionStatusDto);
 
             String taskKey = HcsaConsts.ROUTING_STAGE_INS;
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
 
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
@@ -220,7 +223,7 @@ public class InspectEmailAo1Delegator {
             taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
 
         }
         else {
@@ -231,7 +234,7 @@ public class InspectEmailAo1Delegator {
             appInspectionStatusClient.update(appInspectionStatusDto);
 
             String taskKey = HcsaConsts.ROUTING_STAGE_INS;
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
 
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getId(),HcsaConsts.ROUTING_STAGE_INS);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
@@ -247,7 +250,7 @@ public class InspectEmailAo1Delegator {
 
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
 
 
         }
@@ -451,13 +454,13 @@ public class InspectEmailAo1Delegator {
     }
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,String decision,
-                                                                         String stageId,String roleId,String wrkGrpId,String subStage ) {
+                                                                         String stageId,String roleId,String wrkGrpId,String subStage,String userId ) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setProcessDecision(decision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby(userId);
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto.setRoleId(roleId);
         appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);

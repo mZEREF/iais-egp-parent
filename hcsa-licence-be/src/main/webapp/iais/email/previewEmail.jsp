@@ -37,10 +37,10 @@
     String webroot=IaisEGPConstant.FE_CSS_ROOT;
 %>
 
-${content}
+
 
 <form method="post" action=<%=process.runtime.continueURL()%>>
     <br><br><br><br><br><br>
-
+    ${content}
     <input type="submit" class="backspace-icon" value="Back">
 </form>
