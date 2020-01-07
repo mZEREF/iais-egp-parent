@@ -66,8 +66,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-   /* @Value("${iais.syncFileTracking.shared.path}")*/
-    private     String sharedPath="D:";
+    @Value("${iais.syncFileTracking.shared.path}")
+    private     String sharedPath;
     private     String download;
     private     String backups;
     private     String fileFormat=".text";
@@ -84,6 +84,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Override
     public void compress(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList){
+        log.info("-------------compress start ---------");
         if(new File(backups).isDirectory()){
             File[] files = new File(backups).listFiles();
             for(File fil:files){
@@ -247,7 +248,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                       /*  Boolean backups = backups(flag, filzz);*/
                         if(aBoolean){
                             if(processFileTrackDto!=null){
-                                processFileTrackDto.setStatus("save_success");
                                 changeStatus(processFileTrackDto);
 
                            /*     Boolean aBoolean1 = changeFeApplicationStatus();*/
@@ -298,7 +298,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
 
-                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf("/"));
+                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
                     File file =new File(compressPath+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();
@@ -416,9 +416,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         applicationListDto.setAuditTrailDto(intranet);
         if(applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200){
+            log.info("-----------getDownloadFile-------");
             requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);
 
-
+        log.info("-------"+listApplicationDto+"----------");
         }
 
         return applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
@@ -443,7 +444,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                          int j=0;
                         for(ApplicationDto applicationDto :v){
                             int i=v.size();
-
                             if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)){
                                 j++;
                             }
