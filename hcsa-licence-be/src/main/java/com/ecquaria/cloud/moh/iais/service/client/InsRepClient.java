@@ -3,8 +3,6 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -25,8 +23,8 @@ public interface InsRepClient {
     @RequestMapping(path = "/iais-inspection-report/saveData",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveData(@RequestBody AppPremisesRecommendationDto appPremisesRecommendationDto);
 
-    @RequestMapping(path = "/application-number-grp-premiese/{appNo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppInsRepDto> getAppInsRepDto(@PathVariable("appNo") String appNo);
+    @RequestMapping(path = "/application-number-grp-premiese/{appPremCorreId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppInsRepDto> getAppInsRepDto(@PathVariable("appPremCorreId") String appPremCorreId);
 
     @GetMapping(value = "/iais-inspection-report/app-type/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getAppType (@PathVariable("appId") String appId);
