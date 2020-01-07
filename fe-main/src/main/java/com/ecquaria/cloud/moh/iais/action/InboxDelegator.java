@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -79,6 +80,8 @@ public class    InboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> Start"));
         IaisEGPHelper.clearSessionAttr(bpc.request,InboxConst.class);
         ParamUtil.setSessionAttr(bpc.request,"TAB_NO", "inboxTab");
+
+        AuditTrailHelper.auditFunction("main-web", "main web");
     }
 
     /**

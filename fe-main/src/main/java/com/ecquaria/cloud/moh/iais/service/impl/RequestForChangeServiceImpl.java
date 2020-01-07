@@ -5,12 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
@@ -40,6 +42,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Autowired
     private SubmissionClient client;
+
+    @Autowired
+    private SystemAdminClient systemAdminClient;
 
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
@@ -84,5 +89,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
     }
+
+    @Override
+    public ApplicationDto getApplicationByLicenceId(String licenceId) {
+        return appInboxClient.getApplicaitonByLicenceId(licenceId).getEntity();
+    }
+
+    @Override
+    public String getApplicationGroupNumber(String appType) {
+        return systemAdminClient.applicationNumber(appType).getEntity();
+    }
+
 
 }
