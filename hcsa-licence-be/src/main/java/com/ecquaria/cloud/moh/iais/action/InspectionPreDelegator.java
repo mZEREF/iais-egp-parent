@@ -166,6 +166,7 @@ public class InspectionPreDelegator {
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorRouteB start ...."));
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        inspectionPreTaskService.routingBack(taskDto, inspectionPreTaskDto.getReMarks());
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
     }
 }
