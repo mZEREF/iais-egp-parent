@@ -72,7 +72,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private     String backups;
     private     String fileFormat=".text";
     private     String compressPath;
-
+    private     String downZip;
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -97,7 +97,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
-                        String s = sharedPath+File.separator+System.currentTimeMillis() + "";
+
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
                         BufferedOutputStream bos=null;
@@ -105,7 +105,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         try (ZipFile zipFile=new ZipFile(path);)  {
                             for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
                                 ZipEntry zipEntry = entries.nextElement();
-                                zipFile(zipEntry,os,bos,zipFile,bis,cos,s);
+                                zipFile(zipEntry,os,bos,zipFile,bis,cos,name);
                             }
 
                         } catch (IOException e) {
@@ -146,7 +146,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                         try {
 
-                            this.download(processFileTrackDto,listApplicationDto, requestForInfList,s);
+                            this.download(processFileTrackDto,listApplicationDto, requestForInfList,name);
                             //save success
                         }catch (Exception e){
                             //save bad
@@ -204,6 +204,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         download= sharedPath+File.separator+"compress"+File.separator+"folder";
         backups=sharedPath+File.separator+"backups"+File.separator;
         compressPath=sharedPath+File.separator+"compress";
+        downZip=sharedPath+File.separator+"compress";
         File file =new File(download);
         File b=new File(backups);
         File c=new File(compressPath);
@@ -225,7 +226,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         FileInputStream fileInputStream=null;
         Boolean flag=false;
         try {
-            File file =new File(download);
+            File file =new File(downZip+File.separator+fileName+File.separator+"folder");
             if(!file.exists()){
                 file.mkdirs();
             }
@@ -248,11 +249,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                       /*  Boolean backups = backups(flag, filzz);*/
                         if(aBoolean){
                             if(processFileTrackDto!=null){
+
                                 changeStatus(processFileTrackDto);
 
                            /*     Boolean aBoolean1 = changeFeApplicationStatus();*/
 
-                                saveFileRepo();
+                                saveFileRepo( fileName);
                             }
                         }
 
@@ -299,11 +301,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(!zipEntry.getName().endsWith(File.separator)){
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                    File file =new File(compressPath+File.separator+substring);
+                    File file =new File(compressPath+File.separator+fileName+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(compressPath+File.separator+zipEntry.getName());
+                    os=new FileOutputStream(compressPath+File.separator+fileName+File.separator+zipEntry.getName());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -318,7 +320,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(compressPath+File.separator+zipEntry.getName()).mkdirs();
+                    new File(compressPath+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 
@@ -419,7 +421,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             log.info("-----------getDownloadFile-------");
             requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);
 
-        log.info("-------"+listApplicationDto+"----------");
         }
 
         return applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
@@ -462,9 +463,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     /*
     *
     * save file to fileRepro*/
-    private void saveFileRepo(){
+    private void saveFileRepo(String fileNames){
         boolean aBoolean=false;
-        File file =new File(download+File.separator+"files");
+        File file =new File(downZip+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -490,7 +491,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             OutputStream os = fileItem.getOutputStream();
                             IOUtils.copy(input, os);
                         } catch (IOException ex) {
-                            ex.printStackTrace();
+                           log.error(ex.getMessage(),ex);
                         }
                         MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
 
@@ -499,11 +500,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         fileRepoDto.setId(split[0]);
                         fileRepoDto.setAuditTrailDto(intranet);
                         fileRepoDto.setFileName(fileName.toString());
-                        fileRepoDto.setRelativePath(download);
+                        fileRepoDto.setRelativePath(downZip+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
                         aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
                         if(aBoolean){
-                            removeFilePath(f);
+                         /*   removeFilePath(f);*/
                         }
                     }catch (Exception e){
                         continue;
@@ -528,12 +529,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(file.isFile()){
             String path = file.getPath();
             String name = file.getName();
-            FileInputStream fileInputStream=null;
-            FileOutputStream fileOutputStream=null;
-            try {
-                fileInputStream=new FileInputStream(file);
-                File newFile=new File(download+File.separator+name);
-               fileOutputStream=new FileOutputStream(newFile);
+            File newFile=new File(download+File.separator+name);
+
+            try (  FileInputStream  fileInputStream=new FileInputStream(file);
+                   FileOutputStream  fileOutputStream=new FileOutputStream(newFile); ) {
+
                 byte[] length=new byte[1024];
                 int count =0;
                 count=fileInputStream.read(length);
@@ -543,24 +543,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
 
             }  catch (IOException e) {
-                e.printStackTrace();
-            }
-            finally {
-                if(fileInputStream!=null){
-                    try {
-                        fileInputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            if(fileOutputStream!=null){
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
+                log.error(e.getMessage(),e);
             }
 
         }
