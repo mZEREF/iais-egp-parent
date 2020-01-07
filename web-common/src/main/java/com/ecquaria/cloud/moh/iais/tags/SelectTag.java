@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ public class SelectTag extends DivTagSupport {
     private String firstOption;
     private String codeCategory;
     private String filterCode;
+    private String filterValue;
     private String onchange;
     private String value;
     private String otherOption;
@@ -42,6 +44,7 @@ public class SelectTag extends DivTagSupport {
         name = null;
         codeCategory = "";
         filterCode = "";
+        filterValue = "";
         firstOption = null;
         options = null;
         value = null;
@@ -120,9 +123,20 @@ public class SelectTag extends DivTagSupport {
         if (needMask) {
             MaskUtil.maskSelectOptions(name, sos);
         }
+
         if (!StringUtil.isEmpty(firstOption)) {
             html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append(ENDOPTION);
         }
+
+        //Use ',' to separate your master code keys
+        if (!StringUtils.isEmpty(filterValue)){
+            String[] filter = filterValue.split(",");
+            for (int i = 0; i < filter.length; i++){
+                int indx = i;
+                sos.removeIf(selectOption -> (filter[indx].trim()).equals(selectOption.getValue()));
+            }
+        }
+
         if (sos != null) {
             for (SelectOption option : sos) {
                 String val = StringUtil.viewNonNullHtml(option.getValue());
@@ -193,5 +207,13 @@ public class SelectTag extends DivTagSupport {
     }
 	public void setNeedMask(boolean needMask) {
         this.needMask = needMask;
+    }
+
+    public String getFilterValue() {
+        return filterValue;
+    }
+
+    public void setFilterValue(String filterValue) {
+        this.filterValue = filterValue;
     }
 }

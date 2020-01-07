@@ -100,7 +100,7 @@ public interface HcsaChklService {
 
     Boolean isExistsRecord(ChecklistConfigDto dto);
 
-    String submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationExcelList);
+    String submitUploadRegulation(List<HcsaChklSvcRegulationDto> regulationDtoList);
 
     String submitUploadItem(List<ChecklistItemDto> checklistItemExcelList);
 }

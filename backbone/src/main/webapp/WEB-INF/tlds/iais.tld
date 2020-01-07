@@ -765,6 +765,13 @@
       <rtexprvalue>true</rtexprvalue>
       <type>boolean</type>
     </attribute>
+    <attribute>
+      <name>filterValue</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+
   </tag>
   <tag>
     <description>SortableHeaderTag</description>

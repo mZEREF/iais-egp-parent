@@ -71,8 +71,8 @@
                         <div class="col-xs-5 col-md-3">
                             <iais:field value="Status" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
-                                <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status" value="${itemRequestAttr.status}"></iais:select>
-                                <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                                <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status" value="${itemRequestAttr.status}" filterValue="CMSTAT002"></iais:select>
+                                <span id="error_status" name="iaisErrorMsg" class="error-msg" ></span>
                             </div>
                         </div>
                     </div>

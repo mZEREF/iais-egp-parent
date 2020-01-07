@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -112,9 +113,52 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         String value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        ParamUtil.setSessionAttr(request, "switchUploadPage", value);
+        if (!StringUtils.isEmpty(value)){
+            ParamUtil.setSessionAttr(request, "switchUploadPage", value);
+        }
+    }
 
+    /**
+     * @AutoStep: step3
+     * @param:
+     * @return:
+     * @author: yichen
+     */
+    public void step3(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
+        String currentAction = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
+    }
+
+    private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
+        Map<String, String> errorMap = new HashMap<>();
+        if (file == null){
+            errorMap.put("fileUploadError", "GENERAL_ERR0004");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return errorMap;
+        }
+
+        String originalFileName = file.getOriginalFilename();
+        if (!originalFileName.endsWith(".xlsx")){
+            errorMap.put("fileUploadError", "GENERAL_ERR0005");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return errorMap;
+        }
+
+        Double size = Double.valueOf(file.getSize() / 0x400 / 0x400);
+
+        if (Math.ceil(size) > 0x10){
+            errorMap.put("fileUploadError", "GENERAL_ERR0004");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return errorMap;
+        }
+
+        return null;
     }
 
     /**
@@ -125,58 +169,35 @@ public class HcsaChklItemDelegator {
      */
     public void submitUploadData(BaseProcessClass bpc) throws Exception {
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if("doBack".equals(currentAction)){
-            return;
-        }
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
         String value = (String) ParamUtil.getSessionAttr(request, "switchUploadPage");
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+
         MultipartFile file = mulReq.getFile("selectedFile");
 
-        Map<String, String> errorMap = new HashMap<>();
-        if (file == null){
-            errorMap.put("fileUploadError", "GENERAL_ERR0004");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            return;
-        }
-
-        String originalFileName = file.getOriginalFilename();
-        if (!originalFileName.endsWith(".xlsx")){
-            errorMap.put("fileUploadError", "GENERAL_ERR0005");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            return;
-        }
-
-        Double size = Double.valueOf(file.getSize() / 1024 / 1024);
-
-        if (Math.ceil(size) > 10){
-            errorMap.put("fileUploadError", "GENERAL_ERR0004");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+        Map<String, String> errorMap = validationFile(request, file);
+        if (errorMap != null && !errorMap.isEmpty()){
             return;
         }
 
         String json = "";
         int reduceSize = 0;
         File toFile = FileUtils.multipartFileToFile(file);
+        errorMap = new HashMap<>(1);
+        errorMap.put("fileUploadError", "Please remove the same data from Excel.");
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         try {
             switch (value){
+
                 case REGULATION:
-
-
                     List<HcsaChklSvcRegulationDto> regulationDtoList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
                     List<HcsaChklSvcRegulationDto> passRegulationDtoList = regulationDtoList.stream().distinct().collect(Collectors.toList());
                     reduceSize = regulationDtoList.size() - passRegulationDtoList.size();
-
                     if (reduceSize > 0){
-                        errorMap.put("fileUploadError", "Please remove the same data from Excel.");
-                        ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
                         return;
                     }
+
                     json = hcsaChklService.submitUploadRegulation(passRegulationDtoList);
                     break;
                 case CHECKLIST_ITEM:
@@ -184,13 +205,11 @@ public class HcsaChklItemDelegator {
                     List<ChecklistItemDto> passItemDtoList =  checklistItemDtoList.stream().distinct().collect(Collectors.toList());
                     reduceSize = checklistItemDtoList.size() - passItemDtoList.size();
                     if (reduceSize > 0){
-                        errorMap.put("fileUploadError", "Please remove the same data from Excel.");
-                        ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
                         return;
                     }
 
-                    json  = hcsaChklService.submitUploadItem(null);
+                    json  = hcsaChklService.submitUploadItem(checklistItemDtoList);
                     break;
                 default:
             }
@@ -210,8 +229,8 @@ public class HcsaChklItemDelegator {
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         ParamUtil.setRequestAttr(request, "messageContent", messageContentList);
         FileUtils.delteTempFile(toFile);
-
     }
+
 
     /**
      * @AutoStep: saveChecklistItem
@@ -253,7 +272,6 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-
         String json = hcsaChklService.submitCloneItem(chklItemDtos);
         List<MessageContent> messageContentList = JsonUtil.parseToList(json, MessageContent.class);
         if (messageContentList != null && ! messageContentList.isEmpty()){
@@ -280,6 +298,7 @@ public class HcsaChklItemDelegator {
         itemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
         //Field calibration
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "save");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
@@ -309,7 +328,6 @@ public class HcsaChklItemDelegator {
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> clauseSelect = new ArrayList<>();
 
-
         List<String> strings = hcsaChklService.listRegulationClauseNo();
         for(String s : strings){
             clauseSelect.add(new SelectOption(s, s));
@@ -337,7 +355,6 @@ public class HcsaChklItemDelegator {
 
     }
 
-
     /**
      * AutoStep: prepareChecklistItemInfo
      * @param bpc
@@ -359,8 +376,6 @@ public class HcsaChklItemDelegator {
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
 
     }
-
-
 
     /**
     * @description: get request chkl item dto
@@ -659,5 +674,4 @@ public class HcsaChklItemDelegator {
         }
 
     }
-
 }

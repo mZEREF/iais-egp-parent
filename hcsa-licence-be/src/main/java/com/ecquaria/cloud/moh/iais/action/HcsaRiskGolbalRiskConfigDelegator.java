@@ -109,6 +109,7 @@ public class HcsaRiskGolbalRiskConfigDelegator {
         ParamUtil.setSessionAttr(request, "golbalShowDto", golbalRiskShowDto);
         return golbalRiskShowDto;
     }
+
     public HcsaRiskGolbalVadlidateDto getValueFromPage(HttpServletRequest request) {
         HcsaRiskGolbalVadlidateDto dto = new HcsaRiskGolbalVadlidateDto();
         GolbalRiskShowDto golbalShowDto = (GolbalRiskShowDto)ParamUtil.getSessionAttr(request, "golbalShowDto");

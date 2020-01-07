@@ -15,8 +15,6 @@
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
-<script src="/hcsa-licence-web/iais/js/CommonUtils.js"></script>
-
 
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/include/formHidden.jsp" %>
@@ -78,7 +76,7 @@
           <p></p>
         </div>
         <div class="col-xs-12 col-sm-6">
-          <div class="button-group"><a class="btn btn-primary next" onclick="Utils.submit('mainForm', 'doBack')">Back</a></div>
+          <div class="button-group"><a id="docBack" class="btn btn-primary next" >Back</a></div>
         </div>
       </div>
     </div>
@@ -88,3 +86,10 @@
   </div>
 
 </form>
+
+<script>
+    $('#docBack').click(function () {
+        SOP.Crud.cfxSubmit("mainForm", "doBack");
+    });
+
+</script>

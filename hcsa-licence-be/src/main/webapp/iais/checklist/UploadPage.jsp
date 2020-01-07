@@ -25,9 +25,6 @@
       <input type="hidden" name="crud_action_type" value="">
       <input type="hidden" name="crud_action_value" value="">
       <input type="hidden" name="crud_action_additional" value="">
-      <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.HcsaChklItemDelegator"/>
-      <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.validation.HcsaChklItemValidate"/>
-      <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
 
 
       <br><br><br>
@@ -91,7 +88,6 @@
 
     $('#selectedFile').change(function () {
         var file = $(this).val();
-
     });
 
     $('#docNext').click(function () {
