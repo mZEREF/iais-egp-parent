@@ -91,8 +91,10 @@ public class InspecEmailDelegator {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-        //String taskId = ParamUtil.getRequestString(request,"taskId");
-        String taskId="12985264-D82E-EA11-BE7D-000C29F371DC";
+        String taskId = ParamUtil.getRequestString(request,"taskId");
+        if (StringUtil.isEmpty(taskId)) {
+            taskId="12985264-D82E-EA11-BE7D-000C29F371DC";
+        }
         TaskDto taskDto = taskService.getTaskById(taskId);
         if(StringUtil.isEmpty(taskDto)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
@@ -219,12 +221,13 @@ public class InspecEmailDelegator {
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
             hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
             hcsaSvcStageWorkingGroupDto.setOrder(2);
+            completedTask(taskDto);
             TaskDto taskDto1=taskDto;
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_AO1);
-            taskDto1.setUserId(taskService.getUserIdForWorkGroup(taskDto.getWkGrpId()).getUserId());
-            completedTask(taskDto);
+            taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
+            taskDto1.setUserId(taskService.getUserIdForWorkGroup(taskDto1.getWkGrpId()).getUserId());
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
@@ -249,6 +252,7 @@ public class InspecEmailDelegator {
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+            taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
             taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
             taskService.createTasks(taskDtos);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
@@ -279,12 +283,11 @@ public class InspecEmailDelegator {
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
-    private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) {
+    private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) throws FeignException {
         List<TaskDto> list = new ArrayList<>();
         List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
         String schemeType = listhcsaSvcStageWorkingGroupDto.get(0).getSchemeType();
         Integer count = listhcsaSvcStageWorkingGroupDto.get(0).getCount();
-        taskDto.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
 
         taskDto.setId(null);
         taskDto.setDateAssigned(new Date());

@@ -110,7 +110,7 @@ public class InspectEmailAo1Delegator {
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
+            taskId = "75E0BA77-2A31-EA11-BE7D-000C29F371DC";
         }
         String serviceType = "Inspection";
         InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
@@ -220,6 +220,8 @@ public class InspectEmailAo1Delegator {
             TaskDto taskDto1=taskDto;
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+            taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
+            taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
             taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
@@ -246,7 +248,7 @@ public class InspectEmailAo1Delegator {
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setUserId(appPremisesRoutingHistoryDto.getActionby());
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
-            taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+            taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
 
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
@@ -316,8 +318,6 @@ public class InspectEmailAo1Delegator {
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String correlationId = taskDto.getRefNo();
-        ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
-        String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
         String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
 
@@ -468,7 +468,7 @@ public class InspectEmailAo1Delegator {
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
-    private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) {
+    private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) throws FeignException {
         List<TaskDto> list = new ArrayList<>();
         List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
         String schemeType = listhcsaSvcStageWorkingGroupDto.get(0).getSchemeType();
