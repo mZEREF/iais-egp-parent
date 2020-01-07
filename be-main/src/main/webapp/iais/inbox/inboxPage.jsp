@@ -305,11 +305,19 @@
                     var res = data.ajaxResult;
                     var url = data.appNoUrl;
                     for (var i = 0; i < res.rowCount; i++) {
+                        var color = "black";
+                        if(res.rows[i].timeLimitWarning == "black"){
+                            color = "black";
+                        } else if (res.rows[i].timeLimitWarning == "red"){
+                            color = "red";
+                        } else if (res.rows[i].timeLimitWarning == "amber"){
+                            color = "#DD9C00";
+                        }
                         var address = res.rows[i].blkNo + " " + res.rows[i].streetName + " " + res.rows[i].buildingName +
                             " # " + res.rows[i].floorNo + "-" + res.rows[i].unitNo + ", " + res.rows[i].postalCode;
-                        $('#advfilter' + divid).append('<div class="col-xs-12 col-lg-12">' +
+                        $('#advfilter' + divid).append('<div class="col-xs-12 col-lg-12" style = "color : ' + color + ';">' +
                             '<div class="col-xs-1  col-lg-1 app-in-group-head"></div>' +
-                            '<div class="col-xs-2  col-lg-2 app-in-group-second"><a href=' + url[res.rows[i].refNo] + '>' + res.rows[i].applicationNo + '</a></div>' +
+                            '<div class="col-xs-2  col-lg-2 app-in-group-second"><a style = "color : ' + color + ';" href=' + url[res.rows[i].refNo] + '><u>' + res.rows[i].applicationNo + '</u></a></div>' +
                             '<div class="col-xs-2  col-lg-2">' + serviceName[res.rows[i].serviceId] + '</div>' +
                             '<div class="col-xs-2  col-lg-2">N/A</div>' +
                             '<div class="col-xs-2  col-lg-2">' + res.rows[i].status + '</div>' +
