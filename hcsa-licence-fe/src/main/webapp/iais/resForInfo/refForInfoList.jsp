@@ -52,7 +52,7 @@
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                             <td><c:out value="${pool.licenceNo}"/></td>
                                             <td><c:out value="${pool.requestDate}"/></td>
-                                            <td><c:out value="${pool.requestUser}" />/></td>
+                                            <td><c:out value="${pool.requestUser}" /></td>
                                             <td>
                                                 <iais:action style="text-align:center;">
                                                     <button type="button"  class="btn btn-default" onclick="javascript:doView('${pool.reqInfoId}');" >View</button>

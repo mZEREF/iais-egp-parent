@@ -42,6 +42,12 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
+                                            <iais:field value=""/>
+                                            <iais:value width="18">
+                                                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Extends</button>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
                                             <iais:field value="Due Date :"/>
                                             <iais:value width="18">
                                                 <iais:datePicker  name = "Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}"></iais:datePicker>
@@ -68,7 +74,7 @@
                                         <iais:row style="text-align:center;">
                                             <iais:value width="18">
                                                 <label>
-                                                    <textarea rows="10" cols="100">${licPreReqForInfoDto.userReply}</textarea>
+                                                    <textarea id="userReply" rows="10" cols="100">${licPreReqForInfoDto.userReply}</textarea>
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -108,6 +114,8 @@
         SOP.Crud.cfxSubmit("mainForm", "accept",reqInfoId);
     }
     function doCancel(reqInfoId) {
+        var user=document.getElementById("userReply");
+        if(user.value!=null)
         SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);
     }
 

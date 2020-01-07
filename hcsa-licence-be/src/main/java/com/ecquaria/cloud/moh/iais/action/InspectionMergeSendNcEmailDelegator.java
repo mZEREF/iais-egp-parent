@@ -268,6 +268,7 @@ public class InspectionMergeSendNcEmailDelegator {
         List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
         String schemeType = listhcsaSvcStageWorkingGroupDto.get(0).getSchemeType();
         Integer count = listhcsaSvcStageWorkingGroupDto.get(0).getCount();
+        taskDto.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
 
         taskDto.setId(null);
         taskDto.setDateAssigned(new Date());
