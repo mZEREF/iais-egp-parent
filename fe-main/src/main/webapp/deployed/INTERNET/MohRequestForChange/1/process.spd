@@ -14,26 +14,33 @@
     <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doChoose" x="400" y="170">
+  <AutomaticStep defClass="" executor="" icon="" name="doChoose" x="400" y="140">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doChoose_OnStepProcess_0" name="doChoose_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareAmend" x="290" y="370">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareAmend" x="290" y="430">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareAmend_OnStepProcess_0" name="prepareAmend_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step5" processname="MohNewApplication" project="INTERNET" version="-1" x="290" y="480">
+  <InvokeStep defClass="" executor="" icon="" name="Step5" processname="MohNewApplication" project="INTERNET" version="-1" x="290" y="540">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="jump" x="410" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="jump_OnStepProcess_0" name="jump_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="chooseAmendPage" stageIndicator="" x="370" y="50">
@@ -51,24 +58,31 @@
   <SynchronousLink destinationName="/Pages/WebPage/chooseAmendPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepare" style="rectanular">
    <position>{(270,70)(390,70)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChoose" style="oblique">
-   <position>{(420,190)(430,310)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareAmend" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(430,310)(310,390)}</position>
+   <position>{(430,370)(310,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Step5" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareAmend" style="rectanular">
-   <position>{(310,390)(310,500)}</position>
+   <position>{(310,450)(310,560)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doChoose" linkstyle="Direct" name="" sourceName="/Pages/WebPage/chooseAmendPage" style="oblique">
-   <position>{(390,70)(420,190)}</position>
+   <position>{(390,70)(420,160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/jump" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChoose" style="oblique">
+   <position>{(420,160)(430,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jump" style="oblique">
+   <position>{(430,260)(430,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(430,370)(263,372)(270,70)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="410" y="290">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_form" name="Switch1" x="410" y="350">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/prepareAmend" value="&quot;doAmend&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;prepare&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

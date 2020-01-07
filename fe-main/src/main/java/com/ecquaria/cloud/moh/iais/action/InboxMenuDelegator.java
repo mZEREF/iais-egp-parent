@@ -2,14 +2,17 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +45,6 @@ public class InboxMenuDelegator {
      */
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do start start ...."));
-
 
 
         log.debug(StringUtil.changeForLog("the do start end ...."));
@@ -150,8 +152,21 @@ public class InboxMenuDelegator {
         appGrpPremisesDtoList.add(newPremisesDto);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, appGrpPremisesDtoList);
         //validate
-        Map<String, String> errorMap = doValidatePremiss(bpc.request, newPremisesDto);
-
+        ApplicationDto applicationDto = requestForChangeService.getApplicationByLicenceId(premisesListQueryDto.getLicenceId());
+        String appStatus = "";
+        if(applicationDto != null){
+            appStatus = applicationDto.getStatus();
+        }
+        Map<String, String> errorMap = new HashMap<>();
+        if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(premisesListQueryDto.getStatus())){
+            errorMap.put("Globle", "licence must be active");
+        }
+        //wait constats
+        /*else if(ApplicationConsts.XXX.equals(appStatus)){
+            errorMap.put("Globle", "had ongoing application for licence");
+        }*/else{
+            errorMap = doValidatePremiss(bpc.request, newPremisesDto);
+        }
         if(errorMap.size() >0){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg",WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.FORM_TAB, "prepareEdit");
@@ -161,11 +176,20 @@ public class InboxMenuDelegator {
         //compare and set diff data into XXX table
         //todo
         compareAndSetData(appSubmissionDto, premisesListQueryDto, newPremisesDto);
-
+        String appType = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
+        if(!StringUtil.isEmpty(appSubmissionDto.getAppType())){
+            appType = appSubmissionDto.getAppType();
+        }
+        String appGroupNo = requestForChangeService.getApplicationGroupNumber(appType);
+        appSubmissionDto.setAppGrpNo(appGroupNo);
+        //todo ?
+        appSubmissionDto.setAmount(0.0);
         //save data
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_NOTIFICATION);
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         requestForChangeService.submitChange(appSubmissionDto, bpc.process);
+
 
         log.debug(StringUtil.changeForLog("the do doPremisesEdit end ...."));
     }
@@ -224,6 +248,7 @@ public class InboxMenuDelegator {
     public void jump(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do jump start ...."));
 
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.FORM_TAB, "ack");
         log.debug(StringUtil.changeForLog("the do jump end ...."));
     }
 

@@ -28,4 +28,14 @@ public class RfcConst {
     //error_msg
     public static final String ERRORMAP_PREMISES = "errorMap_premises";
 
+
+
+    //rfc amendType text
+    public static final String REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION_TEXT = "Premises Information";
+    public static final String REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL_TEXT  = "MedAlert Personnel";
+    public static final String REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER_TEXT  = "Principal Officer";
+    public static final String REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER_TEXT  = "Deputy Principal Officer";
+    public static final String REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION_TEXT  = "Service-Related Information";
+    public static final String REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT_TEXT  = "Supporting Document(s)";
+
 }
