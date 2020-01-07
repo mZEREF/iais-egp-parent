@@ -205,4 +205,7 @@ public interface HcsaConfigClient {
     FeignResponseEntity<List<String>> getModuleName(@RequestParam("serviceCode") String serviceCode);
     @RequestMapping(value = "/kpi-reminder/result-service-and-module")
     FeignResponseEntity<HcsaSvcKpiDto> searchResult(@RequestParam("service") String serviceCode, @RequestParam("module") String module);
+
+    @PostMapping(value = "/hcsa-routing/svc-work-task-dto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaSvcStageWorkingGroupDto> getHcsaSvcStageWorkingGroupDto(@RequestBody HcsaSvcStageWorkingGroupDto dto);
 }
