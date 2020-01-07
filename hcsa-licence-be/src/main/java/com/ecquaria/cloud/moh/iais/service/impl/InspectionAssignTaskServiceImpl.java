@@ -102,7 +102,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
 
         ApplicationDto applicationDto = searchByAppCorrId(appCorrelationId).getApplicationDto();
-        AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(applicationDto.getId());
+        AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(appCorrelationId);
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
@@ -121,6 +121,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         setInspectorLeadName(inspecTaskCreAndAssDto, orgUserDtos, workGroupId);
         return inspecTaskCreAndAssDto;
     }
+
+
 
     private void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, String workGroupId) {
         if(StringUtil.isEmpty(workGroupId)){
@@ -254,7 +256,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public SearchResult<InspectionCommonPoolQueryDto> getAddressByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
         for(InspectionCommonPoolQueryDto icpqDto: searchResult.getRows()){
-            AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(icpqDto.getApplicationId());
+            AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(icpqDto.getId());
             icpqDto.setHciName(icpqDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
         }
         return searchResult;
@@ -312,15 +314,18 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
     }
 
-    /**
-      * @author: shicheng
-      * @Date 2019/11/23
-      * @Param: appGroupId
-      * @return: AppGrpPremisesDto
-      * @Descripation: get Application Group Premises By Application Id
-      */
-    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String applicationId){
-        return inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(applicationId).getEntity();
+    @Override
+    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String appCorrId){
+        AppGrpPremisesDto appGrpPremisesDto = inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
+        if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            appGrpPremisesDto.setConveyanceBlockNo(appGrpPremisesDto.getBlkNo());
+            appGrpPremisesDto.setConveyanceStreetName(appGrpPremisesDto.getStreetName());
+            appGrpPremisesDto.setConveyanceBuildingName(appGrpPremisesDto.getBuildingName());
+            appGrpPremisesDto.setConveyanceFloorNo(appGrpPremisesDto.getFloorNo());
+            appGrpPremisesDto.setConveyanceUnitNo(appGrpPremisesDto.getUnitNo());
+            appGrpPremisesDto.setConveyancePostalCode(appGrpPremisesDto.getPostalCode());
+        }
+        return appGrpPremisesDto;
     }
 
     /**
