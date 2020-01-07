@@ -37,4 +37,13 @@ public interface InspectionPreTaskService {
       * @Descripation: routing Task
       */
     void routingTask(TaskDto taskDto, String preInspecRemarks);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/1/7
+      * @Param: taskDto, reMarks
+      * @return: void
+      * @Descripation: routing back
+      */
+    void routingBack(TaskDto taskDto, String reMarks);
 }
