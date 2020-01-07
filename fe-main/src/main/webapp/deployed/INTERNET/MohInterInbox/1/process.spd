@@ -64,7 +64,7 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="requestForChange" processname="MohRequestForChange" project="INTERNET" version="-1" x="900" y="410">
+  <InvokeStep defClass="" executor="" icon="" name="RequestForChange" processname="MohRequestForChange" project="INTERNET" version="-1" x="900" y="410">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -129,7 +129,7 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/MenuControl" style="rectanular">
    <position>{(800,370)(620,520)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/requestForChange" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
+  <SynchronousLink destinationName="/Steps/InvokeStep/RequestForChange" linkstyle="Direct" name="" sourceName="/Switches/Switch/inboxSwitch" style="oblique">
    <position>{(720,120)(920,430)}</position>
   </SynchronousLink>
  </Links>
@@ -143,7 +143,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doWithdraw" value="&quot;doWithdraw&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doDraft" value="&quot;doDraft&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/MenuControl" value="&quot;topMenu&quot;"/>
-   <SwitchCase component="/Steps/InvokeStep/requestForChange" value="&quot;doRfc&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/RequestForChange" value="&quot;doRfc&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

@@ -33,4 +33,8 @@ public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "jump", this);
 	}
 
+	public void step1_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doStart", this);
+	}
+
 }

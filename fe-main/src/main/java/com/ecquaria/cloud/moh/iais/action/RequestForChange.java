@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -14,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +94,8 @@ public class RequestForChange {
                 for(String type:amendLicenceType){
                     amendTypeList.add(type);
                 }
-                ParamUtil.setRequestAttr(bpc.request, "amendLicenceType", amendTypeList);
+                ParamUtil.setSessionAttr(bpc.request, "amendLicenceType", (Serializable) amendTypeList);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
             }else{
                 flag = false;
             }
@@ -127,13 +131,21 @@ public class RequestForChange {
      * @param bpc
      * @Decription prepareAmend
      */
-    public void prepareAmend(BaseProcessClass bpc){
+    public void prepareAmend(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do prepareAmend start ...."));
         List<String> amendTypeList = (List<String>) ParamUtil.getSessionAttr(bpc.request, "amendLicenceType");
-
-        String licenceId = "";
+        
+        //todo: 
+        String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
         AppSubmissionDto appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
         appSubmissionDto.setAmendType(amendTypeList);
+    
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+        StringBuffer url = new StringBuffer();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(url.toString());
 
         log.debug(StringUtil.changeForLog("the do prepareAmend end ...."));
     }
