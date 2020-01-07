@@ -94,14 +94,7 @@ public class AdhocChecklistDelegator {
             return;
         }*/
 
-        String taskId = ParamUtil.getMaskedString(request, "taskId");
-
-        log.info("doInspectorSearchTaskAssign task id ====>>>>> " + taskId);
-        if (taskId == null) {
-            return;
-        }
-
-        TaskDto task = taskService.getTaskById(taskId);
+        TaskDto task = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
 
         if (task != null){
             String refNo = task.getRefNo();
