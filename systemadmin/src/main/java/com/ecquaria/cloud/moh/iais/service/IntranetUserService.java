@@ -22,6 +22,8 @@ public interface IntranetUserService {
 
     ClientUser saveEgpUser(ClientUser clientUser);
     ClientUser updateEgpUser(ClientUser clientUser);
+    Boolean deleteEgpUser(String userDomian,String userId);
+    ClientUser getUserByIdentifier(String userId,String userDomain);
 
     SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(@RequestBody SearchParam searchParam);
 }

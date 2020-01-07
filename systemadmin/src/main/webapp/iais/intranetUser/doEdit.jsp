@@ -40,22 +40,12 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End.</label>
-                            <span style="color:red">*</span>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="endDate" name="endDate"/>
-                                    <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Salutation.</label>
                             <span style="color:red">*</span>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <select name="salutation">
-                                        <option>---Please Select---</option>
+                                        <option value="">---Please Select---</option>
                                         <option value="Mr">Mr</option>
                                         <option value="Ms">Ms</option>
                                         <option value="Mrs">Mrs</option>

@@ -78,6 +78,9 @@
                                                 <button type="button" class="btn btn-default btn-sm"
                                                         onclick="doReactivate('${user.id}')">Reactivate
                                                 </button>
+                                                <button type="button" class="btn btn-default btn-sm"
+                                                        onclick="doTerminate('${user.id}')">Reactivate
+                                                </button>
                                             </td>
                                         </tr>
                                     </c:forEach>

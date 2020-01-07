@@ -72,6 +72,16 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
+    public Boolean deleteEgpUser(String userDomian, String userId) {
+        return egpUserClient.deleteUser(userDomian,userId).getEntity();
+    }
+
+    @Override
+    public ClientUser getUserByIdentifier(String userId,String userDomain) {
+        return egpUserClient.getUserByIdentifier(userId,userDomain).getEntity();
+    }
+
+    @Override
     public SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(SearchParam searchParam) {
         return intranetUserClient.getWorkingGroupBySearchParam(searchParam).getEntity();
     }

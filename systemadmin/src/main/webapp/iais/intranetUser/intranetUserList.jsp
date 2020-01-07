@@ -77,6 +77,12 @@
         submit('doDelete');
     }
 
+    function doTerminate(Id) {
+        $("[name='crud_action_value']").val(Id);
+        $("[name='crud_action_deactivate']").val('doTerminate');
+        submit('doDelete');
+    }
+
     // function getPageValue(pageNo){
     //     SOP.Crud.cfxSubmit("IntranetUserForm","changePage",pageNo);
     // }

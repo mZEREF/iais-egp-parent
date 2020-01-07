@@ -42,7 +42,8 @@
                             <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="displayName" type="text" name="displayName">
+                                    <input id="displayName" type="text" name="displayName" value="${orgUserDto.displayName}">
+                                    <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -51,8 +52,9 @@
                             <span style="color:red">*</span>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="startDate" name="startDate"/>
-                                    <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>
+                                    value="${orgUserDto.userId}"
+                                    <iais:datePicker id="startDate" name="startDate" dateVal="${orgUserDto.accountActivateDatetime}"/>
+                                    <span id="error_accountActivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -60,7 +62,11 @@
                             <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="endDate" name="endDate"/>
+<%--                                    <td>--%>
+<%--                                        <fmt:formatDate value="${orgUserDto.accountActivateDatetime}" pattern="dd/MM/yyyy"></fmt:formatDate>--%>
+<%--                                    </td>--%>
+                                    <iais:datePicker id="endDate" name="endDate" dateVal="${orgUserDto.accountDeactivateDatetime}"/>
+                                    <span id="error_accountDeactivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -68,14 +74,7 @@
                             <label class="col-xs-12 col-md-4 control-label">Salutation.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <select name="salutation">
-                                        <option value="">---Please Select---</option>
-                                        <option value="Mr">Mr</option>
-                                        <option value="Ms">Ms</option>
-                                        <option value="Mrs">Mrs</option>
-                                        <option value="Mdm">Mdm</option>
-                                        <option value="Dr">Dr</option>
-                                    </select>
+                                    <iais:select name="salutation" options="salutation" firstOption="Please select" value="${orgUserDto.salutation}"></iais:select>
                                 </div>
                             </iais:value>
                         </div>
@@ -83,7 +82,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="firstName" type="text" name="firstName">
+                                    <input id="firstName" type="text" name="firstName" value="${orgUserDto.firstName}">
                                 </div>
                             </iais:value>
                         </div>
@@ -91,8 +90,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="lastName" type="text" name="lastName">
-                                    <span id="error_codeValue" name="iaisErrorMsg" class="error-msg"></span>
+                                    <input id="lastName" type="text" name="lastName" value="${orgUserDto.lastName}">
                                 </div>
                             </iais:value>
                         </div>
@@ -109,7 +107,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="division">Division.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="division" type="text" name="division">
+                                    <input id="division" type="text" name="division" value="${orgUserDto.division}">
                                 </div>
                             </iais:value>
                         </div>
@@ -117,7 +115,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="branch">Branch/Unit.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="branch" type="text" name="branch">
+                                    <input id="branch" type="text" name="branch" value="${orgUserDto.branchUnit}">
                                 </div>
                             </iais:value>
                         </div>
@@ -125,8 +123,8 @@
                             <label class="col-xs-12 col-md-4 control-label" for="email">Email</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="email" type="text" name="email">
-                                    <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
+                                    <input id="email" type="text" name="email" value="${orgUserDto.email}">
+                                    <span id="error_email" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -134,7 +132,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="mobileNo" type="number" name="mobileNo">
+                                    <input id="mobileNo" type="number" name="mobileNo" value="${orgUserDto.mobileNo}">
                                 </div>
                             </iais:value>
                         </div>
@@ -142,7 +140,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="officeNo" type="number" name="officeNo">
+                                    <input id="officeNo" type="number" name="officeNo" value="${orgUserDto.officeTelNo}">
                                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -151,8 +149,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="remarks" type="text" name="remarks">
-                                    <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
+                                    <input id="remarks" type="text" name="remarks" value="${orgUserDto.remarks}">
                                 </div>
                             </iais:value>
                         </div>
