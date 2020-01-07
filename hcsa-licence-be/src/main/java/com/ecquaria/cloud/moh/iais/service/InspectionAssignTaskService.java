@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
@@ -34,6 +35,15 @@ public interface InspectionAssignTaskService {
       * @Descripation: Gets a single Common Pool of information for allocation
       */
     InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+
+    /**
+     * @author: shicheng
+     * @Date 2019/11/23
+     * @Param: appGroupId
+     * @return: AppGrpPremisesDto
+     * @Descripation: get Application Group Premises By Application Id
+     */
+    AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String applicationId);
 
     /**
       * @author: shicheng
