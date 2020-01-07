@@ -31,11 +31,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.HttpHeaders;
 
 /**
  * @author Wenkang
@@ -421,6 +421,13 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
 
     @Override
     public FeignResponseEntity<LicenceTenShowDto> getLicenceTenureShow(List<HcsaServiceDto> svcList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+    @Override
+    public FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(String serviceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -31,8 +31,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
@@ -44,9 +47,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wenkang
@@ -203,6 +203,10 @@ public interface HcsaConfigClient {
 
     @RequestMapping(value = "/iais-hcsa-risk/licencetenureshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceTenShowDto> getLicenceTenureShow(@RequestBody List<HcsaServiceDto> svcList);
+
+    @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}",method = RequestMethod.GET)
+    FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(@PathVariable(name = "svcId")String serviceId);
+
 
     @RequestMapping(value = "/kpi-reminder/module-name-service-code",method = RequestMethod.GET)
     FeignResponseEntity<List<String>> getModuleName(@RequestParam("serviceCode") String serviceCode);

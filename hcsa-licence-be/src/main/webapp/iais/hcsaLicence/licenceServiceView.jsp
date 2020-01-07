@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -16,7 +17,6 @@
               <div class="tab-pane active" id="previewTab" role="tabpanel">
                 <div class="preview-gp">
                   <div class="row">
-
                     <div class="col-xs-12 col-md-2 text-right">
                       <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
                     </div>
@@ -64,13 +64,15 @@
                                   </div>
                                   <div class="pop-up">
                                     <div class="pop-up-body">
-                                      <c:forEach var="appGrpPrimaryDocDto" items="${AppSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
+                                      <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
                                         <div class="content-body fileUploadContainer">
                                           <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
-                                          <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
                                           <div class="control col-sm-5">
-                                            <div class="fileList"><span class="filename server-site" id="130">
-                                              <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a> (${appGrpPrimaryDocDto.docSize} KB)</span></div>
+                                            <div class="fileList">
+                                              <span class="filename server-site" id="130">
+                                               ${appGrpPrimaryDocDto.docName} (${appGrpPrimaryDocDto.docSize} KB)
+                                              </span>
+                                            </div>
                                           </div>
                                         </div>
                                       </c:forEach>
@@ -81,21 +83,22 @@
                             </div>
                           </div>
                         </div>
-                        <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status">
-                          <div class="panel panel-default">
-                            <div class="panel-heading " id="headingServiceInfo" role="tab">
-                              <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information -- ${hcsaServiceDto.svcName}</a></h4>
+
+                          <div class="panel panel-default svc-content">
+
+                            <div class="panel-heading"    id="headingServiceInfo0" role="tab" >
+                              <h4 class="panel-title"><a class="svc-pannel-collapse"  role="button" data-toggle="collapse" href="#collapseServiceInfo0" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information -- ${hcsaServiceDto.svcName}</a></h4>
                             </div>
-                            <div class="panel-collapse collapse in" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">
+
+                            <div class=" panel-collapse collapse" id="collapseServiceInfo0" role="tabpanel" aria-labelledby="headingServiceInfo0">
                               <div class="panel-body">
                                 <p class="text-right">
-                                  <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="service">
+                                  <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
                                 </p>
-                                <iframe  class="elemClass-1561088919456" title="" src="${pageContext.request.contextPath}/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form_value=prepareView&svcId=${hcsaServiceDto.id}" id="elemId-${status.index}"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
+                                <iframe  class="svc-iframe" title="" src="${pageContext.request.contextPath}/eservice/INTRANET/MOHServiceView" id="elemId-0"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
                               </div>
                             </div>
                           </div>
-                        </c:forEach>
                       </div>
                     </div>
                   </div>
@@ -138,7 +141,11 @@
             submit('payment','doSubmit',null);
         });
 
-        donwload();
+        $('.svc-pannel-collapse').click(function () {
+            $svcContenEle = $(this).closest('div.svc-content');
+            $svcContenEle.find('.svc-iframe').css('height','400px');
+
+        });
     });
 
 

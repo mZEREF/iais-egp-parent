@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MOHServiceView" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareView" x="290" y="110">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareView_OnStepProcess_0" name="prepareView_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewServiceForm" stageIndicator="" x="470" y="110">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareView" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
+   <position>{(120,120)(310,130)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewServiceForm" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareView" style="rectanular">
+   <position>{(310,130)(490,130)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches/>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

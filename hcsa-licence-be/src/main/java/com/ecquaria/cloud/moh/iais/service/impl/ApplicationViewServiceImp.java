@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -76,6 +77,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Override
     public HcsaServiceDto getHcsaServiceDtoById(String id) {
         return hcsaConfigClient.getHcsaServiceDtoByServiceId(id).getEntity();
+    }
+
+    @Override
+    public List<HcsaSvcSubtypeOrSubsumedDto> getHcsaSvcSubtypeOrSubsumedByServiceId(String serviceId) {
+        return hcsaConfigClient.listSubCorrelation(serviceId).getEntity();
     }
 
 
