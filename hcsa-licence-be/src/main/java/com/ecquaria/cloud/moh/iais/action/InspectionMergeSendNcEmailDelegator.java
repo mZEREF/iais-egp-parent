@@ -236,7 +236,7 @@ public class InspectionMergeSendNcEmailDelegator {
             completedTask(taskDto);
             TaskDto taskDto2=taskDto;
             taskDto2.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-            taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REVISE_NCEMAIL);
+            taskDto2.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
             taskDto2.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
 
             List<TaskDto> taskDtos = prepareTaskList(taskDto2,hcsaSvcStageWorkingGroupDto);
