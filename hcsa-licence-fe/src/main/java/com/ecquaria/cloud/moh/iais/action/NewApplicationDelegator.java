@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -57,6 +58,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,8 +87,10 @@ public class NewApplicationDelegator {
     public static final String ACKMESSAGE = "AckMessage";
     public static final String SERVICEALLPSNCONFIGMAP = "ServiceAllPsnConfigMap";
     public static final String FIRESTOPTION = "Please Select";
-
-
+    
+    //page name
+    public static final String APPLICATION_PAGE_NAME_PREMISES = "APPPNP01";
+    
     @Autowired
     private ServiceConfigService serviceConfigService;
 
@@ -115,6 +119,7 @@ public class NewApplicationDelegator {
 
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
+        requestForChangeLoading(bpc);
         requestForInformationLoading(bpc);
         //for loading the draft by appId
         loadingDraft(bpc);
@@ -281,22 +286,31 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPremises start ...."));
-
+        
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
-
-        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-
-        Map<String, String> errorMap= doValidatePremiss(bpc);
-
+        
+        String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+        boolean isGetDataFromPage = isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit);
+        if(isGetDataFromPage){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
+            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
+                clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
+                appSubmissionDto.setClickEditPage(clickEditPages);
+            }
+            
+            Map<String, String> errorMap= doValidatePremiss(bpc);
             if(errorMap.size()>0){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
                 return;
             }
 
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        }
+        
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
     }
@@ -1240,7 +1254,28 @@ public class NewApplicationDelegator {
         }
         log.debug(StringUtil.changeForLog("the do loadingDraft end ...."));
     }
-
+    private void requestForChangeLoading(BaseProcessClass bpc) throws CloneNotSupportedException{
+        log.debug(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
+        String licenceId = ParamUtil.getString(bpc.request, "licenceId");
+        String amendTypes = ParamUtil.getString(bpc.request, "amendTypes");
+        if(!StringUtil.isEmpty(licenceId) && !StringUtil.isEmpty(amendTypes)){
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
+            String [] amendTypeArr= amendTypes.split(";");
+            List<String> amendTypeList = new ArrayList<>();
+            for(String type:amendTypeArr){
+                amendTypeList.add(type);
+            }
+            
+            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_AMEND);
+            appSubmissionDto.setAmendTypes(amendTypeList);
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+        }
+        log.debug(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
+    }
+    
     private void requestForInformationLoading(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         String appNo = ParamUtil.getString(bpc.request,"appNo");
@@ -1749,7 +1784,6 @@ public class NewApplicationDelegator {
             log.debug(StringUtil.changeForLog("appSubmissionDto is empty "));
             appSubmissionDto = new AppSubmissionDto();
         }
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         return appSubmissionDto;
     }
 
@@ -1916,6 +1950,32 @@ public class NewApplicationDelegator {
             svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
         }
         return svcAllPsnConfig;
+    }
+    
+    private boolean checkCanEdit(List<String> amendTypes, String currentType){
+        boolean rfcCanEdit = false;
+        if(amendTypes != null){
+            for(String type:amendTypes){
+                if(currentType.equals(type)){
+                    rfcCanEdit = true;
+                    break;
+                }
+            }
+        }
+        return rfcCanEdit;
+    }
+    
+    public boolean isGetDataFromPage(AppSubmissionDto appSubmissionDto, String currentType, String isEdit){
+        if(appSubmissionDto == null){
+            return true;
+        }
+        boolean otherType = !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(appSubmissionDto.getAppType());
+        boolean rfcType = false;
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(appSubmissionDto.getAppType())){
+            boolean canEdit = checkCanEdit(appSubmissionDto.getAmendTypes(), currentType);
+            rfcType = canEdit && AppConsts.YES.equals(isEdit);
+        }
+        return otherType || rfcType;
     }
 
 

@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
@@ -54,6 +55,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private AppConfigClient appConfigClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    private LicenceClient licenceClient;
 
     @Override
     public int hashCode() {
@@ -107,6 +110,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<LicenceFeeDto> linenceFeeQuaryDtos = new ArrayList();
         List<String> premisessTypes =  new ArrayList();
+        //todo when multiple base service
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
             premisessTypes.add(appGrpPremisesDto.getPremisesType());
         }
@@ -237,5 +241,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         req.addCallbackParam("token", IaisEGPHelper.genTokenForCallback(req.getSubmissionId(), req.getService()));
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+    }
+
+    @Override
+    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId) {
+        return licenceClient.getAppSubmissionDto(licenceId).getEntity();
     }
 }

@@ -23,4 +23,5 @@ public interface AppSubmissionService {
     public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
     public void setRiskToDto(AppSubmissionDto appSubmissionDto);
     public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
+    public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
 }

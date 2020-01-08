@@ -5,7 +5,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -16,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /****
  *
@@ -90,11 +89,11 @@ public class RequestForChange {
         }else if(AppConsts.YES.equals(amendType)){
             String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
             if(amendLicenceType != null && amendLicenceType.length > 0){
-                List<String> amendTypeList = new ArrayList<>();
+                StringJoiner joiner =new StringJoiner(";");
                 for(String type:amendLicenceType){
-                    amendTypeList.add(type);
+                    joiner.add(type);
                 }
-                ParamUtil.setSessionAttr(bpc.request, "amendLicenceType", (Serializable) amendTypeList);
+                ParamUtil.setSessionAttr(bpc.request, "amendLicenceType", joiner.toString());
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
             }else{
                 flag = false;
@@ -133,20 +132,20 @@ public class RequestForChange {
      */
     public void prepareAmend(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do prepareAmend start ...."));
-        List<String> amendTypeList = (List<String>) ParamUtil.getSessionAttr(bpc.request, "amendLicenceType");
-        
+        String amendTypeStr = (String) ParamUtil.getSessionAttr(bpc.request, "amendLicenceType");
         //todo: 
         String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
-        AppSubmissionDto appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
-        appSubmissionDto.setAmendType(amendTypeList);
-    
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+        
+
         StringBuffer url = new StringBuffer();
         url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
+                .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
+                .append(" ?licenceId=")
+                .append(licenceId)
+                .append("&amendTypes=")
+                .append(amendTypeStr);
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(url.toString());
-
         log.debug(StringUtil.changeForLog("the do prepareAmend end ...."));
     }
 

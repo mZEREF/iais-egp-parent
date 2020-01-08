@@ -18,6 +18,7 @@
     border-top:1px solid #BABABA;
     padding-top:40px;
   }
+
 </style>
 
 <webui:setLayout name="iais-internet"/>
@@ -36,9 +37,59 @@
         <div class="col-xs-12">
           <div class="tab-gp steps-tab">
             <%@ include file="./navTabs.jsp" %>
-            <div class="tab-content">
+            
+            <div class="tab-content  ">
               <div class="tab-pane active" id="premisesTab" role="tabpanel">
-                <div class="row">
+                <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                    <c:if test="${'APPPNP01' == clickEditPage}">
+                      <c:set var="isClickEdit" value="true"/>
+                    </c:if>
+                  </c:forEach>
+                  <c:if test="${'true' != isClickEdit}">
+                    <c:set var="showPreview" value="true"/>
+                    <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
+                      <c:if test="${amendType =='RFCATYPE01'}">
+                        <c:set var="canEdit" value="1"/>
+                      </c:if>
+                    </c:forEach>
+                    <div class="premises-summary-preview <c:if test="${'true' != showPreview}">hidden</c:if>">
+                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                      <c:choose>
+                        <c:when test="${'1' == canEdit}">
+                          <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                        </c:when>
+                        <c:otherwise>
+                          <p class="text-right" style="color: gray"><i class="fa fa-pencil-square-o"></i>Edit</p>
+                        </c:otherwise>
+                      </c:choose>
+                      <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="stat">
+                        <h3 class="without-header-line">Premises ${stat.index+1}</h3>
+                        <p class="premise-address-gp"> 
+                          <span class="premise-type">
+                            <b>
+                              <c:if test="${'ONSITE' == appGrpPremDto.premisesType}">
+                                <c:out value="On-site"/>
+                              </c:if>
+                              <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
+                                <c:out value="Conveyance"/>
+                              </c:if>
+                              :
+                            </b>
+                          </span>
+                          <span class="premise-address">
+                            <c:out value="${appGrpPremDto.address}"/>
+                          </span>
+                        </p>
+                        <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
+                          <p class="vehicle-txt hidden"><b>Vehicle No:</b> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span></p>
+                        </c:if>
+                      </c:forEach>
+                    </div>
+                  </c:if>
+                </c:if>
+                <div class="premises-content <c:if test="${'true' == showPreview}">hidden</c:if>" >
+                <div class="row ">
                   <div class="col-xs-12">
                     <div class="premises-txt">
                       <p>Premises are your service operation sites that can either be at a fixed address<strong> - &#34;on-site&#34;</strong>, or in a mobile clinic or ambulance<strong> - &#34;conveyance&#34;</strong>.</p>
@@ -47,9 +98,9 @@
                 </div>
                 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
                   <c:set value="${errorMap_premises[premIndexNo]}" var="errMsg"/>
-                  <div class="row premContent <c:if test="${!status.first}">underLine</c:if>" id="mainPrem">
-                    <c:set var="onSite" value="<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>" ></c:set>
-                    <c:set var="conv" value="<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>" ></c:set>
+                  <div class="row premContent <c:if test="${!status.first}">underLine</c:if>  " id="mainPrem">
+                    <c:set var="onSite" value="ONSITE" ></c:set>
+                    <c:set var="conv" value="CONVEYANCE" ></c:set>
                     <div class="col-xs-12">
                       <div class="form-horizontal">
                         <div class="form-group premisesTypeDiv" id="premisesType">
@@ -122,12 +173,12 @@
                         </iais:row>
                         <span class="error-msg" id="error_premisesSelect${status.index}" name="iaisErrorMsg"></span>
                       </div>
-                      <div class="prem-summary hidden">
+                      <div class="prem-summary hidden ">
                         <h3 class="without-header-line">Premises Summary</h3>
                         <p class="premise-address-gp"> <span class="premise-type"><strong>On-site: </strong></span><span class="premise-address"></span></p>
                         <p class="vehicle-txt hidden"><strong>Vehicle No:</strong> <span class="vehicle-info"></span></p>
                       </div>
-                      <div class="new-premise-form-on-site hidden">
+                      <div class="new-premise-form-on-site hidden  ">
                         <div class="form-horizontal">
                           <iais:row>
                             <iais:field value="Name of HCI " mandatory="true" width="11"/>
@@ -272,7 +323,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="new-premise-form-conv hidden">
+                      <div class="new-premise-form-conv hidden ">
                         <div class="form-horizontal">
                           <iais:row>
                             <iais:field value="Vehicle No. " mandatory="true" width="12"/>
@@ -390,9 +441,10 @@
                     </div>
                   </div>
                 </c:forEach>
+                </div>
                 <div class="row">
                   <div class="col-xs-12">
-                    <c:if test="${requestInformationConfig==null}">
+                    <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType}">
                       <button id="addPremBtn" type="button">Add Premises</button>
                     </c:if>
                   </div>
@@ -461,6 +513,8 @@
         retrieveAddr();
 
         removePremises();
+
+        doEdit();
 
         //Binding method
         $('.premiseId').click(function(){
@@ -633,6 +687,14 @@ var retrieveAddr = function(){
           $removeEle.remove();
       });
 
+  }
+  
+  var doEdit = function () {
+      $('#edit').click(function () {
+          $('.premises-summary-preview').addClass('hidden');
+          $('.premises-content').removeClass('hidden');
+          $('#isEditHiddenVal').val('1');
+      });
   }
 
 </script>

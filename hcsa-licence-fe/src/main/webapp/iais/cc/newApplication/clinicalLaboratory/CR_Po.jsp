@@ -19,6 +19,8 @@
                 <p><h4>A Principal Officer is responsible for overseeing the day-to-day operations of medical service</h4></p>
                 <div class="row"></div>
               </div>
+              <div class="po-content">
+              </div>
               <c:if test="${PrincipalOfficersMandatory>0}">
               <c:forEach begin="0" end="${PrincipalOfficersMandatory-1}" step="1" varStatus="status">
                 <c:if test="${ReloadPrincipalOfficers != null && ReloadPrincipalOfficers.size()>0}" >
