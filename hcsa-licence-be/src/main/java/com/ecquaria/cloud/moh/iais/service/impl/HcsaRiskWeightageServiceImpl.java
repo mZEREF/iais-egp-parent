@@ -118,7 +118,9 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
                 saveList.add(sWeiDto);
             }
         }
-        doUpdate(saveList,saveShowDto.getWeightageDtoList());
+        if(saveShowDto.getWeightageDtoList()!=null){
+            doUpdate(saveList,saveShowDto.getWeightageDtoList());
+        }
     }
 
     private HcsaRiskWeightageDto getWeiDto(HcsaRiskWeightageDto temp,String type) {
@@ -129,16 +131,23 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
             e.printStackTrace();
         }
         try {
-            if(RiskConsts.LAST_INSPECTION.equals(type)){
-                dto.setRiskWeightage(Double.parseDouble(temp.getDoLastInp()));
-            }else if(RiskConsts.SEC_LASTINSPECTION.equals(type)){
-                dto.setRiskWeightage(Double.parseDouble(temp.getDoSecLastInp()));
-            }else if(RiskConsts.FINANCIAL_SCHEME_AUDIT.equals(type)){
-                dto.setRiskWeightage(Double.parseDouble(temp.getDoFinancial()));
-            }else if(RiskConsts.LEADERSHIP_AND_GOVERNANCE.equals(type)){
-                dto.setRiskWeightage(Double.parseDouble(temp.getDoLeadship()));
-            }else if(RiskConsts.LEGISLATIVE_BREACHES.equals(type)){
-                dto.setRiskWeightage(Double.parseDouble(temp.getDoLegislative()));
+            if(dto!=null){
+                if(RiskConsts.LAST_INSPECTION.equals(type)){
+                    dto.setRiskWeightage(Double.parseDouble(temp.getDoLastInp()));
+                    dto.setRiskComponent(RiskConsts.LAST_INSPECTION);
+                }else if(RiskConsts.SEC_LASTINSPECTION.equals(type)){
+                    dto.setRiskWeightage(Double.parseDouble(temp.getDoSecLastInp()));
+                    dto.setRiskComponent(RiskConsts.SEC_LASTINSPECTION);
+                }else if(RiskConsts.FINANCIAL_SCHEME_AUDIT.equals(type)){
+                    dto.setRiskWeightage(Double.parseDouble(temp.getDoFinancial()));
+                    dto.setRiskComponent(RiskConsts.FINANCIAL_SCHEME_AUDIT);
+                }else if(RiskConsts.LEADERSHIP_AND_GOVERNANCE.equals(type)){
+                    dto.setRiskWeightage(Double.parseDouble(temp.getDoLeadship()));
+                    dto.setRiskComponent(RiskConsts.LEADERSHIP_AND_GOVERNANCE);
+                }else if(RiskConsts.LEGISLATIVE_BREACHES.equals(type)){
+                    dto.setRiskWeightage(Double.parseDouble(temp.getDoLegislative()));
+                    dto.setRiskComponent(RiskConsts.LEGISLATIVE_BREACHES);
+                }
             }
             dto.setEndDate(Formatter.parseDate(temp.getDoEndDate()));
             dto.setEffectiveDate(Formatter.parseDate(temp.getDoEffectiveDate()));
@@ -157,6 +166,11 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
             hcsaConfigClient.updateWeightageMatrixList(weightageLeastVersionList);
         }
         for(HcsaRiskWeightageDto temp:updateList){
+            if(StringUtil.isEmpty(temp.getId())){
+                temp.setVersion(1);
+            }else{
+                temp.setVersion(temp.getVersion()+1);
+            }
             temp.setId(null);
         }
         hcsaConfigClient.saveWeightageMatrixList(updateList);

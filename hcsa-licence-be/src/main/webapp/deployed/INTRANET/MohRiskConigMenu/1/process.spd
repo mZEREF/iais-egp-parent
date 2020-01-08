@@ -30,13 +30,13 @@
     <JavaCode defClass="" executor="" methodName="next_OnStepProcess_0" name="next_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="LeadershipRiskSocreConfiguration" processname="" project="" version="" x="1150" y="340">
+  <InvokeStep defClass="" executor="" icon="" name="LeadershipRiskSocreConfiguration" processname="MohLeadershipRiskSubConfig" project="INTRANET" version="-1" x="1150" y="340">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="RiskScoreGlobalRiskConfiguration" processname="" project="INTRANET" version="-1" x="1150" y="10">
+  <InvokeStep defClass="" executor="" icon="" name="RiskScoreGlobalRiskConfiguration" processname="MohGolbalRiskSubConfig" project="INTRANET" version="-1" x="1150" y="10">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -54,19 +54,19 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="LegislativeRiskScoreConfiguration" processname="" project="" version="" x="1160" y="460">
+  <InvokeStep defClass="" executor="" icon="" name="LegislativeRiskScoreConfiguration" processname="MohLegislativeRiskSubConfig" project="INTRANET" version="-1" x="1160" y="460">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="LicTenureRiskScoreConfiguration" processname="" project="" version="" x="1140" y="700">
+  <InvokeStep defClass="" executor="" icon="" name="LicTenureRiskScoreConfiguration" processname="MohLicTenureRiskSubConfig" project="INTRANET" version="-1" x="1140" y="700">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="WeightageRiskScoreConfiguration" processname="" project="" version="" x="1150" y="580">
+  <InvokeStep defClass="" executor="" icon="" name="WeightageRiskScoreConfiguration" processname="MohWeightageSubConfig" project="INTRANET" version="-1" x="1150" y="580">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>

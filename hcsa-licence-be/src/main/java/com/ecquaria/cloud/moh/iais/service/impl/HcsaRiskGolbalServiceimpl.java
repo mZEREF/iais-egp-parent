@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGolbalExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskGolbalService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -182,6 +183,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             golDto.setVersion(1);
         }
         golDto.setId(null);
+
         golDto = hcsaConfigClient.saveGoalbalMatrix(golDto).getEntity();
         String golId = golDto.getId();
         for(HcsaRiskGolbalExtDto temp:extDtoList){
@@ -230,6 +232,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         renewExt.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         renewExt.setRsGolbalId(temp.getGalbalId());
         renewExt.setInspectType(temp.getDorenewInspectType());
+        renewExt.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         if("Y".equals(temp.getDorenewIsPreInspect())){
             renewExt.setPreInspect(true);
         }else{
@@ -253,6 +256,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             dto.setLastInpectTh(Integer.parseInt(temp.getDoLastInspection()));
             dto.setMaxLicTenu(Integer.parseInt(temp.getDoMaxLic()));
             dto.setServiceCode(temp.getServiceCode());
+            dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }catch (Exception e){
             e.printStackTrace();
         }

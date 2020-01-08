@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionShowDto;
@@ -86,13 +85,13 @@ public class HcsaRiskIndividualConfigDelegator {
     public void submit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
+        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,"inShowDto");
+        hcsaRiskInspectionService.saveDto(showDto);
     }
 
     public void backToMenu(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the backToMenu start ...."));
         HttpServletRequest request = bpc.request;
-        InspectionShowDto showDto = (InspectionShowDto)ParamUtil.getSessionAttr(request,"inShowDto");
-        hcsaRiskInspectionService.saveDto(showDto);
     }
 
     public InspectionShowDto getDataFrompage(HttpServletRequest request, InspectionShowDto financialShowDto) {
@@ -123,7 +122,7 @@ public class HcsaRiskIndividualConfigDelegator {
             clearErrFlag(fin);
         }
         financialShowDto.setInspectionDtoList(finList);
-        ParamUtil.setSessionAttr(request, RiskConsts.FINANCIALSHOWDTO,financialShowDto);
+        ParamUtil.setSessionAttr(request,"inShowDto",financialShowDto);
         return financialShowDto;
     }
 

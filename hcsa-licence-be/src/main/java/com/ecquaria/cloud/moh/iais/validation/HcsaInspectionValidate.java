@@ -85,9 +85,9 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 mjEditNumFlag = 1;
             }
             if (StringUtil.isEmpty(fdto.getId())) {
-                doUsualDateVad(caEffDate,caEndDate,fdto.getSvcCode(),errMap,"C",caEditNumFlag,miEditNumFlag,mjEditNumFlag,fdto);
-                doUsualDateVad(miEffDate,miEndDate,fdto.getSvcCode(),errMap,"I",caEditNumFlag,miEditNumFlag,mjEditNumFlag,fdto);
-                doUsualDateVad(mjEffDate,mjEndDate,fdto.getSvcCode(),errMap,"A",caEditNumFlag,miEditNumFlag,mjEditNumFlag,fdto);
+                doUsualDateVad(caEffDate,caEndDate,fdto.getSvcCode(),errMap,level,caEditNumFlag,miEditNumFlag,mjEditNumFlag,fdto);
+                doUsualDateVad(miEffDate,miEndDate,fdto.getSvcCode(),errMap,level,caEditNumFlag,miEditNumFlag,mjEditNumFlag,fdto);
+                doUsualDateVad(mjEffDate,mjEndDate,fdto.getSvcCode(),errMap,level,caEditNumFlag,miEditNumFlag,mjEditNumFlag,fdto);
             } else {
                 boolean caDateFlag;
                 caDateFlag = doUsualDateVad(caEffDate,caEndDate,fdto.getSvcCode(),errMap,"C",caEditNumFlag,miEditNumFlag,mjEditNumFlag,fdto);

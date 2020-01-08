@@ -40,7 +40,7 @@
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
-                                    <div class="panel-heading"><b>Submission Details</b></div>
+                                    <div class="panel-heading"><strong>Submission Details</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">

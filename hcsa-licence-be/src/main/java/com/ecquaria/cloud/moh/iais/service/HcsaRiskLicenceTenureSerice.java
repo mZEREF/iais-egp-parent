@@ -1,6 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLicenceTenureDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.LicenceTenShowDto;
+
+import java.util.List;
 
 /**
  * @Author: jiahao
@@ -8,4 +12,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.LicenceTenShowDto;
  */
 public interface HcsaRiskLicenceTenureSerice {
     LicenceTenShowDto getTenShowDto();
+    List<SelectOption> getDateTypeOps();
+    void remove(String removeVal,LicenceTenShowDto showDto);
+
+    void add(String svcCode, LicenceTenShowDto showDto);
+
+    boolean doIsEditLogic(HcsaRiskLicenceTenureDto temp);
+
+    void saveDto(LicenceTenShowDto showDto);
 }

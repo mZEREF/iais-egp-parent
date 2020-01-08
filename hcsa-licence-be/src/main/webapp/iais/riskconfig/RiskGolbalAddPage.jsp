@@ -60,51 +60,82 @@
                                             </td>
                                             <td>
                                                 <input type="text" maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>maxLic" name="<c:out value="${go.serviceCode}"/>maxLic"value="<c:out value="${go.doMaxLic}"></c:out>">
-                                                <c:set value = "error_${go.serviceCode}maxl" var = "maxl"/>
-                                                <span class="error-msg" id="<c:out value="${maxl}"/>" name="iaisErrorMsg"></span>
+
                                             </td>
                                             <td>
                                                 <input type="text" maxlength="2" style="width: 60px" id="<c:out value="${go.serviceCode}"/>doLast" name="<c:out value="${go.serviceCode}"/>doLast"value="<c:out value="${go.doLastInspection}"></c:out>">
-                                                <c:set value = "error_${go.serviceCode}last" var = "last"/>
-                                                <span class="error-msg" id="<c:out value="${last}"/>" name="iaisErrorMsg"></span>
+
                                             </td>
                                             <td>
                                                 <c:set var="svc" value="${go.serviceCode}"></c:set>
                                                 <iais:select name="${svc}autoreop" options="autoRenewOp" firstOption="Please select" value="${go.doAutoRenew}"></iais:select>
+
+                                            </td>
+                                            <td>
+                                                <iais:select name="${svc}newinpTypeOps" options="inpTypeOp" firstOption="Please select" value="${go.donewInspectType}"></iais:select>
+
+                                            </td>
+                                            <td>
+                                                <iais:select name="${svc}newPreOrPostOps" options="PreOrPostOp" firstOption="Please select" value="${go.donewIsPreInspect}"></iais:select>
+
+                                            </td>
+                                            <td>
+                                                <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please select" value="${go.dorenewInspectType}"></iais:select>
+
+                                            </td>
+                                            <td>
+                                                <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please select" value="${go.dorenewIsPreInspect}"></iais:select>
+
+                                            </td>
+                                            <td>
+                                                <iais:datePicker id = "${go.serviceCode}instartdate" name = "${go.serviceCode}instartdate" value="${go.doEffectiveDate}"></iais:datePicker>
+
+                                            </td>
+                                            <td>
+                                                <iais:datePicker id = "${go.serviceCode}inenddate" name = "${go.serviceCode}inenddate" value="${go.doEndDate}"></iais:datePicker>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <c:set value = "error_${go.serviceCode}maxl" var = "maxl"/>
+                                                <span class="error-msg" id="<c:out value="${maxl}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td>
+                                                <c:set value = "error_${go.serviceCode}last" var = "last"/>
+                                                <span class="error-msg" id="<c:out value="${last}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td>
                                                 <c:set value = "error_${go.serviceCode}auto" var = "auto"/>
                                                 <span class="error-msg" id="<c:out value="${auto}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}newinpTypeOps" options="inpTypeOp" firstOption="Please select" value="${go.donewInspectType}"></iais:select>
                                                 <c:set value = "error_${go.serviceCode}newit" var = "newit"/>
                                                 <span class="error-msg" id="<c:out value="${newit}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}newPreOrPostOps" options="PreOrPostOp" firstOption="Please select" value="${go.donewIsPreInspect}"></iais:select>
                                                 <c:set value = "error_${go.serviceCode}newpp" var = "newpp"/>
                                                 <span class="error-msg" id="<c:out value="${newpp}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}renewinpTypeOps" options="inpTypeOp" firstOption="Please select" value="${go.dorenewInspectType}"></iais:select>
                                                 <c:set value = "error_${go.serviceCode}renewit" var = "renewit"/>
                                                 <span class="error-msg" id="<c:out value="${renewit}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:select name="${svc}renewPreOrPostOps" options="PreOrPostOp" firstOption="Please select" value="${go.dorenewIsPreInspect}"></iais:select>
                                                 <c:set value = "error_${go.serviceCode}renewpp" var = "renewpp"/>
                                                 <span class="error-msg" id="<c:out value="${renewpp}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:datePicker id = "${go.serviceCode}instartdate" name = "${go.serviceCode}instartdate" value="${go.doEffectiveDate}"></iais:datePicker>
                                                 <c:set value = "error_${go.serviceCode}inEffDate" var = "inEffDate"/>
                                                 <span class="error-msg" id="<c:out value="${inEffDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                             <td>
-                                                <iais:datePicker id = "${go.serviceCode}inenddate" name = "${go.serviceCode}inenddate" value="${go.doEndDate}"></iais:datePicker>
                                                 <c:set value = "error_${go.serviceCode}inEndDate" var = "inEndDate"/>
                                                 <span class="error-msg" id="<c:out value="${inEndDate}"/>" name="iaisErrorMsg"></span>
                                             </td>
                                         </tr>
+
                                     </c:forEach>
                                     </tbody>
                                 </table>
