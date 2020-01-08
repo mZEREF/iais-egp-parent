@@ -66,8 +66,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
-    @Value("${iais.syncFileTracking.shared.path}")
-    private     String sharedPath;
+   /* @Value("${iais.syncFileTracking.shared.path}")*/
+    private     String sharedPath="D:";
     private     String download;
     private     String backups;
     private     String fileFormat=".text";
@@ -170,7 +170,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Override
     public List<ApplicationDto> listApplication() {
 
-        List<ApplicationDto> byPathParam =   applicationClient. getApplicationDto().getEntity();
+        List<ApplicationDto> byPathParam =  applicationClient. getApplicationDto().getEntity();
         return byPathParam;
     }
 
@@ -300,7 +300,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
 
-                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
+                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf("/"));
                     File file =new File(compressPath+File.separator+fileName+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();
@@ -417,13 +417,17 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         applicationListDto.setAuditTrailDto(intranet);
-        if(applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200){
+        Boolean flag=applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
+        if(flag){
             log.info("-----------getDownloadFile-------");
-            requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);
+            List<ApplicationDto> list = this.listApplication();
+             this. requestForInfList(requestForInfList);
+             listApplicationDto.addAll(list);
+           /* requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);*/
 
         }
 
-        return applicationClient.getDownloadFile(applicationListDto).getStatusCode() == 200;
+        return flag;
 
     }
 

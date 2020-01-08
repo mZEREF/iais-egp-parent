@@ -36,6 +36,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.List;
 import java.util.Map;
 
@@ -483,4 +486,13 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
         entity.setHeaders(headers);
         return entity;
     }
+    @Override
+    public FeignResponseEntity saveKpiAndReminder(HcsaSvcKpiDto hcsaSvcKpiDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+
 }
