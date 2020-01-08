@@ -387,7 +387,7 @@ public class InspectionServiceImpl implements InspectionService {
                     itplDto.setApplicationNo(iDto.getApplicationNo());
                     itplDto.setApplicationType(iDto.getApplicationType());
                     itplDto.setHciCode(iDto.getHciCode());
-                    AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(iDto.getApplicationId());
+                    AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(iDto.getId());
                     itplDto.setHciName(iDto.getHciName() + " / " + appGrpPremisesDto.getAddress());
                     itplDto.setSubmitDt(iDto.getSubmitDt());
                     itplDto.setApplicationType(iDto.getApplicationType());
@@ -435,16 +435,5 @@ public class InspectionServiceImpl implements InspectionService {
         if(s.equals(so.getValue())){
             nameList.add(so);
         }
-    }
-
-    /**
-     * @author: shicheng
-     * @Date 2019/11/23
-     * @Param: appGroupId
-     * @return: AppGrpPremisesDto
-     * @Descripation: get Application Group Premises By Application Id
-     */
-    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String applicationId){
-        return inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(applicationId).getEntity();
     }
 }
