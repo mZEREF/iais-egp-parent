@@ -38,26 +38,15 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -190,20 +179,20 @@ public class HcsaApplicationDelegator {
 // History
 
         List<String> actionByList=new ArrayList<>();
-//        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
-//             ) {
-//            String actionBy=appPremisesRoutingHistoryDto.getActionby();
-//            actionByList.add(actionBy);
-//        }
+        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
+             ) {
+            String actionBy=appPremisesRoutingHistoryDto.getActionby();
+            actionByList.add(actionBy);
+        }
         List<OrgUserDto> actionByRealNameList=applicationViewService.getUserNameById(actionByList);
         for (int i = 0; i <applicationViewDto.getAppPremisesRoutingHistoryDtoList().size(); i++) {
-//            for (int j = 0; j <actionByRealNameList.size() ; j++) {
-//                if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(actionByRealNameList.get(j).getId())){
-//                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(actionByRealNameList.get(j).getDisplayName());
-//                }else{
-//                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby("-");
-//                }
-//            }
+            for (int j = 0; j <actionByRealNameList.size() ; j++) {
+                if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(actionByRealNameList.get(j).getId())){
+                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(actionByRealNameList.get(j).getDisplayName());
+                }else{
+                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby("-");
+                }
+            }
             String statusUpdate=MasterCodeUtil.getCodeDesc(applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getAppStatus());
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setAppStatus(statusUpdate);
             String workGroupId = applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getWrkGrpId();
@@ -222,10 +211,11 @@ public class HcsaApplicationDelegator {
         for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()
              ) {
             String stageName=MasterCodeUtil.getCodeDesc(e.getAppStatus());
-            String UserId=e.getActionby();
-            OrgUserDto user=applicationViewService.getUserById(UserId);
+            String userId=e.getActionby();
+            String wrkGrpId=e.getWrkGrpId();
+            OrgUserDto user=applicationViewService.getUserById(userId);
             String actionBy=user.getDisplayName();
-            rollBackMap.put(actionBy+"("+stageName+")",e.getStageId());
+            rollBackMap.put(actionBy+"("+stageName+")",e.getStageId()+","+wrkGrpId+","+userId);
          }
         }
         applicationViewDto.setRollBack(rollBackMap);
@@ -234,25 +224,25 @@ public class HcsaApplicationDelegator {
         //add special stages
 
      //   routingStage.put(ApplicationConsts.PROCESSING_DECISION_LICENCE_START_DATE, "Licence Start Date");
-        routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_QUERY,"Broadcast Query For Internal");
         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationViewDto.getApplicationDto().getStatus())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_AO3_BROADCAST_REPLY,"Broadcast Reply For Internal");
         }
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
+
+        if(HcsaConsts.ROUTING_STAGE_AO3.equals(taskDto.getTaskKey())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
                     MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL));
           //  routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
            // routingStage.put(ApplicationConsts.PROCESSING_DECISION_INTERNAL_ENQUIRY,"Internal Enquiry");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
-        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(applicationViewDto.getApplicationDto().getStatus())
-                ||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationViewDto.getApplicationDto().getStatus())){
-
-        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())){
-
-        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())) {
-
+        }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(taskDto.getTaskKey())
+                ||HcsaConsts.ROUTING_STAGE_AO1.equals(taskDto.getTaskKey())){
+        }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(taskDto.getTaskKey())){
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
+        }else if(HcsaConsts.ROUTING_STAGE_ASO.equals(taskDto.getTaskKey())) {
+            routingStage.put(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION,"Request For Information");
         }
         applicationViewDto.setVerified(routingStage);
 
@@ -413,21 +403,23 @@ public class HcsaApplicationDelegator {
      */
     public void routeBack(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do routeBack start ...."));
-        String routeBack = ParamUtil.getString(bpc.request,"rollBack");
-        if(HcsaConsts.ROUTING_STAGE_ASO.equals(routeBack)){
-            routingTask(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,RoleConsts.USER_ROLE_ASO);
-        }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(routeBack)){
-            routingTask(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,RoleConsts.USER_ROLE_PSO);
-        }else if(HcsaConsts.ROUTING_STAGE_INS.equals(routeBack)){
-            routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,RoleConsts.USER_ROLE_INSPECTIOR);
-        }else if(HcsaConsts.ROUTING_STAGE_AO1.equals(routeBack)){
-            routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,RoleConsts.USER_ROLE_AO1);
-        }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(routeBack)){
-            routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2);
-        }else if(HcsaConsts.ROUTING_STAGE_AO3.equals(routeBack)){
-            routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3);
-        }else{
-            return;
+        String str=ParamUtil.getString(bpc.request,"rollBack");
+        String[] result=str.split(",");
+        String satageId=result[0];
+        String wrkGpId=result[1];
+        String userId=result[2];
+        if(HcsaConsts.ROUTING_STAGE_ASO.equals(satageId)){
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,RoleConsts.USER_ROLE_ASO,wrkGpId,userId);
+        }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(satageId)){
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,RoleConsts.USER_ROLE_PSO,wrkGpId,userId);
+        }else if(HcsaConsts.ROUTING_STAGE_INS.equals(satageId)){
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,RoleConsts.USER_ROLE_INSPECTIOR,wrkGpId,userId);
+        }else if(HcsaConsts.ROUTING_STAGE_AO1.equals(satageId)){
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
+        }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(satageId)){
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2,wrkGpId,userId);
+        }else if(HcsaConsts.ROUTING_STAGE_AO3.equals(satageId)){
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,wrkGpId,userId);
         }
         log.debug(StringUtil.changeForLog("the do routeBack end ...."));
     }
@@ -753,6 +745,50 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
     }
+
+    private void rollBack(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws FeignException, CloneNotSupportedException {
+        //get the user for this applicationNo
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+        BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+
+        //complated this task and create the history
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
+        taskDto =  completedTask(taskDto);
+        broadcastOrganizationDto.setComplateTask(taskDto);
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(taskDto.getRefNo(),
+                applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
+        broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+        //update application status
+        broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
+        String oldStatus = applicationDto.getStatus();
+        applicationDto.setStatus(appStatus);
+        broadcastApplicationDto.setApplicationDto(applicationDto);
+
+        TaskDto newTaskDto = TaskUtil.getTaskDto(stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
+                taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
+                IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastOrganizationDto.setCreateTask(newTaskDto);
+
+        //save the broadcast
+        broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        String eventRefNo = EventBusHelper.getEventRefNo();
+        broadcastOrganizationDto.setEventRefNo(eventRefNo);
+        broadcastApplicationDto.setEventRefNo(eventRefNo);
+        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
+        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
+
+
+
+
+
+    }
+
     private List<UserGroupCorrelationDto> changeStatusUserGroupCorrelationDtos(List<UserGroupCorrelationDto> userGroupCorrelationDtos,String status){
         List<UserGroupCorrelationDto> result = new ArrayList<>();
         if(userGroupCorrelationDtos!= null && userGroupCorrelationDtos.size() >0){

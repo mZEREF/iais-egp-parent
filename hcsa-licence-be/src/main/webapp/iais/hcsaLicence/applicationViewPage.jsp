@@ -517,7 +517,7 @@
                                                             </select>
                                                         </td>
                                                     </tr>
-                                                    <tr id="recomedationDropdown" class="hidden">
+                                                    <tr id="recomedationDropdown" >
                                                         <td>
                                                             <span>Recomedation:</span>
                                                         </td>
