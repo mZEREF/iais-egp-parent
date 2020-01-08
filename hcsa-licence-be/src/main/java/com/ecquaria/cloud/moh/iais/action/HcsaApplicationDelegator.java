@@ -719,6 +719,8 @@ public class HcsaApplicationDelegator {
                 appInspectionStatusDto.setAppPremCorreId(taskDto.getRefNo());
                 appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
                 broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
+                TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,taskDto.getRefNo());
+                broadcastOrganizationDto.setCreateTask(newTaskDto);
             }else{
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,taskDto.getRefNo());
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
