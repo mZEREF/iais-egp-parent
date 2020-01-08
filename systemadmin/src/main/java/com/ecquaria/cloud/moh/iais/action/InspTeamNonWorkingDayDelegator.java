@@ -40,10 +40,17 @@ import java.util.UUID;
 @Slf4j
 public class InspTeamNonWorkingDayDelegator {
 	private static final String NON_WKR_DAY_LIST_ATTR = "nonWkrinDayListAttr";
-	private static final String NON_WKR_DAY_ATTR = "nonWarkingDto";
+	private static final String NON_WKR_DAY_ATTR = "nonWorkingDayAttr";
 	private static final String NON_WKR_DAY_ID_ATTR = "nonWkrDayId";
 	private static final String AM_AVAILABILITY__ATTR = "amAvailability";
 	private static final String PM_AVAILABILITY__ATTR = "pmAvailability";
+	private static final String CURRENT_SHORT_NAME = "currentGroupId";
+
+	private static final String AM_START = "9:00:00";
+	private static final String AM_END = "13:00:00";
+	private static final String PM_START = "14:00:00";
+	private static final String PM_END = "18:00:00";
+
 
 	@Autowired
 	private IntranetUserService intranetUserService;
@@ -63,6 +70,7 @@ public class InspTeamNonWorkingDayDelegator {
 				"Non working day");
 
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, null);
+		ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, null);
 	}
 
 	/**
@@ -90,11 +98,11 @@ public class InspTeamNonWorkingDayDelegator {
 
 		if (shotName != null){
 			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(shotName);
-			ParamUtil.setSessionAttr(request, "currentGroupId", shotName);
+			ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, shotName);
 		}else {
 			String defualtId = workingGroupQueryList.stream().findFirst().get().getId();
 			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defualtId);
-			ParamUtil.setSessionAttr(request, "currentGroupId", defualtId);
+			ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, defualtId);
 		}
 
 		List<SelectOption> wrlGrpNameOpt = new ArrayList<>();
@@ -107,23 +115,24 @@ public class InspTeamNonWorkingDayDelegator {
 
 		ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
 
+		if (IaisCommonUtils.isEmpty(nonWorkingDateListByWorkGroupId)){
+			nonWorkingDateListByWorkGroupId = new ArrayList<>();
+		}
+
 		additionWorkingDay(nonWorkingDateListByWorkGroupId);
 
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, (Serializable) nonWorkingDateListByWorkGroupId);
 	}
 
 	private void additionWorkingDay(List<ApptNonWorkingDateDto> nonWorkingDateList){
-		if (IaisCommonUtils.isEmpty(nonWorkingDateList)){
-			return;
-		}
-
 		List<String> wkrDays = new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
+
 		String[] nonWkrDays = new String[nonWorkingDateList.size()];
 		for (int i = 0; i < nonWorkingDateList.size(); i++){
 			nonWkrDays[i] = nonWorkingDateList.get(i).getRecursivceDate();
 		}
-
 		wkrDays.removeAll(Arrays.asList(nonWkrDays));
+
 		wkrDays.stream().forEach(s -> {
 			ApptNonWorkingDateDto nonWorkingDateDto = new ApptNonWorkingDateDto();
 			nonWorkingDateDto.setId(UUID.randomUUID().toString());
@@ -132,8 +141,8 @@ public class InspTeamNonWorkingDayDelegator {
 			nonWorkingDateDto.setNonWkrDay(false);
 			nonWorkingDateDto.setDesc("");
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-			nonWorkingDateDto.setStartAt(Time.valueOf("9:00:00"));
-			nonWorkingDateDto.setEndAt(Time.valueOf("17:00:00"));
+			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
+			nonWorkingDateDto.setEndAt(Time.valueOf(PM_START));
 			nonWorkingDateList.add(nonWorkingDateDto);
 		});
 
@@ -193,7 +202,7 @@ public class InspTeamNonWorkingDayDelegator {
 			return;
 		}
 
-		String shortName = (String) ParamUtil.getSessionAttr(request, "currentGroupId");
+		String shortName = (String) ParamUtil.getSessionAttr(request, CURRENT_SHORT_NAME);
 		String amAvailability = ParamUtil.getString(request, AM_AVAILABILITY__ATTR);
 		String pmAvailability = ParamUtil.getString(request, PM_AVAILABILITY__ATTR);
 		String status = ParamUtil.getString(request, "status");
@@ -203,23 +212,33 @@ public class InspTeamNonWorkingDayDelegator {
 		nonWorkingDateDto.setShortName(shortName);
 		nonWorkingDateDto.setStatus(status);
 
-		if ("Y".equals(amAvailability) && "Y".equals(pmAvailability)){
-			nonWorkingDateDto.setStartAt(Time.valueOf("9:00:00"));
-			nonWorkingDateDto.setEndAt(Time.valueOf("17:00:00"));
+		int am = "Y".equals(amAvailability) ?  0x1 : 0x0;
+		int pm = "Y".equals(pmAvailability) ?  0x1 : 0x0;
+
+		if((am & 0x1) == 1 && (pm & 0x1) == 1){
+			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
+			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
-		}else if("Y".equals(amAvailability) && "N".equals(pmAvailability)){
-			nonWorkingDateDto.setStartAt(Time.valueOf("9:00:00"));
-			nonWorkingDateDto.setEndAt(Time.valueOf("13:00:00"));
-			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-		}else if("N".equals(amAvailability) && "Y".equals(pmAvailability)){
-			nonWorkingDateDto.setStartAt(Time.valueOf("13:00:00"));
-			nonWorkingDateDto.setEndAt(Time.valueOf("17:00:00"));
-			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-		}else if("N".equals(amAvailability) && "N".equals(pmAvailability)){
-			nonWorkingDateDto.setStartAt(Time.valueOf("9:00:00"));
-			nonWorkingDateDto.setEndAt(Time.valueOf("17:00:00"));
+		}
+
+		if ((am & 0x1) == 0 && (pm & 0x1) == 0){
+			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
+			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 		}
+
+		if ((am & 0x1) == 1 && (pm & 0x1) == 0){
+			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
+			nonWorkingDateDto.setEndAt(Time.valueOf(AM_END));
+			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+		}
+
+		if((am & 0x1) == 0 && (pm & 0x1) == 1){
+			nonWorkingDateDto.setStartAt(Time.valueOf(PM_START));
+			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
+			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+		}
+
 
 		ValidationResult validationResult = WebValidationHelper.validateProperty(nonWorkingDateDto, "update");
 		if(validationResult != null && validationResult.isHasErrors()) {

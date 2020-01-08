@@ -51,7 +51,7 @@
                     </thead>
                     <tbody>
                     <c:choose>
-                      <c:when test="${empty nonWkrinDayAttr}">
+                      <c:when test="${empty nonWkrinDayListAttr}">
                         <tr>
                           <td colspan="6">
                             No Record!!
@@ -59,7 +59,7 @@
                         </tr>
                       </c:when>
                       <c:otherwise>
-                        <c:forEach var="nonwkrDay" items="${nonWkrinDayAttr}" varStatus="status">
+                        <c:forEach var="nonwkrDay" items="${nonWkrinDayListAttr}" varStatus="status">
                           <tr>
                             <td>${status.index + 1}</td>
                             <%--<td>

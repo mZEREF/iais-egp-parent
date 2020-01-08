@@ -36,7 +36,7 @@
           <label class="col-md-1">Day:
           </label>
           <div class="col-md-5">
-            ${nonWorkingDateDto.recursivceDate}
+            ${nonWorkingDayAttr.recursivceDate}
           </div>
         </div>
       </div>
@@ -80,7 +80,7 @@
           <div class="col-md-5">
             <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
                          firstOption="Select Status" filterValue="CMSTAT002"
-                         value="${nonWorkingDateDto.status}"></iais:select>
+                         value="${nonWorkingDayAttr.status}"></iais:select>
           </div>
         </div>
         <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
