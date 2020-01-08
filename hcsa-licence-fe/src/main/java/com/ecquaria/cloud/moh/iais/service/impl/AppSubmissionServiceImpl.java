@@ -195,7 +195,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
    private void  informationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process){
        //prepare request parameters
        appSubmissionRequestInformationDto.setEventRefNo(EventBusHelper.getEventRefNo());
-       String callBackUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+       String callBackUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/HcsaApplicationEventBusCallBack";
        String sopUrl = systemParamConfig.getInterServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication";
        String project ="hcsaApplicationFe";
        String processName = "requestInfromationSubmit";
@@ -206,7 +206,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
            step = process.getCurrentComponentName();
            callBackUrl =  process.getHttpRequest().getServerName()
                    +process.getHttpRequest().getContextPath()
-                   +"/eservice/INTRANET/LicenceEventBusCallBack";
+                   +"/eservice/INTERNET/HcsaApplicationEventBusCallBack";
        }
        SubmitReq req = EventBusHelper.getSubmitReq(appSubmissionRequestInformationDto, generateIdClient.getSeqId().getEntity(),
                EventBusConsts.SERVICE_NAME_APPSUBMIT,
