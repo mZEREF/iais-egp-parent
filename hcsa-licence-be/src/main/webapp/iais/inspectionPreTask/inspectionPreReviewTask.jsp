@@ -29,7 +29,6 @@
     <br>
     <br>
     <input type="hidden" name="inspectorPreType" value="">
-    <input type="hidden" id="taskId" name="taskId" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="">
     <input type="hidden" id="processDec" name="processDec" value="">
 
@@ -68,7 +67,8 @@
                         <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectionPreTaskBack()">Back</button>
                         <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
                         <span style="float:right">&nbsp;</span>
-                        <button class="btn btn-lg btn-login-edit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit('<iais:mask name="taskId" value="${taskDto.id}"/>');">Edit</button>
+
+                        <button class="btn btn-lg btn-login-edit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit();">Edit</button>
                       </iais:action>
                     </iais:section>
                   </div>
@@ -89,8 +89,7 @@
         mainPoolForm.submit();
     }
 
-    function doInspectionPreTaskEdit(taskId) {
-        $("#taskId").val(taskId);
+    function doInspectionPreTaskEdit() {
         $("#actionValue").val('edit');
         inspectionPreTaskSubmit('edit');
     }

@@ -52,7 +52,7 @@
                       <iais:row>
                         <iais:field value="HCI Address"/>
                         <iais:value width="18">
-                          <input type="text" name="hci_address" value="${supTaskSearchParam.filters['blk_no']}" />
+                          <input type="text" name="hci_address" value="${supTaskSearchParam.filters['hci_address']}" />
                         </iais:value>
                       </iais:row>
                       <iais:row>
@@ -187,7 +187,7 @@
 
     function doInspectorSearchTaskClear() {
         $('input[name="application_no"]').val("");
-        $("#application_type option:first").prop("selected", 'selected');
+        $("#application_type option[text = 'Please select']").attr("selected", "selected");
         $("#application_status option:first").prop("selected", 'selected');
         $("#inspector_name option:first").prop("selected", 'selected');
         $('input[name="hci_code"]').val("");

@@ -64,7 +64,7 @@
                     <iais:row>
                       <iais:field value="HCI Address"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_address" value="${cPoolSearchParam.filters['blk_no']}" />
+                        <input type="text" name="hci_address" value="${cPoolSearchParam.filters['hci_address']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
@@ -146,8 +146,7 @@
 
     function doInspectionCommonPoolClear() {
         $('input[name="application_no"]').val("");
-        $("#application_type option:first").val("");
-        $("#application_type option:first").prop("selected", 'selected');
+        $("#application_type option[text = 'Please select']").attr("selected", "selected");
         $('input[name="hci_code"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="hci_address"]').val("");
