@@ -200,12 +200,7 @@ public class BackendInboxDelegator {
             searchParam.addFilter("hci_name", hci_name,true);
         }
         if(!StringUtil.isEmpty(hci_address)){
-            searchParam.addFilter("blk_no", hci_address,true);
-            searchParam.addFilter("floor_no", hci_address,true);
-            searchParam.addFilter("unit_no", hci_address,true);
-            searchParam.addFilter("street_name", hci_address,true);
-            searchParam.addFilter("building_name", hci_address,true);
-            searchParam.addFilter("postal_code", hci_address,true);
+            searchParam.addFilter("address", "%" +hci_address +"%",true);
         }
     }
 
@@ -289,37 +284,46 @@ public class BackendInboxDelegator {
             if(!StringUtil.isEmpty(application_no)){
                 searchParamGroup.addFilter("application_no", application_no,true);
                 searchParamAjax.addFilter("application_no", application_no,true);
+            }else{
+                searchParamGroup.removeFilter("application_no");
+                searchParamAjax.removeFilter("application_no");
             }
 
             if(!StringUtil.isEmpty(application_type)){
                 searchParamGroup.addFilter("application_type", application_type,true);
                 searchParamAjax.addFilter("application_type", application_type,true);
+            }else{
+                searchParamGroup.removeFilter("application_type");
+                searchParamAjax.removeFilter("application_type");
             }
             if(!StringUtil.isEmpty(hci_code)){
                 searchParamGroup.addFilter("hci_code", hci_code,true);
                 searchParamAjax.addFilter("hci_code", hci_code,true);
+            }else{
+                searchParamGroup.removeFilter("hci_code");
+                searchParamAjax.removeFilter("hci_code");
             }
             if(!StringUtil.isEmpty(application_status)){
                 searchParamGroup.addFilter("application_status", application_status,true);
                 searchParamAjax.addFilter("application_status", application_status,true);
+            }else{
+                searchParamGroup.removeFilter("application_status");
+                searchParamAjax.removeFilter("application_status");
             }
             if(!StringUtil.isEmpty(hci_name)){
                 searchParamGroup.addFilter("hci_name", hci_name,true);
                 searchParamAjax.addFilter("hci_name", hci_name,true);
+            }else{
+                searchParamGroup.removeFilter("hci_name");
+                searchParamAjax.removeFilter("hci_name");
             }
+
             if(!StringUtil.isEmpty(hci_address)){
-                searchParamGroup.addFilter("blk_no", hci_address,true);
-                searchParamGroup.addFilter("floor_no", hci_address,true);
-                searchParamGroup.addFilter("unit_no", hci_address,true);
-                searchParamGroup.addFilter("street_name", hci_address,true);
-                searchParamGroup.addFilter("building_name", hci_address,true);
-                searchParamGroup.addFilter("postal_code", hci_address,true);
-                searchParamAjax.addFilter("blk_no", hci_address,true);
-                searchParamAjax.addFilter("floor_no", hci_address,true);
-                searchParamAjax.addFilter("unit_no", hci_address,true);
-                searchParamAjax.addFilter("street_name", hci_address,true);
-                searchParamAjax.addFilter("building_name", hci_address,true);
-                searchParamAjax.addFilter("postal_code", hci_address,true);
+                searchParamGroup.addFilter("address", "%" +hci_address +"%",true);
+                searchParamAjax.addFilter("address", "%" +hci_address +"%",true);
+            }else{
+                searchParamGroup.removeFilter("address");
+                searchParamAjax.removeFilter("address");
             }
 
             QueryHelp.setMainSql("inspectionQuery", "AppGroup",searchParamGroup);
