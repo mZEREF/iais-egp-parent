@@ -64,7 +64,7 @@ public class BackendInboxDelegator {
         }
         log.debug(StringUtil.changeForLog("the BackendInboxDelegator start ...."));
         String curRole = "";
-        if(loginContext.getCurRoleId() == null || loginContext.getCurRoleId() == ""){
+        if(StringUtil.isEmpty(loginContext.getCurRoleId())){
             curRole = "Please select";
         }else{
             curRole = loginContext.getCurRoleId();
@@ -155,10 +155,6 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
         searchParam = getSearchParam(bpc);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(ParamUtil.getString(bpc.request, "roleIds")!= null){
-            String curRole = ParamUtil.getRequestString(bpc.request, "roleIds");
-            loginContext.setCurRoleId(curRole);
-        }
         application_no = ParamUtil.getString(bpc.request, "application_no");
         application_type = ParamUtil.getString(bpc.request, "application_type");
         application_status = ParamUtil.getString(bpc.request, "application_status");
