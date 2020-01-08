@@ -122,8 +122,9 @@ public class LicenceFileDownloadDelegator {
         List<ApplicationDto> rollBackApplicationDtos = new ArrayList<>();
 
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
+            log.debug(StringUtil.changeForLog("the applicationDtos size is-->"+applicationDtos.size()));
             List<RequestInformationSubmitDto> requestInformationSubmitDtos =  applicationService.getRequestInformationSubmitDtos(applicationDtos);
-            if(requestInformationSubmitDtos!=null){
+            if(!IaisCommonUtils.isEmpty(requestInformationSubmitDtos)){
                for(RequestInformationSubmitDto requestInformationSubmitDto : requestInformationSubmitDtos){
                    ApplicationDto applicationDto = requestInformationSubmitDto.getNewApplicationDto();
                    String appStatus = applicationDto.getStatus();

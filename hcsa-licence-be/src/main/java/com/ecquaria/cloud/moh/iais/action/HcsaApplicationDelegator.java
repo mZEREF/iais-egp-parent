@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -144,6 +145,11 @@ public class HcsaApplicationDelegator {
 //        }
 
         String correlationId = taskDto.getRefNo();
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
+        if(appPremisesCorrelationDto!=null){
+            correlationId =  appPremisesCorrelationDto.getId();
+            taskDto.setRefNo(correlationId);
+        }
 //        get routing stage dropdown send to page.
         ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(correlationId);
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
