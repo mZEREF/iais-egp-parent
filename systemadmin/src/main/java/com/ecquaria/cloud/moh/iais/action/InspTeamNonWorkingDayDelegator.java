@@ -159,8 +159,6 @@ public class InspTeamNonWorkingDayDelegator {
 	public void switchAction(BaseProcessClass bpc) {
 		HttpServletRequest request = bpc.request;
 
-		AuditTrailHelper.auditFunction("Appointment",
-				"Non working day");
 	}
 
 	/**
@@ -230,8 +228,6 @@ public class InspTeamNonWorkingDayDelegator {
 			ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
 			return;
 		}else {
-
-
 			appointmentService.updateNonWorkingDate(nonWorkingDateDto);
 		}
 		ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
