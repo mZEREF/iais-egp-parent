@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OnlineApptClient;
@@ -51,6 +52,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	public List<Date> getInspectionRecomInDateByCorreId(List<String> taskRefNum){
 		return applicationBeClient.getInspectionRecomInDateByCorreId(taskRefNum).getEntity();
+	}
+
+	@Override
+	public List<ApptNonWorkingDateDto> getNonWorkingDateListByWorkGroupId(String groupId) {
+		return onlineApptClient.getNonWorkingDateListByWorkGroupId(groupId).getEntity();
+	}
+
+	@Override
+	public ApptNonWorkingDateDto updateNonWorkingDate(ApptNonWorkingDateDto nonWorkingDateDto) {
+		return onlineApptClient.updateNonWorkingDate(nonWorkingDateDto).getEntity();
 	}
 
 }

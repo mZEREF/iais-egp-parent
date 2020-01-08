@@ -134,7 +134,10 @@ public class AdhocChecklistDelegator {
             adhocCheckListConifgDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             adhocCheckListConifgDto.setVersion(1);
             adhocCheckListConifgDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
+
+            // Waiting for the event bus save
+             ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
+            /*adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);*/
         }
     }
 

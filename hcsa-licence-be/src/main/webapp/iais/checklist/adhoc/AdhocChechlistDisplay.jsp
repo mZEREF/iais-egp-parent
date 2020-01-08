@@ -154,7 +154,7 @@
             <div class="col-xs-12 col-sm-12">
               <div class="text-right text-center-mobile">
                 <a id = "addAdhocItemBtn" class="btn btn-primary" href="#">Add Adhoc Item</a>
-                <a id = "nextAdhocItemBtn" class="btn btn-primary" href="#">Next</a>
+                <a id = "nextAdhocItemBtn" class="btn btn-primary" href="#">Draft</a>
               </div>
             </div>
           </div>

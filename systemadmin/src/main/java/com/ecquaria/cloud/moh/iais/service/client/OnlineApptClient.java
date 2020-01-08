@@ -4,13 +4,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 /**
  * @author: yichen
@@ -33,4 +38,10 @@ public interface OnlineApptClient {
 
     @PostMapping(value = "/iais-appointment/blacked-out-date/status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> inActiveBlackedOutCalendar(@RequestBody ApptBlackoutDateDto blackoutDateDto);
+
+	@GetMapping(value = "/iais-appointment/non-working-data/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<List<ApptNonWorkingDateDto>> getNonWorkingDateListByWorkGroupId(@PathVariable(name = "groupId") String groupId);
+
+	@PutMapping(value = "/iais-appointment/non-working-data/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<ApptNonWorkingDateDto> updateNonWorkingDate(@RequestBody ApptNonWorkingDateDto nonWorkingDateDto);
 }
