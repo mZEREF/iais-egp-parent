@@ -317,6 +317,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String appCorrId){
         AppGrpPremisesDto appGrpPremisesDto = inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
+        if(StringUtil.isEmpty(appGrpPremisesDto.getHciName())){
+            appGrpPremisesDto.setHciName(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+        }if(StringUtil.isEmpty(appGrpPremisesDto.getHciCode())){
+            appGrpPremisesDto.setHciCode(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+        }
         if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
             appGrpPremisesDto.setConveyanceBlockNo(appGrpPremisesDto.getBlkNo());
             appGrpPremisesDto.setConveyanceStreetName(appGrpPremisesDto.getStreetName());
