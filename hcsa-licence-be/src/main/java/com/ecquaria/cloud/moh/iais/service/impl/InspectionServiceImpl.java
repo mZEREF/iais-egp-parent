@@ -345,27 +345,31 @@ public class InspectionServiceImpl implements InspectionService {
     @Override
     public SearchResult<InspectionTaskPoolListDto> getOtherDataForSr(SearchResult<InspectionSubPoolQueryDto> searchResult, List<TaskDto> commPools, LoginContext loginContext) {
         List<InspectionTaskPoolListDto> inspectionTaskPoolListDtoList = new ArrayList<>();
-        if(IaisCommonUtils.isEmpty(commPools)){
+        if(IaisCommonUtils.isEmpty(commPools) || IaisCommonUtils.isEmpty(searchResult.getRows())){
             return null;
         }
-        for(TaskDto tDto:commPools){
-            InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
-            inspectionTaskPoolListDto.setAppCorrelationId(tDto.getRefNo());
-            inspectionTaskPoolListDto.setTaskId(tDto.getId());
-            if(StringUtil.isEmpty(tDto.getUserId())){
-                inspectionTaskPoolListDto.setInspectorName("");
-            } else {
-                inspectionTaskPoolListDto.setInspector(tDto.getUserId());
-                List<String> ids = new ArrayList<>();
-                ids.add(tDto.getUserId());
-                List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
-                inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getDisplayName());
+        for(TaskDto tDto:commPools) {
+            for (InspectionSubPoolQueryDto iDto: searchResult.getRows()) {
+                if ((iDto.getId()).equals(tDto.getRefNo())) {
+                    InspectionTaskPoolListDto inspectionTaskPoolListDto = new InspectionTaskPoolListDto();
+                    inspectionTaskPoolListDto.setAppCorrelationId(tDto.getRefNo());
+                    inspectionTaskPoolListDto.setTaskId(tDto.getId());
+                    if (StringUtil.isEmpty(tDto.getUserId())) {
+                        inspectionTaskPoolListDto.setInspectorName("");
+                    } else {
+                        inspectionTaskPoolListDto.setInspector(tDto.getUserId());
+                        List<String> ids = new ArrayList<>();
+                        ids.add(tDto.getUserId());
+                        List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
+                        inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getDisplayName());
+                    }
+                    inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
+                    List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                    List<String> leadName = getWorkGroupLeadsByGroupId(inspectionTaskPoolListDto.getWorkGroupId(), orgUserDtos);
+                    inspectionTaskPoolListDto.setInspectorLeads(leadName);
+                    inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
+                }
             }
-            inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
-            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-            List<String> leadName = getWorkGroupLeadsByGroupId(inspectionTaskPoolListDto.getWorkGroupId(), orgUserDtos);
-            inspectionTaskPoolListDto.setInspectorLeads(leadName);
-            inspectionTaskPoolListDtoList.add(inspectionTaskPoolListDto);
         }
 
         inspectionTaskPoolListDtoList = inputOtherData(searchResult.getRows(), inspectionTaskPoolListDtoList);
