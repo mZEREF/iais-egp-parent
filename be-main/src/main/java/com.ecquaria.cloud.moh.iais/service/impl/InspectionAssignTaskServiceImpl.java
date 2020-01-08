@@ -310,8 +310,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
       * @return: AppGrpPremisesDto
       * @Descripation: get Application Group Premises By Application Id
       */
-    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String applicationId){
-        return inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(applicationId).getEntity();
+    public AppGrpPremisesDto getAppGrpPremisesDtoByAppGroId(String appCorrId){
+        return inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
     }
 
     /**

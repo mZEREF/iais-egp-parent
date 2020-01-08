@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -10,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,10 +34,16 @@ import java.util.Map;
 @Controller
 @RequestMapping("/backend")
 public class BackendAjaxController {
+
     @Autowired
-    InspectionService inspectionService;
+    private InspectionService inspectionService;
+
     @Autowired
-    InspectionAssignTaskService inspectionAssignTaskService;
+    private InspectionAssignTaskService inspectionAssignTaskService;
+
+    @Autowired
+    private AppInspectionStatusClient appInspectionStatusClient;
+
     @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
@@ -69,9 +78,20 @@ public class BackendAjaxController {
         return map;
     }
 
-    private String getTimeLimitWarningColourByTask(InspectionAppInGroupQueryDto item) {
+    private String getTimeLimitWarningColourByTask(InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto) {
+        String subStage = getSubStageByInspectionStatus(inspectionAppInGroupQueryDto);
         String colour = "black";
         return colour;
+    }
+
+    private String getSubStageByInspectionStatus(InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto) {
+        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(inspectionAppInGroupQueryDto.getRefNo()).getEntity();
+        String status = appInspectionStatusDto.getStatus();
+        if(status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO_RESULT)){
+
+        }
+        String subStage = "";
+        return subStage;
     }
 
     @RequestMapping(value = "setCurrentRole.do", method = RequestMethod.POST)

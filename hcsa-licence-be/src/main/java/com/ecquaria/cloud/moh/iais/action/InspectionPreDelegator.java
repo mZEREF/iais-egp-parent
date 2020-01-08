@@ -2,8 +2,10 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -13,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +41,9 @@ public class InspectionPreDelegator {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private AdhocChecklistService adhocChecklistService;
 
     @Autowired
     private InspectionPreDelegator(InspectionPreTaskService inspectionPreTaskService, TaskService taskService){
@@ -152,8 +158,13 @@ public class InspectionPreDelegator {
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorApprove start ...."));
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
+        AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
+        if(adhocCheckListConifgDto != null){
+            adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
+        }
         inspectionPreTaskService.routingTask(taskDto, inspectionPreTaskDto.getReMarks());
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
+        ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
     }
 
     /**
@@ -166,7 +177,12 @@ public class InspectionPreDelegator {
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorRouteB start ...."));
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
+        if(adhocCheckListConifgDto != null){
+            adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
+        }
         inspectionPreTaskService.routingBack(taskDto, inspectionPreTaskDto.getReMarks());
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
+        ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
     }
 }
