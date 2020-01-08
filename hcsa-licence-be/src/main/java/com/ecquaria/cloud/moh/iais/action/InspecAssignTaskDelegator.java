@@ -269,12 +269,7 @@ public class InspecAssignTaskDelegator {
             searchParam.addFilter("sub_date",sub_date,true);
         }
         if(!StringUtil.isEmpty(hci_address)){
-            searchParam.addFilter("blk_no", hci_address,true);
-            searchParam.addFilter("floor_no", hci_address,true);
-            searchParam.addFilter("unit_no", hci_address,true);
-            searchParam.addFilter("street_name", hci_address,true);
-            searchParam.addFilter("building_name", hci_address,true);
-            searchParam.addFilter("postal_code", hci_address,true);
+            searchParam.addFilter("hci_address", hci_address,true);
         }
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
