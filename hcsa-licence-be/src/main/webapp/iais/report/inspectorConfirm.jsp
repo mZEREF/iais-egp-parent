@@ -162,7 +162,7 @@
                                                 <div class="panel-body">
                                                     <div class="panel-main-content">
                                                         <div class="preview-info">
-                                    <p>Section: &nbsp;<b>${sec.section}</b></p>
+                                    <p>Section: &nbsp;<strong>${sec.section}</strong></p>
                                     <p>Description: &nbsp;${sec.description}</p>
 
                                     <table class="table">

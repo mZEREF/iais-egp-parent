@@ -16,9 +16,6 @@
         <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.MohIntranetUserDelegator"/>
         <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
         <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
-
-<%--        <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator"/>--%>
-<%--        <input type="hidden" name="valProfiles" id="valProfiles" value=""/>--%>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <div class="row">
@@ -52,7 +49,6 @@
                             <span style="color:red">*</span>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    value="${orgUserDto.userId}"
                                     <iais:datePicker id="startDate" name="startDate" dateVal="${orgUserDto.accountActivateDatetime}"/>
                                     <span id="error_accountActivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -62,9 +58,6 @@
                             <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-<%--                                    <td>--%>
-<%--                                        <fmt:formatDate value="${orgUserDto.accountActivateDatetime}" pattern="dd/MM/yyyy"></fmt:formatDate>--%>
-<%--                                    </td>--%>
                                     <iais:datePicker id="endDate" name="endDate" dateVal="${orgUserDto.accountDeactivateDatetime}"/>
                                     <span id="error_accountDeactivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -94,15 +87,6 @@
                                 </div>
                             </iais:value>
                         </div>
-<%--                        <div class="form-group">--%>
-<%--                            <label class="col-xs-12 col-md-4 control-label" for="organization">Organization.</label>--%>
-<%--                            <iais:value>--%>
-<%--                                <div class="col-xs-8 col-sm-6 col-md-5">--%>
-<%--                                    <input id="organization" type="text" name="organization">--%>
-<%--                                    <span id="error_codeCategory" name="iaisErrorMsg" class="error-msg"></span>--%>
-<%--                                </div>--%>
-<%--                            </iais:value>--%>
-<%--                        </div>--%>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="division">Division.</label>
                             <iais:value>

@@ -24,10 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,6 +56,8 @@ public class InsReportAoDelegator {
     private AppPremisesCorrClient appPremisesCorrClient;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
+    @Autowired
+    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
 
     public void start(BaseProcessClass bpc) {
@@ -121,11 +120,14 @@ public class InsReportAoDelegator {
         String stageId = taskDto.getTaskKey();
         updateApplicaiton(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
         completedTask(taskDto);
-        createAppPremisesRoutingHistory(appPremisesCorrelationId, status, stageId,null,null,RoleConsts.USER_ROLE_AO1);
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
+        String subStage = appPremisesRoutingHistoryDto.getSubStage();
+        createAppPremisesRoutingHistory(appPremisesCorrelationId, status, stageId,null,null,RoleConsts.USER_ROLE_AO1,subStage);
+        //robackId
         String robackUserId = insRepService.getRobackUserId(appId, stageId);
         List<TaskDto> taskDtos = prepareBackTaskList(taskDto, robackUserId);
         taskService.createTasks(taskDtos);
-        createAppPremisesRoutingHistory(appPremisesCorrelationId,status, stageId,null,null,RoleConsts.USER_ROLE_INSPECTIOR);
+        createAppPremisesRoutingHistory(appPremisesCorrelationId,status, stageId,null,null,RoleConsts.USER_ROLE_INSPECTIOR,subStage);
     }
 
 
@@ -133,26 +135,30 @@ public class InsReportAoDelegator {
         log.debug(StringUtil.changeForLog("the inspectorReportAction start ...."));
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
-        String stageId = taskDto.getTaskKey();
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String appId = applicationDto.getId();
-        String status = applicationDto.getStatus();
-        String serviceId = applicationDto.getServiceId();
-        String userId = insRepService.getRobackUserId(appId, stageId);
-        updateApplicaiton(applicationDto,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-        completedTask(taskDto);
-        createAppPremisesRoutingHistory(appPremisesCorrelationId,status, stageId,null,null,RoleConsts.USER_ROLE_AO1);
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-        hcsaSvcStageWorkingGroupDto.setStageId(stageId);
-        hcsaSvcStageWorkingGroupDto.setOrder(1);
-        List<TaskDto> taskDtos = prepareTaskList(taskDto,hcsaSvcStageWorkingGroupDto,userId);
-        taskService.createTasks(taskDtos);
-        createAppPremisesRoutingHistory(appPremisesCorrelationId,status, stageId,null,null,RoleConsts.USER_ROLE_AO2);
+//        String stageId = taskDto.getTaskKey();
+//        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+//        String appId = applicationDto.getId();
+//        String status = applicationDto.getStatus();
+//        String serviceId = applicationDto.getServiceId();
+//        String userId = insRepService.getRobackUserId(appId, stageId);
+//        updateApplicaiton(applicationDto,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+//        completedTask(taskDto);
+//        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
+//        String subStage = appPremisesRoutingHistoryDto.getSubStage();
+//        createAppPremisesRoutingHistory(appPremisesCorrelationId,status, stageId,null,null,RoleConsts.USER_ROLE_AO1,subStage);
+//        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+//        hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
+//        hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+//        hcsaSvcStageWorkingGroupDto.setOrder(1);
+//        List<TaskDto> taskDtos = prepareTaskList(taskDto,hcsaSvcStageWorkingGroupDto,userId);
+//        taskService.createTasks(taskDtos);
+//        createAppPremisesRoutingHistory(appPremisesCorrelationId,status, stageId,null,null,RoleConsts.USER_ROLE_AO2,subStage);
     }
 
 
@@ -194,7 +200,7 @@ public class InsReportAoDelegator {
 
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-                                                                         String stageId, String internalRemarks, String processDec,String roleId) {
+                                                                         String stageId, String internalRemarks, String processDec,String roleId,String subStage) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
         appPremisesRoutingHistoryDto.setStageId(stageId);
@@ -204,6 +210,7 @@ public class InsReportAoDelegator {
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setProcessDecision(processDec);
         appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setSubStage(subStage);
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }

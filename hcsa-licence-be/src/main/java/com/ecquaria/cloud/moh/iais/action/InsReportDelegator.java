@@ -3,9 +3,11 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -30,8 +32,10 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +65,8 @@ public class InsReportDelegator {
     private AppPremisesCorrClient appPremisesCorrClient;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
+    @Autowired
+    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
@@ -82,7 +88,7 @@ public class InsReportDelegator {
         String taskId;
         taskId = (String)ParamUtil.getSessionAttr(bpc.request, "taskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "46DFF858-2D2D-EA11-BE7D-000C29F371DC";
+            taskId = "44E99138-C82E-EA11-BE7D-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
@@ -112,92 +118,103 @@ public class InsReportDelegator {
             return;
         }
         insRepService.saveRecommendation(appPremisesRecommendationDto);
-
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String serviceId = applicationDto.getServiceId();
-        String status = applicationDto.getStatus();
-        String taskKey = taskDto.getTaskKey();
-        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
-        updateInspectionStatus(applicationDto);
-        completedTask(taskDto);
-        createAppPremisesRoutingHistory(appPremisesCorrelationId, status, taskKey,null,InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT,RoleConsts.USER_ROLE_INSPECTIOR);
-        List<TaskDto> taskDtos = prepareTaskList(taskDto,serviceId,taskKey);
-        taskService.createTasks(taskDtos);
-        createAppPremisesRoutingHistory(appPremisesCorrelationId,updateApplicationDto.getStatus(), taskKey,null,InspectionConstants.PROCESS_DECI_REVISE_INSPECTION_REPORT,RoleConsts.USER_ROLE_AO1);
+//        String serviceId = applicationDto.getServiceId();
+//        String status = applicationDto.getStatus();
+//        String taskKey = taskDto.getTaskKey();
+        insRepService.routingTaskToAo1(taskDto,applicationDto,appPremisesCorrelationId);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
+//        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
+//        updateInspectionStatus(applicationDto);
+//        completedTask(taskDto);
+//        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
+//        String subStage = appPremisesRoutingHistoryDto.getSubStage();
+//        createAppPremisesRoutingHistory(appPremisesCorrelationId, status, taskKey,null,InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT,RoleConsts.USER_ROLE_INSPECTIOR,subStage);
+//        List<TaskDto> taskDtos = prepareTaskList(taskDto,serviceId,applicationDto);
+//        taskService.createTasks(taskDtos);
+//        createAppPremisesRoutingHistory(appPremisesCorrelationId,updateApplicationDto.getStatus(), taskKey,null,InspectionConstants.PROCESS_DECI_REVISE_INSPECTION_REPORT,RoleConsts.USER_ROLE_AO1,subStage);
+
     }
 
-    /**
-     * private utils
-     */
-
-
-    /**
-     * @param applicationDto
-     * @param appStatus      update application status
-     */
-    private ApplicationDto updateApplicaitonStatus(ApplicationDto applicationDto, String appStatus) {
-        applicationDto.setStatus(appStatus);
-        return insRepService.updateApplicaiton(applicationDto);
-    }
-
-    /**
-     * complete task
-     *
-     * @param taskDto
-     * @return
-     */
-    private TaskDto completedTask(TaskDto taskDto) {
-        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-        taskDto.setSlaDateCompleted(new Date());
-        taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
-        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return taskService.updateTask(taskDto);
-    }
-
-
-    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-                                                                         String stageId, String internalRemarks, String processDec,String roleId) {
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
-        appPremisesRoutingHistoryDto.setStageId(stageId);
-        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
-        appPremisesRoutingHistoryDto.setProcessDecision(processDec);
-        appPremisesRoutingHistoryDto.setRoleId(roleId);
-        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
-        return appPremisesRoutingHistoryDto;
-    }
-
-    private List<TaskDto> prepareTaskList(TaskDto taskDto,String serviceId,String taskKey) {
-        List<TaskDto> list = new ArrayList<>();
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-        hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
-        hcsaSvcStageWorkingGroupDto.setOrder(1);
-        List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDtos = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
-        listhcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(listhcsaSvcStageWorkingGroupDtos);
-        if(listhcsaSvcStageWorkingGroupDtos!=null && !listhcsaSvcStageWorkingGroupDtos.isEmpty()){
-            String schemeType = listhcsaSvcStageWorkingGroupDtos.get(0).getSchemeType();
-            Integer count = listhcsaSvcStageWorkingGroupDtos.get(0).getCount();
-            taskDto.setScore(count);
-            taskDto.setTaskType(schemeType);
-        }
-        taskDto.setId(null);
-        //taskDto.setUserId(null);
-        taskDto.setDateAssigned(new Date());
-        taskDto.setSlaDateCompleted(null);
-        taskDto.setSlaRemainInDays(null);
-        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-        taskDto.setRoleId(RoleConsts.USER_ROLE_AO1);
-        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
-        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        list.add(taskDto);
-        return list;
-    }
-
+//    /**
+//     * private utils
+//     */
+//
+//
+//    /**
+//     * @param applicationDto
+//     * @param appStatus      update application status
+//     */
+//    private ApplicationDto updateApplicaitonStatus(ApplicationDto applicationDto, String appStatus) {
+//        applicationDto.setStatus(appStatus);
+//        return insRepService.updateApplicaiton(applicationDto);
+//    }
+//
+//    /**
+//     * complete task
+//     *
+//     * @param taskDto
+//     * @return
+//     */
+//    private TaskDto completedTask(TaskDto taskDto) {
+//        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+//        taskDto.setSlaDateCompleted(new Date());
+//        taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
+//        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        return taskService.updateTask(taskDto);
+//    }
+//
+//
+//    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+//                                                                          String stageId, String internalRemarks, String processDec,String roleId,String subStage) {
+//        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+//        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+//        appPremisesRoutingHistoryDto.setStageId(stageId);
+//        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+//        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+//        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+//        appPremisesRoutingHistoryDto.setProcessDecision(processDec);
+//        appPremisesRoutingHistoryDto.setRoleId(roleId);
+//        appPremisesRoutingHistoryDto.setSubStage(subStage);
+//        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+//        return appPremisesRoutingHistoryDto;
+//    }
+//
+//    private List<TaskDto> prepareTaskList(TaskDto taskDto,String serviceId,ApplicationDto applicationDto) throws FeignException {
+//        List<TaskDto> list = new ArrayList<>();
+//        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+//        hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
+//        hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_AO1);
+//        hcsaSvcStageWorkingGroupDto.setOrder(2);
+//        HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
+//        List<ApplicationDto> applicationDtos = new ArrayList<>();
+//        applicationDtos.add(applicationDto);
+//        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
+//        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+//        String schemeType =dto.getSchemeType();
+//        String groupId = dto.getGroupId();
+//       // dto.getStageWorkGroupId();
+//        if(SystemParameterConstants.ROUND_ROBIN.equals(schemeType)){
+//            TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
+//            taskDto.setUserId(taskDto1.getUserId());
+//        }else {
+//            taskDto.setUserId(null);
+//        }
+//        taskDto.setId(null);
+//        taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
+//        taskDto.setTaskType(schemeType);
+//        taskDto.setWkGrpId(groupId);
+//        taskDto.setDateAssigned(new Date());
+//        taskDto.setSlaDateCompleted(null);
+//        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+//        taskDto.setRoleId(RoleConsts.USER_ROLE_AO1);
+//        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
+//        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        list.add(taskDto);
+//        return list;
+//    }
+//
     private AppPremisesRecommendationDto prepareRecommendation (BaseProcessClass bpc,String appPremisesCorrelationId){
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, "recommendation");
@@ -213,9 +230,7 @@ public class InsReportDelegator {
             }else {
                 appPremisesRecommendationDto.setRecommendation(recommendation);
             }
-
         }
-
         if(!StringUtil.isEmpty(recommendation)){
         if ("Others".equals(recommendation)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
@@ -238,12 +253,24 @@ public class InsReportDelegator {
         }
         return appPremisesRecommendationDto;
     }
-
-    private void updateInspectionStatus(ApplicationDto applicationDto) {
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos =  appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
-        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationDtos.get(0).getId()).getEntity();
-        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_AO_RESULT);
-        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appInspectionStatusClient.update(appInspectionStatusDto);
-    }
+//
+//    private void updateInspectionStatus(ApplicationDto applicationDto) {
+//        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos =  appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
+//        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationDtos.get(0).getId()).getEntity();
+//        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_AO_RESULT);
+//        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        appInspectionStatusClient.update(appInspectionStatusDto);
+//    }
+//
+//    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+//        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
+//        for(ApplicationDto applicationDto : applicationDtos){
+//            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+//            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+//            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+//            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+//            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+//        }
+//        return hcsaSvcStageWorkingGroupDtos;
+//    }
 }

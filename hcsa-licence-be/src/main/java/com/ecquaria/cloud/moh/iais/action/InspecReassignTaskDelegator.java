@@ -342,7 +342,7 @@ public class InspecReassignTaskDelegator {
         }else {
             nameValue = null;
         }
-        if (nameValue == null || nameValue.length < 0) {
+        if (nameValue == null || nameValue.length == 0) {
             inspectionReassignTaskDto.setInspectorCheck(null);
         } else {
             List<SelectOption> inspectorCheckList = inspectionService.getCheckInspector(nameValue, inspectionTaskPoolListDto);

@@ -22,7 +22,9 @@ import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.pwd.util.PasswordConfig;
 import com.ecquaria.cloud.pwd.util.PasswordConstants;
 import com.sun.xml.internal.bind.v2.TODO;
+import com.thoughtworks.xstream.persistence.XmlSet;
 import lombok.extern.slf4j.Slf4j;
+import org.dom4j.io.XMLWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xhtmlrenderer.util.XMLUtil;
 import sop.util.DateUtil;
@@ -66,6 +68,7 @@ public class MohIntranetUserDelegator {
 
     public void prepareData (BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        prepareOption(bpc);
         ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,null);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery",searchParam);
@@ -129,7 +132,6 @@ public class MohIntranetUserDelegator {
             ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
         }
     }
-
     public void doEdit(BaseProcessClass bpc){
         String actionType = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
         if(!IntranetUserConstant.SAVE_ACTION.equals(actionType)){
@@ -137,8 +139,8 @@ public class MohIntranetUserDelegator {
             return;
         }
         Map<String,String> errorMap = new HashMap<>(34);
-        OrgUserDto orgUserDto = prepareOrgUserDto(bpc);
-        errorMap = doValidatePo(orgUserDto);
+        OrgUserDto orgUserDto = prepareEditOrgUserDto(bpc);
+        //errorMap = doValidatePo(orgUserDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto,"edit");
         if (!errorMap.isEmpty()||validationResult.isHasErrors()) {
             Map<String, String> validationResultMap = validationResult.retrieveAll();
@@ -255,6 +257,44 @@ public class MohIntranetUserDelegator {
         return orgUserDto ;
     }
 
+    private OrgUserDto prepareEditOrgUserDto (BaseProcessClass bpc){
+        OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
+        String displayName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DISPLAYNAME);
+        String endDateStr = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_ENDDATE);
+        Date endDate = DateUtil.parseDate(endDateStr, "dd/MM/yyyy");
+        String [] salutation = ParamUtil.getStrings(bpc.request, IntranetUserConstant.INTRANET_SALUTATION);
+        if(!"".equals(salutation[0])){
+            orgUserDto.setSalutation(salutation[0]);
+        }
+        String [] status = ParamUtil.getStrings(bpc.request,"status");
+        if(!"".equals(status[0])){
+            orgUserDto.setStatus(status[0]);
+        }
+        String firstName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_FIRSTNAME);
+        String lastName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_LASTNAME);
+        String division = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DIVISION);
+        String branch = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_BRANCH);
+        String email = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_EMAILADDR);
+        String mobileNo = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_MOBILENO);
+        String officeNo = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_OFFICETELNO);
+        String remarks = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_REMARKS);
+
+        orgUserDto.setFirstName(firstName);
+        orgUserDto.setLastName(lastName);
+        orgUserDto.setDisplayName(displayName);
+        orgUserDto.setAccountDeactivateDatetime(endDate);
+        orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
+        orgUserDto.setDivision(division);
+        orgUserDto.setBranchUnit(branch);
+        orgUserDto.setEmail(email);
+        orgUserDto.setMobileNo(mobileNo);
+        orgUserDto.setOfficeTelNo(officeNo);
+        orgUserDto.setRemarks(remarks);
+        orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+        orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
+        return orgUserDto ;
+    }
+
     private void saveEgpUser(OrgUserDto orgUserDto){
         ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
         clientUser.setUserDomain(orgUserDto.getUserDomain());
@@ -267,11 +307,37 @@ public class MohIntranetUserDelegator {
         intranetUserService.saveEgpUser(clientUser);
     }
     private void editEgpUser(OrgUserDto orgUserDto){
-        ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
-        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        String userId = orgUserDto.getUserId();
+        String userDomain = orgUserDto.getUserDomain();
+        ClientUser clientUser = intranetUserService.getUserByIdentifier(userId,userDomain);
+        Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
+        Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
+        String email = orgUserDto.getEmail();
+        String displayName = orgUserDto.getDisplayName();
+        String status = orgUserDto.getStatus();
+        String firstName = orgUserDto.getFirstName();
+        String lastName = orgUserDto.getLastName();
+        String division = orgUserDto.getDivision();
+        String salutation = orgUserDto.getSalutation();
+        String mobileNo = orgUserDto.getMobileNo();
+
+        clientUser.setUserDomain(userDomain);
+        clientUser.setId(userId);
+        clientUser.setDisplayName(displayName);
+        clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
         clientUser.setPasswordChallengeQuestion("A");
         clientUser.setPasswordChallengeAnswer("A");
-        clientUser.setAccountActivateDatetime(new Date());
+        clientUser.setAccountActivateDatetime(accountActivateDatetime);
+        clientUser.setAccountDeactivateDatetime(accountDeactivateDatetime);
+        clientUser.setFirstName(firstName);
+        clientUser.setLastName(lastName);
+        clientUser.setEmail(email);
+        clientUser.setMobileNo(mobileNo);
+        clientUser.setSalutation(salutation);
+
+
+
+
         /*
         {
               "userDomain": "intranet",
@@ -314,19 +380,6 @@ public class MohIntranetUserDelegator {
                 }
             }
         }
-//        else{
-//            if(!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")){
-//                errorMap.put("userId","USER_ERR002");
-//            }else{
-//                ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
-//                if(userByIdentifier!=null){
-//                    String userid = userByIdentifier.getUserIdentifier().getId();
-//                    if(userId.equals(userid)){
-//                        errorMap.put("userId","USER_ERR003");
-//                    }
-//                }
-//            }
-//        }
         //date
         if(accountActivateDatetime!=null) {
             int i = accountActivateDatetime.compareTo(new Date());
@@ -334,9 +387,6 @@ public class MohIntranetUserDelegator {
                 errorMap.put("accountActivateDatetime", "USER_ERR007");
             }
         }
-//        else{
-//            errorMap.put("accountActivateDatetime", "USER_ERR001");
-//        }
 
         if(accountDeactivateDatetime!=null&&accountActivateDatetime!=null) {
             int i = accountDeactivateDatetime.compareTo(accountActivateDatetime);
@@ -344,9 +394,37 @@ public class MohIntranetUserDelegator {
                 errorMap.put("accountDeactivateDatetime", "USER_ERR006");
             }
         }
-//        else{
-//            errorMap.put("accountDeactivateDatetime", "USER_ERR001");
-//        }
         return errorMap;
+    }
+
+    private void prepareOption(BaseProcessClass bpc){
+        List<SelectOption> salutation = new ArrayList<>();
+        SelectOption so1 = new SelectOption("Mr","Mr");
+        SelectOption so2 = new SelectOption("Ms","Ms");
+        SelectOption so3 = new SelectOption("Mrs","Mrs");
+        SelectOption so4 = new SelectOption("Mdm","Mdm");
+        SelectOption so5 = new SelectOption("Dr","Dr");
+        salutation.add(so1);
+        salutation.add(so2);
+        salutation.add(so3);
+        salutation.add(so4);
+        salutation.add(so5);
+        List<SelectOption> statusOption = new ArrayList<>();
+        SelectOption status1 = new SelectOption("I","I");
+        SelectOption status2 = new SelectOption("A","A");
+        SelectOption status3 = new SelectOption("E","E");
+        SelectOption status4 = new SelectOption("L","L");
+        SelectOption status5 = new SelectOption("S","S");
+        SelectOption status6 = new SelectOption("T","T");
+        statusOption.add(status1);
+        statusOption.add(status2);
+        statusOption.add(status3);
+        statusOption.add(status4);
+        statusOption.add(status5);
+        statusOption.add(status6);
+        ParamUtil.setSessionAttr(bpc.request,"salutation",(Serializable)salutation);
+        ParamUtil.setSessionAttr(bpc.request,"statusOption",(Serializable)statusOption);
+        OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
+        ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);
     }
 }

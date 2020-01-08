@@ -1,10 +1,10 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
@@ -21,10 +21,9 @@
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name.</label>
-                            <span style="color:red">*</span>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="displayName" type="text" name="displayName">
+                                    <input id="displayName" type="text" name="displayName" value="${orgUserDto.displayName}">
                                     <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -34,34 +33,43 @@
                             <span style="color:red">*</span>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="startDate" name="startDate"/>
-                                    <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>
+                                    <iais:datePicker id="startDate" name="startDate" dateVal="${orgUserDto.accountActivateDatetime}"/>
+                                    <span id="error_accountActivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End.</label>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:datePicker id="endDate" name="endDate" dateVal="${orgUserDto.accountDeactivateDatetime}"/>
+                                    <span id="error_accountDeactivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Salutation.</label>
-                            <span style="color:red">*</span>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <select name="salutation">
-                                        <option value="">---Please Select---</option>
-                                        <option value="Mr">Mr</option>
-                                        <option value="Ms">Ms</option>
-                                        <option value="Mrs">Mrs</option>
-                                        <option value="Mdm">Mdm</option>
-                                        <option value="Dr">Dr</option>
-                                    </select>
+                                    value="${orgUserDto.salutation}"
+                                    <iais:select name="salutation" options="salutation" firstOption="Please select" value="${orgUserDto.salutation}"></iais:select>
+                                </div>
+                            </iais:value>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-4 control-label">Status.</label>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    value="${orgUserDto.status}"
+                                    <iais:select name="status" options="statusOption" firstOption="Please select" value="${orgUserDto.status}"></iais:select>
                                 </div>
                             </iais:value>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name.</label>
-                            <span style="color:red">*</span>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="firstName" type="text" name="firstName">
-                                    <span id="error_masterCodeKey" name="iaisErrorMsg" class="error-msg"></span>
+                                    <input id="firstName" type="text" name="firstName" value="${orgUserDto.firstName}">
                                 </div>
                             </iais:value>
                         </div>
@@ -69,25 +77,15 @@
                             <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="lastName" type="text" name="lastName">
-                                    <span id="error_codeValue" name="iaisErrorMsg" class="error-msg"></span>
+                                    <input id="lastName" type="text" name="lastName" value="${orgUserDto.lastName}">
                                 </div>
                             </iais:value>
                         </div>
-<%--                        <div class="form-group">--%>
-<%--                            <label class="col-xs-12 col-md-4 control-label" for="organization">Organization.</label>--%>
-<%--                            <iais:value>--%>
-<%--                                <div class="col-xs-8 col-sm-6 col-md-5">--%>
-<%--                                    <input id="organization" type="text" name="organization">--%>
-<%--                                    <span id="error_codeCategory" name="iaisErrorMsg" class="error-msg"></span>--%>
-<%--                                </div>--%>
-<%--                            </iais:value>--%>
-<%--                        </div>--%>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="division">Division.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="division" type="text" name="division">
+                                    <input id="division" type="text" name="division" value="${orgUserDto.division}">
                                 </div>
                             </iais:value>
                         </div>
@@ -95,7 +93,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="branch">Branch/Unit.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="branch" type="text" name="branch">
+                                    <input id="branch" type="text" name="branch" value="${orgUserDto.branchUnit}">
                                 </div>
                             </iais:value>
                         </div>
@@ -103,8 +101,8 @@
                             <label class="col-xs-12 col-md-4 control-label" for="email">Email</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="email" type="text" name="email">
-                                    <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
+                                    <input id="email" type="text" name="email" value="${orgUserDto.email}">
+                                    <span id="error_email" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -112,7 +110,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="mobileNo" type="number" name="mobileNo">
+                                    <input id="mobileNo" type="number" name="mobileNo" value="${orgUserDto.mobileNo}">
                                 </div>
                             </iais:value>
                         </div>
@@ -120,68 +118,60 @@
                             <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="officeNo" type="number" name="officeNo">
+                                    <input id="officeNo" type="number" name="officeNo" value="${orgUserDto.officeTelNo}">
                                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="remarks" type="text" name="remarks">
-                                    <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
+                        <div class="col-xs-2 col-sm-2">
+                            <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#"
+                                                                          onclick="submit('back')">BACK</a></div>
                         </div>
-                    </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-2 col-sm-2">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a></div>
-                            </div>
-<%--                            <div class="col-xs-10 col-sm-10">--%>
-<%--                                <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('save')">SUBMIT</a></div>--%>
-<%--                            </div>--%>
-                            <div class="col-xs-10 col-sm-10">
-                                <div class="text-right text-center-mobile"><a type="button" class="btn btn-primary" data-toggle="modal" data-target="#editUser">SUBMIT</a></div>
+                        <div class="col-xs-10 col-sm-10">
+                            <div class="text-right text-center-mobile"><a type="button" class="btn btn-primary"
+                                                                          data-toggle="modal" data-target="#editUser">SUBMIT</a>
                             </div>
                         </div>
                     </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUser" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span></div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUser"
+                     style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="doCreate()">Confirm</button>
-                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="doCreate()">Confirm</button>
                             </div>
                         </div>
                     </div>
-                    <!--Modal End-->
                 </div>
+                <!--Modal End-->
             </div>
         </div>
-    </form>
-    <%@include file="/include/validation.jsp"%>
+</div>
+</form>
+<%@include file="/include/validation.jsp" %>
 </div>
 
 <script type="text/javascript">
-    function submit(action){
+    function submit(action) {
         $("[name='crud_action_type']").val(action);
         $("#InternetUserEditForm").submit();
     }
-    function doCreate(){
+
+    function doCreate() {
         submit('doSave');
     }
 </script>
