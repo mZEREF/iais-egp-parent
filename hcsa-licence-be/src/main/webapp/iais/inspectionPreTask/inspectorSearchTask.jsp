@@ -190,6 +190,7 @@
         $("#application_type option[text = 'Please select']").attr("selected", "selected");
         $("#application_status option:first").prop("selected", 'selected');
         $("#inspector_name option:first").prop("selected", 'selected');
+        $(".current").text("Please select");
         $('input[name="hci_code"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="hci_address"]').val("");

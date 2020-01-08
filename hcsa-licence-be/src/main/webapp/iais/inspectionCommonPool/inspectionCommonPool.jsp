@@ -146,7 +146,8 @@
 
     function doInspectionCommonPoolClear() {
         $('input[name="application_no"]').val("");
-        $("#application_type option[text = 'Please select']").attr("selected", "selected");
+        $("#application_type option[text = 'Please select']").val("selected", "selected");
+        $(".current").text("Please select");
         $('input[name="hci_code"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="hci_address"]').val("");
