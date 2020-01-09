@@ -1,1 +1,0 @@
-<%@include file="/iais/mastercode/doCreateView.jsp"%>
