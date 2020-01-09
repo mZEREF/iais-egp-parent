@@ -86,11 +86,13 @@ public class BackendAjaxController {
 
     private String getSubStageByInspectionStatus(InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto) {
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(inspectionAppInGroupQueryDto.getRefNo()).getEntity();
-        String status = appInspectionStatusDto.getStatus();
-        if(status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO_RESULT)){
-
-        }
         String subStage = "";
+        if(appInspectionStatusDto != null) {
+            String status = appInspectionStatusDto.getStatus();
+            if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO_RESULT)) {
+
+            }
+        }
         return subStage;
     }
 
