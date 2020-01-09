@@ -58,9 +58,13 @@ public class RequestForInformationDelegator {
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
 
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     FilterParameter licenceParameter = new FilterParameter.Builder()
             .clz(RfiLicenceQueryDto.class)
@@ -397,8 +401,10 @@ public class RequestForInformationDelegator {
 
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         licPremisesReqForInfoDto1.setAction("create");
-        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1, signature.date(), signature.authorization()).getEntity();
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1,
+                signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
         // 		doCreateRequest->OnStepProcess
     }
     public void preNewRfi(BaseProcessClass bpc) {
@@ -416,7 +422,9 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setReqInfoId(reqInfoId);
         licPremisesReqForInfoDto.setAction("delete");
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto, signature.date(), signature.authorization()).getEntity();
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto,
+                signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
         // 		doCancel->OnStepProcess
     }
     public void doAccept(BaseProcessClass bpc) {

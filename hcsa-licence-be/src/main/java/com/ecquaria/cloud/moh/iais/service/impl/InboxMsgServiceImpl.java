@@ -20,8 +20,13 @@ public class InboxMsgServiceImpl implements InboxMsgService {
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Autowired
     private FEEicGatewayClient feEicGatewayClient;
@@ -32,7 +37,9 @@ public class InboxMsgServiceImpl implements InboxMsgService {
     @Override
     public InterMessageDto saveInterMessage(InterMessageDto interMessageDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        return feEicGatewayClient.saveInboxMessage(interMessageDto, signature.date(), signature.authorization()).getEntity();
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return feEicGatewayClient.saveInboxMessage(interMessageDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
     }
 
     @Override

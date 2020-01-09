@@ -5,9 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
+import org.springframework.http.HttpHeaders;
 
 /**
  * FEEicGatewayClientFallback
@@ -19,7 +18,9 @@ import java.util.List;
 public class FEEicGatewayClientFallback {
     public FeignResponseEntity<List<LicenceGroupDto>> createLicence(List<LicenceGroupDto> licenceGroupDtoList,
                                                                     String date,
-                                                                    String authorization){
+                                                                    String authorization,
+                                                                    String dateSec,
+                                                                    String authorizationSec){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -27,7 +28,9 @@ public class FEEicGatewayClientFallback {
     }
     public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto,
                                                                  String date,
-                                                                 String authorization){
+                                                                 String authorization,
+                                                                 String dateSec,
+                                                                 String authorizationSec){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -35,14 +38,19 @@ public class FEEicGatewayClientFallback {
     }
     public FeignResponseEntity<InterMessageDto> saveInboxMessage(InterMessageDto interInboxDto,
                                                                  String date,
-                                                                 String authorization){
+                                                                 String authorization,
+                                                                 String dateSec,
+                                                                 String authorizationSec){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
-    public FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfoFe( LicPremisesReqForInfoDto licPremisesReqForInfoDto,String date,
-                                                                                 String authorization){
+    public FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfoFe(
+            LicPremisesReqForInfoDto licPremisesReqForInfoDto,String date,
+            String authorization,
+            String dateSec,
+            String authorizationSec){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

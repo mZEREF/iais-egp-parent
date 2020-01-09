@@ -59,9 +59,13 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
 
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
 
 
@@ -265,7 +269,9 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
             applicationClient.doUpDate(applicationGroupDto);
 
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization()).getEntity();
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            gatewayClient.routeSelfDeclData(contentJsonList, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
         }
     }
 

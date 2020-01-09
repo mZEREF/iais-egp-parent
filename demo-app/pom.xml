@@ -72,6 +72,14 @@
             <artifactId>spring-cloud-bus</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.ecquaria.submission.client</groupId>
+            <artifactId>submissionclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ecquaria.kafka</groupId>
+            <artifactId>servicewrapper</artifactId>
+        </dependency>
+        <dependency>
             <groupId>sg.gov.moh.iais</groupId>
             <artifactId>iais-log-audit</artifactId>
             <version>${revision}</version>

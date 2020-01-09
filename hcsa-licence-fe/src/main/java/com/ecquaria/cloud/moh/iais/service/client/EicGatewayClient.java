@@ -23,8 +23,9 @@ public interface EicGatewayClient {
     @PostMapping(value = "/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveFile(@RequestBody ProcessFileTrackDto processFileTrackDto,
                                          @RequestHeader("date") String date,
-
-                                         @RequestHeader("authorization") String authorization);
+                                         @RequestHeader("authorization") String authorization,
+                                         @RequestHeader("date_Secondary") String dateSec,
+                                         @RequestHeader("authorization_Secondary") String authorizationSec);
     /**
     * @author: yichen
     * @description: route to BE db
@@ -33,6 +34,8 @@ public interface EicGatewayClient {
     */
     @PostMapping(value = "/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> routeSelfDeclData(@RequestBody List<String> contentJsonList,
-                                         @RequestHeader("date") String date,
-                                         @RequestHeader("authorization") String authorization);
+                                                  @RequestHeader("date") String date,
+                                                  @RequestHeader("authorization") String authorization,
+                                                  @RequestHeader("date_Secondary") String dateSec,
+                                                  @RequestHeader("authorization_Secondary") String authorizationSec);
 }

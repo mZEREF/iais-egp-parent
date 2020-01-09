@@ -63,8 +63,13 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public List<ApplicationLicenceDto> getCanGenerateApplications(int day) {
@@ -142,6 +147,8 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public List<LicenceGroupDto> createFESuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        return feEicGatewayClient.createLicence(licenceGroupDtos, signature.date(), signature.authorization()).getEntity();
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return feEicGatewayClient.createLicence(licenceGroupDtos, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
     }
 }

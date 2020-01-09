@@ -34,8 +34,13 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
@@ -67,7 +72,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        return feEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization()).getEntity();
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return feEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
     }
 
     @Override

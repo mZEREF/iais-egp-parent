@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
@@ -52,8 +51,13 @@ public class UploadFileServiceImpl implements UploadFileService {
     private Boolean flag=true;
     @Value("${iais.hmac.keyId}")
     private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
     @Autowired
     private ApplicationClient applicationClient;
@@ -279,7 +283,9 @@ public class UploadFileServiceImpl implements UploadFileService {
         String s="FAIL";
         try {
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization()).getEntity();
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
         }catch (Exception e){
             log.error(e.getMessage(),e);
             return s;
