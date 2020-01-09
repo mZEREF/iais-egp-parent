@@ -67,7 +67,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
     @Value("${iais.syncFileTracking.shared.path}")
-    private     String sharedPath="D:";
+    private     String sharedPath;
     private     String download;
     private     String backups;
     private     String fileFormat=".text";
