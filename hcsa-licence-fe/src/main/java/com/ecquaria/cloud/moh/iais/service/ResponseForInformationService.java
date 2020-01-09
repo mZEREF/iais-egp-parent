@@ -16,4 +16,6 @@ public interface ResponseForInformationService {
     LicPremisesReqForInfoDto getLicPreReqForInfo(String id);
     void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     LicPremisesReqForInfoDto updateLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+
+
 }

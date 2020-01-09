@@ -128,6 +128,13 @@
     <JavaCode defClass="" executor="" methodName="preCancel_OnStepProcess_0" name="preCancel_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doUpdate" x="1800" y="560">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doUpdate_OnStepProcess_0" name="doUpdate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="RFIPage" stageIndicator="" x="1560" y="280">
@@ -355,6 +362,12 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge3" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
    <position>{(1930,120)(850,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doUpdate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(1930,750)(1845,610)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doUpdate" style="oblique">
+   <position>{(1845,610)(1560,520)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -388,6 +401,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doAccept" value="&quot;accept&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge2" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doCancel" value="&quot;cancel&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doUpdate" value="&quot;update&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge3" executor="" icon="" leftOperand="crud_action_type" name="Switch6" x="1910" y="100">
    <Description/>

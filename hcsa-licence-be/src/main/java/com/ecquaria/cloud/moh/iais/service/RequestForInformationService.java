@@ -23,11 +23,12 @@ public interface RequestForInformationService {
     SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam);
     SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
     List<String> getSvcNamesByType(String type);
+    LicPremisesReqForInfoDto updateLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
     LicPremisesReqForInfoDto createLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     List<LicPremisesReqForInfoDto> searchLicPremisesReqForInfo(String licPremId);
     LicPremisesReqForInfoDto getLicPreReqForInfo(String id);
     void deleteLicPremisesReqForInfo(String id);
     void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
-
+    List<LicPremisesReqForInfoDto> getAllReqForInfo();
 }

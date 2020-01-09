@@ -443,13 +443,25 @@ public class RequestForInformationDelegator {
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		preViewRfi->OnStepProcess
     }
-    public void preCancel(BaseProcessClass bpc) {
+    public void doUpdate(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>preCancel>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
-        String id = (String) ParamUtil.getSessionAttr(bpc.request, "reqInfoId");
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
-        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks().split("\\|")[0]);
-        ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
-        // 		preCancel->OnStepProcess
+        String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String date=ParamUtil.getString(request, "Due_date");
+        Date dueDate;
+        Calendar calendar = Calendar.getInstance();
+        if(!StringUtil.isEmpty(date)){
+            dueDate= Formatter.parseDate(date);
+        }
+        else {
+            calendar.add(Calendar.DATE,7);
+            dueDate =calendar.getTime();
+        }
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
+        licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
+        requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        licPremisesReqForInfoDto.setAction("update");
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto, signature.date(), signature.authorization()).getEntity();        // 		doUpdate->OnStepProcess
     }
 }

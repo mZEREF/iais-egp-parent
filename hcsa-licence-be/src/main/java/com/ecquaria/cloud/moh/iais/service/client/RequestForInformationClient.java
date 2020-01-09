@@ -49,4 +49,6 @@ public interface RequestForInformationClient {
     @PostMapping(value = "/hcsa-reqForInfo/update-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesReqForInfoDto> updateLicPremisesReqForInfoFe(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
+    @GetMapping(value = "/hcsa-reqForInfo/licence-all-rfi")
+    FeignResponseEntity<List<LicPremisesReqForInfoDto>> getAllReqForInfo();
 }

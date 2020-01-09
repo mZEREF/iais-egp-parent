@@ -194,7 +194,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     applicationDtos.get(i).setStatus(ApplicationConsts.APPLICATION_STATUS_ROLL_BACK);
                     applicationViewService.updateApplicaiton(applicationDtos.get(i));
                     AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
-                    appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_EMAIL_VERIFY);
+                    appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
                     appInspectionStatusClient.update(appInspectionStatusDto1);
 
                     taskKey = HcsaConsts.ROUTING_STAGE_INS;
@@ -224,7 +224,7 @@ public class InspectionMergeSendNcEmailDelegator {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
             AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
-            appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_AFTER_INSPECTION);
+            appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL);
             appInspectionStatusClient.update(appInspectionStatusDto1);
             String taskKey = HcsaConsts.ROUTING_STAGE_INS;
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);

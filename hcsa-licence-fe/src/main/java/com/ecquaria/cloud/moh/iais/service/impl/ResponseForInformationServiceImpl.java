@@ -46,4 +46,6 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     public LicPremisesReqForInfoDto updateLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         return responseForInformationClient.updateLicPremisesReqForInfoFe(licPremisesReqForInfoDto).getEntity();
     }
+
+
 }

@@ -68,7 +68,7 @@
                                         <iais:row style="text-align:center;">
                                             <iais:value width="18">
                                                 <label>
-                                                    <textarea name="userReply" rows="10" cols="100">${licPreReqForInfoDto.userReply}</textarea>
+                                                    <textarea id="userReply_rfi" name="userReply" rows="10" cols="100">${licPreReqForInfoDto.userReply}</textarea>
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -116,7 +116,12 @@
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doSubmit(reqInfoId) {
-        SOP.Crud.cfxSubmit("mainForm", "submit",reqInfoId);
+        var userReply=document.getElementById("userReply_rfi");
+        if(userReply.innerText==null||userReply.innerText=="")
+        {alert("Please reply to the request before submitting it.")}
+        else {
+            SOP.Crud.cfxSubmit("mainForm", "submit",reqInfoId);
+        }
     }
 
 

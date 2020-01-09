@@ -44,7 +44,7 @@
                                         <iais:row>
                                             <iais:field value=""/>
                                             <iais:value width="18">
-                                                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Extends</button>
+                                                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doExtends('${licPreReqForInfoDto.reqInfoId}')">Extends</button>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -112,6 +112,9 @@
     }
     function doAccept(reqInfoId) {
         SOP.Crud.cfxSubmit("mainForm", "accept",reqInfoId);
+    }
+    function doExtends(reqInfoId) {
+        SOP.Crud.cfxSubmit("mainForm", "update",reqInfoId);
     }
     function doCancel(reqInfoId) {
         var user=document.getElementById("userReply");

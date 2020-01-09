@@ -245,7 +245,7 @@ public class InspectEmailAo1Delegator {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
             AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
-            appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_EMAIL_VERIFY);
+            appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
             appInspectionStatusClient.update(appInspectionStatusDto);
 
             String taskKey = HcsaConsts.ROUTING_STAGE_INS;

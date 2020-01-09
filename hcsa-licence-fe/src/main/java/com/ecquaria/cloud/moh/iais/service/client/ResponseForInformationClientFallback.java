@@ -49,6 +49,8 @@ public class ResponseForInformationClientFallback implements ResponseForInformat
         return entity;
     }
 
+
+
     @Override
     public FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfoFe(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

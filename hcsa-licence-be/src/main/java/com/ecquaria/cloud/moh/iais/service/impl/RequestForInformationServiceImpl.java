@@ -113,11 +113,19 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
+    public LicPremisesReqForInfoDto updateLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        return requestForInformationClient.updateLicPremisesReqForInfoFe(licPremisesReqForInfoDto).getEntity();
+    }
+
+    @Override
     public LicPremisesReqForInfoDto createLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         return requestForInformationClient.createLicPremisesReqForInfo(licPremisesReqForInfoDto).getEntity();
     }
 
-
+    @Override
+    public List<LicPremisesReqForInfoDto> getAllReqForInfo() {
+        return requestForInformationClient.getAllReqForInfo().getEntity();
+    }
 
     @Override
     public List<LicPremisesReqForInfoDto> searchLicPremisesReqForInfo(String licPremId) {
