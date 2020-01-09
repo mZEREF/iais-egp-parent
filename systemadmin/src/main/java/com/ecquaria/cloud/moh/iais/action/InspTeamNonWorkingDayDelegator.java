@@ -239,7 +239,6 @@ public class InspTeamNonWorkingDayDelegator {
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 		}
 
-
 		ValidationResult validationResult = WebValidationHelper.validateProperty(nonWorkingDateDto, "update");
 		if(validationResult != null && validationResult.isHasErrors()) {
 			Map<String, String> errorMap = validationResult.retrieveAll();

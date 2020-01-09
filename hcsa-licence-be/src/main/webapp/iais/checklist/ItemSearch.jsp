@@ -78,6 +78,7 @@
             <div class="col-xs-12">
               <div class="components">
                 <h2 class="component-title">Search &amp; Result</h2>
+                <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
                 <div class="table-gp">
                   <table class="table">
                     <thead>
@@ -138,15 +139,6 @@
                       </div>
                       <div class="col-xs-50 col-md-10 text-right">
                         <div class="nav">
-                          <ul class="pagination">
-                            <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><i
-                                    class="fa fa-chevron-left"></i></span></a></li>
-                            <li class="active"><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#" aria-label="Next"><span aria-hidden="true"><i
-                                    class="fa fa-chevron-right"></i></span></a></li>
-                          </ul>
 
                           <br><br><br>
                           <div class="text-right text-center-mobile">
@@ -169,6 +161,10 @@
                                    onclick="javascript: doUploadFile('regulation');">Upload Regulation</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doUploadFile('checklistItem');">Upload Checklist Item</a>
+                                <a class="btn btn-primary next" href="javascript:void(0);"
+                                   onclick="javascript: doExportFile('checklistItem');">Export Checklist Item</a>
+                                <a class="btn btn-primary next" href="javascript:void(0);"
+                                   onclick="javascript: doExportFile('regulation');">Export Regulation</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doSearch();">Search</a>
                               </c:otherwise>
@@ -236,4 +232,9 @@
     function doCancel() {
         SOP.Crud.cfxSubmit("mainForm", "doCancel");
     }
+
+    function jumpToPagechangePage(){
+        SOP.Crud.cfxSubmit("mainForm", "doPage");
+    }
+
 </script>

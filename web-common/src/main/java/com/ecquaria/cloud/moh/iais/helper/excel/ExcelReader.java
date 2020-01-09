@@ -36,7 +36,7 @@ public final class ExcelReader {
     private static String DATE_TYPE_NAME             = "java.util.Date";
 
     private static String EXCEL_TYPE_HSSF			= "xls";
-    private static String EXCEL_TYPE_XSSF			= "xlsx";
+    public static String EXCEL_TYPE_XSSF			= "xlsx";
 
     public static <T> List<T> excelReader(File file, Class<?> clazz) throws IaisRuntimeException {
         if (file == null || !file.exists()){

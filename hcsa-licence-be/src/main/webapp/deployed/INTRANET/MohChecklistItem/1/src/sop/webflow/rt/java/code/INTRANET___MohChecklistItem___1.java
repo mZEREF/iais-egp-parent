@@ -90,6 +90,10 @@ public class INTRANET___MohChecklistItem___1 extends BaseProcessClass {
 	public void step3_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "step3", this);
 	}
+
+	public void changePage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "changePage", this);
+	}
 	
 	
 }

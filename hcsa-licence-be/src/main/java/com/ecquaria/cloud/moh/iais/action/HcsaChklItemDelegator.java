@@ -25,11 +25,13 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -55,6 +57,7 @@ public class HcsaChklItemDelegator {
 
     private static final String REGULATION = "regulation";
     private static final String CHECKLIST_ITEM = "checklistItem";
+    private static final String FILE_UPLOAD_ERROR = "fileUploadError";
 
     private HcsaChklService hcsaChklService;
     private FilterParameter filterParameter = new FilterParameter.Builder()
@@ -135,15 +138,15 @@ public class HcsaChklItemDelegator {
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
         Map<String, String> errorMap = new HashMap<>();
         if (file == null){
-            errorMap.put("fileUploadError", "GENERAL_ERR0004");
+            errorMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
         }
 
         String originalFileName = file.getOriginalFilename();
-        if (!originalFileName.endsWith(".xlsx")){
-            errorMap.put("fileUploadError", "GENERAL_ERR0005");
+        if (!originalFileName.endsWith("." + ExcelReader.EXCEL_TYPE_XSSF)){
+            errorMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0005");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
@@ -152,7 +155,7 @@ public class HcsaChklItemDelegator {
         Double size = Double.valueOf(file.getSize() / 0x400 / 0x400);
 
         if (Math.ceil(size) > 0x10){
-            errorMap.put("fileUploadError", "GENERAL_ERR0004");
+            errorMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
@@ -184,7 +187,7 @@ public class HcsaChklItemDelegator {
         int reduceSize = 0;
         File toFile = FileUtils.multipartFileToFile(file);
         errorMap = new HashMap<>(1);
-        errorMap.put("fileUploadError", "Please remove the same data from Excel.");
+        errorMap.put(FILE_UPLOAD_ERROR, "Please remove the same data from Excel.");
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         try {
             switch (value){
@@ -214,7 +217,7 @@ public class HcsaChklItemDelegator {
                 default:
             }
         }catch (IaisRuntimeException e){
-            errorMap.put("fileUploadError", "CHKL_ERR011");
+            errorMap.put(FILE_UPLOAD_ERROR, "CHKL_ERR011");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
@@ -545,6 +548,18 @@ public class HcsaChklItemDelegator {
         //for jsp action button
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.DISPLAY_BUTTON, "SubmitButton");
         preSelectOption(request);
+    }
+
+    /**
+     * AutoStep: changePage
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void changePage(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doPaging(searchParam, request);
     }
 
     /**
