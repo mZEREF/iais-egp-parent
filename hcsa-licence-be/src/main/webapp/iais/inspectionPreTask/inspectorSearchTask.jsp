@@ -203,4 +203,7 @@
     function doInspectorSearchTaskSearch() {
         inspectorSearchTaskSubmit('search');
     }
+    function jumpToPagechangePage(){
+        inspectorSearchTaskSubmit('page');
+    }
 </script>
