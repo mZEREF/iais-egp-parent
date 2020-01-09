@@ -151,6 +151,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 taskService.updateTask(tDto);
             }
         }
+        updateInspectionStatus(applicationDto, InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
         interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);

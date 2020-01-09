@@ -98,7 +98,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         taskService.updateTask(taskDto);
-        updateInspectionStatus(applicationDto);
+        updateInspectionStatus(applicationDto, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         if(InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION.equals(inspectionPreTaskDto.getSelectValue())){
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),inspectionPreTaskDto.getInternalMarks(), InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_POT);
             createTaskForReport(hcsaSvcStageWorkingGroupDtos, taskDto, loginContext);
@@ -115,6 +115,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         } else if (InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(inspectionPreTaskDto.getSelectValue())){
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationDto.getStatus(),taskDto.getTaskKey(),inspectionPreTaskDto.getInternalMarks(), InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_POT);
             ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION);
+            updateInspectionStatus(applicationDto, InspectionConstants.INSPECTION_STATUS_PENDING_REQUEST_FOR_INFORMATION);
             InterMessageDto interMessageDto = new InterMessageDto();
             interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
             interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
@@ -195,10 +196,10 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         }
         return appPremisesCorrelationDto;
     }
-    private void updateInspectionStatus(ApplicationDto applicationDto) {
+    private void updateInspectionStatus(ApplicationDto applicationDto, String status) {
         AppPremisesCorrelationDto appPremisesCorrelationDto = getAppPreCorrDtoByAppDto(applicationDto);
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationDto.getId()).getEntity();
-        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION);
+        appInspectionStatusDto.setStatus(status);
         appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
