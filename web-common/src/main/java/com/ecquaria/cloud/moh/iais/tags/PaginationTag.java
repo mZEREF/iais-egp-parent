@@ -72,7 +72,7 @@ public class PaginationTag extends DivTagSupport {
             if (pageSize != 0 && sr != null) {
                 int pageCount = sr.getPageCount(pageSize);
                 if (pageCount > 0) {
-                    StringBuilder sb =generateHtml(sr,pageNo,pageCount);
+                    StringBuilder sb =generateHtml(sr,pageNo,pageCount,pageSize);
                     pageContext.getOut().print(sb.toString());
                 }
             }
@@ -84,13 +84,14 @@ public class PaginationTag extends DivTagSupport {
 
         return SKIP_BODY;
     }
-    private StringBuilder generateHtml(SearchResult<?> sr,int pageNo,int pageCount){
+    private StringBuilder generateHtml(SearchResult<?> sr,int pageNo,int pageCount,int pageSize){
         if (StringUtil.isEmpty(jsFunc)) {
             jsFunc = "changePage";
         }
         String pageNumTextName = "pageJumpNoText" + jsFunc;
         String jumpPageFuncName = "jumpToPage" + jsFunc;
         StringBuilder sb = new StringBuilder();
+        sb.append("<input type=\"hidden\" name = \"pageJumpNoTextchangePage\" value=\"\" id = \"pageJumpNoTextchangePage\">");
         sb.append("<div class=\"row table-info-display\">");
         sb.append("<div class=\"col-xs-12 col-md-4 text-left\">");
         sb.append("<p class=\"count table-count\">");
@@ -98,45 +99,108 @@ public class PaginationTag extends DivTagSupport {
         sb.append(" out of ");
         sb.append(sr.getRowCount());
         sb.append(" items");
-        sb.append("</p></div></div>");
+        sb.append("<div class=\"form-group\">");
+        sb.append("<div class=\"col-xs-12 col-md-3\">");
+        sb.append("<select class=\"table-select\" id = \"pageJumpNoPageSize\" name = \"pageJumpNoPageSize\" >");
+//        if(pageSize==5){
+//            sb.append("<option selected value=\"5\">5</option>");
+//        }else{
+//            sb.append("<option  value=\"5\">5</option>");
+//        }
+        if(pageSize==10){
+            sb.append("<option selected value=\"10\">10</option>");
+        }else{
+            sb.append("<option value=\"10\">10</option>");
+        }
+        if(pageSize==20){
+            sb.append("<option selected value=\"20\">20</option>");
+        }else{
+            sb.append("<option value=\"20\">20</option>");
+        }
+        if(pageSize==30){
+            sb.append("<option selected value=\"30\">30</option>");
+        }else{
+            sb.append("<option value=\"30\">30</option>");
+        }
+        if(pageSize==40){
+            sb.append("<option selected value=\"40\">40</option>");
+        }else{
+            sb.append("<option value=\"40\">40</option>");
+        }
+        sb.append("</select>");
+        sb.append("</div></div></p></div>");
 
         sb.append("<div class=\"col-xs-12 col-md-8 text-right\">");
         sb.append("<div class=\"nav\">").append("<ul class=\"pagination\">");
         if (pageNo > 1) {
-            sb.append(STARTLI).append(jsFunc).append("('1');\"></a></li>");
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\"></a></li>");
+            //sb.append(STARTLI).append(jsFunc).append("('1');\"></a></li>");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-chevron-left\"></i></span></a></li>");
+            sb.append("<li><a href=\"#\" >");
+            sb.append(pageNo-1);
+            sb.append("</a></li>");
+            sb.append("<li class=\"active\"><a href=\"#\">");
+            sb.append(pageNo);
+            sb.append("</a></li>");
+            if(pageNo+1<=pageCount){
+                sb.append("<li><a href=\"#\" >");
+                sb.append(pageNo+1);
+                sb.append("</a></li>");
+            }
         } else {
             sb.append("<li><a href=\"#\" aria-label=\"Previous\"><span aria-hidden=\"true\"><i class=\"fa fa-chevron-left\"></i></span></a></li>");
-            sb.append("<li><a href=\"#\" aria-label=\"Next\"><span aria-hidden=\"true\"><i class=\"fa fa-chevron-right\"></i></span></a></li>");
+            sb.append("<li class=\"active\"><a href=\"#\">");
+            sb.append(pageNo);
+            sb.append("</a></li>");
+            if(pageNo+1<=pageCount){
+                sb.append("<li><a href=\"#\" >");
+                sb.append(pageNo+1);
+                sb.append("</a></li>");
+            }
+            if(pageNo+2<=pageCount){
+                sb.append("<li><a href=\"#\" >");
+                sb.append(pageNo+2);
+                sb.append("</a></li>");
+            }
+            //sb.append("<li><a href=\"#\" aria-label=\"Next\"><span aria-hidden=\"true\"><i class=\"fa fa-chevron-right\"></i></span></a></li>");
         }
 //        sb.append("<li><input type=\"text\" name=\"").append(pageNumTextName).append("\" id=\"");
 //        sb.append(pageNumTextName).append("\" class=\"input-pagejump\"></li>");
 //        sb.append("<li><input type=\"button\" class=\"btn btn-mini btn-primary\" value=\"Go\" onclick=\"javascript:").append(jumpPageFuncName);
 //        sb.append("();\"/></li>");
         if (pageNo < pageCount) {
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\"><i class=\"fa fa-chevron-left\"></i></a></li>");
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageCount).append("');\"><i class=\"fa fa-chevron-right\"></i></a></li>");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\"><i class=\"fa fa-chevron-right\"></i></a></li>");
+           // sb.append(STARTLI).append(jsFunc).append("('").append(pageCount).append("');\"><i class=\"fa fa-chevron-right\"></i></a></li>");
         } else {
-            sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-chevron-left\"></i></a></li>");
+           // sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-chevron-left\"></i></a></li>");
             sb.append("<li><a href=\"javascript:void(0);\"><i class=\"fa fa-chevron-right\"></i></a></li>");
         }
-        sb.append("</ul></div></div>");
+        sb.append("</ul></div></div></div>");
         sb.append("<script type=\"text/javascript\">");
-        sb.append("$(\"#pageJumpNoText\").keyup(function(){var str=$(this).val();var newstr='';");
-        sb.append("for(i=0;i<str.length;i++){var j=str.charCodeAt(i);if(j>47&&j<58){newstr+=String.fromCharCode(j);}}");
-        sb.append("$(this).val(newstr);});");
-        sb.append("function ").append(jumpPageFuncName).append("(){");
-        sb.append("var pageNo = $(\"#").append(pageNumTextName).append("\").val();");
-        sb.append("var reg = /^\\d+$/;");
-        sb.append("if(!reg.test(pageNo)){");
-        sb.append("$(\"#").append(pageNumTextName).append("\").val('');");
-        sb.append( "return; ");
-        sb.append( "}");
-        sb.append( "if(pageNo != ''){if(pageNo > ");
-        sb.append(pageCount);
-        sb.append("){pageNo=").append(pageCount).append(";}").append(" else if(pageNo < 1){");
-        sb.append("pageNo=1;}");
-        sb.append("changePage(pageNo);}}");
+//        sb.append("$('.current').html(");
+//        sb.append(pageSize);
+//        sb.append(");");
+        sb.append("$('#pageJumpNoPageSize').change(function(){");
+        sb.append("jumpToPagechangePage();");
+        sb.append(" });");
+        sb.append("function changePage(action){");
+        sb.append("$('#pageJumpNoTextchangePage').val(action);");
+        sb.append("jumpToPagechangePage();");
+        sb.append("}");
+//        sb.append("$(\"#pageJumpNoText\").keyup(function(){var str=$(this).val();var newstr='';");
+//        sb.append("for(i=0;i<str.length;i++){var j=str.charCodeAt(i);if(j>47&&j<58){newstr+=String.fromCharCode(j);}}");
+//        sb.append("$(this).val(newstr);});");
+//        sb.append("function ").append(jumpPageFuncName).append("(){");
+//        sb.append("var pageNo = $(\"#").append(pageNumTextName).append("\").val();");
+//        sb.append("var reg = /^\\d+$/;");
+//        sb.append("if(!reg.test(pageNo)){");
+//        sb.append("$(\"#").append(pageNumTextName).append("\").val('');");
+//        sb.append( "return; ");
+//        sb.append( "}");
+//        sb.append( "if(pageNo != ''){if(pageNo > ");
+//        sb.append(pageCount);
+//        sb.append("){pageNo=").append(pageCount).append(";}").append(" else if(pageNo < 1){");
+//        sb.append("pageNo=1;}");
+//        sb.append("changePage(pageNo);}}");
         sb.append("</script>");
         return sb;
     }

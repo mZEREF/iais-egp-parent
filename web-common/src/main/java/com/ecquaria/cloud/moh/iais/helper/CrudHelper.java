@@ -40,6 +40,7 @@ public class CrudHelper {
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
         searchParam.setSort(sortFieldName,sortType);
+
     }
     /**
      * @description: for the CRUD  do the paging
@@ -50,8 +51,12 @@ public class CrudHelper {
      */
     public static void doPaging(SearchParam searchParam, HttpServletRequest request){
         String  pageNo = ParamUtil.getString(request,"pageJumpNoTextchangePage");
+        String  pageSize = ParamUtil.getString(request,"pageJumpNoPageSize");
         if(!StringUtil.isEmpty(pageNo)){
             searchParam.setPageNo(Integer.parseInt(pageNo));
+        }
+        if(!StringUtil.isEmpty(pageSize)){
+            searchParam.setPageSize(Integer.parseInt(pageSize));
         }
     }
     private CrudHelper() {

@@ -163,4 +163,7 @@
     function doInspectionCommonPoolSearch() {
         inspectionCommonPoolSubmit('search');
     }
+    function jumpToPagechangePage(){
+        inspectionCommonPoolSubmit('page');
+    }
 </script>
