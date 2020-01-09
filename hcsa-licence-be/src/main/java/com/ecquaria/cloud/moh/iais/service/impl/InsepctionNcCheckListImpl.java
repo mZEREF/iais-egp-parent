@@ -223,23 +223,25 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         List<AdhocNcCheckItemDto>  itemDtoList = showDto.getAdItemList();
         List<AdhocChecklistItemDto> saveItemDtoList = new ArrayList<>();
         AdhocCheckListConifgDto dto = applicationClient.getAdhocConfigByAppPremCorrId(appPremId).getEntity();
-        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        if(itemDtoList!=null && !itemDtoList.isEmpty()){
-            dto.setVersion(dto.getVersion()+1);
-            dto.setId(null);
-            dto = applicationClient.saveAppAdhocConfig(dto).getEntity();
-            for(AdhocNcCheckItemDto temp:itemDtoList){
-                temp.setAdhocConfId(dto.getId());
-                temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                temp.setId(null);
-                AdhocAnswerDto adhocAnswerDto = new AdhocAnswerDto();
-                adhocAnswerDto.setRemark(temp.getRemark());
-                adhocAnswerDto.setAnswer(temp.getAdAnswer());
-                String saveAnswer = JsonUtil.parseToJson(adhocAnswerDto);
-                temp.setAnswer(saveAnswer);
-                saveItemDtoList.add(temp);
+        if(dto!=null){
+            dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            if(itemDtoList!=null && !itemDtoList.isEmpty()){
+                dto.setVersion(dto.getVersion()+1);
+                dto.setId(null);
+                dto = applicationClient.saveAppAdhocConfig(dto).getEntity();
+                for(AdhocNcCheckItemDto temp:itemDtoList){
+                    temp.setAdhocConfId(dto.getId());
+                    temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    temp.setId(null);
+                    AdhocAnswerDto adhocAnswerDto = new AdhocAnswerDto();
+                    adhocAnswerDto.setRemark(temp.getRemark());
+                    adhocAnswerDto.setAnswer(temp.getAdAnswer());
+                    String saveAnswer = JsonUtil.parseToJson(adhocAnswerDto);
+                    temp.setAnswer(saveAnswer);
+                    saveItemDtoList.add(temp);
+                }
+                applicationClient.saveAdhocItems(saveItemDtoList).getEntity();
             }
-            applicationClient.saveAdhocItems(saveItemDtoList).getEntity();
         }
     }
 
