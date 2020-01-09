@@ -97,7 +97,7 @@ public class InspectionCreTaskByInspDateDelegator {
                 createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount());
                 aRecoDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 fillUpCheckListGetAppClient.updateAppRecom(aRecoDto);
-                updateInspectionStatus(applicationDto, InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION);
+                updateInspectionStatus(applicationDto, InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
             }
         }
     }
