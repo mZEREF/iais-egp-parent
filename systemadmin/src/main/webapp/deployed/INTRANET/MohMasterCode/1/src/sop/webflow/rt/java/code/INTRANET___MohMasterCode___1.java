@@ -50,11 +50,6 @@ public class INTRANET___MohMasterCode___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doStart", this);
 	}
 
-	public void doCreate_OnStepProcess_0() throws Exception {
-	// 		doCreate->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doCreate", this);
-		
-	}
 
 	public void doEdit_OnStepProcess_0() throws Exception {
 	// 		doEdit->OnStepProcess
@@ -64,5 +59,20 @@ public class INTRANET___MohMasterCode___1 extends BaseProcessClass {
 	public void doUpload_OnStepProcess_0() throws Exception {
 	// 		doUpload->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doUpload", this);
+	}
+
+	public void doCreateCode_OnStepProcess_0() throws Exception {
+	// 		doCreateCode->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCreateCode", this);
+	}
+
+	public void doCreate_OnStepProcess_0() throws Exception {
+	// 		doCreateCatergory->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doCreateCategory", this);
+	}
+
+	public void prepareCode_OnStepProcess_0() throws Exception {
+	// 		prepareCode->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareCode", this);
 	}
 }
