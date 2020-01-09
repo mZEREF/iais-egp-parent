@@ -100,7 +100,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="table-gp">
-                                    <table class="table">
+                                    <table class="table"  style="border-collapse:collapse;">
                                         <thead>
                                             <tr>
                                                 <th>S/N</th>
