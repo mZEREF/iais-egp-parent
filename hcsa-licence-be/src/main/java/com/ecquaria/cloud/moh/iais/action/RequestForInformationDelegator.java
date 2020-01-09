@@ -461,7 +461,8 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
         requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         licPremisesReqForInfoDto.setAction("update");
-        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto, signature.date(), signature.authorization()).getEntity();        // 		doUpdate->OnStepProcess
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();        // 		doUpdate->OnStepProcess
     }
 }

@@ -42,9 +42,13 @@ public class SendsReminderToReplyRfiBatchjob {
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
 
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
     public void start(BaseProcessClass bpc){
         logAbout("start");
     }
@@ -78,8 +82,10 @@ public class SendsReminderToReplyRfiBatchjob {
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         licPremisesReqForInfoDto1.setAction("update");
-        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1, signature.date(), signature.authorization()).getEntity();
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto1, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+
     }
     private void logAbout(String methodName){
         log.debug(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
