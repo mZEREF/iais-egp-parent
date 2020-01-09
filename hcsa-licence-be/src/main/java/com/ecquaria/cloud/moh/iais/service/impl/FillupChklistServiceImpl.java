@@ -521,13 +521,15 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             serviceCode = svcDto.getSvcCode();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
-        AppPremisesPreInspectChklDto chklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,cDtoList.get(0).getConfigId()).getEntity();
-        CheckListDraftDto draft = null;
-        if(chklDto!=null){
-            AppPremInsDraftDto draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(chklDto.getId()).getEntity();
-            if(draftDto!=null){
-                String answerStr = draftDto.getAnswer();
-                draft = JsonUtil.parseToObject(answerStr,CheckListDraftDto.class);
+        CheckListDraftDto draft = new CheckListDraftDto();
+        if(cDtoList!=null){
+            AppPremisesPreInspectChklDto chklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,cDtoList.get(0).getConfigId()).getEntity();
+            if(chklDto!=null){
+                AppPremInsDraftDto draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(chklDto.getId()).getEntity();
+                if(draftDto!=null){
+                    String answerStr = draftDto.getAnswer();
+                    draft = JsonUtil.parseToObject(answerStr,CheckListDraftDto.class);
+                }
             }
         }
         return draft;
