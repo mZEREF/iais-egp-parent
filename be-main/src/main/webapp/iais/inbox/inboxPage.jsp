@@ -100,7 +100,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="table-gp">
-                                    <table class="table" style="border-collapse:collapse;">
+                                    <table class="table">
                                         <thead>
                                             <tr>
                                                 <th>S/N</th>
@@ -122,7 +122,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <c:forEach var="pool" items="${supTaskSearchResult.rows}" varStatus="status">
-                                                    <tr id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
+                                                    <tr style="display: table-row;" id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
                                                         <td>
                                                             <p class="visible-xs visible-sm table-row-title">S/N</p>
                                                             <p><c:out
@@ -271,6 +271,7 @@
 
         }else{
             var display =$('#advfilterson' + divid).css('display');
+            console.log(display)
             if(display == 'none'){
                 $('#advfilterson' + divid).show();
             }else{
