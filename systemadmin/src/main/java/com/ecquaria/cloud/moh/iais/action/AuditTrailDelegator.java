@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -231,11 +232,30 @@ public class AuditTrailDelegator {
         String jsonStr = JsonUtil.parseToJson(searchResult.getRows());
         auditTrailQueryDtoList = JsonUtil.parseToList(jsonStr, AuditTrailQueryDto.class);
 
-        ExcelWriter excelWriter = new ExcelWriter("AuditDto", null);
-        excelWriter.exportXls(auditTrailQueryDtoList);
+       /* ExcelWriter excelWriter = new ExcelWriter("AuditDto", null);
+        excelWriter.exportXls(auditTrailQueryDtoList);*/
 
     }
 
+    public static void main(String[] args) {
+        List<HcsaChklSvcRegulationDto> hcsaChklSvcRegulationDtoList = new ArrayList<>();
+        HcsaChklSvcRegulationDto hcsaChklSvcRegulationDto = new HcsaChklSvcRegulationDto();
+        hcsaChklSvcRegulationDto.setId("11111");
+        hcsaChklSvcRegulationDto.setClauseNo("1222222");
+        hcsaChklSvcRegulationDto.setClause("222223333");
+        hcsaChklSvcRegulationDto.setStatus("333333333");
+
+        HcsaChklSvcRegulationDto hcsaChklSvcRegulationDto2 = new HcsaChklSvcRegulationDto();
+        hcsaChklSvcRegulationDto2.setId("11133311");
+        hcsaChklSvcRegulationDto2.setClauseNo("yuyyuyuy");
+        hcsaChklSvcRegulationDto2.setClause("uyuyuyuyuy");
+        hcsaChklSvcRegulationDto2.setStatus("333333333");
+
+        hcsaChklSvcRegulationDtoList.add(hcsaChklSvcRegulationDto);
+        hcsaChklSvcRegulationDtoList.add(hcsaChklSvcRegulationDto2);
+
+        ExcelWriter.exportExcel(hcsaChklSvcRegulationDtoList, HcsaChklSvcRegulationDto.class, "Checklist_Regulations_Upload_Template");
+    }
 
     /**
     * @AutoStep: doQuery

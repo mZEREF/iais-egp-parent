@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
  */
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -32,33 +33,46 @@ import static org.apache.poi.ss.usermodel.CellType.STRING;
 @Slf4j
 public final class ExcelReader {
     private static String pattern = "yyyy-MM-dd HH:mm:ss";
-    public static String DATE_TYPE_NAME             = "java.util.Date";
+    private static String DATE_TYPE_NAME             = "java.util.Date";
 
-    public static String EXCEL_TYPE_HSSF			= "xls";
-    public static String EXCEL_TYPE_XSSF			= "xlsx";
+    private static String EXCEL_TYPE_HSSF			= "xls";
+    private static String EXCEL_TYPE_XSSF			= "xlsx";
 
-    public static <T> List<T> excelReader(File file, Class<T> clazz) throws IaisRuntimeException {
+    public static <T> List<T> excelReader(File file, Class<?> clazz) throws IaisRuntimeException {
+        if (file == null || !file.exists()){
+            throw new IaisRuntimeException("Please check excel source is exists");
+        }
+
+        if (clazz == null){
+            throw new IaisRuntimeException("Please check excel bean class");
+        }
+
         boolean canConver = canConvert(file, clazz);
         if (!canConver){
             throw new IaisRuntimeException("Excel conversion JavaBean failed");
         }
 
         List<List<String>> result = parse(file);
-        return result.stream().map(x -> setField(clazz, x)).collect(Collectors.toList());
+        return (List<T>) result.stream().map(x -> setField(clazz, x)).collect(Collectors.toList());
     }
 
-    private static boolean canConvert(File file, Class clazz) {
+    private static boolean canConvert(File file, Class<?> clazz) {
         Sheet sheet = parseFile(file);
         String sheetName = sheet.getSheetName();
-        String beanName = clazz.getSimpleName();
-        if (!sheetName.equals(beanName)){
+        ExcelSheetProperty annotation = clazz.getAnnotation(ExcelSheetProperty.class);
+
+        if (annotation == null){
+            throw new IaisRuntimeException("Please check the sheet annotation for the excel source class.");
+        }
+
+        if (!sheetName.equals(annotation.sheetName())){
             return false;
         }
 
         return true;
     }
 
-    public static List<List<String>> parse(File file) {
+    private static List<List<String>> parse(File file) {
         Sheet sheet = parseFile(file);
         int rowCount = sheet.getPhysicalNumberOfRows();
         int cellCount = sheet.getRow(0).getPhysicalNumberOfCells();
@@ -80,9 +94,9 @@ public final class ExcelReader {
      * @return
      */
     @SuppressWarnings("resource")
-    public static Sheet parseFile(File file) {
+    private static Sheet parseFile(File file) {
         FileInputStream in = null;
-        Workbook workBook = null;
+        Workbook workBook;
         try {
             String suffix = file.getName().substring(file.getName().indexOf(".") + 1);
             in = new FileInputStream(file);
@@ -101,9 +115,9 @@ public final class ExcelReader {
         }
     }
 
-    public static <T> T setField(Class<T> clazz, List<String> rowDatas) {
+    private static Object setField(Class<?> clazz, List<String> rowDatas) {
         try {
-            T obj = clazz.newInstance();
+            Object obj = clazz.newInstance();
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 // Use iais project folder ExcelProperty Annotation Class
@@ -122,11 +136,11 @@ public final class ExcelReader {
         }
     }
 
-   public static String getCellName(Sheet sheet, int cellIndex){
+    private static String getCellName(Sheet sheet, int cellIndex){
        return sheet.getRow(0).getCell(cellIndex).toString();
    }
 
-   public static String getCellValue(Sheet sheet, int rowIndex, int cellIndex) {
+    private static String getCellValue(Sheet sheet, int rowIndex, int cellIndex) {
         return getCellValue(sheet.getRow(rowIndex).getCell(cellIndex));
     }
 

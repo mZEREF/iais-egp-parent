@@ -25,9 +25,7 @@ public class SystemParameterDtoTest {
         dto.getModule();
         dto.getStatus();
         dto.getValue();
-        dto.getValueType();
-        dto.getUpdatedBy();
-        dto.getUpdatedOn();
+        dto.getParamType();
 
 
         dto.setId(null);
@@ -36,9 +34,7 @@ public class SystemParameterDtoTest {
         dto.setModule(null);
         dto.setStatus(null);
         dto.setValue(null);
-        dto.setValueType(null);
-        dto.setUpdatedBy(null);
-        dto.setUpdatedOn(null);
+        dto.setParamType(null);
         Assert.assertTrue(true);
     }
 }

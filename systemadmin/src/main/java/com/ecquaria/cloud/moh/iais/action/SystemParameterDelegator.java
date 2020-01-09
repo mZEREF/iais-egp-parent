@@ -133,7 +133,7 @@ public class SystemParameterDelegator {
 
         queryDto.setDomainType(domainType);
         queryDto.setModule(module);
-        queryDto.setStatus(status != null ? status.charAt(0) : null);
+        queryDto.setStatus(status);
         queryDto.setDescription(description);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
