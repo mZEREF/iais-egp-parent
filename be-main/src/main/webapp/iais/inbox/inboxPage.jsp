@@ -316,7 +316,7 @@
                         var address = res.rows[i].address;
                         $('#advfilter' + divid).append('<div class="col-xs-12 col-lg-12" style = "color : ' + color + ';">' +
                             '<div class="col-xs-1  col-lg-1 app-in-group-head"></div>' +
-                            '<div class="col-xs-2  col-lg-2 app-in-group-second"><a style = "color : ' + color + ';" href=' + url[res.rows[i].refNo] + '><u>' + res.rows[i].applicationNo + '</u></a></div>' +
+                            '<div class="col-xs-2  col-lg-2 app-in-group-second"><a href=' + url[res.rows[i].refNo] + '><u>' + res.rows[i].applicationNo + '</u></a></div>' +
                             '<div class="col-xs-2  col-lg-2">' + serviceName[res.rows[i].serviceId] + '</div>' +
                             '<div class="col-xs-2  col-lg-2">N/A</div>' +
                             '<div class="col-xs-2  col-lg-2">' + res.rows[i].status + '</div>' +
