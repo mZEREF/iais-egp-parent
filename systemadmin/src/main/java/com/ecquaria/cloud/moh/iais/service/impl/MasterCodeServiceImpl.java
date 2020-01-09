@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
@@ -49,6 +50,11 @@ public class MasterCodeServiceImpl implements MasterCodeService {
     @Override
     public String findCodeCategoryByDescription(String description) {
         return masterCodeClient.getCodeCategoryByDescription(description).getEntity();
+    }
+
+    @Override
+    public MasterCodeCategoryDto saveMasterCodeCategory(MasterCodeCategoryDto masterCodeCategoryDto) {
+        return masterCodeClient.saveMasterCodeCategory(masterCodeCategoryDto).getEntity();
     }
 
     @Override

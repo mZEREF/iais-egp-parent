@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
-    <form class="form-horizontal" method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
+    <form class="form-horizontal" method="post" id="MasterCodeCreateForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -20,7 +20,7 @@
                             <h2>Create Master Code</h2>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeKey">Master Code Key</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="codeKey">Master Code Key <span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="codeKey" type="text" name="codeKey">
@@ -41,8 +41,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="codeCategory">Code Category.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeCategory" type="text" name="codeCategory">
-                                    <span id="error_codeCategory" name="iaisErrorMsg" class="error-msg"></span>
+                                    <input id="codeCategory" type="text" name="codeCategory" value="${codeCategory}" readonly="readonly">
                                 </div>
                             </iais:value>
                         </div>
@@ -63,7 +62,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeSequence">Sequence</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="codeSequence">Sequence <span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="codeSequence" type="text" name="codeSequence">
@@ -88,16 +87,17 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeStatus">Status.</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="codeStatus">Status.<span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeStatus" type="text" name="codeStatus">
+                                    <iais:select name="codeStatus" id="codeStatus" options="codeStatus"
+                                                 firstOption="Select a status"></iais:select>
                                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date.</label>
+                            <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date. <span class="glyphicon glyphicon-star" aria-hidden="true" style="color: rgb(221, 0, 7);"></span></label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="esd" name="esd"/>
@@ -116,9 +116,6 @@
                     </div>
                     <div class="application-tab-footer">
                         <div class="row">
-                            <div class="col-xs-2 col-sm-2">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a></div>
-                            </div>
                             <div class="col-xs-10 col-sm-10">
                                 <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myCreateModal">SUBMIT</button></div>
                             </div>
@@ -139,7 +136,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="submit('save')">Confirm</button>
+                                    <button type="button" class="btn btn-primary" onclick="submitAction('save')">Confirm</button>
                                 </div>
                             </div>
                         </div>
@@ -152,8 +149,8 @@
 </div>
 
 <script>
-    function submit(action){
+    function submitAction(action){
         $("[name='crud_action_type']").val(action);
-        $("#MasterCodeForm").submit();
+        $("#MasterCodeCreateForm").submit();
     }
 </script>

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -206,13 +207,54 @@ public class MasterCodeDelegator {
         }
     }
 
+    public void doCreateCategory(BaseProcessClass bpc) throws ParseException {
+        logAboutStart("doCreate");
+        HttpServletRequest request = bpc.request;
+        String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
+        if (!SystemAdminBaseConstants.SAVE_ACTION.equals(type)){
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+            return;
+        }
+        MasterCodeCategoryDto masterCodeCategoryDto = new MasterCodeCategoryDto();
+        String categoryDescription = ParamUtil.getString(request,"codeKey");
+        String isEditable = ParamUtil.getString(request,"editable");
+        String codeCategory = masterCodeService.findCodeCategoryByDescription(categoryDescription);
+        masterCodeCategoryDto.setCategoryDescription(codeCategory);
+        masterCodeCategoryDto.setIsEditable(isEditable == null?null:Integer.valueOf(isEditable));
+        masterCodeCategoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeCategoryDto,SystemAdminBaseConstants.SAVE_ACTION);
+        if(validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
+            return;
+        }
+        if (StringUtil.isEmpty(codeCategory)){
+            masterCodeService.saveMasterCodeCategory(masterCodeCategoryDto);
+        }
+        ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+        ParamUtil.setRequestAttr(request, "codeCategory",categoryDescription);
+    }
+
+    public void prepareCode(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        prepareSelect(request);
+        String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
+        if (SystemAdminBaseConstants.SAVE_ACTION.equals(type)){
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+        }else{
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
+        }
+
+    }
+
     /**
      * AutoStep: doCreate
      *
      * @param bpc
      * @throws
      */
-    public void doCreate(BaseProcessClass bpc) throws ParseException {
+    public void doCreateCode(BaseProcessClass bpc) throws ParseException {
         logAboutStart("doCreate");
         HttpServletRequest request = bpc.request;
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
@@ -234,7 +276,6 @@ public class MasterCodeDelegator {
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
 
     }
-
 
     /**
      * AutoStep: prepareEdit
@@ -306,5 +347,12 @@ public class MasterCodeDelegator {
 
     private void logAboutStart(String methodName){
         log.debug("**** The  "+methodName+"  Start ****");
+    }
+
+    private void prepareSelect(HttpServletRequest request){
+        List<SelectOption> selectCodeStatusList = new ArrayList<>();
+        selectCodeStatusList.add(new SelectOption("CMSTAT001", "Active"));
+        selectCodeStatusList.add(new SelectOption("CMSTAT003", "Inactive"));
+        ParamUtil.setRequestAttr(request, "codeStatus", selectCodeStatusList);
     }
 }
