@@ -39,8 +39,9 @@ public class CrudHelper {
     public static void doSorting(SearchParam searchParam, HttpServletRequest request){
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
-        searchParam.setSort(sortFieldName,sortType);
-
+        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+            searchParam.setSort(sortFieldName,sortType);
+        }
     }
     /**
      * @description: for the CRUD  do the paging

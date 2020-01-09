@@ -147,7 +147,7 @@ public class PaginationTag extends DivTagSupport {
                 sb.append("</a></li>");
             }
         } else {
-            sb.append("<li><a href=\"#\" aria-label=\"Previous\"><span aria-hidden=\"true\"><i class=\"fa fa-chevron-left\"></i></span></a></li>");
+            sb.append("<li><a href=\"#\" aria-label=\"Previous\"><span aria-hidden=\"false\"><i class=\"fa fa-chevron-left\"></i></span></a></li>");
             sb.append("<li class=\"active\"><a href=\"#\">");
             sb.append(pageNo);
             sb.append("</a></li>");
