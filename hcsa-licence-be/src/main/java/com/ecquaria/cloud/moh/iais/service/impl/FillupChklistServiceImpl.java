@@ -659,7 +659,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     private void updateInspectionStatus(ApplicationDto applicationDto) {
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos =  appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
         AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationDtos.get(0).getId()).getEntity();
-        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION);
+        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_EMAIL_VERIFY);
         appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
