@@ -181,18 +181,18 @@ public class HcsaApplicationDelegator {
         List<String> actionByList=new ArrayList<>();
         for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
              ) {
-            String actionBy=appPremisesRoutingHistoryDto.getActionby();
-            actionByList.add(actionBy);
+            actionByList.add(appPremisesRoutingHistoryDto.getActionby());
         }
         List<OrgUserDto> actionByRealNameList=applicationViewService.getUserNameById(actionByList);
         for (int i = 0; i <applicationViewDto.getAppPremisesRoutingHistoryDtoList().size(); i++) {
+            String username="-";
             for (int j = 0; j <actionByRealNameList.size() ; j++) {
                 if ((applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getActionby()).equals(actionByRealNameList.get(j).getId())){
-                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(actionByRealNameList.get(j).getDisplayName());
-                }else{
-                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby("-");
+                    username=actionByRealNameList.get(j).getDisplayName();
+                    break;
                 }
             }
+            applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setActionby(username);
             String statusUpdate=MasterCodeUtil.getCodeDesc(applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getAppStatus());
             applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setAppStatus(statusUpdate);
             String workGroupId = applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).getWrkGrpId();
@@ -201,6 +201,8 @@ public class HcsaApplicationDelegator {
                 String workingGroupName=applicationViewService.getWrkGrpName(workGroupId);
                 if (!StringUtil.isEmpty(workingGroupName)){
                     applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup(workingGroupName);
+                }else{
+                    applicationViewDto.getAppPremisesRoutingHistoryDtoList().get(i).setWorkingGroup("-");
                 }
             }
         }
@@ -281,7 +283,14 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
-        String nextStage = ParamUtil.getString(bpc.request,"verified");
+        String verified = ParamUtil.getString(bpc.request,"verified");
+        String rollBack=ParamUtil.getString(bpc.request,"rollBack");
+        String nextStage=null;
+        if(("---select---").equals(rollBack)){
+            nextStage=verified;
+        }else{
+            nextStage="PROCRB";
+        }
         log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
         ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
         log.debug(StringUtil.changeForLog("the do chooseStage end ...."));

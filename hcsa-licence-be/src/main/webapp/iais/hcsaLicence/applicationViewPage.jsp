@@ -517,9 +517,9 @@
                                                             </select>
                                                         </td>
                                                     </tr>
-                                                    <tr id="recomedationDropdown" >
+                                                    <tr id="recomedationDropdown" class="hidden">
                                                         <td>
-                                                            <span>Recomedation:</span>
+                                                            <span>Recommendation:</span>
                                                         </td>
                                                         <td>
                                                             <select name="recomedation" class="table-select">
@@ -603,7 +603,7 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        if('${applicationViewDto.applicationDto.status}' == 'APST003'||'${applicationViewDto.applicationDto.status}' == 'APST012'){
+        if('${taskDto.taskKey}' == '12848A70-820B-EA11-BE7D-000C29F371DC'||'${taskDto.taskKey}' == '13848A70-820B-EA11-BE7D-000C29F371DC'){
             $('#ApplicationViewInspection').css('display','none');
             $('#recomedationDropdown').removeClass('hidden');
         }
