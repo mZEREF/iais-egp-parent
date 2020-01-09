@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -20,7 +21,7 @@ public interface PublicHolidayClient {
 
 
     @PostMapping(value = "/iais-publicHoliday/getAllHoliday",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<PublicHolidayDto>> getAllHoliday(@RequestBody SearchParam searchParam);
+    FeignResponseEntity<SearchResult<PublicHolidayQueryDto>> getAllHoliday(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/iais-publicHoliday/doSave", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PublicHolidayDto> doSave(@RequestBody PublicHolidayDto publicHolidayDto);

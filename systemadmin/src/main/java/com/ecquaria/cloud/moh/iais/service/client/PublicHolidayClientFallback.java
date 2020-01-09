@@ -9,13 +9,14 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 public class PublicHolidayClientFallback implements PublicHolidayClient{
 
     @Override
-    public FeignResponseEntity<SearchResult<PublicHolidayDto>> getAllHoliday(SearchParam searchParam) {
+    public FeignResponseEntity<SearchResult<PublicHolidayQueryDto>> getAllHoliday(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

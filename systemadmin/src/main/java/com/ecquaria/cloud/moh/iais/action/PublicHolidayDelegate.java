@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -40,7 +41,7 @@ public class PublicHolidayDelegate {
     @Autowired
     PublicHolidayServiceImpl publicHolidayService;
 
-    private SearchParam holidaySearchParam = new SearchParam(PublicHolidayDto.class.getName());
+    private SearchParam holidaySearchParam = new SearchParam(PublicHolidayQueryDto.class.getName());
     /**
      * doStart
      * @param bpc
@@ -60,13 +61,13 @@ public class PublicHolidayDelegate {
      */
     public void doPrepare(BaseProcessClass bpc){
         QueryHelp.setMainSql("systemAdmin", "getHolidayList", holidaySearchParam);
-        List<PublicHolidayDto> publicHolidayDtoList = publicHolidayService.getHoliday(holidaySearchParam).getRows();
+        List<PublicHolidayQueryDto> publicHolidayDtoList = publicHolidayService.getHoliday(holidaySearchParam).getRows();
 
         Calendar cal = Calendar.getInstance();
 
         String []arr = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         List<Map<String,String>> holidayList = new ArrayList<>();
-        for (PublicHolidayDto item: publicHolidayDtoList
+        for (PublicHolidayQueryDto item: publicHolidayDtoList
              ) {
             Map<String, String> holidayMap = new HashMap<String,String>();
             if(item.getFromDate().equals(item.getToDate())){

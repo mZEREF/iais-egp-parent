@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayQueryDto;
 import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
 import com.ecquaria.cloud.moh.iais.service.client.PublicHolidayClient;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
     private PublicHolidayClient publicHolidayClient ;
 
     @Override
-    public SearchResult<PublicHolidayDto> getHoliday(SearchParam searchParam) {
+    public SearchResult<PublicHolidayQueryDto> getHoliday(SearchParam searchParam) {
         return publicHolidayClient.getAllHoliday(searchParam).getEntity();
     }
 
