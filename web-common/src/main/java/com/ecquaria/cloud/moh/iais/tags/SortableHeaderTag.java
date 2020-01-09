@@ -47,7 +47,7 @@ public class SortableHeaderTag extends DivTagSupport {
         }
         StringBuilder sb = new StringBuilder();
         sb.append("<th class=\"sorting\">");
-        sb.append(StringUtil.viewHtml(value));
+
         if (needSort) {
             sb.append("<span class=\"column-sort\">");
             String isActiveUp = "";
@@ -58,14 +58,17 @@ public class SortableHeaderTag extends DivTagSupport {
                 Map<String, String> sortMap = searchParam.getSortMap();
                 if (sortMap.containsKey(field.toUpperCase())) {
                     String type = sortMap.get(field.toUpperCase());
-                    if (SearchParam.ASCENDING.equals(type))
+                    if (SearchParam.ASCENDING.equals(type)){
                         isActiveUp = ACTIVE;
-                    else if (SearchParam.DESCENDING.equals(type))
+                    } else if (SearchParam.DESCENDING.equals(type)){
                         isActiveDown = ACTIVE;
+                    }
                 }
             }
+
             generateHtml(sb,isActiveUp,isActiveDown);
         }
+        sb.append(StringUtil.viewHtml(value));
         sb.append("</th>");
 
         try {
@@ -83,7 +86,7 @@ public class SortableHeaderTag extends DivTagSupport {
         if (StringUtil.isEmpty(jsFunc)) {
             jsFunc = "sortRecords";
         }
-        sb.append("<a class=\"sort-up");
+        sb.append("<a class=\"sort-up" );
         sb.append(isActiveUp).append("\"").append(" href=\"");
         if (!ACTIVE.equals(isActiveUp)) {
             sb.append("javascript:");
@@ -96,8 +99,8 @@ public class SortableHeaderTag extends DivTagSupport {
         } else {
             sb.append("#");
         }
-        sb.append("\"  title=\"Sort up\"></a>");
-        sb.append("<a class=\"sort-down");
+        sb.append("\"  title=\"Sort up\"><span class=\"glyphicon glyphicon-chevron-up\"></span></a>");
+        sb.append("<a class=\"sort-down ");
         sb.append(isActiveDown).append("\"").append(" href=\"");
         if (!ACTIVE.equals(isActiveDown)) {
             sb.append("javascript:");
@@ -110,7 +113,9 @@ public class SortableHeaderTag extends DivTagSupport {
         } else {
             sb.append("#");
         }
-        sb.append("\" title=\"Sort down\"></a></span>");
+        sb.append("\" title=\"Sort down\"><span class=\"glyphicon glyphicon-chevron-down\" style=\"font-size: 10px\"></span></a></span>");
+
+
     }
     @Override
     public int doEndTag() {
