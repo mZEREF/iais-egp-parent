@@ -89,7 +89,7 @@ public class BackendAjaxController {
         String subStage = "";
         if(appInspectionStatusDto != null) {
             String status = appInspectionStatusDto.getStatus();
-            if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO_RESULT)) {
+            if (status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT)) {
 
             }
         }
