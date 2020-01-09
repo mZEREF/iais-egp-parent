@@ -13,73 +13,6 @@
 <%
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
-<style type="text/css">
-    .border-div {
-        padding-left: 0px;
-        padding-right: 0px;
-        background-color: #FFFFFF;
-        border-top: 1px solid #CFCFCF;
-        border-bottom: 1px solid #CFCFCF;
-        margin-top: -1px;
-        height: 3.5rem;
-        vertical-align: middle;
-        display: table;
-    }
-
-    .border-div-cell {
-        border-left: 1px solid #CFCFCF;
-        display: table-cell;
-        height: 3.5rem;
-    }
-
-    .border-div-cell-last {
-        border-right: 1px solid #CFCFCF;
-    }
-
-    .app-groups {
-        padding-left: 0px;
-        padding-right: 0px;
-        border-top: 1px solid #CFCFCF;
-        border-bottom: 1px solid #CFCFCF;
-        vertical-align: middle;
-        height: 3.5rem;
-        margin-top: -1px;
-    }
-
-    .app-groups div {
-        border-left: 1px solid #CFCFCF;
-        display: table-cell;
-        height: 3.5rem;
-    }
-
-    .app-in-group {
-        padding-left: 0px;
-        padding-right: 0px;
-        margin-bottom: 1px;
-        border-top: 1px solid #CFCFCF;
-        vertical-align: middle;
-        margin-top: -1px;
-    }
-
-    .app-in-group div {
-        padding-left: 0px;
-        padding-right: 0px;
-        border: 1px solid #797979;
-        display: table-cell;
-        height: 3.5rem;
-    }
-
-    .app-in-group-head {
-        border: 1px solid #FFFFFF !important;
-        padding: 0px;
-        margin: -1px;
-    }
-
-    .app-in-group-second {
-        margin-left: 2px;
-        border-left: 2px solid #797979 !important;
-    }
-</style>
 <div class="main-content">
     <form method="post" id="mainSupForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
@@ -101,58 +34,58 @@
                         </iais:value>
                     </iais:row>
                 </iais:section>
-                    <iais:section title="" id="supPoolList">
-                        <iais:row>
-                            <iais:field value="HCI Code"/>
-                            <iais:value width="18">
-                                <input type="text" name="hci_code" value="${hci_code}"/>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="HCI Name"/>
-                            <iais:value width="18">
-                                <input type="text" name="hci_name" value="${hci_name}"/>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="HCI Address"/>
-                            <iais:value width="18">
-                                <input type="text" name="hci_address" value="${blk_no}"/>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="Application No."/>
-                            <iais:value width="18">
-                                <input type="text" name="application_no" value="${application_no}"/>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="Application Type"/>
-                            <iais:value width="18">
-                                <iais:select name="application_type" options="appTypeOption"
-                                             firstOption="Please select"
-                                             value="${supTaskSearchParam.filters['application_type']}"></iais:select>
-                            </iais:value>
-                        </iais:row>
-                        <iais:row>
-                            <iais:field value="Application Status"/>
-                            <iais:value width="18">
-                                <iais:select name="application_status" options="appStatusOption"
-                                             firstOption="Please select"
-                                             value="${supTaskSearchParam.filters['application_status']}"></iais:select>
-                            </iais:value>
-                        </iais:row>
-                        <iais:action style="text-align:center;">
-                            <button class="btn btn-lg btn-login-submit" type="button"
-                                    style="background:#2199E8; color: white"
-                                    onclick="javascript:doInspectorSearchTaskSearch()">Search
-                            </button>
-                            <button class="btn btn-lg btn-login-clear" type="button"
-                                    style="background:#2199E8; color: white"
-                                    onclick="javascript:doInspectorSearchTaskClear()">Clear
-                            </button>
-                        </iais:action>
-                    </iais:section>
+                <iais:section title="" id="supPoolList">
+                    <iais:row>
+                        <iais:field value="HCI Code"/>
+                        <iais:value width="18">
+                            <input type="text" name="hci_code" value="${hci_code}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="HCI Name"/>
+                        <iais:value width="18">
+                            <input type="text" name="hci_name" value="${hci_name}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="HCI Address"/>
+                        <iais:value width="18">
+                            <input type="text" name="hci_address" value="${blk_no}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Application No."/>
+                        <iais:value width="18">
+                            <input type="text" name="application_no" value="${application_no}"/>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Application Type"/>
+                        <iais:value width="18">
+                            <iais:select name="application_type" options="appTypeOption"
+                                         firstOption="Please select"
+                                         value="${supTaskSearchParam.filters['application_type']}"></iais:select>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Application Status"/>
+                        <iais:value width="18">
+                            <iais:select name="application_status" options="appStatusOption"
+                                         firstOption="Please select"
+                                         value="${supTaskSearchParam.filters['application_status']}"></iais:select>
+                        </iais:value>
+                    </iais:row>
+                    <iais:action style="text-align:center;">
+                        <button class="btn btn-lg btn-login-submit" type="button"
+                                style="background:#2199E8; color: white"
+                                onclick="javascript:doInspectorSearchTaskSearch()">Search
+                        </button>
+                        <button class="btn btn-lg btn-login-clear" type="button"
+                                style="background:#2199E8; color: white"
+                                onclick="javascript:doInspectorSearchTaskClear()">Clear
+                        </button>
+                    </iais:action>
+                </iais:section>
             </div>
             <iais:pagination param="supTaskSearchParam" result="supTaskSearchResult"/>
 
@@ -161,92 +94,82 @@
                     <h3>
                         <span>Search Result</span>
                     </h3>
-                    <div class="table-gp" class="col-xs-12  col-lg-12">
-                        <div class="table">
-                            <div class="col-xs-12  col-lg-12 border-div">
-                                <div class="col-xs-1 col-lg-1 border-div-cell"><iais:sortableHeader needSort="false"
-                                                                                                    field=""
-                                                                                                    value="S/N"></iais:sortableHeader></div>
-                                <div class="col-xs-3  col-lg-3 border-div-cell"><iais:sortableHeader needSort="false"
-                                                                                                     field="APPLICATION_NO"
-                                                                                                     value="Application No."></iais:sortableHeader></div>
-                                <div class="col-xs-2  col-lg-2 border-div-cell"><iais:sortableHeader needSort="false"
-                                                                                                     field="APP_TYPE"
-                                                                                                     value="Application Type"></iais:sortableHeader></div>
-                                <div class="col-xs-2  col-lg-2 border-div-cell"><iais:sortableHeader needSort="false"
-                                                                                                     field="SUB_TYPE"
-                                                                                                     value="Submission Type"></iais:sortableHeader></div>
-                                <div class="col-xs-2  col-lg-2 border-div-cell"><iais:sortableHeader needSort="false"
-                                                                                                     field="APP_DATE"
-                                                                                                     value="Application Date(dd/mm/yyyy)"></iais:sortableHeader></div>
-                                <div class="col-xs-2  col-lg-2 border-div-cell border-div-cell-last">
-                                    <iais:sortableHeader needSort="false" field="PAY_STATUS"
-                                                         value="Payment Status"></iais:sortableHeader></div>
+
+
+                    <div class="tab-pane active" id="tabinfo" role="tabpanel">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="table-gp">
+                                    <table class="table" style="border-collapse:collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th>S/N</th>
+                                                <th>Application No</th>
+                                                <th>Application Type</th>
+                                                <th>Submission Type</th>
+                                                <th>Application Date <span class="sort"></span></th>
+                                                <th>Payment Status</th>
+                                            </tr>
+                                        </thead>
+                                        <c:choose>
+                                            <c:when test="${empty supTaskSearchResult.rows}">
+                                                <tr>
+                                                    <td class="col-xs-12">
+                                                        <iais:message key="No Result!" escape="true"></iais:message>
+                                                        <!--No Record!!-->
+                                                    </td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach var="pool" items="${supTaskSearchResult.rows}" varStatus="status">
+                                                    <tr id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">S/N</p>
+                                                            <p><c:out
+                                                                    value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Application
+                                                                No</p>
+                                                            <p>
+                                                                    <c:out value="${pool.applicationGroupNo}"/>
+                                                                <a class="accordion-toggle" data-toggle="collapse"
+                                                                   data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
+                                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')">
+                                                                </a>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Application
+                                                                Type</p>
+                                                            <p><c:out value="${pool.applicationType}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Submission
+                                                                Type</p>
+                                                            <c:if test="${pool.count > 1}">
+                                                                <p><c:out value="Multiple"/></p>
+                                                            </c:if>
+                                                            <c:if test="${pool.count == 1}">
+                                                                <p><c:out value="Single"/></p>
+                                                            </c:if>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Application
+                                                                Date</p>
+                                                            <p><c:out value="${pool.submitDate}"/></p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="visible-xs visible-sm table-row-title">Payment
+                                                                Status</p>
+                                                            <p><c:out value="${pool.paymentstatus}"/>Status</p>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </table>
+                                </div>
                             </div>
-                            <c:choose>
-                                <c:when test="${empty supTaskSearchResult.rows}">
-                                    <div>
-                                        <div class="col-xs-12">
-                                            <iais:message key="No Result!" escape="true"></iais:message>
-                                            <!--No Record!!-->
-                                        </div>
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:forEach var="pool" items="${supTaskSearchResult.rows}" varStatus="status">
-                                        <div class="col-xs-12 app-groups">
-                                            <div class="col-xs-1  col-lg-1 border-div-cell"><c:out
-                                                    value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></div>
-                                            <div class="col-xs-3  col-lg-3 border-div-cell"><c:out
-                                                    value="${pool.applicationGroupNo}"/>
-                                                <p class="btn btn-default btn-sm" data-toggle="collapse"
-                                                   data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
-                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')">
-                                                    show more
-                                                </p>
-                                            </div>
-                                            <div class="col-xs-2  col-lg-2 border-div-cell"><c:out
-                                                    value="${pool.applicationType}"/></div>
-                                            <c:if test="${pool.count > 1}">
-                                                <div class="col-xs-2  col-lg-2 border-div-cell"><c:out
-                                                        value="Multiple"/></div>
-                                            </c:if>
-                                            <c:if test="${pool.count == 1}">
-                                                <div class="col-xs-2  col-lg-2 border-div-cell"><c:out
-                                                        value="Single"/></div>
-                                            </c:if>
-                                            <div class="col-xs-2  col-lg-2 border-div-cell"><c:out
-                                                    value="${pool.submitDate}"/></div>
-                                            <div class="col-xs-2  col-lg-2 border-div-cell-last"><c:out
-                                                    value="${pool.paymentstatus}"/></div>
-                                        </div>
-                                        <div id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
-                                             class="collapse table col-xs-12 col-lg-12 app-in-group">
-                                            <div class="col-xs-12 col-lg-12 ">
-                                                <div class="col-xs-1  col-lg-1 app-in-group-head"></div>
-                                                <div class="col-xs-2  col-lg-2 app-in-group-second"><iais:sortableHeader
-                                                        needSort="false" field="APPLICATION_NO"
-                                                        value="Application No."></iais:sortableHeader></div>
-                                                <div class="col-xs-2  col-lg-2"><iais:sortableHeader needSort="false"
-                                                                                                     field="SERVICE"
-                                                                                                     value="Service"></iais:sortableHeader></div>
-                                                <div class="col-xs-2  col-lg-2"><iais:sortableHeader needSort="false"
-                                                                                                     field="LICENE_EXPIRY_DATE"
-                                                                                                     value="Licence Expiry Date"></iais:sortableHeader></div>
-                                                <div class="col-xs-2  col-lg-2"><iais:sortableHeader needSort="false"
-                                                                                                     field="APPLICATION_STATUS"
-                                                                                                     value="Application Status"></iais:sortableHeader></div>
-                                                <div class="col-xs-1  col-lg-1"><iais:sortableHeader needSort="false"
-                                                                                                     field="HCICODE"
-                                                                                                     value="HCI Code"></iais:sortableHeader></div>
-                                                <div class="col-xs-2  col-lg-2"><iais:sortableHeader needSort="false"
-                                                                                                     field="HCIADDRESS"
-                                                                                                     value="HCI Address"></iais:sortableHeader></div>
-                                            </div>
-                                        </div>
-                                    </c:forEach>
-                                </c:otherwise>
-                            </c:choose>
                         </div>
                     </div>
                 </div>
@@ -282,6 +205,7 @@
         $('input[name="hci_code"]').val("");
         $('input[name="hci_name"]').val("");
         $('input[name="hci_address"]').val("");
+        $(".current").text("Please select");
     }
 
     function submit(action) {
@@ -304,29 +228,54 @@
                     var serviceName = data.serviceName;
                     var res = data.ajaxResult;
                     var url = data.appNoUrl;
+                    var html = '';
+                    html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson'+ divid+'">' +
+                        '<td colspan="6" style="padding: 0px 8px !important;">' +
+                        '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                        '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                        '<thead>' +
+                        '<tr>' +
+                        '<th>Application No</th>' +
+                        '<th>Service</th>' +
+                        '<th>Licence Expiry Date</th>' +
+                        '<th>Application Status</th>' +
+                        '<th>HCI Code</th>' +
+                        '<th>HCI Address</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
                     for (var i = 0; i < res.rowCount; i++) {
                         var color = "black";
-                        if(res.rows[i].timeLimitWarning == "black"){
+                        if (res.rows[i].timeLimitWarning == "black") {
                             color = "black";
-                        } else if (res.rows[i].timeLimitWarning == "red"){
+                        } else if (res.rows[i].timeLimitWarning == "red") {
                             color = "red";
-                        } else if (res.rows[i].timeLimitWarning == "amber"){
+                        } else if (res.rows[i].timeLimitWarning == "amber") {
                             color = "#DD9C00";
                         }
                         var address = res.rows[i].address;
-                        $('#advfilter' + divid).append('<div class="col-xs-12 col-lg-12" style = "color : ' + color + ';">' +
-                            '<div class="col-xs-1  col-lg-1 app-in-group-head"></div>' +
-                            '<div class="col-xs-2  col-lg-2 app-in-group-second"><a href=' + url[res.rows[i].refNo] + '><u>' + res.rows[i].applicationNo + '</u></a></div>' +
-                            '<div class="col-xs-2  col-lg-2">' + serviceName[res.rows[i].serviceId] + '</div>' +
-                            '<div class="col-xs-2  col-lg-2">N/A</div>' +
-                            '<div class="col-xs-2  col-lg-2">' + res.rows[i].status + '</div>' +
-                            '<div class="col-xs-1  col-lg-1">' + res.rows[i].hciCode + '</div>' +
-                            '<div class="col-xs-2  col-lg-2">' + address + '</div>' +
-                            '</div>');
+                        html += '<tr style = "color : ' + color + ';">' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a href=' + url[res.rows[i].refNo] + '>' + res.rows[i].applicationNo + '</a></p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res.rows[i].serviceId] + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>N/A</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].status + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + address + '</p></td>' +
+                            '</tr>';
                     }
+                    html += '</tbody></table></div></td></tr>';
+                    $('#advfilter' + divid).after(html);
                     dividlist.push(divid);
                 }
             )
+
+        }else{
+            var display =$('#advfilterson' + divid).css('display');
+            if(display == 'none'){
+                $('#advfilterson' + divid).show();
+            }else{
+                $('#advfilterson' + divid).hide();
+            }
 
         }
 
