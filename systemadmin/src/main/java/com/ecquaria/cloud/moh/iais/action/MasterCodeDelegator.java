@@ -75,7 +75,7 @@ public class MasterCodeDelegator {
         logAboutStart("prepareData");
         HttpServletRequest request = bpc.request;
 
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request,filterParameter);
         QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
         List<MasterCodeQueryDto> masterCodeQueryDtoList = searchResult.getRows();
@@ -90,8 +90,8 @@ public class MasterCodeDelegator {
         if(!StringUtil.isEmpty(searchResult)){
             ParamUtil.setSessionAttr(request,MasterCodeConstants.SEARCH_PARAM, searchParam);
             ParamUtil.setRequestAttr(request,MasterCodeConstants.SEARCH_RESULT, searchResult);
-            ParamUtil.setRequestAttr(request,"pageCount", searchResult.getPageCount(searchParam.getPageSize()));
         }
+
     }
 
     /**
@@ -167,6 +167,13 @@ public class MasterCodeDelegator {
         CrudHelper.doSorting(searchParam,bpc.request);
     }
 
+
+
+    public void doUpload(BaseProcessClass bpc){
+    }
+
+
+
     /**
      * AutoStep: doPaging
      *
@@ -176,8 +183,8 @@ public class MasterCodeDelegator {
     public void doPaging(BaseProcessClass bpc){
         logAboutStart("doPaging");
         HttpServletRequest request = bpc.request;
-        int pageNo = ParamUtil.getInt(bpc.request,SystemAdminBaseConstants.CRUD_ACTION_VALUE);
-        filterParameter.setPageNo(pageNo);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
     }
 
     /**

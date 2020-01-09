@@ -1,5 +1,5 @@
 <div class="main-content">
-    <form class="form-horizontal" method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="MasterCodeForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
@@ -13,6 +13,7 @@
                         </div>
                         <%@ include file="doSearchBody.jsp" %>
                         <table class="table">
+                        <iais:pagination  param="MasterCodeSearchParam" result="MasterCodeSearchResult"/>
                             <thead>
                             <tr>
                                 <th>No.</th>
@@ -139,20 +140,6 @@
                             </c:choose>
                             </tbody>
                         </table>
-
-                        <div class="table-footnote">
-                            <div class="row">
-                                <div class="col-xs-6 col-md-4">
-                                    <p class="count">${MasterCodeSearchResult.rowCount} out of ${MasterCodeSearchParam.pageNo}</p>
-                                </div>
-                                <div class="col-xs-6 col-md-8 text-right">
-                                    <div class="nav">
-                                        <ul class="pagination">
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

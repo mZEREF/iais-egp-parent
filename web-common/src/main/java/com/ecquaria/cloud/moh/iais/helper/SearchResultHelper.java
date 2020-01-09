@@ -16,34 +16,35 @@ import java.util.Map;
 @Slf4j
 public class SearchResultHelper {
 
-    public static SearchParam getSearchParam(HttpServletRequest request,boolean isNew, FilterParameter filter){
-        SearchParam searchParam = null;
-        if(!isNew){
-            searchParam = (SearchParam) ParamUtil.getSessionAttr(request, filter.getSearchAttr());
-        }else{
-            try {
-                if(searchParam == null || isNew){
-                    searchParam = new SearchParam(filter.getClz().getName());
-                    searchParam.setPageSize(filter.getPageSize());
-                    searchParam.setPageNo(filter.getPageNo());
-                    if (filter.getSortType() != null){
-                        searchParam.setSort(filter.getSortField(), filter.getSortType());
-                    }else {
-                        searchParam.setSort(filter.getSortField(), SearchParam.ASCENDING);
-                    }
-                    if(filter.getFilters()!=null){
-                        Map<String,Object> inboxMap = filter.getFilters();
-                        for(Map.Entry<String, Object> entry : inboxMap.entrySet()){
-                            String mapKey = entry.getKey();
-                            Object mapValue = entry.getValue();
-                            searchParam.addFilter(mapKey,mapValue,true);
-                        }
+    public static SearchParam getSearchParam(HttpServletRequest request, FilterParameter filter) {
+        return getSearchParam(request, false, filter);
+    }
+
+    public static SearchParam getSearchParam(HttpServletRequest request, boolean isNew, FilterParameter filter) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, filter.getSearchAttr());
+        try {
+            if (searchParam == null || isNew) {
+                searchParam = new SearchParam(filter.getClz().getName());
+                searchParam.setPageSize(filter.getPageSize());
+                searchParam.setPageNo(filter.getPageNo());
+                if (filter.getSortType() != null) {
+                    searchParam.setSort(filter.getSortField(), filter.getSortType());
+                } else {
+                    searchParam.setSort(filter.getSortField(), SearchParam.ASCENDING);
+                }
+                if (filter.getFilters() != null) {
+                    Map<String, Object> inboxMap = filter.getFilters();
+                    for (Map.Entry<String, Object> entry : inboxMap.entrySet()) {
+                        String mapKey = entry.getKey();
+                        Object mapValue = entry.getValue();
+                        searchParam.addFilter(mapKey, mapValue, true);
                     }
                 }
-            }catch (NullPointerException e){
-                log.info("getSearchParam ===>>>> " + e.getMessage());
             }
+        } catch (NullPointerException e) {
+            log.info("getSearchParam ===>>>> " + e.getMessage());
         }
         return searchParam;
     }
+
 }
