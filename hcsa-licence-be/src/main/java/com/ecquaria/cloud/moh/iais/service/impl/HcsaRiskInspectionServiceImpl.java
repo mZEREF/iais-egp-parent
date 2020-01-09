@@ -213,6 +213,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
             List<HcsaRiskInspectionMatrixDto> lastversionList = getLastversionList(temp);
             if(lastversionList!=null && !lastversionList.isEmpty()){
                 for(HcsaRiskInspectionMatrixDto lastversion:lastversionList){
+                    lastversion.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     if("C".equals(lastversion.getRiskLevel())&&lastversion.isCaEdit()){
                         updateLastVersion(temp,lastversion);
                     }else if("I".equals(lastversion.getRiskLevel())&&lastversion.isMiEdit()){
@@ -225,6 +226,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
             }
         }
         for(HcsaRiskInspectionMatrixDto temp:updateList){
+            temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             temp.setId(null);
         }
         hcsaConfigClient.saveInspectionMatrix(updateList);
@@ -292,6 +294,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
         finDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         finDto.setSvcCode(dto.getSvcCode());
         finDto.setStatus("CMSTAT001");
+        finDto.setOrdinalNo(1);
         finDto.setCaEdit(dto.isCaEdit());
         finDto.setMiEdit(dto.isMiEdit());
         finDto.setMjEdit(dto.isMjEdit());

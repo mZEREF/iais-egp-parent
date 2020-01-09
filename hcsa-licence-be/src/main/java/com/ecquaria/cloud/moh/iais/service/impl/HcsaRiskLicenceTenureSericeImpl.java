@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.SubLicenceTenureDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLicenceTenureSerice;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -175,12 +176,14 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
             List<HcsaRiskLicenceTenureDto> lastversionList = getLastversionList(temp);
             if(lastversionList!=null &&!lastversionList.isEmpty()){
                 for(HcsaRiskLicenceTenureDto lastversion:lastversionList){
+                    lastversion.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     updateLastVersion(temp,lastversion);
                 }
                 hcsaConfigClient.updatehcsaRiskLicenceTenure(ltDtoList).getEntity();
             }
         }
         for(HcsaRiskLicenceTenureDto temp:saveDtoList){
+            temp.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             temp.setId(null);
         }
         hcsaConfigClient.savehcsaRiskLicenceTenure(saveDtoList);

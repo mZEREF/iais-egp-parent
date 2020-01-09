@@ -122,23 +122,7 @@
                                                 </c:choose>
 
                                             </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
-                                                        <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
-                                                            <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
-                                                            <div style="width: 120px;height:50px;margin-bottom:15px;" id ="<c:out value="${tenName}timediv"/>">
-                                                                <iais:select name="${tenName}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
-                                                            </div>
-                                                        </c:forEach>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <div style="width: 120px;height:50px;margin-bottom:15px;">
-                                                            <iais:select name="${sub.id}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
-                                                        </div>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
+
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
@@ -156,7 +140,23 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
+                                                        <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
+                                                            <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
+                                                            <div style="width: 120px;height:50px;margin-bottom:15px;" id ="<c:out value="${tenName}timediv"/>">
+                                                                <iais:select name="${tenName}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
+                                                            </div>
+                                                        </c:forEach>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div style="width: 120px;height:50px;margin-bottom:15px;">
+                                                            <iais:select name="${sub.id}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
+                                                        </div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
                                         </tr>
 
                                     </c:forEach>
@@ -185,7 +185,7 @@
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
     function doNext() {
-        SOP.Crud.cfxSubmit("mainForm","next");
+        SOP.Crud.cfxSubmit("mainForm","submit");
     }
 
     function doBack(){

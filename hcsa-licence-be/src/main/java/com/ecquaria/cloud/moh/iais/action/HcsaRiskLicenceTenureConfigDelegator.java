@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.SubLicenceTenureDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.HcsaRiskLicTenValidateDto;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLicenceTenureSerice;
 import com.ecquaria.cloud.moh.iais.validation.HcsaLicTenVadlidate;
@@ -39,6 +40,7 @@ public class HcsaRiskLicenceTenureConfigDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
+        AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         HttpServletRequest request = bpc.request;
 
     }
@@ -79,17 +81,24 @@ public class HcsaRiskLicenceTenureConfigDelegator {
             ParamUtil.setRequestAttr(request, "isValid", "Y");
             ParamUtil.setSessionAttr(request,"tenShowDto", showDto);
         }else if(!StringUtil.isEmpty(addValue)){
-            hcsaRiskLicenceTenureSerice.add(addValue,showDto);
             showDto.setAddFlag(true);
+            showDto.setAddSvcCode(addValue);
             ParamUtil.setRequestAttr(request, "isValid", "Y");
             ParamUtil.setSessionAttr(request,"tenShowDto", showDto);
             HcsaLicTenVadlidate hcsaLicTenVadlidate = new HcsaLicTenVadlidate();
             Map<String, String> errMap = hcsaLicTenVadlidate.validate(request);
+            showDto.setAddFlag(false);
+            showDto.setAddSvcCode(null);
+            ParamUtil.setSessionAttr(request,"tenShowDto", showDto);
             if (!errMap.isEmpty()) {
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
+            }else{
+
+                hcsaRiskLicenceTenureSerice.add(addValue,showDto);
             }
         }else {
             getDataFrompage(request,showDto);
+            ParamUtil.setSessionAttr(request,"tenShowDto", showDto);
             HcsaLicTenVadlidate hcsaLicTenVadlidate = new HcsaLicTenVadlidate();
             Map<String, String> errMap = hcsaLicTenVadlidate.validate(request);
             if (errMap.isEmpty()) {

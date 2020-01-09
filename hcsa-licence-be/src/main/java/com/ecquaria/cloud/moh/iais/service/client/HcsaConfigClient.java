@@ -197,10 +197,10 @@ public interface HcsaConfigClient {
     @RequestMapping(value = "/iais-hcsa-risk/InspectionMatrixStorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> saveInspectionMatrix(@RequestBody List<HcsaRiskInspectionMatrixDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/singlegolbalextriskup",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/iais-hcsa-risk/InspectionMatrixup",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> udpateInspectionMatrix(@RequestBody List<HcsaRiskInspectionMatrixDto> finDtoList);
 
-    @GetMapping(value = "/iais-hcsa-risk/riskInspection{svcCode}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-hcsa-risk/riskInspection/{svcCode}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> getInspectionBySvcCode(@PathVariable("svcCode")String svcCode);
 
     @RequestMapping(value = "/iais-hcsa-risk/licencetenureshow",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)

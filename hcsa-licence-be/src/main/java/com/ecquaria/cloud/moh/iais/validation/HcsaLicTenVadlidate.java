@@ -26,34 +26,67 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         LicenceTenShowDto showDto = (LicenceTenShowDto)ParamUtil.getSessionAttr(request,"tenShowDto");
         Map<String, String> errMap = new HashMap<>();
-        List<HcsaRiskLicenceTenureDto> ltDtoList =  showDto.getLicenceTenureDtoList();
-        List<HcsaRiskLicenceTenureDto> updateList = new ArrayList<>();
-        if(ltDtoList!=null){
-            for(HcsaRiskLicenceTenureDto temp:ltDtoList){
-                if(temp.isEdit()){
-                    updateList.add(temp);
+        if(showDto.isAddFlag()){
+            addMaxVad(showDto,errMap);
+        }else{
+            List<HcsaRiskLicenceTenureDto> ltDtoList =  showDto.getLicenceTenureDtoList();
+            List<HcsaRiskLicenceTenureDto> updateList = new ArrayList<>();
+            if(ltDtoList!=null){
+                for(HcsaRiskLicenceTenureDto temp:ltDtoList){
+                    if(temp.isEdit()){
+                        updateList.add(temp);
+                    }
                 }
             }
-        }
-        if(updateList!=null&&!updateList.isEmpty()){
-            for(HcsaRiskLicenceTenureDto fdto:updateList){
-                dateVad(errMap, fdto);
-                subVad(errMap, fdto);
+            if(updateList!=null&&!updateList.isEmpty()){
+                for(HcsaRiskLicenceTenureDto fdto:updateList){
+                    dateVad(errMap, fdto);
+                    subVad(errMap, fdto);
+                }
+            }else{
+                errMap.put("notEidt","please do some change");
             }
-        }else{
-            errMap.put("notEidt","please do some change");
         }
         return errMap;
     }
 
+    private void addMaxVad(LicenceTenShowDto showDto, Map<String, String> errMap) {
+        String svcCode = showDto.getAddSvcCode();
+        if(showDto.getLicenceTenureDtoList()!=null&&!showDto.getLicenceTenureDtoList().isEmpty()){
+            for(HcsaRiskLicenceTenureDto temp:showDto.getLicenceTenureDtoList()){
+                if(temp.getSvcCode().equals(svcCode)){
+                    if(temp.getSubDtoList()!=null&&!temp.getSubDtoList().isEmpty()){
+                        if(temp.getSubDtoList().size()>=6){
+                            errMap.put(svcCode+"maxSubList","The number of cloum can only add up to six.");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void subVad(Map<String, String> errMap, HcsaRiskLicenceTenureDto fdto) {
         List<SubLicenceTenureDto> subList = fdto.getSubDtoList();
+        int timeFlagNum = 0;
+        int itFlagNum = 0;
+        int maxAndMinFlagNum = 0;
         for(SubLicenceTenureDto temp:subList){
             boolean timeFlag = timeTypeVad(temp,errMap,fdto.getSvcCode());
+            if(!timeFlag){
+                timeFlagNum++;
+            }
             boolean ltFlag = ltVad(temp,errMap,fdto.getSvcCode());
+            if(!ltFlag){
+                itFlagNum++;
+            }
             boolean f= maxAndMinVad(temp,errMap,fdto.getSvcCode());
+            if(f){
+                maxAndMinFlagNum++;
+            }
         }
-        sortVad(subList,errMap,fdto.getSvcCode());
+        if(timeFlagNum==0&&itFlagNum==0&&maxAndMinFlagNum==0){
+            sortVad(subList,errMap,fdto.getSvcCode());
+        }
     }
 
     private void sortVad(List<SubLicenceTenureDto> subList, Map<String, String> errMap, String svcCode) {

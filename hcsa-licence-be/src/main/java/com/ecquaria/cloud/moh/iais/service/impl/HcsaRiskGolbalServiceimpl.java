@@ -183,7 +183,7 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
             golDto.setVersion(1);
         }
         golDto.setId(null);
-
+        golDto.setStatus("CMSTAT001");
         golDto = hcsaConfigClient.saveGoalbalMatrix(golDto).getEntity();
         String golId = golDto.getId();
         for(HcsaRiskGolbalExtDto temp:extDtoList){

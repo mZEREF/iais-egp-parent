@@ -59,7 +59,7 @@
                                         <th>Licence Tenure</th>
                                         <th>Remove</th>
                                         <th>Add</th>
-                                        <th></th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -130,24 +130,7 @@
                                                 </c:choose>
 
                                             </td>
-                                            <td>
-                                                <c:choose>
-                                                    <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
-                                                        <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
-                                                            <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
-                                                            <div style="width: 120px;height:50px;margin-bottom:15px;" id ="<c:out value="${tenName}timediv"/>">
-                                                                <iais:select name="${tenName}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
-                                                                <span class="error-msg" id="<c:out value="error_${tenName}timeerr"/>" name="iaisErrorMsg"></span>
-                                                            </div>
-                                                        </c:forEach>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <div style="width: 120px;height:50px;margin-bottom:15px;">
-                                                            <iais:select name="${sub.id}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
-                                                        </div>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </td>
+
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
@@ -162,6 +145,24 @@
                                                     <c:otherwise>
                                                         <div style="width: 100px;">
                                                             <input type="text" maxlength="5" name="<c:out value="${sub.id}right"/>" value="<c:out value="${sub.licenceTenure}"/>">
+                                                        </div>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${ten.subDtoList!=null&&!empty ten.subDtoList}">
+                                                        <c:forEach var="sub" items="${ten.subDtoList}" varStatus="status">
+                                                            <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
+                                                            <div style="width: 120px;height:50px;margin-bottom:15px;" id ="<c:out value="${tenName}timediv"/>">
+                                                                <iais:select name="${tenName}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
+                                                            </div>
+                                                            <span class="error-msg" id="<c:out value="error_${tenName}timeerr"/>" name="iaisErrorMsg"></span>
+                                                        </c:forEach>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div style="width: 120px;height:50px;margin-bottom:15px;">
+                                                            <iais:select name="${sub.id}type" options="timeType" firstOption="Please select" value="${sub.dateType}" ></iais:select>
                                                         </div>
                                                     </c:otherwise>
                                                 </c:choose>
@@ -188,16 +189,32 @@
                                             <td><div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
                                                 <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)">Add</span>&nbsp;&nbsp;&nbsp;
                                             </div></td>
+
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                             <td>
-                                                <c:set value = "error_${ten.svcCode}ltsort" var = "ltsort"/>
-                                                <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
+
                                                 <c:set value = "error_${ten.svcCode}maxsort" var = "maxsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxsort}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td>
                                                 <c:set value = "error_${ten.svcCode}maxminsort" var = "maxminsort"/>
                                                 <span class="error-msg" id="<c:out value="${maxminsort}"/>" name="iaisErrorMsg"></span>
                                             </td>
-                                        </tr>
+                                            <td>
+                                                <c:set value = "error_${ten.svcCode}ltsort" var = "ltsort"/>
+                                                <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
+                                                <c:set value = "error_${ten.svcCode}maxSubList" var = "ltsort"/>
+                                                <span class="error-msg" id="<c:out value="${ltsort}"/>" name="iaisErrorMsg"></span>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
 
+                                        </tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>

@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.HcsaInspectionValidateDto;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskInspectionService;
 import com.ecquaria.cloud.moh.iais.validation.HcsaInspectionValidate;
@@ -35,6 +36,7 @@ public class HcsaRiskIndividualConfigDelegator {
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
+        AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
 
     }
 
