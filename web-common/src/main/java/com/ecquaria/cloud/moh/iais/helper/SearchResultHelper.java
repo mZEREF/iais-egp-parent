@@ -21,7 +21,16 @@ public class SearchResultHelper {
     }
 
     public static SearchParam getSearchParam(HttpServletRequest request, boolean isNew, FilterParameter filter) {
+
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, filter.getSearchAttr());
+        if (filter.getFilters() != null) {
+            Map<String, Object> inboxMap = filter.getFilters();
+            for (Map.Entry<String, Object> entry : inboxMap.entrySet()) {
+                String mapKey = entry.getKey();
+                Object mapValue = entry.getValue();
+                searchParam.addFilter(mapKey, mapValue, true);
+            }
+        }
         try {
             if (searchParam == null || isNew) {
                 searchParam = new SearchParam(filter.getClz().getName());
@@ -32,14 +41,7 @@ public class SearchResultHelper {
                 } else {
                     searchParam.setSort(filter.getSortField(), SearchParam.ASCENDING);
                 }
-                if (filter.getFilters() != null) {
-                    Map<String, Object> inboxMap = filter.getFilters();
-                    for (Map.Entry<String, Object> entry : inboxMap.entrySet()) {
-                        String mapKey = entry.getKey();
-                        Object mapValue = entry.getValue();
-                        searchParam.addFilter(mapKey, mapValue, true);
-                    }
-                }
+
             }
         } catch (NullPointerException e) {
             log.info("getSearchParam ===>>>> " + e.getMessage());
