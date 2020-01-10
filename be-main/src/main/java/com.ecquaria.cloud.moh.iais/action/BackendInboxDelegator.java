@@ -349,16 +349,19 @@ public class BackendInboxDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
         Map<String,String> appNoUrl = new HashMap<>();
+        Map<String,TaskDto> taskMap = new HashMap<>();
         if(commPools != null && commPools.size() >0){
             for (TaskDto item:commPools
             ) {
                 appNoUrl.put(item.getRefNo(), generateProcessUrl(item, bpc.request));
+                taskMap.put(item.getRefNo(), item);
             }
         }
 
 
 
         ParamUtil.setSessionAttr(bpc.request, "appNoUrl",(Serializable) appNoUrl);
+        ParamUtil.setSessionAttr(bpc.request, "taskMap",(Serializable) taskMap);
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
 
     }
