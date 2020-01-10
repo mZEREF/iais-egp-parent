@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -58,4 +59,7 @@ public interface HcsaConfigClient {
 
     @PostMapping(value = "/iais-hcsa-service/application-premises-by-ids")
     FeignResponseEntity<List<HcsaSvcSpePremisesTypeDto>> applicationPremisesByIds(@RequestBody List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList);
+
+    @GetMapping(value = "/kpi-reminder/result-service-and-module")
+    FeignResponseEntity<HcsaSvcKpiDto> searchKpiResult(@RequestParam("service") String serviceCode, @RequestParam("module") String module);
 }
