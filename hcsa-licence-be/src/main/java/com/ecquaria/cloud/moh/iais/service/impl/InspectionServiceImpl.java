@@ -332,6 +332,7 @@ public class InspectionServiceImpl implements InspectionService {
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto.setProcessDecision(processDec);
         appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setSubStage(subStage);
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto).getEntity();
         return appPremisesRoutingHistoryDto;
     }
