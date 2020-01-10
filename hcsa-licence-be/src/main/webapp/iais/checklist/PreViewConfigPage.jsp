@@ -76,7 +76,7 @@
                               <p>${chklitem.checklistItem}</p>
                             </td>
                             <td>
-                              <p>${chklitem.riskLevel}</p>
+                              <p><iais:code code="${chklitem.riskLevel}"></iais:code></p>
                             </td>
                           </tr>
                         </c:forEach>

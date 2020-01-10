@@ -76,6 +76,9 @@ public class SelectTag extends DivTagSupport {
                 cssClass = "input-large";
             }
             StringBuilder html = new StringBuilder();
+
+
+
             html.append("<select name=\"").append(name).append("\"");
             if (!StringUtil.isEmpty(id)) {
                 id = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("id",
@@ -98,8 +101,8 @@ public class SelectTag extends DivTagSupport {
                 html.append(" hidden=\"").append(onchange).append("\"");
             }
 
-
             html.append(">");
+
             generateOptionHtml(html);
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {

@@ -62,16 +62,16 @@
           </div>
 
           <div class="form-group">
-            <label class="col-xs-4 col-md-2 control-label">Risk Level</label>
-            <div class="col-xs-12 col-md-8 col-lg-9">
+            <label class="col-md-2">Risk Level</label>
+            <div class="col-md-3">
               <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL"
                            firstOption="Select Risk Level"></iais:select>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-xs-4 col-md-2 control-label">Status</label>
-            <div class="col-xs-12 col-md-8 col-lg-9">
+            <label class="col-xs-2">Status</label>
+            <div class="col-md-3">
               <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
                            firstOption="Select Status" filterValue="CMSTAT002"></iais:select>
             </div>
@@ -117,8 +117,8 @@
                             <td>${item.regulationClauseNo}</td>
                             <td>${item.regulationClause}</td>
                             <td>${item.checklistItem}</td>
-                            <td>${item.riskLevel}</td>
-                            <td>${item.status}</td>
+                            <td><iais:code code="${item.riskLevel}"></iais:code></td>
+                            <td><iais:code code="${item.status}"></iais:code></td>
                             <c:if test="${empty sessionScope.currentValidateId}">
                               <td>
                                 <button type="button" class="btn btn-default btn-sm"
@@ -166,11 +166,11 @@
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doUploadFile('checklistItem');">Upload Checklist Item</a>
 
-                                <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: doExportFile('checklistItem');">Export Checklist Item</a>
+                                <a class="btn btn-primary next" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem">
+                                  Export Checklist Item</a>
 
-                                <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: doExportFile('regulation');">Export Regulation</a>
+                                <a class="btn btn-primary next" href="${pageContext.request.contextPath}/checklist-item-file?action=regulation"
+                                   >Export Regulation</a>
 
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doSearch();">Search</a>

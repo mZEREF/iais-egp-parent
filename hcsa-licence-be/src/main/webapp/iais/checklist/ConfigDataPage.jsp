@@ -8,6 +8,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <webui:setLayout name="iais-intranet"/>
 
 
@@ -59,32 +60,31 @@
             <iais:checkbox checkboxId="typeCheckBox" codeCategory = "CATE_ID_CHECKLIST_TYPE" forName="typeCheckBoxFor" name= "typeCheckBox" labelName = "Type"></iais:checkbox>
           </td>
        </div>
-      </div>
 
-      <div class="form-horizontal">
+
+        <br><br>
         <div class="form-group">
-          <div class="col-xs-12">
-            <td>
-              Service Name &nbsp;<iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Select Service Name"></iais:select>
-            </td>
+          <label class="col-md-2">Service Name &nbsp;</label>
+          <div class="col-md-5">
+            <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Select Service Name"></iais:select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-2">Service Sub Type &nbsp;</label>
+          <div class="col-md-5">
+            <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Select Sub Type Name"></iais:select>
           </div>
         </div>
 
       </div>
 
-      <div class="form-horizontal">
-        <div class="form-group">
-          <div class="col-xs-12">
-            <td>
-              Service Sub Type &nbsp;<iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Select Sub Type Name"></iais:select>
-            </td>
-          </div>
-        </div>
 
-      </div>
+
 
       <div class="components">
         <h2 class="component-title">Search &amp; Result</h2>
+        <iais:pagination  param="checklistConfigSearch" result="checklistConfigResult"/>
         <div class="table-gp">
           <table class="table">
             <thead>
@@ -115,8 +115,8 @@
               <td>${config.svcName}</td>
               <td>${config.svcSubType}</td>
               <td>${config.hciCode}</td>
-              <td>${config.eftStartDate}</td>
-              <td>${config.eftEndDate}</td>
+              <td><fmt:formatDate value="${config.eftStartDate}" pattern="MM/dd/yyyy"/></td>
+              <td><fmt:formatDate value="${config.eftEndDate}" pattern = "MM/dd/yyyy"/></td>
               <td>
                 <iais:link icon="form_edit" title="Edit" onclick="javascript:loadEditData('${config.id}');"/>
                 <iais:link icon="form_edit" title="Clone" onclick="javascript:cloneConfig('${config.id}');"/>
@@ -128,24 +128,7 @@
             </tr>
             </tbody>
           </table>
-          <div class="table-footnote">
-            <div class="row">
-              <div class="col-xs-6 col-md-4">
-                <p class="count">5 out of 25</p>
-              </div>
-              <div class="col-xs-6 col-md-8 text-right">
-                <div class="nav">
-                  <ul class="pagination">
-                    <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-chevron-left"></i></span></a></li>
-                    <li class="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right"></i></span></a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
 
         <div class="application-tab-footer">
@@ -197,5 +180,9 @@
 
   function doCancel(){
     SOP.Crud.cfxSubmit("mainForm","doCancel");
+  }
+
+  function jumpToPagechangePage(){
+      SOP.Crud.cfxSubmit("mainForm", "doPage");
   }
 </script>

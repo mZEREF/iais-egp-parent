@@ -133,11 +133,11 @@
                                         </td>
                                         <td>
                                           <p class="visible-xs visible-sm table-row-title">Risk Level</p>
-                                          <p>${chklitem.riskLevel}</p>
+                                          <p><iais:code code="${chklitem.riskLevel}"></iais:code></p>
                                         </td>
                                         <td>
-                                          <p class="visible-xs visible-sm table-row-title">Date</p>
-                                          <p>${chklitem.status}</p>
+                                          <p class="visible-xs visible-sm table-row-title">Status</p>
+                                          <p><iais:code code="${chklitem.status}"></iais:code></p>
                                         </td>
 
                                         <td>

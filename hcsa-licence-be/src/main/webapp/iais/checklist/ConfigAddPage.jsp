@@ -41,34 +41,61 @@
       <br><br>
       <div class="form-horizontal">
         <div class="form-group">
-
-              <div class="col-xs-12">
-                Common  &nbsp; <input class="form-check-input"  <c:if test="${common == true}"> checked="checked"</c:if> id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
-              </div>
-              <br><br>
-              <div class="col-xs-12">
-                Service Name <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name" value="${svcName}"></iais:select>
-              </div>
-
-              <div class="col-xs-12">
-                Service Sub Type <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Select Service Sub Type" value="${svcSubType}"></iais:select>
-              </div>
-
-          <div class="col-xs-12">
-            Module <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Select Module" value="${module}"></iais:select>
+          <div class="form-group">
+            <label class="col-md-2">Common</label>
+            <div class="col-md-3">
+              <input class="form-check-input"  <c:if test="${common == true}"> checked="checked"</c:if> id="commmon" type="radio" name="common" aria-invalid="false" value="1"> General Regulation
+              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+            </div>
           </div>
 
-          <div class="col-xs-12">
-            Type <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Select Type" value="${type}"></iais:select>
+          <div class="form-group">
+            <label class="col-md-2">Service Name</label>
+            <div class="col-md-5">
+              <iais:select name="svcName" id="svcName" options="svcNameSelect" firstOption="Select Service Name" value="${svcName}"></iais:select>
+              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+            </div>
           </div>
 
 
-          <div class="col-xs-12">
-            Effective Start Date <iais:datePicker name = "eftStartDate" value="${eftStartDate}"></iais:datePicker>
+          <div class="form-group">
+            <label class="col-md-2">Service Sub Type</label>
+            <div class="col-md-5">
+              <iais:select name="svcSubType" id="svcSubType" options="subtypeSelect" firstOption="Select Service Sub Type" value="${svcSubType}"></iais:select>
+              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+            </div>
           </div>
 
-          <div class="col-xs-12">
-            Effective End Date <iais:datePicker name = "eftEndDate" value="${eftEndDate}"></iais:datePicker>
+          <div class="form-group">
+            <label class="col-md-2">Module</label>
+            <div class="col-md-3">
+              <iais:select name="module" id="module" codeCategory="CATE_ID_CHECKLIST_MODULE" firstOption="Select Module" value="${module}"></iais:select>
+              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-md-2">Type</label>
+            <div class="col-md-3">
+              <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE" firstOption="Select Type" value="${type}"></iais:select>
+              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-md-2">Effective Start Date</label>
+            <div class="col-md-3">
+               <iais:datePicker name = "eftStartDate" value="${eftStartDate}"></iais:datePicker>
+              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-md-2">Effective End Date</label>
+            <div class="col-md-3">
+              <iais:datePicker name = "eftEndDate" value="${eftEndDate}"></iais:datePicker>
+              <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+            </div>
           </div>
 
         </div>

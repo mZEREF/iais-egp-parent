@@ -16,7 +16,7 @@
                 <#if itemId??> and charindex(:itemId, item.id) >0</#if>
                 <#if regulationClauseNo??> and charindex(:regulationClauseNo, regulation.clause_no) >0 </#if>
                 <#if regulationClause??> and charindex(:regulationClause, regulation.clause) >0 </#if>
-                <#if checklistItem??> and charindex(:checklistitem, item.question) >0</#if>
+                <#if checklistItem??> and charindex(:checklistItem, item.question) >0</#if>
                 <#if answerType??> and item.answer_type = :answerType</#if>
                 <#if riskLevel??> and item.risk_level = :riskLevel</#if>
                 <#if status??> and item.status = :status</#if>

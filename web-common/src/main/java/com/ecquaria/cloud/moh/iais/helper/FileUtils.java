@@ -32,7 +32,7 @@ public final class FileUtils {
         Objects.requireNonNull(response);
         Objects.requireNonNull(fileData);
         if (StringUtils.isEmpty(fileName)){
-            fileName = "";
+
         }
 
         response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
@@ -55,6 +55,7 @@ public final class FileUtils {
             return toFile;
         }
     }
+
 
     private static void inputStreamToFile(InputStream ins, File file) {
         try {

@@ -198,7 +198,6 @@ public class HcsaChklItemDelegator {
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         try {
             switch (value){
-
                 case REGULATION:
                     List<HcsaChklSvcRegulationDto> regulationDtoList = FileUtils.transformToJavaBean(toFile, HcsaChklSvcRegulationDto.class);
                     List<HcsaChklSvcRegulationDto> passRegulationDtoList = regulationDtoList.stream().distinct().collect(Collectors.toList());
@@ -416,7 +415,6 @@ public class HcsaChklItemDelegator {
         return itemDto;
     }
 
-
     /**
      * AutoStep: editCloneItem
      * @param bpc
@@ -609,7 +607,6 @@ public class HcsaChklItemDelegator {
         // do nothing.
     }
 
-
     /**
      * AutoStep: deleteChecklistItem
      * @param bpc
@@ -693,19 +690,24 @@ public class HcsaChklItemDelegator {
 
     }
 
+    
+    /**
+    * @author: yichen 
+    * @description: ajax call that the mehod download excel file by db genereate
+    * @param: 
+    * @return:
+    */
     @GetMapping(value = "checklist-item-file")
 	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
 	    log.debug(StringUtil.changeForLog("fileHandler start ...."));
-
         String action = ParamUtil.getString(request, "action");
-        String retFileName = null;
         byte[] fileData = null;
+        File file = null;
         switch (action){
             case REGULATION:
                 List<HcsaChklSvcRegulationDto> regulationList = hcsaChklService.getRegulationClauseListIsActive();
                 if (regulationList != null){
-                    File file = ExcelWriter.exportExcel(regulationList, HcsaChklSvcRegulationDto.class, "Checklist_Regulations_Upload_Template");
-                    retFileName = file.getName();
+                    file = ExcelWriter.exportExcel(regulationList, HcsaChklSvcRegulationDto.class, "Checklist_Regulations_Upload_Template");
                     fileData = FileUtils.readFileToByteArray(file);
                 }
                 break;
@@ -715,27 +717,20 @@ public class HcsaChklItemDelegator {
                 SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
                 if (searchResult != null){
                     List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
-                    File file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
-                    retFileName = file.getName();
+                    file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
                     fileData = FileUtils.readFileToByteArray(file);
                 }
                 break;
-
             default:
         }
 
-        response.addHeader("Content-Disposition", "attachment;filename=" + retFileName);
-        response.addHeader("Content-Length", "" + fileData.length);
-        response.setContentType("application/x-msdownload");
         try {
-            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-            ops.write(fileData);
-            ops.close();
-            ops.flush();
+            String retFileName = file.getName();
+            FileUtils.setFileResponeContent(response, retFileName, fileData);
+            FileUtils.delteTempFile(file);
         } catch (IOException e) {
-            e.printStackTrace();
+           log.debug(e.getMessage());
         }
-
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
     }
 }

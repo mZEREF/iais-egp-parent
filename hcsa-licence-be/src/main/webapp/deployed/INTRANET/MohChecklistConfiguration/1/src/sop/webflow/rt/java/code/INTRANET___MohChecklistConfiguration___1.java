@@ -73,4 +73,10 @@ public class INTRANET___MohChecklistConfiguration___1 extends BaseProcessClass {
 	public void backToPage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "backToPage", this);
 	}
+	public void doPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doPage", this);
+	}
+	public void doSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doSort", this);
+	}
 }
