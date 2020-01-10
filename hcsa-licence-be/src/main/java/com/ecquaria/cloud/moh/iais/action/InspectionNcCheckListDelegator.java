@@ -70,7 +70,7 @@ public class InspectionNcCheckListDelegator {
         String taskId = ParamUtil.getRequestString(request,"taskId");
         //String taskId = "38CDA333-BC2E-EA11-BE7D-000C29F371DC";
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "BA71A041-AD32-EA11-BE7D-000C29F371DC";
+            taskId = "6D00312B-4E33-EA11-BE7D-000C29F371DC";
         }
         String serviceType = "Inspection";
 /*        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
@@ -93,6 +93,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,"commonDto",commonDto);
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);*/
         TaskDto taskDto = taskService.getTaskById(taskId);
+        String appPremCorrId = taskDto.getRefNo();
         CheckListDraftDto checkListDraftDto = fillupChklistService.getDraftByTaskId(taskId,serviceType);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         InspectionFillCheckListDto cDto = null;
@@ -104,13 +105,13 @@ public class InspectionNcCheckListDelegator {
             cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
             ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
             if(commonCheckListDto!=null){
-                commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
+                commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,appPremCorrId);
             }
         }
         AdCheckListShowDto adchklDto = null;
-        adchklDto = fillupChklistService.getAdhocDraftByappCorrId(cDto.getCheckList().get(0).getAppPreCorreId());
+        adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
         if(adchklDto==null){
-            adchklDto = fillupChklistService.getAdhoc(cDto.getCheckList().get(0).getAppPreCorreId());
+            adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
         }
         ParamUtil.setSessionAttr(request,"taskDto",taskDto);
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
