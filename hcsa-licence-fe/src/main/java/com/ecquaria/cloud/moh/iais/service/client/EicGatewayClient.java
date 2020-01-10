@@ -24,8 +24,8 @@ public interface EicGatewayClient {
     FeignResponseEntity<String> saveFile(@RequestBody ProcessFileTrackDto processFileTrackDto,
                                          @RequestHeader("date") String date,
                                          @RequestHeader("authorization") String authorization,
-                                         @RequestHeader("date_Secondary") String dateSec,
-                                         @RequestHeader("authorization_Secondary") String authorizationSec);
+                                         @RequestHeader("date-Secondary") String dateSec,
+                                         @RequestHeader("authorization-Secondary") String authorizationSec);
     /**
     * @author: yichen
     * @description: route to BE db
@@ -36,6 +36,6 @@ public interface EicGatewayClient {
     FeignResponseEntity<String> routeSelfDeclData(@RequestBody List<String> contentJsonList,
                                                   @RequestHeader("date") String date,
                                                   @RequestHeader("authorization") String authorization,
-                                                  @RequestHeader("date_Secondary") String dateSec,
-                                                  @RequestHeader("authorization_Secondary") String authorizationSec);
+                                                  @RequestHeader("date-Secondary") String dateSec,
+                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
 }
