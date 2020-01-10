@@ -171,7 +171,7 @@ public interface HcsaConfigClient {
     FeignResponseEntity<HcsaRiskGlobalDto> getRiskGolbalRiskMatraixBySvcCode(@PathVariable("serviceCode")String serviceCode);
 
     @GetMapping(value = "/iais-hcsa-risk/golbalextbyid{id}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<HcsaRiskGlobalDto> getRiskGolbalextDtoById(@PathVariable("id")String id);
+    FeignResponseEntity<List<HcsaRiskGolbalExtDto>> getRiskGolbalextDtoById(@PathVariable("id")String id);
 
     @RequestMapping(value = "/iais-hcsa-risk/golbalrisktorage",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskGlobalDto>> saveGoalbalMatrixList(@RequestBody List<HcsaRiskGlobalDto> finDtoList);

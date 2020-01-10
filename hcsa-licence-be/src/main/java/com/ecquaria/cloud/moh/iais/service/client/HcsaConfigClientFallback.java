@@ -36,9 +36,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeO
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.util.List;
 import java.util.Map;
 
@@ -337,7 +334,7 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
     }
 
     @Override
-    public FeignResponseEntity<HcsaRiskGlobalDto> getRiskGolbalextDtoById(String id) {
+    public FeignResponseEntity<List<HcsaRiskGolbalExtDto>> getRiskGolbalextDtoById(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
