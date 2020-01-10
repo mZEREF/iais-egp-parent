@@ -5,12 +5,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
@@ -43,13 +41,13 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class UploadFileServiceImpl implements UploadFileService {
-   /* @Value("${iais.syncFileTracking.shared.path}")*/
-    private String sharedPath="D:/";
+    @Value("${iais.syncFileTracking.shared.path}")
+    private String sharedPath;
     private String download;
     private String fileName;
     private String fileFormat = ".text";
     private String backups;
-    private String fileZipPath="";
+
     private Boolean flag=true;
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -96,10 +94,6 @@ public class UploadFileServiceImpl implements UploadFileService {
         try{
             ApplicationListFileDto applicationListFileDto = JsonUtil.parseToObject(entity, ApplicationListFileDto.class);
             List<AppSvcDocDto> appSvcDoc = applicationListFileDto.getAppSvcDoc();
-            List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
-            if(!applicationGroup.isEmpty()){
-                fileZipPath=  applicationGroup.get(0).getId();
-            }
             List<AppGrpPrimaryDocDto> appGrpPrimaryDoc = applicationListFileDto.getAppGrpPrimaryDoc();
             appSvcDoc(appSvcDoc,appGrpPrimaryDoc);
         }catch (Exception e){
@@ -124,7 +118,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         log.info("-------------compress() end --------------");
         rename(compress);
 
-       /* deleteFile();*/
+        deleteFile();
     }
     /*****************compress*********/
 /*
@@ -133,13 +127,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 * file id */
     private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc){
         //if path is not exists create path
-            File fileRepPath=new File(download+File.separator+fileZipPath+ File.separator+"files");
+            File fileRepPath=new File(download+File.separator+"files");
             if(!fileRepPath.exists()){
                 fileRepPath.mkdirs();
             }
         for(AppSvcDocDto every:appSvcDoc){
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file = MiscUtil.generateFile(download + File.separator +fileZipPath+ File.separator+ "files",
+            File file = MiscUtil.generateFile(download + File.separator + "files",
                     every.getFileRepoId() + "@" + every.getDocName());
             try (FileOutputStream outputStream=new FileOutputStream(file)) {
               outputStream.write(entity);
@@ -150,7 +144,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         }
         for(AppGrpPrimaryDocDto every:appGrpPrimaryDoc){
             byte[] entity = fileRepositoryClient.getFileFormDataBase(every.getFileRepoId()).getEntity();
-            File file = MiscUtil.generateFile(download+File.separator+fileZipPath+ File.separator+"files",
+            File file = MiscUtil.generateFile(download+File.separator+"files",
                     every.getFileRepoId()+"@"+ every.getDocName());
             try (FileOutputStream fileOutputStream=new FileOutputStream(file);) {
                 fileOutputStream.write(entity);
@@ -163,12 +157,12 @@ public class UploadFileServiceImpl implements UploadFileService {
     private String compress(){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        try (OutputStream is=new FileOutputStream(backups+File.separator+ fileZipPath+ File.separator+l+".zip");
+        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
                CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
                ZipOutputStream zos=new ZipOutputStream(cos)) {
 
-            log.info("------------zip file name is"+backups+File.separator+fileZipPath+ File.separator+ l+".zip"+"--------------------");
-            File file = new File(download+File.separator+fileZipPath);
+            log.info("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------");
+            File file = new File(download);
             MiscUtil.checkDirs(file);
             zipFile(zos, file);
             log.info("----------------end zipFile ---------------------");
@@ -209,7 +203,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     private void rename(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
         flag = true;
-        File zipFile =new File(backups+File.separator+fileZipPath);
+        File zipFile =new File(backups);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
            File[] files = zipFile.listFiles((dir, name) -> {
@@ -233,14 +227,10 @@ public class UploadFileServiceImpl implements UploadFileService {
                     is.close();
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
-                   File curFile = new File(backups+File.separator+fileZipPath, s + ".zip");
-                   if(!curFile.exists()){
-                       curFile.mkdirs();
-
-                   }
+                   File curFile = MiscUtil.generateFile(backups, s + ".zip");
                    file.renameTo(curFile);
                    log.info("----------- new zip file name is"+backups+File.separator+s+".zip");
-                   String s1 = saveFileName(s+".zip",backups+File.separator+fileZipPath+File.separator+s+".zip");
+                   String s1 = saveFileName(s+".zip",backups + File.separator+s+".zip");
                    if(!s1.equals("SUCCESS")){
                        MiscUtil.deleteFile(curFile);
                        flag=false;
@@ -286,11 +276,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         processFileTrackDto.setFileName(fileName);
         processFileTrackDto.setFilePath(filePath);
-        processFileTrackDto.setRefId(fileZipPath);
-        if(StringUtil.isEmpty(fileZipPath)){
-            processFileTrackDto.setRefId("BE30AB5D-A92A-EA11-BE7D-000C29F371DC");
-        }
-
+        processFileTrackDto.setRefId("BE30AB5D-A92A-EA11-BE7D-000C29F371DC");
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
         AuditTrailDto intenet = AuditTrailHelper.getBatchJobDto("INTERNET");
         processFileTrackDto.setAuditTrailDto(intenet);
