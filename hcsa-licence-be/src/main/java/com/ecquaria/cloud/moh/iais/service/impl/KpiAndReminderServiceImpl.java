@@ -1,20 +1,25 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +37,8 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-
+    @Autowired
+    private OrganizationClient organizationClient;
     @Override
     public void saveKpiAndReminder(HttpServletRequest request) {
 
@@ -44,10 +50,15 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                 return;
             }
 
-        HcsaSvcKpiDto parameter = getParameter(request);
+        HcsaSvcKpiDto parameter = null;
+        try {
+            parameter = getParameter(request);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         hcsaConfigClient.saveKpiAndReminder(parameter);
         request.setAttribute("message","You have successfully created required KPI");
-
+        request.setAttribute("crud_action_type","submit");
     }
 
     @Override
@@ -66,10 +77,12 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
 
     /***********************/
 
-    private HcsaSvcKpiDto getParameter(HttpServletRequest request){
+    private HcsaSvcKpiDto getParameter(HttpServletRequest request) throws ParseException {
 
         Map<String ,Integer> kpi=new HashMap<>();
-
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = loginContext.getUserId();
+        OrgUserDto entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
         String module = request.getParameter("module");
         String service = request.getParameter("service");
         String reminderThreshold = request.getParameter("reminderThreshold");
@@ -87,7 +100,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         hcsaSvcKpiDto.setRemThreshold(Integer.parseInt(reminderThreshold));
         kpi.put("12848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(adminScreening));
         kpi.put("13848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(professionalScreening));
-        kpi.put("14848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(inspection));
+        kpi.put("298BCC95-5130-EA11-BE7D-000C29F371DC",Integer.parseInt(inspection));
         kpi.put("15848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(levelOne));
         kpi.put("16848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(levelTwo));
         kpi.put("17848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(levelThree));
@@ -96,6 +109,12 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         hcsaSvcKpiDto.setStageIdKpi(kpi);
         hcsaSvcKpiDto.setVersion(1);
         hcsaSvcKpiDto.setServiceCode(service);
+        if(entity!=null){
+            String id = entity.getId();
+            hcsaSvcKpiDto.setCreateBy(id);
+            hcsaSvcKpiDto.setUpdateBy(id);
+        }
+        hcsaSvcKpiDto.setCreateDate(new SimpleDateFormat("dd/MM/yyyy hh:mm:ssa",Locale.ENGLISH).parse(createDate));
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTERNET");
 //        hcsaSvcKpiDto.setAuditTrailDto(batchJobDto);
 

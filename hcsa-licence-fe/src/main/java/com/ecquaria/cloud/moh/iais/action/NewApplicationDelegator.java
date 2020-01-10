@@ -144,7 +144,7 @@ public class NewApplicationDelegator {
         String action = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if (StringUtil.isEmpty(action)) {
             action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-            if (StringUtil.isEmpty(action)) {
+            if (StringUtil.isEmpty(action) || "validation".equals(action)) {
                 //first
                 action = "premises";
             }
@@ -286,10 +286,10 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPremises start ...."));
-        
+
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        
+
         String isEdit = ParamUtil.getString(bpc.request, "isEdit");
         boolean isGetDataFromPage = isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit);
         if(isGetDataFromPage){
@@ -300,7 +300,7 @@ public class NewApplicationDelegator {
                 clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
                 appSubmissionDto.setClickEditPage(clickEditPages);
             }
-            
+
             Map<String, String> errorMap= doValidatePremiss(bpc);
             if(errorMap.size()>0){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
@@ -310,7 +310,7 @@ public class NewApplicationDelegator {
 
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-        
+
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
     }
@@ -423,8 +423,10 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         // do by wenkang
-
-        documentValid(bpc.request, errorMap);
+        String crud_action_values = ParamUtil.getRequestString(bpc.request, "crud_action_value");
+        if("next".equals(crud_action_values)){
+            documentValid(bpc.request, errorMap);
+        }
         if(errorMap.size()>0){
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
@@ -1265,7 +1267,7 @@ public class NewApplicationDelegator {
             for(String type:amendTypeArr){
                 amendTypeList.add(type);
             }
-            
+
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_AMEND);
             appSubmissionDto.setAmendTypes(amendTypeList);
@@ -1275,7 +1277,7 @@ public class NewApplicationDelegator {
         }
         log.debug(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
-    
+
     private void requestForInformationLoading(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         String appNo = ParamUtil.getString(bpc.request,"appNo");
@@ -1397,12 +1399,15 @@ public class NewApplicationDelegator {
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
                         String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
                         String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();
+                        int startDate=0;
+                        int endDate=0;
                         if(StringUtil.isEmpty(onsiteStartHH)||StringUtil.isEmpty(onsiteStartMM)){
                             errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
                         }else {
                             try {
                                 int i1 = Integer.parseInt(onsiteStartHH);
                                 int i2= Integer.parseInt(onsiteStartMM);
+                                startDate=  i1*60+i2*1;
                                 if(i1>=24||i2>=60){
                                     errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
                                 }
@@ -1410,8 +1415,29 @@ public class NewApplicationDelegator {
                                 errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
                             }
 
+                        }
+                        String onsiteEndHH = appGrpPremisesDtoList.get(i).getOnsiteEndHH();
+                        String onsiteEndMM = appGrpPremisesDtoList.get(i).getOnsiteEndMM();
+                        if(StringUtil.isEmpty(onsiteEndHH)||StringUtil.isEmpty(onsiteEndMM)){
+                            errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            try {
+                                int i1 = Integer.parseInt(onsiteEndHH);
+                                int i2 = Integer.parseInt(onsiteEndMM);
+                                endDate=i1*60+i2*1;
+                                if(i1>=24||i2>=60){
+                                    errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                                }
+                            }catch (Exception e){
+                                errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
+
+                            }
 
                         }
+                        if(endDate<startDate){
+                            errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                        }
+
 
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
@@ -1464,10 +1490,44 @@ public class NewApplicationDelegator {
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
+                        int conStartDate=0;
+                        int conEndDate=0;
                         if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
                             errorMap.put("conStartMM"+i,"UC_CHKLMD001_ERR001");
+                        }else {
+                            try {
+                                int i1 = Integer.parseInt(conStartHH);
+                                int i2= Integer.parseInt(conStartMM);
+                                conStartDate=i1*60+i2*1;
+                                if(i1>=24||i2>=60){
+                                    errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                                }
+                            }catch (Exception e){
+                                errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                            }
                         }
+                        String conEndHH = appGrpPremisesDtoList.get(i).getConEndHH();
+                        String conEndMM = appGrpPremisesDtoList.get(i).getConEndMM();
+                        if(StringUtil.isEmpty(conEndHH)||StringUtil.isEmpty(conEndMM)){
+                            errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
+                        }else {
 
+                            try {
+                                int i1 = Integer.parseInt(conEndHH);
+                                int i2 = Integer.parseInt(conEndMM);
+                                conEndDate=i1*60+i2*1;
+                                if(i1>=24||i2>=60){
+
+                                    errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
+                                }
+
+                            }catch (Exception e){
+                                errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
+                            }
+                        }
+                        if(conEndDate<conStartDate){
+                            errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
+                        }
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
                         if(StringUtil.isEmpty(conveyanceVehicleNo)){
                             errorMap.put("conveyanceVehicleNo"+i,"UC_CHKLMD001_ERR001");
@@ -1727,6 +1787,8 @@ public class NewApplicationDelegator {
         String [] scdfRefNo = ParamUtil.getStrings(request, "scdfRefNo");
         String [] onsiteStartHH = ParamUtil.getStrings(request, "onsiteStartHH");
         String [] onsiteStartMM = ParamUtil.getStrings(request, "onsiteStartMM");
+        String[] onsiteEndHHS = ParamUtil.getStrings(request, "onsiteEndHH");
+        String[] onsiteEndMMS = ParamUtil.getStrings(request, "onsiteEndMM");
         String [] fireSafetyCertIssuedDateStr  = ParamUtil.getStrings(request, "fireSafetyCertIssuedDate");
         //conveyance
         String [] conPremisesSelect = ParamUtil.getStrings(request, "premConSelect");
@@ -1740,6 +1802,8 @@ public class NewApplicationDelegator {
         String [] conSiteAddressType = ParamUtil.getStrings(request, "conveyanceAddrType");
         String [] conStartHH = ParamUtil.getStrings(request, "conStartHH");
         String [] conStartMM = ParamUtil.getStrings(request, "conStartMM");
+        String[] conEndHHS = ParamUtil.getStrings(request, "conEndHH");
+        String[] conEndMMS = ParamUtil.getStrings(request, "conEndMM");
         for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             appGrpPremisesDto.setPremisesType(premisesType[i]);
@@ -1747,6 +1811,8 @@ public class NewApplicationDelegator {
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])){
                 appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);
                 appGrpPremisesDto.setOnsiteStartMM(onsiteStartMM[i]);
+                appGrpPremisesDto.setOnsiteEndHH(onsiteEndHHS[i]);
+                appGrpPremisesDto.setOnsiteEndMM(onsiteEndMMS[i]);
                 appGrpPremisesDto.setPremisesSelect(premisesSelect[i]);
                 appGrpPremisesDto.setHciName(hciName[i]);
                 appGrpPremisesDto.setPostalCode(postalCode[i]);
@@ -1763,6 +1829,8 @@ public class NewApplicationDelegator {
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
                 appGrpPremisesDto.setConStartHH(conStartHH[i]);
                 appGrpPremisesDto.setConStartMM(conStartMM[i]);
+                appGrpPremisesDto.setConEndHH(conEndHHS[i]);
+                appGrpPremisesDto.setConEndMM(conEndMMS[i]);
                 appGrpPremisesDto.setPremisesSelect(conPremisesSelect[i]);
                 appGrpPremisesDto.setConveyanceVehicleNo(conVehicleNo[i]);
                 appGrpPremisesDto.setConveyancePostalCode(conPostalCode[i]);

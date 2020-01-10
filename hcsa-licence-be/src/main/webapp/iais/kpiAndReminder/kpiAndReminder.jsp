@@ -154,7 +154,7 @@
         <div class="form-group">
           <label class="col-xs-12  col-sm-1  col-md-4 control-label">Created By:</label>
           <div class="col-xs-8 col-sm-6 col-md-5">
-            <input style="display: none" value="Charlie Tan" name="createBy">
+            <input style="display: none" value="${entity}" name="createBy" >
             <p>Charlie Tan</p>
 
           </div>
@@ -184,7 +184,7 @@
 
 $(document).ready(function () {
     $("input[name='createDate'] +p ").html($("input[name='createDate']").val());
-
+    $("input[name='createBy'] +p ").html($("input[name='createBy']").val());
 });
 
   $("#module").change(function () {
@@ -204,6 +204,7 @@ $(document).ready(function () {
           var inp= data.INP;
           var pot= data.POT;
           var date=data.remThr;
+          var entity= data.entity;
           $("input[name='reminderThreshold']").val(remThreshold);
           $("input[name='adminScreening']").val(aso);
           $("input[name='professionalScreening']").val(pso);
@@ -215,6 +216,8 @@ $(document).ready(function () {
           $("input[name='postInspection']").val(pot);
           $("input[name='createDate']").val(date);
           $("input[name='createDate'] +p ").html($("input[name='createDate']").val());
+          $("input[name='createBy']").val(entity);
+          $("input[name='createBy'] +p ").html($("input[name='createBy']").val());
       });
       }
 
@@ -236,6 +239,7 @@ $("#service").change(function () {
             var inp=data.INP;
             var pot= data.POT;
             var date=data.remThr;
+            var entity= data.entity;
             $("input[name='reminderThreshold']").val(remThreshold);
             $("input[name='adminScreening']").val(aso);
             $("input[name='professionalScreening']").val(pso);
@@ -247,6 +251,8 @@ $("#service").change(function () {
             $("input[name='postInspection']").val(pot);
             $("input[name='createDate']").val(date);
             $("input[name='createDate'] +p ").html($("input[name='createDate']").val());
+            $("input[name='createBy']").val(entity);
+            $("input[name='createBy'] +p ").html($("input[name='createBy']").val());
         });
     }
 });

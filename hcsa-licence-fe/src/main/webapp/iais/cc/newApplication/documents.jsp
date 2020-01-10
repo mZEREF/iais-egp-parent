@@ -53,6 +53,7 @@
                                             <h3>${commonDoc.docTitle}</h3>
                                             <div class="file-upload-gp">
                                                 <input class="hidden delFlag" type="hidden" name="${commDelFlag}" value="N"/>
+
                                                 <span  >${file.docName}</span>
 
                                                 <c:choose>
@@ -146,7 +147,7 @@
             submit('documents','saveDraft',null);
         });
         $('#docNext').click(function(){
-            submit('serviceForms',null,null);
+            submit('serviceForms',"next",null);
         });
         /*$('#selectedFile').change(function(){
             var file = $('#selectedFile').val();

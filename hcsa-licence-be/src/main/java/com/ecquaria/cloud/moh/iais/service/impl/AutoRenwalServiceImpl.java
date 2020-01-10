@@ -163,7 +163,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         List<String> useLicenceIdFindHciNameAndAddress = useLicenceIdFindHciNameAndAddress(id);
 
-        Integer isMigrated = licenceDto.getIsMigrated();
+        Boolean isMigrated = licenceDto.getIsMigrated();
         List<String> list=new ArrayList<>();
         List<LicenceFeeDto> licenceFeeDtos=new ArrayList<>();
         list.add(id);
@@ -174,27 +174,36 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         for(PremisesDto premisesDto:premisesDtoList){
             premises.add(premisesDto.getPremisesType());
         }
-        LicenceFeeDto licenceFeeDto=new LicenceFeeDto();
-        licenceFeeDto.setLicenceId(id);
+
         if(!entity.isEmpty()){
 
             for(HcsaLicenceGroupFeeDto every:entity){
-
+                LicenceFeeDto licenceFeeDto=new LicenceFeeDto();
+                licenceFeeDto.setLicenceId(id);
                 double amount = every.getAmount();
                 int count = every.getCount();
                 Date expiryDate1 = every.getExpiryDate();
                 String groupId = every.getGroupId();
-                licenceFeeDto.setOldAmount(amount);
-                licenceFeeDto.setRenewCount(count);
-                licenceFeeDto.setGroupId(groupId);
-                licenceFeeDto.setExpiryDate(expiryDate1);
-                licenceFeeDto.setServiceCode(split[2]);
-                licenceFeeDto.setServiceName(svcName);
-                licenceFeeDto.setBaseService(split[2]);
-                licenceFeeDto.setPremises(premises);
 
+                licenceFeeDto.setBaseService(split[4]);
+                licenceFeeDto.setServiceCode(split[4]);
+                licenceFeeDto.setServiceName(svcName);
+                licenceFeeDto.setPremises(premises);
+                licenceFeeDto.setRenewCount(count);
+
+                licenceFeeDto.setExpiryDate(expiryDate1);
+
+          /*    if(isMigrated){
+                  licenceFeeDto.setMigrated(true);
+                  licenceFeeDto.setGroupId(groupId);
+                  licenceFeeDto.setOldAmount(amount);
+              }else  if(!isMigrated){*/
+                  licenceFeeDto.setMigrated(false);
+                licenceFeeDto.setOldAmount(amount);
+          /*    }*/
+                licenceFeeDtos.add(licenceFeeDto);
             }
-            licenceFeeDtos.add(licenceFeeDto);
+
             FeeDto feeDto = hcsaConfigClient.renewFee(licenceFeeDtos).getEntity();
              total = feeDto.getTotal();
 

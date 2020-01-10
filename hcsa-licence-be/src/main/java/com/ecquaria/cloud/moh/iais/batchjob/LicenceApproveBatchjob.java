@@ -835,7 +835,12 @@ public class LicenceApproveBatchjob {
         licenceDto.setIsGrpLic(applicationGroupDto.getIsGrpLic());
         licenceDto.setOrganizationId(organizationId);
         licenceDto.setOriginLicenceId(originLicenceId);
-        licenceDto.setIsMigrated(Integer.parseInt(AppConsts.NO));
+        if(Integer.parseInt(AppConsts.NO)==1){
+            licenceDto.setIsMigrated(true);
+        }else if(Integer.parseInt(AppConsts.NO)==0){
+            licenceDto.setIsMigrated(false);
+        }
+
         licenceDto.setIsFeeRetroNeeded(Integer.parseInt(AppConsts.NO));
         licenceDto.setVersion(1);
         //todo:Judge the licence status

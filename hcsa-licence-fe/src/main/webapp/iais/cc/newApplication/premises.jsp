@@ -289,10 +289,10 @@
                             </label>
 
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="" maxlength="2" style="width: 60px" id="onsiteEndHH"/>(HH)
+                              <input type="text" value="${appGrpPremisesDto.onsiteEndHH}" maxlength="2" style="width: 60px" name="onsiteEndHH"/>(HH)
                               :
-                              <input type="text" value="" maxlength="2" style="width: 60px" id="onsiteEndMM"/>(MM)
-                              <span class="error-msg"></span>
+                              <input type="text" value="${appGrpPremisesDto.onsiteEndMM}" maxlength="2" style="width: 60px" name="onsiteEndMM"/>(MM)
+                              <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndMM${status.index}"></span>
                             </div>
                           </div>
                           <iais:row>
@@ -405,10 +405,10 @@
                               Operating Hours (End) <span class="mandatory">*</span>
                             </label>
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="" maxlength="2" style="width: 60px" id="conEndHH"/>(HH)
+                              <input type="text" value="${appGrpPremisesDto.conEndHH}" maxlength="2" style="width: 60px" name="conEndHH"/>(HH)
                               :
-                              <input type="text" value="" maxlength="2" style="width: 60px" id="conEndMM"/>(MM)
-                              <span class="error-msg"></span>
+                              <input type="text" value="${appGrpPremisesDto.conEndMM}" maxlength="2" style="width: 60px" name="conEndMM"/>(MM)
+                              <span class="error-msg" name="iaisErrorMsg" id="error_conEndMM${status.index}"></span>
                             </div>
                           </div>
                           <iais:row>
