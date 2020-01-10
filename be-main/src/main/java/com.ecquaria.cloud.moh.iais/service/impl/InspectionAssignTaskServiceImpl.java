@@ -216,7 +216,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public ApplicationViewDto searchByAppNo(String applicationNo) {
-        return belicationClient.getAppViewByNo(applicationNo).getEntity();
+        return belicationClient.getAppViewByCorrelationId(applicationNo).getEntity();
     }
 
     @Override
