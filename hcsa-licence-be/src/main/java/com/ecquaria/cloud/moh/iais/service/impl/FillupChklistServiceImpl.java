@@ -521,7 +521,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             serviceCode = svcDto.getSvcCode();
         }
         List<ChecklistQuestionDto> cDtoList = hcsaChklClient.getcheckListQuestionDtoList(serviceCode,"Inspection").getEntity();
-        CheckListDraftDto draft = new CheckListDraftDto();
+        CheckListDraftDto draft = null;
         if(cDtoList!=null){
             AppPremisesPreInspectChklDto chklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,cDtoList.get(0).getConfigId()).getEntity();
             if(chklDto!=null){
