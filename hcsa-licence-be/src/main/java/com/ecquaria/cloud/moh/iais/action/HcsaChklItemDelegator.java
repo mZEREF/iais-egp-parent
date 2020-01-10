@@ -701,14 +701,12 @@ public class HcsaChklItemDelegator {
 	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
 	    log.debug(StringUtil.changeForLog("fileHandler start ...."));
         String action = ParamUtil.getString(request, "action");
-        byte[] fileData = null;
         File file = null;
         switch (action){
             case REGULATION:
                 List<HcsaChklSvcRegulationDto> regulationList = hcsaChklService.getRegulationClauseListIsActive();
                 if (regulationList != null){
                     file = ExcelWriter.exportExcel(regulationList, HcsaChklSvcRegulationDto.class, "Checklist_Regulations_Upload_Template");
-                    fileData = FileUtils.readFileToByteArray(file);
                 }
                 break;
             case CHECKLIST_ITEM:
@@ -718,15 +716,13 @@ public class HcsaChklItemDelegator {
                 if (searchResult != null){
                     List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
                     file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
-                    fileData = FileUtils.readFileToByteArray(file);
                 }
                 break;
             default:
         }
 
         try {
-            String retFileName = file.getName();
-            FileUtils.setFileResponeContent(response, retFileName, fileData);
+            FileUtils.writeFileResponeContent(response, file);
             FileUtils.delteTempFile(file);
         } catch (IOException e) {
            log.debug(e.getMessage());

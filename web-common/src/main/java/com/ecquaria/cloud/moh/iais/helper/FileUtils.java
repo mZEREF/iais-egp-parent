@@ -28,12 +28,13 @@ public final class FileUtils {
         throw new IaisRuntimeException("FileUtils structure error.");
     }
 
-    public static void setFileResponeContent(final HttpServletResponse response, String fileName, byte[] fileData) throws IOException {
+    public static void writeFileResponeContent(final HttpServletResponse response, final File file) throws IOException {
         Objects.requireNonNull(response);
-        Objects.requireNonNull(fileData);
-        if (StringUtils.isEmpty(fileName)){
+        Objects.requireNonNull(file);
 
-        }
+        String fileName = file.getName();
+        byte[] fileData = FileUtils.readFileToByteArray(file);
+        Objects.requireNonNull(fileData);
 
         response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
         response.addHeader("Content-Length", "" + fileData.length);
