@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -41,6 +42,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -97,6 +99,8 @@ public class InsReportDelegator {
         if (insRepDto == null) {
             insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto,loginContext);
         }
+        List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable)riskOption);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
@@ -273,4 +277,7 @@ public class InsReportDelegator {
 //        }
 //        return hcsaSvcStageWorkingGroupDtos;
 //    }
+
+
+
 }

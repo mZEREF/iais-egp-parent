@@ -41,29 +41,21 @@
 <%--                                            </td>--%>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
-                                                <p><a href="#">${status.count}</a></p>
+                                                <p>${status.count}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
-                                                <p><a href="#">${user.userId}</a></p>
+                                                <p>${user.userId}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
-                                                <p><a href="#">${user.emailAddr}</a></p>
+                                                <p>${user.emailAddr}</p>
                                             </td>
                                                     <td>
                                                         <p class="visible-xs visible-sm table-row-title">Code
                                                             Category</p>
-                                                        <p><a href="#">${user.status}</a></p>
+                                                        <p>${user.status}</p>
                                                     </td>
-                                                <%--                                            <td>--%>
-                                                <%--                                                <p class="visible-xs visible-sm table-row-title">Code Category</p>--%>
-                                                <%--                                                <p><a href="#">${user.status}</a></p>--%>
-                                                <%--                                            </td>--%>
-                                                <%--                                            <td>--%>
-                                                <%--                                                <p class="visible-xs visible-sm table-row-title">Code Category</p>--%>
-                                                <%--                                                <p><a href="#">${user.userId}</a></p>--%>
-                                                <%--                                            </td>--%>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
                                                 <button type="button" class="btn btn-default btn-sm"
@@ -79,7 +71,13 @@
                                                         onclick="doReactivate('${user.id}')">Reactivate
                                                 </button>
                                                 <button type="button" class="btn btn-default btn-sm"
-                                                        onclick="doTerminate('${user.id}')">Reactivate
+                                                        onclick="doTerminate('${user.id}')">Terminate
+                                                </button>
+                                                <button type="button" class="btn btn-default btn-sm"
+                                                        onclick="doUnlock('${user.id}')">Unlock
+                                                </button>
+                                                <button type="button" class="btn btn-default btn-sm"
+                                                        onclick="doExport('${user.id}')">Export
                                                 </button>
                                             </td>
                                         </tr>

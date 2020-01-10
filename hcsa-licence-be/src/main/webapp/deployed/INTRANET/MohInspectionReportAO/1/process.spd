@@ -9,35 +9,35 @@
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectionReportInit" x="140" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionReportInit" x="0" y="300">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="inspectionReportInit_OnStepProcess_0" name="inspectionReportInit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportPre" x="300" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportPre" x="180" y="300">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="inspectorReportPre_OnStepProcess_0" name="inspectorReportPre_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Roback" x="290" y="410">
+  <AutomaticStep defClass="" executor="" icon="" name="Roback" x="780" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="roback_OnStepProcess_0" name="roback_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Approve" x="610" y="410">
+  <AutomaticStep defClass="" executor="" icon="" name="Approve" x="620" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportAction" x="430" y="170">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectorReportAction" x="430" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -46,19 +46,19 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AOReportPage" stageIndicator="" x="470" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AOReportPage" stageIndicator="" x="200" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="290" y="580">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="910" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="620" y="580">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="620" y="500">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -68,42 +68,52 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionReportInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
-   <position>{(60,120)(160,120)}</position>
+   <position>{(60,120)(20,320)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionReportInit" style="rectanular">
-   <position>{(160,120)(320,120)}</position>
+   <position>{(20,320)(200,320)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AOReportPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorReportPre" style="rectanular">
-   <position>{(320,120)(490,120)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/AOReportPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorReportPre" style="oblique">
+   <position>{(200,320)(220,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AOReportPage" style="oblique">
-   <position>{(490,120)(450,190)}</position>
+   <position>{(220,120)(450,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Roback" style="oblique">
-   <position>{(310,430)(310,600)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Approve" style="oblique">
-   <position>{(630,430)(640,600)}</position>
+   <position>{(800,120)(930,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Page2" style="oblique">
-   <position>{(310,600)(480,600)}</position>
+   <position>{(930,120)(930,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Page1" style="oblique">
-   <position>{(640,600)(480,600)}</position>
+   <position>{(640,520)(930,520)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/action" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectorReportAction" style="rectanular">
-   <position>{(450,190)(470,290)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/action" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectorReportAction" style="oblique">
+   <position>{(450,120)(640,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Roback" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
-   <position>{(470,290)(310,430)}</position>
+   <position>{(640,120)(800,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Approve" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
-   <position>{(470,290)(630,430)}</position>
+   <position>{(640,120)(640,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Approve" style="oblique">
+   <position>{(640,220)(640,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectorReportPre" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(640,320)(200,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(640,320)(640,520)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspectorReportPre" componentIfTrue="/Pages/WebPage/Page1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="620" y="300">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Approve" executor="" icon="" leftOperand="action_type" name="action" x="450" y="270">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Approve" executor="" icon="" leftOperand="action_type" name="action" x="620" y="100">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Roback" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;"/>
@@ -111,7 +121,7 @@
  </Switches>
  <Branches/>
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="460" y="580">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="910" y="500">
    <Description/>
   </Merge>
  </Merges>

@@ -1,5 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -8,6 +10,8 @@
 <%
     String webroot = IaisEGPConstant.BE_CSS_ROOT;
 %>
+<webui:setLayout name="iais-intranet"/>
+<div class="main-content">
 <form method="post" id="aomainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="action_type" value="">
     <div class="tab-pane" id="tabInspection" role="tabpanel">
@@ -350,6 +354,12 @@
                             </td>
                             <td class="col-xs-4">
                                 <p>${option}</p>
+                                <input type="hidden" name="inspectorRecommendation" value="${option}">
+                                <iais:select name="recommendation" options="riskOption" firstOption="Please select"
+                                             onchange="x(this)" value="appPremisesRecommendationDto.recommendation"/>
+                                <input type="text" name="otherRecommendation" id="recom" value=""
+                                       style="display: none"/>
+                                <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -358,12 +368,15 @@
             </div>
         </div>
     </div>
+
+
     <div class="modal-footer">
         <button id="backButton" type="submit" onclick="doBack()" class="btn btn-primary">Back</button>
         <button id="approveButton" type="submit" class="btn btn-primary" onclick="doSubmit()">Approve</button>
     </div>
 </form>
-
+    <%@include file="/include/validation.jsp"%>
+</div>
 <script type="text/javascript">
     function doBack() {
         submit('back');

@@ -68,19 +68,31 @@
     function doDeactivate(Id) {
         $("[name='crud_action_value']").val(Id);
         $("[name='crud_action_deactivate']").val('doDeactivate');
-        submit('doDelete');
+        submit('doDeactivate');
     }
 
     function doReactivate(Id) {
         $("[name='crud_action_value']").val(Id);
         $("[name='crud_action_deactivate']").val('doReactivate');
-        submit('doDelete');
+        submit('doDeactivate');
     }
 
     function doTerminate(Id) {
         $("[name='crud_action_value']").val(Id);
         $("[name='crud_action_deactivate']").val('doTerminate');
-        submit('doDelete');
+        submit('doDeactivate');
+    }
+
+    function doUnlock(Id) {
+        $("[name='crud_action_value']").val(Id);
+       // $("[name='crud_action_deactivate']").val('doUnlock');
+        submit('doUnlock');
+    }
+
+    function doExport(Id) {
+        $("[name='crud_action_value']").val(Id);
+        // $("[name='crud_action_deactivate']").val('doUnlock');
+        submit('doExport');
     }
 
     // function getPageValue(pageNo){

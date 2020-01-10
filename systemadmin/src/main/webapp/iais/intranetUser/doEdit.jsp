@@ -51,7 +51,6 @@
                             <label class="col-xs-12 col-md-4 control-label">Salutation.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    value="${orgUserDto.salutation}"
                                     <iais:select name="salutation" options="salutation" firstOption="Please select" value="${orgUserDto.salutation}"></iais:select>
                                 </div>
                             </iais:value>
@@ -60,7 +59,6 @@
                             <label class="col-xs-12 col-md-4 control-label">Status.</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    value="${orgUserDto.status}"
                                     <iais:select name="status" options="statusOption" firstOption="Please select" value="${orgUserDto.status}"></iais:select>
                                 </div>
                             </iais:value>

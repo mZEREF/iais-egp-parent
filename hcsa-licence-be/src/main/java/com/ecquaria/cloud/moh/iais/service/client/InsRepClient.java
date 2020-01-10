@@ -21,7 +21,7 @@ import java.util.List;
 public interface InsRepClient {
 
     @RequestMapping(path = "/iais-inspection-report/saveData",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> saveData(@RequestBody AppPremisesRecommendationDto appPremisesRecommendationDto);
+    FeignResponseEntity<String> saveRecommendationData(@RequestBody AppPremisesRecommendationDto appPremisesRecommendationDto);
 
     @RequestMapping(path = "/application-number-grp-premiese/{appPremCorreId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> getAppInsRepDto(@PathVariable("appPremCorreId") String appPremCorreId);

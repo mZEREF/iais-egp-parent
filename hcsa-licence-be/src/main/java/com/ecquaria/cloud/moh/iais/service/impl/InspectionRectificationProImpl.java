@@ -162,7 +162,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         appPremisesRecommendationDto.setRemarks(inspectionPreTaskDto.getAccCondMarks());
         appPremisesRecommendationDto.setRecomInNumber(null);
-        insRepClient.saveData(appPremisesRecommendationDto);
+        insRepClient.saveRecommendationData(appPremisesRecommendationDto);
     }
 
     private void createTaskForReport(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos, TaskDto td, LoginContext loginContext) {

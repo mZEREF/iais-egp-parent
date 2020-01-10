@@ -138,7 +138,7 @@
                                 <p>Other Inspection Officer:</p>
                             </td>
                             <td class="col-xs-8">
-<%--                                <p>${insRepDto.reportedBy}</p>--%>
+                                <%--                                <p>${insRepDto.reportedBy}</p>--%>
                             </td>
                         </tr>
                         <tr>
@@ -360,17 +360,10 @@
                                 <p>Recommendation:</p>
                             </td>
                             <td class="col-xs-4">
-                                        <span>
-                                               <select  id="select" name="recommendation" onchange="x(this)">
-                                                   <option value="">---Please select---</option>
-                                                   <c:forEach items="${insRepDto.riskRecommendations}" var="risk">
-                                                       <option value="${risk}"><c:out value="${risk}"></c:out></option>
-                                                   </c:forEach>
-<%--                                                   <c:if test="${appPremisesRecommendationDto.recomInNumber eq '2'}">selected</c:if>--%>
-                                                   <input type="text" name="otherRecommendation" id="recom" value="" style="display: none"></input>
-                                               </select>
-                                           </p>
-                                        </span>
+                                <iais:select name="recommendation" options="riskOption" firstOption="Please select"
+                                             onchange="x(this)" value="appPremisesRecommendationDto.recommendation"/>
+                                <input type="text" name="otherRecommendation" id="recom" value=""
+                                       style="display: none"/>
                                 <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
                             <td class="col-xs-4"></td>
@@ -380,21 +373,22 @@
             </div>
         </div>
     </div>
+
     <div align="right">
         <button id="submitButton" type="submit" class="btn btn-primary">
             Submit
         </button>
     </div>
-<%--    <button type="submit">confirm</button>--%>
-    <%@include file="/include/validation.jsp"%>
+    <%--    <button type="submit">confirm</button>--%>
+    <%@include file="/include/validation.jsp" %>
 </form>
 
 <script type="text/javascript">
     function x(obj) {
-        if(obj.options[obj.selectedIndex].value =="Others")
-            document.getElementById("recom").style.display="";
+        if (obj.options[obj.selectedIndex].value == "Others")
+            document.getElementById("recom").style.display = "";
         else
-            document.getElementById("recom").style.display="none";
+            document.getElementById("recom").style.display = "none";
 
     }
 </script>

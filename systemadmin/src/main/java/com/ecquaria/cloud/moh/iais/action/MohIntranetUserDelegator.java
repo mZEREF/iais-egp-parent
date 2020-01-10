@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -15,25 +17,30 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.xhtmlrenderer.util.XMLUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.crypto.Cipher;
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author weilu
@@ -130,6 +137,7 @@ public class MohIntranetUserDelegator {
             ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
         }
     }
+
     public void doEdit(BaseProcessClass bpc){
         String actionType = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
         if(!IntranetUserConstant.SAVE_ACTION.equals(actionType)){
@@ -160,33 +168,85 @@ public class MohIntranetUserDelegator {
         OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
         String userDomain = intranetUserById.getUserDomain();
         String userId = intranetUserById.getUserId();
-        if("doDeactivate".equals(crud_action_deactivate)){
-           // OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
-            intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
-            intranetUserService.updateOrgUser(intranetUserById);
-            return;
-        }else if ("doReactivate".equals(crud_action_deactivate)){
-            //OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
-            intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-            intranetUserService.updateOrgUser(intranetUserById);
-            return;
-        }else if("doTerminate".equals(crud_action_deactivate)){
-            //OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
-            intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
-            intranetUserService.updateOrgUser(intranetUserById);
-            ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
-            userByIdentifier.setAccountStatus(ClientUser.STATUS_TERMINATED);
-        }
-
+//        if("doDeactivate".equals(crud_action_deactivate)){
+//           // OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+//            intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
+//            intranetUserService.updateOrgUser(intranetUserById);
+//            return;
+//        }else if ("doReactivate".equals(crud_action_deactivate)){
+//            //OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+//            intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+//            intranetUserService.updateOrgUser(intranetUserById);
+//            createXML(intranetUserById);
+//            return;
+//        }else if("doTerminate".equals(crud_action_deactivate)){
+//            //OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+//            intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_IACTIVE);
+//            intranetUserService.updateOrgUser(intranetUserById);
+//            ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
+//            userByIdentifier.setAccountStatus(ClientUser.STATUS_TERMINATED);
+//        }
         ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
         if(userByIdentifier.isFirstTimeLoginNo()){
             intranetUserById.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
             intranetUserService.updateOrgUser(intranetUserById);
-            Boolean aBoolean = deleteEgpUser(userDomain, userId);
+            deleteEgpUser(userDomain, userId);
+            return;
+        }
+    }
+
+    public void doUnlock(BaseProcessClass bpc){
+        String actionType = ParamUtil.getString(bpc.request,IntranetUserConstant.CRUD_ACTION_TYPE);
+        String id = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
+        OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+        String userDomain = intranetUserById.getUserDomain();
+        String userId = intranetUserById.getUserId();
+        ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
+        userByIdentifier.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        intranetUserService.updateEgpUser(userByIdentifier);
+        return;
+    }
+
+    public void doActivate(BaseProcessClass bpc){
+        String actionType = ParamUtil.getString(bpc.request,"crud_action_deactivate");
+        String id = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
+        OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+        String userDomain = intranetUserById.getUserDomain();
+        String userId = intranetUserById.getUserId();
+        ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
+        if(IntranetUserConstant.DEACTIVATE.equals(actionType)){
+            userByIdentifier.setAccountStatus(ClientUser.STATUS_INACTIVE);
+            intranetUserService.updateEgpUser(userByIdentifier);
+            return;
+        }else if(IntranetUserConstant.REDEACTIVATE.equals(actionType)){
+            userByIdentifier.setAccountStatus(ClientUser.STATUS_ACTIVE);
+            intranetUserService.updateEgpUser(userByIdentifier);
+            return;
+        }else if(IntranetUserConstant.TERMINATE.equals(actionType)){
+            userByIdentifier.setAccountStatus(ClientUser.STATUS_TERMINATED);
+            intranetUserService.updateEgpUser(userByIdentifier);
             return;
         }
 
+    }
 
+    public void doImport(BaseProcessClass bpc){
+        String actionType = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE);
+        String id = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
+        OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+        String userDomain = intranetUserById.getUserDomain();
+        String userId = intranetUserById.getUserId();
+        ClientUser userByIdentifier = intranetUserService.getUserByIdentifier(userId,userDomain);
+        userByIdentifier.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        return;
+    }
+
+    public void doExport(BaseProcessClass bpc){
+        String crud_action_deactivate = ParamUtil.getString(bpc.request, "crud_action_type");
+        String id = ParamUtil.getString(bpc.request, IntranetUserConstant.CRUD_ACTION_VALUE);
+        OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
+        createXML(intranetUserById,bpc);
+        return;
     }
 
     public void doSearch(BaseProcessClass bpc){
@@ -215,6 +275,12 @@ public class MohIntranetUserDelegator {
         int pageNo = ParamUtil.getInt(bpc.request,SystemAdminBaseConstants.CRUD_ACTION_VALUE);
         filterParameter.setPageNo(pageNo);
     }
+
+
+
+
+
+
 
     private OrgUserDto prepareOrgUserDto (BaseProcessClass bpc){
         OrgUserDto orgUserDto = new OrgUserDto() ;
@@ -255,6 +321,7 @@ public class MohIntranetUserDelegator {
         return orgUserDto ;
     }
 
+
     private OrgUserDto prepareEditOrgUserDto (BaseProcessClass bpc){
         OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         String displayName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DISPLAYNAME);
@@ -293,6 +360,7 @@ public class MohIntranetUserDelegator {
         return orgUserDto ;
     }
 
+
     private void saveEgpUser(OrgUserDto orgUserDto){
         ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
         clientUser.setUserDomain(orgUserDto.getUserDomain());
@@ -304,6 +372,8 @@ public class MohIntranetUserDelegator {
         clientUser.setPasswordChallengeAnswer("A");
         intranetUserService.saveEgpUser(clientUser);
     }
+
+
     private void editEgpUser(OrgUserDto orgUserDto){
         String userId = orgUserDto.getUserId();
         String userDomain = orgUserDto.getUserDomain();
@@ -351,6 +421,7 @@ public class MohIntranetUserDelegator {
         intranetUserService.updateEgpUser(clientUser);
     }
 
+
     private Boolean deleteEgpUser(String userDomian,String userId){
         return intranetUserService.deleteEgpUser(userDomian, userId);
     }
@@ -395,6 +466,7 @@ public class MohIntranetUserDelegator {
         return errorMap;
     }
 
+
     private void prepareOption(BaseProcessClass bpc){
         List<SelectOption> salutation = new ArrayList<>();
         SelectOption so1 = new SelectOption("Mr","Mr");
@@ -424,5 +496,119 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request,"statusOption",(Serializable)statusOption);
         OrgUserDto orgUserDto = (OrgUserDto)ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);
+    }
+
+
+    void createXML(OrgUserDto orgUserDto ,BaseProcessClass bpc){
+        Document document= DocumentHelper.createDocument();
+        Element userGroups=document.addElement("user-groups");
+        Element userGroup =  userGroups.addElement("user-group");
+        Element userDomain = userGroup.addElement("userDomain");
+        userDomain.setText(orgUserDto.getUserDomain());
+        Element userId = userGroup.addElement("userId");
+        userId.setText(orgUserDto.getUserId());
+        Element displayName = userGroup.addElement("displayName");
+        displayName.setText(orgUserDto.getDisplayName());
+        Element startDate = userGroup.addElement("startDate");
+        //startDate.setText(orgUserDto.getAccountActivateDatetime());
+        Element endDate = userGroup.addElement("endDate");
+        endDate.setText(orgUserDto.getUserDomain());
+        Element salutation = userGroup.addElement("salutation");
+//        salutation.setText(orgUserDto.getSalutation());
+//        Element firstName = userGroup.addElement("firstName");
+//        firstName.setText(orgUserDto.getFirstName());
+//        Element lastName = userGroup.addElement("lastName");
+//        lastName.setText(orgUserDto.getLastName());
+//        Element mobileNo = userGroup.addElement("mobileNo");
+//        mobileNo.setText(orgUserDto.getMobileNo());
+//        Element officeNo = userGroup.addElement("officeNo");
+//        officeNo.setText(orgUserDto.getOfficeTelNo());
+        Element email = userGroup.addElement("email");
+        //email.setText(orgUserDto.getEmail());
+        Element organization = userGroup.addElement("organization");
+        //organization.setText(orgUserDto);
+//        Element branch = userGroup.addElement("branch");
+//        branch.setText(orgUserDto.getBranchUnit());
+//        Element remarks = userGroup.addElement("remarks");
+//        remarks.setText(orgUserDto.getRemarks());
+        Element status = userGroup.addElement("status");
+        status.setText(orgUserDto.getStatus());
+//        byte[] buffer = null;
+        OutputFormat format=OutputFormat.createPrettyPrint();
+        format.setEncoding("UTF-8");
+        File XmlFile=new File("D:/intranet.xml");
+        XMLWriter writer;
+        try {
+//            FileOutputStream fileOutputStream = new FileOutputStream(XmlFile);
+//            writer = new XMLWriter(fileOutputStream,format);
+//            writer.write(document);
+//            writer.close();
+//            fileOutputStream.close();
+            byte[] content = FileUtils.readFileToByteArray(XmlFile);
+            ParamUtil.setSessionAttr(bpc.request,"content",content);
+            //FileUtils.setFileResponeContent(bpc.response, XmlFile.getName(), content);
+//            FileInputStream fis = new FileInputStream(XmlFile);
+//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//            byte[] b = new byte[1024];
+//            int n;
+//            while ((n = fis.read(b)) != -1)
+//            {
+//                bos.write(b, 0, n);
+//            }
+//
+//            buffer = bos.toByteArray();
+
+//            response.addHeader("Content-Disposition", "attachment;filename="+XmlFile.getName());
+//            response.addHeader("Content-Length", ""+bytes.length);
+//            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+//            response.setContentType("application/x-octet-stream");
+//            ops.write(bytes);
+//            ops.close();
+//            ops.flush();
+        }catch (Exception e) {
+            log.debug(e.getMessage());
+        }
+    }
+
+
+
+    void importXML(OrgUserDto orgUserDto){
+        try {
+
+            SAXReader reader = new SAXReader();
+            Document document = reader.read("intranet.xml");
+//			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//		    DocumentBuilder db = dbf.newDocumentBuilder();
+//			File file = new File("d:/skills.xml");
+//			org.w3c.dom.Document domDocument = db.parse(file);
+//			DOMReader domerReader = new DOMReader();
+//			Document readDocument = domerReader.read(domDocument);
+            Element root = document.getRootElement();
+            List<Element> skills = root.elements();
+            for (Element e : skills) {
+                // 获取子元素名称
+                System.out.print(e.getName() + " ");
+                String arr [] = new String[20];
+                // 获取子元素的属性
+//				Attribute attr = e.attribute(1);
+//				System.out.println(attr.getName() + "=" + attr.getValue());
+                List<Element> echilds = e.elements();
+                for (int i = 0; i < 20; i++) {
+                    arr[i] = skills.get(i).getText();
+                }
+
+//                for (Element e2 : echilds) {
+//                    // 获取子元素名称和值
+//
+//                    System.out.println(e2.getName()+e2.getTextTrim());
+//                }
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExceptionInInitializerError e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

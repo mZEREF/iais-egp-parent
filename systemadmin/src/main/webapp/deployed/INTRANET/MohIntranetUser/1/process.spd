@@ -51,32 +51,60 @@
     <JavaCode defClass="" executor="" methodName="doEdit_OnStepProcess_0" name="doEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="650" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="560" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doDelete" x="560" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="doDelete" x="500" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doDelete_OnStepProcess_0" name="doDelete_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSorting" x="730" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="doSorting" x="610" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSorting_OnStepProcess_0" name="doSorting_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPaging" x="800" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="doPaging" x="670" y="190">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPaging_OnStepProcess_0" name="doPaging_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doUnlock" x="740" y="190">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doUnlock_OnStepProcess_0" name="doUnlock_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doDeactivate" x="820" y="190">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doDeactivate_OnStepProcess_0" name="doDeactivate_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doImport" x="900" y="190">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doImport_OnStepProcess_0" name="doImport_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doExport" x="970" y="190">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doExport_OnStepProcess_0" name="doExport_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -94,6 +122,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="doEditPage" stageIndicator="" x="410" y="320">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="downLoad" stageIndicator="" x="970" y="310">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -121,16 +155,16 @@
    <position>{(580,80)(430,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doDelete" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(580,220)}</position>
+   <position>{(580,80)(520,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(670,220)}</position>
+   <position>{(580,80)(580,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSorting" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(750,220)}</position>
+   <position>{(580,80)(630,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPaging" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(820,220)}</position>
+   <position>{(580,80)(690,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/doCreatePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCreate" style="oblique">
    <position>{(210,210)(210,340)}</position>
@@ -157,16 +191,16 @@
    <position>{(440,560)(303,568)(430,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDelete" style="oblique">
-   <position>{(580,220)(580,640)}</position>
+   <position>{(520,210)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
-   <position>{(670,220)(580,640)}</position>
+   <position>{(580,210)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSorting" style="oblique">
-   <position>{(750,220)(580,640)}</position>
+   <position>{(630,210)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPaging" style="oblique">
-   <position>{(820,220)(580,640)}</position>
+   <position>{(690,210)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
    <position>{(440,560)(580,640)}</position>
@@ -176,6 +210,33 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(580,640)(63,641)(140,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doUnlock" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(580,80)(760,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doDeactivate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(580,80)(840,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doImport" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(580,80)(920,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doExport" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(580,80)(990,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doUnlock" style="oblique">
+   <position>{(760,210)(580,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDeactivate" style="oblique">
+   <position>{(840,210)(580,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doImport" style="oblique">
+   <position>{(920,210)(580,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/downLoad" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doExport" style="oblique">
+   <position>{(990,210)(990,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/downLoad" style="oblique">
+   <position>{(990,330)(580,640)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -195,6 +256,10 @@
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doUnlock" value="&quot;doUnlock&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doDeactivate" value="&quot;doDeactivate&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doImport" value="&quot;doImport&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doExport" value="&quot;doExport&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
