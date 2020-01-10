@@ -70,7 +70,7 @@ public class InspectionNcCheckListDelegator {
         String taskId = ParamUtil.getRequestString(request,"taskId");
         //String taskId = "38CDA333-BC2E-EA11-BE7D-000C29F371DC";
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "38CDA333-BC2E-EA11-BE7D-000C29F371DC";
+            taskId = "BA71A041-AD32-EA11-BE7D-000C29F371DC";
         }
         String serviceType = "Inspection";
 /*        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
