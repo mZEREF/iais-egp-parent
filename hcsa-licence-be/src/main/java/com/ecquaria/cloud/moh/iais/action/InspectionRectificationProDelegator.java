@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -75,6 +77,7 @@ public class InspectionRectificationProDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);
+        ParamUtil.setSessionAttr(bpc.request, "inboxUrl", null);
     }
 
     /**
@@ -99,11 +102,29 @@ public class InspectionRectificationProDelegator {
             inspectionPreTaskDto.setReMarks(appPremisesRoutingHistoryDto.getInternalRemarks());
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
         }
+        setInboxUrlToSession(bpc);
         List<SelectOption> processDecOption = inspectionRectificationProService.getProcessRecDecOption();
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+    }
+
+    private void setInboxUrlToSession(BaseProcessClass bpc) {
+        StringBuilder sb = new StringBuilder("https://");
+        String url = MessageConstants.MESSAGE_CALL_BACK_URL_BEINBOX;
+        sb.append(bpc.request.getServerName());
+        if (!url.startsWith("/")) {
+            sb.append("/");
+        }
+        sb.append(url);
+        if (url.indexOf("?") >= 0) {
+            sb.append("&");
+        } else {
+            sb.append("?");
+        }
+        String inboxUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(sb.toString(), bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, "inboxUrl", inboxUrl);
     }
 
     /**

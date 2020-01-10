@@ -76,7 +76,7 @@
                         </iais:value>
                       </iais:row>
                       <iais:action >
-                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectorProRecBack()">Back</button>
+                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectorProRecBack()"><a href = "${inboxUrl}">Back</a></button>
                         <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:doInspectorProRecSubmit()">Submit</button>
                       </iais:action>
                     </iais:section>
@@ -104,7 +104,6 @@
 
     function doInspectorProRecBack() {
         $("#actionValue").val('back');
-        inspectorProRecSubmit('back');
     }
 
     function doInspectorProRecChange(value) {
