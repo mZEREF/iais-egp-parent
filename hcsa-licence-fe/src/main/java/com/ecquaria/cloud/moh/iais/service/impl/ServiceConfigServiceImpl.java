@@ -131,7 +131,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             docMap.put("common", "0");
             docMap.put("premises", "1");
         }else{
-            docMap.put("premises",serviceId);
+            docMap.put("svc",serviceId);
+            docMap.put("common", "0");
         }
         String docMapJson = JsonUtil.parseToJson(docMap);
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos =  appConfigClient.getHcsaSvcDocConfig(docMapJson).getEntity();
