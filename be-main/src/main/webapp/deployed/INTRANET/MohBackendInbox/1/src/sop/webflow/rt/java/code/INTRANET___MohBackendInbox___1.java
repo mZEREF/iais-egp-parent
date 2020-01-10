@@ -51,6 +51,11 @@ public class INTRANET___MohBackendInbox___1 extends BaseProcessClass {
 	public void searchQuery_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "searchQuery", this); 	}
 
+	public void approve_OnStepProcess_0() throws Exception {
+	// 		Approve->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doApprove", this);
+	}
+
 	
 
 }

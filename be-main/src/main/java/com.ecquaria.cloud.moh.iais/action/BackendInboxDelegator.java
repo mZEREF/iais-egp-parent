@@ -232,13 +232,26 @@ public class BackendInboxDelegator {
     }
 
     /**
-     * StartStep: inspectionSupSearchSort
+     * StartStep: searchSort
      *
      * @param bpc
      * @throws
      */
     public void searchSort(BaseProcessClass bpc){
         }
+
+
+    /**
+     * StartStep: doApprove
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doApprove(BaseProcessClass bpc){
+        String[] taskList =  ParamUtil.getStrings(bpc.request, "taskcheckbox");
+        StringBuilder dfsf = new StringBuilder();
+
+    }
 
 
     /**
@@ -254,10 +267,11 @@ public class BackendInboxDelegator {
         SearchParam searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
         searchParamGroup.setPageSize(10);
         searchParamGroup.setPageNo(1);
+
         searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
 
         SearchParam searchParamAjax = new SearchParam(InspectionAppInGroupQueryDto.class.getName());
-        searchParamAjax.setPageSize(10);
+        searchParamAjax.setPageSize(100);
         searchParamAjax.setPageNo(1);
         searchParamAjax.setSort("APPLICATION_NO", SearchParam.ASCENDING);
 
@@ -326,6 +340,7 @@ public class BackendInboxDelegator {
                 searchParamAjax.removeFilter("address");
             }
 
+            CrudHelper.doPaging(searchParamGroup,bpc.request);
             QueryHelp.setMainSql("inspectionQuery", "AppGroup",searchParamGroup);
             log.debug(StringUtil.changeForLog("searchResult3 searchParamGroup = "+JsonUtil.parseToJson(searchParamGroup)));
             SearchResult<InspectionAppGroupQueryDto> searchResult3 = inspectionService.searchInspectionBeAppGroup(searchParamGroup);
@@ -349,17 +364,19 @@ public class BackendInboxDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
         Map<String,String> appNoUrl = new HashMap<>();
-        Map<String,TaskDto> taskMap = new HashMap<>();
+        Map<String,String> taskList = new HashMap<>();
         if(commPools != null && commPools.size() >0){
             for (TaskDto item:commPools
             ) {
                 appNoUrl.put(item.getRefNo(), generateProcessUrl(item, bpc.request));
+                taskList.put(item.getRefNo(), item.getId());
                 taskMap.put(item.getRefNo(), item);
             }
         }
 
 
 
+        ParamUtil.setSessionAttr(bpc.request, "taskList",(Serializable) taskList);
         ParamUtil.setSessionAttr(bpc.request, "appNoUrl",(Serializable) appNoUrl);
         ParamUtil.setSessionAttr(bpc.request, "taskMap",(Serializable) taskMap);
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);

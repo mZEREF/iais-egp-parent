@@ -18,6 +18,7 @@
         <%@ include file="/include/formHidden.jsp" %>
         <input type="hidden" name="SearchSwitchType" value="">
         <input type="hidden" id="taskId" name="taskId" value="">
+        <input type="hidden" id="chkIdList" name="chkIdList" value="">
         <input type="hidden" id="inspector_name" name="inspector_name" value="">
         <div class="col-xs-12">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -174,6 +175,10 @@
                     </div>
                 </div>
             </div>
+            <button class="btn btn-lg btn-login-submit" type="button"
+                    style="background:#2199E8; color: white"
+                    onclick="javascript:approve()">Approve
+            </button>
         </div>
     </form>
 </div>
@@ -228,6 +233,7 @@
                     var serviceName = data.serviceName;
                     var res = data.ajaxResult;
                     var url = data.appNoUrl;
+                    var taskList = data.taskList;
                     var html = '';
                     html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson'+ divid+'">' +
                         '<td colspan="6" style="padding: 0px 8px !important;">' +
@@ -235,6 +241,7 @@
                         '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
                         '<tr>' +
+                        '<th><input type="checkbox" id="checkbox'+ divid+'" onclick="chooseAllcheckBox('+ divid+')" </th>' +
                         '<th>Application No</th>' +
                         '<th>Service</th>' +
                         '<th>Licence Expiry Date</th>' +
@@ -255,6 +262,7 @@
                         }
                         var address = res.rows[i].address;
                         html += '<tr style = "color : ' + color + ';">' +
+                                '<td><input type="checkbox" name="taskcheckbox" value="'+taskList[res.rows[i].refNo]+'"></td>'+
                             '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a href=' + url[res.rows[i].refNo] + '>' + res.rows[i].applicationNo + '</a></p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res.rows[i].serviceId] + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>N/A</p></td>' +
@@ -282,8 +290,19 @@
 
     }
 
-    function chooseCurRole() {
-        submit('page');
+    function jumpToPagechangePage() {
+        submit('search');
     }
 
+    function approve() {
+        submit('approve');
+    }
+    
+    function chooseAllcheckBox(id) {
+        if($('#checkbox' + id).prop('checked')){
+            $('#advfilterson' + id + ' input[type="checkbox"]').prop("checked",true)
+        }else{
+            $('#advfilterson' + id + ' input[type="checkbox"]').prop("checked",false)
+        }
+    }
 </script>
