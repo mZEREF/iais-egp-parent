@@ -83,7 +83,6 @@
             <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
               <input type="text" id="siteFloorNo" name="floorNo" maxlength="3" autocomplete="off">
-              <p class="small-txt">(Optional)</p>
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
@@ -91,7 +90,6 @@
             <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
               <input type="text" id="siteUnitNo" name="unitNo" maxlength="5" autocomplete="off">
-              <p class="small-txt">(Optional)</p>
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
@@ -99,7 +97,6 @@
             <label class="col-xs-12 col-md-4 control-label">Building Name</label>
             <div class="col-sm-7 col-md-6 col-xs-10 input-with-label">
               <input type="text" id="siteBuildingName" name="buildingName" class="siteBuildingName" maxlength="45" autocomplete="off">
-              <p class="small-txt">(Optional)</p>
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
@@ -129,9 +126,18 @@
               <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo(00)"></span>
             </div>
           <div class="clear"></div></div>
-          <div class="form-group">
-            <label class="col-xs-12 col-md-4 control-label">Are you co-locating with another licensee?</label>
-            <div class=" col-xs-7 col-sm-4 col-md-3">
+          <div class="form-group other-lic-content">
+            <label class="col-xs-12 col-md-4 control-label">Are you co-locating with another licensee?<span class="mandatory">*</span></label>
+            <div class=" col-xs-7 col-sm-4 col-md-6">
+              <input type="hidden" name="isOtherLic" value=""/>
+              <div class="form-check col-sm-3">
+                <input class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
+                <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+              </div>
+              <div class="form-check col-sm-3">
+                <input class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
+                <label class="form-check-label" ><span class="check-circle"></span>No</label>
+              </div>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
@@ -157,7 +163,7 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
             <div class=" col-xs-7 col-sm-4 col-md-3">
-              <input type="text" class="date_picker form-control form_datetime" id="-17812753676100" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
+              <input type="text" name="onsitePubHoliday" class="date_picker form-control form_datetime" id="-17812753676100" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
@@ -219,21 +225,18 @@
             <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
               <input type="text" id="conveyanceFloorNo" name="conveyanceFloorNo" maxlength="3" autocomplete="off">
-              <p class="small-txt">(Optional)</p>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
               <input type="text" id="conveyanceUnitNo" name="conveyanceUnitNo" maxlength="5" autocomplete="off">
-              <p class="small-txt">(Optional)</p>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Building Name </label>
             <div class=" col-xs-11 col-sm-7 col-md-6 input-with-label">
               <input type="text" id="conveyanceBuildingName" name="conveyanceBuildingName" class="conveyanceBuildingName" maxlength="45" autocomplete="off">
-              <p class="small-txt">(Optional)</p>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
@@ -266,6 +269,7 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
             <div class=" col-xs-7 col-sm-4 col-md-3">
+            <input type="text" name="conPubHoliday" class="date_picker form-control form_datetime" id="-17812753676100" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
@@ -294,5 +298,37 @@
 
 </div>
         ]]>
+    </sql>
+
+    <sql key="premises-ph" cached="no" remarks="generate Governance Officer Html">
+        <![CDATA[
+            <div class="pubHolidayContent"> 
+              <div class="form-group">
+                <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
+                  <div class=" col-xs-7 col-sm-4 col-md-3">
+                  <input type="text" autocomplete="off" class="date_picker form-control form_datetime" name="" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
+                  <span id="error_onsitePubHoliday" name="iaisErrorMsg" class="error-msg"></span></div><div class=" col-xs-7 col-sm-4 col-md-3">
+                  <div class="form-check">
+                  <b class=" removeBtn">X</b>
+                  </div>
+                </div>
+                <div class="clear"></div>
+              </div>
+            <div class="form-group">
+              <label class="col-xs-12 col-md-4 control-label"> Public Holidays Operating Hours (Start)</label>
+              <div class="col-xs-9 col-sm-5 col-md-4">
+                <input type="text" name="" value="" maxlength="2" style="width: 60px">(HH) :
+                <input type="text" name="" value="" maxlength="2" style="width: 60px">(MM) 
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-xs-12 col-md-4 control-label">Public Holidays Operating Hours (End)</label>
+              <div class="col-xs-9 col-sm-5 col-md-4">
+              <input type="text" name="" value="" maxlength="2" style="width: 60px">(HH) :
+              <input type="text" name="" value="" maxlength="2" style="width: 60px">(MM)
+            </div>
+          </div>
+         </div>    
+         ]]>
     </sql>
 </sqls>
