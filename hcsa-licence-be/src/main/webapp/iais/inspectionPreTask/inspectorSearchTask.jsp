@@ -195,15 +195,24 @@
         $('input[name="hci_name"]').val("");
         $('input[name="hci_address"]').val("");
     }
+
     function inspectorSearchTaskSubmit(action){
         $("[name='InspectionSupSearchSwitchType']").val(action);
         var mainPoolForm = document.getElementById('mainSupForm');
         mainPoolForm.submit();
     }
+
     function doInspectorSearchTaskSearch() {
         inspectorSearchTaskSubmit('search');
     }
+
     function jumpToPagechangePage(){
         inspectorSearchTaskSubmit('page');
+    }
+
+    function sortRecords(sortFieldName,sortType){
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        inspectorSearchTaskSubmit('sort');
     }
 </script>
