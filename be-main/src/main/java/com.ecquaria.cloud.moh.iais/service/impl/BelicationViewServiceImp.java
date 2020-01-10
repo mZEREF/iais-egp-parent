@@ -27,7 +27,7 @@ public class BelicationViewServiceImp implements BelicationViewService {
     @Override
     public ApplicationViewDto searchByAppNo(String appNo) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
-        return belicationClient.getAppViewByNo(appNo).getEntity();
+        return belicationClient.getAppViewByCorrelationId(appNo).getEntity();
     }
 
     @Override
