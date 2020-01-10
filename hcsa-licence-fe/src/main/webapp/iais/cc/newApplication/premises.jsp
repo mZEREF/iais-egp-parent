@@ -42,7 +42,7 @@
               <div class="tab-pane active" id="premisesTab" role="tabpanel">
                 <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
                   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                    <c:if test="${'APPPNP01' == clickEditPage}">
+                    <c:if test="${'APPPN01' == clickEditPage}">
                       <c:set var="isClickEdit" value="true"/>
                     </c:if>
                   </c:forEach>
@@ -220,7 +220,6 @@
                             <iais:field value="Floor No." width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
                               <iais:input maxLength="3" type="text" name="floorNo" id="siteFloorNo" value="${appGrpPremisesDto.floorNo}"></iais:input>
-                              <p class="small-txt">(Optional)</p>
                               <span class="error-msg" name="iaisErrorMsg" id="error_floorNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
@@ -228,7 +227,6 @@
                             <iais:field value="Unit No." width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
                               <iais:input maxLength="5" type="text" name="unitNo" id="siteUnitNo" value="${appGrpPremisesDto.unitNo}"></iais:input>
-                              <p class="small-txt">(Optional)</p>
                               <span class="error-msg" name="iaisErrorMsg" id="error_unitNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
@@ -236,7 +234,6 @@
                             <iais:field value="Building Name" width="12"/>
                             <iais:value width="11" cssClass="input-with-label">
                               <iais:input cssClass="siteBuildingName" maxLength="45" type="text" name="buildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
-                              <p class="small-txt">(Optional)</p>
                               <span class="error-msg" name="iaisErrorMsg" id="error_buildingName"></span>
                             </iais:value>
                           </iais:row>
@@ -266,9 +263,18 @@
                               <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
-                          <iais:row>
-                            <iais:field value="Are you co-locating with another licensee?" width="12"/>
-                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                          <iais:row cssClass="other-lic-content">
+                            <iais:field value="Are you co-locating with another licensee?" mandatory="true" width="12"/>
+                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-6">
+                              <input type="hidden" name="isOtherLic" value=""/>
+                              <div class="form-check col-sm-3">
+                                <input class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
+                                <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+                              </div>
+                              <div class="form-check col-sm-3">
+                                <input class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
+                                <label class="form-check-label" ><span class="check-circle"></span>No</label>
+                              </div>
                             </iais:value>
                           </iais:row>
                           <div class="form-group">
@@ -295,32 +301,39 @@
                               <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndMM${status.index}"></span>
                             </div>
                           </div>
-                          <iais:row>
-                            <iais:field value="Select Public Holiday" width="12"/>
-                            <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:datePicker cssClass="form_datetime" />
-                            </iais:value>
-                          </iais:row>
-                          <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">
-                              Public Holidays Operating Hours (Start)
-                            </label>
-                            <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(HH)
-                              :
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(MM)
+                          <div class="pubHolidayContent">
+                            <iais:row>
+                              <iais:field value="Select Public Holiday" width="12"/>
+                              <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                <iais:datePicker cssClass="form_datetime public-holiday"  name="onsitePubHoliday"/>
+                              </iais:value>
+                            </iais:row>
+                            <div class="form-group">
+                              <label class="col-xs-12 col-md-4 control-label">
+                                Public Holidays Operating Hours (Start)
+                              </label>
+                              <div class="col-xs-9 col-sm-5 col-md-4">
+                                <input class="onsitePbHolDayStartHH" type="text" name="onsitePbHolDayStartHH" value="" maxlength="2" style="width: 60px"/>(HH)
+                                :
+                                <input class="onsitePbHolDayStartMM" type="text" name="onsitePbHolDayStartMM" value="" maxlength="2" style="width: 60px"/>(MM)
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-xs-12 col-md-4 control-label">
+                                Public Holidays Operating Hours (End)
+                              </label>
+                              <div class="col-xs-9 col-sm-5 col-md-4">
+                                <input class="onsitePbHolDayEndHH" type="text" name="onsitePbHolDayEndHH" value="" maxlength="2" style="width: 60px"/>(HH)
+                                :
+                                <input class="onsitePbHolDayEndMM" type="text" name="onsitePbHolDayEndMM" value="" maxlength="2" style="width: 60px"/>(MM)
+                              </div>
                             </div>
                           </div>
                           <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">
-                              Public Holidays Operating Hours (End)
-                            </label>
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(HH)
-                              :
-                              <input type="text" value="" maxlength="2" style="width: 60px"/>(MM)
+                              <button id="addPubHolDay" type="button">add Public Holiday</button>
                             </div>
-                          </div>
+                          </div> 
                         </div>
                       </div>
                       <div class="new-premise-form-conv hidden ">
@@ -361,7 +374,6 @@
                             <iais:field value="Floor No." width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
                               <iais:input maxLength="3" type="text" name="conveyanceFloorNo" id="conveyanceFloorNo" value="${appGrpPremisesDto.conveyanceFloorNo}"></iais:input>
-                              <p class="small-txt">(Optional)</p>
                               <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceFloorNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
@@ -369,7 +381,6 @@
                             <iais:field value="Unit No." width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
                               <iais:input maxLength="5" type="text" name="conveyanceUnitNo"  value="${appGrpPremisesDto.conveyanceUnitNo}"></iais:input>
-                              <p class="small-txt">(Optional)</p>
                               <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceUnitNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
@@ -377,7 +388,6 @@
                             <iais:field value="Building Name " width="12"/>
                             <iais:value cssClass="col-xs-11 col-sm-7 col-md-6 input-with-label">
                               <iais:input maxLength="45" cssClass="conveyanceBuildingName" type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
-                              <p class="small-txt">(Optional)</p>
                               <span  class="error-msg"></span>
                             </iais:value>
                           </iais:row>
@@ -414,6 +424,7 @@
                           <iais:row>
                             <iais:field value="Select Public Holiday" width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                              <iais:datePicker cssClass="form_datetime"  name="conPubHoliday"/>
                             </iais:value>
                           </iais:row>
                           <div class="form-group">
@@ -516,23 +527,22 @@
 
         doEdit();
 
+        otherLic();
+
+        addPubHolDay();
+        
         //Binding method
         $('.premiseId').click(function(){
-         /*   doValidation();
-            if (getErrorMsg()) {
-                dismissWaiting();
-            } else {*/
-                submit('documents',null,null);
-          /*  }*/
+          submit('documents',null,null);
         });
         $('.premiseSaveDraft').click(function(){
-            submit('premises','saveDraft',null);
+          submit('premises','saveDraft',null);
         });
 
         if(<c:out value="${errorMap_premises eq null}"/>){
-            $('#premisesli').removeClass('incomplete');
+          $('#premisesli').removeClass('incomplete');
         }else{
-            $('#premisesli').addClass('incomplete');
+          $('#premisesli').addClass('incomplete');
         }
 
     });
@@ -696,7 +706,79 @@ var retrieveAddr = function(){
           $('#isEditHiddenVal').val('1');
       });
   }
+  
+  var otherLic = function () {
+      $('.other-lic').click(function () {
+          var val = $(this).val();
+          $otherLicEle = $(this).closest('div.other-lic-content');
+          $otherLicEle.find('input[name="isOtherLic"]').val(val);      
+      });
+      
+  }
+  
+  var addPubHolDay = function () {
+      $('#addPubHolDay').click(function () {
+         var pubHolDayHtml = "<div class=\"pubHolidayContent\">" 
+           + " <div class=\"form-group\">"
+           + "<label class=\"col-xs-12 col-md-4 control-label\">Select Public Holiday</label>"
+           + "<div class=\" col-xs-7 col-sm-4 col-md-3\">"
+           + "<input type=\"text\" autocomplete=\"off\" class=\"date_picker form-control form_datetime public-holiday \" name=\"onsitePubHoliday1\" data-date-start-date=\"01/01/1900\" placeholder=\"dd/mm/yyyy\" maxlength=\"10\"><span id=\"error_onsitePubHoliday\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>"
+           + "</div>" 
+           + "<div class=\" col-xs-7 col-sm-4 col-md-3\">"
+           + "<div class=\"form-check\">"  
+           + "<b class=\" removeBtn\">X</b>"
+           + "</div>"
+           + "</div>"
+           + "<div class=\"clear\"></div></div>"
+           + "<div class=\"form-group\">"
+           + "<label class=\"col-xs-12 col-md-4 control-label\">"
+           + " Public Holidays Operating Hours (Start)"
+           + "</label>"
+           + "<div class=\"col-xs-9 col-sm-5 col-md-4\">"
+           + "<input type=\"text\" class=\"onsitePbHolDayStartHH\" name=\"onsitePbHolDayStartHH1\" value=\"\" maxlength=\"2\" style=\"width: 60px\">(HH) :"
+           + "<input type=\"text\" class=\"onsitePbHolDayStartMM\" name=\"onsitePbHolDayStartMM1\" value=\"\" maxlength=\"2\" style=\"width: 60px\">(MM)"
+           + " </div>"
+           + "</div>"
+           + "<div class=\"form-group\">"
+           + "<label class=\"col-xs-12 col-md-4 control-label\">"
+           + "Public Holidays Operating Hours (End)"
+           + "</label>"
+           + "<div class=\"col-xs-9 col-sm-5 col-md-4\">"
+           + "<input type=\"text\" class=\"onsitePbHolDayEndHH\" name=\"onsitePbHolDayEndHH1\" value=\"\" maxlength=\"2\" style=\"width: 60px\">(HH) :"
+           + "<input type=\"text\" class=\"onsitePbHolDayEndMM\" name=\"onsitePbHolDayEndMM1\" value=\"\" maxlength=\"2\" style=\"width: 60px\">(MM)"
+           + "</div>"
+           + "</div>"
+           + "</div>";
+         $premContentEle = $(this).closest('div.premContent');
+         $premContentEle.find('div.pubHolidayContent:last').after(pubHolDayHtml);
 
+          $('.date_picker').datepicker({
+              format:"dd/mm/yyyy"
+          });
+
+          removePH();
+      });
+  }
+  
+  
+  var removePH = function () {
+      $('.removeBtn').click(function () {
+         $pubHolidayContentEle = $(this).closest('div.pubHolidayContent');
+         $contentDivEle = $(this).closest('div.form-horizontal');
+         $pubHolidayContentEle.remove();
+          
+         var length = $contentDivEle.find('div.pubHolidayContent').length;
+         $contentDivEle.find('div.pubHolidayContent').each(function (k,v) {
+             $(this).find('.public-holiday').attr("name","onsitePubHoliday"+k);
+             $(this).find('.onsitePbHolDayStartHH').attr("name","onsitePbHolDayStartHH"+k);
+             $(this).find('.onsitePbHolDayStartMM').attr("name","onsitePbHolDayStartMM"+k);
+             $(this).find('.onsitePbHolDayEndHH').attr("name","onsitePbHolDayEndHH"+k);
+             $(this).find('.onsitePbHolDayEndMM').attr("name","onsitePbHolDayEndMM"+k);
+         });
+         
+      });
+  }
+  
 </script>
 
 
