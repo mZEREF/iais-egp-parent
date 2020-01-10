@@ -102,11 +102,11 @@ public interface InspectionAssignTaskService {
     /**
       * @author: shicheng
       * @Date 2019/12/10
-      * @Param: internalRemarks, taskKey, status, appPremisesCorrelationId, processDec, RoleId, subStage
+      * @Param: internalRemarks, taskKey, status, appPremisesCorrelationId, processDec, RoleId, subStage, workGroupId
       * @return: AppPremisesRoutingHistoryDto
       * @Descripation: createAppPremisesRoutingHistory
       */
-    AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String status, String taskKey, String internalRemarks, String processDec, String RoleId, String subStage);
+    AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String status, String taskKey, String internalRemarks, String processDec, String RoleId, String subStage, String workGroupId);
 
     /**
       * @author: shicheng
