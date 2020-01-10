@@ -120,6 +120,7 @@ public class NewApplicationDelegator {
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
         requestForChangeLoading(bpc);
+        renewLicence(bpc);
         requestForInformationLoading(bpc);
         //for loading the draft by appId
         loadingDraft(bpc);
@@ -286,10 +287,10 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPremises start ...."));
-
+        
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-
+        
         String isEdit = ParamUtil.getString(bpc.request, "isEdit");
         boolean isGetDataFromPage = isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit);
         if(isGetDataFromPage){
@@ -300,7 +301,7 @@ public class NewApplicationDelegator {
                 clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
                 appSubmissionDto.setClickEditPage(clickEditPages);
             }
-
+            
             Map<String, String> errorMap= doValidatePremiss(bpc);
             if(errorMap.size()>0){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
@@ -310,7 +311,7 @@ public class NewApplicationDelegator {
 
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-
+        
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
     }
@@ -1267,7 +1268,7 @@ public class NewApplicationDelegator {
             for(String type:amendTypeArr){
                 amendTypeList.add(type);
             }
-
+            
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_AMEND);
             appSubmissionDto.setAmendTypes(amendTypeList);
@@ -1276,6 +1277,18 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
         }
         log.debug(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
+    }
+    private void renewLicence(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do renewLicence start ...."));
+        String licenceId = ParamUtil.getString(bpc.request, "licenceId");
+        String type = ParamUtil.getString(bpc.request, "type");
+        if(!StringUtil.isEmpty(licenceId) && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
+            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
+
+            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        }
+        log.debug(StringUtil.changeForLog("the do renewLicence end ...."));
     }
 
     private void requestForInformationLoading(BaseProcessClass bpc) throws CloneNotSupportedException {
