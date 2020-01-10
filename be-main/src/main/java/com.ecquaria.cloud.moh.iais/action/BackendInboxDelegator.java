@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -365,6 +366,7 @@ public class BackendInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
         Map<String,String> appNoUrl = new HashMap<>();
         Map<String,String> taskList = new HashMap<>();
+        Map<String,TaskDto> taskMap = new HashMap<>();
         if(commPools != null && commPools.size() >0){
             for (TaskDto item:commPools
             ) {
