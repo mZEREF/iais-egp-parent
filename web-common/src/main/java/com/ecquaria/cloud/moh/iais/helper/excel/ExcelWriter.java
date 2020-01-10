@@ -16,10 +16,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -30,13 +30,13 @@ public final class ExcelWriter {
     private static String EXCEL_TYPE_HSSF			= "xls";
     private static String EXCEL_TYPE_XSSF			= "xlsx";
 
-    private static String generationFileName(String clzName){
+    private static String generationFileName(final String clzName){
         long currentTimeMillis = System.currentTimeMillis();
         String jointText = currentTimeMillis + "." + EXCEL_TYPE_XSSF;
         return clzName + jointText;
     }
 
-    private static String getSheetName(Class<?> clz){
+    private static String getSheetName(final Class<?> clz){
         ExcelSheetProperty annotation = clz.getAnnotation(ExcelSheetProperty.class);
         if (annotation == null){
             throw new IaisRuntimeException("Please check the sheet annotation for the excel source class.");
@@ -45,7 +45,7 @@ public final class ExcelWriter {
         return annotation.sheetName();
     }
 
-    private static void setFieldName(Class<?> clz, Sheet sheet){
+    private static void setFieldName(final Class<?> clz, final Sheet sheet){
         Row sheetRow = sheet.createRow(0);
         sheetRow.createCell(0).setCellValue("SN");
         Field[] fields = clz.getDeclaredFields();
@@ -59,14 +59,14 @@ public final class ExcelWriter {
         }
     }
 
-    public static void exportExcel(List<?> source, Class<?> clz, String fileName){
+    public static File exportExcel(final List<?> source, final Class<?> clz, final String fileName){
         if (IaisCommonUtils.isEmpty(source) || clz == null){
             throw new IaisRuntimeException("Please check the export excel parameters.");
         }
 
         String retFileName = generationFileName(fileName);
 
-        OutputStream fileOut;
+        FileOutputStream fileOut = null;
         XSSFWorkbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet(getSheetName(clz));
         setFieldName(clz, sheet);
@@ -85,9 +85,11 @@ public final class ExcelWriter {
         } catch (IOException e) {
             log.debug(e.getMessage());
         }
+
+        return new File(retFileName);
     }
 
-    private static void createCellValue(Sheet sheet, List<?> source, Class<?> clz) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    private static void createCellValue(final Sheet sheet, final List<?> source, final Class<?> clz) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         //sequence number
         int sequence = 1;
         for (Object t : source){
@@ -108,7 +110,7 @@ public final class ExcelWriter {
 
     }
 
-    private static String setValue(Object obj) {
+    private static String setValue(final Object obj) {
         return obj == null ? "" : obj.toString();
     }
 

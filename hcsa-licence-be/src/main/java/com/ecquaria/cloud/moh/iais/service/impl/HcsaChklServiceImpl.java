@@ -46,6 +46,11 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
+    public List<HcsaChklSvcRegulationDto> getRegulationClauseListIsActive() {
+        return chklClient.getRegulationClauseListIsActive().getEntity();
+    }
+
+    @Override
     @SearchTrack(catalog = "hcsaconfig",key = "listChecklistConfig")
     public SearchResult<ChecklistConfigQueryDto> listChecklistConfig(SearchParam searchParam) {
         return chklClient.listChecklistConfig(searchParam).getEntity();

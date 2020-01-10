@@ -20,6 +20,10 @@
     width: 100%;
   }
 
+.btn.btn-primary {
+  font-size: 12px;
+}
+
 </style>
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
@@ -121,7 +125,7 @@
                                         onclick="javascript:prepareEditItem('${item.itemId}');">Edit
                                 </button>
                                 <button type="button" class="btn btn-default btn-sm"
-                                        onclick="javascript:disable('${item.itemId}');">Disable
+                                        onclick="javascript:disable('${item.itemId}');">Delete
                                 </button>
                               </td>
                             </c:if>
@@ -161,10 +165,13 @@
                                    onclick="javascript: doUploadFile('regulation');">Upload Regulation</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doUploadFile('checklistItem');">Upload Checklist Item</a>
+
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doExportFile('checklistItem');">Export Checklist Item</a>
+
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doExportFile('regulation');">Export Regulation</a>
+
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: doSearch();">Search</a>
                               </c:otherwise>
@@ -205,6 +212,26 @@
         SOP.Crud.cfxSubmit("mainForm", "preUploadData", value);
     }
 
+    function doExportFile(action){
+        $.ajax({
+            url: "${pageContext.request.contextPath}" + "/checklist-item-file",
+            type: "GET",
+            datatype: "applicatoin/octet-stream",
+            data: {action: action},
+            timeout : 3000,
+            success: function (result){
+                if (result.type == "applicatoin/octet-stream") {
+                    alert(result)
+                    var a = document.createElement("a");
+                    a.download = fileName;
+                    a.href = window.URL.createObjectURL(data);
+                    a.click();
+                    return;
+                }
+            }
+        });
+    }
+
     function disable(itemId) {
         SOP.Crud.cfxSubmit("mainForm", "deleteChecklistItem", itemId);
     }
@@ -229,12 +256,10 @@
         SOP.Crud.cfxSubmit("mainForm", "prepareEditItem", id);
     }
 
-    function doCancel() {
-        SOP.Crud.cfxSubmit("mainForm", "doCancel");
-    }
-
     function jumpToPagechangePage(){
         SOP.Crud.cfxSubmit("mainForm", "doPage");
     }
+
+
 
 </script>

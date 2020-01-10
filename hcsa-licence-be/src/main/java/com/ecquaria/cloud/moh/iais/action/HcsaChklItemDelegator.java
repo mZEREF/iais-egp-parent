@@ -32,17 +32,24 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -528,12 +535,8 @@ public class HcsaChklItemDelegator {
     private void loadSingleItemData(HttpServletRequest request){
         String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(itemId)){
-            List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR);
-            for (ChecklistItemDto itemDto : chklItemDtos){
-                if (itemId.equals(itemDto.getItemId())){
-                    ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
-                }
-            }
+            ChecklistItemDto itemDto = hcsaChklService.getChklItemById(itemId);
+            ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
         }
     }
 
@@ -688,5 +691,51 @@ public class HcsaChklItemDelegator {
             searchParam.addFilter(HcsaChecklistConstants.PARAM_STATUS, status, true);
         }
 
+    }
+
+    @GetMapping(value = "checklist-item-file")
+	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
+	    log.debug(StringUtil.changeForLog("fileHandler start ...."));
+
+        String action = ParamUtil.getString(request, "action");
+        String retFileName = null;
+        byte[] fileData = null;
+        switch (action){
+            case REGULATION:
+                List<HcsaChklSvcRegulationDto> regulationList = hcsaChklService.getRegulationClauseListIsActive();
+                if (regulationList != null){
+                    File file = ExcelWriter.exportExcel(regulationList, HcsaChklSvcRegulationDto.class, "Checklist_Regulations_Upload_Template");
+                    retFileName = file.getName();
+                    fileData = FileUtils.readFileToByteArray(file);
+                }
+                break;
+            case CHECKLIST_ITEM:
+                SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+                QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
+                SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
+                if (searchResult != null){
+                    List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
+                    File file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
+                    retFileName = file.getName();
+                    fileData = FileUtils.readFileToByteArray(file);
+                }
+                break;
+
+            default:
+        }
+
+        response.addHeader("Content-Disposition", "attachment;filename=" + retFileName);
+        response.addHeader("Content-Length", "" + fileData.length);
+        response.setContentType("application/x-msdownload");
+        try {
+            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+            ops.write(fileData);
+            ops.close();
+            ops.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
     }
 }

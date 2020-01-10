@@ -3,13 +3,18 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: yichen
@@ -20,20 +25,35 @@ import java.util.List;
 public final class FileUtils {
 
     private FileUtils(){
-        throw new IaisRuntimeException("FileUtils structure error");
+        throw new IaisRuntimeException("FileUtils structure error.");
     }
 
-    public static File multipartFileToFile(MultipartFile file) throws Exception {
+    public static void setFileResponeContent(final HttpServletResponse response, String fileName, byte[] fileData) throws IOException {
+        Objects.requireNonNull(response);
+        Objects.requireNonNull(fileData);
+        if (StringUtils.isEmpty(fileName)){
+            fileName = "";
+        }
+
+        response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
+        response.addHeader("Content-Length", "" + fileData.length);
+        response.setContentType("applicatoin/octet-stream");
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(fileData);
+        ops.close();
+        ops.flush();
+    }
+
+    public static File multipartFileToFile(final MultipartFile file) throws Exception {
 
         if (file == null || file.isEmpty()) {
-            throw new IaisRuntimeException("MultipartFile is null");
+            throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
             File toFile = new File(file.getOriginalFilename());
-            inputStreamToFile(ins, toFile);
+            copyInputStreamToFile(ins, toFile);
             return toFile;
         }
-
     }
 
     private static void inputStreamToFile(InputStream ins, File file) {
@@ -50,7 +70,17 @@ public final class FileUtils {
         }
     }
 
-    public static void delteTempFile(File file) {
+
+    private static void copyInputStreamToFile(final InputStream source, final File file) {
+        try {
+            org.apache.commons.io.FileUtils.copyInputStreamToFile(source, file);
+        } catch (IOException e) {
+            throw new IaisRuntimeException("the file encounter an error with input by stream.");
+        }
+
+    }
+
+    public static void delteTempFile(final File file) {
         if (file != null) {
             File del = new File(file.toURI());
             del.delete();
@@ -58,8 +88,16 @@ public final class FileUtils {
 
     }
 
-    public static <T> List<T> transformToJavaBean(File file, Class<?> clz){
+    public static <T> List<T> transformToJavaBean(final File file, final Class<?> clz){
         List<?> objects = ExcelReader.excelReader(file, clz);
         return (List<T>) objects;
+    }
+
+    public static byte[] readFileToByteArray(final File file){
+        try {
+            return  org.apache.commons.io.FileUtils.readFileToByteArray(file);
+        } catch (IOException e) {
+            throw new IaisRuntimeException("the file encounter an error with convert to byte[].");
+        }
     }
 }

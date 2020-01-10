@@ -31,6 +31,8 @@ public interface HcsaChklService {
      */
     SearchResult<CheckItemQueryDto> listChklItem(SearchParam searchParam);
 
+    List<HcsaChklSvcRegulationDto> getRegulationClauseListIsActive();
+
     /**
      * list checklist config by SearchParam
      * backend method: listChecklistConfig

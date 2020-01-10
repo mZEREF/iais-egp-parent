@@ -38,7 +38,7 @@ public final class ExcelReader {
     private static String EXCEL_TYPE_HSSF			= "xls";
     public static String EXCEL_TYPE_XSSF			= "xlsx";
 
-    public static <T> List<T> excelReader(File file, Class<?> clazz) throws IaisRuntimeException {
+    public static <T> List<T> excelReader(final File file, final Class<?> clazz) throws IaisRuntimeException {
         if (file == null || !file.exists()){
             throw new IaisRuntimeException("Please check excel source is exists");
         }
@@ -56,7 +56,7 @@ public final class ExcelReader {
         return (List<T>) result.stream().map(x -> setField(clazz, x)).collect(Collectors.toList());
     }
 
-    private static boolean canConvert(File file, Class<?> clazz) {
+    private static boolean canConvert(final File file, final Class<?> clazz) {
         Sheet sheet = parseFile(file);
         String sheetName = sheet.getSheetName();
         ExcelSheetProperty annotation = clazz.getAnnotation(ExcelSheetProperty.class);
@@ -72,7 +72,7 @@ public final class ExcelReader {
         return true;
     }
 
-    private static List<List<String>> parse(File file) {
+    private static List<List<String>> parse(final File file) {
         Sheet sheet = parseFile(file);
         int rowCount = sheet.getPhysicalNumberOfRows();
         int cellCount = sheet.getRow(0).getPhysicalNumberOfCells();
@@ -94,7 +94,7 @@ public final class ExcelReader {
      * @return
      */
     @SuppressWarnings("resource")
-    private static Sheet parseFile(File file) {
+    private static Sheet parseFile(final File file) {
         FileInputStream in = null;
         Workbook workBook;
         try {
@@ -115,7 +115,7 @@ public final class ExcelReader {
         }
     }
 
-    private static Object setField(Class<?> clazz, List<String> rowDatas) {
+    private static Object setField(final Class<?> clazz, final List<String> rowDatas) {
         try {
             Object obj = clazz.newInstance();
             Field[] fields = clazz.getDeclaredFields();
@@ -136,16 +136,16 @@ public final class ExcelReader {
         }
     }
 
-    private static String getCellName(Sheet sheet, int cellIndex){
+    private static String getCellName(final Sheet sheet, final int cellIndex){
        return sheet.getRow(0).getCell(cellIndex).toString();
    }
 
-    private static String getCellValue(Sheet sheet, int rowIndex, int cellIndex) {
+    private static String getCellValue(final Sheet sheet, final int rowIndex, final int cellIndex) {
         return getCellValue(sheet.getRow(rowIndex).getCell(cellIndex));
     }
 
     @SuppressWarnings("deprecation")
-    private static String getCellValue(Cell cell) {
+    private static String getCellValue(final Cell cell) {
         String cellValue = "";
         if (cell != null) {
             switch (cell.getCellType()) {
@@ -180,7 +180,7 @@ public final class ExcelReader {
         return cellValue.trim();
     }
 
-    private static Object getFieldValue(Field field, String value, String pattern) {
+    private static Object getFieldValue(final Field field, final String value, final String pattern) {
         Class<?> typeClass = field.getType();
         Object val;
         if (typeClass == Integer.class || typeClass == int.class) {
