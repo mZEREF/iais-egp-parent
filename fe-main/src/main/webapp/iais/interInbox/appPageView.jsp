@@ -54,4 +54,22 @@
         $("[name='crud_action_additional']").val(sortType);
         submit('appSort');
     }
+
+    function doDraft(appNo){
+        if (appNo.indexOf("DN") !== -1 ||appNo.indexOf("DR") !== -1) {
+            $("[name='crud_action_value']").val(appNo);
+            submit('app','doDraft');
+        }
+    }
+
+    function doDraftAction(appNo,val){
+        var action = val;
+        if ("Reload" == action){
+            $("[name='crud_action_value']").val(appNo);
+            submit('app','doDraft');
+        }
+        if ("Delete" == action) {
+            $("[name='crud_action_value']").val(appNo);
+        }
+    }
 </script>

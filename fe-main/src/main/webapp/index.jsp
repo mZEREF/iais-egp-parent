@@ -1,4 +1,4 @@
 
 <%
-  response.sendRedirect("/main-web/eservice/INTERNET/MohInterInbox");
+  response.sendRedirect("/main-web/eservice/INTERNET/MohInternetInbox");
 %>
