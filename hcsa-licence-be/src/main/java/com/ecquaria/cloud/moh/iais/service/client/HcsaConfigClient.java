@@ -38,6 +38,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -232,4 +233,6 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-risk/lictenurebycode{serviceCode}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLicenceTenureDto>> getgetLictenureByCode(@PathVariable("serviceCode")String serviceCode);
 
+    @GetMapping(value = "/iais-hcsa-service/sub-correlation/{svcId}")
+    FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelationFooReport(@PathVariable(name = "svcId")String serviceId);
 }

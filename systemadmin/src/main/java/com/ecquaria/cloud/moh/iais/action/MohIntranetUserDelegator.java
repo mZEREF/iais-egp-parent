@@ -8,8 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -18,28 +16,22 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.xhtmlrenderer.util.XMLUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.crypto.Cipher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -271,7 +263,6 @@ public class MohIntranetUserDelegator {
     }
 
     public void doPaging (BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
         int pageNo = ParamUtil.getInt(bpc.request,SystemAdminBaseConstants.CRUD_ACTION_VALUE);
         filterParameter.setPageNo(pageNo);
     }
@@ -533,20 +524,23 @@ public class MohIntranetUserDelegator {
 //        remarks.setText(orgUserDto.getRemarks());
         Element status = userGroup.addElement("status");
         status.setText(orgUserDto.getStatus());
-//        byte[] buffer = null;
-        OutputFormat format=OutputFormat.createPrettyPrint();
-        format.setEncoding("UTF-8");
-        File XmlFile=new File("D:/intranet.xml");
-        XMLWriter writer;
+
+
         try {
-//            FileOutputStream fileOutputStream = new FileOutputStream(XmlFile);
-//            writer = new XMLWriter(fileOutputStream,format);
-//            writer.write(document);
-//            writer.close();
-//            fileOutputStream.close();
-            byte[] content = FileUtils.readFileToByteArray(XmlFile);
-            ParamUtil.setSessionAttr(bpc.request,"content",content);
-            //FileUtils.setFileResponeContent(bpc.response, XmlFile.getName(), content);
+            File xmlFile=new File("D:/test.xml");
+            XMLWriter writer = new XMLWriter(new FileOutputStream(xmlFile));
+            //Writer xmlFile = new FileWriter("C:/test.xml");
+            //FileOutputStream fileOutputStream = new FileOutputStream(XmlFile);
+            //writer = new XMLWriter(fileOutputStream,format);
+            //writer = new XMLWriter(xmlFile);
+            writer.write(document);
+            writer.close();
+            //byte[] content = FileUtils.readFileToByteArray(xmlFile);
+            //fileOutputStream.close();
+            //byte[] content = FileUtils.readFileToByteArray(XmlFile);
+            //FileUtils.setFileResponeContent(bpc.response, xmlFile.getName(), content);
+           // ParamUtil.setSessionAttr(bpc.request,"content",content);
+
 //            FileInputStream fis = new FileInputStream(XmlFile);
 //            ByteArrayOutputStream bos = new ByteArrayOutputStream();
 //            byte[] b = new byte[1024];
@@ -569,8 +563,6 @@ public class MohIntranetUserDelegator {
             log.debug(e.getMessage());
         }
     }
-
-
 
     void importXML(OrgUserDto orgUserDto){
         try {

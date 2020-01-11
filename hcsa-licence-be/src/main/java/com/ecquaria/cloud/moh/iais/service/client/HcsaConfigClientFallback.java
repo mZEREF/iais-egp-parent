@@ -483,6 +483,15 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelationFooReport(String serviceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     @Override
     public FeignResponseEntity saveKpiAndReminder(HcsaSvcKpiDto hcsaSvcKpiDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

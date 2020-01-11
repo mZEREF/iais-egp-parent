@@ -79,16 +79,23 @@
                                 <p>${insRepDto.principalOfficer}</p>
                             </td>
                         </tr>
+
                         <tr>
                             <td class="col-xs-4">
                                 <p>Subsumed Services:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.subsumedService}</p>
-                            </td>
+                                <table class="table">
+                                    <c:forEach var="service" items="${insRepDto.subsumedServices}">
+                                        <tr>
+                                            <td>
+                                                <p><c:out value="${service}"></c:out></p>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                        </td>
                         </tr>
-                        </tbody>
-                    </table>
                     <div class="alert alert-info" role="alert">
                         <p><span><strong>Section B (Type of Inspection)</strong></span></p>
                     </div>

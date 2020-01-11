@@ -9,6 +9,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -38,5 +39,6 @@ public interface InsRepClient {
     @GetMapping(value = "/iais-inspection-report/recommendationDto/{appPremCorreId}/{type}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesRecommendationDto>getRecommendationDto(@PathVariable("appPremCorreId") String appPremCorreId,
                                                                           @PathVariable("type") String type);
-
+    @PostMapping(value = "/iais-application-be/inspection/date", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<Date>> getInspectionRecomInDateByCorreId(@RequestBody List<String> taskRefNum);
 }

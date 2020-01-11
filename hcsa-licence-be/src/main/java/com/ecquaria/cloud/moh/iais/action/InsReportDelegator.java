@@ -59,16 +59,16 @@ public class InsReportDelegator {
     private InsRepService insRepService;
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
-    @Autowired
-    private HcsaConfigClient hcsaConfigClient;
-    @Autowired
-    private AppPremisesCorrClient appPremisesCorrClient;
-    @Autowired
-    AppInspectionStatusClient appInspectionStatusClient;
-    @Autowired
-    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
+//    @Autowired
+//    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
+//    @Autowired
+//    private HcsaConfigClient hcsaConfigClient;
+//    @Autowired
+//    private AppPremisesCorrClient appPremisesCorrClient;
+//    @Autowired
+//    AppInspectionStatusClient appInspectionStatusClient;
+//    @Autowired
+//    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
