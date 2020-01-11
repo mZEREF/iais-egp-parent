@@ -47,7 +47,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${fin.inIsEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
+                                                        <p><strong>${fin.serviceName}</strong></p>
 
                                                     </c:when>
                                                     <c:otherwise>
@@ -98,7 +98,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${fin.prIsEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
+                                                        <p><strong>${fin.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${fin.serviceName}</p>

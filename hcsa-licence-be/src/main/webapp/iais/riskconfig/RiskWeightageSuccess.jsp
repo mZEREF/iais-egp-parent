@@ -49,7 +49,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${leg.edit}">
-                                                        <p><b>${leg.serviceName}</b></p>
+                                                        <p><strong>${leg.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${leg.serviceName}</p>
@@ -101,16 +101,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <p><a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Next</a></div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -119,10 +110,5 @@
 </form>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
-    function doNext() {
-        SOP.Crud.cfxSubmit("mainForm","next");
-    }
-    function doBack(){
-        SOP.Crud.cfxSubmit("mainForm","backToMenu");
-    }
+
 </script>

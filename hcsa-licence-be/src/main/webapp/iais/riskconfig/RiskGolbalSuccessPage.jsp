@@ -51,7 +51,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${go.totalEdit}">
-                                                        <p><b>${go.serviceName}</b></p>
+                                                        <p><strong>${go.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${go.serviceName}</p>

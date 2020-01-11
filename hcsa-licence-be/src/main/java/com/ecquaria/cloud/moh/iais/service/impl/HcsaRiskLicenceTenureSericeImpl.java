@@ -90,10 +90,11 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
         subDto.setEffDate(temp.getBaseEffectiveDate());
         if(subList!=null&&!subList.isEmpty()){
             subDto.setOrderNum(subList.get(subList.size()-1).getOrderNum()+1);
+            subList.add(subDto);
         }else{
             subDto.setOrderNum(0);
+            subList.add(subDto);
         }
-        subList.add(subDto);
 
     }
 
@@ -113,12 +114,12 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
                 if(baseSubDtoList.size()!=subDtoList.size()){
                     return false;
                 }
-            }
-            for(int i=0;i<subDtoList.size();i++){
-                SubLicenceTenureDto subDto = subDtoList.get(i);
-                SubLicenceTenureDto baseSubDto = baseSubDtoList.get(i);
-                if(!doSubEdit(subDto,baseSubDto)){
-                    flagNum++;
+                for(int i=0;i<subDtoList.size();i++){
+                    SubLicenceTenureDto subDto = subDtoList.get(i);
+                    SubLicenceTenureDto baseSubDto = baseSubDtoList.get(i);
+                    if(!doSubEdit(subDto,baseSubDto)){
+                        flagNum++;
+                    }
                 }
             }
             if(flagNum>0){

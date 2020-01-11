@@ -52,7 +52,7 @@
                                                 <span class="error-msg" id="<c:out value="${errboth}"/>" name="iaisErrorMsg"></span>
                                                 <c:choose>
                                                     <c:when test="${fin.caEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
+                                                        <p><strong>${fin.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${fin.serviceName}</p>
@@ -121,7 +121,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${fin.mjEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
+                                                        <p><strong>${fin.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${fin.serviceName}</p>
@@ -192,7 +192,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${fin.miEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
+                                                        <p><strong>${fin.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${fin.serviceName}</p>

@@ -89,7 +89,7 @@
                                 </div>
                                 <div>&nbsp</div>
                                 <div class="panel panel-default">
-                                    <div class="panel-heading"><b>Applicant Details</b></div>
+                                    <div class="panel-heading"><strong>Applicant Details</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
@@ -124,9 +124,9 @@
                             </div>
 
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                <div class="alert alert-info" role="alert"><b>
+                                <div class="alert alert-info" role="alert"><strong>
                                     <h4>Supporting Document</h4>
-                                </b></div>
+                                </strong></div>
                                 <div id="u8522_text" class="text ">
                                     <p><span>These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed
 												documents are those defined for this digital service only.</span></p>

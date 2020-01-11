@@ -118,7 +118,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
                 saveList.add(sWeiDto);
             }
         }
-        if(saveShowDto.getWeightageDtoList()!=null){
+        if(saveShowDto!=null&&saveShowDto.getWeightageDtoList()!=null){
             doUpdate(saveList,saveShowDto.getWeightageDtoList());
         }
     }
@@ -148,9 +148,9 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
                     dto.setRiskWeightage(Double.parseDouble(temp.getDoLegislative()));
                     dto.setRiskComponent(RiskConsts.LEGISLATIVE_BREACHES);
                 }
+                dto.setEndDate(Formatter.parseDate(temp.getDoEndDate()));
+                dto.setEffectiveDate(Formatter.parseDate(temp.getDoEffectiveDate()));
             }
-            dto.setEndDate(Formatter.parseDate(temp.getDoEndDate()));
-            dto.setEffectiveDate(Formatter.parseDate(temp.getDoEffectiveDate()));
         }catch (Exception e){
             e.printStackTrace();
         }

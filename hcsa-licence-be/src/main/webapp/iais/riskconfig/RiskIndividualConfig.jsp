@@ -52,7 +52,7 @@
                                                 <span class="error-msg" id="<c:out value="${errboth}"/>" name="iaisErrorMsg"></span>
                                                 <c:choose>
                                                     <c:when test="${fin.caEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
+                                                        <p><strong>${fin.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${fin.serviceName}</p>
@@ -121,7 +121,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${fin.mjEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
+                                                        <p><strong>${fin.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${fin.serviceName}</p>
@@ -192,7 +192,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${fin.miEdit}">
-                                                        <p><b>${fin.serviceName}</b></p>
+                                                        <p><strong>${fin.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${fin.serviceName}</p>
@@ -268,7 +268,7 @@
                     <div class="application-tab-footer">
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <p><a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
+                                <p><a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a></p>
                             </div>
                             <div class="col-xs-12 col-sm-6">
                                 <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doNext();">Next</a></div>

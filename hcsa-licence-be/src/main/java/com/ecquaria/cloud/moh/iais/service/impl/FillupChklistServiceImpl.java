@@ -232,7 +232,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
         AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
         appPreRecommentdationDto.setAppPremCorreId(appPremCorrId);
-        appPreRecommentdationDto.setRecomType("tcu");
+        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
         Date tcuDate = null;
         try {
             tcuDate = Formatter.parseDate(dto.getTuc());
@@ -246,7 +246,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         appPreRecommentdationDto.setBestPractice(dto.getBestPractice());
         appPreRecommentdationDto.setRemarks(dto.getTcuRemark());
         appPreRecommentdationDto.setStatus("CMSTAT001");
-        appPreRecommentdationDto.setRecomType("tcu");
+        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
         appPreRecommentdationDto.setVersion(1);
         appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         try {

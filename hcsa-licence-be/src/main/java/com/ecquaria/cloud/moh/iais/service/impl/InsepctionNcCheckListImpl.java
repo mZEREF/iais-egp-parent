@@ -268,7 +268,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         appDto.setChkLstConfId(configId);
         appDto.setStatus("CMSTAT001");
         appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId,"tcu").getEntity();
+        AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId,InspectionConstants.RECOM_TYPE_TCU).getEntity();
         //AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
         //update
         if(appPreRecommentdationDto!=null){
@@ -281,7 +281,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
         appPreRecommentdationDto.setAppPremCorreId(appPremCorrId);
 
-        appPreRecommentdationDto.setRecomType("tcu");
+        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
         Date tcuDate = null;
         try {
             tcuDate = Formatter.parseDate(dto.getTuc());
@@ -296,7 +296,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         appPreRecommentdationDto.setBestPractice(dto.getBestPractice());
         appPreRecommentdationDto.setRemarks(dto.getTcuRemark());
         appPreRecommentdationDto.setStatus("CMSTAT001");
-        appPreRecommentdationDto.setRecomType("tcu");
+        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
         appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         try {
             List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = null;

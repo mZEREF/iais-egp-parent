@@ -50,7 +50,7 @@
                                             <td>
                                                 <c:choose>
                                                     <c:when test="${leg.edit}">
-                                                        <p><b>${leg.serviceName}</b></p>
+                                                        <p><strong>${leg.serviceName}</strong></p>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <p>${leg.serviceName}</p>
@@ -128,7 +128,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </form>
 <%@ include file="/include/validation.jsp" %>
