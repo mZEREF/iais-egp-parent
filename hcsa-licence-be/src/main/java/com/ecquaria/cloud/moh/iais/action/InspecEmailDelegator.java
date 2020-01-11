@@ -177,6 +177,8 @@ public class InspecEmailDelegator {
             return;
         }
         String content=ParamUtil.getString(request,MSG_CON);
+        String subject=ParamUtil.getString(request,"subject");
+        ParamUtil.setRequestAttr(request,"subject", subject);
         ParamUtil.setRequestAttr(request,"content", content);
 
 
