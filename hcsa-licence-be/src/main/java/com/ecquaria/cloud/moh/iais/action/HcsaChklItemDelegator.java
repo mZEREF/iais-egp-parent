@@ -159,7 +159,7 @@ public class HcsaChklItemDelegator {
             return errorMap;
         }
 
-        Double size = Double.valueOf(file.getSize() / 0x400 / 0x400);
+        double size = Double.valueOf(file.getSize() / 0x400 / 0x400);
 
         if (Math.ceil(size) > 0x10){
             errorMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");
@@ -237,7 +237,7 @@ public class HcsaChklItemDelegator {
 
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         ParamUtil.setRequestAttr(request, "messageContent", messageContentList);
-        FileUtils.delteTempFile(toFile);
+        FileUtils.deleteTempFile(toFile);
     }
 
 
@@ -723,7 +723,7 @@ public class HcsaChklItemDelegator {
 
         try {
             FileUtils.writeFileResponeContent(response, file);
-            FileUtils.delteTempFile(file);
+            FileUtils.deleteTempFile(file);
         } catch (IOException e) {
            log.debug(e.getMessage());
         }

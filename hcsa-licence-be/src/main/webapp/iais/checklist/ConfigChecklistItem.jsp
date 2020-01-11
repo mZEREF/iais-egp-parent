@@ -133,11 +133,11 @@
                       <div class="col-xs-6 col-md-8 text-right">
                         <div class="nav">
                           <ul class="pagination">
-                            <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-chevron-left"></i></span></a></li>
+                            <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><em class="fa fa-chevron-left"></em></span></a></li>
                             <li class="active"><a href="#">1</a></li>
                             <li><a href="#">2</a></li>
                             <li><a href="#">3</a></li>
-                            <li><a href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right"></i></span></a></li>
+                            <li><a href="#" aria-label="Next"><span aria-hidden="true"><em class="fa fa-chevron-right"></em></span></a></li>
                           </ul>
                         </div>
                       </div>
@@ -157,7 +157,7 @@
       <div class="application-tab-footer">
         <div class="row">
           <div class="col-xs-12 col-sm-6">
-            <p><a class="back" href="#"><i class="fa fa-angle-left"></i> Back</a></p>
+            <p><a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a></p>
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: addChecklistItemNextAction();">Config Item</a></div>

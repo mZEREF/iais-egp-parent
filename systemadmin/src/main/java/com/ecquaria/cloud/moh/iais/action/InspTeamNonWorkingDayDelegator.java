@@ -182,8 +182,9 @@ public class InspTeamNonWorkingDayDelegator {
 
 		if (!StringUtils.isEmpty(nonWkrDayId)){
 			List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = (List<ApptNonWorkingDateDto>) ParamUtil.getSessionAttr(request, NON_WKR_DAY_LIST_ATTR);
-			ApptNonWorkingDateDto nonWorkingDateDto = nonWorkingDateListByWorkGroupId.stream().filter(apptNonWorkingDateDto ->  !StringUtils.isEmpty(apptNonWorkingDateDto.getId()))
-					.filter(apptNonWorkingDateDto -> apptNonWorkingDateDto.getId().equals(nonWkrDayId)).findFirst().get();
+			ApptNonWorkingDateDto nonWorkingDateDto = nonWorkingDateListByWorkGroupId.stream()
+					.filter(apptNonWorkingDateDto ->  !StringUtils.isEmpty(apptNonWorkingDateDto.getId()))
+					.filter(apptNonWorkingDateDto -> apptNonWorkingDateDto.getId().equals(nonWkrDayId)).findFirst().orElse(null);
 			ParamUtil.setSessionAttr(request, NON_WKR_DAY_ATTR, nonWorkingDateDto);
 		}
 	}

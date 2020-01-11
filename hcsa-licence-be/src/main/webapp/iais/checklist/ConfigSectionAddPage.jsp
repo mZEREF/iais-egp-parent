@@ -91,15 +91,15 @@
                   <div class="panel panel-default">
                     <div class="panel-heading"  role="tab">
                       <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">${chklsec.section}</a>
-                        <p class="text-right"><a class="btnUp" data-id="${sectionStatus.index}" onclick="javascript:swapPosition(${sectionStatus.index},'UP', 'sectionSon')"><i class=""></i>Up</a></p>
-                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:swapPosition(${sectionStatus.index},'DOWN', 'sectionSon')"><i class=""></i>Down</a></p>
-                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:removeSection('${chklsec.id}')"><i class=""></i>Remove</a></p>
+                        <p class="text-right"><a class="btnUp" data-id="${sectionStatus.index}" onclick="javascript:swapPosition(${sectionStatus.index},'UP', 'sectionSon')"><em class=""></em>Up</a></p>
+                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:swapPosition(${sectionStatus.index},'DOWN', 'sectionSon')"><em class=""></em>Down</a></p>
+                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:removeSection('${chklsec.id}')"><em class=""></em>Remove</a></p>
                       </h4>
 
                     </div>
                     <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                       <div class="panel-body">
-                        <p class="text-right"><a onclick="javascript:routeToItemProcess('${chklsec.id}');"><i class="fa fa-pencil-square-o"></i>Config Checklist Item </a></p>
+                        <p class="text-right"><a onclick="javascript:routeToItemProcess('${chklsec.id}');"><em class="fa fa-pencil-square-o"></em>Config Checklist Item </a></p>
 
 
                         <table class="table">
@@ -142,9 +142,9 @@
 
                                         <td>
                                           <p class="visible-xs visible-sm table-row-title">Date</p>
-                                          <p><a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId} + ${sectionStatus.index}','UP', 'itemClass')"><i class=""> </i>Up</a>
-                                            <a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId} + ${sectionStatus.index}','DOWN', 'itemClass')"><i class=""></i>Down</a>
-                                            <a class="btnUp"  onclick="javascript:removeSectionItem('${chklsec.id}','${chklitem.itemId}')"><i class=""></i>Remove</a></p>
+                                          <p><a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId} + ${sectionStatus.index}','UP', 'itemClass')"><em class=""> </em>Up</a>
+                                            <a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId} + ${sectionStatus.index}','DOWN', 'itemClass')"><em class=""></em>Down</a>
+                                            <a class="btnUp"  onclick="javascript:removeSectionItem('${chklsec.id}','${chklitem.itemId}')"><em class=""></em>Remove</a></p>
                                           </p>
 
                                         </td>
@@ -165,7 +165,7 @@
             <div class="application-tab-footer">
               <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                  <p><a class="back" href="#" onclick="javascript:doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
+                  <p><a class="back" href="#" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></p>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                   <div class="text-right text-center-mobile">

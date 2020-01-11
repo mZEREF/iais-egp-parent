@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -32,11 +33,11 @@ import static org.apache.poi.ss.usermodel.CellType.STRING;
 
 @Slf4j
 public final class ExcelReader {
-    private static String pattern = "yyyy-MM-dd HH:mm:ss";
-    private static String DATE_TYPE_NAME             = "java.util.Date";
+    private static final String pattern = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_TYPE_NAME             = "java.util.Date";
 
-    private static String EXCEL_TYPE_HSSF			= "xls";
-    public static String EXCEL_TYPE_XSSF			= "xlsx";
+    public static final String EXCEL_TYPE_HSSF			= "xls";
+    public static final String EXCEL_TYPE_XSSF			= "xlsx";
 
     public static <T> List<T> excelReader(final File file, final Class<?> clazz) throws IaisRuntimeException {
         if (file == null || !file.exists()){
@@ -95,22 +96,18 @@ public final class ExcelReader {
      */
     @SuppressWarnings("resource")
     private static Sheet parseFile(final File file) {
-        FileInputStream in = null;
-        Workbook workBook;
-        try {
+        Workbook workBook = null;
+        try (FileInputStream in = new FileInputStream(file)){
             String suffix = file.getName().substring(file.getName().indexOf(".") + 1);
-            in = new FileInputStream(file);
             workBook = suffix.equals(EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
             return workBook.getSheetAt(0);
         } catch (Exception e) {
-            throw new IllegalArgumentException(e);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    log.info(e.getMessage());
-                }
+            throw new IllegalArgumentException(e.getMessage());
+        }finally {
+            try {
+                workBook.close();
+            } catch (IOException e) {
+                log.debug(e.getMessage());
             }
         }
     }
@@ -197,8 +194,6 @@ public final class ExcelReader {
             val = Short.valueOf(value);
         } else if (typeClass == Character.class || typeClass == char.class) {
             val = Character.valueOf(value.charAt(0));
-        } else if (typeClass == Boolean.class) {
-            val = Boolean.valueOf(value);
         }else if(typeClass == Boolean.class) {
             val = Arrays.asList(BooleanEnum.values()).stream()
                     .filter(x -> x.getName().equals(value.toUpperCase()))

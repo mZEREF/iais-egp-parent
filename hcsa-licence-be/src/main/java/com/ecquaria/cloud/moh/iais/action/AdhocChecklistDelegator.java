@@ -116,7 +116,7 @@ public class AdhocChecklistDelegator {
      * @throws
      */
     public void getNextStep(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+        log.debug("getNextStep");
     }
 
     /**
@@ -179,8 +179,7 @@ public class AdhocChecklistDelegator {
      * @throws
      */
     public void doBack(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-
+        log.debug("doBack");
     }
 
     /**

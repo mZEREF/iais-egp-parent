@@ -59,8 +59,7 @@ public final class FileUtils {
 
 
     private static void inputStreamToFile(InputStream ins, File file) {
-        try {
-            OutputStream os = new FileOutputStream(file);
+        try (OutputStream os = new FileOutputStream(file)){
             int bytesRead;
             byte[] buffer = new byte[8192];
             while ((bytesRead = ins.read(buffer, 0,
@@ -82,10 +81,16 @@ public final class FileUtils {
 
     }
 
-    public static void delteTempFile(final File file) {
+    public static void deleteTempFile(final File file) {
         if (file != null) {
             File del = new File(file.toURI());
-            del.delete();
+            log.debug("delete temp file uri" + file.toURI());
+            boolean success = del.delete();
+            if (success){
+                log.info("delete temp file success");
+            }else {
+                log.info("delete temp file failure");
+            }
         }
 
     }

@@ -89,7 +89,7 @@
     </div>
 
     <div class="col-xs-12 col-sm-6">
-      <p><a class="back" onclick="doCancel();"><i class="fa fa-angle-left"></i> Back</a></p>
+      <p><a class="back" onclick="doCancel();"><em class="fa fa-angle-left"></em> Back</a></p>
     </div>
     <div class="text-right text-center-mobile">
       <a class="btn btn-primary next" id="submitBtn">Submit</a>

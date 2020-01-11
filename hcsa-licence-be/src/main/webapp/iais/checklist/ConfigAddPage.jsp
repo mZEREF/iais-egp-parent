@@ -105,7 +105,7 @@
       <div class="application-tab-footer">
         <div class="row">
           <div class="col-xs-12 col-sm-6">
-            <p><a class="back" href="#" onclick="doBack()"><i class="fa fa-angle-left"></i> Back</a></p>
+            <p><a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a></p>
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile">

@@ -103,7 +103,8 @@ public class BlackedOutDateDelegator {
             return;
         }
 
-        String defualtId = workingGroupQueryList.stream().findFirst().get().getId();
+
+        String defualtId = workingGroupQueryList.stream().findFirst().orElse(new WorkingGroupQueryDto()).getId();
         List<SelectOption> wrlGrpNameOpt = new ArrayList<>();
         workingGroupQueryList.stream().forEach(wkr -> {
             String groupId = wkr.getId();
@@ -165,7 +166,8 @@ public class BlackedOutDateDelegator {
         if (blackDateId != null){
             List<ApptBlackoutDateQueryDto> blackoutDateQueryList = (List<ApptBlackoutDateQueryDto>) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT);
             if (!IaisCommonUtils.isEmpty(blackoutDateQueryList)){
-                ApptBlackoutDateQueryDto blackoutDateQueryDto = blackoutDateQueryList.stream().filter(item -> item.getId().equals(blackDateId)).findFirst().get();
+                ApptBlackoutDateQueryDto blackoutDateQueryDto = blackoutDateQueryList.stream()
+                        .filter(item -> item.getId().equals(blackDateId)).findFirst().orElse(null);
                 if (Optional.of(blackoutDateQueryDto).isPresent()){
                     ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ATTR, blackoutDateQueryDto);
                 }
@@ -225,15 +227,15 @@ public class BlackedOutDateDelegator {
 
     private void doCreateOrUpdate(HttpServletRequest request, Integer bit){
         int ans = bit & 1;
-        ApptBlackoutDateDto blackoutDateDto = null;
+
         String propertName = "";
         String ldate = ParamUtil.getString(request, "startDate");
         String rdate = ParamUtil.getString(request, "endDate");
         String desc = ParamUtil.getString(request, "desc");
 
+        ApptBlackoutDateDto blackoutDateDto = new ApptBlackoutDateDto();
         if (ans == CREATE_ACTION) {
             propertName = "insert";
-            blackoutDateDto = new ApptBlackoutDateDto();
             String groupName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
             String status = ParamUtil.getString(request, "status");
             blackoutDateDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
@@ -245,7 +247,6 @@ public class BlackedOutDateDelegator {
             ApptBlackoutDateQueryDto blackoutDateQueryDto = (ApptBlackoutDateQueryDto) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_ATTR);
             Objects.requireNonNull(blackoutDateQueryDto);
 
-            blackoutDateDto = new ApptBlackoutDateDto();
             blackoutDateDto.setId(blackoutDateQueryDto.getId());
             blackoutDateDto.setShortName(blackoutDateQueryDto.getShortName());
             blackoutDateDto.setSrcSystemId(blackoutDateQueryDto.getSrcSystemId());
