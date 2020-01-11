@@ -17,7 +17,7 @@ import java.util.List;
  * @author Jinhua
  * @date 2019/12/3 17:33
  */
-@FeignClient(value = "eicgate", url="${iais.intra.gateway.url}", configuration = {FeignMultipartConfig.class},
+@FeignClient(value = "eicgate", url="${iais.inter.gateway.url}", configuration = {FeignMultipartConfig.class},
         fallback = FeEicGatewayClientFallback.class)
 public interface FeEicGatewayClient {
     @PostMapping(value = "/v1/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
