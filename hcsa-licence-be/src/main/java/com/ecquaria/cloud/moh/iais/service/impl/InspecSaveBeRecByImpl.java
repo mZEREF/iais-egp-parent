@@ -23,6 +23,11 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,10 +44,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -104,17 +105,11 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             for(File fil:files) {
                 for(ProcessFileTrackDto pDto : processFileTrackDtos){
                     if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
-                        ZipFile zipFile = null;
-                        CheckedInputStream cos = null;
-                        BufferedInputStream bis = null;
-                        BufferedOutputStream bos = null;
-                        OutputStream os = null;
-                        try {
-                            zipFile = new ZipFile(pDto.getFilePath());
+                        try (ZipFile zipFile = new ZipFile(pDto.getFilePath())) {
                             for (Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements(); ) {
                                 ZipEntry zipEntry = entries.nextElement();
                                 String fileName = pDto.getFileName().substring(0,pDto.getFileName().lastIndexOf("."));
-                                unzipFile(zipEntry, os, bos, zipFile, bis, cos, fileName);
+                                unzipFile(zipEntry, zipFile, fileName);
                             }
                         } catch (IOException e) {
                             log.error(e.getMessage(), e);
@@ -125,18 +120,17 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         }
     }
 
-    private void unzipFile(ZipEntry zipEntry, OutputStream os, BufferedOutputStream bos, ZipFile zipFile, BufferedInputStream bis, CheckedInputStream cos, String fileName)  {
-        try {
+    private void unzipFile(ZipEntry zipEntry, ZipFile zipFile, String fileName)  {
+        try(OutputStream os = new FileOutputStream(compressPath + File.separator + zipEntry.getName());
+            BufferedOutputStream bos = new BufferedOutputStream(os);
+            InputStream is = zipFile.getInputStream(zipEntry);
+            BufferedInputStream bis = new BufferedInputStream(is);
+            CheckedInputStream cos = new CheckedInputStream(bis, new CRC32())) {
             if(!zipEntry.getName().endsWith(File.separator)){
                 File file = new File(compressPath + File.separator + zipEntry.getName().substring(0,zipEntry.getName().lastIndexOf(File.separator)) + File.separator + fileName);
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os = new FileOutputStream(compressPath + File.separator + zipEntry.getName());
-                bos = new BufferedOutputStream(os);
-                InputStream is = zipFile.getInputStream(zipEntry);
-                bis = new BufferedInputStream(is);
-                cos = new CheckedInputStream(bis, new CRC32());
                 byte[] b = new byte[1024];
                 int count = cos.read(b);
                 while(count != -1){
@@ -207,6 +201,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         }
                         fileToDto(by.toString(), intranet, submissionId);
                         textJson.add(by.toString());
+                        fileInputStream.close();
+                        by.close();
                     }
                 }
                 List<FileRepoDto> list = new ArrayList<>();
