@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -16,9 +17,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -58,7 +59,7 @@ public class InspectionCreTaskByInspDateDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
-    private InspectionAssignTaskService inspectionAssignTaskService;
+    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
     @Autowired
     private InspectionCreTaskByInspDateDelegator(TaskService taskService, OrganizationClient organizationClient, InspectionTaskClient inspectionTaskClient){
@@ -148,7 +149,7 @@ public class InspectionCreTaskByInspDateDelegator {
             taskDto.setScore(score);
             taskDtoList.add(taskDto);
             ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
-            inspectionAssignTaskService.createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getApplicationDto().getStatus(),taskDto.getTaskKey(),null, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
+            createAppPremisesRoutingHistory(intranet, applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getApplicationDto().getStatus(),taskDto.getTaskKey(),null, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
         }
         taskService.createTasks(taskDtoList);
     }
@@ -165,5 +166,22 @@ public class InspectionCreTaskByInspDateDelegator {
             }
         }
         return taskDtoList;
+    }
+
+    public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(AuditTrailDto intranet, String appPremisesCorrelationId, String status, String stageId, String internalRemarks,
+                                                                        String processDec, String roleId, String subStage, String workGroupId) {
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(status);
+        appPremisesRoutingHistoryDto.setActionby(intranet.getMohUserGuid());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(intranet);
+        appPremisesRoutingHistoryDto.setProcessDecision(processDec);
+        appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setSubStage(subStage);
+        appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto).getEntity();
+        return appPremisesRoutingHistoryDto;
     }
 }
