@@ -97,7 +97,7 @@
                                     <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#" onclick="submit('back')">BACK</a></div>
                                 </div>
                                 <div class="col-xs-10 col-sm-10">
-                                    <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">SUBMIT</button></div>
+                                    <div class="text-right text-center-mobile"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">SAVE</button></div>
                                 </div>
                             </div>
                         </div>
