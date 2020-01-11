@@ -150,6 +150,9 @@ public class InspectionCreTaskByInspDateDelegator {
             taskDtoList.add(taskDto);
             ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
             createAppPremisesRoutingHistory(intranet, applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getApplicationDto().getStatus(),taskDto.getTaskKey(),null, InspectionConstants.PROCESS_DECI_ACCEPTS_RECTIFICATION_CONDITION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
+            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            fillUpCheckListGetAppClient.updateAppRecom(appPremisesRecommendationDto);
         }
         taskService.createTasks(taskDtoList);
     }
