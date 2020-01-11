@@ -20,12 +20,22 @@
         border-radius: 8px;
         -moz-border-radius:8px;
         -webkit-border-radius:8px;
-
     }
 
     .table-count {
         float: left;
         margin-top: 5px;
+    }
+    .nav ul.pagination{
+        padding-top: 7px;
+    }
+
+    .nav ul.pagination > li{
+        padding-left: 3px;
+    }
+
+    .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count{
+        margin-left: -12px;
     }
 </style>
 <script type="text/javascript">

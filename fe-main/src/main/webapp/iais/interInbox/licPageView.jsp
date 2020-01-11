@@ -12,7 +12,6 @@
 
 <%@ include file="lic/licDashboard.jsp" %>
 <%@ include file="lic/licMainContent.jsp" %>
-
 <style>
     .table-info-display {
         margin: 20px 0px 5px 0px;
@@ -27,6 +26,17 @@
     .table-count {
         float: left;
         margin-top: 5px;
+    }
+    .nav ul.pagination{
+        padding-top: 7px;
+    }
+
+    .nav ul.pagination > li{
+        padding-left: 3px;
+    }
+
+    .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count{
+        margin-left: -12px;
     }
 </style>
 <script type="text/javascript">
