@@ -211,11 +211,11 @@ public class TaskServiceImpl implements TaskService {
     public TaskDto getLowestTaskScore(List<TaskDto> taskScoreDtos, List<OrgUserDto> users) {
         TaskDto result = null;
         //There is not user in this workgroup return null
-        if(users == null || users.size() ==0){
+        if(IaisCommonUtils.isEmpty(users)){
             return  result;
         }
         //There is not taskScoreDtos ,return the users first.
-        if(taskScoreDtos == null || taskScoreDtos.size() == 0){
+        if(IaisCommonUtils.isEmpty(taskScoreDtos)){
             result = new TaskDto();
             result.setUserId(users.get(0).getId());
             result.setScore(0);

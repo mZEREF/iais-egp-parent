@@ -11,10 +11,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequ
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
@@ -23,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
@@ -57,6 +60,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private LicenceClient licenceClient;
+
+    @Autowired
+    private HcsaLicenClient hcsaLicenClient;
 
     @Override
     public int hashCode() {
@@ -126,8 +132,24 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             licenceFeeDto.setBaseService(baseServiceCode);
             licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
             licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
-            licenceFeeDto.setRenewCount(1);
             licenceFeeDto.setPremises(premisessTypes);
+
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                licenceFeeDto.setRenewCount(1);
+                String licenceId = appSubmissionDto.getLicenceId();
+                List<String> licenceIds = new ArrayList<>();
+                licenceIds.add(licenceId);
+                List<HcsaLicenceGroupFeeDto> hcsaLicenceGroupFeeDtos =  hcsaLicenClient.retrieveHcsaLicenceGroupFee(licenceIds).getEntity();
+                if(!IaisCommonUtils.isEmpty(hcsaLicenceGroupFeeDtos)){
+                    HcsaLicenceGroupFeeDto hcsaLicenceGroupFeeDto =  hcsaLicenceGroupFeeDtos.get(0);
+                    licenceFeeDto.setGroupId(hcsaLicenceGroupFeeDto.getGroupId());
+                    licenceFeeDto.setMigrated(hcsaLicenceGroupFeeDto.isMigrated());
+                    licenceFeeDto.setOldAmount(hcsaLicenceGroupFeeDto.getAmount());
+                    licenceFeeDto.setExpiryDate(hcsaLicenceGroupFeeDto.getExpiryDate());
+                    licenceFeeDto.setRenewCount(hcsaLicenceGroupFeeDto.getCount());
+                }
+               // licenceFeeDto.setCharity();
+            }
             linenceFeeQuaryDtos.add(licenceFeeDto);
         }
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:"+linenceFeeQuaryDtos.size()));
