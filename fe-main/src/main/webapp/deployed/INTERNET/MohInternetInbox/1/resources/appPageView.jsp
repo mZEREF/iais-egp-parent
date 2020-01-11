@@ -1,0 +1,1 @@
+<%@include file="/iais/interInbox/appPageView.jsp"%>
