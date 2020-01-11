@@ -4,12 +4,14 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -35,7 +38,8 @@ public class KpiAndReminderDelegator {
 
     @Autowired
     private KpiAndReminderService kpiAndReminderService;
-
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
     private  OrgUserDto entity;
     @Autowired
     private OrganizationClient organizationClient;
@@ -51,19 +55,23 @@ public class KpiAndReminderDelegator {
 
 //        clearSession(bpc.request);
 //        bpc.request.removeAttribute("errorMsg");
-
-        clearSession(bpc.request);
-        bpc.request.removeAttribute("errorMsg");
+        List<HcsaSvcRoutingStageDto> entity = hcsaConfigClient.getAllHcsaSvcRoutingStage().getEntity();
+        for(HcsaSvcRoutingStageDto every:entity){
+            String stageCode = every.getStageCode();
+            if("INS".equals(stageCode)){
+                entity.remove(every);
+                break;
+            }
+        }
+        bpc.request.getSession().setAttribute("hcsaSvcRoutingStageDtos",entity);
         Date date=new Date();
         String format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ssa", Locale.ENGLISH).format(date);
         bpc.request.setAttribute("date",format);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-         entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
-        bpc.request.setAttribute("entity",entity.getDisplayName());
+         this.entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+        bpc.request.setAttribute("entity", this.entity.getDisplayName());
         kpiAndReminderService.getKpiAndReminder(bpc.request);
-
-
 
     }
 
@@ -107,14 +115,12 @@ public class KpiAndReminderDelegator {
         }
 
         Date createDate = hcsaSvcKpiDto.getCreateDate();
-
             if(stageIdKpi!=null){
                 stageIdKpi.forEach((k,v)->{
                     String s = stageNameKpi.get(k);
                     map.put(s,v);
                 });
             }
-
             if(createDate==null){
                 Date date=new Date();
                 String  format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ssa", Locale.ENGLISH).format(date);
@@ -124,8 +130,6 @@ public class KpiAndReminderDelegator {
                 map.put("remThr",format);
             }
 
-
-
         return map;
     }
 
@@ -134,14 +138,11 @@ public class KpiAndReminderDelegator {
         request.getSession().removeAttribute("module");
         request.getSession().removeAttribute("service");
         request.getSession().removeAttribute("reminderThreshold");
-        request.getSession().removeAttribute("adminScreening");
-        request.getSession().removeAttribute("professionalScreening");
-        request.getSession().removeAttribute("preInspection");
-        request.getSession().removeAttribute("inspection");
-        request.getSession().removeAttribute("postInspection");
-        request.getSession().removeAttribute("levelOne");
-        request.getSession().removeAttribute("levelTwo");
-        request.getSession().removeAttribute("levelThree");
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = (List<HcsaSvcRoutingStageDto>)request.getSession().getAttribute("hcsaSvcRoutingStageDtos");
+        for(HcsaSvcRoutingStageDto every:hcsaSvcRoutingStageDtos){
+            String stageCode = every.getStageCode();
+            request.getSession().removeAttribute(stageCode);
+        }
 
     }
 }

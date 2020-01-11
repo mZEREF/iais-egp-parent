@@ -235,4 +235,7 @@ public interface HcsaConfigClient {
 
     @GetMapping(value = "/iais-hcsa-service/sub-correlation/{svcId}")
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelationFooReport(@PathVariable(name = "svcId")String serviceId);
+    @GetMapping(value = "/hcsa-routing/list-all-routing-stage",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity <List<HcsaSvcRoutingStageDto>> getAllHcsaSvcRoutingStage();
+
 }

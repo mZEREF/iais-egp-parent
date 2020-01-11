@@ -18,6 +18,8 @@
                 <div class="preview-gp">
                   <div class="row">
                     <div class="col-xs-12 col-md-2 text-right">
+                      <br>
+                      <br>
                       <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>
                     </div>
                   </div>

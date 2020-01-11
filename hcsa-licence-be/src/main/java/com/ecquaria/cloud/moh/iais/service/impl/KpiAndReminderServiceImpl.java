@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -85,27 +86,35 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         OrgUserDto entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
         String module = request.getParameter("module");
         String service = request.getParameter("service");
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDto = (List<HcsaSvcRoutingStageDto>) request.getSession().getAttribute("hcsaSvcRoutingStageDtos");
+        for(HcsaSvcRoutingStageDto every:hcsaSvcRoutingStageDto){
+            String stageCode = every.getStageCode();
+            String id = every.getId();
+            String parameter = request.getParameter(stageCode);
+            kpi.put(id,Integer.parseInt(parameter));
+        }
+
         String reminderThreshold = request.getParameter("reminderThreshold");
-        String adminScreening = request.getParameter("adminScreening");
+      /*  String adminScreening = request.getParameter("adminScreening");
         String professionalScreening = request.getParameter("professionalScreening");
         String preInspection = request.getParameter("preInspection");
         String inspection = request.getParameter("inspection");
         String postInspection = request.getParameter("postInspection");
         String levelOne = request.getParameter("levelOne");
         String levelTwo = request.getParameter("levelTwo");
-        String levelThree = request.getParameter("levelThree");
+        String levelThree = request.getParameter("levelThree");*/
         String createDate = request.getParameter("createDate");
         HcsaSvcKpiDto hcsaSvcKpiDto =new HcsaSvcKpiDto();
         hcsaSvcKpiDto.setModule(module);
         hcsaSvcKpiDto.setRemThreshold(Integer.parseInt(reminderThreshold));
-        kpi.put("12848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(adminScreening));
+       /* kpi.put("12848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(adminScreening));
         kpi.put("13848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(professionalScreening));
         kpi.put("298BCC95-5130-EA11-BE7D-000C29F371DC",Integer.parseInt(inspection));
         kpi.put("15848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(levelOne));
         kpi.put("16848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(levelTwo));
         kpi.put("17848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(levelThree));
         kpi.put("288BCC95-5130-EA11-BE7D-000C29F371DC",Integer.parseInt(preInspection));
-        kpi.put("2A8BCC95-5130-EA11-BE7D-000C29F371DC",Integer.parseInt(postInspection));
+        kpi.put("2A8BCC95-5130-EA11-BE7D-000C29F371DC",Integer.parseInt(postInspection));*/
         hcsaSvcKpiDto.setStageIdKpi(kpi);
         hcsaSvcKpiDto.setVersion(1);
         hcsaSvcKpiDto.setServiceCode(service);
@@ -130,7 +139,21 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         request.getSession().setAttribute("service",service);
         String reminderThreshold = request.getParameter("reminderThreshold");
         request.getSession().setAttribute("reminderThreshold",reminderThreshold);
-        String adminScreening = request.getParameter("adminScreening");
+        List<HcsaSvcRoutingStageDto> entity = (List<HcsaSvcRoutingStageDto>) request.getSession().getAttribute("hcsaSvcRoutingStageDtos");
+
+        for(HcsaSvcRoutingStageDto every:entity){
+            String stageCode = every.getStageCode();
+            String stageCode1 = request.getParameter(stageCode);
+            request.getSession().setAttribute(stageCode,stageCode1);
+            if(StringUtil.isEmpty(stageCode1)){
+                errorMap.put(stageCode,"UC_CHKLMD001_ERR001");
+            }else {
+                if(!stageCode1.matches("^[0-9]*$")){
+                    errorMap.put(stageCode,"UC_CHKLMD001_ERR002");
+                }
+            }
+        }
+       /* String adminScreening = request.getParameter("adminScreening");
         request.getSession().setAttribute("adminScreening",adminScreening);
         String professionalScreening = request.getParameter("professionalScreening");
         request.getSession().setAttribute("professionalScreening",professionalScreening);
@@ -146,7 +169,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         request.getSession().setAttribute("levelTwo",levelTwo);
         String levelThree = request.getParameter("levelThree");
         request.getSession().setAttribute("levelThree",levelThree);
-        String createDate = request.getParameter("createDate");
+        String createDate = request.getParameter("createDate");*/
         if(StringUtil.isEmpty(module)){
             errorMap.put("module","UC_CHKLMD001_ERR001");
         }
@@ -160,7 +183,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                 errorMap.put("reminderThreshold","UC_CHKLMD001_ERR002");
             }
         }
-        if(StringUtil.isEmpty(adminScreening)){
+       /* if(StringUtil.isEmpty(adminScreening)){
             errorMap.put("adminScreening","UC_CHKLMD001_ERR001");
         }else {
             if(!adminScreening.matches("^[0-9]*$")){
@@ -217,7 +240,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                 errorMap.put("levelThree","UC_CHKLMD001_ERR002");
             }
         }
-
+*/
         return errorMap;
     }
 

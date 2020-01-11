@@ -57,6 +57,7 @@
 
   <div class="table-gp">
     <table class="table" border="1px">
+
       <tr>
         <td rowspan="9" width="20%" style="text-align: center;vert-align: middle" >Processing Time for different stages</td>
         <td style="text-align: center;vert-align: middle">Reminder Threshold:</td>
@@ -67,17 +68,21 @@
          </td>
 
       </tr>
+
+  <c:forEach items="${hcsaSvcRoutingStageDtos}" var="hcsaSvcRoutingStageDto">
+
       <tr>
 
-        <td style="text-align: center;vert-align: middle">Admin Screening :</td>
+        <td style="text-align: center;vert-align: middle">${hcsaSvcRoutingStageDto.stageName}</td>
         <td style="text-align: center;vert-align: middle">
-          <input name="adminScreening" type="text"   placeholder="Enter required man-days" value="${adminScreening}" maxlength="5" style="width: 50% ;height: 10%"/>
+          <input name="${hcsaSvcRoutingStageDto.stageCode}" type="text"  placeholder="Enter required man-days" value="" maxlength="5" style="width: 50% ;height: 10%"/>
           man-days
-          <span name="iaisErrorMsg" id="error_adminScreening" class="error-msg"></span>
+          <span name="iaisErrorMsg" id="error_${hcsaSvcRoutingStageDto.stageCode}" class="error-msg"></span>
         </td>
 
       </tr>
-      <tr>
+  </c:forEach>
+    <%--  <tr>
 
         <td style="text-align: center;vert-align: middle">Professional Screening:</td>
         <td style="text-align: center;vert-align: middle">
@@ -140,7 +145,7 @@
           <span name="iaisErrorMsg" id="error_levelThree" class="error-msg"></span>
         </td>
 
-      </tr>
+      </tr>--%>
 
     </table>
   </div>
@@ -196,7 +201,6 @@ $(document).ready(function () {
           var remThreshold= data.remThreshold;
           var aso=  data.ASO;
           var pso=  data.PSO;
-          var ins=  data.INS;
           var ao1= data.AO1;
           var ao2= data.AO2;
           var ao3= data.AO3;
@@ -206,14 +210,14 @@ $(document).ready(function () {
           var date=data.remThr;
           var entity= data.entity;
           $("input[name='reminderThreshold']").val(remThreshold);
-          $("input[name='adminScreening']").val(aso);
-          $("input[name='professionalScreening']").val(pso);
-          $("input[name='preInspection']").val(pre);
-          $("input[name='inspection']").val(ins);
-          $("input[name='levelOne']").val(ao1);
-          $("input[name='levelTwo']").val(ao2);
-          $("input[name='levelThree']").val(ao3);
-          $("input[name='postInspection']").val(pot);
+          $("input[name='ASO']").val(aso);
+          $("input[name='PSO']").val(pso);
+          $("input[name='PRE']").val(pre);
+          $("input[name='INP']").val(inp);
+          $("input[name='AO1']").val(ao1);
+          $("input[name='AO2']").val(ao2);
+          $("input[name='AO3']").val(ao3);
+          $("input[name='POT']").val(pot);
           $("input[name='createDate']").val(date);
           $("input[name='createDate'] +p ").html($("input[name='createDate']").val());
           $("input[name='createBy']").val(entity);
@@ -231,7 +235,6 @@ $("#service").change(function () {
             var remThreshold= data.remThreshold;
             var aso= data.ASO;
             var pso=  data.PSO;
-            var ins=  data.INS;
             var ao1=data.AO1;
             var ao2= data.AO2;
             var ao3= data.AO3;
@@ -241,14 +244,14 @@ $("#service").change(function () {
             var date=data.remThr;
             var entity= data.entity;
             $("input[name='reminderThreshold']").val(remThreshold);
-            $("input[name='adminScreening']").val(aso);
-            $("input[name='professionalScreening']").val(pso);
-            $("input[name='preInspection']").val(pre);
-            $("input[name='inspection']").val(ins);
-            $("input[name='levelOne']").val(ao1);
-            $("input[name='levelTwo']").val(ao2);
-            $("input[name='levelThree']").val(ao3);
-            $("input[name='postInspection']").val(pot);
+            $("input[name='ASO']").val(aso);
+            $("input[name='PSO']").val(pso);
+            $("input[name='PRE']").val(pre);
+            $("input[name='INP']").val(inp);
+            $("input[name='AO1']").val(ao1);
+            $("input[name='AO2']").val(ao2);
+            $("input[name='AO3']").val(ao3);
+            $("input[name='POT']").val(pot);
             $("input[name='createDate']").val(date);
             $("input[name='createDate'] +p ").html($("input[name='createDate']").val());
             $("input[name='createBy']").val(entity);

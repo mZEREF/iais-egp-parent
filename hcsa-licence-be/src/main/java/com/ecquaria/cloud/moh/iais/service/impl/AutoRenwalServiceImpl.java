@@ -181,23 +181,24 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 int count = every.getCount();
                 Date expiryDate1 = every.getExpiryDate();
                 String groupId = every.getGroupId();
-
+                licenceFeeDto.setGroupId(groupId);
                 licenceFeeDto.setBaseService(split[4]);
                 licenceFeeDto.setServiceCode(split[4]);
                 licenceFeeDto.setServiceName(svcName);
                 licenceFeeDto.setPremises(premises);
-                licenceFeeDto.setRenewCount(count);
 
                 licenceFeeDto.setExpiryDate(expiryDate1);
 
-          /*    if(isMigrated){
-                  licenceFeeDto.setMigrated(true);
+              if(isMigrated){
+                  licenceFeeDto.setMigrated(isMigrated);
                   licenceFeeDto.setGroupId(groupId);
                   licenceFeeDto.setOldAmount(amount);
-              }else  if(!isMigrated){*/
-                  licenceFeeDto.setMigrated(false);
+                  licenceFeeDto.setRenewCount(count);
+              }else  if(!isMigrated){
+                  licenceFeeDto.setMigrated(isMigrated);
                 licenceFeeDto.setOldAmount(amount);
-          /*    }*/
+                  licenceFeeDto.setRenewCount(0);
+              }
                 licenceFeeDtos.add(licenceFeeDto);
             }
 
