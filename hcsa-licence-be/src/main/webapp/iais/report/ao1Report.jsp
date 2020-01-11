@@ -86,7 +86,17 @@
                                 <p>Subsumed Services:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.subsumedService}</p>
+                            <td class="col-xs-8">
+                                <table class="table">
+                                    <c:forEach var="service" items="${insRepDto.subsumedServices}">
+                                        <tr>
+                                            <td>
+                                                <p><c:out value="${service}"></c:out></p>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                            </td>
                             </td>
                         </tr>
                         </tbody>
@@ -164,8 +174,6 @@
                                 <p>Checklist Used:</p>
                             </td>
                             <td class="col-xs-8">
-
-
                                 <!-- Content goes here -->
                                 <c:forEach var="sec" items="${insRepDto.otherCheckList.sectionDtos}">
                                     <p>

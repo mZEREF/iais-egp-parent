@@ -73,7 +73,15 @@
                                 <p>Subsumed Services:</p>
                             </td>
                             <td class="col-xs-8">
-                                <p>${insRepDto.subsumedService}</p>
+                                <table class="table">
+                                    <c:forEach var="service" items="${insRepDto.subsumedServices}">
+                                        <tr>
+                                            <td>
+                                                <p><c:out value="${service}"></c:out></p>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
                             </td>
                         </tr>
                         </tbody>
