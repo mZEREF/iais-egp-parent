@@ -2052,7 +2052,7 @@ public class NewApplicationDelegator {
         return svcAllPsnConfig;
     }
     
-    private boolean checkCanEdit(List<String> amendTypes, String currentType){
+    private static boolean checkCanEdit(List<String> amendTypes, String currentType){
         boolean rfcCanEdit = false;
         if(amendTypes != null){
             for(String type:amendTypes){
@@ -2065,7 +2065,7 @@ public class NewApplicationDelegator {
         return rfcCanEdit;
     }
     
-    public boolean isGetDataFromPage(AppSubmissionDto appSubmissionDto, String currentType, String isEdit){
+    public static boolean isGetDataFromPage(AppSubmissionDto appSubmissionDto, String currentType, String isEdit){
         if(appSubmissionDto == null){
             return true;
         }
