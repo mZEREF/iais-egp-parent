@@ -88,7 +88,7 @@ public class LicenceApproveBatchjob {
        //get can Generate Licence
         List<ApplicationLicenceDto> applicationLicenceDtos =licenceService.getCanGenerateApplications(day);
         if(applicationLicenceDtos == null || applicationLicenceDtos.size() == 0 ){
-            log.debug(StringUtil.changeForLog("This time do not have need Generate Licences."));
+           log.debug(StringUtil.changeForLog("This time do not have need Generate Licences."));
            return;
         }
         //get the all use serviceCode.
