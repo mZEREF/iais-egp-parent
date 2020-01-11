@@ -92,9 +92,6 @@ public class InspectionPreDelegator {
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
-            if(StringUtil.isEmpty(taskId)){
-                taskId = "CBD90C65-2F34-EA11-BE7D-000C29F371DC";
-            }
             taskDto = taskService.getTaskById(taskId);
             String appStatus = inspectionPreTaskService.getAppStatusByTaskId(taskDto);
             inspectionPreTaskDto.setAppStatus(appStatus);
