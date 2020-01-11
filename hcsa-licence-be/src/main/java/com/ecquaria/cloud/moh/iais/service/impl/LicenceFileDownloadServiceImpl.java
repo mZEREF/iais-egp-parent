@@ -66,8 +66,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 @Service
 @Slf4j
 public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadService {
- /*  *//* @Value("${iais.syncFileTracking.shared.path}")*/
-    private     String sharedPath="D:";
+    @Value("${iais.syncFileTracking.shared.path}")
+    private     String sharedPath;
     private     String download;
     private     String backups;
     private     String fileFormat=".text";
@@ -110,38 +110,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                         } catch (IOException e) {
                             log.error(e.getMessage(),e);
-                        }
-                        finally {
-                            if(cos!=null){
-                                try {
-                                    cos.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
-
-                            if(bis!=null){
-                                try {
-                                    bis.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
-                            if(bos!=null){
-                                try {
-                                    bos.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
-                            if(os!=null) {
-                                try {
-                                    os.close();
-                                } catch (IOException e) {
-                                    log.error(e.getMessage());
-                                }
-                            }
-
                         }
 
                         try {
@@ -234,6 +202,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 File[] files = file.listFiles();
                 for(File  filzz:files){
                     if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
+                        try {
+
+                        }catch (Exception e){
+
+                        }
                        fileInputStream =new FileInputStream(filzz);
                         ByteArrayOutputStream by=new ByteArrayOutputStream();
                         int count=0;
@@ -300,7 +273,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
 
-                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf("/"));
+                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
                     File file =new File(compressPath+File.separator+fileName+File.separator+substring);
                     if(!file.exists()){
                         file.mkdirs();
