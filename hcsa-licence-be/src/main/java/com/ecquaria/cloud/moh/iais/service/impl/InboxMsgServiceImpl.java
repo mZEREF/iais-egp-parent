@@ -3,7 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.client.FEEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@ public class InboxMsgServiceImpl implements InboxMsgService {
     private String secSecretKey;
 
     @Autowired
-    private FEEicGatewayClient feEicGatewayClient;
+    private BeEicGatewayClient beEicGatewayClient;
 
     @Autowired
     private SystemBeLicClient systemBeLicClient;
@@ -38,7 +38,7 @@ public class InboxMsgServiceImpl implements InboxMsgService {
     public InterMessageDto saveInterMessage(InterMessageDto interMessageDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return feEicGatewayClient.saveInboxMessage(interMessageDto, signature.date(), signature.authorization(),
+        return beEicGatewayClient.saveInboxMessage(interMessageDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
     }
 

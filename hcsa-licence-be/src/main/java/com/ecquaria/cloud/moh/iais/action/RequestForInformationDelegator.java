@@ -22,13 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.FEEicGatewayClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +30,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * RequestForInformationDelegator
@@ -54,7 +53,7 @@ public class RequestForInformationDelegator {
     ApplicationViewService applicationViewService;
 
     @Autowired
-    private FEEicGatewayClient gatewayClient;
+    private BeEicGatewayClient gatewayClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;

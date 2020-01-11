@@ -16,7 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FEEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -52,7 +52,7 @@ public class LicenceServiceImpl implements LicenceService {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
-    private FEEicGatewayClient feEicGatewayClient;
+    private BeEicGatewayClient beEicGatewayClient;
 
     @Autowired
     private GenerateIdClient generateIdClient;
@@ -148,7 +148,7 @@ public class LicenceServiceImpl implements LicenceService {
     public List<LicenceGroupDto> createFESuperLicDto(List<LicenceGroupDto> licenceGroupDtos) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return feEicGatewayClient.createLicence(licenceGroupDtos, signature.date(), signature.authorization(),
+        return beEicGatewayClient.createLicence(licenceGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
     }
 }

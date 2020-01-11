@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FEEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
-    private FEEicGatewayClient feEicGatewayClient;
+    private BeEicGatewayClient beEicGatewayClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -73,7 +73,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return feEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization(),
+        return beEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
     }
 
