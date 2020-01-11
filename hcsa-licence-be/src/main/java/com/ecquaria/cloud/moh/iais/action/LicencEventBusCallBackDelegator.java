@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -52,9 +51,9 @@ public class LicencEventBusCallBackDelegator {
         String serviceName = ParamUtil.getString(request, "service");
         log.info(StringUtil.changeForLog("The serviceName is-->:"+serviceName));
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
-        if (!isLeagal) {
-            throw new IaisRuntimeException("Visit without Token!!");
-        }
+//        if (!isLeagal) {
+//            throw new IaisRuntimeException("Visit without Token!!");
+//        }
         String operation = ParamUtil.getString(request, "operation");
         log.info(StringUtil.changeForLog("The operation is-->:"+operation));
         Map<String, List<ServiceStatus>> map = client.getSubmissionStatus(AppConsts.REST_PROTOCOL_TYPE
