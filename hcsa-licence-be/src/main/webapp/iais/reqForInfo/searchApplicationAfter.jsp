@@ -84,14 +84,14 @@
                             <thead>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="HCI_NAME" value="HCI Name "></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="ADDRESS" value=" Address"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="LICENSEE_NAME" value="Licensee NAME"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="true"  field="SERVICE_NAME" value="Service NAME"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="LICENSEE_NAME" value="Licensee NAME"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="SERVICE_NAME" value="Service NAME"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Period" value="Licence Period"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Licence_Status" value="Licence Status"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="past_compliance_history" value="Past Compliance History"></iais:sortableHeader>
@@ -112,7 +112,7 @@
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
-                                            <td><a onclick="doAppInfo()">${pool.applicationNo}</a></td>
+                                            <td><a onclick="doAppInfo('${pool.licenseeId}')">${pool.applicationNo}</a></td>
                                             <td><c:out value="${pool.applicationType}"/></td>
                                             <td><c:out value="${pool.licenceNo}"/></td>
                                             <td><c:out value="${pool.hciCode}"/></td>
@@ -160,7 +160,7 @@
     function doReqForInfo(licPremId) {
         SOP.Crud.cfxSubmit("mainForm", "reqForInfo",licPremId);
     }
-    function doAppInfo() {
-        SOP.Crud.cfxSubmit("mainForm", "appInfo");
+    function doAppInfo(licenseeId) {
+        SOP.Crud.cfxSubmit("mainForm", "appInfo",licenseeId);
     }
 </script>

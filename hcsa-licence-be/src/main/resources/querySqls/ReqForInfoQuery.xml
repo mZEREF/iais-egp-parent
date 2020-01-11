@@ -50,5 +50,8 @@
             <#if app_id??> AND licApp.APPLICATION_ID = :app_id</#if>
         ]]>
     </sql>
+    <!--                LicPremisesAdhocChklItem.RISK_LEVEL-->
+
+    <!--            JOIN lic_premises_adhoc_chkl_item LicPremisesAdhocChklItem ON licPrem.ID = LicPremisesAdhocChklItem.LIC_PREM_CORRE_ID-->
 
 </sqls>

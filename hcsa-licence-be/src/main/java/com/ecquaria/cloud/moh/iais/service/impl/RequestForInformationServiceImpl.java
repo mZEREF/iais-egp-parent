@@ -63,8 +63,16 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_VERIFIED,
             ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_INFORMATION,
             ApplicationConsts.APPLICATION_STATUS_LICENCE_START_DATE,
-            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW
-    };
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT,
+            ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
+            ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,
+            ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY,
+            ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_NOTIFICATION,
+            ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_AMEND,
+            ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION
+};
     private final String[] licServiceType=new String[]{
             ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,
             ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,

@@ -40,7 +40,7 @@
                                             <iais:field value="Licence No:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <input type="text" name="licenceNo">
+                                                    <input type="text" name="licenceNo" value="${licenceNo}">
                                                 </label>
                                             </iais:value>
                                         </iais:row>

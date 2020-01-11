@@ -96,17 +96,15 @@ public class ResponseForInformationDelegator {
         String userReply=mulReq.getParameter("userReply");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(crudActionValue);
         CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile");
-        if(file != null && file.getSize() != 0){
-            if (!StringUtil.isEmpty(file.getOriginalFilename())) {
-                file.getFileItem().setFieldName("selectedFile");
-                licPremisesReqForInfoDto.setDocName(file.getOriginalFilename());
-                long size = file.getSize() / 1024;
-                licPremisesReqForInfoDto.setDocSize(Integer.valueOf(String.valueOf(size)));
-                String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-                licPremisesReqForInfoDto.setFileRepoId(fileRepoGuid);
-                licPremisesReqForInfoDto.setSubmitDt(new Date());
-                licPremisesReqForInfoDto.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
-            }
+        if(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename())){
+            file.getFileItem().setFieldName("selectedFile");
+            licPremisesReqForInfoDto.setDocName(file.getOriginalFilename());
+            long size = file.getSize() / 1024;
+            licPremisesReqForInfoDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+            String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
+            licPremisesReqForInfoDto.setFileRepoId(fileRepoGuid);
+            licPremisesReqForInfoDto.setSubmitDt(new Date());
+            licPremisesReqForInfoDto.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
         }
         licPremisesReqForInfoDto.setReplyDate(new Date());
         licPremisesReqForInfoDto.setReplyUser(licPremisesReqForInfoDto.getLicenseeId());

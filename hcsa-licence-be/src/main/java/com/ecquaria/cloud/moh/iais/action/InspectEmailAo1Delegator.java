@@ -56,8 +56,7 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -104,6 +103,17 @@ public class InspectEmailAo1Delegator {
     private OrganizationClient organizationClient;
     @Autowired
     ApplicationService applicationService;
+    private final String ADCHK_DTO="adchklDto";
+    private final String TASK_DTO="taskDto";
+    private final String FILL_CHECK_LIST_DTO="fillCheckListDto";
+    private final String APP_VIEW_DTO="applicationViewDto";
+    private final String COM_DTO="commonDto";
+    private final String MSG_CON="messageContent";
+    private final String EMAIL_VIEW="emailView";
+    private final String INS_EMAIL_DTO="insEmailDto";
+    private final String AC_DTO="acDto";
+    private final String TD="</td><td>";
+
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
 
@@ -131,12 +141,12 @@ public class InspectEmailAo1Delegator {
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
-        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
-        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
-        ParamUtil.setSessionAttr(request,"fillCheckListDto",insepectionNcCheckListDto);
-        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
+        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
+        ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
+        ParamUtil.setSessionAttr(request,FILL_CHECK_LIST_DTO,insepectionNcCheckListDto);
+        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
+        ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
     }
 
 
@@ -158,10 +168,10 @@ public class InspectEmailAo1Delegator {
     public void emailSubmitStep(BaseProcessClass bpc){
         log.info("=======>>>>>emailSubmitStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,"insEmailDto");
-        String content=ParamUtil.getString(request,"messageContent");
+        InspectionEmailTemplateDto inspectionEmailTemplateDto = (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(bpc.request,INS_EMAIL_DTO);
+        String content=ParamUtil.getString(request,MSG_CON);
         ParamUtil.setSessionAttr(request,"content",content);
-        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
     }
 
     public void previewEmail(BaseProcessClass bpc){
@@ -171,7 +181,7 @@ public class InspectEmailAo1Delegator {
         if(!"preview".equals(currentAction)){
             return;
         }
-        String content=ParamUtil.getString(request,"messageContent");
+        String content=ParamUtil.getString(request,MSG_CON);
         ParamUtil.setSessionAttr(request,"content", content);
 
 
@@ -183,8 +193,8 @@ public class InspectEmailAo1Delegator {
         HttpServletRequest request = bpc.request;
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
-        TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
+        TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
         String serviceId=applicationViewDto.getApplicationDto().getServiceId();
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!"send".equals(currentAction)){
@@ -193,9 +203,9 @@ public class InspectEmailAo1Delegator {
         String decision=ParamUtil.getString(request,"decision");
         if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
 
-        InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,"insEmailDto");
+        InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
         inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
-        inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,"messageContent"));
+        inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = new HashMap<>();
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
@@ -213,9 +223,8 @@ public class InspectEmailAo1Delegator {
             appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL);
             appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto);
-
-            String taskKey = HcsaConsts.ROUTING_STAGE_INS;
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
+            taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
 
             boolean flag=true;
             List<ApplicationDto> applicationDtos= applicationService.getApplicaitonsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());
@@ -225,11 +234,11 @@ public class InspectEmailAo1Delegator {
                     flag=false;
                 }
             }
-            if(flag==true){
+            if(flag){
 
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
                 hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-                hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
+                hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
                 hcsaSvcStageWorkingGroupDto.setOrder(3);
                 completedTask(taskDto);
                 TaskDto taskDto1=taskDto;
@@ -239,24 +248,24 @@ public class InspectEmailAo1Delegator {
                 taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
                 taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
                 taskService.createTasks(taskDtos);
-                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
+                createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS, InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT,taskDto1,HcsaConsts.ROUTING_STAGE_POT,userId);
             }
         }
         else {
-            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+            applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
             AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
             appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
             appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appInspectionStatusClient.update(appInspectionStatusDto);
 
-            String taskKey = HcsaConsts.ROUTING_STAGE_INS;
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskKey,taskDto.getRoleId(),taskDto.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
+            taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
 
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getId(),HcsaConsts.ROUTING_STAGE_INS);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-            hcsaSvcStageWorkingGroupDto.setStageId(taskKey);
+            hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDto.setOrder(1);
             completedTask(taskDto);
             TaskDto taskDto1=taskDto;
@@ -267,25 +276,23 @@ public class InspectEmailAo1Delegator {
 
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED, InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto1.getTaskKey(),taskDto1.getRoleId(),taskDto1.getWkGrpId(),HcsaConsts.ROUTING_STAGE_POT,userId);
+            createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW, InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto1,HcsaConsts.ROUTING_STAGE_POT,userId);
 
 
         }
         inspEmailService.insertEmailTemplate(inspectionEmailTemplateDto);
 
-        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
 
     }
     public void doRecallEmail(BaseProcessClass bpc) {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
     }
 
     public void preCheckList(BaseProcessClass bpc) {
-
         log.info("=======>>>>>preCheckList>>>>>>>>>>>>>>>>emailRequest");
-        HttpServletRequest request = bpc.request;
 
     }
     public void checkListNext(BaseProcessClass bpc)  {
@@ -294,14 +301,14 @@ public class InspectEmailAo1Delegator {
         InspectionFillCheckListDto cDto = getDataFromPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
         AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
-        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
-        ParamUtil.setSessionAttr(request,"fillCheckListDto",cDto);
-        List<NcAnswerDto> acDtoList =  (List<NcAnswerDto>)ParamUtil.getSessionAttr(request,"acDto");
+        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
+        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
+        ParamUtil.setSessionAttr(request,FILL_CHECK_LIST_DTO,cDto);
+        List<NcAnswerDto> acDtoList =  (List<NcAnswerDto>)ParamUtil.getSessionAttr(request,AC_DTO);
         List<NcAnswerDto> ncDtoList = inspEmailService.getNcAnswerDtoList(cDto,commonDto,adchklDto,acDtoList);
-        InspectionCheckListValidation InspectionCheckListValidation = new InspectionCheckListValidation();
-        Map<String, String> errMap = InspectionCheckListValidation.validate(request);
-        ParamUtil.setSessionAttr(request,"acDto", (Serializable) ncDtoList);
+        InspectionCheckListValidation inspectionCheckListValidation = new InspectionCheckListValidation();
+        Map<String, String> errMap = inspectionCheckListValidation.validate(request);
+        ParamUtil.setSessionAttr(request,AC_DTO, (Serializable) ncDtoList);
         if(!errMap.isEmpty()){
             ParamUtil.setRequestAttr(request, "isValid", "N");
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errMap));
@@ -321,17 +328,17 @@ public class InspectEmailAo1Delegator {
                 }
                 fillupChklistService.merge(commonDto,cDto);
                 insepctionNcCheckListService.submit(cDto,adchklDto);
-                ParamUtil.setSessionAttr(request,"adchklDto",adchklPageDto);
-                ParamUtil.setSessionAttr(request,"fillCheckListDto",cPageDto);
-                ParamUtil.setSessionAttr(request,"commonDto",commonPageDto);
-                ParamUtil.setSessionAttr(request,"acDto", (Serializable) acDtoList);
+                ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklPageDto);
+                ParamUtil.setSessionAttr(request,FILL_CHECK_LIST_DTO,cPageDto);
+                ParamUtil.setSessionAttr(request,COM_DTO,commonPageDto);
+                ParamUtil.setSessionAttr(request,AC_DTO, (Serializable) acDtoList);
             }
         }
     }
     public void preEmailView(BaseProcessClass bpc)  {
         log.info("=======>>>>>preEmailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, TASK_DTO);
         String correlationId = taskDto.getRefNo();
         String appPremCorrId=correlationId;
         InspectionEmailTemplateDto inspectionEmailTemplateDto= inspEmailService.getInsertEmail(appPremCorrId);
@@ -340,27 +347,23 @@ public class InspectEmailAo1Delegator {
 
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,"draftEmailId",inspectionEmailTemplateDto.getId());
-        ParamUtil.setSessionAttr(request,"insEmailDto", inspectionEmailTemplateDto);
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
     }
     public void emailView(BaseProcessClass bpc) {
         log.info("=======>>>>>emailView>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "emailView");
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
     }
 
 
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
-        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
+        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
         List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
         for(InspectionCheckQuestionDto temp:checkListDtoList){
             String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrad");
             String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comremark");
             String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrec");
-            if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
-                temp.setRectified(true);
-            }else{
-                temp.setRectified(false);
-            }
+            temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
             temp.setChkanswer(answer);
             temp.setRemark(remark);
         }
@@ -369,17 +372,13 @@ public class InspectEmailAo1Delegator {
     }
 
     public InspectionFillCheckListDto getDataFromPage(HttpServletRequest request){
-        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
+        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,FILL_CHECK_LIST_DTO);
         List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
         for(InspectionCheckQuestionDto temp:checkListDtoList){
             String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rad");
             String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"remark");
             String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rec");
-            if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
-                temp.setRectified(true);
-            }else{
-                temp.setRectified(false);
-            }
+            temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
             temp.setChkanswer(answer);
             temp.setRemark(remark);
         }
@@ -394,7 +393,7 @@ public class InspectEmailAo1Delegator {
     }
 
     public AdCheckListShowDto getAdhocDtoFromPage(HttpServletRequest request){
-        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADCHK_DTO);
         List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
         if(itemDtoList!=null && !itemDtoList.isEmpty()){
             for(AdhocNcCheckItemDto temp:itemDtoList){
@@ -403,22 +402,18 @@ public class InspectEmailAo1Delegator {
                 String rec = ParamUtil.getString(request,temp.getId()+"adhocrec");
                 temp.setAdAnswer(answer);
                 temp.setRemark(remark);
-                if("No".equals(answer)&&!StringUtil.isEmpty(rec)){
-                    temp.setRectified(true);
-                }else{
-                    temp.setRectified(false);
-                }
+                temp.setRectified(!StringUtil.isEmpty(rec)&&"No".equals(answer));
             }
         }
         showDto.setAdItemList(itemDtoList);
         return showDto;
     }
 
-    @RequestMapping(value = "/reload-nc-email", method = RequestMethod.GET)
+    @GetMapping(value = "/reload-nc-email")
     public @ResponseBody
     String reloadNcEmail(HttpServletRequest request) throws IOException, TemplateException {
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
-        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, "taskDto");
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = inspEmailService.getAppViewByCorrelationId(correlationId);
         String appNo=applicationViewDto.getApplicationDto().getApplicationNo();
@@ -445,13 +440,14 @@ public class InspectEmailAo1Delegator {
         map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
         map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
         if(!ncAnswerDtos.isEmpty()){
-            StringBuilder stringBuilder=new StringBuilder();int i=0;
+            StringBuilder stringBuilder=new StringBuilder();
+            int i=0;
             for (NcAnswerDto ncAnswerDto:ncAnswerDtos
             ) {
                 stringBuilder.append("<tr><td>"+ ++i);
-                stringBuilder.append("</td><td>"+ncAnswerDto.getItemQuestion());
-                stringBuilder.append("</td><td>"+ncAnswerDto.getClause());
-                stringBuilder.append("</td><td>"+ncAnswerDto.getRemark());
+                stringBuilder.append(TD+ncAnswerDto.getItemQuestion());
+                stringBuilder.append(TD+ncAnswerDto.getClause());
+                stringBuilder.append(TD+ncAnswerDto.getRemark());
                 stringBuilder.append("</td></tr>");
             }
             map.put("NC_DETAILS",stringBuilder.toString());
@@ -469,21 +465,22 @@ public class InspectEmailAo1Delegator {
     }
 
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,String decision,
-                                                                         String stageId,String roleId,String wrkGrpId,String subStage,String userId ) {
+                                                                         TaskDto taskDto,String subStage,String userId ) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
-        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setStageId(taskDto.getTaskKey());
         appPremisesRoutingHistoryDto.setProcessDecision(decision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(userId);
+
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        appPremisesRoutingHistoryDto.setRoleId(roleId);
-        appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);
+        appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
+        appPremisesRoutingHistoryDto.setWrkGrpId(taskDto.getWkGrpId());
         appPremisesRoutingHistoryDto.setSubStage(subStage);
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
         return appPremisesRoutingHistoryDto;
     }
-    private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) throws FeignException {
+    private List<TaskDto> prepareTaskList(TaskDto taskDto, HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto) {
         List<TaskDto> list = new ArrayList<>();
         List<HcsaSvcStageWorkingGroupDto> listhcsaSvcStageWorkingGroupDto = hcsaConfigClient.getSvcWorkGroup(hcsaSvcStageWorkingGroupDto).getEntity();
         String schemeType = listhcsaSvcStageWorkingGroupDto.get(0).getSchemeType();

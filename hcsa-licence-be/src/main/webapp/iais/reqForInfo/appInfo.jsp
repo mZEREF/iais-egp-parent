@@ -48,11 +48,11 @@
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Licensee Type</td>
-                                                        <td class="col-xs-6">Company</td>
+                                                        <td class="col-xs-6">${licenseeDto.licenseeType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">UEN</td>
-                                                        <td>20181224-00003</td>
+                                                        <td>${organizationDto.uenno}</td>
                                                     </tr>
 
                                                     </tbody>
@@ -71,31 +71,31 @@
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
-                                                        <td class="col-xs-6" align="right">Name of Company</td>
-                                                        <td class="col-xs-6">SAM Group</td>
+                                                        <td class="col-xs-6" align="right">Name of ${licenseeDto.licenseeType}</td>
+                                                        <td class="col-xs-6">${licenseeDto.name}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Postal code</td>
-                                                        <td>319579</td>
+                                                        <td>${licenseeDto.postalCode}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Block No</td>
-                                                        <td>Mapex</td>
+                                                        <td>${licenseeDto.blkNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Floor No</td>
-                                                        <td>04</td>
+                                                        <td>${licenseeDto.floorNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Unit No</td>
-                                                        <td>13</td>
+                                                        <td>${licenseeDto.unitNo}</td>
                                                     </tr><tr>
                                                         <td align="right">Street Name</td>
-                                                        <td>Jalan Permimpin</td>
+                                                        <td>${licenseeDto.streetName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Building Name</td>
-                                                        <td>-</td>
+                                                        <td>${licenseeDto.buildingName}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Office Number</td>
