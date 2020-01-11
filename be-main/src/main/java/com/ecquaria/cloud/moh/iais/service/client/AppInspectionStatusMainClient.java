@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
@@ -23,7 +21,7 @@ import java.util.List;
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = AppInspectionStatusMainClientFallback.class)
 public interface AppInspectionStatusMainClient {
-    @RequestMapping(path = "/iais-inspecstatus/status-swo/{status}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,
+    @GetMapping(path = "/iais-inspecstatus/status-swo/{status}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspectionStatusByStatus(@PathVariable("status") String status);
 

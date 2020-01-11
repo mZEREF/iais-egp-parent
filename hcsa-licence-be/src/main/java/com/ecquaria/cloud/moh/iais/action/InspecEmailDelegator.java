@@ -99,9 +99,6 @@ public class InspecEmailDelegator {
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         String taskId = ParamUtil.getRequestString(request,"taskId");
-        if (StringUtil.isEmpty(taskId)) {
-            taskId="12985264-D82E-EA11-BE7D-000C29F371DC";
-        }
         TaskDto taskDto = taskService.getTaskById(taskId);
         if(StringUtil.isEmpty(taskDto)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
@@ -127,11 +124,11 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
 
         Map<String,Object> map=new HashMap<>();
-        map.put("APPLICANT_NAME",inspectionEmailTemplateDto.getApplicantName());
-        map.put("APPLICATION_NUMBER",inspectionEmailTemplateDto.getApplicationNumber());
-        map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
-        map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
-        map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
+        map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
+        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));
+        map.put("HCI_CODE",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciCode()));
+        map.put("HCI_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciNameOrAddress()));
+        map.put("SERVICE_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getServiceName()));
         if(!ncAnswerDtos.isEmpty()){
             StringBuilder stringBuilder=new StringBuilder();int i=0;
             for (NcAnswerDto ncAnswerDto:ncAnswerDtos
@@ -142,10 +139,10 @@ public class InspecEmailDelegator {
                 stringBuilder.append(TD+ncAnswerDto.getRemark());
                 stringBuilder.append("</td></tr>");
             }
-            map.put("NC_DETAILS",stringBuilder.toString());
+            map.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
         }
         if(inspectionEmailTemplateDto.getBestPractices()!=null){
-            map.put("BEST_PRACTICE",inspectionEmailTemplateDto.getBestPractices());
+            map.put("BEST_PRACTICE",StringUtil.viewHtml(inspectionEmailTemplateDto.getBestPractices()));
         }
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext= MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(),map);

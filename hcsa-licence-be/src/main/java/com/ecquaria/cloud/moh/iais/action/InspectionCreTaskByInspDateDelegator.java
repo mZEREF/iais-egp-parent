@@ -160,7 +160,7 @@ public class InspectionCreTaskByInspDateDelegator {
         }
         List<TaskDto> taskDtoList = new ArrayList<>();
         for(TaskDto tDto:taskDtos){
-            if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_COMPLETED)){
+            if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_COMPLETED) && tDto.getRoleId().equals(RoleConsts.USER_ROLE_INSPECTIOR)){
                 taskDtoList.add(tDto);
             }
         }
