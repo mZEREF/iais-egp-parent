@@ -25,9 +25,9 @@
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="currentValidateId" value="">
     <div class="bg-title"><h2>Define Inspection Team's Weekly Non-Working Days</h2></div>
-
-    <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" firstOption="Please Select" value="${currentGroupId}" ></iais:select>
-
+    <div class="col-md-3">
+      <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" firstOption="Please Select" value="${currentGroupId}" ></iais:select>
+    </div>
     <br><br><br>
     <div>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">

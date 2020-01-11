@@ -35,7 +35,7 @@
         <div class="col-md-12">
           <label class="col-md-1">Day:
           </label>
-          <div class="col-md-5">
+          <div class="col-md-3">
             ${nonWorkingDayAttr.recursivceDate}
           </div>
         </div>
@@ -45,26 +45,43 @@
         <div class="col-md-12">
           <label class="col-md-1">AM Availability
           </label>
-          <div class="col-md-5">
+          <div class="col-md-3">
             <select name="amAvailability" value="">
               <option value=>Please select</option>
-              <option value="Y" >Y</option>
-              <option value="N" >N</option>
+              <option value="Y"  <c:if test="${nonWorkingDayAttr.am == true}">
+                selected
+              </c:if>>Y
+              </option>
+              <option value="N"
+                      <c:if test="${nonWorkingDayAttr.am == false}">
+                        selected
+                      </c:if>
+              >N
+              </option>
             </select>
             <span id="error_startAt" name="iaisErrorMsg" class="error-msg"></span>
           </div>
         </div>
       </div>
 
+
       <div class="form-group">
         <div class="col-md-12">
           <label class="col-md-1">PM Availability
           </label>
-          <div class="col-md-5">
+          <div class="col-md-3">
             <select name="pmAvailability" value="">
               <option value=>Please select</option>
-              <option value="Y">Y</option>
-              <option value="N">N</option>
+              <option value="Y"  <c:if test="${nonWorkingDayAttr.pm == true}">
+                selected
+              </c:if>>Y
+              </option>
+              <option value="N"
+                      <c:if test="${nonWorkingDayAttr.pm == false}">
+                        selected
+                      </c:if>
+              >N
+              </option>
             </select>
             <span id="error_endAt" name="iaisErrorMsg" class="error-msg"></span>
           </div>
@@ -72,20 +89,20 @@
       </div>
 
 
-<%--
-      <div class="form-group">
-        <div class="col-md-12">
-          <label class="col-md-1">Status:
-          </label>
-          <div class="col-md-5">
-            <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                         firstOption="Select Status" filterValue="CMSTAT002"
-                         value="${nonWorkingDayAttr.status}"></iais:select>
-          </div>
-        </div>
-        <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
-      </div>
---%>
+      <%--
+            <div class="form-group">
+              <div class="col-md-12">
+                <label class="col-md-1">Status:
+                </label>
+                <div class="col-md-5">
+                  <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
+                               firstOption="Select Status" filterValue="CMSTAT002"
+                               value="${nonWorkingDayAttr.status}"></iais:select>
+                </div>
+              </div>
+              <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+            </div>
+      --%>
     </div>
 
     <div class="col-xs-12 col-sm-6">

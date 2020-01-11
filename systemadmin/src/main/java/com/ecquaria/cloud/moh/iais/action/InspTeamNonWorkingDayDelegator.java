@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -119,34 +120,48 @@ public class InspTeamNonWorkingDayDelegator {
 			nonWorkingDateListByWorkGroupId = new ArrayList<>();
 		}
 
-		additionWorkingDay(nonWorkingDateListByWorkGroupId);
+		List<ApptNonWorkingDateDto> sortDayList = sortNonWorkingDay(nonWorkingDateListByWorkGroupId);
 
-		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, (Serializable) nonWorkingDateListByWorkGroupId);
+		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, (Serializable) sortDayList);
 	}
 
-	private void additionWorkingDay(List<ApptNonWorkingDateDto> nonWorkingDateList){
+	/**
+	* @author: yichen
+	* @description: the code need to optimize
+	* @param:
+	* @return:
+	*/
+	private List<ApptNonWorkingDateDto> sortNonWorkingDay(List<ApptNonWorkingDateDto> nonWorkingDateList){
 		List<String> wkrDays = new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
-
-		String[] nonWkrDays = new String[nonWorkingDateList.size()];
-		for (int i = 0; i < nonWorkingDateList.size(); i++){
-			nonWkrDays[i] = nonWorkingDateList.get(i).getRecursivceDate();
-		}
-		wkrDays.removeAll(Arrays.asList(nonWkrDays));
-
-		wkrDays.stream().forEach(s -> {
+		List<ApptNonWorkingDateDto> retList = new ArrayList<>(7);
+		LinkedHashMap<String, ApptNonWorkingDateDto> map = new LinkedHashMap<>(7);
+		for (int i = 0; i < wkrDays.size(); i++){
 			ApptNonWorkingDateDto nonWorkingDateDto = new ApptNonWorkingDateDto();
 			nonWorkingDateDto.setId(UUID.randomUUID().toString());
 			nonWorkingDateDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
-			nonWorkingDateDto.setRecursivceDate(s);
+			nonWorkingDateDto.setRecursivceDate(wkrDays.get(i));
 			nonWorkingDateDto.setNonWkrDay(false);
 			nonWorkingDateDto.setDesc("");
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
-			nonWorkingDateDto.setEndAt(Time.valueOf(PM_START));
-			nonWorkingDateList.add(nonWorkingDateDto);
-		});
+			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
+			nonWorkingDateDto.setAm(true);
+			nonWorkingDateDto.setPm(true);
+			map.put(wkrDays.get(i), nonWorkingDateDto);
 
+			for (ApptNonWorkingDateDto workingDateDto : nonWorkingDateList){
+				String recursivceDate = workingDateDto.getRecursivceDate();
+				if (wkrDays.get(i).equals(recursivceDate)){
+					map.put(wkrDays.get(i), workingDateDto);
+				}
+			}
+		}
 
+		for (Map.Entry<String, ApptNonWorkingDateDto> entry : map.entrySet()) {
+			retList.add(entry.getValue());
+		}
+
+		return retList;
 	}
 
 	/**
@@ -219,24 +234,32 @@ public class InspTeamNonWorkingDayDelegator {
 		if((am & 0x1) == 1 && (pm & 0x1) == 1){
 			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
 			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
+			nonWorkingDateDto.setAm(true);
+			nonWorkingDateDto.setPm(true);
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
 		}
 
 		if ((am & 0x1) == 0 && (pm & 0x1) == 0){
 			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
 			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
+			nonWorkingDateDto.setAm(false);
+			nonWorkingDateDto.setPm(false);
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 		}
 
 		if ((am & 0x1) == 1 && (pm & 0x1) == 0){
 			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
 			nonWorkingDateDto.setEndAt(Time.valueOf(AM_END));
+			nonWorkingDateDto.setAm(true);
+			nonWorkingDateDto.setPm(false);
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 		}
 
 		if((am & 0x1) == 0 && (pm & 0x1) == 1){
 			nonWorkingDateDto.setStartAt(Time.valueOf(PM_START));
 			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
+			nonWorkingDateDto.setAm(false);
+			nonWorkingDateDto.setPm(true);
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 		}
 
