@@ -9,12 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -89,10 +91,10 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     private AppointmentClient appointmentClient;
 
     @Override
-    public String getAppStatusByTaskId(TaskDto taskDto) {
+    public ApplicationDto getAppStatusByTaskId(TaskDto taskDto) {
         ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        return applicationDto.getStatus();
+        return applicationDto;
     }
 
     @Override
@@ -103,7 +105,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public void routingTask(TaskDto taskDto, String preInspecRemarks) {
+    public void routingTask(TaskDto taskDto, String preInspecRemarks, List<ChecklistConfigDto> inspectionChecklist) {
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         taskDto.setSlaDateCompleted(new Date());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -120,6 +122,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 taskService.updateTask(tDto);
             }
         }
+        saveInspectionChecklist(inspectionChecklist, taskDto.getRefNo());
         updateInspectionStatus(taskDto.getRefNo(), InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION);
         //todo:call inspection date
 
@@ -145,6 +148,19 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
             appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        }
+    }
+
+    private void saveInspectionChecklist(List<ChecklistConfigDto> inspectionChecklist, String appCorrId) {
+        for(ChecklistConfigDto ccDto : inspectionChecklist){
+            AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
+            appDto.setId(null);
+            appDto.setAppPremCorrId(appCorrId);
+            appDto.setVersion(AppConsts.YES);
+            appDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appDto.setChkLstConfId(ccDto.getId());
+            appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
         }
     }
 

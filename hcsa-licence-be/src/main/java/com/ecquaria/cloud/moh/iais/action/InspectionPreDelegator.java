@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -88,12 +90,14 @@ public class InspectionPreDelegator {
     public void inspectionPreInspectorPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorPre start ...."));
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
+        ApplicationDto applicationDto = (ApplicationDto)ParamUtil.getSessionAttr(bpc.request, "applicationDto");
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
             taskDto = taskService.getTaskById(taskId);
-            String appStatus = inspectionPreTaskService.getAppStatusByTaskId(taskDto);
+            applicationDto = inspectionPreTaskService.getAppStatusByTaskId(taskDto);
+            String appStatus = applicationDto.getStatus();
             inspectionPreTaskDto.setAppStatus(appStatus);
         }
         setInboxUrlToSession(bpc);
@@ -101,6 +105,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
+        ParamUtil.setSessionAttr(bpc.request, "applicationDto", applicationDto);
     }
 
     private void setInboxUrlToSession(BaseProcessClass bpc) {
@@ -179,12 +184,18 @@ public class InspectionPreDelegator {
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
+        ApplicationDto applicationDto = (ApplicationDto)ParamUtil.getSessionAttr(bpc.request, "applicationDto");
+        List<ChecklistConfigDto> inspectionChecklist = (List<ChecklistConfigDto>)ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR);
         if(adhocCheckListConifgDto != null){
             adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
         }
-        inspectionPreTaskService.routingTask(taskDto, inspectionPreTaskDto.getReMarks());
+        if(inspectionChecklist == null){
+            inspectionChecklist = adhocChecklistService.getInspectionChecklist((applicationDto));
+        }
+        inspectionPreTaskService.routingTask(taskDto, inspectionPreTaskDto.getReMarks(), inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
+        ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
     }
 
     /**

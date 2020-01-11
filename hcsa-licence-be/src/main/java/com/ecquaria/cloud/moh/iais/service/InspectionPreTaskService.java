@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public interface InspectionPreTaskService {
       * @return: String
       * @Descripation: get Application Status By Task Id
       */
-    String getAppStatusByTaskId(TaskDto taskDto);
+    ApplicationDto getAppStatusByTaskId(TaskDto taskDto);
 
     /**
       * @author: shicheng
@@ -36,7 +38,7 @@ public interface InspectionPreTaskService {
       * @return: void
       * @Descripation: routing Task
       */
-    void routingTask(TaskDto taskDto, String preInspecRemarks);
+    void routingTask(TaskDto taskDto, String preInspecRemarks, List<ChecklistConfigDto> inspectionChecklist);
 
     /**
       * @author: shicheng
