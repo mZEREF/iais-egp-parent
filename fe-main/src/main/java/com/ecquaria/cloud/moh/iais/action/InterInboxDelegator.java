@@ -311,7 +311,6 @@ public class InterInboxDelegator {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
         String appNo = ParamUtil.getString(request, InboxConst.CRUD_ACTION_VALUE);
-        String action = ParamUtil.getString(request, InboxConst.SWITCH_ACTION);
 //        String draftNo = inboxService.getDraftNumber(appNo);
         StringBuffer url = new StringBuffer();
         url.append("https://").append(bpc.request.getServerName())

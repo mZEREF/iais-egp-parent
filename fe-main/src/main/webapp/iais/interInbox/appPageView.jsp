@@ -58,7 +58,7 @@
     function doDraft(appNo){
         if (appNo.indexOf("DN") !== -1 ||appNo.indexOf("DR") !== -1) {
             $("[name='crud_action_value']").val(appNo);
-            submit('app','doDraft');
+            submit('appDraft');
         }
     }
 
@@ -66,7 +66,7 @@
         var action = val;
         if ("Reload" == action){
             $("[name='crud_action_value']").val(appNo);
-            submit('app','doDraft');
+            submit('appDraft');
         }
         if ("Delete" == action) {
             $("[name='crud_action_value']").val(appNo);
