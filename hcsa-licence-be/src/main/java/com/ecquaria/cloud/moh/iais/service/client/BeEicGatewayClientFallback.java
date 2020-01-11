@@ -15,7 +15,7 @@ import org.springframework.http.HttpHeaders;
  * @date 12/19/2019
  */
 
-public class FEEicGatewayClientFallback {
+public class BeEicGatewayClientFallback {
     public FeignResponseEntity<List<LicenceGroupDto>> createLicence(List<LicenceGroupDto> licenceGroupDtoList,
                                                                     String date,
                                                                     String authorization,

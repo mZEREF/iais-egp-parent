@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @author suocheng
  * @date 2019/12/14 17:33
  */
-@FeignClient(value = "eicgate", url="${iais.inter.gateway.url}", configuration = {FeignMultipartConfig.class},
-        fallback = FEEicGatewayClientFallback.class)
-public interface FEEicGatewayClient {
+@FeignClient(value = "eicgate", url="${iais.intra.gateway.url}", configuration = {FeignMultipartConfig.class},
+        fallback = BeEicGatewayClientFallback.class)
+public interface BeEicGatewayClient {
     @RequestMapping(value = "/v1/hcsa-licence-transport-licence/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceGroupDto>> createLicence(@RequestBody List<LicenceGroupDto> licenceGroupDtoList,
                  @RequestHeader("date") String date,
