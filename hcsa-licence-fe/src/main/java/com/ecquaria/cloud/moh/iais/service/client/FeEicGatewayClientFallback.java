@@ -11,7 +11,7 @@ import org.springframework.http.HttpHeaders;
  * @author Jinhua
  * @date 2020/1/9 12:13
  */
-public class EicGatewayClientFallback {
+public class FeEicGatewayClientFallback {
     public FeignResponseEntity<String> saveFile(ProcessFileTrackDto processFileTrackDto, String date,
                                          String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

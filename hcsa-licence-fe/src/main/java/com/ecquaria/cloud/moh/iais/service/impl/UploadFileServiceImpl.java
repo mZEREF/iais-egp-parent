@@ -13,7 +13,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
@@ -62,7 +62,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
-    private EicGatewayClient eicGatewayClient;
+    private FeEicGatewayClient eicGatewayClient;
     @Autowired
     private FileRepositoryClient fileRepositoryClient;
 

@@ -18,9 +18,9 @@ import java.util.List;
  * @date 2019/12/3 17:33
  */
 @FeignClient(value = "eicgate", url="${iais.intra.gateway.url}", configuration = {FeignMultipartConfig.class},
-        fallback = ComSystemAdminClientFallback.class)
-public interface EicGatewayClient {
-    @PostMapping(value = "/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
+        fallback = FeEicGatewayClientFallback.class)
+public interface FeEicGatewayClient {
+    @PostMapping(value = "/v1/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveFile(@RequestBody ProcessFileTrackDto processFileTrackDto,
                                          @RequestHeader("date") String date,
                                          @RequestHeader("authorization") String authorization,
@@ -32,7 +32,7 @@ public interface EicGatewayClient {
     * @param:
     * @return:
     */
-    @PostMapping(value = "/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v1/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> routeSelfDeclData(@RequestBody List<String> contentJsonList,
                                                   @RequestHeader("date") String date,
                                                   @RequestHeader("authorization") String authorization,
