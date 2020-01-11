@@ -17,7 +17,7 @@ import java.util.List;
  * @author Shicheng
  * @date 2019/11/22 10:19
  **/
-public interface InspectionAssignTaskService {
+public interface InspectionMainAssignTaskService {
     /**
      * @author: shicheng
      * @Date 2019/11/21

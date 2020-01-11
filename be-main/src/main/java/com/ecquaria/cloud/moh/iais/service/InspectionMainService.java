@@ -20,7 +20,7 @@ import java.util.List;
  * @date 2019/11/14 18:04
  **/
 
-public interface InspectionService {
+public interface InspectionMainService {
     /**
      * @author: shicheng
      * @Date 2019/12/2

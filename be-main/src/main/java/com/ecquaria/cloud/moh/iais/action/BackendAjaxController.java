@@ -15,22 +15,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Author: guyin
@@ -43,19 +42,19 @@ import java.util.Map;
 public class BackendAjaxController {
 
     @Autowired
-    private InspectionService inspectionService;
+    private InspectionMainService inspectionService;
 
     @Autowired
-    private InspectionAssignTaskService inspectionAssignTaskService;
+    private InspectionMainAssignTaskService inspectionAssignTaskService;
 
     @Autowired
-    private AppInspectionStatusClient appInspectionStatusClient;
+    private AppInspectionStatusMainClient appInspectionStatusClient;
 
     @Autowired
     private BelicationClient belicationClient;
 
     @Autowired
-    private HcsaConfigClient hcsaConfigClient;
+    private HcsaConfigMainClient hcsaConfigClient;
 
     @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
     public @ResponseBody

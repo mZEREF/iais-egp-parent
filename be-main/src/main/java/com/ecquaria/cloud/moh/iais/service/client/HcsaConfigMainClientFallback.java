@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Wenkang
  * @date 2019/12/4 15:28
  */
-public class HcsaConfigClientFallback {
+public class HcsaConfigMainClientFallback {
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfig( List<String> docId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

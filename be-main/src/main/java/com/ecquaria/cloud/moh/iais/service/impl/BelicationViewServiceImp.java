@@ -7,13 +7,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.service.BelicationViewService;
 import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -21,9 +20,9 @@ public class BelicationViewServiceImp implements BelicationViewService {
     @Autowired
     private BelicationClient belicationClient;
     @Autowired
-    private OrganizationClient organizationClient;
+    private OrganizationMainClient organizationClient;
     @Autowired
-    private HcsaConfigClient hcsaConfigClient;
+    private HcsaConfigMainClient hcsaConfigClient;
     @Override
     public ApplicationViewDto searchByAppNo(String appNo) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();

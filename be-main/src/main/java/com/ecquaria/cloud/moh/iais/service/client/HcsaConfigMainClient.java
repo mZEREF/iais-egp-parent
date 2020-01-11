@@ -28,8 +28,8 @@ import java.util.Map;
  * @date 2019/12/4 15:27
  */
 @FeignClient(name = "hcsa-config", configuration = FeignConfiguration.class,
-        fallback = HcsaConfigClientFallback.class)
-public interface HcsaConfigClient {
+        fallback = HcsaConfigMainClientFallback.class)
+public interface HcsaConfigMainClient {
     @RequestMapping(path = "/iais-hcsa-service/list-svc-doc-config",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfig(@RequestBody List<String> docId);
     @RequestMapping(path = "/hcsa-routing/stage-id",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)

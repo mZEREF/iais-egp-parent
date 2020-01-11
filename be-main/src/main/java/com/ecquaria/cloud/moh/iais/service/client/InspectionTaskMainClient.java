@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @date 2019/11/26 10:33
  **/
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
-        fallback = InspectionTaskClientFallback.class)
-public interface InspectionTaskClient {
+        fallback = InspectionTaskMainClientFallback.class)
+public interface InspectionTaskMainClient {
     @RequestMapping(path = "/iais-inspection/one-of-inspection/{applicationNo}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@PathVariable("applicationNo") String applicationNo);

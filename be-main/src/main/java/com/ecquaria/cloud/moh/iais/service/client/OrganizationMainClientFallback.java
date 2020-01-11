@@ -14,7 +14,7 @@ import java.util.List;
  * @author Wenkang
  * @date 2019/12/4 15:13
  */
-public class OrganizationClientFallback {
+public class OrganizationMainClientFallback {
     public FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(List<String> ids) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

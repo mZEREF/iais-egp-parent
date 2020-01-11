@@ -25,25 +25,23 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.BelicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.BeInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.BePremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Shicheng
@@ -51,15 +49,15 @@ import java.util.Set;
  **/
 @Service
 @Slf4j
-public class InspectionServiceImpl implements InspectionService {
+public class InspectionMainServiceImpl implements InspectionMainService {
     @Autowired
-    private InspectionTaskClient inspectionTaskClient;
+    private InspectionTaskMainClient inspectionTaskClient;
 
     @Autowired
-    private HcsaConfigClient hcsaConfigClient;
+    private HcsaConfigMainClient hcsaConfigClient;
 
     @Autowired
-    private OrganizationClient organizationClient;
+    private OrganizationMainClient organizationClient;
 
     @Autowired
     private TaskService taskService;
@@ -71,7 +69,7 @@ public class InspectionServiceImpl implements InspectionService {
     private BePremisesRoutingHistoryClient bePremisesRoutingHistoryClient;
 
     @Autowired
-    private InspectionAssignTaskService inspectionAssignTaskService;
+    private InspectionMainAssignTaskService inspectionAssignTaskService;
 
     @Autowired
     private BeInspectionStatusClient beInspectionStatusClient;

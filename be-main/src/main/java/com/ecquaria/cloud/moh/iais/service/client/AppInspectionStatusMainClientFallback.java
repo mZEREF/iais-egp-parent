@@ -11,7 +11,7 @@ import java.util.List;
  * @author Shicheng
  * @date 2019/12/10 16:52
  **/
-public class AppInspectionStatusClientFallback {
+public class AppInspectionStatusMainClientFallback {
     FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspectionStatusByStatus(String status){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

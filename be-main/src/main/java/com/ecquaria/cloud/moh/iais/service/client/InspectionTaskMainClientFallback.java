@@ -15,7 +15,7 @@ import org.springframework.http.HttpHeaders;
  * @author Shicheng
  * @date 2019/11/26 10:34
  **/
-public class InspectionTaskClientFallback {
+public class InspectionTaskMainClientFallback {
     public FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(String applicationNo){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

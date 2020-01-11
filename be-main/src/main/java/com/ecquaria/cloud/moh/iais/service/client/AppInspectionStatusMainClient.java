@@ -21,8 +21,8 @@ import java.util.List;
  * @date 2019/12/10 16:52
  **/
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
-        fallback = AppInspectionStatusClientFallback.class)
-public interface AppInspectionStatusClient {
+        fallback = AppInspectionStatusMainClientFallback.class)
+public interface AppInspectionStatusMainClient {
     @RequestMapping(path = "/iais-inspecstatus/status-swo/{status}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AppInspectionStatusDto>> getAppInspectionStatusByStatus(@PathVariable("status") String status);

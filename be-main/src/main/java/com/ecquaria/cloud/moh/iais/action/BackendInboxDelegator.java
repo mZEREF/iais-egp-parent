@@ -21,12 +21,7 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
+import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +30,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * BankedInboxDelegator
@@ -46,7 +45,7 @@ import java.util.Map;
 @Slf4j
 public class BackendInboxDelegator {
     @Autowired
-    InspectionService inspectionService;
+    InspectionMainService inspectionService;
 
     private String application_no;
     private String application_type;
