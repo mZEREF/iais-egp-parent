@@ -73,25 +73,6 @@ public class InspectionNcCheckListDelegator {
             taskId = "6D00312B-4E33-EA11-BE7D-000C29F371DC";
         }
         String serviceType = "Inspection";
-/*        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
-        String configId = cDto.getCheckList().get(0).getConfigId();
-        AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,configId);
-        InspectionFillCheckListDto insepectionNcCheckListDto = null;
-        String appPremCorrId = appPremPreCklDto.getAppPremCorrId();
-        AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
-        List<AppPremisesPreInspectionNcItemDto> itemDtoList = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremPreCklDto.getAppPremCorrId());
-        insepectionNcCheckListDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
-        ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
-        InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
-        insepctionNcCheckListService.getCommonDto(commonDto,appPremPreCklDto,itemDtoList);
-        AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
-        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
-        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
-        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
-        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
-        ParamUtil.setSessionAttr(request,"fillCheckListDto",insepectionNcCheckListDto);
-        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);*/
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appPremCorrId = taskDto.getRefNo();
         CheckListDraftDto checkListDraftDto = fillupChklistService.getDraftByTaskId(taskId,serviceType);

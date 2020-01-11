@@ -371,24 +371,27 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
     @Override
     public List<NcAnswerDto> getNcAnswerDtoList(String configId,String appPremCorrId){
+
         List<NcAnswerDto> ncAnswerDtoList = new ArrayList<>();
-        AppPremisesPreInspectChklDto appPremisesPreInspectChklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
-        if(appPremisesPreInspectChklDto!=null){
-            String answerStr = appPremisesPreInspectChklDto.getAnswer();
-            List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answerStr, InspectionCheckListAnswerDto.class);
-            NcAnswerDto ncAnswerDto = null;
-            if(answerDtoList!=null &&!answerDtoList.isEmpty()){
-                for(InspectionCheckListAnswerDto temp:answerDtoList){
-                    if("No".equals(temp.getAnswer())){
-                        ncAnswerDto = new NcAnswerDto();
-                        ncAnswerDto.setItemId(temp.getItemId());
-                        ncAnswerDto.setRemark(temp.getRemark());
-                        ncAnswerDtoList.add(ncAnswerDto);
+        if(configId!=null){
+            AppPremisesPreInspectChklDto appPremisesPreInspectChklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
+            if(appPremisesPreInspectChklDto!=null){
+                String answerStr = appPremisesPreInspectChklDto.getAnswer();
+                List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answerStr, InspectionCheckListAnswerDto.class);
+                NcAnswerDto ncAnswerDto = null;
+                if(answerDtoList!=null &&!answerDtoList.isEmpty()){
+                    for(InspectionCheckListAnswerDto temp:answerDtoList){
+                        if("No".equals(temp.getAnswer())){
+                            ncAnswerDto = new NcAnswerDto();
+                            ncAnswerDto.setItemId(temp.getItemId());
+                            ncAnswerDto.setRemark(temp.getRemark());
+                            ncAnswerDtoList.add(ncAnswerDto);
+                        }
                     }
-                }
-                if(ncAnswerDtoList!=null &&!ncAnswerDtoList.isEmpty()){
-                    for(NcAnswerDto temp:ncAnswerDtoList){
-                        getFillNcAnswerDto(temp);
+                    if(ncAnswerDtoList!=null &&!ncAnswerDtoList.isEmpty()){
+                        for(NcAnswerDto temp:ncAnswerDtoList){
+                            getFillNcAnswerDto(temp);
+                        }
                     }
                 }
             }
