@@ -422,11 +422,11 @@ public class InspectReviseNcEmailDelegator {
         inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
 
         Map<String,Object> map=new HashMap<>();
-        map.put("APPLICANT_NAME",inspectionEmailTemplateDto.getApplicantName());
-        map.put("APPLICATION_NUMBER",inspectionEmailTemplateDto.getApplicationNumber());
-        map.put("HCI_CODE",inspectionEmailTemplateDto.getHciCode());
-        map.put("HCI_NAME",inspectionEmailTemplateDto.getHciNameOrAddress());
-        map.put("SERVICE_NAME",inspectionEmailTemplateDto.getServiceName());
+        map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
+        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));
+        map.put("HCI_CODE",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciCode()));
+        map.put("HCI_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciNameOrAddress()));
+        map.put("SERVICE_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getServiceName()));
         if(!ncAnswerDtos.isEmpty()){
             StringBuilder stringBuilder=new StringBuilder();
             int i=0;
