@@ -155,9 +155,9 @@
               Operating Hours (End) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="onsiteEndHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="onsiteEndMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="form-group">
@@ -261,9 +261,9 @@
               Operating Hours (End) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="conEndHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="conEndMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="form-group">
