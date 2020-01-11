@@ -32,7 +32,7 @@ public interface SystemClient {
     @GetMapping(path = "/system-parameter/{id}")
     FeignResponseEntity<SystemParameterDto> getParameterByRowguid(@PathVariable(name = "id") String rowguid);
 
-    @PostMapping(path = "/system-parameter/")
+    @PostMapping(path = "/system-parameter/",  consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveSystemParameter(@RequestBody SystemParameterDto dto);
 
     @PostMapping(path = "/iais-message", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

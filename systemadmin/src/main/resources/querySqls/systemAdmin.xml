@@ -82,12 +82,20 @@
 
     <sql key="querySystemParam" remarks="query system param sql">
         <![CDATA[
-            select pid, domain_type , module, description, value_type, value, status, updated_by ,updated_dt
-            from cm_system_parameters
-            where 1=1 and status != 'n'
+            select pid, domain_type , module, description, units,  value, param_type, is_mandatory,  can_update , max_length, status
+            from
+            cm_system_parameters
+            where 1=1 and status = 'CMSTAT001'
             <#if domainType??> and domain_type = :domainType</#if>
             <#if module??> and module = :module</#if>
             <#if description??> and charindex(:description, description) >0</#if>
+            <#if units??> and units = :units</#if>
+            <#if value??> and value = :value</#if>
+            <#if param_type??> and param_type = :param_type</#if>
+            <#if is_mandatory??> and is_mandatory = :is_mandatory</#if>
+            <#if can_update??> and can_update = :can_update</#if>
+            <#if max_length??> and max_length = :max_length</#if>
+
             <#if status??> and status = :status</#if>
         ]]>
     </sql>

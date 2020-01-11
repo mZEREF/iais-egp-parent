@@ -44,7 +44,7 @@
             svc.[type] as type,
             svc.is_common as is_common,
             hcsa.svc_name as service,
-            svc.EFFECTIVE_DATE as START_DATE,
+            svc.effective_date as start_date,
             svc.end_date as END_DATE,
             svc.version as version
             from chkl_config_hcsa_service svc

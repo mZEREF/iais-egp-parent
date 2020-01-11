@@ -79,6 +79,10 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_SERVICE_PERSONNEL_PSN_TYPE  = "D44B5FF6-5028-EA11-BE78-000C29D29DB0";
     public static final String CATE_ID_PROCESS_FILE_TRACK_STATUS   = "38902DD7-1E29-EA11-BE7D-000C29F371DC";
 
+    public static final String CATE_ID_SYSTEM_PARAMETER_MODULE          = "1D3F6F1A-5334-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_SYSTEM_PARAMETER_TYPE            = "364C7AFB-5234-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_SYSTEM_PARAMETER_TYPE_OF_VALUE   = "D68BA451-5334-EA11-BE7D-000C29F371DC";
+
     /**
      * @description: refresh the master codes into cache
      *

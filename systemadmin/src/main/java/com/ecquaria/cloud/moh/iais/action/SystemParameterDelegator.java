@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -102,7 +103,6 @@ public class SystemParameterDelegator {
      */
     public void loadData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        preSelectOption(request);
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "querySystemParam", searchParam);
@@ -208,7 +208,7 @@ public class SystemParameterDelegator {
         String pid = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(pid)) {
             SystemParameterDto dto = parameterService.getParameterByPid(pid);
-            dto.setStatus(SystemParameterConstants.STATUS_DEACTIVATED);
+            dto.setStatus(AppConsts.COMMON_STATUS_DELETED);
             parameterService.saveSystemParameter(dto);
         }
     }
