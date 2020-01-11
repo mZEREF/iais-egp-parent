@@ -22,7 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.BelicationViewService;
+import com.ecquaria.cloud.moh.iais.service.BelicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.BeInspectionStatusClient;
@@ -70,7 +70,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
     private BePremisesRoutingHistoryClient bePremisesRoutingHistoryClient;
 
     @Autowired
-    private BelicationViewService belicationViewService;
+    private BelicationViewMainService belicationViewService;
 
     @Override
     public List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext) {

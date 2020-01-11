@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.service.BelicationViewService;
+import com.ecquaria.cloud.moh.iais.service.BelicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class BelicationViewServiceImp implements BelicationViewService {
+public class BelicationViewMainServiceImp implements BelicationViewMainService {
     @Autowired
     private BelicationClient belicationClient;
     @Autowired

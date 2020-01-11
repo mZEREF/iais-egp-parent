@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.BelicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -63,7 +64,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     private TaskService taskService;
 
     @Autowired
-    private BelicationViewService belicationViewService;
+    private BelicationViewMainService belicationViewService;
 
     @Autowired
     private BePremisesRoutingHistoryClient bePremisesRoutingHistoryClient;

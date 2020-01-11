@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 
 import java.util.List;
 
-public interface BelicationViewService {
+public interface BelicationViewMainService {
 
     ApplicationViewDto searchByAppNo(String appNo);
 
