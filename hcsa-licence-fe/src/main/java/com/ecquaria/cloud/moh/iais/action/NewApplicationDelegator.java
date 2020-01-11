@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriod;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
@@ -89,7 +90,16 @@ public class NewApplicationDelegator {
     public static final String FIRESTOPTION = "Please Select";
     
     //page name
-    public static final String APPLICATION_PAGE_NAME_PREMISES = "APPPNP01";
+    public static final String APPLICATION_PAGE_NAME_PREMISES           = "APPPN01";
+    public static final String APPLICATION_PAGE_NAME_PRIMARY            = "APPPN02";  
+    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN01";
+    /*public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN02";
+    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN03";
+    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN04";
+    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN05";
+    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN06";*/
+    
+    
     
     @Autowired
     private ServiceConfigService serviceConfigService;
@@ -111,7 +121,7 @@ public class NewApplicationDelegator {
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
         list.add(appSvcPrincipalOfficersDto);
         ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",(Serializable) list);
-
+        
         //Primary Documents
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
@@ -1190,7 +1200,11 @@ public class NewApplicationDelegator {
     }
 
 
-
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
     @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
     public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug(StringUtil.changeForLog("file-repo start ...."));
@@ -1211,7 +1225,8 @@ public class NewApplicationDelegator {
         ops.flush();
         log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
-
+    
+    
 
     /**
      * @param request
@@ -1800,9 +1815,10 @@ public class NewApplicationDelegator {
         String [] scdfRefNo = ParamUtil.getStrings(request, "scdfRefNo");
         String [] onsiteStartHH = ParamUtil.getStrings(request, "onsiteStartHH");
         String [] onsiteStartMM = ParamUtil.getStrings(request, "onsiteStartMM");
-        String[] onsiteEndHHS = ParamUtil.getStrings(request, "onsiteEndHH");
-        String[] onsiteEndMMS = ParamUtil.getStrings(request, "onsiteEndMM");
+        String [] onsiteEndHHS = ParamUtil.getStrings(request, "onsiteEndHH");
+        String [] onsiteEndMMS = ParamUtil.getStrings(request, "onsiteEndMM");
         String [] fireSafetyCertIssuedDateStr  = ParamUtil.getStrings(request, "fireSafetyCertIssuedDate");
+        String [] isOtherLic = ParamUtil.getStrings(request, "isOtherLic");
         //conveyance
         String [] conPremisesSelect = ParamUtil.getStrings(request, "premConSelect");
         String [] conVehicleNo = ParamUtil.getStrings(request, "conveyanceVehicleNo");
@@ -1815,11 +1831,14 @@ public class NewApplicationDelegator {
         String [] conSiteAddressType = ParamUtil.getStrings(request, "conveyanceAddrType");
         String [] conStartHH = ParamUtil.getStrings(request, "conStartHH");
         String [] conStartMM = ParamUtil.getStrings(request, "conStartMM");
-        String[] conEndHHS = ParamUtil.getStrings(request, "conEndHH");
-        String[] conEndMMS = ParamUtil.getStrings(request, "conEndMM");
+        String [] conEndHHS = ParamUtil.getStrings(request, "conEndHH");
+        String [] conEndMMS = ParamUtil.getStrings(request, "conEndMM");
+        //every prem's ph length
+        String [] phLength = ParamUtil.getStrings(request,"phLength");
         for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             appGrpPremisesDto.setPremisesType(premisesType[i]);
+            List<AppPremPhOpenPeriod> appPremPhOpenPeriods = new ArrayList<>();
             //wait to do
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])){
                 appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);

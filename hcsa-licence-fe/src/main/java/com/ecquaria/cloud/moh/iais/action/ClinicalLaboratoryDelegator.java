@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -46,9 +47,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 
 
 /**
@@ -588,13 +590,26 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines start ...."));
-        //demo
-        List<String> reloadCheckedList = new ArrayList<>();
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit);
+        if(!isGetDataFromPage){
+            // when rfc not click edit
+            log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+isEdit);
+            log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+            return;
+        }
+
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
+            clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
+            appSubmissionDto.setClickEditPage(clickEditPages);
+        }
+        
         AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto = null;
         Map<String,HcsaSvcSubtypeOrSubsumedDto> map = new HashMap<>();
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto");
         turn(hcsaSvcSubtypeOrSubsumedDtos, map);
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcDto =getAppSvcRelatedInfo(bpc.request,currentSvcId);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1219,13 +1234,48 @@ public class ClinicalLaboratoryDelegator {
         return sql;
     }
 
+    /**
+     * @param
+     * @description: ajax
+     * @author: zixia
+     */
+    @RequestMapping(value = "/psn-info", method = RequestMethod.GET)
+    public @ResponseBody AppSvcCgoDto getPsnInfoByIdNo (HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("getPsnInfoByIdNo start ...."));
+        String idNo = ParamUtil.getRequestString(request, "idNo");
+        AppSvcCgoDto appSvcCgoDto =new AppSvcCgoDto();
+        if(StringUtil.isEmpty(idNo)){
+            return appSvcCgoDto;
+        }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
+                List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                if(!IaisCommonUtils.isEmpty(appSvcCgoDtoList)){
+                    appSvcCgoDto = isExistIdNo(appSvcCgoDtoList, idNo);
+                    if(appSvcCgoDto != null){
+                        break;
+                    }
+                }
+            }
+        }
+        log.debug(StringUtil.changeForLog("getPsnInfoByIdNo end ...."));
+        return  appSvcCgoDto;
+    }
+    
+    private AppSvcCgoDto isExistIdNo(List<AppSvcCgoDto> appSvcCgoDtoList, String idNo){
+        for (AppSvcCgoDto appSvcCgoDto:appSvcCgoDtoList){
+            if(idNo.equals(appSvcCgoDto.getIdNo())){
+                log.info(StringUtil.changeForLog("had matching dto"));
+                return appSvcCgoDto;
+            }
+        }
+        return  null;
+    }
 
     private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS,null);
-        /*HcsaSvcPersonnelDto hcsaSvcPersonnelDto  = (HcsaSvcPersonnelDto) ParamUtil.getSessionAttr(request, "HcsaSvcPersonnel");
-        if(hcsaSvcPersonnelDto ==null){
-            return null;
-        }*/
         List<AppSvcCgoDto> appSvcCgoDtoList = new ArrayList<>();
         AppSvcCgoDto appSvcCgoDto = null;
 
@@ -1348,7 +1398,7 @@ public class ClinicalLaboratoryDelegator {
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
         }
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        
         return appSubmissionDto;
     }
 
@@ -1754,7 +1804,7 @@ public class ClinicalLaboratoryDelegator {
 
     private List<SelectOption> getIdTypeSelOp(){
         List<SelectOption> idTypeSelectList = new ArrayList<>();
-        SelectOption idType0 = new SelectOption("-1", "Select Personnel");
+        SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
         SelectOption idType1 = new SelectOption("NRIC", "NRIC");
         idTypeSelectList.add(idType1);
