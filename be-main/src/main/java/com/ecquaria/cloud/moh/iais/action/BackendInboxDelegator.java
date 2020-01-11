@@ -3,13 +3,23 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -18,10 +28,22 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
+import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloudfeign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,10 +52,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * BankedInboxDelegator
@@ -46,6 +64,15 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class BackendInboxDelegator {
     @Autowired
     InspectionMainService inspectionService;
+
+    @Autowired
+    TaskService taskService;
+
+    @Autowired
+    ApplicationViewMainService applicationViewService;
+
+    @Autowired
+    private BroadcastMainService broadcastService;
 
     private String application_no;
     private String application_type;
@@ -247,12 +274,99 @@ public class BackendInboxDelegator {
      * @param bpc
      * @throws
      */
-    public void doApprove(BaseProcessClass bpc){
+    public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
         String[] taskList =  ParamUtil.getStrings(bpc.request, "taskcheckbox");
-        StringBuilder dfsf = new StringBuilder();
+        for (String item:taskList
+        ) {
+            TaskDto taskDto = taskService.getTaskById(item);
+            String correlationId = taskDto.getRefNo();
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
+            if(appPremisesCorrelationDto!=null){
+                correlationId =  appPremisesCorrelationDto.getId();
+                taskDto.setRefNo(correlationId);
+            }
+            ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(correlationId);
+            log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
+            routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
+            log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
+
+        }
+
+
 
     }
 
+    private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException {
+
+        //get the user for this applicationNo
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+        BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
+
+        //complated this task and create the history
+        broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
+        taskDto =  completedTask(taskDto);
+        broadcastOrganizationDto.setComplateTask(taskDto);
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(taskDto.getRefNo(),
+                applicationDto.getStatus(),taskDto.getTaskKey(), taskDto.getWkGrpId(),internalRemarks,processDecision,taskDto.getRoleId());
+        broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
+        //update application status
+        broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
+        String oldStatus = applicationDto.getStatus();
+        applicationDto.setStatus(appStatus);
+
+        broadcastApplicationDto.setApplicationDto(applicationDto);
+
+        //setCreateTask
+        TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,taskDto.getRefNo());
+        broadcastOrganizationDto.setCreateTask(newTaskDto);
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(taskDto.getRefNo(),applicationDto.getStatus(),stageId,
+                taskDto.getWkGrpId(),null,null,roleId);
+        broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+
+        //save the broadcast
+        broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        String eventRefNo = EventBusHelper.getEventRefNo();
+        broadcastOrganizationDto.setEventRefNo(eventRefNo);
+        broadcastApplicationDto.setEventRefNo(eventRefNo);
+        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
+        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
+    }
+
+    private TaskDto completedTask(TaskDto taskDto){
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setSlaRemainInDays(remainDays(taskDto));
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return taskDto;
+    }
+
+    private int remainDays(TaskDto taskDto){
+        int result = 0;
+        //todo: wait count kpi
+        // String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
+        // log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
+        return  result;
+    }
+
+    private AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
+                                                                      String stageId,String wrkGrpId, String internalRemarks,String processDecision,
+                                                                      String roleId){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setProcessDecision(processDecision);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setWrkGrpId(wrkGrpId);
+        appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return appPremisesRoutingHistoryDto;
+    }
 
     /**
      * StartStep: inspectionSupSearchQuery1
@@ -364,20 +478,26 @@ public class BackendInboxDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request,"curRole",loginContext.getCurRoleId());
         Map<String,String> appNoUrl = new HashMap<>();
-        Map<String,String> taskList = new HashMap<>();
+
         Map<String,TaskDto> taskMap = new HashMap<>();
-        if(commPools != null && commPools.size() >0){
-            for (TaskDto item:commPools
-            ) {
-                appNoUrl.put(item.getRefNo(), generateProcessUrl(item, bpc.request));
-                taskList.put(item.getRefNo(), item.getId());
-                taskMap.put(item.getRefNo(), item);
+
+
+            Map<String,String> taskList = new HashMap<>();
+            if(commPools != null && commPools.size() >0){
+                for (TaskDto item:commPools
+                ) {
+                    appNoUrl.put(item.getRefNo(), generateProcessUrl(item, bpc.request));
+                    taskList.put(item.getRefNo(), item.getId());
+                    taskMap.put(item.getRefNo(), item);
+                }
             }
+        if(RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())){
+            ParamUtil.setSessionAttr(bpc.request, "taskList",(Serializable) taskList);
+            ParamUtil.setSessionAttr(bpc.request, "hastaskList",AppConsts.TRUE);
+        }else{
+            ParamUtil.setSessionAttr(bpc.request, "hastaskList",AppConsts.FALSE);
         }
 
-
-
-        ParamUtil.setSessionAttr(bpc.request, "taskList",(Serializable) taskList);
         ParamUtil.setSessionAttr(bpc.request, "appNoUrl",(Serializable) appNoUrl);
         ParamUtil.setSessionAttr(bpc.request, "taskMap",(Serializable) taskMap);
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);

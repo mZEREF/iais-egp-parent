@@ -62,4 +62,6 @@ public interface HcsaConfigMainClient {
 
     @GetMapping(value = "/kpi-reminder/result-service-and-module")
     FeignResponseEntity<HcsaSvcKpiDto> searchKpiResult(@RequestParam("service") String serviceCode, @RequestParam("module") String module);
+
+
 }

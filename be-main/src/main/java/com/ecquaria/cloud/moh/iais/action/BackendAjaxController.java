@@ -20,16 +20,17 @@ import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: guyin
@@ -63,6 +64,7 @@ public class BackendAjaxController {
         SearchParam searchParamAjax = (SearchParam) ParamUtil.getSessionAttr(request, "searchParamAjax");
         Map<String, String> appNoUrl = (Map<String, String>) ParamUtil.getSessionAttr(request, "appNoUrl");
         Map<String, String> taskList = (Map<String, String>) ParamUtil.getSessionAttr(request, "taskList");
+        String hastaskList = (String)ParamUtil.getSessionAttr(request, "hastaskList");
         Map<String, TaskDto> taskMap = (Map<String, TaskDto>) ParamUtil.getSessionAttr(request, "taskMap");
 
         Map<String, Object> map = new HashMap();
@@ -86,6 +88,7 @@ public class BackendAjaxController {
             map.put("serviceName", serviceNameMap);
             map.put("appNoUrl", appNoUrl);
             map.put("taskList", taskList);
+            map.put("hastaskList", hastaskList);
             map.put("ajaxResult", ajaxResult);
             map.put("result", "Success");
         } else {
@@ -103,14 +106,16 @@ public class BackendAjaxController {
             HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigClient.searchKpiResult(hcsaServiceDto.getSvcCode(), applicationDto.getApplicationType()).getEntity();
             if(hcsaSvcKpiDto != null){
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
-                int kpi = kpiMap.get(taskDto.getTaskKey());
-                int days = 0;
-                if(days < hcsaSvcKpiDto.getRemThreshold()){
-                    colour = "black";
-                } else if (hcsaSvcKpiDto.getRemThreshold() <= days && days <= kpi) {
-                    colour = "red";
-                } else if (days > kpi) {
-                    colour = "amber";
+                if(kpiMap != null) {
+                    int kpi = kpiMap.get(taskDto.getTaskKey());
+                    int days = 0;
+                    if (days < hcsaSvcKpiDto.getRemThreshold()) {
+                        colour = "black";
+                    } else if (hcsaSvcKpiDto.getRemThreshold() <= days && days <= kpi) {
+                        colour = "red";
+                    } else if (days > kpi) {
+                        colour = "amber";
+                    }
                 }
             }
         } else {

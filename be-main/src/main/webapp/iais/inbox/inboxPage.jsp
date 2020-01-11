@@ -234,15 +234,19 @@
                     var res = data.ajaxResult;
                     var url = data.appNoUrl;
                     var taskList = data.taskList;
+                    var hastaskList = data.hastaskList;
                     var html = '';
                     html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson'+ divid+'">' +
                         '<td colspan="6" style="padding: 0px 8px !important;">' +
                         '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
                         '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
-                        '<tr>' +
-                        '<th><input type="checkbox" id="checkbox'+ divid+'" onclick="chooseAllcheckBox('+ divid+')" </th>' +
-                        '<th>Application No</th>' +
+                        '<tr>';
+                    if(hastaskList == "true"){
+                        html += '<th><input type="checkbox" id="checkbox'+ divid+'" onclick="chooseAllcheckBox('+ divid+')" </th>';
+                    }
+
+                    html +='<th>Application No</th>' +
                         '<th>Service</th>' +
                         '<th>Licence Expiry Date</th>' +
                         '<th>Application Status</th>' +
@@ -260,10 +264,30 @@
                         } else if (res.rows[i].timeLimitWarning == "amber") {
                             color = "#DD9C00";
                         }
-                        var address = res.rows[i].address;
-                        html += '<tr style = "color : ' + color + ';">' +
-                                '<td><input type="checkbox" name="taskcheckbox" value="'+taskList[res.rows[i].refNo]+'"></td>'+
-                            '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a href=' + url[res.rows[i].refNo] + '>' + res.rows[i].applicationNo + '</a></p></td>' +
+                        var address = '';
+                        if(res.rows[i].blkNo != null){
+                            address = res.rows[i].blkNo;
+                        }
+                        if(res.rows[i].streetName != null){
+                            address +=" " + res.rows[i].streetName;
+                        }
+                        if(res.rows[i].buildingName != null){
+                            address +=" " + res.rows[i].buildingName;
+                        }
+                        if(res.rows[i].floorNo != null){
+                            address +=" # " + res.rows[i].floorNo;
+                        }
+                        if(res.rows[i].unitNo != null){
+                            address += "-" + res.rows[i].unitNo;
+                        }
+                        if(res.rows[i].postalCode != null){
+                            address += ", " + res.rows[i].postalCode;
+                        }
+                        html += '<tr style = "color : ' + color + ';">';
+                        if(hastaskList == "true") {
+                            html +='<td><input type="checkbox" name="taskcheckbox" value="' + taskList[res.rows[i].refNo] + '"></td>'
+                        }
+                        html +='<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a href=' + url[res.rows[i].refNo] + '>' + res.rows[i].applicationNo + '</a></p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res.rows[i].serviceId] + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>N/A</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].status + '</p></td>' +
