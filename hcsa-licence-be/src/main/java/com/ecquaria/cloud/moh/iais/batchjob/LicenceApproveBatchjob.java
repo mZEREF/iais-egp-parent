@@ -843,11 +843,8 @@ public class LicenceApproveBatchjob {
         licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
         licenceDto.setOrganizationId(organizationId);
         licenceDto.setOriginLicenceId(originLicenceId);
-        if(Integer.parseInt(AppConsts.NO)==1){
-            licenceDto.setMigrated(true);
-        }else if(Integer.parseInt(AppConsts.NO)==0){
-            licenceDto.setMigrated(false);
-        }
+
+        licenceDto.setMigrated(false);
 
         licenceDto.setIsFeeRetroNeeded(Integer.parseInt(AppConsts.NO));
         licenceDto.setVersion(1);
