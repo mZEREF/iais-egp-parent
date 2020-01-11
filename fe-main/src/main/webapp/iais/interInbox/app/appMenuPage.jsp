@@ -4,13 +4,19 @@
       <div class="nav nav-tabs nav-menu">
         <li class="active"><a href="#"><span>Dashboard</span></a></li>
         <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="javascript:;"><span>eServices</span></a>
+          <menu:load id="inbox-top-menus">
+            <menu:include name="INTER_INBOX"/>
+          </menu:load>
           <ul class="dropdown-menu">
-            <li><a href="#">Apply for a New Licence</a></li>
-            <li><a href="#">Request to Cease a Licence</a></li>
-            <li><a href="#">Renew a Licence</a></li>
-            <li><a href="#">Edit a Drafted Application</a></li>
-            <li><a id="amendLicence">Amend a Licence</a></li>
-            <li><a href="#">Withdraw an Application</a></li>
+            <menu:iterate id="inbox-top-menus" var="item" varStatus="status">
+              <c:if test="${item.depth > 0}">
+                <li>
+                  <a href="<c:out value="${item.url}" />">
+                    <egov-smc:commonLabel><c:out value="${item.displayLabel}"/></egov-smc:commonLabel>
+                  </a>
+                </li>
+              </c:if>
+            </menu:iterate>
             <li class="divider" role="separator"></li>
             <li><a href="#">Step-by-step guide to eServices</a></li>
           </ul>

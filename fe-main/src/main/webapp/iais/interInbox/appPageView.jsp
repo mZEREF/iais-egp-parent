@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
+<%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -68,6 +69,7 @@
             $("[name='crud_action_value']").val(appNo);
             submit('appDraft');
         }
+
         if ("Delete" == action) {
             $("[name='crud_action_value']").val(appNo);
         }

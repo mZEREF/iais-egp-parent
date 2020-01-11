@@ -1,16 +1,11 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
 <%
     String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
-            <div id="navbar" class="collapse navbar-collapse ">
-                <menu:load id="cc-top-menus">
-                    <menu:include name="CLOUD_CC"/>
-                </menu:load>
-            </div>
+            <%@include file="msgMenuPage.jsp"%>
         </div>
         <div class="row">
             <div class="col-xs-12">
