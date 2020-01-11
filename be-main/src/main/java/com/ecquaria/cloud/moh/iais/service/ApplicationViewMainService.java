@@ -8,12 +8,8 @@ public interface ApplicationViewMainService {
 
     ApplicationViewDto searchByCorrelationIdo(String correlationId);
 
-    ApplicationDto getApplicaitonByAppNo(String appNo);
-
-    ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
-
     public AppPremisesCorrelationDto getLastAppPremisesCorrelationDtoById(String id);
 
-
+    public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto);
 
 }
