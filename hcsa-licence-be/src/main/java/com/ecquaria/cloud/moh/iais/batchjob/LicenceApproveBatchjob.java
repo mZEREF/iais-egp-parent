@@ -304,12 +304,14 @@ public class LicenceApproveBatchjob {
 
                     List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
                             appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
-                    PremisesGroupDto premisesGroupDto =premisesGroupDtos1.get(0);
-                    if(premisesGroupDto == null || premisesGroupDto.isHasError()){
-                        errorMessage = premisesGroupDto.getErrorMessage();
-                        break;
+                    if(!IaisCommonUtils.isEmpty(premisesGroupDtos1)){
+                        PremisesGroupDto premisesGroupDto =premisesGroupDtos1.get(0);
+                        if(premisesGroupDto.isHasError()){
+                            errorMessage = premisesGroupDto.getErrorMessage();
+                            break;
+                        }
+                        premisesGroupDtos.addAll(premisesGroupDtos1);
                     }
-                    premisesGroupDtos.addAll(premisesGroupDtos1);
 
                     //create the lic_app_correlation
                     LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
@@ -433,21 +435,26 @@ public class LicenceApproveBatchjob {
 
                 List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(appGrpPremisesEntityDtos,appPremisesCorrelationDtos,appSvcPremisesScopeDtos,
                         appSvcPremisesScopeAllocationDtos, hcsaServiceDto,organizationId,isPostInspNeeded);
-                PremisesGroupDto premisesGroupDto =premisesGroupDtos.get(0);
-                if(premisesGroupDto == null || premisesGroupDto.isHasError()){
-                    errorMessage = premisesGroupDto.getErrorMessage();
-                    break;
-                }
-                superLicDto.setPremisesGroupDtos(premisesGroupDtos);
-                //create licence
-                 //todo:get the yearLenth.
+                String licenceNo = null;
+                //todo:get the yearLenth.
                 int yearLength = 1;
-                String licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(),hcsaServiceDto.getSvcCode(),yearLength);
-                log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
-                if(StringUtil.isEmpty(licenceNo)){
-                    errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode() + ":" + yearLength;
-                    break;
+                if(!IaisCommonUtils.isEmpty(premisesGroupDtos)){
+                    PremisesGroupDto premisesGroupDto =premisesGroupDtos.get(0);
+                    if(premisesGroupDto.isHasError()){
+                        errorMessage = premisesGroupDto.getErrorMessage();
+                        break;
+                    }
+                    superLicDto.setPremisesGroupDtos(premisesGroupDtos);
+                    //create licence
+                    licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(),hcsaServiceDto.getSvcCode(),yearLength);
+                    log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
+                    if(StringUtil.isEmpty(licenceNo)){
+                        errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode() + ":" + yearLength;
+                        break;
+                    }
                 }
+
+
                 LicenceDto licenceDto = getLicenceDto(licenceNo,hcsaServiceDto.getSvcName(),applicationGroupDto,yearLength,
                         applicationDto.getOriginLicenceId(),organizationId,applicationDto,null);
                 superLicDto.setLicenceDto(licenceDto);
@@ -478,7 +485,7 @@ public class LicenceApproveBatchjob {
                     break;
                 }
                 List<PersonnelsDto> personnelsDtos = getPersonnelsDto(appGrpPersonnelDtos,appGrpPersonnelExtDtos,appSvcKeyPersonnelDtos,organizationId);
-                if(personnelsDtos == null){
+                if(IaisCommonUtils.isEmpty(personnelsDtos)){
                     errorMessage = "There is Error for AppGrpPersonnel -->: "+applicationDto.getApplicationNo();
                     break;
                 }
@@ -597,7 +604,7 @@ public class LicenceApproveBatchjob {
 
   private AppSvcPremisesScopeDto getAppSvcPremisesScopeDtoByCorrelationId(List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,String appPremCorrecId){
       AppSvcPremisesScopeDto result = null;
-        if(appSvcPremisesScopeDtos == null || appSvcPremisesScopeDtos.size() == 0 || StringUtil.isEmpty(appPremCorrecId)){
+        if(IaisCommonUtils.isEmpty(appSvcPremisesScopeDtos)|| StringUtil.isEmpty(appPremCorrecId)){
           return result;
         }
 

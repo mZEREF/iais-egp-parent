@@ -9,7 +9,7 @@
             <div class="col-xs-12 col-lg-6">
                 <div class="logo-img">
                     <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
-                        <i class="fa fa-bars"></i>
+                        <em class="fa fa-bars"></em>
                     </button>
                     <a href="#"><img src="<%=webrooth%>img/moh-logo.svg" alt="Ministry of Health" width="235" height="64">
                         <p class="logo-txt">Integrated Application and Inspection System</p></a>

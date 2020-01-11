@@ -238,8 +238,10 @@ public class TaskServiceImpl implements TaskService {
         if(result == null){
             for(TaskDto taskDto : taskScoreDtos){
                boolean isExist = isExistUser(users,taskDto.getUserId());
-                result = taskDto;
-                break;
+               if(isExist){
+                   result = taskDto;
+                   break;
+               }
             }
            // result.setScore(0);
         }
