@@ -78,7 +78,7 @@
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input id="idType-idNo" name="idNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
+                        <input id="idType-idNo" name="idNo" type="text"  class="idNoVal form-control control-input control-set-font control-font-normal" value="${principalOfficer.idNo}" >
                         <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                       </div>
                     </div>
@@ -234,7 +234,7 @@
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input  name="deputyIdNo" type="text"  class="form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
+                        <input  name="deputyIdNo" type="text"  class=" form-control control-input control-set-font control-font-normal" value="${deputy.idNo}" size="30">
                         <span class="error-msg"  name="iaisErrorMsg" id="error_deputyIdNo"></span>
                       </div>
                     </div>
@@ -320,6 +320,9 @@
 <script>
   $(document).ready(function () {
       poSelect();
+
+      retrieveData();
+      
       $('.poSelect').trigger('change');
       $('.deputySelect').trigger('change');
   });
@@ -358,6 +361,8 @@
 
                 poSelect();
 
+                retrieveData();
+
             },
             'error':function (data) {
                 console.log("err");
@@ -384,5 +389,43 @@
       });
 
   });
+  
+  var retrieveData = function () {
+      $('.idNoVal').blur(function () {
+          $poContentEle = $(this).closest('div.po-content');
+          var data = {
+              'idNo':$(this).val()
+          };
+          $.ajax({
+              'url':'${pageContext.request.contextPath}/psn-info',
+              'dataType':'json',
+              'data':data,
+              'type':'GET',
+              'success':function (data) {
+                  console.log("suc");
+                  $poContentEle.find('input[name="name"]').val(data.name);
+                  $poContentEle.find('input[name="mobileNo"]').val(data.mobileNo);
+                  $poContentEle.find('input[name="officeTelNo"]').val(data.officeTelNo);
+                  $poContentEle.find('input[name="emailAddress"]').val(data.emailAddr);
+                  <!--salutation-->
+                  $poContentEle.find('select[name="salutation"]').val(data.salutation);
+                  var salutationVal = $poContentEle.find('option[value="'+data.salutation+'"]').html();
+                  $poContentEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+                  <!-- idType-->
+                  $poContentEle.find('select[name="idType"]').val(data.idType);
+                  var idTypeVal = $poContentEle.find('option[value="'+data.idType+'"]').html();
+                  $poContentEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
+                  <!--Designation  -->
+                  $poContentEle.find('select[name="designation"]').val(data.designation);
+                  var designationVal = $poContentEle.find('option[value="'+data.designation+'"]').html();
+                  $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+              },
+              'error':function (data) {
+                  console.log("err");
+              }
+          });
+          
+      });
+  }
 
 </script>

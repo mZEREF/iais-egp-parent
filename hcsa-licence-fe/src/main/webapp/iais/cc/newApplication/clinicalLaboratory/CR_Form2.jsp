@@ -36,16 +36,22 @@
     width: auto;
     padding-right: 25px;
   }
+  
+  .assign-header{
+    margin-left: 20px;
+    font-weight: bold;
+  }
 
 
 </style>
-<%--<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>--%>
+
+
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
-  <div id="wizard-page-title">Clinical Governance Officer</div>
+  <div id="wizard-page-title">A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-      <table class="control-grid columns1">
+      <table class="control-grid columns1 " style="width: 100%;">
         <tbody>
         <tr height="1">
           <td class="first last" style="width: 100%;">
@@ -58,36 +64,64 @@
         <tr height="1">
           <td class="first last" style="width: 100%;">
             <div id="control--runtime--1" class="section control  container-s-1">
-              <div class="control-set-font control-font-header section-header"><label>A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</label></div>
+                <div class="control-set-font control-font-header section-header">
+                </div>
 
+              
               <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
-              <div class="assignContent hideen-div hidden">
-
-              </div>
+              <div class="assignContent hideen-div hidden"></div>
               <c:if test="${CgoMandatoryCount >0}">
               <c:forEach  begin="0" end="${CgoMandatoryCount-1}"  step="1" varStatus="status" >
                 <c:set value="${GovernanceOfficersList}" var="cgoList"/>
                 <c:set value="cgo-${status.index}-" var="cgoIndeNo"/>
                 <c:set value="${cgoList[status.index]}" var="currentCgo"/>
                 <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
+
                 <table class="assignContent control-grid">
                   <tbody>
                   <tr height="1">
                     <td class="first last" style="width: 100%;">
-                      <div id="control--runtime--2" class="control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                          <div class="col-sm-4 control-label formtext ">
-                            <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Clinical Governance Officer</label>
-                            <span class="upload_controls"></span>
+                      <c:choose>
+                        <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
+                          <div id="control--runtime--2" class="control control-caption-horizontal">
+                            <c:if test="${currentCgo != null}">
+                              <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-4 control-label formtext ">
+                                  <label>Clinical Governance Office ${status.index+1}</label><br/>
+                                  <label>${currentCgo.name},${currentCgo.idNo}(${currentCgo.idType})</label>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                  <br/>
+                                  <a class="edit"><i class="fa fa-pencil-square-o"></i>Edit</a>
+                                </div>
+                                <div class="hidden">
+                                  <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                </div>
+                              </div>
+                            </c:if>
                           </div>
-                          <div class="col-sm-5">
-                            <div class="">
-                              <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
-                              <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect${status.index}"></span>
+                        </c:when>
+                        <c:otherwise>
+                          <div id="control--runtime--2" class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                              <div class="control-label formtext assign-header">
+                                Clinical Governance Officer <label class="assign-psn-item">${status.index+1}</label>
+                              </div><br/>
+                              <div class="col-sm-5 control-label formtext ">
+                                <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
+                                <span class="upload_controls"></span>
+                              </div>
+                              <div class="col-sm-5">
+                                <div class="">
+                                  <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                  <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect${status.index}"></span>
+                                </div>
+                              </div>
                             </div>
+                            
                           </div>
-                        </div>
-                      </div>
+                        </c:otherwise>
+                      </c:choose>
                       <div class="profile-info-gp hidden">
                         <div class="officer-info">
                           <h3>Linda Tan</h3>
@@ -130,7 +164,7 @@
                           </div>
                         </div>
                       </div>
-
+                      
                       <div id="newOfficer" class="new-officer-form ${cgoIndeNo}-new hidden">
                         <table class="control-grid">
                           <tbody>
@@ -372,7 +406,7 @@
           </td>
         </tr>
         <hr/>
-        <c:if test="${'BLB'!=currentSvcCode && 'RDS'!=currentSvcCode && requestInformationConfig==null}">
+        <c:if test="${'BLB'!=currentSvcCode && 'RDS'!=currentSvcCode && requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType}">
         <tr id="addInfo">
           <td>
             <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Clinical Governance Officer</span>
@@ -412,7 +446,20 @@
         reLoadChange();
 
         showSpecialty();
+         
+        if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEdit}'){
+            disabledAll();
+            //nice-select
+            $('div.nice-select').addClass('disabled');
+        }
+
+       
     });
+
+    var disabledAll = function () {
+        $('input[type="text"]').prop('disabled',true);
+      //  $('input[type="text"]').addClass('disabled');
+    }
 
     var showSpecialty = function () {
         $('.specialty').change(function () {
@@ -450,6 +497,10 @@
             'type':'GET',
             'success':function (data) {
                 console.log("suc");
+                var length = $('.assignContent').length;
+                if(length>0){
+                    data = "<hr/>" + data;
+                }
                 $('.assignContent:last').after(data);
                 showSpecialty();
 
@@ -463,8 +514,8 @@
                         $parentEle.find('> .new-officer-form').addClass('hidden');
                     }
                 });
-
-
+                <!--change psn item -->
+                changePsnItem();
             },
             'error':function (data) {
                 console.log("err");
@@ -472,4 +523,21 @@
         });
     });
 
+  var doEdit = function () {
+    $('.edit').click(function () {
+        $assignContentEle = $(this).closest('div.assignContent');
+        $assignContentEle.find('input[type="text"]').prop('disabled',false);
+        $assignContentEle.find('div.nice-select').removeClass('disabled');
+
+        $('#isEditHiddenVal').val('1');
+    });
+  }
+  
+  var changePsnItem = function () {
+    $('.assign-psn-item').each(function (k,v) {
+        $(this).html(k+1);
+    });
+      
+  }
+    
 </script>

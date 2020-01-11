@@ -53,7 +53,7 @@
                         </div>
                       </div>
                       <div class="col-sm-4">
-                        <input id="idType-idNo" name="idNo" type="text" class="form-control control-input control-set-font control-font-normal" value="">
+                        <input id="idType-idNo" name="idNo" type="text" class="idNoVal form-control control-input control-set-font control-font-normal" value="">
                         <span class="error-msg" id="error_NRICFIN" name="iaisErrorMsg"></span>
                       </div>
                     </div>

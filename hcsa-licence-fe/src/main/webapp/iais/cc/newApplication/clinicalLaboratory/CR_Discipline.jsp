@@ -1,3 +1,33 @@
+<input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+<c:if test="${'APTY002' ==AppSubmissionDto.appType}">
+  <c:set var="isClickEdit" value="true"/>
+</c:if>
+<c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+    <c:if test="${'APPSPN01' == clickEditPage}">
+      <c:set var="isClickEdit" value="true"/>
+    </c:if>
+  </c:forEach>
+  <c:if test="${'true' != isClickEdit}">
+    <c:set var="locking" value="true"/>
+    <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
+      <c:if test="${amendType =='RFCATYPE05'}">
+        <c:set var="canEdit" value="1"/>
+      </c:if>
+    </c:forEach>
+    <div id="edit-content">
+    <c:choose>
+      <c:when test="${'1' == canEdit}">
+        <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+      </c:when>
+      <c:otherwise>
+        <p class="text-right" style="color: gray"><i class="fa fa-pencil-square-o"></i>Edit</p>
+      </c:otherwise>
+    </c:choose>
+    </div>
+  </c:if>
+</c:if>
+
 <c:set value="${reloadLaboratoryDisciplines}" var="reloadData"/>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
   <c:choose>
@@ -8,6 +38,7 @@
       <c:set value="${appGrpPremisesDto.conveyanceVehicleNo}" var="premIndexNo"/>
     </c:when>
   </c:choose>
+  <fieldset id="fieldset-content" <c:if test="${'true' != isClickEdit}">disabled</c:if> >
   <p>Please select the service disciplines you would like to apply at your premises${status.index+1}.</p>
   <span class="error-msg" name="iaisErrorMsg" id="error_checkError"></span>
 <div class="wrapper">
@@ -112,6 +143,7 @@
     <%--</form>--%>
   </div>
 </div>
+  </fieldset>
   <br/>
 </c:forEach>
 <script>
@@ -121,26 +153,17 @@
             var parentID = $(this).closest('.parent-form-check').attr('data-parent');
             $('.sub-form-check[data-child="'+parentID+'"]').removeClass('disabled');
         });
+
+        doEdit();
     });
 
-    /*var checkboxControl = function () {
-        $('.parent-form-check input[type="checkbox"]').on('change', function() {
-            alert(0);
-            var parentID = $(this).closest('.parent-form-check').attr('data-parent');
-            if ($(this).prop('checked') == true) {
-                $('.sub-form-check[data-child="'+parentID+'"]').removeClass('disabled');
-            } else {
 
-                $('.sub-form-check[data-child="'+parentID+'"] input[type="checkbox"]').prop('checked', false);
-                if($('.sub-form-check[data-child="'+parentID+'"]').hasClass('parent-form-check')) {
-                    var secondChild = $('.sub-form-check[data-child="'+parentID+'"]').attr("data-parent");
-                    $('.sub-form-check[data-child="'+secondChild+'"] input[type="checkbox"]').prop('checked', false);
-                    $('.sub-form-check[data-child="'+secondChild+'"]').addClass('disabled');
-                }
-                $('.sub-form-check[data-child="'+parentID+'"]').addClass('disabled');
-
-            }
+    var doEdit = function () {
+        $('#edit').click(function () {
+            $('#edit-content').addClass('hidden');
+            $('#fieldset-content').prop('disabled',false);
+            $('#isEditHiddenVal').val('1');
         });
-    };*/
-
+    }
+  
 </script>

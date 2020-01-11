@@ -2,15 +2,17 @@
 <sqls catalog="governanceOfficer">
     <sql key="generateGovernanceOfficerHtml" cached="no" remarks="generate Governance Officer Html">
         <![CDATA[
-        <hr/>
         <table class="assignContent control-grid">
           <tbody>
           <tr height="1">
             <td class="first last" style="width: 100%;">
               <div id="control--runtime--2" class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
-                  <div class="col-sm-4 control-label formtext ">
-                    <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Assign a Clinical Governance Officer</label>
+                  <div class="control-label formtext assign-header">
+                    Clinical Governance Officer <label class="assign-psn-item"></label>
+                  </div><br/>
+                  <div class="col-sm-5 control-label formtext ">
+                    <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
                     <span class="upload_controls"></span>
                   </div>
                   <div class="col-sm-5">
