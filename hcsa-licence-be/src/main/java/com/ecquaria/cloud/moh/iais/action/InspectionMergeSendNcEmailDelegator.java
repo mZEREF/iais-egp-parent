@@ -135,6 +135,8 @@ public class InspectionMergeSendNcEmailDelegator {
             return;
         }
         String content=ParamUtil.getString(request,"messageContent");
+        String subject=ParamUtil.getString(request,"subject");
+        ParamUtil.setRequestAttr(request,"subject", subject);
         ParamUtil.setRequestAttr(request,"content", content);
     }
 

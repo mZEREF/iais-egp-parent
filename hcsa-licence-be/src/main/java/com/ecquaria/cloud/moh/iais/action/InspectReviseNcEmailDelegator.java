@@ -169,7 +169,9 @@ public class InspectReviseNcEmailDelegator {
             return;
         }
         String content=ParamUtil.getString(request,MSG_CON);
-        ParamUtil.setSessionAttr(request,"content", content);
+        String subject=ParamUtil.getString(request,"subject");
+        ParamUtil.setRequestAttr(request,"subject", subject);
+        ParamUtil.setRequestAttr(request,"content", content);
 
 
     }
