@@ -136,13 +136,13 @@ public class InspecUserRecUploadDelegator {
                     file = iDto.getRecFile();
                 }
             }
-            Boolean flag=false;
-            String fileName = file.getOriginalFilename();
-            String substring = fileName.substring(fileName.lastIndexOf(".")+1);
             if(file.isEmpty() || file.getSize() == 0) {
                 errorMap.put(errorKey, "ERR0009");
                 continue;
             }
+            Boolean flag = false;
+            String fileName = file.getOriginalFilename();
+            String substring = fileName.substring(fileName.lastIndexOf(".")+1);
             if(file.getSize() > 4*1024*1024) {
                 errorMap.put(errorKey, "The file has exceeded the maximum upload size of 4MB.");
                 continue;

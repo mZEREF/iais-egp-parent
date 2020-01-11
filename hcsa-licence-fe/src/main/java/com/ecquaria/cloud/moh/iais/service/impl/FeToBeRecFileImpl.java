@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.FeToBeRecFileService;
@@ -14,6 +15,11 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,10 +37,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -92,13 +94,16 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         }
         File file = new File(download + File.separator + data + fileFormat);
         try {
+            boolean fileStatus = false;
             if(!file.exists()){
-                file.createNewFile();
+                fileStatus = file.createNewFile();
             }
-            fileOutputStream2 = new FileOutputStream(backups + File.separator + file.getName());
-            fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(data.getBytes());
-            fileOutputStream2.write(data.getBytes());
+            if (fileStatus) {
+                fileOutputStream2 = new FileOutputStream(backups + File.separator + file.getName());
+                fileOutputStream = new FileOutputStream(file);
+                fileOutputStream.write(data.getBytes());
+                fileOutputStream2.write(data.getBytes());
+            }
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
@@ -183,13 +188,16 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         FileOutputStream fileOutputStream = null;
         FileOutputStream fileOutputStream2 = null;
         try {
+            boolean fileStatus = false;
             if(!file.exists()){
-                file.createNewFile();
+                fileStatus = file.createNewFile();
             }
-            fileOutputStream2 = new FileOutputStream(backupsFile);
-            fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(fileByte);
-            fileOutputStream2.write(fileByte);
+            if(fileStatus) {
+                fileOutputStream2 = new FileOutputStream(backupsFile);
+                fileOutputStream = new FileOutputStream(file);
+                fileOutputStream.write(fileByte);
+                fileOutputStream2.write(fileByte);
+            }
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
@@ -214,51 +222,22 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private String compress(){
-        long l = 0L;
-        ZipOutputStream zos = null;
-        CheckedOutputStream cos = null;
-        OutputStream is = null;
-        try {
-            l = System.currentTimeMillis();
-            is = new FileOutputStream(backups + File.separator + l + ".zip");
-            cos = new CheckedOutputStream(is, new CRC32());
-            zos = new ZipOutputStream(cos);
+        long l = System.currentTimeMillis();
+        try (OutputStream is = new FileOutputStream(backups + File.separator + l + ".zip");
+             CheckedOutputStream cos = new CheckedOutputStream(is, new CRC32());
+             ZipOutputStream zos = new ZipOutputStream(cos)){
+
             File file = new File(download);
             zipFile(zos, file);
-
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-        }
-        finally {
-            if(zos != null){
-                try {
-                    zos.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if(cos != null){
-                try {
-                    cos.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if(is != null){
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
         }
         return l+"";
     }
 
     private void zipFile(ZipOutputStream zos, File file)  {
-        BufferedInputStream bis = null;
-        InputStream is = null;
-        try {
+        try(InputStream is = new FileInputStream(file.getPath());
+            BufferedInputStream bis = new BufferedInputStream(is)) {
             if(file.isDirectory()){
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName)) + File.separator));
                 for(File f: Objects.requireNonNull(file.listFiles())){
@@ -267,8 +246,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             }
             else {
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
-                is = new FileInputStream(file.getPath());
-                bis = new BufferedInputStream(is);
                 int count ;
                 byte [] b = new byte[1024];
                 count = bis.read(b);
@@ -279,9 +256,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             }
         }catch (IOException e){
             log.error(e.getMessage(), e);
-        }
-        finally {
-
         }
     }
 
@@ -296,24 +270,27 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                 return false;
             });
             for(File file:files){
-                try {
-                    FileInputStream is = new FileInputStream(file);
-                    ByteArrayOutputStream by = new ByteArrayOutputStream();
+                try (FileInputStream is = new FileInputStream(file);
+                     ByteArrayOutputStream by = new ByteArrayOutputStream()){
                     byte [] size = new byte[1024];
                     int count = is.read(size);
                     while(count != -1){
                         by.write(size,0, count);
                         count = is.read(size);
                     }
-                    by.close();
-                    is.close();
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    file.renameTo(new File(backups + File.separator + s + ".zip"));
+                    boolean fileStatus = file.renameTo(new File(backups + File.separator + s + ".zip"));
+                    if(!fileStatus){
+                        log.debug(StringUtil.changeForLog(file.getName() + "renameTo false"));
+                    }
                     String appId = appIdItemIdMap.get(file.getName());
                     String s1 = saveFileName(s + ".zip",backups + File.separator + s + ".zip", appId);
                     if(!s1.equals(AppConsts.SUCCESS)){
-                        new File(backups + File.separator + s + ".zip").delete();
+                        boolean fileDelStatus = new File(backups + File.separator + s + ".zip").delete();
+                        if(!fileDelStatus){
+                            log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
+                        }
                         flag = false;
                         break;
                     }
@@ -335,7 +312,10 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             });
             for(File f:files){
                 if(f.exists()){
-                    f.delete();
+                    boolean fileStatus = f.delete();
+                    if(!fileStatus){
+                        log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
+                    }
                 }
             }
         }

@@ -186,13 +186,15 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, boolean aBoolean, List<String> textJson,
                                        boolean fileBoolean, String submissionId) {
+        FileInputStream fileInputStream = null;
+        ByteArrayOutputStream by = null;
         try {
             if(file2.isDirectory()){
                 File[] files2 = file2.listFiles();
                 for(File file3:files2){
                     if(file3.isFile() && file3.getName().endsWith(fileFormat)){
-                        FileInputStream fileInputStream = new FileInputStream(file3);
-                        ByteArrayOutputStream by = new ByteArrayOutputStream();
+                        fileInputStream = new FileInputStream(file3);
+                        by = new ByteArrayOutputStream();
                         byte[] size = new byte[1024];
                         int count = fileInputStream.read(size);
                         while(count != -1){
@@ -201,8 +203,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         }
                         fileToDto(by.toString(), intranet, submissionId);
                         textJson.add(by.toString());
-                        fileInputStream.close();
-                        by.close();
+
                     }
                 }
                 List<FileRepoDto> list = new ArrayList<>();
@@ -224,6 +225,17 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         } catch(Exception e) {
             log.error(e.getMessage(),e);
+        } finally {
+            try {
+                fileInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                by.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
