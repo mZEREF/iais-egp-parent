@@ -5,25 +5,25 @@
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
-        <%@include file="menuPage.jsp"%>
+        <%@include file="licMenuPage.jsp"%>
         </div>
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-gp">
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabInbox" href="javascript:;">
+                        <div class="dashboard-tile"><a data-tab="#tabInbox" href="#" onclick="licToMsgPage()">
                             <h1 class="dashboard-count">2</h1>
-                            <p class="dashboard-txt">Licences Eligible <br> for Renewal</p></a></div>
+                            <p class="dashboard-txt">New Messages</p></a></div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabApp" href="javascript:;">
-                            <h1 class="dashboard-count">2</h1>
+                        <div class="dashboard-tile"><a data-tab="#tabApp" href="#" onclick="licToAppPage()">
+                            <h1 class="dashboard-count">${appDraftNum}</h1>
                             <p class="dashboard-txt">Application Drafts</p></a></div>
                     </div>
                     <div class="dashboard-tile-item">
-                        <div class="dashboard-tile"><a data-tab="#tabLic" href="javascript:;">
-                            <h1 class="dashboard-count">3</h1>
-                            <p class="dashboard-txt">Licences Ready <br> for Printing</p></a></div>
+                        <div class="dashboard-tile"><a data-tab="#tabLic" href="#">
+                            <h1 class="dashboard-count">${licActiveNum}</h1>
+                            <p class="dashboard-txt">Active Licences</p></a></div>
                     </div>
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile txt-only">
