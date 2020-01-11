@@ -37,7 +37,7 @@ public interface BeEicGatewayClient {
               @RequestHeader("date-Secondary") String dateSec,
               @RequestHeader("authorization-Secondary") String authorizationSec);
 
-    @RequestMapping(value = "/v1/iais-inter-inbox-message/",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/v1/iais-inter-inbox-message/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InterMessageDto> saveInboxMessage(@RequestBody InterMessageDto interInboxDto,
               @RequestHeader("date") String date,
               @RequestHeader("authorization") String authorization,
