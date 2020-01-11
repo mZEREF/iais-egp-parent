@@ -10,6 +10,10 @@
     color:red;
     cursor: pointer;
   }
+  .removePhBtn{
+    color:red;
+    cursor: pointer;
+  }
   .new-premise-form-conv{
     border-top:1px solid #BABABA;
     padding-top:40px;
@@ -57,17 +61,17 @@
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                       <c:choose>
                         <c:when test="${'1' == canEdit}">
-                          <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
                         </c:when>
                         <c:otherwise>
-                          <p class="text-right" style="color: gray"><i class="fa fa-pencil-square-o"></i>Edit</p>
+                          <p class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</p>
                         </c:otherwise>
                       </c:choose>
                       <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="stat">
                         <h3 class="without-header-line">Premises ${stat.index+1}</h3>
                         <p class="premise-address-gp"> 
                           <span class="premise-type">
-                            <b>
+                            <strong>
                               <c:if test="${'ONSITE' == appGrpPremDto.premisesType}">
                                 <c:out value="On-site"/>
                               </c:if>
@@ -75,14 +79,14 @@
                                 <c:out value="Conveyance"/>
                               </c:if>
                               :
-                            </b>
+                            </strong>
                           </span>
                           <span class="premise-address">
                             <c:out value="${appGrpPremDto.address}"/>
                           </span>
                         </p>
                         <c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">
-                          <p class="vehicle-txt hidden"><b>Vehicle No:</b> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span></p>
+                          <p class="vehicle-txt hidden"><strong>Vehicle No:</strong> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span></p>
                         </c:if>
                       </c:forEach>
                     </div>
@@ -101,6 +105,16 @@
                   <div class="row premContent <c:if test="${!status.first}">underLine</c:if>  " id="mainPrem">
                     <c:set var="onSite" value="ONSITE" ></c:set>
                     <c:set var="conv" value="CONVEYANCE" ></c:set>
+                    <input class="premValue" type="hidden" name="premValue" value="${status}"/>
+                    <c:choose>
+                      <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList != null && appGrpPremisesDto.appPremPhOpenPeriodList.size()>0}">
+                        <input class="phLength" type="hidden" name="phLength" value="${appGrpPremisesDto.appPremPhOpenPeriodList.size()}"/>
+                      </c:when>
+                      <c:otherwise>
+                        <input class="phLength" type="hidden" name="phLength" value="1"/>
+                      </c:otherwise>
+                    </c:choose>
+                    <c:set var="premValue" value="${status.index}"/>
                     <div class="col-xs-12">
                       <div class="form-horizontal">
                         <div class="form-group premisesTypeDiv" id="premisesType">
@@ -134,7 +148,7 @@
                           <c:if test="${!status.first && requestInformationConfig==null}">
                           <div class="col-xs-6 col-md-2">
                             <div class="form-check">
-                              <b class="removeBtn">X</b>
+                              <strong class="removeBtn">X</strong>
                             </div>
                           </div>
                           </c:if>
@@ -301,37 +315,82 @@
                               <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndMM${status.index}"></span>
                             </div>
                           </div>
-                          <div class="pubHolidayContent">
-                            <iais:row>
-                              <iais:field value="Select Public Holiday" width="12"/>
-                              <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                                <iais:datePicker cssClass="form_datetime public-holiday"  name="onsitePubHoliday"/>
-                              </iais:value>
-                            </iais:row>
-                            <div class="form-group">
-                              <label class="col-xs-12 col-md-4 control-label">
-                                Public Holidays Operating Hours (Start)
-                              </label>
-                              <div class="col-xs-9 col-sm-5 col-md-4">
-                                <input class="onsitePbHolDayStartHH" type="text" name="onsitePbHolDayStartHH" value="" maxlength="2" style="width: 60px"/>(HH)
-                                :
-                                <input class="onsitePbHolDayStartMM" type="text" name="onsitePbHolDayStartMM" value="" maxlength="2" style="width: 60px"/>(MM)
+                          <c:choose>
+                            <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList == null}">
+
+                              <div class="pubHolidayContent">
+                                <iais:row>
+                                  <iais:field value="Select Public Holiday" width="12"/>
+                                  <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                    <iais:datePicker cssClass="form_datetime public-holiday"  name="${premValue}onsitePubHoliday0"/>
+                                  </iais:value>
+                                </iais:row>
+                                <div class="form-group">
+                                  <label class="col-xs-12 col-md-4 control-label">
+                                    Public Holidays Operating Hours (Start)
+                                  </label>
+                                  <div class="col-xs-9 col-sm-5 col-md-4">
+                                    <input class="onsitePbHolDayStartHH" type="text" name="${premValue}onsitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                    :
+                                    <input class="onsitePbHolDayStartMM" type="text" name="${premValue}onsitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label class="col-xs-12 col-md-4 control-label">
+                                    Public Holidays Operating Hours (End)
+                                  </label>
+                                  <div class="col-xs-9 col-sm-5 col-md-4">
+                                    <input class="onsitePbHolDayEndHH" type="text" name="${premValue}onsitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                    :
+                                    <input class="onsitePbHolDayEndMM" type="text" name="${premValue}onsitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                            <div class="form-group">
-                              <label class="col-xs-12 col-md-4 control-label">
-                                Public Holidays Operating Hours (End)
-                              </label>
-                              <div class="col-xs-9 col-sm-5 col-md-4">
-                                <input class="onsitePbHolDayEndHH" type="text" name="onsitePbHolDayEndHH" value="" maxlength="2" style="width: 60px"/>(HH)
-                                :
-                                <input class="onsitePbHolDayEndMM" type="text" name="onsitePbHolDayEndMM" value="" maxlength="2" style="width: 60px"/>(MM)
-                              </div>
-                            </div>
-                          </div>
+
+                            </c:when>
+                            <c:otherwise>
+                              <c:forEach var="ph" items="${appGrpPremisesDto.appPremPhOpenPeriodList}" varStatus="phStat" >
+                                <div class="pubHolidayContent">
+                                  <iais:row>
+                                    <iais:field value="Select Public Holiday" width="12"/>
+                                    <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
+                                      <iais:datePicker cssClass="form_datetime public-holiday" value="${ph.phDate}"  name="${premValue}onsitePubHoliday${phStat}"/>
+                                    </iais:value>
+                                    <c:if test="${!phStat.first}">
+                                      <div class=" col-xs-7 col-sm-4 col-md-3">
+                                        <div class="form-check">
+                                          <strong class="removePhBtn">X</strong>
+                                        </div>
+                                      </div>
+                                    </c:if>
+                                  </iais:row>
+                                  <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label">
+                                      Public Holidays Operating Hours (Start)
+                                    </label>
+                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                      <input class="onsitePbHolDayStartHH" type="text" name="${premValue}onsitePbHolDayStartHH${phStat}" value="${ph.onsiteStartFromHH}" maxlength="2" style="width: 60px"/>(HH)
+                                      :
+                                      <input class="onsitePbHolDayStartMM" type="text" name="${premValue}onsitePbHolDayStartMM${phStat}" value="${ph.onsiteStartFromMM}" maxlength="2" style="width: 60px"/>(MM)
+                                    </div>
+                                  </div>
+                                  <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label">
+                                      Public Holidays Operating Hours (End)
+                                    </label>
+                                    <div class="col-xs-9 col-sm-5 col-md-4">
+                                      <input class="onsitePbHolDayEndHH" type="text" name="${premValue}onsitePbHolDayEndHH${phStat}" value="${ph.onsiteEndToHH}" maxlength="2" style="width: 60px"/>(HH)
+                                      :
+                                      <input class="onsitePbHolDayEndMM" type="text" name="${premValue}onsitePbHolDayEndMM${phStat}" value="${ph.onsiteEndToMM}" maxlength="2" style="width: 60px"/>(MM)
+                                    </div>
+                                  </div>
+                                </div>
+                              </c:forEach>
+                            </c:otherwise>
+                          </c:choose>
                           <div class="form-group">
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <button id="addPubHolDay" type="button">add Public Holiday</button>
+                              <button class="addPubHolDay" type="button">add Public Holiday</button>
                             </div>
                           </div> 
                         </div>
@@ -558,11 +617,18 @@
                 $premSelect.find('.premiseConSelect').addClass('hidden');
                 $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
+                <!--change hidden length value -->
+                var length =  $premSelect.find('.new-premise-form-on-site div.pubHolidayContent').length;
+                $premSelect.find('.phLength').val(length);
+                
             }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
                 $premSelect.find('.premiseConSelect').removeClass('hidden');
                 $premSelect.find('.premiseOnSiteSelect').addClass('hidden');
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
+                <!--change hidden length value -->
+                var length =  $premSelect.find('.new-premise-form-conv div.pubHolidayContent').length;
+                $premSelect.find('.phLength').val(length);
             }
 
         });
@@ -717,7 +783,7 @@ var retrieveAddr = function(){
   }
   
   var addPubHolDay = function () {
-      $('#addPubHolDay').click(function () {
+      $('.addPubHolDay').click(function () {
          var pubHolDayHtml = "<div class=\"pubHolidayContent\">" 
            + " <div class=\"form-group\">"
            + "<label class=\"col-xs-12 col-md-4 control-label\">Select Public Holiday</label>"
@@ -726,7 +792,7 @@ var retrieveAddr = function(){
            + "</div>" 
            + "<div class=\" col-xs-7 col-sm-4 col-md-3\">"
            + "<div class=\"form-check\">"  
-           + "<b class=\" removeBtn\">X</b>"
+           + "<strong class=\"removePhBtn\">X</strong>"
            + "</div>"
            + "</div>"
            + "<div class=\"clear\"></div></div>"
@@ -756,26 +822,39 @@ var retrieveAddr = function(){
               format:"dd/mm/yyyy"
           });
 
+          <!--change hidden length value -->
+          $contentDivEle = $(this).closest('div.form-horizontal');
+          var length = $contentDivEle.find('div.pubHolidayContent').length;
+          $premContentEle.find('.phLength').val(length);
+          
+          //Prevent duplicate binding
+          $('.removePhBtn').unbind('click');
           removePH();
       });
   }
   
   
   var removePH = function () {
-      $('.removeBtn').click(function () {
+      $('.removePhBtn').click(function () {
          $pubHolidayContentEle = $(this).closest('div.pubHolidayContent');
          $contentDivEle = $(this).closest('div.form-horizontal');
+         $premContentEle = $(this).closest('div.premContent');
          $pubHolidayContentEle.remove();
+         <!--change hidden length value -->
+         var length =  $contentDivEle.find('div.pubHolidayContent').length;
+         console.log("length"+length);
+         $premContentEle.find('.phLength').val(length);
           
-         var length = $contentDivEle.find('div.pubHolidayContent').length;
-         $contentDivEle.find('div.pubHolidayContent').each(function (k,v) {
-             $(this).find('.public-holiday').attr("name","onsitePubHoliday"+k);
-             $(this).find('.onsitePbHolDayStartHH').attr("name","onsitePbHolDayStartHH"+k);
-             $(this).find('.onsitePbHolDayStartMM').attr("name","onsitePbHolDayStartMM"+k);
-             $(this).find('.onsitePbHolDayEndHH').attr("name","onsitePbHolDayEndHH"+k);
-             $(this).find('.onsitePbHolDayEndMM').attr("name","onsitePbHolDayEndMM"+k);
-         });
+         <!-- get current premValue-->
+         var premValue = $premContentEle.find('.premValue').val();
          
+         $contentDivEle.find('div.pubHolidayContent').each(function (k,v) {
+             $(this).find('.public-holiday').attr("name",premValue+"onsitePubHoliday"+k);
+             $(this).find('.onsitePbHolDayStartHH').attr("name",premValue+"onsitePbHolDayStartHH"+k);
+             $(this).find('.onsitePbHolDayStartMM').attr("name",premValue+"onsitePbHolDayStartMM"+k);
+             $(this).find('.onsitePbHolDayEndHH').attr("name",premValue+"onsitePbHolDayEndHH"+k);
+             $(this).find('.onsitePbHolDayEndMM').attr("name",premValue+"onsitePbHolDayEndMM"+k);
+         });
       });
   }
   
