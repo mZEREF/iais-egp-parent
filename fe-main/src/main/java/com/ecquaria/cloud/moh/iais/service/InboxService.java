@@ -23,4 +23,6 @@ public interface InboxService {
     SearchResult<InboxAppQueryDto> appDoQuery(SearchParam searchParam);
     SearchResult<InboxQueryDto> inboxDoQuery(SearchParam searchParam);
     SearchResult<InboxLicenceQueryDto> licenceDoQuery(SearchParam searchParam);
+    Integer licActiveStatusNum();
+    Integer appDraftNum();
 }

@@ -35,7 +35,10 @@ public interface LicenceInboxClient {
     @RequestMapping(path= "/hcsa-licence-rfc/licence-submission", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(@RequestParam(value = "licenceId" ) String licenceId);
 
-    @RequestMapping(path= "//licence-personnels", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PersonnelListQueryDto>> ggetPersonnel(@RequestParam(value = "licenseeId")String licenseeId);
+    @RequestMapping(path= "/licence-personnels", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PersonnelListQueryDto>> getPersonnel(@RequestParam(value = "licenceId")String licenseeId);
+
+    @RequestMapping(path= "/hcsa-licence-transport/licence-active-num", method = RequestMethod.GET)
+    FeignResponseEntity<Integer> getLicActiveStatusNum();
 
 }

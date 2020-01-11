@@ -62,4 +62,14 @@ public class InboxServiceImpl implements InboxService {
     public SearchResult<InboxLicenceQueryDto> licenceDoQuery(SearchParam searchParam) {
         return licenceInboxClient.searchResultFromLicence(searchParam).getEntity();
     }
+
+    @Override
+    public Integer licActiveStatusNum() {
+        return licenceInboxClient.getLicActiveStatusNum().getEntity();
+    }
+
+    @Override
+    public Integer appDraftNum() {
+        return appInboxClient.getAppDraftNum().getEntity();
+    }
 }

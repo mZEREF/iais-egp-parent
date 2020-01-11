@@ -42,6 +42,9 @@ public interface AppInboxClient {
     @GetMapping(value = "/iais-submission/submission-id")
     FeignResponseEntity<String> getSubmissionId();
 
+    @GetMapping(value = "/iais-submission/application-status-draft")
+    FeignResponseEntity<Integer> getAppDraftNum();
+
     @RequestMapping(path = "/iais-application/application-licenceId",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicaitonByLicenceId(@RequestParam(name = "licenceId")String licenceId);
 }
