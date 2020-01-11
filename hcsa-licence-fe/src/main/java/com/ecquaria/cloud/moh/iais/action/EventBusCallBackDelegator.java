@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
@@ -40,9 +39,9 @@ public class EventBusCallBackDelegator {
         String token = ParamUtil.getString(request, "token");
         String serviceName = ParamUtil.getString(request, "service");
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
-        if (!isLeagal) {
-            throw new IaisRuntimeException("Visit without Token!!");
-        }
+//        if (!isLeagal) {
+//            throw new IaisRuntimeException("Visit without Token!!");
+//        }
         String operation = ParamUtil.getString(request, "operation");
         Map<String, List<ServiceStatus>> map = client.getSubmissionStatus(AppConsts.REST_PROTOCOL_TYPE
                         + RestApiUrlConsts.EVENT_BUS, submissionId, operation);
