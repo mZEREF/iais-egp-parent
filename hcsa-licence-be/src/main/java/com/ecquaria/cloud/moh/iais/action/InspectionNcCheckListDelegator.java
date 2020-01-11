@@ -179,37 +179,42 @@ public class InspectionNcCheckListDelegator {
 
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
-        List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
-        for(InspectionCheckQuestionDto temp:checkListDtoList){
-            String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrad");
-            String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comremark");
-            String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrec");
-            if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
-                temp.setRectified(true);
-            }else{
-                temp.setRectified(false);
+        if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()){
+            List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
+            for(InspectionCheckQuestionDto temp:checkListDtoList){
+                String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrad");
+                String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comremark");
+                String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"comrec");
+                if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
+                    temp.setRectified(true);
+                }else{
+                    temp.setRectified(false);
+                }
+                temp.setChkanswer(answer);
+                temp.setRemark(remark);
             }
-            temp.setChkanswer(answer);
-            temp.setRemark(remark);
+            fillupChklistService.fillInspectionFillCheckListDto(cDto);
         }
-        fillupChklistService.fillInspectionFillCheckListDto(cDto);
         return cDto;
     }
 
     public InspectionFillCheckListDto getDataFromPage(HttpServletRequest request){
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
-        List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
-        for(InspectionCheckQuestionDto temp:checkListDtoList){
-            String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rad");
-            String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"remark");
-            String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rec");
-            if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
-                temp.setRectified(true);
-            }else{
-                temp.setRectified(false);
+        if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()){
+            List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
+            for(InspectionCheckQuestionDto temp:checkListDtoList){
+                String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rad");
+                String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"remark");
+                String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rec");
+                if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
+                    temp.setRectified(true);
+                }else{
+                    temp.setRectified(false);
+                }
+                temp.setChkanswer(answer);
+                temp.setRemark(remark);
             }
-            temp.setChkanswer(answer);
-            temp.setRemark(remark);
+            fillupChklistService.fillInspectionFillCheckListDto(cDto);
         }
         String tcu = ParamUtil.getString(request,"tuc");
         String bestpractice = ParamUtil.getString(request,"bestpractice");
@@ -217,7 +222,6 @@ public class InspectionNcCheckListDelegator {
         cDto.setTcuRemark(tcuremark);
         cDto.setTuc(tcu);
         cDto.setBestPractice(bestpractice);
-        fillupChklistService.fillInspectionFillCheckListDto(cDto);
         return cDto;
     }
 

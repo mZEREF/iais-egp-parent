@@ -3,7 +3,9 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLeadershipMatrixDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -31,6 +33,11 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
     public RiskLeaderShipShowDto getLeaderShowDto() {
         List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
         RiskLeaderShipShowDto showDto  = hcsaConfigClient.getRiskLeaderShipShow(serviceDtoList).getEntity();
+        List<RiskAcceptiionDto> riskAcceptiionDtoList = new ArrayList<>();
+        RiskAcceptiionDto dto = new RiskAcceptiionDto();
+        dto.setScvCode("CLB");
+        riskAcceptiionDtoList.add(dto);
+        List<RiskResultDto> riskList = hcsaConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
         return showDto;
     }
     @Override

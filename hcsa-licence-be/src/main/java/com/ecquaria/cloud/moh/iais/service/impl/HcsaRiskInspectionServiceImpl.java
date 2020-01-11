@@ -66,6 +66,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 fin.setDoCaRightLowCounth(carightlow);
                 fin.setDoCaEffectiveDate(caStartDate);
                 fin.setDoCaEndDate(caEndDate);
+                fin.setCaEdit(true);
             }
             boolean miEditFlag = getNoIdEditFlag(mileftmod,milefthigh,mirightlow,mirightmod,miStartDate,miEndDate);
             if(miEditFlag){
@@ -75,6 +76,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 fin.setDoMiRightLowCounth(mirightlow);
                 fin.setDoMiEffectiveDate(miStartDate);
                 fin.setDoMiEndDate(miEndDate);
+                fin.setMiEdit(true);
             }
             boolean mjEditFlag = getNoIdEditFlag(mjleftmod,mjlefthigh,mjrightlow,mjrightmod,mjStartDate,mjEndDate);
             if(mjEditFlag){
@@ -84,6 +86,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 fin.setDoMjRightLowCounth(mjrightlow);
                 fin.setDoMjEffectiveDate(mjStartDate);
                 fin.setDoMjEndDate(mjEndDate);
+                fin.setMjEdit(true);
             }
 
         }

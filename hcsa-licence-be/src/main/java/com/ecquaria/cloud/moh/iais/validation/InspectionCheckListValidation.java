@@ -31,8 +31,6 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                     errMap.put(temp.getSectionName()+temp.getItemId(),"ERR0010");
                 }
             }
-        }else{
-            errMap.put("allList","Please fill in checkList.");
         }
         tcuVad(icDto,errMap);
         commonVad(request,errMap);
