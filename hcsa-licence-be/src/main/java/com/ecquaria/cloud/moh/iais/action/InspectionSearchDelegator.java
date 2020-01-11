@@ -317,7 +317,7 @@ public class InspectionSearchDelegator {
     public InspectionTaskPoolListDto getValueFromPage(BaseProcessClass bpc) {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         String[] nameValue = ParamUtil.getStrings(bpc.request,"inspectorCheck");
-        if(nameValue == null || nameValue.length < 0) {
+        if(nameValue == null || nameValue.length <= 0) {
             inspectionTaskPoolListDto.setInspectorCheck(null);
         } else {
             List<SelectOption> inspectorCheckList = inspectionService.getCheckInspector(nameValue, inspectionTaskPoolListDto);
