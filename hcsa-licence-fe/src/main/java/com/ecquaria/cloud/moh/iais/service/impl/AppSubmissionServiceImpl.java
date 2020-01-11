@@ -73,6 +73,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private SystemAdminClient systemAdminClient;
     @Autowired
     private GenerateIdClient generateIdClient;
+
+
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -146,7 +148,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     licenceFeeDto.setMigrated(hcsaLicenceGroupFeeDto.isMigrated());
                     licenceFeeDto.setOldAmount(hcsaLicenceGroupFeeDto.getAmount());
                     licenceFeeDto.setExpiryDate(hcsaLicenceGroupFeeDto.getExpiryDate());
-                    licenceFeeDto.setRenewCount(hcsaLicenceGroupFeeDto.getCount());
+                    if(hcsaLicenceGroupFeeDto.isMigrated()){
+                        licenceFeeDto.setRenewCount(hcsaLicenceGroupFeeDto.getCount());
+                    }else{
+                        licenceFeeDto.setRenewCount(0);
+                    }
                 }
                // licenceFeeDto.setCharity();
             }
