@@ -9,7 +9,11 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/include/formHidden.jsp" %>
+
+    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
+    <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
+
     <div class="main-content">
         <div class="container">
             <div class="row">
