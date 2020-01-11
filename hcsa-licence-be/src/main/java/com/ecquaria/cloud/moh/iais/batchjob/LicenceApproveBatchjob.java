@@ -832,13 +832,13 @@ public class LicenceApproveBatchjob {
         }
         licenceDto.setStartDate(startDate);
         licenceDto.setExpiryDate(getExpiryDate(licenceDto.getStartDate(),yearLength));
-        licenceDto.setIsGrpLic(applicationGroupDto.getIsGrpLic());
+        licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
         licenceDto.setOrganizationId(organizationId);
         licenceDto.setOriginLicenceId(originLicenceId);
         if(Integer.parseInt(AppConsts.NO)==1){
-            licenceDto.setIsMigrated(true);
+            licenceDto.setMigrated(true);
         }else if(Integer.parseInt(AppConsts.NO)==0){
-            licenceDto.setIsMigrated(false);
+            licenceDto.setMigrated(false);
         }
 
         licenceDto.setIsFeeRetroNeeded(Integer.parseInt(AppConsts.NO));
