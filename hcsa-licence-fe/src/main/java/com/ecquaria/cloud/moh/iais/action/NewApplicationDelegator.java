@@ -607,8 +607,14 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
-        appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-        appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        if (preOrPostInspectionResultDto == null) {
+            appSubmissionDto.setPreInspection(true);
+            appSubmissionDto.setRequirement(true);
+        } else {
+            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        }
+
         //set Risk Score
         appSubmissionService.setRiskToDto(appSubmissionDto);
 
