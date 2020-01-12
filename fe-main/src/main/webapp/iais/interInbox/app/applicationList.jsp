@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <iais:pagination  param="appParam" result="appResult"/>
+        <iais:pagination param="appParam" result="appResult"/>
     </form>
 </div>
 <div class="row">
@@ -73,11 +73,13 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Type"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="SERVICE_ID" value="Service"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="STATUS" value="Status"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="CREATED_DT" value="Submission Date"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="APPLICATION_NO"
+                                         value="Application No."></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="APP_TYPE" value="Type"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="SERVICE_ID" value="Service"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="STATUS" value="Status"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="CREATED_DT"
+                                         value="Submission Date"></iais:sortableHeader>
                     <th style="width:175px">Actions</th>
                 </tr>
                 </thead>
@@ -112,7 +114,8 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
-                                    <p style="width: 153px"><fmt:formatDate value="${app.createdAt}" pattern="MM/dd/yyyy HH:mm:ss"/></p>
+                                    <p style="width: 153px"><fmt:formatDate value="${app.createdAt}"
+                                                                            pattern="MM/dd/yyyy HH:mm:ss"/></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title" for="appAction">Actions</p>

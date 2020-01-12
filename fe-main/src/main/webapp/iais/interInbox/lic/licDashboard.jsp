@@ -1,11 +1,11 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
-    String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
+    String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
-            <%@include file="licMenuPage.jsp"%>
+            <%@include file="licMenuPage.jsp" %>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-gp">
@@ -44,7 +44,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-footernote">
-                        <p class="dashboard-small-txt"><strong>Last Login:</strong> 07 February 2019, 14: 39 | <strong>Last Activity:</strong> Application For Renewal - Licence No. EP000-2019-2, On 01 Feb 2019</p>
+                        <p class="dashboard-small-txt"><strong>Last Login:</strong> 07 February 2019, 14: 39 | <strong>Last
+                            Activity:</strong> Application For Renewal - Licence No. EP000-2019-2, On 01 Feb 2019</p>
                     </div>
                 </div>
             </div>

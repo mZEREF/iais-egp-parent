@@ -1,11 +1,11 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
-    String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
+    String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
-            <%@include file="appMenuPage.jsp"%>
+            <%@include file="appMenuPage.jsp" %>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-gp">
@@ -16,7 +16,7 @@
                             </a></div>
                         </div>
                         <div class="dashboard-tile-item">
-                            <div class="dashboard-tile"><a data-tab="#tabApp" href="#" >
+                            <div class="dashboard-tile"><a data-tab="#tabApp" href="#">
                                 <p class="dashboard-txt">Application Drafts</p>
                                 <h1 class="dashboard-count">${appDraftNum}</h1>
                             </a></div>
@@ -41,12 +41,13 @@
                 </div>
             </div>
             <div class="row">
-            <div class="col-xs-12">
-                <div class="dashboard-footernote">
-                    <p class="dashboard-small-txt"><strong>Last Login:</strong> 07 February 2019, 14: 39 | <strong>Last Activity:</strong> Application For Renewal - Licence No. EP000-2019-2, On 01 Feb 2019</p>
+                <div class="col-xs-12">
+                    <div class="dashboard-footernote">
+                        <p class="dashboard-small-txt"><strong>Last Login:</strong> 07 February 2019, 14: 39 | <strong>Last
+                            Activity:</strong> Application For Renewal - Licence No. EP000-2019-2, On 01 Feb 2019</p>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
 </div>

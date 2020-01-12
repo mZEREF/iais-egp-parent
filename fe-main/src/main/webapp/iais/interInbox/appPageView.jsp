@@ -1,12 +1,12 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
 
@@ -18,41 +18,42 @@
         background: #efefef;
         padding: 8px;
         border-radius: 8px;
-        -moz-border-radius:8px;
-        -webkit-border-radius:8px;
+        -moz-border-radius: 8px;
+        -webkit-border-radius: 8px;
     }
 
     .table-count {
         float: left;
         margin-top: 5px;
     }
-    .nav ul.pagination{
+
+    .nav ul.pagination {
         padding-top: 7px;
     }
 
-    .nav ul.pagination > li{
+    .nav ul.pagination > li {
         padding-left: 3px;
     }
 
-    .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count{
+    .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count {
         margin-left: -12px;
     }
 </style>
 <script type="text/javascript">
-    function submit(action){
+    function submit(action) {
         $("[name='app_action_type']").val(action);
         $("#appForm").submit();
     }
 
-    function appToMsgPage(){
+    function appToMsgPage() {
         submit("appToMsg");
     }
 
-    function appToLicPage(){
+    function appToLicPage() {
         submit("appToLic");
     }
 
-    function doSearchApp(){
+    function doSearchApp() {
         submit("appSearch");
     }
 
@@ -60,22 +61,22 @@
         submit('appPage');
     }
 
-    function sortRecords(sortFieldName,sortType){
+    function sortRecords(sortFieldName, sortType) {
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         submit('appSort');
     }
 
-    function doDraft(appNo){
-        if (appNo.indexOf("DN") !== -1 ||appNo.indexOf("DR") !== -1) {
+    function doDraft(appNo) {
+        if (appNo.indexOf("DN") !== -1 || appNo.indexOf("DR") !== -1) {
             $("[name='crud_action_value']").val(appNo);
             submit('appDraft');
         }
     }
 
-    function doDraftAction(appNo,val){
+    function doDraftAction(appNo, val) {
         var action = val;
-        if ("Reload" == action){
+        if ("Reload" == action) {
             $("[name='crud_action_value']").val(appNo);
             submit('appDraft');
         }

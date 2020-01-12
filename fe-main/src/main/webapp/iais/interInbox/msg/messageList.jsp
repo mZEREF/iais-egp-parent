@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <iais:pagination  param="inboxParam" result="inboxResult"/>
+        <iais:pagination param="inboxParam" result="inboxResult"/>
     </form>
 </div>
 <div class="row">
@@ -42,11 +42,12 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <iais:sortableHeader needSort="true"  field="subject" value="Subject"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="message_type" value="Message Type"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="ref_no" value="Ref. No."></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="service_id" value="Service"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true"  field="CREATED_DT" value="Date"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="subject" value="Subject"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="message_type"
+                                         value="Message Type"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No."></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="service_id" value="Service"></iais:sortableHeader>
+                    <iais:sortableHeader needSort="true" field="CREATED_DT" value="Date"></iais:sortableHeader>
                 </tr>
                 </thead>
                 <tbody>

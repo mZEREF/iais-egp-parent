@@ -13,7 +13,8 @@
                         </li>
                         <li class="incomplete" role="presentation" id="licTab"><a href="#" aria-controls="tabLic"
                                                                                   role="tab" data-toggle="tab"
-                                                                                  onclick="msgToLicPage()">Licences (${licActiveNum})</a>
+                                                                                  onclick="msgToLicPage()">Licences
+                            (${licActiveNum})</a>
                         </li>
                     </ul>
                     <div class="tab-nav-mobile visible-xs visible-sm">

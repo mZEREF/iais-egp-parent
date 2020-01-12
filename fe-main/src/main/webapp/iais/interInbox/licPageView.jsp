@@ -35,7 +35,7 @@
         padding-left: 3px;
     }
 
-    .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count{
+    .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count {
         margin-left: -12px;
     }
 </style>
