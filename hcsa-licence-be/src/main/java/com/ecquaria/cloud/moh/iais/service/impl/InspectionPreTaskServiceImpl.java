@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -22,27 +23,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Shicheng
@@ -213,33 +200,34 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
          * Working hours
          */
         Integer preManHour = (int) Math.ceil((double) manHour / inspectorNum);
+        Map<Date,String> avaiDate = new HashMap<Date, String>();
+
+        List<ApptNonWorkingDateDto> apptNonWorkingDateDtoList = appointmentClient.getNonWorkingDateListByWorkGroupId(applicationDto.getAppGrpId()).getEntity();
+        for (ApptNonWorkingDateDto apptNonWorkingDateDto:apptNonWorkingDateDtoList
+             ) {
+            boolean avaiAM = apptNonWorkingDateDto.isAm();
+            boolean avaiPM = apptNonWorkingDateDto.isPm();
+            String recursivceDate = apptNonWorkingDateDto.getRecursivceDate();
+            SearchResultHelper.getDateByWeekOfDay(avaiDate,recursivceDate,avaiAM,avaiPM);
+        }
+
         List<PublicHolidayDto> publicHolidayDtoList = appointmentClient.getActiveHoliday().getEntity();
-        List<Date> invalidDateList = new ArrayList<>();
         for (PublicHolidayDto publicHolidayDto : publicHolidayDtoList) {
             List<Date> calculateDateList = getBetweenDays(publicHolidayDto.getFromDate(), publicHolidayDto.getToDate());
             for (Date calculateDate : calculateDateList) {
-                invalidDateList.add(calculateDate);
+                avaiDate.put(calculateDate, "ALL");
             }
         }
+
         List<ApptBlackoutDateDto> apptBlackoutDateDtoList = appointmentClient.getAllByShortName(taskDto.getWkGrpId()).getEntity();
         for (ApptBlackoutDateDto apptBlackoutDateDto : apptBlackoutDateDtoList) {
             List<Date> calculateDateList = getBetweenDays(apptBlackoutDateDto.getStartDate(), apptBlackoutDateDto.getEndDate());
             for (Date calculateDate : calculateDateList) {
-                invalidDateList.add(calculateDate);
+                avaiDate.put(calculateDate, "ALL");
             }
         }
-        List<Date> scheduleDateList = new ArrayList<>();
-        for (Date scheduleDate : scheduleDateList) {
-            Iterator<Date> it = invalidDateList.iterator();
-            while (it.hasNext()) {
-                if (it.next().getTime() == scheduleDate.getTime()) {
-                    it.remove();
-                }
-            }
-        }
-        /**
-         * TODO 2020-01-06 Loading start date and end date from shicheng
-         */
+
+
     }
 
     /**

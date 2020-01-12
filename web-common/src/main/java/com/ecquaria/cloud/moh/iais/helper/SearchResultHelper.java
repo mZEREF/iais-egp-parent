@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -49,4 +51,67 @@ public class SearchResultHelper {
         return searchParam;
     }
 
+    public static void getDateByWeekOfDay(Map<Date,String> dateOfWeekList,String day,boolean avaiAM,boolean avaiPM) {
+        int i = 1;
+        Calendar calendar = Calendar.getInstance();
+        int THIS_YEAR = calendar.get(Calendar.YEAR);
+        while (calendar.get(Calendar.YEAR) < THIS_YEAR + 1) {
+            calendar.set(THIS_YEAR, 01, 01);
+            calendar.set(Calendar.WEEK_OF_YEAR, i++);
+            switch (day.toUpperCase()) {
+                case "MONDAY":
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                    if (calendar.get(Calendar.YEAR) == THIS_YEAR) {
+                        judgeDate(dateOfWeekList,calendar,avaiAM,avaiPM);
+                    }
+                    break;
+                case "TUESDAY":
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+                    if (calendar.get(Calendar.YEAR) == THIS_YEAR) {
+                        judgeDate(dateOfWeekList,calendar,avaiAM,avaiPM);
+                    }
+                    break;
+                case "WEDNESDAY":
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+                    if (calendar.get(Calendar.YEAR) == THIS_YEAR) {
+                        judgeDate(dateOfWeekList,calendar,avaiAM,avaiPM);
+                    }
+                    break;
+                case "THURSDAY":
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+                    if (calendar.get(Calendar.YEAR) == THIS_YEAR) {
+                        judgeDate(dateOfWeekList,calendar,avaiAM,avaiPM);
+                    }
+                    break;
+                case "FRIDAY":
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+                    if (calendar.get(Calendar.YEAR) == THIS_YEAR) {
+                        judgeDate(dateOfWeekList,calendar,avaiAM,avaiPM);
+                    }
+                    break;
+                case "SATURDAY":
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+                    if (calendar.get(Calendar.YEAR) == THIS_YEAR) {
+                        judgeDate(dateOfWeekList,calendar,avaiAM,avaiPM);
+                    }
+                    break;
+                case "SUNDAY":
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                    if (calendar.get(Calendar.YEAR) == THIS_YEAR) {
+                        judgeDate(dateOfWeekList,calendar,avaiAM,avaiPM);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private static void judgeDate(Map<Date,String> dateOfWeekList,Calendar calendar,boolean avaiAM,boolean avaiPM) {
+        if(avaiAM && avaiPM) {
+            dateOfWeekList.put(calendar.getTime(), "ALL");
+        }else if(avaiAM && !avaiPM) {
+            dateOfWeekList.put(calendar.getTime(), "AM");
+        }else {
+            dateOfWeekList.put(calendar.getTime(), "PM");
+        }
+    }
 }

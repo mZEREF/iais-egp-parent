@@ -1,1 +1,1 @@
-<%@include file="/iais/inbox/menu/premisesEdit.jsp"%>
+<%@include file="/iais/interInbox/menu/premisesEdit.jsp"%>
