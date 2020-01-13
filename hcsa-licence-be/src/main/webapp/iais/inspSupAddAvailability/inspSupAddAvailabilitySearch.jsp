@@ -46,13 +46,18 @@
                       <iais:row>
                         <iais:field value="Username"/>
                         <iais:value width="18">
-                          <input type="text" name="userName" value="${avaSearchParam.filters['hci_code']}" />
+                          <c:if test="${curRole eq 'INSPECTOR_LEAD'}">
+                            <input type="text" name="userName" value="${avaSearchParam.filters['userName']}" />
+                          </c:if>
+                          <c:if test="${curRole ne 'INSPECTOR_LEAD'}">
+                            <label><c:out value="${userName}"/></label>
+                          </c:if>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Year"/>
                         <iais:value width="18">
-                          <iais:select name="availabilityYear" options="yearOption" firstOption="Please select" value="${avaSearchParam.filters['application_type']}" ></iais:select>
+                          <iais:select name="availabilityYear" options="yearOption" firstOption="Please select" value="${avaSearchParam.filters['availabilityYear']}" ></iais:select>
                         </iais:value>
                       </iais:row>
                       <iais:action style="text-align:center;">
@@ -138,9 +143,11 @@
 <script type="text/javascript">
 
     function doInspAvailabilityCheck() {
+
     }
 
     function doInspAvailabilityCheckAll() {
+
     }
 
     function doInspAvailabilityEdit(avaId) {
