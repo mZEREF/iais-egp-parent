@@ -1,1 +1,0 @@
-<%@include file = "/iais/inspSupAddAvailability/inspSupAddAvailabilityConfirm.jsp"%>
