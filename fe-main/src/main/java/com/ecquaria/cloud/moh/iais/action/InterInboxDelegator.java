@@ -82,14 +82,10 @@ public class InterInboxDelegator {
 
     public void msgDoPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, inboxParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
     }
 
     public void msgDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, inboxParameter);
-        CrudHelper.doSorting(searchParam,bpc.request);
     }
 
     public void msgDoSearch(BaseProcessClass bpc){
@@ -113,7 +109,7 @@ public class InterInboxDelegator {
     public void prepareDate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
-        SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter);
+        SearchParam inboxParam = SearchResultHelper.getSearchParam(request,true,inboxParameter);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
@@ -150,7 +146,7 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> toLicencePage"));
         HttpServletRequest request = bpc.request;
         prepareLicSelectOption(request);
-        SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter);
+        SearchParam licParam = SearchResultHelper.getSearchParam(request,true,licenceParameter);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
         if(!StringUtil.isEmpty(licResult)){
@@ -205,18 +201,15 @@ public class InterInboxDelegator {
             licSearchMap.put("eExpiryDate",eExpiryDate);
         }
         licenceParameter.setFilters(licSearchMap);
+        licenceParameter.setPageNo(1);
     }
 
     public void licDoPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, licenceParameter);
-        CrudHelper.doPaging(searchParam,request);
     }
 
     public void licDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, licenceParameter);
-        CrudHelper.doSorting(searchParam,request);
     }
 
     /**
@@ -232,7 +225,7 @@ public class InterInboxDelegator {
         /**
          * Application SearchResult
          */
-        SearchParam appParam = SearchResultHelper.getSearchParam(request,appParameter);
+        SearchParam appParam = SearchResultHelper.getSearchParam(request,true,appParameter);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         SearchResult appResult = inboxService.appDoQuery(appParam);
         List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
@@ -293,18 +286,15 @@ public class InterInboxDelegator {
         }
         appParameter.setFilters(appSearchMap);
         appParameter.setPageNo(1);
+
     }
 
     public void appDoPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, appParameter);
-        CrudHelper.doPaging(searchParam,request);
     }
 
     public void appDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, appParameter);
-        CrudHelper.doSorting(searchParam,request);
     }
 
     public void appDoDraft(BaseProcessClass bpc) throws IOException {
@@ -366,11 +356,13 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(request, "appServiceType", appServiceTypeSelectList);
 
         List<SelectOption> selectDraftApplicationSelectList = new ArrayList<>();
+        selectDraftApplicationSelectList.add(new SelectOption("All", "All"));
         selectDraftApplicationSelectList.add(new SelectOption("Reload", "Reload"));
         selectDraftApplicationSelectList.add(new SelectOption("Delete", "Delete"));
         ParamUtil.setRequestAttr(request, "selectDraftApplication", selectDraftApplicationSelectList);
 
         List<SelectOption> selectApplicationSelectList = new ArrayList<>();
+        selectApplicationSelectList.add(new SelectOption("All", "All"));
         selectApplicationSelectList.add(new SelectOption("Recall", "Recall"));
         selectApplicationSelectList.add(new SelectOption("Withdraw", "Withdraw"));
         ParamUtil.setRequestAttr(request, "selectApplication", selectApplicationSelectList);

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,18 +35,33 @@ public class SearchResultHelper {
                 } else {
                     searchParam.setSort(filter.getSortField(), SearchParam.ASCENDING);
                 }
+
+                String pageNo = ParamUtil.getString(request, "pageJumpNoTextchangePage");
+                String pageSize = ParamUtil.getString(request, "pageJumpNoPageSize");
+                if (!StringUtil.isEmpty(pageNo)) {
+                    searchParam.setPageNo(Integer.parseInt(pageNo));
+                }
+                if (!StringUtil.isEmpty(pageSize)) {
+                    searchParam.setPageSize(Integer.parseInt(pageSize));
+                }
+
+                String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+                String sortType = ParamUtil.getString(request,"crud_action_additional");
+                if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                    searchParam.setSort(sortFieldName,sortType);
+                }
+
+                if (filter.getFilters() != null) {
+                    Map<String, Object> inboxMap = filter.getFilters();
+                    for (Map.Entry<String, Object> entry : inboxMap.entrySet()) {
+                        String mapKey = entry.getKey();
+                        Object mapValue = entry.getValue();
+                        searchParam.addFilter(mapKey, mapValue,true);
+                    }
+                }
             }
         } catch (NullPointerException e) {
             log.info(e.getMessage());
-        }
-        if (searchParam != null && filter.getFilters() != null){
-            Map<String, Object> inboxMap = filter.getFilters();
-            for (Map.Entry<String, Object> entry : inboxMap.entrySet()) {
-                String mapKey = entry.getKey();
-                Object mapValue = entry.getValue();
-                searchParam.addFilter(mapKey, mapValue, true);
-            }
-
         }
         return searchParam;
     }

@@ -88,7 +88,7 @@
                     <c:when test="${empty appResult.rows}">
                         <tr>
                             <td colspan="6">
-                                No Record!!
+                                <p class="table-row-title" style="text-align:center">No Record !</p>
                             </td>
                         </tr>
                     </c:when>
