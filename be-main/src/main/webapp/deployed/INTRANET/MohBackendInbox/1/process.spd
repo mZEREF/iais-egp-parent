@@ -51,7 +51,7 @@
     <JavaCode defClass="" executor="" methodName="searchSort_OnStepProcess_0" name="searchSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="SearchQuery" x="740" y="420">
+  <AutomaticStep defClass="" executor="" icon="" name="SearchQuery" x="730" y="420">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -68,6 +68,12 @@
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InboxPage" stageIndicator="" x="410" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="successPage" stageIndicator="" x="850" y="420">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -95,19 +101,19 @@
    <position>{(720,120)(780,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoSearch" style="oblique">
-   <position>{(680,240)(760,440)}</position>
+   <position>{(680,240)(750,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchSort" style="oblique">
-   <position>{(780,240)(760,440)}</position>
+   <position>{(780,240)(750,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchPage" style="oblique">
-   <position>{(570,240)(760,440)}</position>
+   <position>{(570,240)(750,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/SearchStart" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InboxPage" style="rectanular">
    <position>{(430,120)(570,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/SearchQuery" style="rectanular">
-   <position>{(760,440)(280,358)(270,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/SearchQuery" style="oblique">
+   <position>{(750,440)(280,358)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareData" style="rectanular">
    <position>{(270,120)(370,120)}</position>
@@ -121,8 +127,11 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Approve" linkstyle="Direct" name="" sourceName="/Switches/Switch/SearchStartSwitch" style="oblique">
    <position>{(720,120)(880,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Approve" style="oblique">
-   <position>{(880,240)(760,440)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/successPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Approve" style="rectanular">
+   <position>{(880,240)(870,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/SearchInit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/successPage" style="oblique">
+   <position>{(870,440)(180,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

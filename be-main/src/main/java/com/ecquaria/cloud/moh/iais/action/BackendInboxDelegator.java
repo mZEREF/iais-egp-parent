@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -341,12 +342,27 @@ public class BackendInboxDelegator {
 
         broadcastApplicationDto.setApplicationDto(applicationDto);
 
-        //setCreateTask
-        TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,taskDto.getRefNo());
-        broadcastOrganizationDto.setCreateTask(newTaskDto);
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(taskDto.getRefNo(),applicationDto.getStatus(),stageId,
-                taskDto.getWkGrpId(),null,null,roleId);
-        broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+            List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+            boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getId(),
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+            if(isAllSubmit){
+                // send the task to Ao3
+                TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,
+                        HcsaConsts.ROUTING_STAGE_AO3,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
+                List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+            }
+        }else{
+            //setCreateTask
+            TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,taskDto.getRefNo());
+            broadcastOrganizationDto.setCreateTask(newTaskDto);
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(taskDto.getRefNo(),applicationDto.getStatus(),stageId,
+                    taskDto.getWkGrpId(),null,null,roleId);
+            broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
+        }
 
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
