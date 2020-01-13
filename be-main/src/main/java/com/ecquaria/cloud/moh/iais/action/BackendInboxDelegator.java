@@ -279,43 +279,44 @@ public class BackendInboxDelegator {
     public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
         String[] taskList =  ParamUtil.getStrings(bpc.request, "taskcheckbox");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        for (String item:taskList
-        ) {
-            TaskDto taskDto = taskService.getTaskById(item);
-            String correlationId = taskDto.getRefNo();
-            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
-            if(appPremisesCorrelationDto!=null){
-                correlationId =  appPremisesCorrelationDto.getId();
-                taskDto.setRefNo(correlationId);
-            }
-            ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(correlationId);
+        if(!StringUtil.isEmpty(taskList)){
+            for (String item:taskList
+            ) {
+                TaskDto taskDto = taskService.getTaskById(item);
+                String correlationId = taskDto.getRefNo();
+                AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
+                if(appPremisesCorrelationDto!=null){
+                    correlationId =  appPremisesCorrelationDto.getId();
+                    taskDto.setRefNo(correlationId);
+                }
+                ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(correlationId);
 
-            if(RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId())){
-                log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
-                routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
-                log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
-            }else if(RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId())){
-                log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
-                routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,applicationViewDto,taskDto);
-                log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
-            }else if(RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())){
-                String action =  ParamUtil.getRequestString(bpc.request, "action");
-                if(!StringUtil.isEmpty(action) && "trigger".equals(action)){
-                    log.debug(StringUtil.changeForLog("the do approve start ...."));
-                    routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED,null,applicationViewDto,taskDto);
-                    log.debug(StringUtil.changeForLog("the do approve end ...."));
-                }else{
-                    //trigger to DMS
-                    ApplicationDto application=applicationViewDto.getApplicationDto();
-                    application.setStatus(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS);
-                    applicationViewDto.setApplicationDto(application);
-                    applicationViewService.updateFEApplicaiton(application);
+                if(RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId())){
+                    log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
+                    routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
+                    log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
+                }else if(RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId())){
+                    log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
+                    routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,applicationViewDto,taskDto);
+                    log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
+                }else if(RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())){
+                    String action =  ParamUtil.getRequestString(bpc.request, "action");
+                    if(!StringUtil.isEmpty(action) && "trigger".equals(action)){
+                        log.debug(StringUtil.changeForLog("the do approve start ...."));
+                        routingTask(bpc,null,ApplicationConsts.APPLICATION_STATUS_APPROVED,null,applicationViewDto,taskDto);
+                        log.debug(StringUtil.changeForLog("the do approve end ...."));
+                    }else{
+                        //trigger to DMS
+                        ApplicationDto application=applicationViewDto.getApplicationDto();
+                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS);
+                        applicationViewDto.setApplicationDto(application);
+                        applicationViewService.updateFEApplicaiton(application);
+                    }
                 }
             }
+            //update commPools
+            commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
         }
-        //update commPools
-        commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
-
 
     }
 

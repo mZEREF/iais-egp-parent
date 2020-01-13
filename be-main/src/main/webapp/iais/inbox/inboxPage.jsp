@@ -342,12 +342,22 @@
     }
 
     function approve() {
-        $('#action').val('approve');
-        submit('approve');
+        if($("input:checkbox:checked").length > 0){
+            $('#action').val('approve');
+            submit('approve');
+        }else{
+            alert('No checked');
+        }
+
     }
     function trigger() {
-        $('#action').val('trigger');
-        submit('approve');
+        if($("input:checkbox:checked").length > 0){
+            $('#action').val('trigger');
+            submit('approve');
+        }else{
+            alert('No checked');
+        }
+
     }
     
     function chooseAllcheckBox(id) {
