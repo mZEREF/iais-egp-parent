@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriod;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
@@ -56,6 +56,8 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -90,14 +92,14 @@ public class NewApplicationDelegator {
     public static final String FIRESTOPTION = "Please Select";
     
     //page name
-    public static final String APPLICATION_PAGE_NAME_PREMISES           = "APPPN01";
-    public static final String APPLICATION_PAGE_NAME_PRIMARY            = "APPPN02";  
-    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN01";
-    /*public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN02";
-    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN03";
-    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN04";
-    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN05";
-    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY     = "APPSPN06";*/
+    public static final String APPLICATION_PAGE_NAME_PREMISES                   = "APPPN01";
+    public static final String APPLICATION_PAGE_NAME_PRIMARY                    = "APPPN02";  
+    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY             = "APPSPN01";
+    public static final String APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS    = "APPSPN02";
+    public static final String APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION  = "APPSPN03";
+    public static final String APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS     = "APPSPN04";
+    public static final String APPLICATION_SVC_PAGE_NAME_DOCUMENT               = "APPSPN05";
+    public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL      = "APPSPN06";
     
     
     
@@ -208,6 +210,66 @@ public class NewApplicationDelegator {
             Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }
+        
+        //todo continue
+        //reload 
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        /*List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
+            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+                String wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
+                String wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
+                if(!StringUtil.isEmpty(wrkTimeFrom)){
+                    LocalTime localTimeFrom = LocalTime.parse(wrkTimeFrom);
+                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                        appGrpPremisesDto.setOnsiteStartHH(String.valueOf(localTimeFrom.getHour()));
+                        appGrpPremisesDto.setOnsiteStartMM(String.valueOf(localTimeFrom.getMinute()));
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                        appGrpPremisesDto.setConStartHH(String.valueOf(localTimeFrom.getHour()));
+                        appGrpPremisesDto.setConStartMM(String.valueOf(localTimeFrom.getMinute()));
+                    }
+                }
+                if(!StringUtil.isEmpty(wrkTimeTo)){
+                    LocalTime localTimeTo = LocalTime.parse(wrkTimeTo);
+                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                        appGrpPremisesDto.setOnsiteEndHH(String.valueOf(localTimeTo.getHour()));
+                        appGrpPremisesDto.setOnsiteEndMM(String.valueOf(localTimeTo.getMinute()));
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                        appGrpPremisesDto.setConEndHH(String.valueOf(localTimeTo.getHour()));
+                        appGrpPremisesDto.setConEndMM(String.valueOf(localTimeTo.getMinute()));
+                    }
+                    
+                }
+                
+                List<AppPremPhOpenPeriod> appPremPhOpenPeriods = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriods)){
+                    for(AppPremPhOpenPeriod appPremPhOpenPeriod:appPremPhOpenPeriods){
+                        String start = appPremPhOpenPeriod.getStartFrom();
+                        String end = appPremPhOpenPeriod.getStartFrom();
+                        if(!StringUtil.isEmpty(start)){
+                            LocalTime localTimeStart = LocalTime.parse(start);
+                            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                                appPremPhOpenPeriod.setOnsiteStartFromHH(String.valueOf(localTimeStart.getHour()));
+                                appPremPhOpenPeriod.setOnsiteStartFromMM(String.valueOf(localTimeStart.getMinute()));
+                            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                                appPremPhOpenPeriod.setConvStartFromHH(String.valueOf(localTimeStart.getHour()));
+                                appPremPhOpenPeriod.setConvStartFromMM(String.valueOf(localTimeStart.getMinute()));
+                            }
+                        }
+                        if(!StringUtil.isEmpty(end)){
+                            LocalTime localTimeEnd = LocalTime.parse(end);
+                            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+                                appPremPhOpenPeriod.setOnsiteEndToHH(String.valueOf(localTimeEnd.getHour()));
+                                appPremPhOpenPeriod.setOnsiteEndToMM(String.valueOf(localTimeEnd.getMinute()));
+                            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                                appPremPhOpenPeriod.setConvEndToHH(String.valueOf(localTimeEnd.getHour()));
+                                appPremPhOpenPeriod.setConvEndToMM(String.valueOf(localTimeEnd.getMinute()));
+                            }
+                        }
+                    }
+                }
+            }
+        }*/
         log.debug(StringUtil.changeForLog("the do preparePremises end ...."));
     }
 
@@ -1194,7 +1256,7 @@ public class NewApplicationDelegator {
         conAddrTypesAttr.put("style", "display: none;");
         String conAddrTypeSelectStr = generateDropDownHtml(conAddrTypesAttr, conAddrTypes, FIRESTOPTION);
 
-
+        sql = sql.replace("(0)", currentLength);
         sql = sql.replace("(1)", premTypeBuffer.toString());
         sql = sql.replace("(2)", premOnSiteSelectStr);
         sql = sql.replace("(3)", premConvSelectStr);
@@ -1521,6 +1583,17 @@ public class NewApplicationDelegator {
                         }else {
                             errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR001");
                         }
+                        
+                        try {
+                            LocalTime wrkTimeFrom = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteStartHH()), Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteStartMM()));
+                            LocalTime wrkTimeTo = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteEndHH()),Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteEndMM()) );
+                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(wrkTimeFrom));
+                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(wrkTimeTo));
+                            
+                        }catch (Exception e){
+                            log.error(StringUtil.changeForLog("number formatter exception..."));
+                        }
+                        
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
@@ -1604,6 +1677,16 @@ public class NewApplicationDelegator {
                                 }
                             }
                         }
+                        try {
+                            LocalTime wrkTimeFrom = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getConStartHH()), Integer.parseInt(appGrpPremisesDtoList.get(i).getConStartMM()));
+                            LocalTime wrkTimeTo = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getConEndHH()),Integer.parseInt(appGrpPremisesDtoList.get(i).getConEndMM()) );
+                            appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(wrkTimeFrom));
+                            appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(wrkTimeTo));
+
+                        }catch (Exception e){
+                            log.error(StringUtil.changeForLog("number formatter exception..."));
+                        }
+                        
                     }
                 } else {
                     //premiseSelect = organization hci code
@@ -1841,11 +1924,17 @@ public class NewApplicationDelegator {
         String [] conEndMMS = ParamUtil.getStrings(request, "conEndMM");
         //every prem's ph length
         String [] phLength = ParamUtil.getStrings(request,"phLength");
+        String [] premValue = ParamUtil.getStrings(request, "premValue");
         for(int i =0 ; i<count;i++){
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
             appGrpPremisesDto.setPremisesType(premisesType[i]);
-            List<AppPremPhOpenPeriod> appPremPhOpenPeriods = new ArrayList<>();
-            //wait to do
+            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = new ArrayList<>();
+            int length = 0;
+            try {
+                length = Integer.parseInt(phLength[i]);
+            }catch (Exception e){
+                log.info(StringUtil.changeForLog("length can not parse to int"));
+            }
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])){
                 appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);
                 appGrpPremisesDto.setOnsiteStartMM(onsiteStartMM[i]);
@@ -1864,6 +1953,30 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setOffTelNo(offTelNo[i]);
                 Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], "dd/mm/yyyy");
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
+                appGrpPremisesDto.setIsOtherLic(isOtherLic[i]);
+                for(int j =0; j<length; j++){
+                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
+                    String onsitePubHolidayName = premValue[i]+"onsitePubHoliday"+j;
+                    String onsitePbHolDayStartHHName = premValue[i]+"onsitePbHolDayStartHH"+j;
+                    String onsitePbHolDayStartMMName = premValue[i]+"onsitePbHolDayStartMM"+j;
+                    String onsitePbHolDayEndHHName = premValue[i]+"onsitePbHolDayEndHH"+j;
+                    String onsitePbHolDayEndMMName = premValue[i]+"onsitePbHolDayEndMM"+j;
+                    
+                    String onsitePubHoliday = ParamUtil.getDate(request, onsitePubHolidayName);
+                    String onsitePbHolDayStartHH = ParamUtil.getString(request, onsitePbHolDayStartHHName);
+                    String onsitePbHolDayStartMM = ParamUtil.getString(request, onsitePbHolDayStartMMName);
+                    String onsitePbHolDayEndHH = ParamUtil.getString(request, onsitePbHolDayEndHHName);
+                    String onsitePbHolDayEndMM = ParamUtil.getString(request, onsitePbHolDayEndMMName);
+                    appPremPhOpenPeriod.setPhDateStr(onsitePubHoliday);
+                    Date phDate = DateUtil.parseDate(onsitePubHoliday, "dd/mm/yyyy");
+                    appPremPhOpenPeriod.setPhDate(phDate);
+                    appPremPhOpenPeriod.setOnsiteStartFromHH(onsitePbHolDayStartHH);
+                    appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
+                    appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
+                    appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
+                    appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+                }
+   
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
                 appGrpPremisesDto.setConStartHH(conStartHH[i]);
                 appGrpPremisesDto.setConStartMM(conStartMM[i]);
@@ -1878,7 +1991,30 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
                 appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
                 appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
+                for(int j =0; j<length; j++){
+                    AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
+                    String convPubHolidayName = premValue[i]+"convPubHoliday"+j;
+                    String convPbHolDayStartHHName = premValue[i]+"convPbHolDayStartHH"+j;
+                    String convPbHolDayStartMMName = premValue[i]+"convPbHolDayStartMM"+j;
+                    String convPbHolDayEndHHName = premValue[i]+"convPbHolDayEndHH"+j;
+                    String convPbHolDayEndMMName = premValue[i]+"convPbHolDayEndMM"+j;
+
+                    String convPubHoliday = ParamUtil.getDate(request, convPubHolidayName);
+                    String convPbHolDayStartHH = ParamUtil.getString(request, convPbHolDayStartHHName);
+                    String convPbHolDayStartMM = ParamUtil.getString(request, convPbHolDayStartMMName);
+                    String convPbHolDayEndHH = ParamUtil.getString(request, convPbHolDayEndHHName);
+                    String convPbHolDayEndMM = ParamUtil.getString(request, convPbHolDayEndMMName);
+                    appPremPhOpenPeriod.setPhDateStr(convPubHoliday);
+                    Date phDate = DateUtil.parseDate(convPubHoliday, "dd/mm/yyyy");
+                    appPremPhOpenPeriod.setPhDate(phDate);
+                    appPremPhOpenPeriod.setConvStartFromHH(convPbHolDayStartHH);
+                    appPremPhOpenPeriod.setConvStartFromMM(convPbHolDayStartMM);
+                    appPremPhOpenPeriod.setConvEndToHH(convPbHolDayEndHH);
+                    appPremPhOpenPeriod.setConvEndToMM(convPbHolDayEndMM);
+                    appPremPhOpenPeriods.add(appPremPhOpenPeriod);
+                }
             }
+            appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
         return  appGrpPremisesDtoList;
@@ -2083,7 +2219,6 @@ public class NewApplicationDelegator {
         }
         return otherType || rfcType;
     }
-
-
+    
 }
 
