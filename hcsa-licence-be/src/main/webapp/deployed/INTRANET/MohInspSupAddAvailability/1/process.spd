@@ -151,8 +151,8 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityStep" style="rectanular">
    <position>{(790,120)(990,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/InspSupAddAvailabilitySearchPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(990,120)(991,59)(660,59)(580,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityPre" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(990,120)(991,59)(660,59)(420,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilitySearch" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(990,120)(1200,120)}</position>
@@ -244,7 +244,6 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="inspSupAddAvailabilityType" name="Switch1" x="970" y="100">
    <Description/>
-   <SwitchCase component="/Pages/WebPage/InspSupAddAvailabilitySearchPage" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilitySearch" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilitySort" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityPage" value="&quot;page&quot;"/>
@@ -252,6 +251,7 @@
    <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityDelete" value="&quot;delete&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityConfirm" value="&quot;confirm&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" value="&quot;edit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityPre" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
