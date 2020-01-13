@@ -93,6 +93,16 @@
     <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityDelete_OnStepProcess_0" name="inspSupAddAvailabilityDelete_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityEdit" x="500" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityEditVali" x="490" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspSupAddAvailabilitySearchPage" stageIndicator="" x="560" y="100">
@@ -108,6 +118,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspSupAddAvailabilityConPage" stageIndicator="" x="960" y="310">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspSupAddAvailabilityEditPage" stageIndicator="" x="490" y="310">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -194,9 +210,30 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityStep2" style="oblique">
    <position>{(990,450)(1522,449)(1460,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(990,120)(520,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspSupAddAvailabilityEditPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" style="rectanular">
+   <position>{(520,220)(510,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityEditVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspSupAddAvailabilityEditPage" style="rectanular">
+   <position>{(510,330)(510,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityEditVali" style="rectanular">
+   <position>{(510,450)(570,580)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(570,580)(800,720)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(570,580)(479,580)(479,220)(520,220)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/InspSupAddAvailabilityAdd" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="780" y="560">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="flag" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="550" y="560">
    <Description/>
   </Condition>
  </Conditions>
@@ -210,6 +247,7 @@
    <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityAdd" value="&quot;add&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityDelete" value="&quot;delete&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityConfirm" value="&quot;confirm&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" value="&quot;edit&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
