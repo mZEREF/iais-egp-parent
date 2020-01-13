@@ -62,6 +62,31 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
     }
 
     @Override
+    public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,boolean wait) {
+        String callBackUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+        String sopUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/ApplicationView";
+        String project ="hcsaLicenceBe";
+        String processName = "rountingASO_createTask";
+        String step = "start";
+        if(process!=null){
+            project= process.getCurrentProject();
+            processName = process.getCurrentProcessName();
+            step = process.getCurrentComponentName();
+            callBackUrl =  process.getHttpRequest().getServerName()
+                    +process.getHttpRequest().getContextPath()
+                    +"/eservice/INTRANET/LicenceEventBusCallBack";
+        }
+        SubmitReq req = EventBusHelper.getSubmitReq(broadcastOrganizationDto, generateIdClient.getSeqId().getEntity(),
+                EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
+                EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                sopUrl,
+                callBackUrl, EventBusConsts.SOP_USER_ID,wait,project,processName,step);
+        //
+        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+        return null;
+    }
+
+    @Override
     public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process) {
         String callBackUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
         String sopUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/ApplicationView";
@@ -81,6 +106,31 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 sopUrl,
                 callBackUrl, EventBusConsts.SOP_USER_ID,false,project,processName,step);
+        //
+        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
+        return null;
+    }
+
+    @Override
+    public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process,boolean wait) {
+        String callBackUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+        String sopUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/ApplicationView";
+        String project ="hcsaLicenceBe";
+        String processName = "rountingASO_updateApplication";
+        String step = "start";
+        if(process!=null){
+            project= process.getCurrentProject();
+            processName = process.getCurrentProcessName();
+            step = process.getCurrentComponentName();
+            callBackUrl =  process.getHttpRequest().getServerName()
+                    +process.getHttpRequest().getContextPath()
+                    +"/eservice/INTRANET/LicenceEventBusCallBack";
+        }
+        SubmitReq req =EventBusHelper.getSubmitReq(broadcastApplicationDto, generateIdClient.getSeqId().getEntity(),
+                EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                sopUrl,
+                callBackUrl, EventBusConsts.SOP_USER_ID,wait,project,processName,step);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
         return null;

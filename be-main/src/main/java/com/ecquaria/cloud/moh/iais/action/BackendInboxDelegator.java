@@ -354,8 +354,8 @@ public class BackendInboxDelegator {
         String eventRefNo = EventBusHelper.getEventRefNo();
         broadcastOrganizationDto.setEventRefNo(eventRefNo);
         broadcastApplicationDto.setEventRefNo(eventRefNo);
-        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
-        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
+        broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,true);
+        broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,true);
     }
 
     private TaskDto completedTask(TaskDto taskDto){
