@@ -160,4 +160,24 @@ public class InspSupAddAvailabilityDelegator {
     public void inspSupAddAvailabilityDelete(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityDelete start ...."));
     }
+
+    /**
+     * StartStep: inspSupAddAvailabilityEdit
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspSupAddAvailabilityEdit(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityEdit start ...."));
+    }
+
+    /**
+     * StartStep: inspSupAddAvailabilityEditVali
+     *
+     * @param bpc
+     * @throws
+     */
+    public void inspSupAddAvailabilityEditVali(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the inspSupAddAvailabilityEditVali start ...."));
+    }
 }
