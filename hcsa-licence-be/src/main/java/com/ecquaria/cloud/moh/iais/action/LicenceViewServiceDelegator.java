@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -161,6 +162,7 @@ public class LicenceViewServiceDelegator {
                      List<String> selectsList = Arrays.asList(selects);
 
                      AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                     appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                      appEditSelectDto.setApplicationId(newAppPremisesCorrelationDto.getApplicationId());
                      if(selectsList.contains("premises")){
                          appEditSelectDto.setPremisesEdit(true);
@@ -171,6 +173,7 @@ public class LicenceViewServiceDelegator {
                      if(selectsList.contains("service")){
                          appEditSelectDto.setServiceEdit(true);
                      }
+                     appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
                      appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                      appEditSelectDto = licenceViewService.saveAppEditSelect(appEditSelectDto);
                      appEditSelectDto = licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
