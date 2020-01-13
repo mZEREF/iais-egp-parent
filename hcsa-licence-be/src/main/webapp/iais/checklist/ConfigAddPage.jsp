@@ -83,6 +83,15 @@
           </div>
 
           <div class="form-group">
+            <label class="col-md-2">HCI CODE</label>
+            <div class="col-md-3">
+              <input type="text" name="hciCode" value="${hciCode}"/>
+
+            <%--<span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>--%>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label class="col-md-2">Effective Start Date</label>
             <div class="col-md-3">
                <iais:datePicker name = "eftStartDate" value="${eftStartDate}"></iais:datePicker>

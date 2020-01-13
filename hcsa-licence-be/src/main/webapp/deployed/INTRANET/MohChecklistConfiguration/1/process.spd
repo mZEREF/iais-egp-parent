@@ -1,204 +1,204 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="4" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepare" x="250" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="switchAction" x="550" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="switchAction_OnStepProcess_0" name="switchAction_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="switchAction_OnStepProcess_0" name="switchAction_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareAddConfig" x="600" y="200">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareAddConfig_OnStepProcess_0" name="prepareAddConfig_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareAddConfig_OnStepProcess_0" name="prepareAddConfig_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="loadEditData" x="720" y="200">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="loadEditData_OnStepProcess_0" name="loadEditData_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="loadEditData_OnStepProcess_0" name="loadEditData_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="deleteRecord" x="820" y="200">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="deleteRecord_OnStepProcess_0" name="deleteRecord_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="deleteRecord_OnStepProcess_0" name="deleteRecord_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="910" y="200">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doSearch_OnStepProcess_0" name="doSearch_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="addConfigNextAction" x="650" y="580">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="addConfigNextAction_OnStepProcess_0" name="addConfigNextAction_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="addConfigNextAction_OnStepProcess_0" name="addConfigNextAction_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareConfigSectionInfo" x="540" y="680">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareConfigSectionInfo_OnStepProcess_0" name="prepareConfigSectionInfo_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareConfigSectionInfo_OnStepProcess_0" name="prepareConfigSectionInfo_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="preViewConfig" x="850" y="940">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preViewConfig_OnStepProcess_0" name="preViewConfig_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preViewConfig_OnStepProcess_0" name="preViewConfig_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="submitConfig" x="1010" y="1270">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="submitConfig_OnStepProcess_0" name="submitConfig_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="submitConfig_OnStepProcess_0" name="submitConfig_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="addSectionItem" x="1040" y="760">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="addSectionItem_OnStepProcess_0" name="addSectionItem_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="addSectionItem_OnStepProcess_0" name="addSectionItem_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="routeToItemProcess" x="740" y="950">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="routeToItemProcess_OnStepProcess_0" name="routeToItemProcess_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="routeToItemProcess_OnStepProcess_0" name="routeToItemProcess_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="invokeChecklistItem" processname="MohChecklistItem" project="INTRANET" version="-1" x="670" y="1010">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="addChecklistItemNextAction" x="530" y="1100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="addChecklistItemNextAction_OnStepProcess_0" name="addChecklistItemNextAction_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="addChecklistItemNextAction_OnStepProcess_0" name="addChecklistItemNextAction_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="removeSectionItem" x="550" y="980">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="removeSectionItem_OnStepProcess_0" name="removeSectionItem_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="removeSectionItem_OnStepProcess_0" name="removeSectionItem_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="removeSection" x="480" y="970">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="removeSection_OnStepProcess_0" name="removeSection_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="removeSection_OnStepProcess_0" name="removeSection_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doView" x="1010" y="190">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doView_OnStepProcess_0" name="doView_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doView_OnStepProcess_0" name="doView_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="cloneConfig" x="490" y="200">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="cloneConfig_OnStepProcess_0" name="cloneConfig_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="cloneConfig_OnStepProcess_0" name="cloneConfig_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="backToPage" x="910" y="430">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="backToPage_OnStepProcess_0" name="backToPage_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="backToPage_OnStepProcess_0" name="backToPage_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doPage" x="1440" y="190">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doPage_OnStepProcess_0" name="doPage_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doPage_OnStepProcess_0" name="doPage_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doSort" x="1550" y="170">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doSort_OnStepProcess_0" name="doSort_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doSort_OnStepProcess_0" name="doSort_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigDataPage" stageIndicator="" x="380" y="100">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigAddPage" stageIndicator="" x="660" y="410">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigSectionAddPage" stageIndicator="" x="550" y="780">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AddSectionItemPage" stageIndicator="" x="1030" y="830">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreViewConfigPage" stageIndicator="" x="970" y="1080">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SuccessPage" stageIndicator="" x="1190" y="1260">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewConfigPage" stageIndicator="" x="1150" y="220">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Step1" style="rectanular">
    <position>{(120,120)(270,120)}</position>
@@ -395,81 +395,82 @@
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareAddConfig" componentIfTrue="/Steps/AutomaticStep/prepareConfigSectionInfo" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="590" y="580">
-   <Description/>
+   <Description />
   </Condition>
   <Condition componentIfFalse="/Merges/Merge/Merge7" componentIfTrue="/Pages/WebPage/PreViewConfigPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="830" y="1080">
-   <Description/>
+   <Description />
   </Condition>
   <Condition componentIfFalse="/Merges/Merge/Merge5" componentIfTrue="/Steps/AutomaticStep/prepareConfigSectionInfo" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="1060" y="680">
-   <Description/>
+   <Description />
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareAddConfig" componentIfTrue="/Merges/Merge/Merge9" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="1600" y="440">
-   <Description/>
+   <Description />
   </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="710" y="100">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareAddConfig" value="&quot;prepareAddConfig&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/loadEditData" value="&quot;loadEditData&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/deleteRecord" value="&quot;deleteRecord&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doView" value="&quot;doView&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/cloneConfig" value="&quot;cloneConfig&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doPage" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/doSort" value=""/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/prepareAddConfig" value="&quot;prepareAddConfig&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/loadEditData" value="&quot;loadEditData&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/deleteRecord" value="&quot;deleteRecord&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/doView" value="&quot;doView&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/cloneConfig" value="&quot;cloneConfig&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/doPage" value="&quot;doPage&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/doSort" value="&quot;doSort&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="680" y="490">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;backLastPage&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/addConfigNextAction" value="&quot;nextPage&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;backLastPage&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/addConfigNextAction" value="&quot;nextPage&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="860" y="830">
-   <Description/>
-   <SwitchCase component="/Pages/WebPage/AddSectionItemPage" value="&quot;addSectionItem&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preViewConfig" value="&quot;preViewConfig&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/removeSectionItem" value="&quot;removeSectionItem&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/removeSection" value="&quot;removeSection&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/routeToItemProcess" value="&quot;routeToItemProcess&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/backToPage" value="&quot;backLastPage&quot;"/>
+   <Description />
+   <SwitchCase component="/Pages/WebPage/AddSectionItemPage" value="&quot;addSectionItem&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/preViewConfig" value="&quot;preViewConfig&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/removeSectionItem" value="&quot;removeSectionItem&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/removeSection" value="&quot;removeSection&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/routeToItemProcess" value="&quot;routeToItemProcess&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/backToPage" value="&quot;backLastPage&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="770" y="1270">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/submitConfig" value="&quot;submitConfig&quot;"/>
-   <SwitchCase component="/Merges/Merge/Merge7" value="&quot;doBack&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/submitConfig" value="&quot;submitConfig&quot;" />
+   <SwitchCase component="/Merges/Merge/Merge7" value="&quot;doBack&quot;" />
   </Switch>
  </Switches>
- <Branches/>
+ <Branches />
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="680" y="300">
-   <Description/>
+   <Description />
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="1390" y="1260">
-   <Description/>
+   <Description />
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge3" type="Or" x="1380" y="350">
-   <Description/>
+   <Description />
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge4" type="Or" x="1390" y="1390">
-   <Description/>
+   <Description />
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge5" type="Or" x="1240" y="680">
-   <Description/>
+   <Description />
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge6" type="Or" x="360" y="1120">
-   <Description/>
+   <Description />
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge7" type="Or" x="530" y="1270">
-   <Description/>
+   <Description />
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge8" type="Or" x="820" y="440">
-   <Description/>
+   <Description />
   </Merge>
   <Merge defClass="" executor="" icon="" name="Merge9" type="Or" x="1600" y="30">
-   <Description/>
+   <Description />
   </Merge>
  </Merges>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

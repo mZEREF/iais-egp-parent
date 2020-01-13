@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -83,7 +84,7 @@ public class HcsaChklConfigDelegator {
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_SEARCH, null);
-        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_CONFIG_RESULT, null);
         ParamUtil.setSessionAttr(request, "addedItemIdList", null);
         ParamUtil.setSessionAttr(request, "actionBtn", null);
 
@@ -322,6 +323,7 @@ public class HcsaChklConfigDelegator {
         String module = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE);
         String type = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE);
         String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
+        String hciCode = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_HCI_CODE);
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
         String eftStartDate = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE);
         String eftEndDate = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE);
@@ -329,6 +331,7 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, common);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, module);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE, type);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_HCI_CODE, hciCode);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE, svcName);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE, eftStartDate);
@@ -691,6 +694,30 @@ public class HcsaChklConfigDelegator {
         // go checklist checklist item page
         String currentValidateId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX, currentValidateId);
+    }
+
+    /**
+     * AutoStep: doSort
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void doSort(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doSorting(searchParam,bpc.request);
+    }
+
+    /**
+     * AutoStep: doPage
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void doPage(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doSorting(searchParam,bpc.request);
     }
 
 

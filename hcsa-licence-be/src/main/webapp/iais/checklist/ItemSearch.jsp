@@ -36,11 +36,12 @@
 
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <span id="error_deleteItemMsg" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_cloneItemMsg" name="iaisErrorMsg" class="error-msg"></span>
         <div class="form-horizontal">
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label">Regulation Clause Number</label>
             <div class="col-xs-5 col-md-3">
-              <input type="text" name="regulationClauseNo" value=""/>
+              <input type="text" name="regulationClauseNo" value="${regulationClauseNo}"/>
               <span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
@@ -48,7 +49,7 @@
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label">Regulation</label>
             <div class="col-xs-5 col-md-3">
-              <input type="text" name="regulationClause" value=""/>
+              <input type="text" name="regulationClause" value="${regulationClause}"/>
               <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
@@ -56,7 +57,7 @@
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label">Checklist Item</label>
             <div class="col-xs-5 col-md-3">
-              <input type="text" name="checklistItem" value=""/>
+              <input type="text" name="checklistItem" value="${checklistItem}"/>
               <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>
@@ -65,7 +66,7 @@
             <label class="col-md-2">Risk Level</label>
             <div class="col-md-3">
               <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL"
-                           firstOption="Select Risk Level"></iais:select>
+                           firstOption="Select Risk Level" value="${riskLevel}"></iais:select>
             </div>
           </div>
 
@@ -73,7 +74,7 @@
             <label class="col-xs-2">Status</label>
             <div class="col-md-3">
               <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                           firstOption="Select Status" filterValue="CMSTAT002"></iais:select>
+                           firstOption="Select Status" filterValue="CMSTAT002" value="${status}"></iais:select>
             </div>
           </div>
         </div>
@@ -89,13 +90,13 @@
                     <tr>
                       <iais:sortableHeader needSort="false" field="" value="No."></iais:sortableHeader>
                       <td></td>
-                      <iais:sortableHeader needSort="true" field="regulationClauseNo"
+                      <iais:sortableHeader needSort="true" field="CLAUSE_NO"
                                            value="Regulation Clause Number"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="regulationClause"
+                      <iais:sortableHeader needSort="true" field="CLAUSE"
                                            value="Regulations"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="checklistItem"
+                      <iais:sortableHeader needSort="true" field="CHECKLISTITEM"
                                            value="Checklist Item"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="riskLevel" value="Risk Level"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true" field="RISK_LEVEL" value="Risk Level"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="status" value="Status"></iais:sortableHeader>
                     </tr>
                     </thead>
@@ -139,7 +140,6 @@
                   <div class="table-footnote">
                     <div class="row">
                       <div class="col-xs-6 col-md-4">
-                        <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
                       </div>
                       <div class="col-xs-50 col-md-10 text-right">
                         <div class="nav">
@@ -258,6 +258,10 @@
 
     function jumpToPagechangePage(){
         SOP.Crud.cfxSubmit("mainForm", "doPage");
+    }
+
+    function sortRecords(sortFieldName,sortType){
+        SOP.Crud.cfxSubmit("mainForm","sortRecords",sortFieldName,sortType);
     }
 
 

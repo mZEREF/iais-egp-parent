@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -46,10 +47,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -272,7 +271,7 @@ public class HcsaChklItemDelegator {
     public void submitCloneItem(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
-        List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) request.getSession().getAttribute("cloneItems");
+        List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR);
         if (chklItemDtos == null || chklItemDtos.isEmpty()){
             Map<String,String> errorMap = new HashMap<>(1);
             errorMap.put("cloneRecords", "Please add item to be clone.");
@@ -294,6 +293,7 @@ public class HcsaChklItemDelegator {
             return;
         }
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+
     }
 
 
@@ -359,19 +359,12 @@ public class HcsaChklItemDelegator {
             return;
         }
 
+        if(checkBoxItemId.length > 0x10){
+            return;
+        }
+
         List<ChecklistItemDto> chklItemDtos = hcsaChklService.listChklItemByItemId(Arrays.asList(checkBoxItemId));
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, (Serializable) chklItemDtos);
-
-    }
-
-    /**
-     * AutoStep: prepareChecklistItemInfo
-     * @param bpc
-     * @throws IllegalAccessException
-     */
-    public void prepareChecklistItemInfo(BaseProcessClass bpc) throws IllegalAccessException {
-        HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
 
     }
 
@@ -424,6 +417,7 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if(!HcsaChecklistConstants.ACTION_EDIT_CLONE_ITEM.equals(currentAction)){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
             return;
         }
 
@@ -469,10 +463,10 @@ public class HcsaChklItemDelegator {
     public void prepareChecklistItem(BaseProcessClass bpc) throws IllegalAccessException {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
 
         if(HcsaChecklistConstants.ACTION_CANCEL.equals(currentAction)){
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
-            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
             ParamUtil.setSessionAttr(request, "currentValidateId", null);
         }
 
@@ -563,6 +557,19 @@ public class HcsaChklItemDelegator {
         CrudHelper.doPaging(searchParam, request);
     }
 
+
+    /**
+     * AutoStep: sortRecords
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void sortRecords(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doSorting(searchParam,bpc.request);
+    }
+
     /**
      * AutoStep: prepareEditItem
      * @param bpc
@@ -586,7 +593,14 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,"btnTag","CloneButton");
         preSelectOption(request);
-        loadSingleItemData(request);
+
+        String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
+        List<ChecklistItemDto> chklItemDtos = (List<ChecklistItemDto>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR);
+        chklItemDtos.stream().forEach(itemDto -> {
+            if (itemDto.getItemId().equals(itemId)){
+                ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
+            }
+        });
     }
 
     /**
@@ -654,6 +668,13 @@ public class HcsaChklItemDelegator {
         itemDto.setRiskLevel(riskLevel);
         itemDto.setAnswerType(answerType);
 
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE, clause);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_REGULATION_DESC, desc);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM, chklItem);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_STATUS, status);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE, answerType);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_RISK_LEVEL, riskLevel);
+
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "search");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
@@ -715,6 +736,12 @@ public class HcsaChklItemDelegator {
                 SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
                 if (searchResult != null){
                     List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
+                    checkItemQueryDtoList.stream().forEach(itemQueryDto -> {
+                        itemQueryDto.setRiskLevel(MasterCodeUtil.getCodeDesc(itemQueryDto.getRiskLevel()));
+                        itemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(itemQueryDto.getStatus()));
+                        itemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(itemQueryDto.getAnswerType()));
+                    });
+
                     file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
                 }
                 break;

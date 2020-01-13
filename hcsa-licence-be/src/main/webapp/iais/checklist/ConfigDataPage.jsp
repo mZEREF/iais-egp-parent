@@ -52,12 +52,12 @@
 
       <div>
           <td>
-            <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_CHECKLIST_MODULE" name= "moduleCheckBox" labelName = "Module"></iais:checkbox>
+            <iais:checkbox checkboxId="moduleCheckBox" codeCategory = "CATE_ID_CHECKLIST_MODULE" name= "moduleCheckBox" labelName = "Module" ></iais:checkbox>
           </td>
 
 
           <td>
-            <iais:checkbox checkboxId="typeCheckBox" codeCategory = "CATE_ID_CHECKLIST_TYPE" forName="typeCheckBoxFor" name= "typeCheckBox" labelName = "Type"></iais:checkbox>
+            <iais:checkbox checkboxId="typeCheckBox" codeCategory = "CATE_ID_CHECKLIST_TYPE" forName="typeCheckBoxFor" name= "typeCheckBox" labelName = "Type" ></iais:checkbox>
           </td>
        </div>
 
@@ -66,14 +66,14 @@
         <div class="form-group">
           <label class="col-md-2">Service Name &nbsp;</label>
           <div class="col-md-5">
-            <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Select Service Name"></iais:select>
+            <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Select Service Name" value="${svcName}"></iais:select>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-md-2">Service Sub Type &nbsp;</label>
           <div class="col-md-5">
-            <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Select Sub Type Name"></iais:select>
+            <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Select Sub Type Name" value="${svcSubType}"></iais:select>
           </div>
         </div>
 
@@ -91,14 +91,14 @@
             <tr>
               <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
               <td></td>
-              <iais:sortableHeader needSort="true"   field="isCommon" value="Common"></iais:sortableHeader>
+              <iais:sortableHeader needSort="true"   field="IS_COMMON" value="Common"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="type" value="Type"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="service" value="Service"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="svcSubType" value="Service Sub-type"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="hciCode" value="HCI Code"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="eftStartDate" value="Effective Start Date"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="eftEndDate" value="Effective End Date"></iais:sortableHeader>
+              <iais:sortableHeader needSort="true"   field="SUBTYPE_NAME" value="Service Sub-type"></iais:sortableHeader>
+              <iais:sortableHeader needSort="true"   field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
+              <iais:sortableHeader needSort="true"   field="START_DATE" value="Effective Start Date"></iais:sortableHeader>
+              <iais:sortableHeader needSort="true"   field="END_DATE" value="Effective End Date"></iais:sortableHeader>
               <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
 
             </tr>
@@ -178,11 +178,11 @@
     SOP.Crud.cfxSubmit("mainForm", "prepareAddConfig");
   }
 
-  function doCancel(){
-    SOP.Crud.cfxSubmit("mainForm","doCancel");
-  }
-
   function jumpToPagechangePage(){
       SOP.Crud.cfxSubmit("mainForm", "doPage");
+  }
+
+  function sortRecords(sortFieldName,sortType){
+      SOP.Crud.cfxSubmit("mainForm","doSort",sortFieldName,sortType);
   }
 </script>
