@@ -112,15 +112,15 @@
                 <thead>
                 <tr align="center">
                   <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"  field="HCI_NAME" value="HCI Name / Address"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"  field="SERVICE_ID" value="Service Name"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false" field="END_DATE" value="Licence Expiry Date (dd/mm/yyyy)"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false" field="" value="Inspection Date (dd/mm/yyyy)"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false" field="Status" value="Application Status"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false" field="" value="Inspector"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="APPLICATION_NO" value="Application No."></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="APP_TYPE" value="Application Type"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name / Address"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"  field="SERVICE_ID" value="Service Name"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true" field="END_DATE" value="Licence Expiry Date (dd/mm/yyyy)"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true" field="" value="Inspection Date (dd/mm/yyyy)"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true" field="Status" value="Application Status"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true" field="" value="Inspector"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="" value="Inspection Lead"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                 </tr>
