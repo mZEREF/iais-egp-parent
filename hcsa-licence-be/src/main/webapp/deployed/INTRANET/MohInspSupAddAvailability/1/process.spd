@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/InspSupAddAvailabilityStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohInspSupAddAvailability" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="InspSupAddAvailabilityStart" x="60" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityStart_OnStepProcess_0" name="inspSupAddAvailabilityStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityInit" x="240" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityInit_OnStepProcess_0" name="inspSupAddAvailabilityInit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityPre" x="400" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityPre_OnStepProcess_0" name="inspSupAddAvailabilityPre_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityStep" x="770" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityStep_OnStepProcess_0" name="inspSupAddAvailabilityStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilitySort" x="1190" y="0">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilitySort_OnStepProcess_0" name="inspSupAddAvailabilitySort_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilitySearch" x="1180" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilitySearch_OnStepProcess_0" name="inspSupAddAvailabilitySearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityPage" x="1190" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityPage_OnStepProcess_0" name="inspSupAddAvailabilityPage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityQuery" x="1440" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityQuery_OnStepProcess_0" name="inspSupAddAvailabilityQuery_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityAdd" x="720" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityAdd_OnStepProcess_0" name="inspSupAddAvailabilityAdd_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityConfirm" x="960" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityConfirm_OnStepProcess_0" name="inspSupAddAvailabilityConfirm_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityVali" x="730" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityVali_OnStepProcess_0" name="inspSupAddAvailabilityVali_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityStep2" x="970" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityStep2_OnStepProcess_0" name="inspSupAddAvailabilityStep2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityDelete" x="1190" y="310">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityDelete_OnStepProcess_0" name="inspSupAddAvailabilityDelete_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityEdit" x="500" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityEdit_OnStepProcess_0" name="inspSupAddAvailabilityEdit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspSupAddAvailabilityEditVali" x="490" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspSupAddAvailabilityEditVali_OnStepProcess_0" name="inspSupAddAvailabilityEditVali_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspSupAddAvailabilitySearchPage" stageIndicator="" x="560" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspSupAddAvailabilityAddPage" stageIndicator="" x="710" y="310">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspSupAddAvailabilityConPage" stageIndicator="" x="960" y="310">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspSupAddAvailabilityEditPage" stageIndicator="" x="490" y="310">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/InspSupAddAvailabilityStart" style="rectanular">
+   <position>{(80,120)(260,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityPre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityInit" style="rectanular">
+   <position>{(260,120)(420,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspSupAddAvailabilitySearchPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityPre" style="rectanular">
+   <position>{(420,120)(580,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspSupAddAvailabilitySearchPage" style="rectanular">
+   <position>{(580,120)(790,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityStep" style="rectanular">
+   <position>{(790,120)(990,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspSupAddAvailabilitySearchPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(990,120)(991,59)(660,59)(580,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilitySearch" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(990,120)(1200,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilitySort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(990,120)(1210,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(990,120)(1210,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilitySort" style="oblique">
+   <position>{(1210,20)(1460,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityQuery" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilitySearch" style="rectanular">
+   <position>{(1200,120)(1460,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityPage" style="oblique">
+   <position>{(1210,220)(1460,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityAdd" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(990,120)(740,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspSupAddAvailabilityAddPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityAdd" style="rectanular">
+   <position>{(740,220)(730,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityAdd" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(800,580)(953,579)(953,219)(740,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspSupAddAvailabilityAddPage" style="rectanular">
+   <position>{(730,330)(750,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityVali" style="rectanular">
+   <position>{(750,450)(800,580)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspSupAddAvailabilityConPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityConfirm" style="rectanular">
+   <position>{(980,220)(980,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityStep2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspSupAddAvailabilityConPage" style="rectanular">
+   <position>{(980,330)(990,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(800,580)(800,720)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityStep" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(800,720)(400,719)(400,198)(790,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityDelete" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(990,120)(1210,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityDelete" style="oblique">
+   <position>{(1210,330)(1460,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityQuery" style="oblique">
+   <position>{(1460,120)(1522,-51)(474,-51)(420,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityConfirm" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(990,120)(980,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityQuery" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityStep2" style="oblique">
+   <position>{(990,450)(1522,449)(1460,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(990,120)(520,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspSupAddAvailabilityEditPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" style="rectanular">
+   <position>{(520,220)(510,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityEditVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspSupAddAvailabilityEditPage" style="rectanular">
+   <position>{(510,330)(510,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspSupAddAvailabilityEditVali" style="rectanular">
+   <position>{(510,450)(570,580)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(570,580)(800,720)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(570,580)(479,580)(479,220)(520,220)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspSupAddAvailabilityAdd" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="780" y="560">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="flag" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="550" y="560">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="inspSupAddAvailabilityType" name="Switch1" x="970" y="100">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/InspSupAddAvailabilitySearchPage" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilitySearch" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilitySort" value="&quot;sort&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityPage" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityAdd" value="&quot;add&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityDelete" value="&quot;delete&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityConfirm" value="&quot;confirm&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspSupAddAvailabilityEdit" value="&quot;edit&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="780" y="700">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
