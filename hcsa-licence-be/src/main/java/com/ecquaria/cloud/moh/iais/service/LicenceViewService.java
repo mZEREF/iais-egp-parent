@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 
 /**
@@ -11,4 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 
 public interface LicenceViewService {
     public AppSubmissionDto getAppSubmissionByAppId(String appId);
+
+    public AppEditSelectDto saveAppEditSelect(AppEditSelectDto appEditSelectDto);
+    public AppEditSelectDto saveAppEditSelectToFe(AppEditSelectDto appEditSelectDto);
 }

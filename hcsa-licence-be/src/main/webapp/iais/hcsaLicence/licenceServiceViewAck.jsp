@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -12,7 +13,20 @@
       <div class="center-content">
         <div class="intranet-content">
           <div class="bg-title">
-            <h2>Success</h2>
+            <iais:error>
+              <c:if test = "${not empty errorMsg}">
+                <div class="error">
+                    ${errorMap}
+                </div>
+              </c:if>
+            </iais:error>
+            <iais:success>
+              <c:if test = "${not empty successMsg}">
+                <div class="success">
+                    ${successMsg}
+                </div>
+              </c:if>
+            </iais:success>
           </div>
         </div>
       </div>

@@ -3,6 +3,8 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -22,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,7 +151,43 @@ public class LicenceViewServiceDelegator {
      */
     public void doSaveSelect(BaseProcessClass bpc) throws Exception{
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect start ..."));
+         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+         String successMsg = null;
+         String errorMsg = null;
+         if(applicationViewDto !=null){
+             AppPremisesCorrelationDto newAppPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
+             if(newAppPremisesCorrelationDto!=null){
+                 String[] selects = ParamUtil.getStrings(bpc.request,"editCheckbox");
+                 if(selects!=null && selects.length > 0){
+                     List<String> selectsList = Arrays.asList(selects);
 
+                     AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                     appEditSelectDto.setApplicationId(newAppPremisesCorrelationDto.getApplicationId());
+                     if(selectsList.contains("premises")){
+                         appEditSelectDto.setPremisesEdit(true);
+                     }
+                     if(selectsList.contains("primary")){
+                         appEditSelectDto.setPrimaryEdit(true);
+                     }
+                     if(selectsList.contains("service")){
+                         appEditSelectDto.setServiceEdit(true);
+                     }
+                     appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                     appEditSelectDto = licenceViewService.saveAppEditSelect(appEditSelectDto);
+                     appEditSelectDto = licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
+                     successMsg = "save success";
+                 }else{
+                     successMsg = "do not select save success!!!";
+                 }
+             }else{
+               errorMsg = "Data Error!!!";
+             }
+         }else{
+           errorMsg = "Session Time out !!!";
+         }
+
+         ParamUtil.setRequestAttr(bpc.request,"successMsg",successMsg);
+         ParamUtil.setRequestAttr(bpc.request,"errorMsg",errorMsg);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect end ..."));
     }
 

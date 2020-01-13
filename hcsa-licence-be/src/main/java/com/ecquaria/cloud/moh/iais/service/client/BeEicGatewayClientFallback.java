@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
@@ -48,6 +49,17 @@ public class BeEicGatewayClientFallback {
     }
     public FeignResponseEntity<LicPremisesReqForInfoDto> createLicPremisesReqForInfoFe(
             LicPremisesReqForInfoDto licPremisesReqForInfoDto,String date,
+            String authorization,
+            String dateSec,
+            String authorizationSec){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    public FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(
+            AppEditSelectDto  appEditSelectDto,String date,
             String authorization,
             String dateSec,
             String authorizationSec){

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
@@ -50,5 +51,12 @@ public interface BeEicGatewayClient {
             @RequestHeader("authorization") String authorization,
             @RequestHeader("date-Secondary") String dateSec,
             @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @RequestMapping(value = "/v1/app-edit-select/",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(@RequestBody AppEditSelectDto  appEditSelectDto,
+                                                        @RequestHeader("date") String date,
+                                                        @RequestHeader("authorization") String authorization,
+                                                        @RequestHeader("date-Secondary") String dateSec,
+                                                        @RequestHeader("authorization-Secondary") String authorizationSec);
 
 }

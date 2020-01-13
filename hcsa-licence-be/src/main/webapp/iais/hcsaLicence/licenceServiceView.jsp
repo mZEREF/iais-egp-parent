@@ -100,7 +100,7 @@
                             <div class=" panel-collapse collapse" id="collapseServiceInfo0" role="tabpanel" aria-labelledby="headingServiceInfo0">
                               <div class="panel-body">
                                 <p class="text-right">
-                                  <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
+                                  <input class="form-check-input" id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="service">
                                 </p>
                                 <iframe  class="svc-iframe" title="" src="${pageContext.request.contextPath}/eservice/INTRANET/MOHServiceView" id="elemId-0"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
                               </div>
@@ -135,20 +135,9 @@
 
     $(document).ready(function() {
         //Binding method
-        $('#premisesEdit').click(function(){
-            submit('premises',null,null);
-        });
-        $('#docEdit').click(function(){
-            submit('documents',null,null);
-        });
-        $('#docBack').click(function(){
-            submit('serviceForms',null,null);
-        });
-        $('#previewSaveDraft').click(function(){
-            submit('preview','saveDraft',null);
-        });
         $('#previewNext').click(function(){
-            submit('payment','doSubmit',null);
+            var mainForm = document.getElementById("mainForm");
+            mainForm.submit();
         });
 
         $('.svc-pannel-collapse').click(function () {
