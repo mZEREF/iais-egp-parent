@@ -10,7 +10,18 @@
                 <%@ include file="../common/dashboardDropDown.jsp" %>
                 <div class="col-xs-12">
                     <div class="dashboard-page-title">
-                        <h1>New Licence Application</h1>
+                        <c:choose>
+                            <c:when test="${'APTY004' == AppSubmissionDto.appType}">
+                                <h1>Renewal Licence Application</h1>
+                            </c:when>
+                            <c:when test="${'APTY005' == AppSubmissionDto.appType}">
+                                <h1>Amend Licence Application</h1>
+                            </c:when>
+                            
+                            <c:otherwise>
+                                <h1>New Licence Application</h1>
+                            </c:otherwise>
+                        </c:choose>
                         <h3>
                             You are applying for
                             <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status">
