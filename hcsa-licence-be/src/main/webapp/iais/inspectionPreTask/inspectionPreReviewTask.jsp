@@ -64,7 +64,7 @@
                         </iais:value>
                       </iais:row>
                       <iais:action >
-                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectionPreTaskBack()"><a href = "${inboxUrl}">Back</a></button>
+                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspectionPreTaskBack()"><a style="color: black;" href = "${inboxUrl}">Back</a></button>
                         <button class="btn btn-lg btn-login-submit" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
                         <span style="float:right">&nbsp;</span>
 
