@@ -35,7 +35,7 @@
                 </label>
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
-                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE"></iais:select>
+                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE" value="${domainType}"></iais:select>
                 </div>
             </div>
 
@@ -43,7 +43,7 @@
                 <label class="col-md-1">Module:
                 </label>
                 <div class="col-md-3">
-                    <iais:select name="module" id="module"  codeCategory = "1D3F6F1A-5334-EA11-BE7D-000C29F371DC" firstOption="Please select"></iais:select>
+                    <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${module}"></iais:select>
                 </div>
             </div>
 
@@ -51,18 +51,18 @@
                 <label class="col-md-1">Description:
                 </label>
                 <div class="col-md-3">
-                    <input id="desciption" type="text">
+                    <input id="description" type="text" value="${description}">
                 </div>
             </div>
 
-            <div class="form-group">
+            <%--<div class="form-group">
                 <label class="col-md-1">Status:
                 </label>
                 <div class="col-md-3">
                     <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                                 firstOption="Select Status" filterValue="CMSTAT002"></iais:select>
+                                 firstOption="Select Status" filterValue="CMSTAT002" value="${status}"></iais:select>
                 </div>
-            </div>
+            </div>--%>
 
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="tab-content">
@@ -98,12 +98,12 @@
                                                 <c:forEach var="resultRow" items="${systemParamSearchResult.rows}" varStatus="status">
                                                     <tr>
                                                         <td class="row_no">${(status.index + 1) + (systemParamSearchParam.pageNo - 1) * systemParamSearchParam.pageSize}</td>
-                                                        <td>${resultRow.domainType}</td>
-                                                        <td>${resultRow.module}</td>
+                                                        <td><iais:code code="${resultRow.domainType}"></iais:code></td>
+                                                        <td><iais:code code="${resultRow.module}"></iais:code></td>
                                                         <td>${resultRow.description}</td>
-                                                        <td>${resultRow.paramType}</td>
-                                                        <td>${resultRow.value}</td>
-                                                        <td>${resultRow.status}</td>
+                                                            <td>${resultRow.paramType}</td>
+                                                        <td>${resultRow.units}</td>
+                                                        <td><iais:code code="${resultRow.status}"></iais:code></td>
                                                         <td>
                                                             <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${resultRow.id}');"/>
                                                             <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${resultRow.id}');"/>

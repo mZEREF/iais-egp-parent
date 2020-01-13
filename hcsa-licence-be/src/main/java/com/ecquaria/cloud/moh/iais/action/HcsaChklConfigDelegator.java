@@ -237,6 +237,11 @@ public class HcsaChklConfigDelegator {
         String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
 
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, common);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE, svcName);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType);
+        ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE_CHECKBOX, typeCheckBox);
+
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
         if(!StringUtil.isEmpty(common)){

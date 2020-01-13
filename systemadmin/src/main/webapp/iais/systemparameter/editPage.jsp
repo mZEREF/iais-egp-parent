@@ -23,67 +23,82 @@
 </style>
 
 
-<form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
-    <div class="main-content">
-        <div class="container">
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <div class="col-xs-12">
-                        <td>
-                            <label class="col-xs-12 col-md-3 control-label">Domain Type</label>
-                            <div class="col-xs-12 col-md-5">
-                                <iais:select name="domainType" options="domainTypeSelect" firstOption="Please select" value="${parameterRequestDto.domainType}" ></iais:select>
-                            </div>
-                        </td>
-                    </div>
+<div class="main-content">
+    <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+        <%@ include file="/include/formHidden.jsp" %>
+        <input type="hidden" name="crud_action_type" value="">
+        <input type="hidden" name="crud_action_value" value="">
+        <input type="hidden" name="crud_action_additional" value="">
+        <input type="hidden" name="currentValidateId" value="">
+        <div class="bg-title"><h2>System Parameters</h2></div>
 
-                    <div class="col-xs-12">
-                        <td>
-                            <label class="col-xs-12 col-md-3 control-label">Module</label>
-                            <div class="col-xs-12 col-md-5">
-                                <iais:select name="module" options="moduleTypeSelect" firstOption="Please select" value="${parameterRequestDto.module}"></iais:select>
-                            </div>
-                        </td>
-                    </div>
-
-                    <div class="col-xs-12">
-                        <td>
-                            <label class="col-xs-12 col-md-3 control-label">Description</label>
-                            <div class="col-xs-12 col-md-5">
-                                <input type="text" name="description" value="${parameterRequestDto.description}" />
-                            </div>
-                        </td>
-                    </div>
-
-                    <div class="col-xs-12">
-                        <td>
-                            <label class="col-xs-12 col-md-3 control-label">Value</label>
-                            <div class="col-xs-12 col-md-5">
-                                <input type="text" name="value" value="${parameterRequestDto.value}" />
-                            </div>
-                        </td>
-                    </div>
-
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-1">Domain Type:
+                </label>
+                <div class="col-md-3">
+                    <iais:select name="domainType" id="domainType"
+                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE" value="${parameterRequestDto.domainType}"></iais:select>
+                    <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
-            <div class="application-tab-footer">
-                <td>
-                    <div class="text-right text-center-mobile">
-                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doQuery();">Search</a>
-
-                    </div>
-
-                </td>
+            <div class="form-group">
+                <label class="col-md-1">Module:
+                </label>
+                <div class="col-md-3">
+                    <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${parameterRequestDto.module}"></iais:select>
+                    <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
             </div>
-        </div>
-    </div>
-</>
 
+            <div class="form-group">
+                <label class="col-md-1">Units:
+                </label>
+                <div class="col-md-3">
+                    <input name="units" type="text" value="${parameterRequestDto.units}">
+                    <span id="error_units" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-1">Description:
+                </label>
+                <div class="col-md-3">
+                    <input name="description" type="text" value="${parameterRequestDto.description}">
+                    <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+            </div>
+
+            <%--<div class="form-group">
+                <label class="col-md-1">Status:
+                </label>
+                <div class="col-md-3">
+                    <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
+                                 firstOption="Select Status" filterValue="CMSTAT002" value="${parameterRequestDto.status}"></iais:select>
+                    <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+            </div>--%>
+        </div>
+        <div class="application-tab-footer">
+            <td>
+                <div class="text-right text-center-mobile">
+                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Cancel</a>
+                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doEdit('${parameterRequestDto.id}');">Edit</a>
+
+                </div>
+
+            </td>
+        </div>
+
+
+
+
+
+
+    </form>
+</div>
+<%@include file="/include/validation.jsp"%>
 <script type="text/javascript">
 
 
