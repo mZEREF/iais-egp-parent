@@ -213,9 +213,8 @@ public class UploadFileServiceImpl implements UploadFileService {
                return false;
            });
            for(File file:files){
-               try {
-                   FileInputStream is=new FileInputStream(file);
-                   ByteArrayOutputStream by=new ByteArrayOutputStream();
+               try ( FileInputStream is=new FileInputStream(file);
+                     ByteArrayOutputStream by=new ByteArrayOutputStream();){
                    int count=0;
                    byte [] size=new byte[1024];
                    count=is.read(size);

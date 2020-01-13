@@ -191,9 +191,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Override
     public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName) {
-        FileInputStream fileInputStream=null;
+
         Boolean flag=false;
-        try {
+
             File file =new File(downZip+File.separator+fileName+File.separator+"folder");
             if(!file.exists()){
                 file.mkdirs();
@@ -202,51 +202,38 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 File[] files = file.listFiles();
                 for(File  filzz:files){
                     if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
-                        try {
+                        try (  FileInputStream  fileInputStream =new FileInputStream(filzz);
+                                ByteArrayOutputStream by=new ByteArrayOutputStream();) {
 
-                        }catch (Exception e){
-
-                        }
-                       fileInputStream =new FileInputStream(filzz);
-                        ByteArrayOutputStream by=new ByteArrayOutputStream();
-                        int count=0;
-                        byte [] size=new byte[1024];
-                        count=fileInputStream.read(size);
-                        while(count!=-1){
-                            by.write(size,0,count);
-                            count= fileInputStream.read(size);
-                        }
-
-                        Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList);
-                        flag=aBoolean;
-                      /*  Boolean backups = backups(flag, filzz);*/
-                        if(aBoolean){
-                            if(processFileTrackDto!=null){
-
-                                changeStatus(processFileTrackDto);
-
-                           /*     Boolean aBoolean1 = changeFeApplicationStatus();*/
-
-                                saveFileRepo( fileName);
+                            int count=0;
+                            byte [] size=new byte[1024];
+                            count=fileInputStream.read(size);
+                            while(count!=-1){
+                                by.write(size,0,count);
+                                count= fileInputStream.read(size);
                             }
+
+                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList);
+                            flag=aBoolean;
+                            /*  Boolean backups = backups(flag, filzz);*/
+                            if(aBoolean){
+                                if(processFileTrackDto!=null){
+
+                                    changeStatus(processFileTrackDto);
+
+                                    /*     Boolean aBoolean1 = changeFeApplicationStatus();*/
+
+                                    saveFileRepo( fileName);
+                                }
+                            }
+                        }catch (Exception e){
+                            log.error(e.getMessage(),e);
                         }
 
                     }
                 }
             }
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
-        finally {
-            if(fileInputStream!=null){
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(),e);
-                }
-            }
 
-        }
 
         return flag;
     }
@@ -463,10 +450,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        try {
-                            InputStream input = new FileInputStream(f);
-                            OutputStream os = fileItem.getOutputStream();
-                            IOUtils.copy(input, os);
+                        try ( InputStream input = new FileInputStream(f);){
+                            if(fileItem!=null){
+                                OutputStream os = fileItem.getOutputStream();
+                                IOUtils.copy(input, os);
+                            }
                         } catch (IOException ex) {
                            log.error(ex.getMessage(),ex);
                         }

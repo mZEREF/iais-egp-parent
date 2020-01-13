@@ -46,6 +46,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -135,14 +136,18 @@ public class HcsaApplicationDelegator {
 
         String correlationId = taskDto.getRefNo();
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
-        if(appPremisesCorrelationDto!=null){
-            correlationId =  appPremisesCorrelationDto.getId();
-            taskDto.setRefNo(correlationId);
+        appPremisesCorrelationDto.setOldCorrelationId(correlationId);
+        String newCorrelationId = appPremisesCorrelationDto.getId();
+        if(StringUtil.isEmpty(correlationId)&&StringUtil.isEmpty(newCorrelationId)&&!newCorrelationId.equals(correlationId)){
+
+
         }
 //        get routing stage dropdown send to page.
-        ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(correlationId);
+        ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(newCorrelationId);
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
         List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+        applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+
         List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
         for (int i = 0; i <appSupDocDtos.size(); i++) {
             for (int j = 0; j <docTitleList.size() ; j++) {
@@ -860,6 +865,12 @@ public class HcsaApplicationDelegator {
         }
         return  new ArrayList(set);
 
+
+    }
+
+    /************************/
+
+    private void  date(HttpServletRequest request){
 
     }
 }

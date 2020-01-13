@@ -39,10 +39,15 @@
                                 <div class="panel-main-content">
                                   <div class="preview-info">
                                     <p><strong>Premises ${status.index+1}</strong></p>
-                                    <p>${appGrpPremDto.premisesType}: ${appGrpPremDto.address}</p>
+                                    <p>${appGrpPremDto.premisesType}: ${appGrpPremDto.address}
+                                      <wrms:value width="7">
+                                      <span class="newVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}: ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}: ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
+                                      <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}: ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}: ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
+                                    </wrms:value></p>
                                     <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
                                       <p>Vehicle No: ${appGrpPremDto.conveyanceVehicleNo}</p>
                                     </c:if>
+
                                   </div>
                                 </div>
                               </c:forEach>
@@ -123,6 +128,9 @@
     </div>
   </div>
 </form>
+<style>
+  .compareTdStyle{display:inline;padding:.2em .6em .3em;line-height:1;color:#000;text-align:center;vertical-align:baseline;border-radius:.5em;font-size:100%;background-color:#FF0}
+</style>
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -151,6 +159,22 @@
     });
 
 
+    hightLightChangeVal('newVal', 'oldVal');
+
+    function hightLightChangeVal(newValClass, oldValClass) {
+        $('.' + oldValClass).each(function () {
+            var oldVal = $(this).attr('attr');
+            var newEle = $(this).parent().find('.' + newValClass);
+            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
+            if (oldVal.length > 0 && newVal.length > 0) {
+                if (oldVal != newVal) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            }
+        });
+    }
 
 
 </script>
