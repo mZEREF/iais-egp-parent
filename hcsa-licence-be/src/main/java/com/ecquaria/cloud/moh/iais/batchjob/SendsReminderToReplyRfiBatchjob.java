@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -71,16 +72,16 @@ public class SendsReminderToReplyRfiBatchjob {
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getReqInfoId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         Map<String,Object> map=new HashMap<>();
-        map.put("APPLICANT_NAME",licenseeDto.getName());
-        map.put("DETAILS",licPremisesReqForInfoDto.getOfficerRemarks());
-        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+        map.put("APPLICANT_NAME",StringUtil.viewHtml(licenseeDto.getName()));
+        map.put("DETAILS",StringUtil.viewHtml(licPremisesReqForInfoDto.getOfficerRemarks()));
+        map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
 
 
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
         Calendar cal = Calendar.getInstance();
         cal.setTime(licPremisesReqForInfoDto.getDueDateSubmission());
-        cal.add(Calendar.DAY_OF_MONTH, 7);
+        cal.add(Calendar.DAY_OF_MONTH, RequestForInformationConstants.REMIND_INTERVAL_DAY);
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);

@@ -126,7 +126,9 @@
                                             <td><c:out value="${pool.currentRiskTagging}"/></td>
 
                                             <td><iais:action style="text-align:center;">
-                                                <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.licPremId}');">ReqForInfo</button>
+                                                <c:if test="${pool.licenceNo!=null}">
+                                                    <button type="button"  class="btn btn-default" onclick="javascript:doReqForInfo('${pool.licPremId}');">ReqForInfo</button>
+                                                </c:if>
                                             </iais:action></td>
                                         </tr>
                                     </c:forEach>

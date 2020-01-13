@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -31,8 +30,7 @@ import java.util.List;
 public class ResponseForInformationDelegator {
     @Autowired
     ResponseForInformationService responseForInformationService;
-    @Autowired
-    FileRepoClient fileRepoClient;
+
 
     @Autowired
     private ServiceConfigService serviceConfigService;
@@ -111,6 +109,8 @@ public class ResponseForInformationDelegator {
         licPremisesReqForInfoDto.setUserReply(userReply);
         responseForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
+
+
         // 		doSubmit->OnStepProcess
     }
 }
