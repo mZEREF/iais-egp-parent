@@ -94,7 +94,7 @@ public class SearchResultHelper {
                         judgeDate(dateOfWeekList,calendar,avaiAM,avaiPM);
                     }
                     break;
-                case "SUNDAY":
+                default:
                     calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
                     if (calendar.get(Calendar.YEAR) == THIS_YEAR) {
                         judgeDate(dateOfWeekList,calendar,avaiAM,avaiPM);
