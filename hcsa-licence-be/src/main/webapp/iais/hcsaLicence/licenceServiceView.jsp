@@ -76,9 +76,15 @@
                                           <div class="field col-sm-4 control-label formtext"><label>Docment1 for Premise1:</label></div>
                                           <div class="control col-sm-5">
                                             <div class="fileList">
-                                              <span class="filename server-site" id="130">
+                                              <span class="filename server-site col-xs-6 col-md-6" id="130">
                                                ${appGrpPrimaryDocDto.docName} (${appGrpPrimaryDocDto.docSize} KB)
                                               </span>
+                                              <span class="col-xs-6 col-md-6">
+                                                <wrms:value width="7">
+                                                <span class="newVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}+${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
+                                                <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}+${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></label></span>
+                                                </wrms:value></span>
+
                                             </div>
                                           </div>
                                         </div>

@@ -76,7 +76,7 @@ public class LicenceViewServiceDelegator {
     public void PrepareViewData(BaseProcessClass bpc) throws Exception{
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData start ..."));
         ApplicationViewDto applicationViewDto=(ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
-        AppSubmissionDto appSubmissionDto=null;
+        AppSubmissionDto appSubmissionDto;
         String newCorrelationId="";
         String oldCorrelationId="";
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
@@ -90,7 +90,7 @@ public class LicenceViewServiceDelegator {
             appSubmissionDto = licenceViewService.getAppSubmissionByAppId(appId);
         }
         String status = appSubmissionDto.getStatus();
-        if("APST024".equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(status)){
             //new
             ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
             //last
