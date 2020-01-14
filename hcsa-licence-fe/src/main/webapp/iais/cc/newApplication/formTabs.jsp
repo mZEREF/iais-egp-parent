@@ -39,7 +39,7 @@
         // if($('#isServiceEdit').val() == 'true'){
         //     disabledPage();
         // }
-        <c:if test="${AppSubmissionDto.appEditSelectDto!=null}&&${!AppSubmissionDto.appEditSelectDto.serviceEdit}">
+        <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.serviceEdit}">
         disabledPage();
         </c:if>
     });

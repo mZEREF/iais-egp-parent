@@ -642,7 +642,7 @@
         //     disabledPage();
         // }
 
-        <c:if test="${AppSubmissionDto.appEditSelectDto!=null}&&${!AppSubmissionDto.appEditSelectDto.premisesEdit}">
+        <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.premisesEdit}">
         disabledPage();
         </c:if>
     });

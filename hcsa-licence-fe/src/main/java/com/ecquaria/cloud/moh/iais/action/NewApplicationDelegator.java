@@ -378,7 +378,7 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        if(isGetDataFromPage){
+        if(isGetDataFromPage && canEdit){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
@@ -651,6 +651,13 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> oldAppGrpPremisesDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        boolean premisesa= appGrpPremisesDtos.equals(oldAppGrpPremisesDtos);
+        boolean premises= appGrpPremisesDtos.get(0).equals(oldAppGrpPremisesDtos.get(0));
+
+        boolean related = appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+        boolean related1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0));
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
