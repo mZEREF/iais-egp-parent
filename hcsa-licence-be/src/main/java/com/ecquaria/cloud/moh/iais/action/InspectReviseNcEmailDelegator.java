@@ -9,13 +9,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
@@ -23,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -57,7 +55,6 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -120,27 +117,27 @@ public class InspectReviseNcEmailDelegator {
         AccessUtil.initLoginUserInfo(bpc.request);
         String taskId = ParamUtil.getRequestString(request,"taskId");
         if (StringUtil.isEmpty(taskId)) {
-            taskId = "7260C794-2C22-EA11-BE7D-000C29F371DC";
+            taskId = "F9359FD4-5934-EA11-BE7D-000C29F371DC";
         }
-        String serviceType = "Inspection";
-        InspectionFillCheckListDto cDto = fillupChklistService.getInspectionFillCheckListDto(taskId,serviceType);
-        String configId = cDto.getCheckList().get(0).getConfigId();
-        AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,configId);
-        InspectionFillCheckListDto insepectionNcCheckListDto = null;
-        String appPremCorrId = appPremPreCklDto.getAppPremCorrId();
-        AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"RETYPE001");
-        List<AppPremisesPreInspectionNcItemDto> itemDtoList = insepctionNcCheckListService.getNcItemDtoByAppCorrId(appPremPreCklDto.getAppPremCorrId());
-        insepectionNcCheckListDto = insepctionNcCheckListService.getNcCheckList(cDto,appPremPreCklDto,itemDtoList,appPremisesRecommendationDto);
-        ChecklistConfigDto commonCheckListDto = fillupChklistService.getcommonCheckListDto("Inspection","New");
-        InspectionFillCheckListDto commonDto  = fillupChklistService.transferToInspectionCheckListDto(commonCheckListDto,cDto.getCheckList().get(0).getAppPreCorreId());
-        insepctionNcCheckListService.getCommonDto(commonDto,appPremPreCklDto,itemDtoList);
+        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
+        String appPremCorrId = taskDto.getRefNo();
+        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
+        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
+        InspectionFillCheckListDto commonDto = null;
+        if(commonList!=null && !commonList.isEmpty()){
+            commonDto = commonList.get(0);
+        }
+        InspectionFDtosDto serListDto = new InspectionFDtosDto();
+        serListDto.setFdtoList(cDtoList);
+        fillupChklistService.getTcuInfo(serListDto,appPremCorrId);
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
-        TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
-        ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
-        ParamUtil.setSessionAttr(request,FILL_CHECK_LIST_DTO,insepectionNcCheckListDto);
-        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
+        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
+        ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
+        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
+        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
+        ParamUtil.setSessionAttr(request,"serListDto",serListDto);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
     }
@@ -287,14 +284,14 @@ public class InspectReviseNcEmailDelegator {
     public void checkListNext(BaseProcessClass bpc) {
         log.info("=======>>>>>checkListNext>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        InspectionFillCheckListDto cDto = getDataFromPage(request);
+        InspectionFDtosDto serListDto = getDataFromPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
         AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
-        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
-        ParamUtil.setSessionAttr(request,FILL_CHECK_LIST_DTO,cDto);
-        List<NcAnswerDto> acDtoList =  (List<NcAnswerDto>)ParamUtil.getSessionAttr(request,AC_DTO);
-        List<NcAnswerDto> ncDtoList = inspEmailService.getNcAnswerDtoList(cDto,commonDto,adchklDto,acDtoList);
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,"taskDto");
+        ParamUtil.setSessionAttr(request,"serListDto",serListDto);
+        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
+        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
+        List<NcAnswerDto> ncDtoList = insepctionNcCheckListService.getNcAnswerDtoList(taskDto.getRefNo());
         InspectionCheckListValidation inspectionCheckListValidation = new InspectionCheckListValidation();
         Map<String, String> errMap = inspectionCheckListValidation.validate(request);
         ParamUtil.setSessionAttr(request,AC_DTO, (Serializable) ncDtoList);
@@ -305,22 +302,7 @@ public class InspectReviseNcEmailDelegator {
             ParamUtil.setRequestAttr(request, "isValid", "Y");
             String saveFlag = ParamUtil.getString(request,"saveflag");
             if(!StringUtil.isEmpty(saveFlag)){
-                InspectionFillCheckListDto cPageDto =new InspectionFillCheckListDto();
-                InspectionFillCheckListDto commonPageDto = new InspectionFillCheckListDto();
-                AdCheckListShowDto adchklPageDto = new AdCheckListShowDto();
-                try {
-                    adchklPageDto = (AdCheckListShowDto)CopyUtil.copyMutableObject(adchklDto);
-                    cPageDto = (InspectionFillCheckListDto)CopyUtil.copyMutableObject(cDto);
-                    commonPageDto = (InspectionFillCheckListDto)CopyUtil.copyMutableObject(commonDto);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                fillupChklistService.merge(commonDto,cDto);
-                insepctionNcCheckListService.submit(cDto,adchklDto);
-                ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklPageDto);
-                ParamUtil.setSessionAttr(request,FILL_CHECK_LIST_DTO,cPageDto);
-                ParamUtil.setSessionAttr(request,COM_DTO,commonPageDto);
-                ParamUtil.setSessionAttr(request,AC_DTO, (Serializable) acDtoList);
+                insepctionNcCheckListService.submit(commonDto,adchklDto,serListDto,taskDto.getRefNo());
             }
         }
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
@@ -359,26 +341,35 @@ public class InspectReviseNcEmailDelegator {
         return cDto;
     }
 
-    public InspectionFillCheckListDto getDataFromPage(HttpServletRequest request){
-        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,FILL_CHECK_LIST_DTO);
-        List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
-        for(InspectionCheckQuestionDto temp:checkListDtoList){
-            String answer = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rad");
-            String remark = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"remark");
-            String rectified = ParamUtil.getString(request,temp.getSectionName()+temp.getItemId()+"rec");
-            temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
-
-            temp.setChkanswer(answer);
-            temp.setRemark(remark);
+    public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+        if(serListDto.getFdtoList()!=null &&!serListDto.getFdtoList().isEmpty()){
+            for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
+                if(fdto!=null&&fdto.getCheckList()!=null&&!fdto.getCheckList().isEmpty()){
+                    List<InspectionCheckQuestionDto> checkListDtoList = fdto.getCheckList();
+                    for(InspectionCheckQuestionDto temp:checkListDtoList){
+                        String answer = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rad");
+                        String remark = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"remark");
+                        String rectified = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rec");
+                        if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
+                            temp.setRectified(true);
+                        }else{
+                            temp.setRectified(false);
+                        }
+                        temp.setChkanswer(answer);
+                        temp.setRemark(remark);
+                    }
+                    fillupChklistService.fillInspectionFillCheckListDto(fdto);
+                }
+            }
         }
         String tcu = ParamUtil.getString(request,"tuc");
         String bestpractice = ParamUtil.getString(request,"bestpractice");
         String tcuremark = ParamUtil.getString(request,"tcuRemark");
-        cDto.setTcuRemark(tcuremark);
-        cDto.setTuc(tcu);
-        cDto.setBestPractice(bestpractice);
-        fillupChklistService.fillInspectionFillCheckListDto(cDto);
-        return cDto;
+        serListDto.setTcuRemark(tcuremark);
+        serListDto.setTuc(tcu);
+        serListDto.setBestPractice(bestpractice);
+        return serListDto;
     }
 
     public AdCheckListShowDto getAdhocDtoFromPage(HttpServletRequest request){
@@ -417,11 +408,9 @@ public class InspectReviseNcEmailDelegator {
         inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
         HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-        String configId=inspEmailService.getcheckListQuestionDtoList(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcType()).get(1).getConfigId();
-        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
+        List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
         AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"tcu");
         inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
-
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
         map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));

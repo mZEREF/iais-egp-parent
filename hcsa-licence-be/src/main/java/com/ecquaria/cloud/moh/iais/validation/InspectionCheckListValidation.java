@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -23,16 +24,20 @@ public class InspectionCheckListValidation implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = new HashMap<>();
-        InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"fillCheckListDto");
-        List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
-        if(cqDtoList!=null && !cqDtoList.isEmpty()){
-            for(InspectionCheckQuestionDto temp:cqDtoList){
-                if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(temp.getSectionName()+temp.getItemId(),"ERR0010");
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+        if(serListDto.getFdtoList()!=null &&!serListDto.getFdtoList().isEmpty()){
+            for(InspectionFillCheckListDto fDto:serListDto.getFdtoList()){
+                List<InspectionCheckQuestionDto> cqDtoList = fDto.getCheckList();
+                if(cqDtoList!=null && !cqDtoList.isEmpty()){
+                    for(InspectionCheckQuestionDto temp:cqDtoList){
+                        if(StringUtil.isEmpty(temp.getChkanswer())){
+                            errMap.put(fDto.getSvcCode()+temp.getSectionName()+temp.getItemId(),"ERR0010");
+                        }
+                    }
                 }
             }
         }
-        tcuVad(icDto,errMap);
+        tcuVad(serListDto,errMap);
         commonVad(request,errMap);
         ahocVad(request,errMap);
         return errMap;
@@ -62,7 +67,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             }
         }
     }
-    public void tcuVad(InspectionFillCheckListDto icDto,Map<String, String> errMap){
+    public void tcuVad(InspectionFDtosDto icDto,Map<String, String> errMap){
         try {
             String dateStr = icDto.getTuc();
             if(!StringUtil.isEmpty(dateStr)){

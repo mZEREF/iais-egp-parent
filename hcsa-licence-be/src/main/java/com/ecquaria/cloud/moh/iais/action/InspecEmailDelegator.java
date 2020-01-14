@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterCo
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -100,6 +99,9 @@ public class InspecEmailDelegator {
         HttpServletRequest request = bpc.request;
         String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         String taskId = ParamUtil.getRequestString(request,"taskId");
+        if(StringUtil.isEmpty(taskId)){
+            taskId = "F9359FD4-5934-EA11-BE7D-000C29F371DC";
+        }
         TaskDto taskDto = taskService.getTaskById(taskId);
         if(StringUtil.isEmpty(taskDto)){
             taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
@@ -118,16 +120,9 @@ public class InspecEmailDelegator {
         inspectionEmailTemplateDto.setHciNameOrAddress(applicationViewDto.getHciAddress());
         HcsaServiceDto hcsaServiceDto=inspectionService.getHcsaServiceDtoByServiceId(applicationViewDto.getApplicationDto().getServiceId());
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
-        List<ChecklistQuestionDto> checklistQuestionDtoList = inspEmailService.getcheckListQuestionDtoList(hcsaServiceDto.getSvcCode(),hcsaServiceDto.getSvcType());
-        String configId = null;
-        if(checklistQuestionDtoList!=null&&!checklistQuestionDtoList.isEmpty()){
-            configId = checklistQuestionDtoList.get(0).getConfigId();
-        }
-        List<NcAnswerDto> ncAnswerDtos =insepctionNcCheckListService.getNcAnswerDtoList(configId,appPremCorrId);
-
+        List<NcAnswerDto> ncAnswerDtos =insepctionNcCheckListService.getNcAnswerDtoList(appPremCorrId);
         AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremCorrId,"RETYPE001");
         inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
-
         Map<String,Object> map=new HashMap<>();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicantName()));
         map.put("APPLICATION_NUMBER",StringUtil.viewHtml(inspectionEmailTemplateDto.getApplicationNumber()));
@@ -243,7 +238,6 @@ public class InspecEmailDelegator {
             List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
             taskService.createTasks(taskDtos);
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01, InspectionConstants.PROCESS_DECI_ROTE_EMAIL_AO1_REVIEW,taskDto1,HcsaConsts.ROUTING_STAGE_POT,userId);
-
         }
         else {
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);

@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -52,7 +51,6 @@ import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -169,7 +167,7 @@ public class InsRepServiceImpl implements InsRepService {
         //add ReportNcRegulationDto and add ncItemId
         if (listChecklistQuestionDtos != null && !listChecklistQuestionDtos.isEmpty()) {
             String configId = listChecklistQuestionDtos.get(0).getConfigId();
-            List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(configId, appPremisesCorrelationId);
+            List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(appPremisesCorrelationId);
             if (ncAnswerDtoList != null && !ncAnswerDtoList.isEmpty()) {
                 for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
                     ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();

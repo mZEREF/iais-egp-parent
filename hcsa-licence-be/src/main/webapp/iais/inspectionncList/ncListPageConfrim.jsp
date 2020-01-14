@@ -9,13 +9,17 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <%@ include file="/include/formHidden.jsp" %>
     <br>
     <br>
     <br>
     <br>
     <br>
+    <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.FillupChklistDelegator"/>
+    <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto"/>
+    <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
+
+    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
@@ -25,11 +29,11 @@
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li class="complete" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
+                            <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li class="active" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
-                                                                        data-toggle="tab">Comfirm page</a></li>
+                            <li class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
+                                                                        data-toggle="tab">Comfirm</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -42,7 +46,7 @@
                         </div>
 
                         <div class="tab-content">
-                            <div class="tab-pane" id="tabInfo" role="tabpanel">
+                            <div class="tab-pane active" id="tabInfo" role="tabpanel">
 
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
@@ -198,7 +202,7 @@
                                 </div>
 
                             </div>
-                            <div class="tab-pane active" id="tabPayment" role="tabpanel">
+                            <div class="tab-pane" id="tabPayment" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
                                 </strong></div>
                                 <div class="row">
@@ -228,56 +232,72 @@
                                                             <td class="row_no">${(status.index + 1) }</td>
                                                             <td>${item.incqDto.regClauseNo}</td>
                                                             <td>${item.incqDto.checklistItem}</td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxYes" type="radio"  disabled <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNo" type="radio" disabled  <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" /></td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNa" type="radio" disabled <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxRemark" disabled type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
-                                                            <td> <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> <c:if test="${item.incqDto.chkanswer != 'No'}">hidden </c:if> value="rec" disabled/></td>
+                                                            <c:set value = "${item.incqDto.sectionName}${item.incqDto.itemId}" var = "ckkId"/>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" disabled/></td>
+                                                            <td>
+                                                                <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" disabled/>
+                                                            </td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" disabled/></td>
+                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comitemCheckboxRemark" type="text" value="<c:out value="${item.incqDto.remark}"/>" disabled/></td>
+                                                            <td>
+                                                                <div id="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
+                                                                    <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec" disabled/>
+                                                                </div>
+                                                                <c:set value = "error_${item.incqDto.sectionName}${item.incqDto.itemId}com" var = "err"/>
+                                                                <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                            </td>
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>
                                                 </table>
                                             </c:forEach>
                                         </div>
-
-
-                                        <h3>General</h3>
-                                        <div class="table-gp">
-                                            <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
-                                                <br/>
-                                                <h4><c:out value="${section.sectionName}"></c:out></h4>
-                                                <table class="table">
-                                                    <thead>
-                                                    <tr>
-                                                        <th>No.</th>
-                                                        <th>Regulation Clause Number</th>
-                                                        <th>Item</th>
-                                                        <th>Yes</th>
-                                                        <th>No</th>
-                                                        <th>N/A</th>
-                                                        <th>Remark</th>
-                                                        <th>Rectified</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                                        <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="status">
+                                            <h3>${cdto.svcName}</h3>
+                                            <div class="table-gp">
+                                                <c:forEach var ="section" items ="${cdto.sectionDtoList}">
+                                                    <br/>
+                                                    <h4><c:out value="${section.sectionName}"></c:out></h4>
+                                                    <table class="table">
+                                                        <thead>
                                                         <tr>
-                                                            <td class="row_no">${(status.index + 1) }</td>
-                                                            <td>${item.incqDto.regClauseNo}</td>
-                                                            <td>${item.incqDto.checklistItem}</td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxYes" type="radio"  disabled <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" /></td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNo" type="radio" disabled  <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" /></td>
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" type="radio" disabled <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
-
-                                                            <td><input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" disabled type="text" value="<c:out value="${item.incqDto.remark}"/>" /></td>
-                                                            <td> <input name="<c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> <c:if test="${item.incqDto.chkanswer != 'No'}">hidden </c:if> value="rec" disabled/></td>
+                                                            <th>No.</th>
+                                                            <th>Regulation Clause Number</th>
+                                                            <th>Item</th>
+                                                            <th>Yes</th>
+                                                            <th>No</th>
+                                                            <th>N/A</th>
+                                                            <th>Remark</th>
+                                                            <th>Rectified</th>
                                                         </tr>
-                                                    </c:forEach>
-                                                    </tbody>
-                                                </table>
-                                            </c:forEach>
-                                        </div>
-
+                                                        </thead>
+                                                        <tbody>
+                                                        <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                                                            <tr>
+                                                                <td class="row_no">${(status.index + 1) }</td>
+                                                                <td>${item.incqDto.regClauseNo}</td>
+                                                                <td>${item.incqDto.checklistItem}</td>
+                                                                <c:set value = "${cdto.svcCode}${item.incqDto.sectionName}${item.incqDto.itemId}" var = "ckkId"/>
+                                                                <td><input name="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" disabled/></td>
+                                                                <td>
+                                                                    <input name="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" disabled/>
+                                                                </td>
+                                                                <td><input name="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" disabled/></td>
+                                                                <td><input name="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>itemCheckboxRemark" type="text" value="<c:out value="${item.incqDto.remark}"/>" disabled/></td>
+                                                                <td>
+                                                                    <div id="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
+                                                                        <input name="<c:out value="${cdto.svcCode}"/><c:out value="${item.incqDto.sectionName}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${cdto.svcCode}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionName}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec" disabled/>
+                                                                    </div>
+                                                                    <c:set value = "error_${cdto.svcCode}${item.incqDto.sectionName}${item.incqDto.itemId}" var = "err"/>
+                                                                    <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                        </tbody>
+                                                    </table>
+                                                </c:forEach>
+                                            </div>
+                                        </c:forEach>
                                         <div class="table-gp">
                                             <h3>Adhoc</h3>
                                             <br/>
@@ -304,14 +324,16 @@
                                                         <c:set value = "${item.id}" var = "ckkId"/>
                                                         <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" disabled /></td>
                                                         <td>
-                                                            <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" disabled/>
+                                                            <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" disabled />
                                                         </td>
-                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A" disabled/></td>
-                                                        <td><input name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" type="text" value="<c:out value="${item.remark}"/>" disabled /></td>
+                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A" disabled /></td>
+                                                        <td><input name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" type="text" value="<c:out value="${item.remark}"/>" disabled/></td>
                                                         <td>
                                                             <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
-                                                                <input name="<c:out value="${item.id}"/>rec" id="<c:out value="${item.id}"/>rec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec" disabled/>
+                                                                <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec" disabled/>
                                                             </div>
+                                                            <c:set value = "error_${item.id}adhoc" var = "err"/>
+                                                            <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -319,21 +341,23 @@
                                             </table>
                                         </div>
 
+
                                         <div class="col-xs-12">
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
                                                     <h4>Best Practice</h4>
-                                                    <textarea cols="70" rows="7" disabled name="bestpractice" id="bestpractice"><c:out value="${fillCheckListDto.bestPractice}"></c:out></textarea>
+                                                    <textarea cols="70" rows="7" name="bestpractice" id="bestpractice" disabled><c:out value="${serListDto.bestPractice}"></c:out></textarea>
+                                                    <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>TCU Date</h4> &nbsp;<c:out value="${fillCheckListDto.tuc}"/>&nbsp;<br>
+                                                    <h4>TCU Date</h4> <c:out value="${serListDto.tuc}"></c:out> &nbsp;<br>
                                                 </div>
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" disabled id="tcuRemark"><c:out value="${fillCheckListDto.tcuRemark}"></c:out></textarea>
+                                                    <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark" disabled><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -355,12 +379,31 @@
         </div>
     </div>
 </form>
-
+<%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
+    function doSubmit(){
+        SOP.Crud.cfxSubmit("mainForm", "submit");
+    }
     function doBack(){
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
-    function doSubmit(){
-        SOP.Crud.cfxSubmit("mainForm", "submit");
+    function showCheckBox(str){
+        var name = str;
+        var divId = str+'ck';
+        var comId = str+'comck'
+        var comdivck =document.getElementById(divId);
+        var divck =document.getElementById(comId);
+        $("#"+divId).show();
+        $("#"+comId).show();
+    }
+    function hideCheckBox(str){
+        var name = str;
+        var divId = str+'ck';
+        var comdivId = str+'comck';
+        var divck =document.getElementById(divId);
+        var comdivck =document.getElementById(comdivId);
+        $("#"+divId).hide();
+        $("#"+comdivId).hide();
+
     }
 </script>

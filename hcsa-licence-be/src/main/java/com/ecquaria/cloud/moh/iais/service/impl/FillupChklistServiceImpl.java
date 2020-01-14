@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
@@ -38,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
@@ -85,6 +87,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     private AppPremisesCorrClient appPremisesCorrClient;
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
+    @Autowired
+    InsepctionNcCheckListService insepctionNcCheckListService;
     @Override
     public ApplicationViewDto getAppViewDto(String taskId){
         TaskDto taskDto = taskService.getTaskById(taskId);
@@ -100,16 +104,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String appPremCorrId = null;
         String serviceCode = null;
         if(taskDto!=null){
-            /*String refNo = taskDto.getRefNo();
-            ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
-            String serviceId = appDto.getServiceId();
-            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
-            serviceCode = svcDto.getSvcCode();
-            String appId = appDto.getId();
-            appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
-            if(appCorrDtolist!=null && !appCorrDtolist.isEmpty()){
-                appPremCorrId = appCorrDtolist.get(0).getId();
-            }*/
             appPremCorrId = taskDto.getRefNo();
             ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
             String svcId = appViewDto.getApplicationDto().getServiceId();
@@ -194,7 +188,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
     public InspectionCheckQuestionDto transferQuestionDtotoInDto(ChecklistQuestionDto cdto){
         InspectionCheckQuestionDto icDto = new InspectionCheckQuestionDto();
-        //icDto.setAppPreCorreId();
         icDto.setAnswerType(cdto.getAnswerType());
         icDto.setAnswer(cdto.getAnswer());
         icDto.setChecklistItem(cdto.getChecklistItem());
@@ -504,17 +497,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String serviceCode = null;
         if(taskDto!=null){
             String refNo = taskDto.getRefNo();
-            /*ApplicationDto appDto = applicationClient.getAppByNo(refNo).getEntity();
-            String serviceId = appDto.getServiceId();
-            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
-            serviceCode = svcDto.getSvcCode();
-            String appId = appDto.getId();
-            appCorrDtolist = fillUpCheckListGetAppClient.getAppPremiseseCorrDto(appId).getEntity();
-            if(appCorrDtolist!=null && !appCorrDtolist.isEmpty()){
-                appPremCorrId = appCorrDtolist.get(0).getId();
-            }*/
             appPremCorrId = taskDto.getRefNo();
-
             ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
             String svcId = appViewDto.getApplicationDto().getServiceId();
             HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(svcId).getEntity();
@@ -664,5 +647,71 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_EMAIL_VERIFY);
         appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appInspectionStatusClient.update(appInspectionStatusDto);
+    }
+
+    @Override
+    public List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String conifgType) {
+        List<InspectionFillCheckListDto> fillChkDtoList = null;
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        List<AppPremisesCorrelationDto> appCorrDtolist = null;
+        String appPremCorrId = null;
+        String serviceCode = null;
+        if(taskDto!=null){
+            appPremCorrId = taskDto.getRefNo();
+            ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
+            String svcId = appViewDto.getApplicationDto().getServiceId();
+        }
+        if(appPremCorrId!=null){
+            List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
+            if(chkList!=null && !chkList.isEmpty()){
+                fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,conifgType);
+            }
+        }
+        return fillChkDtoList;
+    }
+
+    private List<InspectionFillCheckListDto> getServiceChkDtoListByAppPremId(List<AppPremisesPreInspectChklDto> chkList,String appPremCorrId,String conifgType) {
+        List<InspectionFillCheckListDto> chkDtoList = new ArrayList<>();
+        for(AppPremisesPreInspectChklDto temp:chkList){
+            String configId  = temp.getChkLstConfId();
+            ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(configId).getEntity();
+            InspectionFillCheckListDto fDto =null;
+            if("common".equals(conifgType)&&dto.isCommon()){
+                fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
+                fDto.setConfigId(temp.getChkLstConfId());
+                chkDtoList.add(fDto);
+            }else if("service".equals(conifgType)&&!dto.isCommon()){
+                fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
+                fDto.setSvcName(dto.getSvcName());
+                fDto.setConfigId(temp.getChkLstConfId());
+                fDto.setSvcCode(dto.getSvcCode());
+                chkDtoList.add(fDto);
+            }
+        }
+        return chkDtoList;
+    }
+
+    @Override
+    public List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String taskId, String service) {
+        List<InspectionFillCheckListDto> fillCheckDtoList = getInspectionFillCheckListDtoList(taskId,service);
+        if(fillCheckDtoList!=null&&!fillCheckDtoList.isEmpty()){
+            for(InspectionFillCheckListDto temp:fillCheckDtoList){
+                AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,temp.getConfigId());
+                insepctionNcCheckListService.getCommonDto(temp,appPremPreCklDto);
+            }
+        }
+        return fillCheckDtoList;
+    }
+
+    @Override
+    public void getTcuInfo(InspectionFDtosDto serListDto, String appPremCorrId) {
+        AppPremisesRecommendationDto dto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId,InspectionConstants.RECOM_TYPE_TCU).getEntity();
+        try {
+            serListDto.setTuc(Formatter.formatDate(dto.getRecomInDate()));
+        }catch (Exception e){
+            log.debug("date formatter error");
+        }
+        serListDto.setBestPractice(dto.getBestPractice());
+        serListDto.setTcuRemark(dto.getRemarks());
     }
 }
