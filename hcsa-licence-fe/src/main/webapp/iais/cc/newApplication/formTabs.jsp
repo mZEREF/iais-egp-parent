@@ -36,7 +36,12 @@
         // $('#blood').click(function(){
         //     submitFormTabs('blood');
         // });
-
+        // if($('#isServiceEdit').val() == 'true'){
+        //     disabledPage();
+        // }
+        <c:if test="${!AppSubmissionDto.appEditSelectDto.serviceEdit}">
+        disabledPage();
+        </c:if>
     });
 
     function submitFormTabs(action){

@@ -637,6 +637,14 @@
           $('#premisesli').addClass('incomplete');
         }
 
+        //request for information
+        // if($('#isPremisesEdit').val() == 'true'){
+        //     disabledPage();
+        // }
+
+        <c:if test="${AppSubmissionDto.appEditSelectDto!=null}&&${!AppSubmissionDto.appEditSelectDto.premisesEdit}">
+        disabledPage();
+        </c:if>
     });
 
 

@@ -176,6 +176,12 @@
             var file = $('#selectedFile').val();
             $('#showFile').html(getFileName(file))
         });*/
+        // if($('#isPramayEdit').val() == 'true'){
+        //     disabledPage();
+        // }
+        <c:if test="${!AppSubmissionDto.appEditSelectDto.primaryEdit}">
+        disabledPage();
+        </c:if>
     });
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");

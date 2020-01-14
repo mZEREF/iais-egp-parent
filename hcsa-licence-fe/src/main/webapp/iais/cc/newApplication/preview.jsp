@@ -35,7 +35,9 @@
                                                     </div>
                                                     <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                                                         <div class="panel-body">
+                                                           <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.premisesEdit}">
                                                             <p class="text-right"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                                           </c:if>
                                                             <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
                                                             <div class="panel-main-content">
                                                                 <div class="preview-info">
@@ -56,7 +58,9 @@
                                                     </div>
                                                     <div class="panel-collapse collapse " id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
                                                         <div class="panel-body">
+                                                           <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.primaryEdit}">
                                                             <p class="text-right mb-0"><a href="#" id="docEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                                           </c:if>
                                                             <div class="elemClass-1561088919456">
                                                                 <div id="control--runtime--34" class="page section control  container-s-1" style="margin: 10px 0px">
                                                                     <div class="control-set-font control-font-header section-header">
@@ -90,7 +94,9 @@
 
                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">
                                                             <div class="panel-body">
+                                                                <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit}">
                                                                 <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                                                </c:if>
                                                                 <iframe  class="svc-iframe" title="" src="${pageContext.request.contextPath}/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form_value=prepareView&svcId=${hcsaServiceDto.id}" id="elemId-${status.index}"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
                                                             </div>
                                                         </div>

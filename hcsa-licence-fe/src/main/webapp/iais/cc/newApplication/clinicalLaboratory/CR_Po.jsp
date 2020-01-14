@@ -177,13 +177,13 @@
                 </div>
               </c:forEach>
               </c:if>
-                <div class="row">
-                  <div class="col-sm-4">
-                    <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
-                  </div>
+<c:if test="${requestInformationConfig==null}">
+              <div class="row">
+                <div class="col-sm-4">
+                  <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
                 </div>
-             
-             
+              </div>
+</c:if>
               <br/>
               <br/>
               <div class="row">
@@ -377,7 +377,7 @@
                     <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
                   </div>
                 </div>
-              
+
           </div>
         </div>
       </div>
@@ -393,17 +393,17 @@
       retrieveData();
       
       addPo();
-      
+
       addDpo();
-      
+
       doEdit();
-      
+
       doEditDpo();
-      
+
       $('.poSelect').trigger('change');
       $('.deputySelect').trigger('change');
-      
-      //disabled 
+
+      //disabled
       if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEdit}'){
           $('.po-content input[type="text"]').prop('disabled',true);
           $('.po-content div.nice-select').addClass('disabled');
@@ -482,11 +482,11 @@ var addDpo = function(){
             }
         });
 
-    });  
+    });
 }
-    
 
-  
+
+
   
   var retrieveData = function () {
       $('.idNoVal').blur(function () {
@@ -548,5 +548,5 @@ var addDpo = function(){
           $('#edit-dpo').addClass('hidden');
       });
   }
-  
+
 </script>
