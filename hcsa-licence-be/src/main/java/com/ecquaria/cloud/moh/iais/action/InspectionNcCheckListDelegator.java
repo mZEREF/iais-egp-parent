@@ -157,7 +157,7 @@ public class InspectionNcCheckListDelegator {
         }
         ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
         try {
-            //fillupChklistService.routingTask(taskDto,null);
+            fillupChklistService.routingTask(taskDto,null);
         }catch (Exception e){
 
         }
