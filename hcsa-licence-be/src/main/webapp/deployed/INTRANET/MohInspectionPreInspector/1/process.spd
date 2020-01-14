@@ -55,6 +55,20 @@
    <probepoint type="none"/>
    <OnStepProcess/>
   </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionPreInspectorSelf" x="900" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionPreInspectorSelf_OnStepProcess_0" name="inspectionPreInspectorSelf_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionPreInspectorSelfStep" x="520" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="inspectionPreInspectorSelfStep_OnStepProcess_0" name="inspectionPreInspectorSelfStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionPreInspectorPage" stageIndicator="" x="620" y="100">
@@ -64,6 +78,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionPreInspectorSuccess" stageIndicator="" x="1070" y="410">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InspectionPreInspectorSelfPage" stageIndicator="" x="710" y="410">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -114,6 +134,18 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionPreInspectorPre" linkstyle="Direct" name="" sourceName="/Conditions/Condition/InspectionPreInspectorCond1" style="oblique">
    <position>{(850,250)(450,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionPreInspectorSelf" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionPreInspectorSwitch1" style="oblique">
+   <position>{(1080,120)(920,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionPreInspectorSelfPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionPreInspectorSelf" style="rectanular">
+   <position>{(920,430)(730,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionPreInspectorSelfStep" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/InspectionPreInspectorSelfPage" style="rectanular">
+   <position>{(730,430)(540,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionPreInspectorPre" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionPreInspectorSelfStep" style="oblique">
+   <position>{(540,430)(450,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/InspectionPreInspectorPre" componentIfTrue="/Switches/Switch/InspectionPreInspectorSwitch1" defClass="" executor="" icon="" leftOperand="flag" name="InspectionPreInspectorCond1" operator="=" rightOperand="&quot;true&quot;" x="830" y="230">
@@ -127,6 +159,7 @@
    <SwitchCase component="/Steps/AutomaticStep/InspectionPreInspectorRouteB" value="&quot;routeB&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/InspectionPreInspectorEdit" value="&quot;edit&quot;"/>
    <SwitchCase component="/Steps/ReturnInvokeProcessStep/InspectionPreInspectorBack" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/InspectionPreInspectorSelf" value=""/>
   </Switch>
  </Switches>
  <Branches/>
