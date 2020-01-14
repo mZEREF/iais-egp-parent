@@ -112,9 +112,10 @@
         <div class="application-tab-footer">
           <td>
             <div class="text-right text-center-mobile">
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
-              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSave('${tabIndex}');">Draft</a>
               <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doCancel();">Cancel</a>
+              <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
+              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSave('${tabIndex}');">Draft</a>
+              <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSubmit();">Submit</a>
             </div>
 
           </td>
@@ -130,6 +131,7 @@
 </c:choose>
 
   <%@include file="/include/validation.jsp"%>
+  <script src="/hcsa-licence-web/iais/js/CommonUtils.js"></script>
   <script>
       function switchNextStep(index){
           $("[name='tabIndex']").val(index);
