@@ -10,9 +10,9 @@
 <webui:setLayout name="iais-intranet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" name="crud_action_type" value=""/>
+    <input type="hidden" name="crud_action_value" value=""/>
+    <input type="hidden" name="crud_action_additional" value=""/>
     <iais:body >
         <div class="container">
             <div class="col-xs-12">
@@ -79,5 +79,11 @@
                 break;
             }
         }
+    }
+
+    function sortRecords(sortFieldName,sortType){
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        submit('licSort');
     }
 </script>

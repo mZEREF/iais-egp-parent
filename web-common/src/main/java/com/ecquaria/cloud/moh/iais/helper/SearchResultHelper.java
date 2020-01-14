@@ -20,10 +20,10 @@ import java.util.Map;
 public class SearchResultHelper {
 
     public static SearchParam getSearchParam(HttpServletRequest request, FilterParameter filter) {
-        return getSearchParam(request, false, filter);
+        return getSearchParam(request, false, filter,false);
     }
 
-    public static SearchParam getSearchParam(HttpServletRequest request, boolean isNew, FilterParameter filter) {
+    public static SearchParam getSearchParam(HttpServletRequest request, boolean isNew, FilterParameter filter,boolean doSort) {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, filter.getSearchAttr());
         try {
             if (searchParam == null || isNew) {
@@ -45,10 +45,12 @@ public class SearchResultHelper {
                     searchParam.setPageSize(Integer.parseInt(pageSize));
                 }
 
-                String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-                String sortType = ParamUtil.getString(request,"crud_action_additional");
-                if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-                    searchParam.setSort(sortFieldName,sortType);
+                if (doSort){
+                    String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+                    String sortType = ParamUtil.getString(request,"crud_action_additional");
+                    if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                        searchParam.setSort(sortFieldName,sortType);
+                    }
                 }
 
                 if (filter.getFilters() != null) {
