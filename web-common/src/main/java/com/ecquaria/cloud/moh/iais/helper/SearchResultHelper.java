@@ -20,13 +20,13 @@ import java.util.Map;
 public class SearchResultHelper {
 
     public static SearchParam getSearchParam(HttpServletRequest request, FilterParameter filter) {
-        return getSearchParam(request, filter,true,true,true);
+        return getSearchParam(request, filter,false);
     }
 
-    public static SearchParam getSearchParam(HttpServletRequest request,FilterParameter filter,boolean doPage,boolean doSort,boolean doSearch) {
+    public static SearchParam getSearchParam(HttpServletRequest request,FilterParameter filter,boolean isNew) {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, filter.getSearchAttr());
         try {
-            if (searchParam == null) {
+            if (searchParam == null || isNew) {
                 searchParam = new SearchParam(filter.getClz().getName());
                 searchParam.setPageSize(filter.getPageSize());
                 searchParam.setPageNo(filter.getPageNo());
@@ -35,10 +35,7 @@ public class SearchResultHelper {
                 } else {
                     searchParam.setSort(filter.getSortField(), SearchParam.ASCENDING);
                 }
-            }
-
-            if (doSearch){
-                if (filter.getFilters() != null) {
+                if (filter.getFilters() != null && filter.getFilters().size()>0) {
                     Map<String, Object> inboxMap = filter.getFilters();
                     for (Map.Entry<String, Object> entry : inboxMap.entrySet()) {
                         String mapKey = entry.getKey();
@@ -46,30 +43,34 @@ public class SearchResultHelper {
                         searchParam.addFilter(mapKey, mapValue,true);
                     }
                 }
+
             }
 
-            if (doPage){
-                String pageNo = ParamUtil.getString(request, "pageJumpNoTextchangePage");
-                String pageSize = ParamUtil.getString(request, "pageJumpNoPageSize");
-                if (!StringUtil.isEmpty(pageNo)) {
-                    searchParam.setPageNo(Integer.parseInt(pageNo));
-                }
-                if (!StringUtil.isEmpty(pageSize)) {
-                    searchParam.setPageSize(Integer.parseInt(pageSize));
-                }
-            }
-
-            if (doSort){
-                String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-                String sortType = ParamUtil.getString(request,"crud_action_additional");
-                if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-                    searchParam.setSort(sortFieldName,sortType);
-                }
-            }
         } catch (NullPointerException e) {
             log.info(e.getMessage());
         }
         return searchParam;
+    }
+
+
+    public static void doSort(HttpServletRequest request,FilterParameter filterParameter){
+        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
+        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+            filterParameter.setSortType(sortType);
+            filterParameter.setSortField(sortFieldName);
+        }
+    }
+
+    public static void doPage(HttpServletRequest request,FilterParameter filterParameter){
+        String pageNo = ParamUtil.getString(request, "pageJumpNoTextchangePage");
+        String pageSize = ParamUtil.getString(request, "pageJumpNoPageSize");
+        if (!StringUtil.isEmpty(pageNo)) {
+            filterParameter.setPageNo(Integer.parseInt(pageNo));
+        }
+        if (!StringUtil.isEmpty(pageSize)) {
+            filterParameter.setPageSize(Integer.parseInt(pageSize));
+        }
     }
 
     public static void getDateByWeekOfDay(Map<Date,String> dateOfWeekList,String day,boolean avaiAM,boolean avaiPM) {
