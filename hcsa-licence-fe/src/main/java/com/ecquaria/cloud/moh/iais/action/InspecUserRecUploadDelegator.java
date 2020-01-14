@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -147,11 +148,13 @@ public class InspecUserRecUploadDelegator {
                 errorMap.put(errorKey, "The file has exceeded the maximum upload size of 4MB.");
                 continue;
             }
-            for(String fileType: AppServicesConsts.FILE_TYPE){
-                if(fileType.equalsIgnoreCase(substring)){
+            FileType[] values = FileType.values();
+            for(FileType f:values){
+                if(f.name().equalsIgnoreCase(substring)){
                     flag = true;
                 }
             }
+
             if(!flag){
                 errorMap.put(errorKey,"The file type is incorrect.");
                 continue;

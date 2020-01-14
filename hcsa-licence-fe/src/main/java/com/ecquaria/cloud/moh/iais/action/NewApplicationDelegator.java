@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -56,6 +57,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -2091,8 +2093,9 @@ public class NewApplicationDelegator {
             Boolean flag=false;
             String name = appGrpPrimaryDocDto.getDocName();
             String substring = name.substring(name.lastIndexOf(".")+1);
-            for(String fileType: AppServicesConsts.FILE_TYPE){
-                if(fileType.equalsIgnoreCase(substring)){
+            FileType[] fileType = FileType.values();
+            for(FileType f:fileType){
+                if(f.name().equalsIgnoreCase(substring)){
                     flag=true;
                 }
             }
