@@ -90,7 +90,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             for(File fil:files){
                 if(fil.getName().endsWith(".zip")){
                     String name = fil.getName();
-                    String path = fil.getPath();
+                    String path = "backups"+File.separator+name;
                     HashMap<String,String> map=new HashMap<>();
                     map.put("fileName",name);
                     map.put("filePath",path);

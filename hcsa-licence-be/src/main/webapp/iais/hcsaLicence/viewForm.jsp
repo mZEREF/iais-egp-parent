@@ -10,6 +10,8 @@
 <webui:setLayout name="iais-blank"/>
 <%--<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>--%>
 <c:set var="appGrpPremisesDtoList" value="${appSubmissionDto.appGrpPremisesDtoList}"></c:set>
+<input style="display: none" value="${NOT_VIEW}" id="view">
+
 <div class="panel-main-content">
 
   <div class="amended-service-info-gp">
@@ -18,7 +20,7 @@
         <div class="amend-preview-info">
           <p><span class="preview-title col-xs-6 col-md-4">Premises ${status.index+1}:</span> ${appSvcLaboratoryDisciplinesDto.premiseGetAddress}
             <wrms:value width="7">
-              <span class="newVal compareTdStyle" attr="${appSvcLaboratoryDisciplinesDto.premiseGetAddress}" style="display: none" ><label><c:out value="         Premises ${status.index+1}  : ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].premiseGetAddress}"/></label></span>
+              <span class="newVal " attr="${appSvcLaboratoryDisciplinesDto.premiseGetAddress}" style="display: none" ><label><c:out value=""/></label></span>
               <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].premiseGetAddress}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].premiseGetAddress}"/></label></span>
             </wrms:value>
           </p>
@@ -192,7 +194,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><span class="col-xs-6 col-md-4"> ${cgo.speciality }</span>
                         <span  class="col-xs-6 col-md-4">
                               <wrms:value width="7">
-                                <span class="newVal compareTdStyle" attr=" ${cgo.speciality }" style="display: none"><label><c:out value=" ${cgo.speciality }"/></label></span>
+                                <span class="newVal compareTdStyle" attr="${cgo.speciality }" style="display: none"><label><c:out value=" ${cgo.speciality }"/></label></span>
                                 <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"/></label></span>
                               </wrms:value>
 
@@ -262,31 +264,73 @@
                   </tr>
                   </thead>
                   <c:forEach var="appGrpPrem" items="${appGrpPremisesDtoList}" varStatus="status">
+                    <c:set var="hciNameOldAppSubmissionDtos" value=" ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/>
+                    <c:set var="conveyanceVehicleNoOldAppSubmissionDtos" value=" ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/>
+                    <c:if test="${hciNameOldAppSubmissionDtos!='' && hciNameOldAppSubmissionDtos!=null}" >
+                      <c:set value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}" var="oldAppSubmissionDto"></c:set>
+                    </c:if>
+
                     <c:if test="${appGrpPrem.hciName != '' && appGrpPrem.hciName!= null}">
                       <c:set var="reloadMapValue" value="${appGrpPrem.hciName}"/>
                     </c:if>
+
+                   <%-- <c:if test="${conveyanceVehicleNoOldAppSubmissionDtos != ''&& conveyanceVehicleNoOldAppSubmissionDtos !=null}">
+                    <c:set value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}" var="oldAppSubmissionDto" />
+                     </c:if>--%>
+
                     <c:if test="${appGrpPrem.conveyanceVehicleNo != '' && appGrpPrem.conveyanceVehicleNo!= null}">
                       <c:set var="reloadMapValue" value="${appGrpPrem.conveyanceVehicleNo}"/>
                     </c:if>
                     <tbody>
                     <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}" varStatus="stat">
+                      <c:set value="${reloadOld[reloadMapValue]}" var="reloaded"></c:set>
                       ${stat.end}
                       <tr>
                         <c:if test="${stat.first}">
                           <td rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
-                            <p class="visible-xs visible-sm table-row-title">${appGrpPrem.address}</p>
+                            <p class="visible-xs visible-sm table-row-title">${appGrpPrem.address}
+
+
+                              <wrms:value width="7">
+                                <span class="newVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"  style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
+                                <span class="oldVal compareTdStyle" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}" style="display: none"><label><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/></label></span>
+                              </wrms:value>
+                            </p>
                           </td>
                         </c:if>
                         <td>
-                          <p>${disciplineAllocation.chkLstName}</p>
+                          <p>${disciplineAllocation.chkLstName}
+                            <wrms:value width="7">
+                              <span class="newVal " attr="${disciplineAllocation.chkLstName}"  style="display: none"><label><c:out value="${disciplineAllocation.chkLstName}"/></label></span>
+                              <span class="oldVal compareTdStyle" attr="${reloadOld[reloadMapValue][stat.index].chkLstName}" style="display: none"><label><c:out value="${reloadOld[reloadMapValue][stat.index].chkLstName}"/></label></span>
+                            </wrms:value>
+
+                          </p>
                         </td>
                         <td>
-                          <p>${disciplineAllocation.cgoSelName}</p>
+                          <p>${disciplineAllocation.cgoSelName}
+                            <wrms:value width="7">
+                              <span class="newVal " attr="${disciplineAllocation.cgoSelName}"  style="display: none"><label><c:out value="${disciplineAllocation.cgoSelName}"/></label></span>
+                              <span class="oldVal compareTdStyle" attr="${reloadOld[reloadMapValue][stat.index].cgoSelName}" style="display: none"><label><c:out value="${reloadOld[reloadMapValue][stat.index].cgoSelName}"/></label></span>
+                            </wrms:value>
+
+                          </p>
                         </td>
                       </tr>
                     </c:forEach>
+                  <%--  <c:forEach items="${reloadOld[reloadMapValue]}" var="reload">
+                      <td>
+                        <p>${reload.chkLstName}
+                        </p>
+                      </td>
+                      <td>
+                        <p>${reload.cgoSelName}
+                        </p>
+                      </td>
+                    </c:forEach>--%>
                     </tbody>
                   </c:forEach>
+
                 </table>
           </div>
 
@@ -489,12 +533,17 @@
                        (${svcDoc.docSize} KB)</span>
 
                      <wrms:value width="7">
-                       <span class="newVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}+${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}"><label>
+                       <span class="newVal " attr="${svcDoc.docSize}${svcDoc.docName}" style="display: none"><label>
                         <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}"/>&fileRepoName=${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" title="Download" class="downloadFile">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}
                         </a> <c:out value="(${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize})KB"/>
                        </label></span>
-                       <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}+${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}"/></label></span>
+                       <span class="oldVal compareTdStyle" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" style="display: none"><label>
+
+                          <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].fileRepoId}"/>&fileRepoName=${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}" title="Download" class="downloadFile">
+                              ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docName}
+                          </a>
+                         <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize}"/></label></span>
                      </wrms:value>
 
                    </div>
@@ -531,10 +580,10 @@
                 } else {
                     $(this).hide();
                 }
-            }else {
+            }else  if($("#view").val()==""){
                 if (oldVal != newVal) {
                     $(this).show();
-                   /* $(this).val("NA");*/
+                    $(this).html("NA");
                 } else {
                     $(this).hide();
                 }

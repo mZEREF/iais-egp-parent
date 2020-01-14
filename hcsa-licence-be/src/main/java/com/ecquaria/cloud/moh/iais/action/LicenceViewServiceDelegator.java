@@ -34,6 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * LicenceViewServiceDelegator
  *
@@ -75,6 +77,7 @@ public class LicenceViewServiceDelegator {
      */
     public void PrepareViewData(BaseProcessClass bpc) throws Exception{
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData start ..."));
+        bpc.request.getSession().removeAttribute("NOT_VIEW");
         ApplicationViewDto applicationViewDto=(ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
         AppSubmissionDto appSubmissionDto;
         String newCorrelationId="";
@@ -119,6 +122,9 @@ public class LicenceViewServiceDelegator {
                 appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId1);
 
              }
+
+        }else {
+            ParamUtil.setSessionAttr(bpc.request,"NOT_VIEW","NOT_VIEW");
 
         }
 
@@ -207,10 +213,11 @@ public class LicenceViewServiceDelegator {
             return;
         }
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto=null;
         if(oldAppSubmissionDto!=null){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-            oldAppSvcRelatedInfoDto = doAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList, oldAppSubmissionDto);
+            oldAppSvcRelatedInfoDto = doAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList, oldAppSubmissionDto,bpc.request);
 
         }
         /*************************/
@@ -301,7 +308,7 @@ public class LicenceViewServiceDelegator {
     }
 
 
-    private  AppSvcRelatedInfoDto doAppSvcRelatedInfoDtoList( List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, AppSubmissionDto appSubmissionDto){
+    private  AppSvcRelatedInfoDto doAppSvcRelatedInfoDtoList(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, AppSubmissionDto appSubmissionDto, HttpServletRequest request){
         AppSvcRelatedInfoDto appSvcRelatedInfoDto=new AppSvcRelatedInfoDto();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
              appSvcRelatedInfoDto = appSvcRelatedInfoDtoList.get(0);
@@ -364,8 +371,10 @@ public class LicenceViewServiceDelegator {
                 }
                 reloadDisciplineAllocationMap.put(hciName, reloadDisciplineAllocation);
             }
+            ParamUtil.setSessionAttr(request, "reloadOld", (Serializable) reloadDisciplineAllocationMap);
+
         }
 
-return  appSvcRelatedInfoDto;
+        return  appSvcRelatedInfoDto;
     }
 }
