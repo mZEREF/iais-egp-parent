@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: ShiCheng_Xu
   Date: 2020/1/13
-  Time: 15:56
+  Time: 13:42
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
@@ -21,7 +21,7 @@
   String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-  <form method="post" id="mainEditForm" action=<%=process.runtime.continueURL()%>>
+  <form method="post" id="mainAddForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/include/formHidden.jsp" %>
     <br>
     <br>
@@ -35,13 +35,13 @@
         <div class="col-xs-12">
           <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <h3>
-              <span>Update Non-Availability Form</span>
+              <span>Add Non-Availability Form</span>
             </h3>
             <div class="panel panel-default">
               <div class="panel-collapse collapse in" id="collapseOne" role="tabpanel" aria-labelledby="headingOne" aria-expanded="true" style="">
                 <div class="panel-body">
                   <div class="panel-main-content">
-                    <iais:section title="" id = "editAvailability">
+                    <iais:section title="" id = "addAvailability">
                       <iais:row>
                         <iais:field value="Name" required="true"/>
                         <iais:value width="7">
@@ -69,8 +69,8 @@
                         </iais:value>
                       </iais:row>
                       <iais:action >
-                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspAvailabilityEditBack()">Back</button>
-                        <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doInspAvailabilityEditNext()">Next</button>
+                        <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspAvailabilityAddBack()">Back</button>
+                        <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doInspAvailabilityAddNext()">Next</button>
                       </iais:action>
                     </iais:section>
                   </div>
@@ -85,18 +85,19 @@
 </div>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
-    function doInspAvailabilityEditBack() {
+    function doInspAvailabilityAddBack() {
         $("[name='actionValue']").val('back');
-        inspAvailabilityEditSubmit('back');
+        inspAvailabilityAddSubmit('back');
     }
 
-    function doInspAvailabilityEditNext() {
+    function doInspAvailabilityAddNext() {
         $("[name='actionValue']").val('confirm');
-        inspAvailabilityEditSubmit('confirm');
+        inspAvailabilityAddSubmit('confirm');
     }
-    function inspAvailabilityEditSubmit(action){
+    function inspAvailabilityAddSubmit(action){
         $("[name='inspSupAddAvailabilityType']").val(action);
-        var mainPoolForm = document.getElementById('mainEditForm');
+        var mainPoolForm = document.getElementById('mainAddForm');
         mainPoolForm.submit();
     }
 </script>
+
