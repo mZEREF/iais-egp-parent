@@ -52,7 +52,6 @@ public class SearchResultHelper {
         return searchParam;
     }
 
-
     public static void doSort(HttpServletRequest request,FilterParameter filterParameter){
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
