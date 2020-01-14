@@ -30,31 +30,9 @@
                       <c:set var="canEdit" value="1"/>
                     </c:if>
                   </c:forEach>
-                  <div class="document-info-list document-preview">
-                    <c:choose>
-                      <c:when test="${'1' == canEdit}">
-                        <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
-                      </c:when>
-                      <c:otherwise>
-                        <p class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</p>
-                      </c:otherwise>
-                    </c:choose>
-                    <c:forEach var="commonDocConfig" items="${commonHcsaSvcDocConfigDto}" varStatus="v">
-                      <c:set var="commDocKey" value="common${commonDoc.id}" />
-                      <c:set var="commonfile" value="${docMap.get(commDocKey)}"/>
-                      <c:if test="${commonfile != null }">
-                        <h3 class="without-header-line">${commonDocConfig.docTitle}</h3>
-                        <p class="premise-address-gp">
-                          <span>${commonfile.docName}</span>
-                        </p>
-                      </c:if>
-                    </c:forEach>
-
-                    <c:forEach var="premiseDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStatus">
-                    </c:forEach>
-                  </div>
                 </c:if>
-                <div class="document-content <c:if test="${'true' == showPreview}">hidden</c:if>">
+              </div>
+                <div class="document-content ">
                   <div class="document-info-list">
                     <ul>
                       <li>
@@ -161,7 +139,11 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function() { 
+        if('APTY005' == '${AppSubmissionDto.appType}' &&'1' != '${canEdit}'){
+            disabledPage();
+        }
+        
         //Binding method
         $('#docBack').click(function(){
             submit('premises',null,null);

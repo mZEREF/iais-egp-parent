@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
@@ -275,4 +276,30 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId) {
         return licenceClient.getAppSubmissionDto(licenceId).getEntity();
     }
+
+    @Override
+    public Double getGroupAmendAmount(AppSubmissionDto appSubmissionDto) {
+        Double amount = 0.0;
+        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+        //todo compare
+        amendmentFeeDto.setChangeInLicensee(false);
+        amendmentFeeDto.setChangeInHCIName(false);
+        amendmentFeeDto.setChangeInLocation(false);
+        FeeDto feeDto = appConfigClient.amendmentFee(amendmentFeeDto).getEntity();
+        if(feeDto != null){
+            amount = feeDto.getTotal();
+        }
+        return amount;
+    }
+
+    @Override
+    public AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process) {
+        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
+        eventBus(appSubmissionDto, process);
+        return appSubmissionDto;
+    }
+    
+
+    
 }

@@ -1,4 +1,11 @@
-
+<c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+  <c:set var="showPreview" value="true"/>
+  <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
+    <c:if test="${amendType =='RFCATYPE06'}">
+      <c:set var="canEdit" value="1"/>
+    </c:if>
+  </c:forEach>
+</c:if>
 <c:forEach var="docConfig" items="${serviceDocConfigDto}">
   <c:set var="svcDoc" value="${ReloadSvcDoc[docConfig.id]}" />
   <c:set var="svcDelFlag" value="${docConfig.id}flag"/>
@@ -39,6 +46,12 @@
 </div>
 </c:forEach>
 <script>
+    $(document).ready(function() {
+        if('APTY005' == '${AppSubmissionDto.appType}' &&'1' != '${canEdit}'){
+            disabledPage();
+        }
+    });
+
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");
         return o.substring(pos + 1);

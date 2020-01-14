@@ -22,4 +22,6 @@ public interface RequestForChangeService {
     AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto, Process process);
 
     String getApplicationGroupNumber(String appType);
+    
+    String upDateLicStatus(String licenceId, String status);
 }

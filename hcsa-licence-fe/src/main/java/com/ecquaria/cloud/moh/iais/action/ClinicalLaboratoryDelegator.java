@@ -947,6 +947,12 @@ public class ClinicalLaboratoryDelegator {
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         if(judegCanEdit(appSubmissionDto)){
+            boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, AppConsts.YES);
+            if(!isGetDataFromPage){
+                log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+AppConsts.YES);
+                log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+                return;
+            }
             Map<String,AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
             List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, "serviceDocConfigDto");
             Map<String,CommonsMultipartFile> commonsMultipartFileMap = new HashMap<>();

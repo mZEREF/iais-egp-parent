@@ -74,5 +74,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return systemAdminClient.applicationNumber(appType).getEntity();
     }
 
-
+    @Override
+    public String upDateLicStatus(String licenceId, String status) {
+        return null;
+    }
 }

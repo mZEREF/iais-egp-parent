@@ -132,20 +132,8 @@ public class RequestForChangeDelegator {
      */
     public void prepareAmend(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do prepareAmend start ...."));
-        String amendTypeStr = (String) ParamUtil.getSessionAttr(bpc.request, "amendLicenceType");
-        //todo: 
-        String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
         
-
-        StringBuilder url = new StringBuilder();
-        url.append("https://").append(bpc.request.getServerName())
-                .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
-                .append(" ?licenceId=")
-                .append(licenceId)
-                .append("&amendTypes=")
-                .append(amendTypeStr);
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl.toString());
+        
         log.debug(StringUtil.changeForLog("the do prepareAmend end ...."));
     }
 

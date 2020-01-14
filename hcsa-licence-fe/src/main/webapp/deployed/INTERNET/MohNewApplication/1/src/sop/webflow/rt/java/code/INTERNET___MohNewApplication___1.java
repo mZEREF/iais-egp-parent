@@ -92,6 +92,10 @@ public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	// 		doRequestInformationSubmit->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doRequestInformationSubmit", this);
 	}
+	public void doRequestForChange_OnStepProcess_0() throws Exception {
+	// 		doRequestForChange->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doRequestForChangeSubmit", this);
+	}
 	
 
 }

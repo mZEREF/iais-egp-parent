@@ -1,0 +1,1 @@
+<%@include file="/iais/inbox/menu/premisesList.jsp"%>

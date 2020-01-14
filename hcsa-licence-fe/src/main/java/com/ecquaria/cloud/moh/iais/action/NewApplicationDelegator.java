@@ -431,6 +431,12 @@ public class NewApplicationDelegator {
             }
         }
         if(canEdit){
+            boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, AppConsts.YES);
+            if(!isGetDataFromPage){
+                log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+AppConsts.YES);
+                log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+                return;
+            }
             List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
             List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -703,6 +709,53 @@ public class NewApplicationDelegator {
         return result;
     }
 
+
+    /**
+     * StartStep: doRequestForChangeSubmit
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doRequestForChangeSubmit(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+        Map<String, String> map = doPreviewAndSumbit(bpc);
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"Msg",map);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            return;
+        }
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        String draftNo = appSubmissionDto.getDraftNo();
+        if(StringUtil.isEmpty(draftNo)){
+            draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+            appSubmissionDto.setDraftNo(draftNo);
+        }
+        //get appGroupNo
+        String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
+        log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
+        appSubmissionDto.setAppGrpNo(appGroupNo);
+        Double amount = appSubmissionService.getGroupAmendAmount(appSubmissionDto);
+        log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
+        appSubmissionDto.setAmount(amount);
+        //judge is the preInspection
+        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+        if (preOrPostInspectionResultDto == null) {
+            appSubmissionDto.setPreInspection(true);
+            appSubmissionDto.setRequirement(true);
+        } else {
+            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        }
+        //set Risk Score
+        appSubmissionService.setRiskToDto(appSubmissionDto);
+
+        appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDto, bpc.process);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        
+        log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+    }
+    
+
     /**
      * StartStep: doSubmit
      *
@@ -731,7 +784,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
         appSubmissionDto.setAppGrpNo(appGroupNo);
         //get Amount
-        Double amount = appSubmissionService.getGroupAmount(appSubmissionDto);
+        Double amount = amount = appSubmissionService.getGroupAmount(appSubmissionDto);
         log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
@@ -1128,6 +1181,7 @@ public class NewApplicationDelegator {
      */
     public void controlSwitch(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do controlSwitch start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String switch2 = "loading";
         String crudActionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (StringUtil.isEmpty(crudActionValue)) {
@@ -1139,7 +1193,9 @@ public class NewApplicationDelegator {
         }else if("doSubmit".equals(crudActionValue)){
              if(requestInformationConfig == null){
                  switch2 = crudActionValue;
-             }else{
+             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                 switch2 = "requstChange";
+            }else{
                  switch2 = "information";
              }
         }
@@ -1449,7 +1505,7 @@ public class NewApplicationDelegator {
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,appSubmissionDto.getAppEditSelectDto());
+            ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,"test");
         }
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
     }

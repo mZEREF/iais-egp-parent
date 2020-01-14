@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGlobalDto;
@@ -160,5 +161,6 @@ public interface AppConfigClient {
     @GetMapping(value = "/iais-hcsa-risk/golbalextbyid{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskGolbalExtDto>> getRiskGolbalextDtoById(@PathVariable("id")String id);
 
-
+    @PostMapping(value = "/fee-amendment", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<FeeDto> amendmentFee(@RequestBody @Required AmendmentFeeDto amendmentFeeDto);
 }
