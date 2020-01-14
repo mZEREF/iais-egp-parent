@@ -62,7 +62,7 @@ public class TemplatesDelegator {
     }
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter,true);
         QueryHelp.setMainSql(MsgTemplateConstants.MSG_TEMPLATE_FILE, MsgTemplateConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult searchResult = templatesService.getTemplateResults(searchParam);
         List<MsgTemplateQueryDto> msgTemplateQueryDtoList = searchResult.getRows();

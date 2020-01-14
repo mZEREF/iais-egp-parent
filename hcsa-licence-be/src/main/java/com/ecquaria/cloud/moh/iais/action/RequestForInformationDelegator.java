@@ -174,7 +174,7 @@ public class RequestForInformationDelegator {
             filters.put("toDate",toDate);
         }
         applicationParameter.setFilters(filters);
-        SearchParam appParam = SearchResultHelper.getSearchParam(request, true,applicationParameter,false);
+        SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
         if (appParam != null) {
             SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
@@ -190,7 +190,7 @@ public class RequestForInformationDelegator {
                         filter.put("app_id", rfiApplicationQueryDto.getId());
                     }
                     licenceParameter.setFilters(filter);
-                    SearchParam licParam = SearchResultHelper.getSearchParam(request, true,licenceParameter,false);
+                    SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
                     QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
                     SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
                     if(licResult.getRowCount()!=0) {
@@ -277,7 +277,7 @@ public class RequestForInformationDelegator {
         }
         licenceParameter.setFilters(filters);
 
-        SearchParam licParam = SearchResultHelper.getSearchParam(request, true,licenceParameter,false);
+        SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
         QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
         if (licParam != null) {
             SearchResult<RfiLicenceQueryDto> licResult = requestForInformationService.licenceDoQuery(licParam);

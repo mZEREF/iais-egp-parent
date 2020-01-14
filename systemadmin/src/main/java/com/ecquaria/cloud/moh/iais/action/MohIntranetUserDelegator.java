@@ -15,7 +15,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
@@ -23,16 +28,19 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -67,7 +75,7 @@ public class MohIntranetUserDelegator {
         HttpServletRequest request = bpc.request;
         prepareOption(bpc);
         ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,null);
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request,true, filterParameter);
+        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter,true);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery",searchParam);
         SearchResult searchResult = intranetUserService.doQuery(searchParam);
         if(!StringUtil.isEmpty(searchResult)){
