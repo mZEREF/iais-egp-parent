@@ -8,6 +8,10 @@
         action = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
     }
 %>
+<input type="hidden" id="isPremisesEdit" value="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
+<input type="hidden" id="isPramayEdit" value="${AppSubmissionDto.appEditSelectDto.primaryEdit}">
+<input type="hidden" id="isServiceEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
+
 <input type="hidden" name="crud_action_type" value="">
 <input type="hidden" name="crud_action_value" value="">
 <input type="hidden" name="crud_action_additional" value="">
@@ -53,6 +57,18 @@
         $('#payment').click(function(){
             submit('payment',null,null);
         });
+
+       if($('#isPremisesEdit').val() == 'true' && $('#crud_action_type').val() == 'premises'){
+           disabledPage();
+       }
+        if($('#isPramayEdit').val() == 'true' && $('#crud_action_type').val() == 'documents'){
+            disabledPage();
+        }
+        if($('#isServiceEdit').val() == 'true' && $('#crud_action_type').val() == 'serviceForms'){
+            disabledPage();
+        }
+
+
     });
 
     function submit(action,value,additional){
@@ -83,6 +99,11 @@
         $('[name="crud_action_bak"]').val(bak);
         var mainForm = document.getElementById('mainForm');
         mainForm.submit();
+    }
+    function disabledPage(){
+        $('input[type="radio"]').prop('disabled',true);
+        $('input[type="text"]').prop('disabled',true);
+        $('div.nice-select').addClass('disabled');
     }
 
 </script>
