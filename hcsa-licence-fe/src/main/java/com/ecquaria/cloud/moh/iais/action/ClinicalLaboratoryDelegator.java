@@ -845,7 +845,7 @@ public class ClinicalLaboratoryDelegator {
             currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
         }
-    }
+
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation end ...."));
 
     }
@@ -911,7 +911,7 @@ public class ClinicalLaboratoryDelegator {
                 return;
             }
         }
-    }
+
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
     }
 
@@ -1119,7 +1119,6 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
 
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         if(judegCanEdit(appSubmissionDto)){
             List<AppSvcPersonnelDto> appSvcPersonnelDtos = new ArrayList<>();
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
@@ -1332,7 +1331,7 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("getPsnInfoByIdNo end ...."));
         return  appSvcCgoDto;
     }
-    
+
     private AppSvcCgoDto isExistIdNo(List<AppSvcCgoDto> appSvcCgoDtoList, String idNo){
         for (AppSvcCgoDto appSvcCgoDto:appSvcCgoDtoList){
             if(idNo.equals(appSvcCgoDto.getIdNo())){
@@ -1469,7 +1468,7 @@ public class ClinicalLaboratoryDelegator {
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
         }
-        
+
         return appSubmissionDto;
     }
 
