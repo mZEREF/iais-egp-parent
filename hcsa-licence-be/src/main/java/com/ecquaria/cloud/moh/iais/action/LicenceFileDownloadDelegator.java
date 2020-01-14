@@ -163,7 +163,7 @@ public class LicenceFileDownloadDelegator {
                }
             }
         }else{
-            log.debug(StringUtil.changeForLog("There are reqest information application"));
+            log.debug(StringUtil.changeForLog("There are not reqest information application"));
         }
         log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation end ...."));
         return  result;

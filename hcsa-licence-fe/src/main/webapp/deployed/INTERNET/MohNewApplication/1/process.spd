@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="12" minorVersion="0" name="MohNewApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="13" minorVersion="0" name="MohNewApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="120" y="140">
@@ -134,7 +134,7 @@
     <JavaCode defClass="" executor="" methodName="prepareErrorAck_OnStepProcess_0" name="prepareErrorAck_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doRequestInformationSubmit" x="1080" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="doRequestInformationSubmit" x="1030" y="110">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -276,16 +276,26 @@
    <position>{(430,160)(510,-40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doRequestInformationSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(990,170)(1100,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareAckPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRequestInformationSubmit" style="oblique">
-   <position>{(1100,120)(1050,20)}</position>
+   <position>{(990,170)(1050,130)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareAckPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareErrorAck" style="oblique">
    <position>{(510,-40)(1050,20)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doRequestInformationSubmit" style="oblique">
+   <position>{(1050,130)(1240,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareAckPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(1240,140)(1050,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(1240,140)(860,540)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Merges/Merge/Merge1" componentIfTrue="/Steps/AutomaticStep/PrepareAckPage" defClass="" executor="" icon="" leftOperand="isrfiSuccess" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="1220" y="120">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_value" name="Switch1" x="410" y="140">
    <Description/>

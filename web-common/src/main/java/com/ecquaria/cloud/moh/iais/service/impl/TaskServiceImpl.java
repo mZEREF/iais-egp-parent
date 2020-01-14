@@ -179,7 +179,7 @@ public class TaskServiceImpl implements TaskService {
                 log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
             }
         }else{
-            log.error(StringUtil.changeForLog("The applicationDtos is null"));
+            log.info(StringUtil.changeForLog("The applicationDtos is null"));
         }
 
         log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison end ...."));

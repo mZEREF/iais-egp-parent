@@ -651,13 +651,22 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
-        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-        List<AppGrpPremisesDto> oldAppGrpPremisesDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-        boolean premisesa= appGrpPremisesDtos.equals(oldAppGrpPremisesDtos);
-        boolean premises= appGrpPremisesDtos.get(0).equals(oldAppGrpPremisesDtos.get(0));
 
-        boolean related = appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
-        boolean related1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0));
+        Map<String, String> doComChangeMap = doComChange(appSubmissionDto,oldAppSubmissionDto);
+        if(!doComChangeMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"Msg",doComChangeMap);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","N");
+            return;
+        }
+
+        Map<String, String> map = doPreviewAndSumbit(bpc);
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"Msg",map);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","N");
+            return;
+        }
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
@@ -665,7 +674,33 @@ public class NewApplicationDelegator {
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
        // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
+        ParamUtil.setRequestAttr(bpc.request,"AckMessage","The request for information save success");
         log.debug(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
+    }
+
+    private Map<String,String> doComChange( AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+        StringBuilder sB=new StringBuilder();
+        Map<String,String> result=new HashMap<>();
+        AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+        if(appEditSelectDto!=null){
+            if(!appEditSelectDto.isPremisesEdit()){
+              if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())){
+                  result.put("premiss","UC_CHKLMD001_ERR001");
+              }
+            }
+            if(!appEditSelectDto.isPrimaryEdit()){
+                if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())){
+                    result.put("document","UC_CHKLMD001_ERR001");
+                }
+            }
+            if(!appEditSelectDto.isServiceEdit()){
+                if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())){
+                    result.put("serviceId","UC_CHKLMD001_ERR001");
+                }
+            }
+        }
+        return result;
     }
 
     /**
