@@ -84,6 +84,7 @@
         <p><a class="back" onclick="doCancel();"><em class="fa fa-angle-left" ></em> Back</a></p>
       </div>
       <div class="text-right text-center-mobile">
+        <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
             <a class="btn btn-primary next" onclick="javascript:editCloneItem();">Edit</a>
       </div>
     </div>
@@ -91,10 +92,10 @@
 
   </div>
 
-
+  </div>
 </>
 
-
+<script src="/hcsa-licence-web/iais/js/CommonUtils.js"></script>
 <script type="text/javascript">
     function editCloneItem(){
         SOP.Crud.cfxSubmit("mainForm", "editCloneItem");

@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.ecquaria.cloud.helper.EngineHelper" %><%--
   Created by IntelliJ IDEA.
   User: yichen
   Date: 11/8/2019
@@ -134,6 +134,7 @@
         <div class="application-tab-footer">
               <td>
                 <div class="text-right text-center-mobile">
+                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
                   <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: doSearch();">Search</a>
                   <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddConfig();">Add Configuration</a>
 
@@ -150,7 +151,9 @@
 
 
 <%@include file="/include/validation.jsp"%>
+<script src="/hcsa-licence-web/iais/js/CommonUtils.js"></script>
 <script type="text/javascript">
+
   function doSearch(){
     SOP.Crud.cfxSubmit("mainForm", "doSearch");
   }

@@ -7,5 +7,12 @@ var Utils = {
 
     submit: function (form, action, value) {
         SOP.Crud.cfxSubmit(form, action, value);
+    },
+
+    clearClickStatus: function () {
+        $("input[type='radio']").removeAttr('checked')
+        $("input[type='checkbox']").removeAttr('checked')
+        $("input[type='text']").val("");
+        $(".current").text("Please select");
     }
 }

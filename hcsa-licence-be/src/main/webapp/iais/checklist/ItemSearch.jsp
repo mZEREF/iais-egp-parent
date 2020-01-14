@@ -34,9 +34,13 @@
     <input type="hidden" name="currentValidateId" value="">
      <div class="bg-title"><h2>Checklist Item Management</h2></div>
 
+    <span id="error_deleteItemMsg" name="iaisErrorMsg" class="error-msg"></span>
+    <span id="error_cloneItemMsg" name="iaisErrorMsg" class="error-msg"></span>
+
+    <br><br>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
-        <span id="error_deleteItemMsg" name="iaisErrorMsg" class="error-msg"></span>
-        <span id="error_cloneItemMsg" name="iaisErrorMsg" class="error-msg"></span>
+
+
         <div class="form-horizontal">
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label">Regulation Clause Number</label>
@@ -122,12 +126,14 @@
                             <td><iais:code code="${item.status}"></iais:code></td>
                             <c:if test="${empty sessionScope.currentValidateId}">
                               <td>
-                                <button type="button" class="btn btn-default btn-sm"
-                                        onclick="javascript:prepareEditItem('${item.itemId}');">Edit
-                                </button>
-                                <button type="button" class="btn btn-default btn-sm"
-                                        onclick="javascript:disable('${item.itemId}');">Delete
-                                </button>
+                                <c:if test="${item.status eq 'CMSTAT001'}">
+                                    <button type="button" class="btn btn-default btn-sm"
+                                            onclick="javascript:prepareEditItem('${item.itemId}');">Edit
+                                    </button>
+                                    <button type="button" class="btn btn-default btn-sm"
+                                            onclick="javascript:disable('${item.itemId}');">Delete
+                                    </button>
+                                </c:if>
                               </td>
                             </c:if>
                           </tr>
@@ -149,6 +155,7 @@
 
                             <c:choose>
                               <c:when test="${!empty sessionScope.currentValidateId}">
+                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: configToChecklist();">Add to Config</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
@@ -157,6 +164,7 @@
                                    onclick="javascript: cancelConfig();">Cancel</a>
                               </c:when>
                               <c:otherwise>
+                                <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: prepareAddItem();">Add ChecklistItem</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
@@ -199,6 +207,7 @@
 </div>
 
 <%@include file="/include/validation.jsp" %>
+<script src="/hcsa-licence-web/iais/js/CommonUtils.js"></script>
 <script type="text/javascript">
     function cancelConfig() {
         SOP.Crud.cfxSubmit("mainForm", "cancelConfig");

@@ -103,6 +103,7 @@
                 <p><a class="back" onclick="doCancel();"><em class="fa fa-angle-left" ></em> Back</a></p>
             </div>
             <div class="text-right text-center-mobile">
+                <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
                 <c:choose>
                     <c:when test="${btnTag eq 'SubmitButton'}">
                         <a class="btn btn-primary next" onclick="javascript:doSubmit();">Submit</a>
@@ -119,7 +120,7 @@
 
 
 </>
-
+<script src="/hcsa-licence-web/iais/js/CommonUtils.js"></script>
 <%@include file="/include/validation.jsp"%>
 <script>
     function doSubmit(itemId){

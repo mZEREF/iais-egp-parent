@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -93,6 +92,7 @@ public class HcsaChklItemDelegator {
         }
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_HCSA_SERVICE_SEARCH, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
 
     }
@@ -731,17 +731,14 @@ public class HcsaChklItemDelegator {
                 }
                 break;
             case CHECKLIST_ITEM:
-                SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+                SearchParam  searchParam = new SearchParam(CheckItemQueryDto.class.getName());
+                searchParam.setPageSize(Integer.MAX_VALUE);
+                searchParam.setPageNo(Integer.MIN_VALUE);
+                searchParam.setSort("item_id", SearchParam.ASCENDING);
                 QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
                 SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
                 if (searchResult != null){
                     List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
-                    checkItemQueryDtoList.stream().forEach(itemQueryDto -> {
-                        itemQueryDto.setRiskLevel(MasterCodeUtil.getCodeDesc(itemQueryDto.getRiskLevel()));
-                        itemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(itemQueryDto.getStatus()));
-                        itemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(itemQueryDto.getAnswerType()));
-                    });
-
                     file = ExcelWriter.exportExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
                 }
                 break;

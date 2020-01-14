@@ -103,6 +103,7 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_COMMON, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_HCI_CODE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE, null);
@@ -346,6 +347,7 @@ public class HcsaChklConfigDelegator {
             if (!StringUtils.isEmpty(operationType) && HcsaChecklistConstants.ACTION_CLONE.equals(operationType)){
                 configDto = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
                 configDto.setSvcName(svcName);
+                configDto.setHciCode(hciCode);
 
                 if (module != null){
                     configDto.setModule(MasterCodeUtil.getCodeDesc(module));
@@ -354,6 +356,8 @@ public class HcsaChklConfigDelegator {
                 if (type != null){
                     configDto.setType(MasterCodeUtil.getCodeDesc(type));
                 }
+
+
             }else {
                 configDto = new ChecklistConfigDto();
                 if (common != null){
@@ -368,6 +372,7 @@ public class HcsaChklConfigDelegator {
                     configDto.setModule(MasterCodeUtil.getCodeDesc(module));
                 }
 
+                configDto.setHciCode(hciCode);
                 configDto.setSvcName(svcName);
                 configDto.setSvcSubType(svcSubType);
             }

@@ -83,7 +83,7 @@
           </div>
 
           <div class="form-group">
-            <label class="col-md-2">HCI CODE</label>
+            <label class="col-md-2">HCI Code</label>
             <div class="col-md-3">
               <input type="text" name="hciCode" value="${hciCode}"/>
 
@@ -118,6 +118,7 @@
           </div>
           <div class="col-xs-12 col-sm-6">
             <div class="text-right text-center-mobile">
+              <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus();">Clear</a>
               <a class="btn btn-primary next"  onclick="javascript: doNext();">Next</a>
             </div>
           </div>
@@ -129,6 +130,7 @@
 </>
 
 <%@include file="/include/validation.jsp"%>
+<script src="/hcsa-licence-web/iais/js/CommonUtils.js"></script>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm","nextPage");
