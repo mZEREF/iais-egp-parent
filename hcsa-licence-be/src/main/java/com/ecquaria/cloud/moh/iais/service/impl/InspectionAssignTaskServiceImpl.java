@@ -290,8 +290,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public void routingTaskByCommonPool(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks) {
         TaskDto taskDto = getTaskDtoByPool(commPools, inspecTaskCreAndAssDto);
         ApplicationViewDto applicationViewDto = searchByAppCorrId(inspecTaskCreAndAssDto.getAppCorrelationId());
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        appInspectionStatusClient.createAppInspectionStatusByAppDto(applicationDto);
         assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto);
     }
 
