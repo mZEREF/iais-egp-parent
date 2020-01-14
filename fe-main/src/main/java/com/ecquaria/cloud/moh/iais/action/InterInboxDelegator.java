@@ -109,7 +109,7 @@ public class InterInboxDelegator {
     public void prepareDate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
-        SearchParam inboxParam = SearchResultHelper.getSearchParam(request,true,inboxParameter);
+        SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
@@ -146,7 +146,7 @@ public class InterInboxDelegator {
         log.debug(StringUtil.changeForLog("Step ---> toLicencePage"));
         HttpServletRequest request = bpc.request;
         prepareLicSelectOption(request);
-        SearchParam licParam = SearchResultHelper.getSearchParam(request,true,licenceParameter);
+        SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
         if(!StringUtil.isEmpty(licResult)){
@@ -225,7 +225,7 @@ public class InterInboxDelegator {
         /**
          * Application SearchResult
          */
-        SearchParam appParam = SearchResultHelper.getSearchParam(request,true,appParameter);
+        SearchParam appParam = SearchResultHelper.getSearchParam(request,appParameter);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         SearchResult appResult = inboxService.appDoQuery(appParam);
         List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();

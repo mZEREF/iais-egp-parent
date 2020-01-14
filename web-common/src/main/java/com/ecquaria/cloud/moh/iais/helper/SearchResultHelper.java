@@ -20,13 +20,13 @@ import java.util.Map;
 public class SearchResultHelper {
 
     public static SearchParam getSearchParam(HttpServletRequest request, FilterParameter filter) {
-        return getSearchParam(request, false, filter,false);
+        return getSearchParam(request, filter,true,true,true);
     }
 
-    public static SearchParam getSearchParam(HttpServletRequest request, boolean isNew, FilterParameter filter,boolean doSort) {
+    public static SearchParam getSearchParam(HttpServletRequest request,FilterParameter filter,boolean doPage,boolean doSort,boolean doSearch) {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, filter.getSearchAttr());
         try {
-            if (searchParam == null || isNew) {
+            if (searchParam == null) {
                 searchParam = new SearchParam(filter.getClz().getName());
                 searchParam.setPageSize(filter.getPageSize());
                 searchParam.setPageNo(filter.getPageNo());
@@ -35,7 +35,20 @@ public class SearchResultHelper {
                 } else {
                     searchParam.setSort(filter.getSortField(), SearchParam.ASCENDING);
                 }
+            }
 
+            if (doSearch){
+                if (filter.getFilters() != null) {
+                    Map<String, Object> inboxMap = filter.getFilters();
+                    for (Map.Entry<String, Object> entry : inboxMap.entrySet()) {
+                        String mapKey = entry.getKey();
+                        Object mapValue = entry.getValue();
+                        searchParam.addFilter(mapKey, mapValue,true);
+                    }
+                }
+            }
+
+            if (doPage){
                 String pageNo = ParamUtil.getString(request, "pageJumpNoTextchangePage");
                 String pageSize = ParamUtil.getString(request, "pageJumpNoPageSize");
                 if (!StringUtil.isEmpty(pageNo)) {
@@ -44,22 +57,13 @@ public class SearchResultHelper {
                 if (!StringUtil.isEmpty(pageSize)) {
                     searchParam.setPageSize(Integer.parseInt(pageSize));
                 }
+            }
 
-                if (doSort){
-                    String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-                    String sortType = ParamUtil.getString(request,"crud_action_additional");
-                    if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-                        searchParam.setSort(sortFieldName,sortType);
-                    }
-                }
-
-                if (filter.getFilters() != null) {
-                    Map<String, Object> inboxMap = filter.getFilters();
-                    for (Map.Entry<String, Object> entry : inboxMap.entrySet()) {
-                        String mapKey = entry.getKey();
-                        Object mapValue = entry.getValue();
-                        searchParam.addFilter(mapKey, mapValue,true);
-                    }
+            if (doSort){
+                String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+                String sortType = ParamUtil.getString(request,"crud_action_additional");
+                if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                    searchParam.setSort(sortFieldName,sortType);
                 }
             }
         } catch (NullPointerException e) {
