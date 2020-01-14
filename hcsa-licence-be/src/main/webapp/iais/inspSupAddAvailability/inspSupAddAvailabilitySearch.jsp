@@ -50,14 +50,14 @@
                             <input type="text" name="userName" value="${avaSearchParam.filters['userName']}" />
                           </c:if>
                           <c:if test="${curRole ne 'INSPECTOR_LEAD'}">
-                            <label><c:out value="${userName}"/></label>
+                            <label><c:out value="${inspNonAvailabilityDto.userName}"/></label>
                           </c:if>
                         </iais:value>
                       </iais:row>
                       <iais:row>
                         <iais:field value="Year"/>
                         <iais:value width="18">
-                          <iais:select name="availabilityYear" options="yearOption" firstOption="Please select" value="${avaSearchParam.filters['availabilityYear']}" ></iais:select>
+                          <input type="text" name="availabilityYear" value="${avaSearchParam.filters['availabilityYear']}" />
                         </iais:value>
                       </iais:row>
                       <iais:action style="text-align:center;">
@@ -73,7 +73,6 @@
       </div>
       <c:if test="${avaTaskSearchResult != null}">
         <button type="button" class="btn btn-default" style="float:left" onclick="javascript:doInspAvailabilityAdd();">Add</button>
-        <button type="button" class="btn btn-default" style="float:right" onclick="javascript:doInspAvailabilityDelete();">Delete</button>
         <iais:pagination  param="avaSearchParam" result="avaTaskSearchResult"/>
         <div class="container">
           <div class="col-xs-12">
@@ -85,12 +84,8 @@
                 <table class="table">
                   <thead>
                   <tr align="center">
-                    <iais:sortableHeader needSort="false" field="" value="">
-                      <input type="checkbox" name="availabilityCheck" id="availabilityCheck" onclick="javascript:doInspAvailabilityCheckAll();" value=""/>
-                    </iais:sortableHeader>
                     <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="" value="User ID"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="true" field="" value="Year"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="" value="User Blockout Date Start"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="" value="User Blockout Date End"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="" value="User Blockout Date Description"></iais:sortableHeader>
@@ -113,19 +108,16 @@
                     <c:otherwise>
                       <c:forEach var="pool" items="${avaTaskSearchResult.rows}" varStatus="status">
                         <tr>
-                          <td>
-                            <input type="checkbox" name="availabilityChCheck" onclick="javascript:doInspAvailabilityCheck();" value="<c:out value="${pool.value}"/>"/>
-                          </td>
                           <td class="row_no"><c:out value="${(status.index + 1) + (avaSearchParam.pageNo - 1) * avaSearchParam.pageSize}"/></td>
-                          <td><c:out value="${pool.applicationNo}"/></td>
-                          <td><iais:code code="${pool.applicationType}"/></td>
-                          <td><c:out value="${pool.hciCode}"/></td>
-                          <td><c:out value="${pool.hciName}"/></td>
-                          <td><c:out value="${pool.serviceName}"/></td>
-                          <td><c:out value="${pool.hciCode}"/></td>
-                          <td><c:out value="${pool.hciCode}"/></td>
-                          <td><fmt:formatDate value='${pool.inspectionDate}' pattern='dd/MM/yyyy' /></td>
-                          <td><button type="button"  class="btn btn-default" onclick="javascript:doInspAvailabilityEdit('<iais:mask name="avaId" value="${pool.avaId}"/>');">Edit</button></td>
+                          <td><c:out value="${pool.userName}"/></td>
+                          <td><fmt:formatDate value='${pool.nonAvaStartDate}' pattern='dd/MM/yyyy' /></td>
+                          <td><fmt:formatDate value='${pool.nonAvaEndDate}' pattern='dd/MM/yyyy' /></td>
+                          <td><c:out value="${pool.blockOutDesc}"/></td>
+                          <td><c:out value="${pool.recurrence}"/></td>
+                          <td><c:out value="${pool.recurrenceEndDate}"/></td>
+                          <td><c:out value="${pool.expectedResults}"/></td>
+                          <td><button type="button" class="btn btn-default" onclick="javascript:doInspAvailabilityEdit('<iais:mask name="avaId" value="${pool.avaId}"/>');">Update</button></td>
+                              <br><button type="button" class="btn btn-default" onclick="javascript:doInspAvailabilityDelete('<iais:mask name="avaId" value="${pool.avaId}"/>');">Delete</button>
                         </tr>
                       </c:forEach>
                     </c:otherwise>
@@ -142,14 +134,6 @@
 </div>
 <script type="text/javascript">
 
-    function doInspAvailabilityCheck() {
-
-    }
-
-    function doInspAvailabilityCheckAll() {
-
-    }
-
     function doInspAvailabilityEdit(avaId) {
         $("#avaId").val(avaId);
         inspAvailabilitySubmit('edit');
@@ -159,7 +143,8 @@
         inspAvailabilitySubmit('add');
     }
 
-    function doInspAvailabilityDelete() {
+    function doInspAvailabilityDelete(avaId) {
+        $("#avaId").val(avaId);
         inspAvailabilitySubmit('delete');
     }
 

@@ -63,6 +63,18 @@
                           <textarea id="blockOutDesc" name="blockOutDesc" cols="70" rows="7" ><c:out value="${inspNonAvailabilityDto.blockOutDesc}"></c:out></textarea>
                         </iais:value>
                       </iais:row>
+                      <iais:row>
+                        <iais:field value="Recurrence" required="true"/>
+                        <iais:value width="7">
+                          <label><c:out value="${inspNonAvailabilityDto.recurrence}"/></label>
+                        </iais:value>
+                      </iais:row>
+                      <iais:row>
+                        <iais:field value="Recurrence End Date" required="true"/>
+                        <iais:value width="7">
+                          <fmt:formatDate value='${inspNonAvailabilityDto.recurrenceEndDate}' pattern='dd/MM/yyyy' />
+                        </iais:value>
+                      </iais:row>
                       <iais:action >
                         <button class="btn btn-lg btn-login-back" style="float:left" type="button" onclick="javascript:doInspAvailabilityConBack()">Back</button>
                         <button class="btn btn-lg btn-login-next" style="float:right" type="button" onclick="javascript:doInspAvailabilityConSubmit()">Submit</button>
