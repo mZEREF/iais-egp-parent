@@ -1,46 +1,5 @@
 <style>
-  /* label in the component */
-
-  div.capital-info div.control div.control-label-span {
-    display: none;
-  }
-  /* label component */
-
-  div.capital-info div.control div.label-control {
-    display: block;
-  }
-
-  div.capital-info div.info-header div.label-control {
-    padding-left: 16px;
-    text-align: left;
-  }
-
-  div.capital-info td.first div.control div.label-control {
-    width: 100%;
-  }
-
-  div.capital-info td.first {
-    width: 350px;
-  }
-
-  div.capital-info div.no-label div.control-input-span {
-    width: 90%;
-  }
-
-  div.capital-info .control .control-input-span input[type="text"] {
-    max-width: none;
-    width: 90%;
-  }
-
-  div.capital-info table.control-grid tr td td {
-    width: auto;
-    padding-right: 25px;
-  }
   
-  .assign-header{
-    margin-left: 20px;
-    font-weight: bold;
-  }
 
 
 </style>
@@ -65,6 +24,40 @@
           <td class="first last" style="width: 100%;">
             <div id="control--runtime--1" class="section control  container-s-1">
                 <div class="control-set-font control-font-header section-header">
+                  
+                  <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                    <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                      <c:if test="${'APPSPN02' == clickEditPage}">
+                        <c:set var="isClickEdit" value="true"/>
+                      </c:if>
+                    </c:forEach>
+                    <c:choose>
+                      <c:when test="${'true' != isClickEdit}">
+                        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                      </c:when>
+                      <c:otherwise>
+                        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+                      </c:otherwise>
+                    </c:choose>
+                    <c:if test="${'true' != isClickEdit}">
+                      <c:set var="locking" value="true"/>
+                      <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
+                        <c:if test="${amendType =='RFCATYPE05'}">
+                          <c:set var="canEdit" value="1"/>
+                        </c:if>
+                      </c:forEach>
+                      <div id="edit-content">
+                        <c:choose>
+                          <c:when test="${'1' == canEdit}">
+                            <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                          </c:when>
+                          <c:otherwise>
+                            <p class="text-right" style="color: gray"><i class="fa fa-pencil-square-o"></i>Edit</p>
+                          </c:otherwise>
+                        </c:choose>
+                      </div>
+                    </c:if>
+                  </c:if>
                 </div>
 
               
@@ -89,10 +82,6 @@
                                 <div class="col-sm-4 control-label formtext ">
                                   <label>Clinical Governance Office ${status.index+1}</label><br/>
                                   <label>${currentCgo.name},${currentCgo.idNo}(${currentCgo.idType})</label>
-                                </div>
-                                <div class="col-sm-6 text-right">
-                                  <br/>
-                                  <a class="edit"><i class="fa fa-pencil-square-o"></i>Edit</a>
                                 </div>
                                 <div class="hidden">
                                   <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
@@ -446,6 +435,7 @@
         reLoadChange();
 
         showSpecialty();
+        
          
         if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEdit}'){
             disabledAll();
@@ -453,12 +443,11 @@
             $('div.nice-select').addClass('disabled');
         }
 
-       
+        doEdit();
     });
 
     var disabledAll = function () {
         $('input[type="text"]').prop('disabled',true);
-      //  $('input[type="text"]').addClass('disabled');
     }
 
     var showSpecialty = function () {
@@ -524,11 +513,12 @@
     });
 
   var doEdit = function () {
-    $('.edit').click(function () {
-        $assignContentEle = $(this).closest('div.assignContent');
+    $('#edit').click(function () {
+        /*$assignContentEle = $(this).closest('div.assignContent');
         $assignContentEle.find('input[type="text"]').prop('disabled',false);
-        $assignContentEle.find('div.nice-select').removeClass('disabled');
-
+        $assignContentEle.find('div.nice-select').removeClass('disabled');*/
+        $('input[type="text"]').prop('disabled',false);
+        $('div.nice-select').removeClass('disabled');
         $('#isEditHiddenVal').val('1');
     });
   }

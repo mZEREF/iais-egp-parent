@@ -1,0 +1,65 @@
+
+.removeBtn{
+    color:red;
+    cursor: pointer;
+}
+.removePhBtn{
+    color:red;
+    cursor: pointer;
+}
+.new-premise-form-conv{
+    border-top:1px solid #BABABA;
+    padding-top:40px;
+}
+.underLine{
+    border-top:1px solid #BABABA;
+    padding-top:40px;
+}
+
+
+
+
+/* label in the component */
+
+div.capital-info div.control div.control-label-span {
+    display: none;
+}
+/* label component */
+
+div.capital-info div.control div.label-control {
+    display: block;
+}
+
+div.capital-info div.info-header div.label-control {
+    padding-left: 16px;
+    text-align: left;
+}
+
+div.capital-info td.first div.control div.label-control {
+    width: 100%;
+}
+
+div.capital-info td.first {
+    width: 350px;
+}
+
+div.capital-info div.no-label div.control-input-span {
+    width: 90%;
+}
+
+div.capital-info .control .control-input-span input[type="text"] {
+    max-width: none;
+    width: 90%;
+}
+
+div.capital-info table.control-grid tr td td {
+    width: auto;
+    padding-right: 25px;
+}
+
+.assign-header{
+    margin-left: 20px;
+    font-weight: bold;
+}
+  
+  

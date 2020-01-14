@@ -93,9 +93,16 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-
-
-
+        <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+          <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
+            <c:if test="${amendType =='RFCATYPE05'}">
+            <c:set var="canEdit" value="1"/>
+            </c:if>
+          </c:forEach>
+        </c:if>
+        if('APTY005' == '${AppSubmissionDto.appType}' && '1' != '${canEdit}'){
+            $('div.nice-select').addClass('disabled');
+        }
 
         //Binding method
         $('#disciplineAllocationBack').click(function(){

@@ -21,7 +21,42 @@
               <span class="upload_controls"></span>
 
               <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
-              <div class="personnel-content "></div>
+              <div class="personnel-content ">
+                <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                    <c:if test="${'APPSPN06' == clickEditPage}">
+                      <c:set var="isClickEdit" value="true"/>
+                    </c:if>
+                  </c:forEach>
+                  <c:choose>
+                    <c:when test="${'true' != isClickEdit}">
+                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                    </c:when>
+                    <c:otherwise>
+                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+                    </c:otherwise>
+                  </c:choose>
+                  <c:if test="${'true' != isClickEdit}">
+                    <c:set var="locking" value="true"/>
+                    <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
+                      <c:if test="${amendType =='RFCATYPE05'}">
+                        <c:set var="canEdit" value="1"/>
+                      </c:if>
+                    </c:forEach>
+                    <div id="edit-content">
+                      <c:choose>
+                        <c:when test="${'1' == canEdit}">
+                          <p class="text-right"><a id="edit"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                        </c:when>
+                        <c:otherwise>
+                          <p class="text-right" style="color: gray"><i class="fa fa-pencil-square-o"></i>Edit</p>
+                        </c:otherwise>
+                      </c:choose>
+                    </div>
+                  </c:if>
+                </c:if>
+              </div>
+              
               <c:if test="${ServicePersonnelMandatory>0}">
               <c:forEach begin="0" end="${ServicePersonnelMandatory-1}" step="1" varStatus="status">
                 <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
@@ -143,9 +178,11 @@
                   </table>
               </c:forEach>
               </c:if>
-              <div>
-                <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
-              </div>
+              <c:if test="${'APTY005' !=AppSubmissionDto.appType}">
+                <div>
+                  <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
+                </div>
+              </c:if>
             </div>
           </td>
         </tr>
@@ -160,6 +197,12 @@
       personnelSel();
       //triggering event
       $('.personnelSel').trigger('change');
+
+      if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEdit}'){
+          $('input[type="text"]').prop('disabled',true);
+          //nice-select
+          $('div.nice-select').addClass('disabled');
+      }
 
   });
 

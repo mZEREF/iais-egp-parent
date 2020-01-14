@@ -43,8 +43,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
-        List<PremisesListQueryDto> premisesListQueryDtos = licenceClient.getPremises(licenseeId).getEntity();
-        return premisesListQueryDtos;
+        return licenceClient.getPremises(licenseeId).getEntity();
     }
 
     @Override
@@ -58,32 +57,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //save appGrp and app
         appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
 //asynchronous save the other data.
-        eventBus(appSubmissionDto, process);
+        //eventBus(appSubmissionDto, process);
         return appSubmissionDto;
     }
 
-    private  void eventBus(AppSubmissionDto appSubmissionDto, Process process){
-        /*//prepare request parameters
-        appSubmissionDto.setEventRefNo(appSubmissionDto.getAppGrpNo());
-        SubmitReq req = new SubmitReq();
-        req.setSubmissionId(applicationClient.getSubmissionId().getEntity());
-        req.setProject(process.getCurrentProject());
-        req.setProcess(process.getCurrentProcessName());
-        req.setStep(process.getCurrentComponentName());
-        req.setService(EventBusConsts.SERVICE_NAME_APPSUBMIT);
-        req.setOperation(EventBusConsts.OPERATION_NEW_APP_SUBMIT);
-        req.setSopUrl("https://" + systemParamConfig.getInterServerName()
-                +  "/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
-        req.setData(JsonUtil.parseToJson(appSubmissionDto));
-        req.setCallbackUrl("https://"
-                + systemParamConfig.getInterServerName()
-                + "/hcsa-licence-web/eservice/INTERNET/HcsaApplicationEventBusCallBack");
-        req.setUserId("SOP");
-        req.setWait(false);
-        req.addCallbackParam("token", IaisEGPHelper.genTokenForCallback(req.getSubmissionId(), req.getService()));
-        //
-        SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);*/
-    }
+
 
     @Override
     public ApplicationDto getApplicationByLicenceId(String licenceId) {

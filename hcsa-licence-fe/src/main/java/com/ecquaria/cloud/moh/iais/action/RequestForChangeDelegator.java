@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.StringJoiner;
  */
 @Slf4j
 @Delegator("requestForChangeDelegator")
-public class RequestForChange {
+public class RequestForChangeDelegator {
 
     @Autowired
     RequestForChangeService requestForChangeService;
@@ -136,7 +137,7 @@ public class RequestForChange {
         String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
         
 
-        StringBuffer url = new StringBuffer();
+        StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
                 .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication")
                 .append(" ?licenceId=")
@@ -144,7 +145,7 @@ public class RequestForChange {
                 .append("&amendTypes=")
                 .append(amendTypeStr);
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(url.toString());
+        bpc.response.sendRedirect(tokenUrl.toString());
         log.debug(StringUtil.changeForLog("the do prepareAmend end ...."));
     }
 

@@ -20,6 +20,39 @@
                 <div class="row"></div>
               </div>
               <div class="po-content">
+                <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                    <c:if test="${'APPSPN03' == clickEditPage}">
+                      <c:set var="isClickEdit" value="true"/>
+                    </c:if>
+                  </c:forEach>
+                  <c:choose>
+                    <c:when test="${'true' != isClickEdit}">
+                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                    </c:when>
+                    <c:otherwise>
+                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+                    </c:otherwise>
+                  </c:choose>
+                  <c:if test="${'true' != isClickEdit}">
+                    <c:set var="showPreview" value="true"/>
+                    <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
+                      <c:if test="${amendType =='RFCATYPE03'}">
+                        <c:set var="canEdit" value="1"/>
+                      </c:if>
+                    </c:forEach>
+                    <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
+                      <c:choose>
+                        <c:when test="${'1' == canEdit}">
+                          <p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                        </c:when>
+                        <c:otherwise>
+                          <p class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</p>
+                        </c:otherwise>
+                      </c:choose>
+                    </div>
+                  </c:if>
+                </c:if>
               </div>
               <c:if test="${PrincipalOfficersMandatory>0}">
               <c:forEach begin="0" end="${PrincipalOfficersMandatory-1}" step="1" varStatus="status">
@@ -144,11 +177,13 @@
                 </div>
               </c:forEach>
               </c:if>
-              <div class="row">
-                <div class="col-sm-4">
-                  <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
+                  </div>
                 </div>
-              </div>
+             
+             
               <br/>
               <br/>
               <div class="row">
@@ -175,6 +210,39 @@
                   <br/>
                   <br/>
                 </div>
+                  <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
+                    <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                      <c:if test="${'APPSPN04' == clickEditPage}">
+                        <c:set var="isClickEditDpo" value="true"/>
+                      </c:if>
+                    </c:forEach>
+                    <c:choose>
+                      <c:when test="${'true' != isClickEditDpo}">
+                        <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="0"/>
+                      </c:when>
+                      <c:otherwise>
+                        <input id="isEditDpoHiddenVal" type="hidden" name="isEditDpo" value="1"/>
+                      </c:otherwise>
+                    </c:choose>
+                    <c:if test="${'true' != isClickEditDpo}">
+                      <c:set var="showPreview" value="true"/>
+                      <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
+                        <c:if test="${amendType =='RFCATYPE04'}">
+                          <c:set var="canEditDpo" value="1"/>
+                        </c:if>
+                      </c:forEach>
+                      <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
+                        <c:choose>
+                          <c:when test="${'1' == cancanEditDpoEdit}">
+                            <p class="text-right"><a id="edit-dpo"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                          </c:when>
+                          <c:otherwise>
+                            <p class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</p>
+                          </c:otherwise>
+                        </c:choose>
+                      </div>
+                    </c:if>
+                  </c:if>
                 </c:if>
               </div>
 
@@ -304,11 +372,12 @@
             </div>
           </c:forEach>
         </c:if>
-              <div class="row">
-                <div class="col-sm-6">
-                  <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
+                <div class="row <c:if test="${'APTY005' ==AppSubmissionDto.appType  &&'1' == canEditDpo}">disabled</c:if>">
+                  <div class="col-sm-6">
+                    <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
+                  </div>
                 </div>
-              </div>
+              
           </div>
         </div>
       </div>
@@ -323,8 +392,30 @@
 
       retrieveData();
       
+      addPo();
+      
+      addDpo();
+      
+      doEdit();
+      
+      doEditDpo();
+      
       $('.poSelect').trigger('change');
       $('.deputySelect').trigger('change');
+      
+      //disabled 
+      if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEdit}'){
+          $('.po-content input[type="text"]').prop('disabled',true);
+          $('.po-content div.nice-select').addClass('disabled');
+          $('#addPoBtn').addClass('hidden');
+          $('#addPoBtn').unbind('click');
+      }
+      if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEditDpo}'){
+          $('.deputySelect').addClass('disabled');
+          $('.deputy-content input[type="text"]').prop('disabled',true);
+          $('.deputy-content div.nice-select').addClass('disabled');
+          $('#addDpoBtn').unbind('click');
+      }
   });
 
   var poSelect = function(){
@@ -349,7 +440,7 @@
 
     });
 
-
+var addPo = function(){
     $('#addPoBtn').click(function () {
         $.ajax({
             'url':'${pageContext.request.contextPath}/principal-officer-html',
@@ -370,25 +461,32 @@
         });
 
     });
+}
 
-  $('#addDpoBtn').click(function () {
-      $.ajax({
-          'url':'${pageContext.request.contextPath}/deputy-principal-officer-html',
-          'dataType':'text',
-          'type':'GET',
-          'success':function (data) {
-              console.log("suc");
-              $('.deputyPrincipalOfficers:last').after(data);
 
-              poSelect();
+var addDpo = function(){
+    $('#addDpoBtn').click(function () {
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/deputy-principal-officer-html',
+            'dataType':'text',
+            'type':'GET',
+            'success':function (data) {
+                console.log("suc");
+                $('.deputyPrincipalOfficers:last').after(data);
 
-          },
-          'error':function (data) {
-              console.log("err");
-          }
-      });
+                poSelect();
 
-  });
+            },
+            'error':function (data) {
+                console.log("err");
+            }
+        });
+
+    });  
+}
+    
+
+  
   
   var retrieveData = function () {
       $('.idNoVal').blur(function () {
@@ -428,4 +526,27 @@
       });
   }
 
+  var doEdit = function () {
+      $('#edit').click(function () {
+          $('.po-content input[type="text"]').prop('disabled',false);
+          $('.po-content div.nice-select').removeClass('disabled');
+          $('#isEditHiddenVal').val('1');
+          $('#addPoBtn').removeClass('hidden');
+          addPo();
+          $('#edit').addClass('hidden');
+      });
+  }
+
+
+  var doEditDpo = function () {
+      $('#edit-dpo').click(function () {
+          $('.deputySelect').removeClass('disabled');
+          $('.deputy-content input[type="text"]').prop('disabled',false);
+          $('.deputy-content div.nice-select').removeClass('disabled');
+          $('#isEditDpoHiddenVal').val('1');
+          addDpo();
+          $('#edit-dpo').addClass('hidden');
+      });
+  }
+  
 </script>

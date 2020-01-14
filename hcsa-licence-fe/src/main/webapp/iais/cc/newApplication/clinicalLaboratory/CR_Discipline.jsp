@@ -1,4 +1,4 @@
-<input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+
 <c:if test="${'APTY002' ==AppSubmissionDto.appType}">
   <c:set var="isClickEdit" value="true"/>
 </c:if>
@@ -8,6 +8,14 @@
       <c:set var="isClickEdit" value="true"/>
     </c:if>
   </c:forEach>
+  <c:choose>
+    <c:when test="${'true' != isClickEdit}">
+      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+    </c:when>
+    <c:otherwise>
+      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
+    </c:otherwise>
+  </c:choose>
   <c:if test="${'true' != isClickEdit}">
     <c:set var="locking" value="true"/>
     <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">

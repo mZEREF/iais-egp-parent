@@ -24,6 +24,7 @@
 <link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.min.css" rel="stylesheet">
 <link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.standalone.min.css" rel="stylesheet">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_style.css">
+<link rel="stylesheet" href="<%=webroot%>css/hcsaApplication.css">
 
 
 <script type="text/javascript" src="<%=webroot%>js/bootstrap.min.js"></script>

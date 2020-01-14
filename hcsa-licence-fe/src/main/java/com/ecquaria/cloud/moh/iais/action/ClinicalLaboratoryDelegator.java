@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -730,7 +731,21 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit);
+        if(!isGetDataFromPage){
+            // when rfc not click edit
+            log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+isEdit);
+            log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+            return;
+        }
         List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
+            clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
+            appSubmissionDto.setClickEditPage(clickEditPages);
+        }
         //do validate
         Map<String,String> errList=new HashMap<>();
 
@@ -738,6 +753,7 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
+        
         setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
         String crud_action_additional = bpc.request.getParameter("nextStep");
         if("next".equals(crud_action_additional)){
@@ -748,6 +764,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errList));
             return;
         }
+
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
     }
 
@@ -762,6 +779,13 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation start ...."));
         Map<String,String > errorMap=new HashMap<>();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, AppConsts.YES);
+        if(!isGetDataFromPage){
+            // when rfc not click edit
+            log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+AppConsts.YES);
+            log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+            return;
+        }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
@@ -771,15 +795,12 @@ public class ClinicalLaboratoryDelegator {
             for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
                 String premisesType = "";
                 String premisesValue = "";
-                String premisesIndexNo = "";
                 for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
                     if(appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getConveyanceVehicleNo())){
-                    //    premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
                         premisesType = appGrpPremisesDto.getPremisesType();
                         premisesValue = appGrpPremisesDto.getConveyanceVehicleNo();
                         break;
                     }else if (appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getHciName())){
-                    //    premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
                         premisesType = appGrpPremisesDto.getPremisesType();
                         premisesValue = appGrpPremisesDto.getHciName();
                         break;
@@ -838,8 +859,31 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doPrincipalOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers start ...."));
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request) ;
+        
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+        String isEditDpo = ParamUtil.getString(bpc.request, "isEditDpo");
+        boolean isGetDataFromPagePo = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit);
+        boolean isGetDataFromPageDpo = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEditDpo);
+        if(!isGetDataFromPagePo && !isGetDataFromPageDpo){
+            // when rfc not click edit
+            log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+isEdit+";isEditDpo:"+isEditDpo);
+            log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+            return;
+        }
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request, isGetDataFromPagePo, isGetDataFromPageDpo) ;
         ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null? new HashSet<>() :appSubmissionDto.getClickEditPage();
+            if(isGetDataFromPagePo){
+                clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS);
+            }
+            if(isGetDataFromPageDpo){
+                clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS);
+            }
+            
+            appSubmissionDto.setClickEditPage(clickEditPages);
+        }
         Map<String,String> map=new HashMap<>();
         String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
 
@@ -1051,6 +1095,16 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doServicePersonnel (BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doServicePersonnel start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+        boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit);
+        if(!isGetDataFromPage){
+            // when rfc not click edit
+            log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+isEdit);
+            log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+            return;
+        }
+        
         Map<String ,String >errorMap=new HashMap<>();
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
@@ -1326,37 +1380,39 @@ public class ClinicalLaboratoryDelegator {
 
 
 
-    private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request){
+    private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo){
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = new ArrayList<>();
         String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
-
-        String [] assignSelect = ParamUtil.getStrings(request, "assignSelect");
-        String [] salutation = ParamUtil.getStrings(request, "salutation");
-        String [] name = ParamUtil.getStrings(request, "name");
-        String [] idType = ParamUtil.getStrings(request, "idType");
-        String [] idNo = ParamUtil.getStrings(request, "idNo");
-        String [] designation = ParamUtil.getStrings(request, "designation");
-        String [] mobileNo = ParamUtil.getStrings(request, "mobileNo");
-        String [] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
-        String [] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-        if(assignSelect!=null && assignSelect.length>0){
-            for(int i=0 ;i<assignSelect.length;i++){
-                AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
-                poDto.setAssignSelect(assignSelect[i]);
-                poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-                poDto.setSalutation(salutation[i]);
-                poDto.setName(name[i]);
-                poDto.setIdType(idType[i]);
-                poDto.setIdNo(idNo[i]);
-                poDto.setOfficeTelNo(officeTelNo[i]);
-                poDto.setDesignation(designation[i]);
-                poDto.setMobileNo(mobileNo[i]);
-                poDto.setEmailAddr(emailAddress[i]);
-                appSvcPrincipalOfficersDtos.add(poDto);
+        if(isGetDataFromPagePo){
+            String [] assignSelect = ParamUtil.getStrings(request, "assignSelect");
+            String [] salutation = ParamUtil.getStrings(request, "salutation");
+            String [] name = ParamUtil.getStrings(request, "name");
+            String [] idType = ParamUtil.getStrings(request, "idType");
+            String [] idNo = ParamUtil.getStrings(request, "idNo");
+            String [] designation = ParamUtil.getStrings(request, "designation");
+            String [] mobileNo = ParamUtil.getStrings(request, "mobileNo");
+            String [] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
+            String [] emailAddress = ParamUtil.getStrings(request, "emailAddress");
+            if(assignSelect!=null && assignSelect.length>0){
+                for(int i=0 ;i<assignSelect.length;i++){
+                    AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
+                    poDto.setAssignSelect(assignSelect[i]);
+                    poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                    poDto.setSalutation(salutation[i]);
+                    poDto.setName(name[i]);
+                    poDto.setIdType(idType[i]);
+                    poDto.setIdNo(idNo[i]);
+                    poDto.setOfficeTelNo(officeTelNo[i]);
+                    poDto.setDesignation(designation[i]);
+                    poDto.setMobileNo(mobileNo[i]);
+                    poDto.setEmailAddr(emailAddress[i]);
+                    appSvcPrincipalOfficersDtos.add(poDto);
+                }
             }
         }
+        
         //depo
-        if("1".equals(deputySelect)){
+        if("1".equals(deputySelect) && isGetDataFromPageDpo){
             String [] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
             String [] deputyDesignation = ParamUtil.getStrings(request, "deputyDesignation");
             String [] deputyName = ParamUtil.getStrings(request, "deputyName");

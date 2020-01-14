@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -94,14 +95,14 @@ public class NewApplicationDelegator {
     public static final String FIRESTOPTION = "Please Select";
     
     //page name
-    public static final String APPLICATION_PAGE_NAME_PREMISES                   = "APPPN01";
-    public static final String APPLICATION_PAGE_NAME_PRIMARY                    = "APPPN02";  
-    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY             = "APPSPN01";
-    public static final String APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS    = "APPSPN02";
-    public static final String APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION  = "APPSPN03";
-    public static final String APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS     = "APPSPN04";
-    public static final String APPLICATION_SVC_PAGE_NAME_DOCUMENT               = "APPSPN05";
-    public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL      = "APPSPN06";
+    public static final String APPLICATION_PAGE_NAME_PREMISES                       = "APPPN01";
+    public static final String APPLICATION_PAGE_NAME_PRIMARY                        = "APPPN02";  
+    public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY                 = "APPSPN01";
+    public static final String APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS        = "APPSPN02";
+    public static final String APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS         = "APPSPN03";
+    public static final String APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS  = "APPSPN04";
+    public static final String APPLICATION_SVC_PAGE_NAME_DOCUMENT                   = "APPSPN05";
+    public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL          = "APPSPN06";
     
     
     
@@ -367,6 +368,7 @@ public class NewApplicationDelegator {
         
         String isEdit = ParamUtil.getString(bpc.request, "isEdit");
         boolean isGetDataFromPage = isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit);
+        log.debug("isGetDataFromPage:"+isGetDataFromPage);
         if(isGetDataFromPage){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
@@ -1953,7 +1955,7 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
                 appGrpPremisesDto.setAddrType(siteAddressType[i]);
                 appGrpPremisesDto.setOffTelNo(offTelNo[i]);
-                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], "dd/mm/yyyy");
+                Date fireSafetyCertIssuedDateDate = DateUtil.parseDate(fireSafetyCertIssuedDateStr[i], Formatter.DATE);
                 appGrpPremisesDto.setCertIssuedDt(fireSafetyCertIssuedDateDate);
                 appGrpPremisesDto.setIsOtherLic(isOtherLic[i]);
                 for(int j =0; j<length; j++){
@@ -1970,7 +1972,7 @@ public class NewApplicationDelegator {
                     String onsitePbHolDayEndHH = ParamUtil.getString(request, onsitePbHolDayEndHHName);
                     String onsitePbHolDayEndMM = ParamUtil.getString(request, onsitePbHolDayEndMMName);
                     appPremPhOpenPeriod.setPhDateStr(onsitePubHoliday);
-                    Date phDate = DateUtil.parseDate(onsitePubHoliday, "dd/mm/yyyy");
+                    Date phDate = DateUtil.parseDate(onsitePubHoliday, Formatter.DATE);
                     appPremPhOpenPeriod.setPhDate(phDate);
                     appPremPhOpenPeriod.setOnsiteStartFromHH(onsitePbHolDayStartHH);
                     appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
