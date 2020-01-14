@@ -272,6 +272,7 @@ public class InspecAssignTaskDelegator {
             searchParam.addFilter("hci_address", hci_address,true);
         }
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "sub_date2", sub_date2);
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
     }
 

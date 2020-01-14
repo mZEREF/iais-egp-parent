@@ -70,7 +70,7 @@
                     <iais:row>
                       <iais:field value="Submission Date"/>
                       <iais:value width="18">
-                        <iais:datePicker id = "sub_date" name = "sub_date" value="${cPoolSearchParam.filters['sub_date']}"></iais:datePicker>
+                        <iais:datePicker id = "sub_date" name = "sub_date" value="${sub_date2}"></iais:datePicker>
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:center;">
