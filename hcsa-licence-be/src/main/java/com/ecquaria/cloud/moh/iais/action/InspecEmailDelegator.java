@@ -268,6 +268,7 @@ public class InspecEmailDelegator {
                 List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
                 taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                 taskDto1.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+                taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
                 taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
                 taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
                 taskService.createTasks(taskDtos);

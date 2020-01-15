@@ -19,16 +19,16 @@
                     <div class="tab-gp dashboard-tab">
                         <br><br><br>
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li class="active" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
+                            <li class="complete" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
                             <li class="complete" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
                                                                         data-toggle="tab">Payment</a></li>
                             <li class="complete" role="presentation"><a href="#tabInspection" aria-controls="tabInspection" role="tab"
                                                                         data-toggle="tab">Inspection</a></li>
-                            <li class="incomplete" role="presentation"><a href="#tabCheckList" aria-controls="CheckList" role="tab"
+                            <li class="complete" role="presentation"><a href="#tabCheckList" aria-controls="CheckList" role="tab"
                                                                           data-toggle="tab">CheckList</a></li>
-                            <li class="complete" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
+                            <li class="active" role="presentation"><a href="#tabProcessing" aria-controls="tabProcessing" role="tab"
                                                                           data-toggle="tab">Processing</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
