@@ -5,6 +5,8 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -32,22 +34,20 @@ public class RequestForChange {
     RequestForChangeService requestForChangeService;
 
     /**
-     *
      * @param bpc
      * @Decription doStart
      */
-    public void doStart(BaseProcessClass bpc){
+    public void doStart(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
 
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
 
     /**
-     *
      * @param bpc
      * @Decription prepare
      */
-    public void prepare(BaseProcessClass bpc){
+    public void prepare(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prepare start ...."));
         List<SelectOption> amendType = new ArrayList<>();
         SelectOption sp1 = new SelectOption(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION,
@@ -75,31 +75,30 @@ public class RequestForChange {
 
 
     /**
-     *
      * @param bpc
      * @Decription doChoose
      */
-    public void doChoose(BaseProcessClass bpc){
+    public void doChoose(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do start doChoose ...."));
         String amendType = ParamUtil.getString(bpc.request, "amendType");
         boolean flag = true;
-        if(AppConsts.NO.equals(amendType)){
+        if (AppConsts.NO.equals(amendType)) {
             //....
             flag = false;
-        }else if(AppConsts.YES.equals(amendType)){
-            String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
-            if(amendLicenceType != null && amendLicenceType.length > 0){
-                StringJoiner joiner =new StringJoiner(";");
-                for(String type:amendLicenceType){
+        } else if (AppConsts.YES.equals(amendType)) {
+            String[] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
+            if (amendLicenceType != null && amendLicenceType.length > 0) {
+                StringJoiner joiner = new StringJoiner(";");
+                for (String type : amendLicenceType) {
                     joiner.add(type);
                 }
                 ParamUtil.setSessionAttr(bpc.request, "amendLicenceType", joiner.toString());
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
-            }else{
+            } else {
                 flag = false;
             }
         }
-        if(!flag){
+        if (!flag) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prepare");
             ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", "error 1!!");
             ParamUtil.setRequestAttr(bpc.request, "AmendType", amendType);
@@ -109,14 +108,13 @@ public class RequestForChange {
     }
 
     /**
-     *
      * @param bpc
      * @Decription jump
      */
-    public void jump(BaseProcessClass bpc){
+    public void jump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do jump start ...."));
         String crudActionTypeForm = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
-        if(StringUtil.isEmpty(crudActionTypeForm)){
+        if (StringUtil.isEmpty(crudActionTypeForm)) {
             crudActionTypeForm = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
         }
 
@@ -126,7 +124,6 @@ public class RequestForChange {
     }
 
     /**
-     *
      * @param bpc
      * @Decription prepareAmend
      */
@@ -135,7 +132,7 @@ public class RequestForChange {
         String amendTypeStr = (String) ParamUtil.getSessionAttr(bpc.request, "amendLicenceType");
         //todo: 
         String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
-        
+
 
         StringBuffer url = new StringBuffer();
         url.append("https://").append(bpc.request.getServerName())
@@ -150,6 +147,46 @@ public class RequestForChange {
     }
 
 
+    /**
+     * @param bpc
+     * @Decription compareChangePercentage
+     */
+    public void compareChangePercentage(BaseProcessClass bpc) {
+        String pageType = (String) ParamUtil.getSessionAttr(bpc.request, "keyType");
+        String licenseNo= (String) ParamUtil.getSessionAttr(bpc.request, "licenseNo");
+        String UNID=(String) ParamUtil.getSessionAttr(bpc.request, "UNID");
+        List<String> uenMemberIds=new ArrayList<>();
+        if(("UEN").equals(pageType)){
+            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList=requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(UNID);
+            if(licenseeKeyApptPersonDtoList!=null&&licenseeKeyApptPersonDtoList.size()>0){
+                for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoList
+                     ) {
+                    uenMemberIds.add(e.getId());
+                }
+            }
+        }
+        LicenceDto licenceDto=requestForChangeService.getByLicNo(licenseNo);
+        List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoListFromLicenseeId=requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
+        List<String> oldMemberIds=new ArrayList<>();
+        if(licenseeKeyApptPersonDtoListFromLicenseeId!=null&&licenseeKeyApptPersonDtoListFromLicenseeId.size()>0) {
+            for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoListFromLicenseeId
+                 ) {
+                oldMemberIds.add(e.getId());
+            }
+        }
+        int count = 0;
+        for(int i=0;i<=oldMemberIds.size();i++){
+            for(int j=0;j<=uenMemberIds.size();j++){
+                if(oldMemberIds.get(i).equals(uenMemberIds.get(j))){
+                    count++;
+                }
+            }
+        }
+        boolean result=false;
+        if(count/oldMemberIds.size()<0.5){
+            result=true;
+        }
 
 
+    }
 }

@@ -6,12 +6,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
@@ -45,6 +48,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Autowired
     private SystemAdminClient systemAdminClient;
+
+    @Autowired
+    private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
@@ -98,6 +104,21 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public String getApplicationGroupNumber(String appType) {
         return systemAdminClient.applicationNumber(appType).getEntity();
+    }
+
+    @Override
+    public List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByUen(String uenNo) {
+        return organizationLienceseeClient.getLicenseeKeyApptPersonDtoListByUen(uenNo).getEntity();
+    }
+
+    @Override
+    public LicenceDto getByLicNo(String licNo) {
+        return licenceInboxClient.getLicBylicNo().getEntity();
+    }
+
+    @Override
+    public List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByLicenseeId(String licenseeId) {
+        return organizationLienceseeClient.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeId).getEntity();
     }
 
 

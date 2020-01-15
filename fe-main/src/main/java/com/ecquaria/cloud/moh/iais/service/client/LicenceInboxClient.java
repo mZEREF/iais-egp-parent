@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
@@ -41,4 +42,6 @@ public interface LicenceInboxClient {
     @RequestMapping(path= "/hcsa-licence-transport/licence-active-num", method = RequestMethod.GET)
     FeignResponseEntity<Integer> getLicActiveStatusNum();
 
+    @RequestMapping(path= "/hcsa-licence-rfc/licence-bylicence-byNo/{licenceNo}", method = RequestMethod.GET)
+    FeignResponseEntity<LicenceDto> getLicBylicNo();
 }
