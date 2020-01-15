@@ -1,1 +1,0 @@
-<%@include file="/iais/inbox/menu/chooseAmend.jsp"%>

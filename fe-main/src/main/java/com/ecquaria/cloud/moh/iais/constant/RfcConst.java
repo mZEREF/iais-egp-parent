@@ -6,6 +6,7 @@ package com.ecquaria.cloud.moh.iais.constant;
  *   @author zixian
  */
 public class RfcConst {
+    private RfcConst() {throw new IllegalStateException("RfcConst class");}
     //switch
         //control top menu
     public static final String CRUD_ACTION_TOP  = "crud_action_top";
