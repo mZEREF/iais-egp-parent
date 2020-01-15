@@ -90,6 +90,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inboxUrl", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationDto", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionFillCheckListDto", null);
     }
 
     /**
@@ -120,6 +121,7 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, "applicationDto", applicationDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "inspectionFillCheckListDto", inspectionFillCheckListDto);
     }
 
     private void setInboxUrlToSession(BaseProcessClass bpc) {
