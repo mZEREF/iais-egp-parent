@@ -51,17 +51,11 @@ public class INTRANET___MohIntranetUser___1 extends BaseProcessClass {
 	public void doPaging_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doPaging", this);
 	}
-	public void doUnlock_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doUnlock", this);
+	public void doStatus_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "changeStatus", this);
 	}
-	public void doDeactivate_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doActivate", this);
-	}
-	public void doImport_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doImport", this);
-	}
-	public void doExport_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doExport", this);
+	public void doChange_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "saveStatus", this);
 	}
 
 }

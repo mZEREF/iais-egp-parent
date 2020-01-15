@@ -43,8 +43,7 @@ public class PaymentDelegator {
         paymentDto.setAmount(amount);
         paymentDto.setReqRefNo(reqRefNo);
         paymentDto.setInvoiceNo(invoiceNo);
-        paymentDto.setStatus(result);
+        paymentDto.setPmtStatus(result);
         paymentService.savePayment(paymentDto);
-
     }
 }

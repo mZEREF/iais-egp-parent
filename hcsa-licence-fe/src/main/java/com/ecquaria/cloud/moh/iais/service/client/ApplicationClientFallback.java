@@ -265,7 +265,7 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<ApplicationGroupDto> getApplicarionGroup(String appGroupId){
+    public FeignResponseEntity<ApplicationGroupDto> getApplicationGroup(String appGroupId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

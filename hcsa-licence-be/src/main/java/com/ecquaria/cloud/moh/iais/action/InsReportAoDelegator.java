@@ -87,7 +87,7 @@ public class InsReportAoDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>prepareReportData");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId;
-        taskId = (String)ParamUtil.getSessionAttr(bpc.request, "taskId");
+        taskId = ParamUtil.getRequestString(bpc.request,"taskId");
         if(StringUtil.isEmpty(taskId)){
             taskId = "44E99138-C82E-EA11-BE7D-000C29F371DC";
         }

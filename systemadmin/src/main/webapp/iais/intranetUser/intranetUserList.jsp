@@ -51,6 +51,10 @@
         submit('doSave');
     }
 
+    function doStatus(){
+        submit('doStatus');
+    }
+
     $("#IU_Search").click(function() {
         submit('doSearch');
     });
@@ -65,29 +69,6 @@
         submit('doDelete');
     }
 
-    function doDeactivate(Id) {
-        $("[name='crud_action_value']").val(Id);
-        $("[name='crud_action_deactivate']").val('doDeactivate');
-        submit('doDeactivate');
-    }
-
-    function doReactivate(Id) {
-        $("[name='crud_action_value']").val(Id);
-        $("[name='crud_action_deactivate']").val('doReactivate');
-        submit('doDeactivate');
-    }
-
-    function doTerminate(Id) {
-        $("[name='crud_action_value']").val(Id);
-        $("[name='crud_action_deactivate']").val('doTerminate');
-        submit('doDeactivate');
-    }
-
-    function doUnlock(Id) {
-        $("[name='crud_action_value']").val(Id);
-       // $("[name='crud_action_deactivate']").val('doUnlock');
-        submit('doUnlock');
-    }
 
     function doExport(Id) {
         $("[name='crud_action_value']").val(Id);

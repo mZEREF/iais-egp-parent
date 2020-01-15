@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import org.springframework.web.bind.annotation.RequestBody;
+import sop.rbac.user.UserIdentifier;
 
 /**
  * @author weilu
@@ -24,6 +25,6 @@ public interface IntranetUserService {
     ClientUser updateEgpUser(ClientUser clientUser);
     Boolean deleteEgpUser(String userDomian,String userId);
     ClientUser getUserByIdentifier(String userId,String userDomain);
-
+    Boolean validatepassword(String password, UserIdentifier userIdentifier);
     SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(@RequestBody SearchParam searchParam);
 }

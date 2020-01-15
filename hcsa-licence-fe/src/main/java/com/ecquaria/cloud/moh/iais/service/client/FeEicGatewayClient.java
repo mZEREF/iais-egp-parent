@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.config.FeignMultipartConfig;
@@ -7,6 +8,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -40,10 +42,27 @@ public interface FeEicGatewayClient {
                                                   @RequestHeader("date-Secondary") String dateSec,
                                                   @RequestHeader("authorization-Secondary") String authorizationSec);
 
+/**
+ *@Author :weilu on 2020/1/15 12:35
+ *@param :
+ *@return :
+ *@Description :
+ */
+@PutMapping(value = "/v1/payment-status/",consumes = MediaType.APPLICATION_JSON_VALUE)
+FeignResponseEntity<String> routePaymentStatus(@RequestBody ApplicationDto applicationDto,
+                                              @RequestHeader("date") String date,
+                                              @RequestHeader("authorization") String authorization,
+                                              @RequestHeader("date-Secondary") String dateSec,
+                                              @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
+
+
+
     @PostMapping(value = "/v1/rfi-reply-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto,
-                                                  @RequestHeader("date") String date,
-                                                  @RequestHeader("authorization") String authorization,
-                                                  @RequestHeader("date-Secondary") String dateSec,
-                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
+                                                               @RequestHeader("date") String date,
+                                                               @RequestHeader("authorization") String authorization,
+                                                               @RequestHeader("date-Secondary") String dateSec,
+                                                               @RequestHeader("authorization-Secondary") String authorizationSec);
 }

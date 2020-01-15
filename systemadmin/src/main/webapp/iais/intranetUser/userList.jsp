@@ -14,6 +14,7 @@
                         <table class="table">
                             <thead>
                             <tr>
+                                <th></th>
                                 <th>No.</th>
                                 <th>User ID</th>
                                 <th>Email address</th>
@@ -35,27 +36,31 @@
                                 <c:otherwise>
                                     <c:forEach var="user" items="${IntranetUserSearchResult.rows}" varStatus="status">
                                         <tr>
-<%--                                            <td>--%>
-<%--                                                <p class="visible-xs visible-sm table-row-title">No.</p>--%>
-<%--                                                <p>#${(MasterCodeSearchParam.pageNo - 1) * 10 + status.index + 1}</p>--%>
-<%--                                            </td>--%>
+                                                <%--                                            <td>--%>
+                                                <%--                                                <p class="visible-xs visible-sm table-row-title">No.</p>--%>
+                                                <%--                                                <p>#${(MasterCodeSearchParam.pageNo - 1) * 10 + status.index + 1}</p>--%>
+                                                <%--                                            </td>--%>
+                                            <td>
+                                            <td><input type="checkbox" value="<c:out value='${user.userId}'/>"
+                                                       name="userUid" id="userUid<c:out value='${user.userId}'/>"></td>
+                                            </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
                                                 <p>${status.count}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
-                                                <p>${user.userId}</p>
+                                                <p>${user.displayName}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Code Category</p>
                                                 <p>${user.emailAddr}</p>
                                             </td>
-                                                    <td>
-                                                        <p class="visible-xs visible-sm table-row-title">Code
-                                                            Category</p>
-                                                        <p>${user.status}</p>
-                                                    </td>
+                                            <td>
+                                                <p class="visible-xs visible-sm table-row-title">Code
+                                                    Category</p>
+                                                <p>${user.status}</p>
+                                            </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Action</p>
                                                 <button type="button" class="btn btn-default btn-sm"
@@ -63,21 +68,6 @@
                                                 </button>
                                                 <button type="button" class="btn btn-default btn-sm"
                                                         onclick="doDelete('${user.id}')">Delete
-                                                </button>
-                                                <button type="button" class="btn btn-default btn-sm"
-                                                        onclick="doDeactivate('${user.id}')">Deactivate
-                                                </button>
-                                                <button type="button" class="btn btn-default btn-sm"
-                                                        onclick="doReactivate('${user.id}')">Reactivate
-                                                </button>
-                                                <button type="button" class="btn btn-default btn-sm"
-                                                        onclick="doTerminate('${user.id}')">Terminate
-                                                </button>
-                                                <button type="button" class="btn btn-default btn-sm"
-                                                        onclick="doUnlock('${user.id}')">Unlock
-                                                </button>
-                                                <button type="button" class="btn btn-default btn-sm"
-                                                        onclick="doExport('${user.id}')">Export
                                                 </button>
                                             </td>
                                         </tr>

@@ -19,107 +19,117 @@
                         <div class="bg-title">
                             <h2>Edit Intranet User</h2>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="displayName" type="text" name="displayName" value="${orgUserDto.displayName}">
-                                    <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
+                        <div class="tab-gp dashboard-tab">
+                            <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                                <li class="active" role="presentation"><a href="#tabAccount" aria-controls="tabAccount" role="tab" data-toggle="tab">Account Information</a></li>
+                                <li class="complete" role="presentation"><a href="#tabPersonal" aria-controls="tabPersonal" role="tab" data-toggle="tab">Personal Information</a></li>
+                                <li class="complete" role="presentation"><a href="#tabContaact" aria-controls="tabContaact" role="tab" data-toggle="tab">Contaact Information</a></li>
+                            </ul>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="startDate">Account Activation Start.</label>
-                            <span style="color:red">*</span>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="startDate" name="startDate" dateVal="${orgUserDto.accountActivateDatetime}"/>
-                                    <span id="error_accountActivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tabAccount" role="tabAccount">
+                                    <div class="form-group">
+                                        <span style="color:red">*</span>
+                                        <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name.</label>
+                                        <iais:value>
+                                            <div class="col-xs-8 col-sm-6 col-md-5">
+                                                <input id="displayName" type="text" name="displayName" value="${orgUserDto.displayName}">
+                                                <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
+                                            </div>
+                                        </iais:value>
+                                    </div>
+                                    <div class="form-group">
+                                        <span style="color:red">*</span>
+                                        <label class="col-xs-12 col-md-4 control-label" for="startDate">Account Activation Start.</label>
+                                        <iais:value>
+                                            <div class="col-xs-8 col-sm-6 col-md-5">
+                                                <iais:datePicker id="startDate" name="startDate" dateVal="${orgUserDto.accountActivateDatetime}"/>
+                                                <span id="error_accountActivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
+                                            </div>
+                                        </iais:value>
+                                    </div>
+                                    <div class="form-group">
+                                        <span style="color:red">*</span>
+                                        <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End.</label>
+                                        <iais:value>
+                                            <div class="col-xs-8 col-sm-6 col-md-5">
+                                                <iais:datePicker id="endDate" name="endDate" dateVal="${orgUserDto.accountDeactivateDatetime}"/>
+                                                <span id="error_accountDeactivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
+                                            </div>
+                                        </iais:value>
+                                    </div>
+                            </div>
+                            <div class="tab-pane" id="tabPersonal" role="tabPersonal">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label">Salutation.</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <iais:select name="salutation" options="salutation" firstOption="Please select" value="${orgUserDto.salutation}"></iais:select>
+                                        </div>
+                                    </iais:value>
                                 </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:datePicker id="endDate" name="endDate" dateVal="${orgUserDto.accountDeactivateDatetime}"/>
-                                    <span id="error_accountDeactivateDatetime" name="iaisErrorMsg" class="error-msg"></span>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name.</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="firstName" type="text" name="firstName" value="${orgUserDto.firstName}">
+                                        </div>
+                                    </iais:value>
                                 </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Salutation.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="salutation" options="salutation" firstOption="Please select" value="${orgUserDto.salutation}"></iais:select>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name.</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="lastName" type="text" name="lastName" value="${orgUserDto.lastName}">
+                                        </div>
+                                    </iais:value>
                                 </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Status.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="status" options="statusOption" firstOption="Please select" value="${orgUserDto.status}"></iais:select>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="division">Division.</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="division" type="text" name="division" value="${orgUserDto.division}">
+                                        </div>
+                                    </iais:value>
                                 </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="firstName" type="text" name="firstName" value="${orgUserDto.firstName}">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="branch">Branch/Unit.</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="branch" type="text" name="branch" value="${orgUserDto.branchUnit}">
+                                        </div>
+                                    </iais:value>
                                 </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="lastName" type="text" name="lastName" value="${orgUserDto.lastName}">
+                            </div>
+                            <div class="tab-pane" id="tabContaact" role="tabContaact">
+                                <div class="form-group">
+                                    <span style="color:red">*</span>
+                                    <label class="col-xs-12 col-md-4 control-label" for="email">Email</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="email" type="text" name="email" value="${orgUserDto.email}">
+                                            <span id="error_email" name="iaisErrorMsg" class="error-msg"></span>
+                                        </div>
+                                    </iais:value>
                                 </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="division">Division.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="division" type="text" name="division" value="${orgUserDto.division}">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No.</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="mobileNo" type="number" name="mobileNo" value="${orgUserDto.mobileNo}">
+                                        </div>
+                                    </iais:value>
                                 </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="branch">Branch/Unit.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="branch" type="text" name="branch" value="${orgUserDto.branchUnit}">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No.</label>
+                                    <iais:value>
+                                        <div class="col-xs-8 col-sm-6 col-md-5">
+                                            <input id="officeNo" type="number" name="officeNo" value="${orgUserDto.officeTelNo}">
+                                            <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                                        </div>
+                                    </iais:value>
                                 </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="email">Email</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="email" type="text" name="email" value="${orgUserDto.email}">
-                                    <span id="error_email" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="mobileNo" type="number" name="mobileNo" value="${orgUserDto.mobileNo}">
-                                </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No.</label>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="officeNo" type="number" name="officeNo" value="${orgUserDto.officeTelNo}">
-                                    <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
+                            </div>
                         </div>
                         <div class="col-xs-2 col-sm-2">
                             <div class="text-right text-center-mobile"><a class="btn btn-primary" href="#"
@@ -132,6 +142,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Modal -->
                 <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUser"
                      style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">

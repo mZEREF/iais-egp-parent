@@ -151,7 +151,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<AppPremisesPreInspectionNcItemDto> createAppNcItemDto(@RequestBody AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto);
 
     @GetMapping(path = "/iais-application/application/grp/{groupId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ApplicationGroupDto> getApplicarionGroup(@PathVariable("groupId") String groupId);
+    FeignResponseEntity<ApplicationGroupDto> getApplicationGroup(@PathVariable("groupId") String groupId);
 
     @GetMapping(value = "/application-renwal-origin-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> applicationIsRenwalByOriginId();

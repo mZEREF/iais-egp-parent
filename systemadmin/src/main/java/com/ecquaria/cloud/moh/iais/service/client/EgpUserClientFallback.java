@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
+import sop.rbac.user.UserIdentifier;
 
 /**
  * @author weilu
@@ -35,6 +36,14 @@ public class EgpUserClientFallback implements EgpUserClient {
 
     @Override
     public FeignResponseEntity<ClientUser> getUserByIdentifier(String var1, String var2) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> validatepassword(String var1, UserIdentifier var2) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

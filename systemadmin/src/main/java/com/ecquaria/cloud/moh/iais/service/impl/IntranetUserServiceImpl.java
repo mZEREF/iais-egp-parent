@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.rbac.user.UserIdentifier;
 
 /**
  * @author weilu
@@ -79,6 +80,15 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public ClientUser getUserByIdentifier(String userId,String userDomain) {
         return egpUserClient.getUserByIdentifier(userId,userDomain).getEntity();
+    }
+
+    @Override
+    public Boolean validatepassword(String password, UserIdentifier userIdentifier) {
+        Boolean entity = egpUserClient.validatepassword(password, userIdentifier).getEntity();
+        if(entity==null){
+            return false;
+        }
+        return entity;
     }
 
     @Override

@@ -79,32 +79,18 @@
     <JavaCode defClass="" executor="" methodName="doPaging_OnStepProcess_0" name="doPaging_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doUnlock" x="740" y="190">
+  <AutomaticStep defClass="" executor="" icon="" name="doStatus" x="790" y="180">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doUnlock_OnStepProcess_0" name="doUnlock_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doStatus_OnStepProcess_0" name="doStatus_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doDeactivate" x="820" y="190">
+  <AutomaticStep defClass="" executor="" icon="" name="doChange" x="790" y="410">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doDeactivate_OnStepProcess_0" name="doDeactivate_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doImport" x="900" y="190">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doImport_OnStepProcess_0" name="doImport_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doExport" x="970" y="190">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doExport_OnStepProcess_0" name="doExport_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doChange_OnStepProcess_0" name="doChange_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -127,7 +113,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="downLoad" stageIndicator="" x="970" y="310">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="doStatusPage" stageIndicator="" x="780" y="300">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -211,32 +197,23 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(580,640)(63,641)(140,80)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doUnlock" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(760,210)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doStatus" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(580,80)(810,200)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doDeactivate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(840,210)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/doStatusPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doStatus" style="oblique">
+   <position>{(810,200)(800,320)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doImport" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(920,210)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doChange" linkstyle="Direct" name="" sourceName="/Pages/WebPage/doStatusPage" style="oblique">
+   <position>{(800,320)(810,430)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doExport" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(580,80)(990,210)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChange" style="oblique">
+   <position>{(810,430)(820,640)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doUnlock" style="oblique">
-   <position>{(760,210)(580,640)}</position>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
+   <position>{(820,640)(580,640)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDeactivate" style="oblique">
-   <position>{(840,210)(580,640)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doImport" style="oblique">
-   <position>{(920,210)(580,640)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/downLoad" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doExport" style="oblique">
-   <position>{(990,210)(990,330)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/downLoad" style="oblique">
-   <position>{(990,330)(580,640)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doStatus" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
+   <position>{(820,640)(1028,638)(810,200)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -244,6 +221,9 @@
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/PrepareEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="420" y="540">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/doStatus" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;true&quot;" x="800" y="620">
    <Description/>
   </Condition>
  </Conditions>
@@ -256,10 +236,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doUnlock" value="&quot;doUnlock&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doDeactivate" value="&quot;doDeactivate&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doImport" value="&quot;doImport&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/doExport" value="&quot;doExport&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doStatus" value="&quot;doStatus&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

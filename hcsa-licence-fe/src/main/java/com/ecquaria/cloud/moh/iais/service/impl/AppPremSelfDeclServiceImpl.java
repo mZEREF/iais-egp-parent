@@ -276,7 +276,7 @@ public class AppPremSelfDeclServiceImpl implements AppPremSelfDeclService {
 
     @Override
     public Date getBlockPeriodByAfterApp(String groupId, List<SelfDecl> selfDeclList) {
-        ApplicationGroupDto groupDto = applicationClient.getApplicarionGroup(groupId).getEntity();
+        ApplicationGroupDto groupDto = applicationClient.getApplicationGroup(groupId).getEntity();
         int min = Integer.MAX_VALUE;
         for (SelfDecl selfDecl : selfDeclList){
             if (!selfDecl.isCommon()){

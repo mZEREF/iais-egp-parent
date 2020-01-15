@@ -39,10 +39,8 @@
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
-
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
                                     <div class="panel-heading"><strong>Submission Details</strong></div>
@@ -121,7 +119,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
                                     <h4>Supporting Document</h4>
