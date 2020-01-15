@@ -66,17 +66,17 @@ public class AppPremSelfDeclDelegator {
     public void initData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
-        String groupId = ParamUtil.getRequestString(request, "groupId");
+        String groupId = (String) ParamUtil.getScopeAttr(request, "groupId");
         ParamUtil.setSessionAttr(request, "currentSelfDeclGroupId", groupId);
 
         log.info("assign to self decl group id ==>>>>> " + groupId);
 
         List<SelfDecl> selfDeclList = (List<SelfDecl>) ParamUtil.getSessionAttr(request, "selfDeclQueryAttr");
         if (selfDeclList == null){
-            List<SelfDecl> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId("1C629C17-CB72-4892-8F31-87F6759C791A");
+            List<SelfDecl> selfDeclByGroupId = appPremSelfDesc.getSelfDeclByGroupId(groupId);
             ParamUtil.setSessionAttr(request, "selfDeclQueryAttr", (Serializable) selfDeclByGroupId);
 
-            Date date = appPremSelfDesc.getBlockPeriodByAfterApp("1C629C17-CB72-4892-8F31-87F6759C791A", selfDeclByGroupId);
+            Date date = appPremSelfDesc.getBlockPeriodByAfterApp(groupId, selfDeclByGroupId);
             ParamUtil.setSessionAttr(request, INSPECTION_START_PERIOD, IaisEGPHelper.parseToString(date, "dd/MM/yyyy"));
         }
 
