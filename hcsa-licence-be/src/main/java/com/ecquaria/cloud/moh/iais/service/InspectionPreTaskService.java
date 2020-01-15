@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckList
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -56,8 +57,8 @@ public interface InspectionPreTaskService {
       * @author: shicheng
       * @Date 2020/1/14
       * @Param: refNo
-      * @return: InspectionFillCheckListDto
+      * @return: Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>>
       * @Descripation: get Self-CheckList By CorrId
       */
-    InspectionFillCheckListDto getSelfCheckListByCorrId(String refNo);
+    Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> getSelfCheckListByCorrId(String refNo);
 }

@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +91,8 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inboxUrl", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationDto", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "inspectionFillCheckListDto", null);
+        ParamUtil.setSessionAttr(bpc.request,"commonDto", null);
+        ParamUtil.setSessionAttr(bpc.request,"serListDto", null);
     }
 
     /**
@@ -113,7 +115,15 @@ public class InspectionPreDelegator {
             inspectionPreTaskDto.setAppStatus(appStatus);
         }
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
-        InspectionFillCheckListDto inspectionFillCheckListDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
+        Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
+        InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
+        List<InspectionFillCheckListDto> ifcDtos = new ArrayList<>();
+        if(mapInDto != null) {
+            for (Map.Entry<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> entry : mapInDto.entrySet()) {
+                inspectionFillCheckListDto = entry.getKey();
+                ifcDtos = entry.getValue();
+            }
+        }
         setInboxUrlToSession(bpc);
         List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption();
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
@@ -121,7 +131,8 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, "applicationDto", applicationDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request, "inspectionFillCheckListDto", inspectionFillCheckListDto);
+        ParamUtil.setSessionAttr(bpc.request,"commonDto",inspectionFillCheckListDto);
+        ParamUtil.setSessionAttr(bpc.request,"serListDto", (Serializable) ifcDtos);
     }
 
     private void setInboxUrlToSession(BaseProcessClass bpc) {

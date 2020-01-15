@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.JsonNameAttrConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -26,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
@@ -35,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClien
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -95,6 +98,12 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
+
+    @Autowired
+    private HcsaChklClient hcsaChklClient;
+
+    @Autowired
+    private FillupChklistService fillupChklistService;
 
     @Override
     public ApplicationDto getAppStatusByTaskId(TaskDto taskDto) {
@@ -252,17 +261,33 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public InspectionFillCheckListDto getSelfCheckListByCorrId(String refNo) {
+    public Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> getSelfCheckListByCorrId(String refNo) {
+        Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> map = new HashMap<>();
+        List<InspectionFillCheckListDto> chkDtoList = new ArrayList<>();
+        InspectionFillCheckListDto commonDto = new InspectionFillCheckListDto();
         List<String> ids = new ArrayList<>();
         ids.add(refNo);
         JSONArray jsonArray = inspectionTaskClient.getSelfDeclChecklistByCorreId(ids).getEntity();
+        if(jsonArray == null){
+            return null;
+        }
         for (int i = 0; i < jsonArray.length(); i++){
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            String configId = (String) jsonObject.get("checklistConfigId");
-            System.out.println(configId);
+            String configId = (String) jsonObject.get(JsonNameAttrConstants.CHECKLIST_CONFIG_ID);
+            ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(configId).getEntity();
+            if(dto.isCommon()){
+                commonDto = fillupChklistService.transferToInspectionCheckListDto(dto,refNo);
+                commonDto.setConfigId(configId);
+            }else if(!dto.isCommon()){
+                InspectionFillCheckListDto fDto = fillupChklistService.transferToInspectionCheckListDto(dto,refNo);
+                fDto.setSvcName(dto.getSvcName());
+                fDto.setConfigId(configId);
+                fDto.setSvcCode(dto.getSvcCode());
+                chkDtoList.add(fDto);
+            }
         }
-
-        return null;
+        map.put(commonDto, chkDtoList);
+        return map;
     }
 
     /**
