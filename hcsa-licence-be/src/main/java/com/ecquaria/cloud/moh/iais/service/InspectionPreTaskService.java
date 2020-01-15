@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
 import java.util.List;
@@ -50,4 +51,13 @@ public interface InspectionPreTaskService {
     void routingBack(TaskDto taskDto, String reMarks);
 
     void getAppointmentDate(TaskDto taskDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/1/14
+      * @Param: refNo
+      * @return: InspectionFillCheckListDto
+      * @Descripation: get Self-CheckList By CorrId
+      */
+    InspectionFillCheckListDto getSelfCheckListByCorrId(String refNo);
 }

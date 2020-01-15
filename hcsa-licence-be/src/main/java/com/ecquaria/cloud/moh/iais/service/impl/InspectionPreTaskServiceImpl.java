@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -255,6 +256,12 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         List<String> ids = new ArrayList<>();
         ids.add(refNo);
         JSONArray jsonArray = inspectionTaskClient.getSelfDeclChecklistByCorreId(ids).getEntity();
+        for (int i = 0; i < jsonArray.length(); i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String configId = (String) jsonObject.get("checklistConfigId");
+            System.out.println(configId);
+        }
+
         return null;
     }
 

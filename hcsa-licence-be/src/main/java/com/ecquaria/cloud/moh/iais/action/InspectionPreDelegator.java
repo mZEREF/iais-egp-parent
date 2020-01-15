@@ -8,8 +8,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -20,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -50,9 +53,15 @@ public class InspectionPreDelegator {
     private AdhocChecklistService adhocChecklistService;
 
     @Autowired
-    private InspectionPreDelegator(InspectionPreTaskService inspectionPreTaskService, TaskService taskService){
+    private InspectionAssignTaskService inspectionAssignTaskService;
+
+    @Autowired
+    private InspectionPreDelegator(InspectionPreTaskService inspectionPreTaskService, TaskService taskService,
+                                   AdhocChecklistService adhocChecklistService, InspectionAssignTaskService inspectionAssignTaskService){
         this.inspectionPreTaskService = inspectionPreTaskService;
         this.taskService = taskService;
+        this.adhocChecklistService = adhocChecklistService;
+        this.inspectionAssignTaskService = inspectionAssignTaskService;
     }
 
     /**
@@ -79,6 +88,8 @@ public class InspectionPreDelegator {
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", null);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", null);
         ParamUtil.setSessionAttr(bpc.request, "inboxUrl", null);
+        ParamUtil.setSessionAttr(bpc.request, "applicationDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
     }
 
     /**
@@ -100,12 +111,15 @@ public class InspectionPreDelegator {
             String appStatus = applicationDto.getStatus();
             inspectionPreTaskDto.setAppStatus(appStatus);
         }
+        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
+        InspectionFillCheckListDto inspectionFillCheckListDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
         setInboxUrlToSession(bpc);
         List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption();
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
         ParamUtil.setSessionAttr(bpc.request, "applicationDto", applicationDto);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }
 
     private void setInboxUrlToSession(BaseProcessClass bpc) {
@@ -166,7 +180,9 @@ public class InspectionPreDelegator {
             } else {
                 ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
             }
-        }else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue) || InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue)){
+        }else if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue) ||
+                InspectionConstants.SWITCH_ACTION_EDIT.equals(actionValue) ||
+                InspectionConstants.SWITCH_ACTION_SELF.equals(actionValue)){
             ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
         }
 
