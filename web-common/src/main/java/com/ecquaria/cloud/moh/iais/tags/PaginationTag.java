@@ -135,14 +135,15 @@ public class PaginationTag extends DivTagSupport {
         if (pageNo > 1) {
             //sb.append(STARTLI).append(jsFunc).append("('1');\"></a></li>");
             sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-chevron-left\"></i></span></a></li>");
-            sb.append("<li><a href=\"#\" >");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\">");
             sb.append(pageNo-1);
             sb.append("</a></li>");
-            sb.append("<li class=\"active\"><a href=\"#\">");
+            sb.append("<li class=\"active\"><a href=\"#\"  onclick=\"javascript:");
+            sb.append(jsFunc).append("('").append(pageNo).append("');\">");
             sb.append(pageNo);
             sb.append("</a></li>");
             if(pageNo+1<=pageCount){
-                sb.append("<li><a href=\"#\" >");
+                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\">");
                 sb.append(pageNo+1);
                 sb.append("</a></li>");
             }
@@ -152,12 +153,12 @@ public class PaginationTag extends DivTagSupport {
             sb.append(pageNo);
             sb.append("</a></li>");
             if(pageNo+1<=pageCount){
-                sb.append("<li><a href=\"#\" >");
+                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\">");
                 sb.append(pageNo+1);
                 sb.append("</a></li>");
             }
             if(pageNo+2<=pageCount){
-                sb.append("<li><a href=\"#\" >");
+                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 2).append("');\">");
                 sb.append(pageNo+2);
                 sb.append("</a></li>");
             }
