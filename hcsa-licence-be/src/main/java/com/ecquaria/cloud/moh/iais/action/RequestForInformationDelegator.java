@@ -373,7 +373,7 @@ public class RequestForInformationDelegator {
         String licPremId = (String) ParamUtil.getSessionAttr(request, "id");
         List<LicPremisesReqForInfoDto>licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremId);
 
-        if(licPremisesReqForInfoDtoList.size()!=0) {
+        if(!licPremisesReqForInfoDtoList.isEmpty()) {
             ParamUtil.setSessionAttr(request, "licenceNo", licPremisesReqForInfoDtoList.get(0).getLicenceNo());
         }
         else {
