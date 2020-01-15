@@ -422,13 +422,20 @@ public class HcsaChklItemDelegator {
         }
 
         ChecklistItemDto itemDto = (ChecklistItemDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR);
+        if (itemDto == null){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+            return;
+        }
+
         String chklItem = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM);
         String riskLevel = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_RISK_LEVEL);
         String answerType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE);
+
         itemDto.setAnswerType(answerType);
         itemDto.setRiskLevel(riskLevel);
         itemDto.setChecklistItem(chklItem);
 
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "clone");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
@@ -452,7 +459,6 @@ public class HcsaChklItemDelegator {
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, (Serializable) chklItemDtos);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
         }
-        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
     }
 
      /**
