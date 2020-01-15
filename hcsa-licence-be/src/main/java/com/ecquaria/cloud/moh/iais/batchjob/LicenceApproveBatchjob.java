@@ -850,7 +850,10 @@ public class LicenceApproveBatchjob {
         licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
         licenceDto.setOrganizationId(organizationId);
         licenceDto.setOriginLicenceId(originLicenceId);
-        LicenceDto licenceDto1 = licenceService.getLicenceDto(originLicenceId);
+        LicenceDto licenceDto1 = null;
+        if(!StringUtil.isEmpty(originLicenceId)){
+            licenceDto1  = licenceService.getLicenceDto(originLicenceId);
+        }
         int version = 1;
         if(licenceDto1!=null){
             licenceDto.setMigrated(licenceDto1.isMigrated());

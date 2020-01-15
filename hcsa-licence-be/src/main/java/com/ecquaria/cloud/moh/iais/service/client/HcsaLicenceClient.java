@@ -51,5 +51,5 @@ public interface HcsaLicenceClient {
     FeignResponseEntity<List<PremisesDto>> getPremisess(@RequestParam("licenceId") String licenceId);
 
     @GetMapping(value = "/hcsa-licence/licence/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<LicenceDto> getLicenceDtoById(@PathVariable("licenceId") String licenceId);
+    FeignResponseEntity<LicenceDto> getLicenceDtoById(@PathVariable(name="licenceId") String licenceId);
 }
