@@ -435,9 +435,9 @@ public class InspectEmailAo1Delegator {
             for (NcAnswerDto ncAnswerDto:ncAnswerDtos
             ) {
                 stringBuilder.append("<tr><td>"+ ++i);
-                stringBuilder.append(TD+ncAnswerDto.getItemQuestion());
-                stringBuilder.append(TD+ncAnswerDto.getClause());
-                stringBuilder.append(TD+ncAnswerDto.getRemark());
+                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
+                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getClause()));
+                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getRemark()));
                 stringBuilder.append("</td></tr>");
             }
             map.put("NC_DETAILS",stringBuilder.toString());
