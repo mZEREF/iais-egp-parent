@@ -176,38 +176,27 @@
                             <p>Checklist Used:</p>
                         </td>
                         <td class="col-xs-8">
-                            <c:forEach var="sec" items="${insRepDto.otherCheckList.sectionDtos}">
-                                <p>Section: &nbsp;<strong>${sec.section}</strong></p>
-                                <p>Description: &nbsp;${sec.description}</p>
+                            <p>${insRepDto.serviceName}</p>
+                            <c:if test="${insRepDto.otherCheckList != null}">
                                 <table class="table">
                                     <thead>
                                     <tr>
+                                        <th>No.</th>
                                         <th>Regulation Clause Number</th>
-                                        <th>Regulations</th>
-                                        <th>Checklist Item</th>
-                                        <th>Risk Level</th>
+                                        <th>Item</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <c:forEach var="chklitem" items="${sec.checklistItemDtos}" varStatus="status">
+                                    <c:forEach var="item" items="${insRepDto.otherCheckList.adItemList}"
+                                               varStatus="status">
                                         <tr>
-                                            <td>
-                                                <p>${chklitem.regulationClauseNo}</p>
-                                            </td>
-                                            <td>
-                                                <p>${chklitem.regulationClause}</p>
-                                            </td>
-                                            <td>
-                                                <p>${chklitem.checklistItem}</p>
-                                            </td>
-                                            <td>
-                                                <p>${chklitem.riskLevel}</p>
-                                            </td>
+                                            <td class="row_no">${(index.count) }</td>
+                                            <td><c:out value="${item.question}"/></td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>
-                            </c:forEach>
+                            </c:if>
                         </td>
                     </tr>
                 </table>
@@ -353,13 +342,13 @@
                                 <p>Recommendation:</p>
                             </td>
                             <td class="col-xs-4">
-                                <p>${option}</p>
-                                <input type="hidden" name="inspectorRecommendation" value="${option}">
                                 <iais:select name="recommendation" options="riskOption" firstOption="Please select"
-                                             onchange="x(this)" value="appPremisesRecommendationDto.recommendation"/>
-                                <input type="text" name="otherRecommendation" id="recom" value=""
-                                       style="display: none"/>
+                                             onchange="javascirpt:x(this.value);" value="${appPremisesRecommendationDto.recommendation}"/>
                                 <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
+                                <div id="recom1" hidden>
+                                    <input type="number" name="number" value="${number}" width="20%">
+                                    <iais:select name="chrono" options="chronoOption" firstOption="Please select" value="${chrono}"/>
+                                </div>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -392,11 +381,18 @@
     }
 
     function x(obj) {
-        if (obj.options[obj.selectedIndex].value == "Others")
-            document.getElementById("recom").style.display = "";
-        else
-            document.getElementById("recom").style.display = "none";
-
+        if (obj == "Others") {
+            document.getElementById("recom1").style.display = "";
+            $("#recom1").show();
+        } else {
+            document.getElementById("recom1").style.display = "none";
+        }
     }
+
+    $(document).ready(function(){
+        if($("#recommendation").val() == "Others"){
+            x("Others");
+        }
+    });
 </script>
 

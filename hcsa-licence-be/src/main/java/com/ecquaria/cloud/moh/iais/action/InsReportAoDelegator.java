@@ -89,7 +89,7 @@ public class InsReportAoDelegator {
         String taskId;
         taskId = ParamUtil.getRequestString(bpc.request,"taskId");
         if(StringUtil.isEmpty(taskId)){
-            taskId = "44E99138-C82E-EA11-BE7D-000C29F371DC";
+            taskId = "B7A46131-6637-EA11-BE7E-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
@@ -141,7 +141,20 @@ public class InsReportAoDelegator {
 //        taskService.createTasks(taskDtos);
 //        createAppPremisesRoutingHistory(appPremisesCorrelationId,status, stageId,null,null,RoleConsts.USER_ROLE_INSPECTIOR,subStage);
     }
-
+    private Map<String,  String> doValidateRe(BaseProcessClass bpc){
+        Map<String,String> errorMap = new HashMap<>(34);
+        String recommendation = ParamUtil.getRequestString(bpc.request, "recommendation");
+        String chrono = ParamUtil.getRequestString(bpc.request, "chrono");
+        String number = ParamUtil.getRequestString(bpc.request, "number");
+        if("Others".equals(recommendation)){
+            if(StringUtil.isEmpty(chrono)){
+                errorMap.put("recommendation","please select");
+            }else if (StringUtil.isEmpty(number)) {
+                errorMap.put("recommendation","please key a number");
+            }
+        }
+        return errorMap;
+    }
 
     public void approve(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the inspectorReportAction start ...."));
@@ -153,10 +166,13 @@ public class InsReportAoDelegator {
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
 //        appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
         AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc, appPremisesCorrelationId);
+        ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
+        Map<String, String> stringStringMap = doValidateRe(bpc);
         Map<String,String> errorMap = new HashMap<>(34);
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "edit");
         if (validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
+            errorMap.putAll(stringStringMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
             return;
@@ -187,41 +203,31 @@ public class InsReportAoDelegator {
 
     private AppPremisesRecommendationDto prepareRecommendation (BaseProcessClass bpc,String appPremisesCorrelationId){
         String recommendation = ParamUtil.getRequestString(bpc.request, "recommendation");
-        String otherRecommendation = ParamUtil.getRequestString(bpc.request, "otherRecommendation");
-//        String inspectorRecommendation = ParamUtil.getRequestString(bpc.request, "inspectorRecommendation");
+        String chrono = ParamUtil.getRequestString(bpc.request, "chrono");
+        String number = ParamUtil.getRequestString(bpc.request, "number");
+        ParamUtil.setSessionAttr(bpc.request, "chrono", chrono);
+        ParamUtil.setSessionAttr(bpc.request, "number", number);
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRecomInDate(new Date());
         appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT);
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-        if(!StringUtil.isEmpty(recommendation)||!StringUtil.isEmpty(otherRecommendation)){
-            if(!StringUtil.isEmpty(otherRecommendation)){
-                appPremisesRecommendationDto.setRecommendation(otherRecommendation);
-            }else {
-                appPremisesRecommendationDto.setRecommendation(recommendation);
-            }
-        }
-        if(!StringUtil.isEmpty(recommendation)){
-            if ("Others".equals(recommendation)) {
-                appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                String[] split_number = otherRecommendation.split("\\D");
-                String[] split_unit = otherRecommendation.split("\\d");
-                String unit = split_unit[1];
-                String number = split_number[0];
-                appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                appPremisesRecommendationDto.setChronoUnit(unit);
-                appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-            }else if("accept".equals(recommendation)){
-                appPremisesRecommendationDto.setRecommendation("accept");
-            }
-            else {
-                String[] split_number = recommendation.split("\\D");
-                String[] split_unit = recommendation.split("\\d");
-                String unit = split_unit[1];
-                String number = split_number[0];
-                appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
-                appPremisesRecommendationDto.setChronoUnit(unit);
-                appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-            }
+        appPremisesRecommendationDto.setRecommendation(recommendation);
+        if("Others".equals(recommendation)&&!StringUtil.isEmpty(chrono)&&!StringUtil.isEmpty(number)){
+            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+            appPremisesRecommendationDto.setChronoUnit(chrono);
+            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
+            //appPremisesRecommendationDto.setRecommendation(recommendation);
+        }else if("accept".equals(recommendation)){
+            appPremisesRecommendationDto.setRecommendation("accept");
+        }else {
+            String[] split_number = recommendation.split("\\D");
+            String[] split_unit = recommendation.split("\\d");
+            String chronoRe = split_unit[1];
+            String numberRe = split_number[0];
+            appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+            appPremisesRecommendationDto.setChronoUnit(chronoRe);
+            appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(numberRe));
+            appPremisesRecommendationDto.setRecommendation(recommendation);
         }
         return appPremisesRecommendationDto;
     }
