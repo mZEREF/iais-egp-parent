@@ -138,7 +138,7 @@ public class InspectionSearchDelegator {
      */
     public void inspectionSupSearchDoSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
-        SearchParam searchParam = getSearchParam(bpc);
+        SearchParam searchParam = getSearchParam(bpc, true);
         List<String> workGroupIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "workGroupIds");
         String application_no = ParamUtil.getRequestString(bpc.request, "application_no");
         String application_type = ParamUtil.getRequestString(bpc.request, "application_type");
