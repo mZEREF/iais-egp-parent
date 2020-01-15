@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.JsonNameAttrConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -23,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
@@ -41,8 +41,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -267,23 +265,24 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         InspectionFillCheckListDto commonDto = new InspectionFillCheckListDto();
         List<String> ids = new ArrayList<>();
         ids.add(refNo);
-        JSONArray jsonArray = inspectionTaskClient.getSelfDeclChecklistByCorreId(ids).getEntity();
-        if(jsonArray == null){
+        List<String> selfDeclIdList = inspectionTaskClient.getSelfDeclChecklistByCorreId(ids).getEntity();
+        if(IaisCommonUtils.isEmpty(selfDeclIdList)){
             return null;
         }
-        for (int i = 0; i < jsonArray.length(); i++){
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            String configId = (String) jsonObject.get(JsonNameAttrConstants.CHECKLIST_CONFIG_ID);
+        for (int i = 0; i < selfDeclIdList.size(); i++){
+            String configId = selfDeclIdList.get(i);
             ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(configId).getEntity();
-            if(dto.isCommon()){
-                commonDto = fillupChklistService.transferToInspectionCheckListDto(dto,refNo);
-                commonDto.setConfigId(configId);
-            }else if(!dto.isCommon()){
-                InspectionFillCheckListDto fDto = fillupChklistService.transferToInspectionCheckListDto(dto,refNo);
-                fDto.setSvcName(dto.getSvcName());
-                fDto.setConfigId(configId);
-                fDto.setSvcCode(dto.getSvcCode());
-                chkDtoList.add(fDto);
+            if(dto != null){
+                if(dto.isCommon()){
+                    commonDto = fillupChklistService.transferToInspectionCheckListDto(dto,refNo);
+                    commonDto.setConfigId(configId);
+                }else if(!dto.isCommon()){
+                    InspectionFillCheckListDto fDto = fillupChklistService.transferToInspectionCheckListDto(dto,refNo);
+                    fDto.setSvcName(dto.getSvcName());
+                    fDto.setConfigId(configId);
+                    fDto.setSvcCode(dto.getSvcCode());
+                    chkDtoList.add(fDto);
+                }
             }
         }
         map.put(commonDto, chkDtoList);

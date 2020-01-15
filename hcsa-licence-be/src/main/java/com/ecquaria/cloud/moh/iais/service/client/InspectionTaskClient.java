@@ -10,8 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQue
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,5 +57,5 @@ public interface InspectionTaskClient {
     FeignResponseEntity<ApplicationDto> getApplicationByCorreId(@PathVariable("appCorreId") String appCorreId);
 
     @PostMapping(value = "/iais-application-be/self-decl/results", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<JSONObject>> getSelfDeclChecklistByCorreId(@RequestBody List<String> correIdList);
+    FeignResponseEntity<List<String>> getSelfDeclChecklistByCorreId(@RequestBody List<String> correIdList);
 }
