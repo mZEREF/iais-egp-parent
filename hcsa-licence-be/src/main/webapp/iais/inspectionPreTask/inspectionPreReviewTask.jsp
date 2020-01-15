@@ -226,7 +226,62 @@
 
               </div>
               <div class="tab-pane" id="tabInspection" role="tabpanel">
-
+                <div class="row">
+                  <div class="col-xs-12">
+                    <h3>Common</h3>
+                    <div class="table-gp">
+                      <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
+                        <br/>
+                        <h4><c:out value="${section.sectionName}"></c:out></h4>
+                        <table class="table">
+                          <thead>
+                          <tr>
+                            <th>No.</th>
+                            <th>Regulation Clause Number</th>
+                            <th>Item</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                            <tr>
+                              <td class="row_no">${(status.index + 1) }</td>
+                              <td>${item.incqDto.regClauseNo}</td>
+                              <td>${item.incqDto.checklistItem}</td>
+                            </tr>
+                          </c:forEach>
+                          </tbody>
+                        </table>
+                      </c:forEach>
+                    </div>
+                    <c:forEach var ="cdto" items ="${serListDto}" varStatus="status">
+                      <h3>${cdto.svcName}</h3>
+                      <div class="table-gp">
+                        <c:forEach var ="section" items ="${cdto.sectionDtoList}">
+                          <br/>
+                          <h4><c:out value="${section.sectionName}"></c:out></h4>
+                          <table class="table">
+                            <thead>
+                            <tr>
+                              <th>No.</th>
+                              <th>Regulation Clause Number</th>
+                              <th>Item</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
+                              <tr>
+                                <td class="row_no">${(status.index + 1) }</td>
+                                <td>${item.incqDto.regClauseNo}</td>
+                                <td>${item.incqDto.checklistItem}</td>
+                              </tr>
+                            </c:forEach>
+                            </tbody>
+                          </table>
+                        </c:forEach>
+                      </div>
+                    </c:forEach>
+                  </div>
+                </div>
               </div>
               <div class="tab-pane" id="tabProcessing" role="tabpanel">
 
@@ -273,7 +328,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </iais:body>
