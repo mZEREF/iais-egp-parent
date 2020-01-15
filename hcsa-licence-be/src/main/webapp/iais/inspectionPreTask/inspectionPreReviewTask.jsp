@@ -228,7 +228,9 @@
               <div class="tab-pane" id="tabInspection" role="tabpanel">
                 <div class="row">
                   <div class="col-xs-12">
-                    <h3>Common</h3>
+                    <c:if test="${commonDto.sectionDtoList != null}">
+                      <h3>Common</h3>
+                    </c:if>
                     <div class="table-gp">
                       <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
                         <br/>
