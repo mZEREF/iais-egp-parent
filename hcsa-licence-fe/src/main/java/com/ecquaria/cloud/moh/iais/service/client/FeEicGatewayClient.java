@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.config.FeignMultipartConfig;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -34,6 +35,13 @@ public interface FeEicGatewayClient {
     */
     @PostMapping(value = "/v1/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> routeSelfDeclData(@RequestBody List<String> contentJsonList,
+                                                  @RequestHeader("date") String date,
+                                                  @RequestHeader("authorization") String authorization,
+                                                  @RequestHeader("date-Secondary") String dateSec,
+                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/rfi-reply-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto,
                                                   @RequestHeader("date") String date,
                                                   @RequestHeader("authorization") String authorization,
                                                   @RequestHeader("date-Secondary") String dateSec,

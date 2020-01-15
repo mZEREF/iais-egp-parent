@@ -80,4 +80,12 @@ public class RequestForInformationClientFallback implements RequestForInformatio
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<LicPremisesReqForInfoDto> rfiFeUpdateToBe(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
