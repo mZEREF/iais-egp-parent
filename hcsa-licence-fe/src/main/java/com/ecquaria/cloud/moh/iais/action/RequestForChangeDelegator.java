@@ -1,10 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -17,7 +18,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 /****
  *
@@ -89,11 +89,6 @@ public class RequestForChangeDelegator {
         }else if(AppConsts.YES.equals(amendType)){
             String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
             if(amendLicenceType != null && amendLicenceType.length > 0){
-                StringJoiner joiner =new StringJoiner(";");
-                for(String type:amendLicenceType){
-                    joiner.add(type);
-                }
-                ParamUtil.setSessionAttr(bpc.request, "amendLicenceType", joiner.toString());
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doAmend");
             }else{
                 flag = false;
@@ -132,11 +127,60 @@ public class RequestForChangeDelegator {
      */
     public void prepareAmend(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do prepareAmend start ...."));
-        
+        //todo change
+        //todo status
+        String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
+        LicenceDto licenceDto = new LicenceDto();
+        licenceDto.setId(licenceId);
+        licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REQUEST_FOR_CHANGE);
+        //update lic status
+        requestForChangeService.upDateLicStatus(licenceDto);
         
         log.debug(StringUtil.changeForLog("the do prepareAmend end ...."));
     }
 
+    /**
+     * @param bpc
+     * @Decription compareChangePercentage
+     */
+    public void compareChangePercentage(BaseProcessClass bpc) {
+        String pageType = (String) ParamUtil.getSessionAttr(bpc.request, "keyType");
+        String licenseNo= (String) ParamUtil.getSessionAttr(bpc.request, "licenseNo");
+        String UNID=(String) ParamUtil.getSessionAttr(bpc.request, "UNID");
+        List<String> uenMemberIds=new ArrayList<>();
+        if(("UEN").equals(pageType)){
+            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList=requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(UNID);
+            if(licenseeKeyApptPersonDtoList!=null&&licenseeKeyApptPersonDtoList.size()>0){
+                for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoList
+                        ) {
+                    uenMemberIds.add(e.getId());
+                }
+            }
+        }
+        LicenceDto licenceDto=requestForChangeService.getByLicNo(licenseNo);
+        List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoListFromLicenseeId=requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
+        List<String> oldMemberIds=new ArrayList<>();
+        if(licenseeKeyApptPersonDtoListFromLicenseeId!=null&&licenseeKeyApptPersonDtoListFromLicenseeId.size()>0) {
+            for (LicenseeKeyApptPersonDto e:licenseeKeyApptPersonDtoListFromLicenseeId
+                    ) {
+                oldMemberIds.add(e.getId());
+            }
+        }
+        int count = 0;
+        for(int i=0;i<=oldMemberIds.size();i++){
+            for(int j=0;j<=uenMemberIds.size();j++){
+                if(oldMemberIds.get(i).equals(uenMemberIds.get(j))){
+                    count++;
+                }
+            }
+        }
+        boolean result=false;
+        if(count/oldMemberIds.size()<0.5){
+            result=true;
+        }
+
+
+    }
 
 
 

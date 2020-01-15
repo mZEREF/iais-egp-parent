@@ -9,6 +9,8 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,8 +32,10 @@ public interface LicenceClient {
     @GetMapping(path= "/hcsa-licence-rfc/licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesListQueryDto>> getPremises(@RequestParam(value = "licenseeId" ) String licenseeId);
     
-    
-    
+    @PutMapping(value = "/licence-status}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> doUpdate(@RequestBody LicenceDto licenceDto);
 
+    @RequestMapping(path= "/hcsa-licence-rfc/licence-bylicence-byNo/{licenceNo}", method = RequestMethod.GET)
+    FeignResponseEntity<LicenceDto> getLicBylicNo();
 
 }

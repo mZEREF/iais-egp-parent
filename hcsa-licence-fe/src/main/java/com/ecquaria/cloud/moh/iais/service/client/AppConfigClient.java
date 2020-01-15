@@ -161,6 +161,6 @@ public interface AppConfigClient {
     @GetMapping(value = "/iais-hcsa-risk/golbalextbyid{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskGolbalExtDto>> getRiskGolbalextDtoById(@PathVariable("id")String id);
 
-    @PostMapping(value = "/fee-amendment", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-fee/fee-amendment", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeeDto> amendmentFee(@RequestBody @Required AmendmentFeeDto amendmentFeeDto);
 }
