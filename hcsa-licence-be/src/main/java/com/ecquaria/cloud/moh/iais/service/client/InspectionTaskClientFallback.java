@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQue
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
@@ -76,7 +77,7 @@ public class InspectionTaskClientFallback implements InspectionTaskClient {
     }
 
     @Override
-    public FeignResponseEntity<JSONArray> getSelfDeclChecklistByCorreId(List<String> correIdList) {
+    public FeignResponseEntity<List<JSONObject>> getSelfDeclChecklistByCorreId(List<String> correIdList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
