@@ -92,8 +92,8 @@ public class InspEmailServiceImpl implements InspEmailService {
     }
 
     @Override
-    public List<AppPremisesCorrelationDto> getAppPremisesCorrelationsByAppId(String appId) {
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=appPremisesCorrClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
+    public List<AppPremisesCorrelationDto> getAppPremisesCorrelationsByAppGroupId(String appGroupId) {
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=appPremisesCorrClient.getGroupAppsByNo(appGroupId).getEntity();
         return appPremisesCorrelationDtos;
     }
 
