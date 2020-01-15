@@ -119,7 +119,7 @@ public interface ApplicationClient {
             produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getLastApplicationByAppNo(@RequestBody ApplicationDto applicationDto);
 
-    @RequestMapping(path = "/iais-licence-view/app-edit-select",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-licence-view/app-edit-select",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppEditSelectDto> createAppEditSelectDto(@RequestBody AppEditSelectDto appEditSelectDto);
 
 }
