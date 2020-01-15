@@ -43,7 +43,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -90,7 +89,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             for(File fil:files){
                 if(fil.getName().endsWith(".zip")){
                     String name = fil.getName();
-                    String path = "backups"+File.separator+name;
+                    String path = fil.getPath();
                     HashMap<String,String> map=new HashMap<>();
                     map.put("fileName",name);
                     map.put("filePath",path);

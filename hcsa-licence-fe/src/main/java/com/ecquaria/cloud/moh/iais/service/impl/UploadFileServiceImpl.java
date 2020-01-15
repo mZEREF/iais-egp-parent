@@ -229,7 +229,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                    File curFile = MiscUtil.generateFile(backups, s + ".zip");
                    file.renameTo(curFile);
                    log.info("----------- new zip file name is"+backups+File.separator+s+".zip");
-                   String s1 = saveFileName(s+".zip","backups" + File.separator+s+".zip");
+                   String s1 = saveFileName(s+".zip",backups + File.separator+s+".zip");
                    if(!s1.equals("SUCCESS")){
                        MiscUtil.deleteFile(curFile);
                        flag=false;
