@@ -71,6 +71,19 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-xs-2 col-md-2">
+                    <button type="button" class="btn btn-primary" >Renew</button>
+                </div>
+                <div class="col-xs-2 col-md-2">
+                    <button type="button" class="btn btn btn-secondary" >Amend</button>
+                </div>
+                <div class="col-xs-2 col-md-2">
+                    <button type="button" class="btn btn btn-secondary" >Cease</button>
+                </div>
+            </div>
+        </div>
         <iais:pagination  param="licParam" result="licResult"/>
     </form>
 </div>

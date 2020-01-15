@@ -76,7 +76,7 @@ public class InterInboxDelegator {
      * >>>>>>>>Message Inbox<<<<<<<
      */
     public void toMsgPage(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("Step ---> toMsgPage"));
 
     }
 
@@ -135,7 +135,7 @@ public class InterInboxDelegator {
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("Step ---> prepareSwitch"));
     }
 
     /**
@@ -256,7 +256,7 @@ public class InterInboxDelegator {
     }
 
     public void appSwitch(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
+        log.debug(StringUtil.changeForLog("Step ---> appSwitch"));
     }
 
     public void appDoSearch(BaseProcessClass bpc) throws ParseException {
