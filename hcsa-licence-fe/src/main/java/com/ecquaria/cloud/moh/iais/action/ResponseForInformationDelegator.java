@@ -5,10 +5,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -30,8 +33,18 @@ import java.util.List;
 public class ResponseForInformationDelegator {
     @Autowired
     ResponseForInformationService responseForInformationService;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
 
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
 
+    @Autowired
+    FeEicGatewayClient feEicGatewayClient;
     @Autowired
     private ServiceConfigService serviceConfigService;
 
@@ -108,8 +121,13 @@ public class ResponseForInformationDelegator {
         licPremisesReqForInfoDto.setReplyUser(licPremisesReqForInfoDto.getLicenseeId());
         licPremisesReqForInfoDto.setUserReply(userReply);
         responseForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
-        responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        feEicGatewayClient.routeRfiData(licPremisesReqForInfoDto,
+                signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+
+        responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
         // 		doSubmit->OnStepProcess
     }

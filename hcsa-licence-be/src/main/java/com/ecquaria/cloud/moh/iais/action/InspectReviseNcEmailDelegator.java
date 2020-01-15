@@ -101,7 +101,6 @@ public class InspectReviseNcEmailDelegator {
     private OrganizationClient organizationClient;
     private final String ADCHK_DTO="adchklDto";
     private final String TASK_DTO="taskDto";
-    private final String FILL_CHECK_LIST_DTO="fillCheckListDto";
     private final String APP_VIEW_DTO="applicationViewDto";
     private final String COM_DTO="commonDto";
     private final String MSG_CON="messageContent";
@@ -109,6 +108,7 @@ public class InspectReviseNcEmailDelegator {
     private final String INS_EMAIL_DTO="insEmailDto";
     private final String AC_DTO="acDto";
     private final String TD="</td><td>";
+    private final String SER_LIST_DTO= "serListDto";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -133,11 +133,11 @@ public class InspectReviseNcEmailDelegator {
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
-        ParamUtil.setSessionAttr(request,"taskDto",taskDto);
+        ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,"applicationViewDto",appViewDto);
-        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
-        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
-        ParamUtil.setSessionAttr(request,"serListDto",serListDto);
+        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
+        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
+        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
     }
@@ -287,10 +287,10 @@ public class InspectReviseNcEmailDelegator {
         InspectionFDtosDto serListDto = getDataFromPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
         AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,"taskDto");
-        ParamUtil.setSessionAttr(request,"serListDto",serListDto);
-        ParamUtil.setSessionAttr(request,"adchklDto",adchklDto);
-        ParamUtil.setSessionAttr(request,"commonDto",commonDto);
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,TASK_DTO);
+        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
+        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
+        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
         List<NcAnswerDto> ncDtoList = insepctionNcCheckListService.getNcAnswerDtoList(taskDto.getRefNo());
         InspectionCheckListValidation inspectionCheckListValidation = new InspectionCheckListValidation();
         Map<String, String> errMap = inspectionCheckListValidation.validate(request);
@@ -342,7 +342,7 @@ public class InspectReviseNcEmailDelegator {
     }
 
     public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
-        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
         if(serListDto.getFdtoList()!=null &&!serListDto.getFdtoList().isEmpty()){
             for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
                 if(fdto!=null&&fdto.getCheckList()!=null&&!fdto.getCheckList().isEmpty()){
@@ -351,11 +351,7 @@ public class InspectReviseNcEmailDelegator {
                         String answer = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rad");
                         String remark = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"remark");
                         String rectified = ParamUtil.getString(request,fdto.getSvcCode()+temp.getSectionName()+temp.getItemId()+"rec");
-                        if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
-                            temp.setRectified(true);
-                        }else{
-                            temp.setRectified(false);
-                        }
+                        temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
                         temp.setChkanswer(answer);
                         temp.setRemark(remark);
                     }
