@@ -42,7 +42,7 @@
                                         </iais:row>
                                         <iais:action style="text-align:center;">
                                             <button type="button" class="search btn" onclick="javascript:doSearch();">Search</button>
-                                            <button type="button" class="search btn" onclick="javascript:doAdvancedSearch();">Advanced Search</button>
+                                            <button type="button" class="search btn" onclick="javascript:doAdvancedSearch();">Advanced</button>
                                             <button type="button" class="search btn" onclick="javascript:doClear();">Clear</button>
                                         </iais:action>
                                     </iais:section>
@@ -62,7 +62,7 @@
         $('input[name="search_no"]').val("");
     }
 
-    function doSearch(){
+    function doAdvancedSearch(){
         var radios=document.getElementsByName("select_search");
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
@@ -71,7 +71,7 @@
             }
         }
     }
-    function doAdvancedSearch(){
+    function doSearch(){
         var radios=document.getElementsByName("select_search");
         for (var i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {

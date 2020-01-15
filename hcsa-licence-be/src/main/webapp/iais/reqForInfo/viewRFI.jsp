@@ -81,12 +81,17 @@
                                         <c:if test="${licPreReqForInfoDto.needDocument}">
                                             <iais:row >
                                                 <iais:value width="18">
-                                                <span  style="margin-right: 5px; cursor: pointer;" uploadid="157795250964805646132380337285">
-                                                    <input type="button" class="ico_att" style="margin:0 3px 0 0!important;margin:0 3px 2px 0;">
-                                                    <input ext="control"  type="hidden" value="${licPreReqForInfoDto.docName}" filename="${licPreReqForInfoDto.docName}" filesize="${licPreReqForInfoDto.docSize}" disabled="">
-                                                    <span ui-type="filename"  class="">${licPreReqForInfoDto.docName}</span>&nbsp;
-                                                    <span  name="206432" class="addrtitle">(${licPreReqForInfoDto.docSize/1024}K)</span>
-                                                </span>
+                                                    <div class="pop-up">
+                                                        <div class="pop-up-body">
+
+                                                            <div class="field col-sm-4 control-label formtext"><label>Docment for Premise:</label></div>
+                                                            <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
+                                                            <div class="control col-sm-5">
+                                                                <div class="fileList "><span class="filename server-site" id="130"><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${licPreReqForInfoDto.fileRepoId}"/>&fileRepoName=${licPreReqForInfoDto.docName}" title="Download" class="downloadFile">${licPreReqForInfoDto.docName}</a> (${licPreReqForInfoDto.docSize} KB)</span></div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
                                                 </iais:value>
                                             </iais:row>
                                         </c:if>
@@ -121,6 +126,7 @@
         if(user.value!=null)
         SOP.Crud.cfxSubmit("mainForm", "cancel",reqInfoId);
     }
+
 
 </script>
 

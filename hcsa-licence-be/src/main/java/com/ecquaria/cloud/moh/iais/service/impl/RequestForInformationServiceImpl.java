@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     AppPremisesCorrClient appPremisesCorrClient;
     @Autowired
     HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    FileRepoClient fileRepoClient;
 
     private final String[] appType=new String[]{
             ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
@@ -156,6 +159,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         requestForInformationClient.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
     }
-
+    @Override
+    public byte[] downloadFile(String fileRepoId) {
+        return fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
+    }
 
 }

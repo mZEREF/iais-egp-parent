@@ -33,10 +33,15 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -498,5 +503,27 @@ public class RequestForInformationDelegator {
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         licPremisesReqForInfoDto.setAction("update");
         gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();        // 		doUpdate->OnStepProcess
+    }
+
+
+    @GetMapping(value = "/file-repo")
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("file-repo start ...."));
+        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
+        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
+        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
+        if(StringUtil.isEmpty(fileRepoId)){
+            log.debug(StringUtil.changeForLog("file-repo id is empty"));
+            return;
+        }
+        byte[] fileData =requestForInformationService.downloadFile(fileRepoId);
+        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+        response.addHeader("Content-Length", "" + fileData.length);
+        response.setContentType("application/x-octet-stream");
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(fileData);
+        ops.close();
+        ops.flush();
+        log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
 }

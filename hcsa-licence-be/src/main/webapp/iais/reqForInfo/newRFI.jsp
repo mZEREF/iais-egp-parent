@@ -80,7 +80,12 @@
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doSubmit() {
-        SOP.Crud.cfxSubmit("mainForm", "submit");
+        var rfiTitle=document.getElementById("rfiTitle");
+        if(rfiTitle.innerText==null||rfiTitle.innerText=="")
+        {alert("Please enter the title.")}
+        else {
+            SOP.Crud.cfxSubmit("mainForm", "submit");
+        }
     }
 
 </script>

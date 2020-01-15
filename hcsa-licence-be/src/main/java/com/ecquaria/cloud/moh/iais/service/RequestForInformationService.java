@@ -31,4 +31,5 @@ public interface RequestForInformationService {
     void deleteLicPremisesReqForInfo(String id);
     void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     List<LicPremisesReqForInfoDto> getAllReqForInfo();
+    byte[] downloadFile(String fileRepoId);
 }
