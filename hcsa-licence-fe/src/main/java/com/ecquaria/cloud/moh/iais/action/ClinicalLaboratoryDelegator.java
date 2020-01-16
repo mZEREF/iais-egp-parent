@@ -1907,10 +1907,8 @@ public class ClinicalLaboratoryDelegator {
         boolean canEdit = true;
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto!=null){
-            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())){
-                if(!appEditSelectDto.isServiceEdit()){
-                    canEdit = false;
-                }
+            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())&&!appEditSelectDto.isServiceEdit()){
+               canEdit = false;
             }
         }
         return  canEdit;

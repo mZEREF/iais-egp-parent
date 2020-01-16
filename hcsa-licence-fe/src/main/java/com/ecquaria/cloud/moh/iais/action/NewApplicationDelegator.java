@@ -373,10 +373,8 @@ public class NewApplicationDelegator {
         boolean canEdit = true;
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto!=null){
-            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())){
-                if(!appEditSelectDto.isPremisesEdit()){
-                    canEdit = false;
-                }
+            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())&&!appEditSelectDto.isPremisesEdit()){
+                canEdit = false;
             }
         }
         if(isGetDataFromPage && canEdit){
@@ -425,10 +423,8 @@ public class NewApplicationDelegator {
         boolean canEdit = true;
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto!=null){
-            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())){
-                if(!appEditSelectDto.isPrimaryEdit()){
-                    canEdit = false;
-                }
+            if(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI.equals(appEditSelectDto.getEditType())&&!appEditSelectDto.isPrimaryEdit()){
+               canEdit = false;
             }
         }
         if(canEdit){
