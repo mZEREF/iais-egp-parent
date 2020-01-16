@@ -59,17 +59,12 @@ public class InsReportDelegator {
     private InsRepService insRepService;
     @Autowired
     private TaskService taskService;
-//    @Autowired
-//    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
-//    @Autowired
-//    private HcsaConfigClient hcsaConfigClient;
-//    @Autowired
-//    private AppPremisesCorrClient appPremisesCorrClient;
-//    @Autowired
-//    AppInspectionStatusClient appInspectionStatusClient;
-//    @Autowired
-//    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
 
+    private final String RECOMMENDATION_DTO="appPremisesRecommendationDto";
+    private final String RECOMMENDATION="recommendation";
+    private final String CHRONO="chrono";
+    private final String NUMBER="number";
+    private final String OTHERS="Others";
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
         AuditTrailHelper.auditFunction("Inspection Report", "Assign Report");
@@ -79,7 +74,7 @@ public class InsReportDelegator {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
         AccessUtil.initLoginUserInfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
-        ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", null);
+        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
     }
 
 
@@ -121,14 +116,14 @@ public class InsReportDelegator {
 
     private Map<String,  String> doValidateRe(BaseProcessClass bpc){
         Map<String,String> errorMap = new HashMap<>(34);
-        String recommendation = ParamUtil.getRequestString(bpc.request, "recommendation");
-        String chrono = ParamUtil.getRequestString(bpc.request, "chrono");
-        String number = ParamUtil.getRequestString(bpc.request, "number");
-        if("Others".equals(recommendation)){
+        String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
+        String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
+        String number = ParamUtil.getRequestString(bpc.request, NUMBER);
+        if(OTHERS.equals(recommendation)){
             if(StringUtil.isEmpty(chrono)){
-                errorMap.put("recommendation","please select");
+                errorMap.put(RECOMMENDATION,"please select");
             }else if (StringUtil.isEmpty(number)) {
-                errorMap.put("recommendation","please key a number");
+                errorMap.put(RECOMMENDATION,"please key a number");
             }
         }
         return errorMap;
@@ -141,7 +136,7 @@ public class InsReportDelegator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc, appPremisesCorrelationId);
-        ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
+        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         Map<String, String> stringStringMap = doValidateRe(bpc);
         Map<String,String> errorMap = new HashMap<>(34);
         ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "create");
@@ -154,121 +149,29 @@ public class InsReportDelegator {
         }
         insRepService.saveRecommendation(appPremisesRecommendationDto);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-//        String serviceId = applicationDto.getServiceId();
-//        String status = applicationDto.getStatus();
-//        String taskKey = taskDto.getTaskKey();
         insRepService.routingTaskToAo1(taskDto,applicationDto,appPremisesCorrelationId);
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
-//        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
-//        updateInspectionStatus(applicationDto);
-//        completedTask(taskDto);
-//        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
-//        String subStage = appPremisesRoutingHistoryDto.getSubStage();
-//        createAppPremisesRoutingHistory(appPremisesCorrelationId, status, taskKey,null,InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT,RoleConsts.USER_ROLE_INSPECTIOR,subStage);
-//        List<TaskDto> taskDtos = prepareTaskList(taskDto,serviceId,applicationDto);
-//        taskService.createTasks(taskDtos);
-//        createAppPremisesRoutingHistory(appPremisesCorrelationId,updateApplicationDto.getStatus(), taskKey,null,InspectionConstants.PROCESS_DECI_REVISE_INSPECTION_REPORT,RoleConsts.USER_ROLE_AO1,subStage);
 
     }
 
-//    /**
-//     * private utils
-//     */
-//
-//
-//    /**
-//     * @param applicationDto
-//     * @param appStatus      update application status
-//     */
-//    private ApplicationDto updateApplicaitonStatus(ApplicationDto applicationDto, String appStatus) {
-//        applicationDto.setStatus(appStatus);
-//        return insRepService.updateApplicaiton(applicationDto);
-//    }
-//
-//    /**
-//     * complete task
-//     *
-//     * @param taskDto
-//     * @return
-//     */
-//    private TaskDto completedTask(TaskDto taskDto) {
-//        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-//        taskDto.setSlaDateCompleted(new Date());
-//        taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
-//        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//        return taskService.updateTask(taskDto);
-//    }
-//
-//
-//    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appPremisesCorrelationId, String appStatus,
-//                                                                          String stageId, String internalRemarks, String processDec,String roleId,String subStage) {
-//        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-//        appPremisesRoutingHistoryDto.setAppPremCorreId(appPremisesCorrelationId);
-//        appPremisesRoutingHistoryDto.setStageId(stageId);
-//        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
-//        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-//        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
-//        appPremisesRoutingHistoryDto.setProcessDecision(processDec);
-//        appPremisesRoutingHistoryDto.setRoleId(roleId);
-//        appPremisesRoutingHistoryDto.setSubStage(subStage);
-//        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
-//        return appPremisesRoutingHistoryDto;
-//    }
-//
-//    private List<TaskDto> prepareTaskList(TaskDto taskDto,String serviceId,ApplicationDto applicationDto) throws FeignException {
-//        List<TaskDto> list = new ArrayList<>();
-//        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-//        hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
-//        hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_AO1);
-//        hcsaSvcStageWorkingGroupDto.setOrder(2);
-//        HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
-//        List<ApplicationDto> applicationDtos = new ArrayList<>();
-//        applicationDtos.add(applicationDto);
-//        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
-//        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-//        String schemeType =dto.getSchemeType();
-//        String groupId = dto.getGroupId();
-//       // dto.getStageWorkGroupId();
-//        if(SystemParameterConstants.ROUND_ROBIN.equals(schemeType)){
-//            TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
-//            taskDto.setUserId(taskDto1.getUserId());
-//        }else {
-//            taskDto.setUserId(null);
-//        }
-//        taskDto.setId(null);
-//        taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
-//        taskDto.setTaskType(schemeType);
-//        taskDto.setWkGrpId(groupId);
-//        taskDto.setDateAssigned(new Date());
-//        taskDto.setSlaDateCompleted(null);
-//        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-//        taskDto.setRoleId(RoleConsts.USER_ROLE_AO1);
-//        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1);
-//        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//        list.add(taskDto);
-//        return list;
-//    }
-//
     private AppPremisesRecommendationDto prepareRecommendation (BaseProcessClass bpc,String appPremisesCorrelationId){
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
-        String recommendation = ParamUtil.getRequestString(bpc.request, "recommendation");
-        String chrono = ParamUtil.getRequestString(bpc.request, "chrono");
-        String number = ParamUtil.getRequestString(bpc.request, "number");
-        ParamUtil.setSessionAttr(bpc.request, "chrono", chrono);
-        ParamUtil.setSessionAttr(bpc.request, "number", number);
+        String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
+        String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
+        String number = ParamUtil.getRequestString(bpc.request, NUMBER);
+        ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
+        ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setRemarks(remarks);
         appPremisesRecommendationDto.setRecomInDate(new Date());
         appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT);
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         appPremisesRecommendationDto.setRecommendation(recommendation);
-        if("Others".equals(recommendation)&&!StringUtil.isEmpty(chrono)&&!StringUtil.isEmpty(number)){
+        if(OTHERS.equals(recommendation)&&!StringUtil.isEmpty(chrono)&&!StringUtil.isEmpty(number)){
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-            //appPremisesRecommendationDto.setRecommendation(recommendation);
-        }else if(!StringUtil.isEmpty(recommendation)&&!"Others".equals(recommendation)){
+        }else if(!StringUtil.isEmpty(recommendation)&&!OTHERS.equals(recommendation)){
             String[] split_number = recommendation.split("\\D");
             String[] split_unit = recommendation.split("\\d");
             String chronoRe = split_unit[1];
@@ -280,27 +183,4 @@ public class InsReportDelegator {
         }
         return appPremisesRecommendationDto;
     }
-//
-//    private void updateInspectionStatus(ApplicationDto applicationDto) {
-//        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos =  appPremisesCorrClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
-//        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremisesCorrelationDtos.get(0).getId()).getEntity();
-//        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_AO_RESULT);
-//        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//        appInspectionStatusClient.update(appInspectionStatusDto);
-//    }
-//
-//    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
-//        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList();
-//        for(ApplicationDto applicationDto : applicationDtos){
-//            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-//            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
-//            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
-//            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-//            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
-//        }
-//        return hcsaSvcStageWorkingGroupDtos;
-//    }
-
-
-
 }

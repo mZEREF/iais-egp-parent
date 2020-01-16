@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
@@ -39,45 +40,32 @@ public class PaymentStatusServiceImpl implements PaymentStatusService {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
-    @Override
-    public void checkPaymentStatus(List<String> reqRefNos) {
-        List<PaymentDto> paymentDtos = appPaymentStatusClient.getPaymentDtoByReqRefNos(reqRefNos).getEntity();
-        if (paymentDtos.isEmpty() && paymentDtos != null) {
-            return;
-        }
-        for (PaymentDto paymentDto : paymentDtos) {
-            String status = paymentDto.getPmtStatus();
-            String reqRefNo = paymentDto.getReqRefNo();
-            ApplicationGroupDto applicationGroupDto = applicationClient.getApplicationGroup(reqRefNo).getEntity();
-            if (applicationGroupDto == null) {
-                return;
-            }
-            String pmtStatus = applicationGroupDto.getPmtStatus();
-            if (!"success".equals(pmtStatus)) {
-                //update applicationGroup
-                applicationGroupDto.setPmtStatus(status);
-                applicationClient.doUpDate(applicationGroupDto).getEntity();
-                //update application
-                List<ApplicationDto> applicationDtos = applicationClient.listApplicationByGroupId(reqRefNo).getEntity();
-                if (applicationDtos.isEmpty() && applicationDtos == null) {
-                    return;
-                }
-                List<String> appNos = new ArrayList<>();
-                for(ApplicationDto applicationDto :applicationDtos){
-                    appNos.add(applicationDto.getApplicationNo());
-                    ApplicationDto updateApplicationDto = applicationClient.updateApplication(applicationDto).getEntity();
-                    HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                    HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                    gatewayClient.routePaymentStatus(updateApplicationDto, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
-                }
-
-            }
-        }
-    }
 
     @Override
-    public void sendEmail(List<String> appNos) {
-
-
+    public void checkPaymentStatusAndUpdateAppGrp() {
+        //get payment info
+        List<PaymentDto> paymentDtos = appPaymentStatusClient.getPaymentDtosByReqRefNos().getEntity();
+        if (paymentDtos != null && !paymentDtos.isEmpty()) {
+            for (PaymentDto paymentDto : paymentDtos) {
+                String reqRefNo = paymentDto.getReqRefNo();
+                String pmtStatusPayment = paymentDto.getPmtStatus();
+                List<String> appGrpIds = new ArrayList<>();
+                appGrpIds.add(reqRefNo);
+                //get appGrp info
+                List<ApplicationGroupDto> appGrps = applicationClient.getApplicationGroupsByIds(appGrpIds).getEntity();
+                if (appGrps != null && !appGrps.isEmpty()) {
+                    ApplicationGroupDto applicationGroupDto = appGrps.get(0);
+                    String pmtStatus = applicationGroupDto.getPmtStatus();
+                    if (!ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS.equals(pmtStatus) && !ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS.equals(pmtStatus)) {
+                        applicationGroupDto.setPmtStatus(pmtStatusPayment);
+                        applicationClient.doUpDate(applicationGroupDto).getEntity();
+                        //jiang appGrpDto chuan dao iais
+                        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                        gatewayClient.routePaymentStatus(applicationGroupDto, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+                    }
+                }
+            }
+        }
     }
 }

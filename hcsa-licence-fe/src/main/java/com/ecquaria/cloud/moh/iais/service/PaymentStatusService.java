@@ -7,7 +7,5 @@ import java.util.List;
  * @date 2020/1/14 14:52
  */
 public interface PaymentStatusService {
-
-    void checkPaymentStatus(List<String> reqRefNos);
-    void sendEmail(List<String> appNos);
+    void checkPaymentStatusAndUpdateAppGrp();
 }

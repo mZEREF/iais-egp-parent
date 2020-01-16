@@ -166,5 +166,6 @@ public interface ApplicationClient  {
     @GetMapping(path = "/iais-application/application-licenceId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicaitonByLicenceId(@RequestParam(name = "licenceId")String licenceId);
 
-    
+    @PostMapping(value = "/iais-application/appGrps-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationGroupDto>>getApplicationGroupsByIds(@RequestBody List<String> appGrpIds);
 }

@@ -17,7 +17,7 @@ import java.util.List;
  * @date 2020/1/15
  */
 @FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
-        fallback = SystemAdminClientFallback.class)
+        fallback = OrganizationLienceseeClientFallback.class)
 public interface OrganizationLienceseeClient {
     @GetMapping(value = "/iais-licensee/licenseeKeyApptPerson/{uenNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByUen(@PathVariable("uenNo") String uenNo);

@@ -29,6 +29,6 @@ public class CheckPaymentStatusDelegator {
         log.debug(StringUtil.changeForLog("the do action start ...."));
         List<String> list = new ArrayList<>();
         list.add("79EEF774-8927-EA11-BE78-000C298A32C2");
-        paymentStatusService.checkPaymentStatus(list);
+        paymentStatusService.checkPaymentStatusAndUpdateAppGrp();
     }
 }

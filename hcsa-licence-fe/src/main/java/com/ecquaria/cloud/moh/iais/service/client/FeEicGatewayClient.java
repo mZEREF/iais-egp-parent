@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.config.FeignMultipartConfig;
@@ -49,11 +50,11 @@ public interface FeEicGatewayClient {
  *@Description :
  */
 @PutMapping(value = "/v1/payment-status/",consumes = MediaType.APPLICATION_JSON_VALUE)
-FeignResponseEntity<String> routePaymentStatus(@RequestBody ApplicationDto applicationDto,
-                                              @RequestHeader("date") String date,
-                                              @RequestHeader("authorization") String authorization,
-                                              @RequestHeader("date-Secondary") String dateSec,
-                                              @RequestHeader("authorization-Secondary") String authorizationSec);
+FeignResponseEntity<String> routePaymentStatus(@RequestBody ApplicationGroupDto applicationGroupDto,
+                                               @RequestHeader("date") String date,
+                                               @RequestHeader("authorization") String authorization,
+                                               @RequestHeader("date-Secondary") String dateSec,
+                                               @RequestHeader("authorization-Secondary") String authorizationSec);
 
 
 

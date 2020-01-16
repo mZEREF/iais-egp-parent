@@ -18,6 +18,6 @@ import java.util.List;
         fallback = AppPaymentStatusClientFallback.class)
 public interface  AppPaymentStatusClient {
 
-    @PostMapping(value = "/iais-payment/payment-status",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PaymentDto>> getPaymentDtoByReqRefNos(@RequestBody List<String> reqRefNos);
+    @PostMapping(value = "/iais-payment/payment-status-appGrpId",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PaymentDto>> getPaymentDtosByReqRefNos();
 }
