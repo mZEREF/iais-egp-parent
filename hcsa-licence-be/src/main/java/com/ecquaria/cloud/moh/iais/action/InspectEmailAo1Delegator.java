@@ -144,6 +144,7 @@ public class InspectEmailAo1Delegator {
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
     }
 

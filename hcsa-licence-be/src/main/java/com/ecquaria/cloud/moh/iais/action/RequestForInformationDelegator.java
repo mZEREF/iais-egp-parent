@@ -97,6 +97,11 @@ public class RequestForInformationDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");
+        HttpServletRequest request=bpc.request;
+        ParamUtil.setSessionAttr(request,SEARCH_NO,null);
+        ParamUtil.setSessionAttr(request,"id",null);
+        ParamUtil.setSessionAttr(request, "licenceNo", null);
+        ParamUtil.setSessionAttr(request, "reqInfoId", null);
 
         // 		Start->OnStepProcess
     }

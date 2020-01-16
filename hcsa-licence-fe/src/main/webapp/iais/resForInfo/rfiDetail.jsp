@@ -116,12 +116,7 @@
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doSubmit(reqInfoId) {
-        var userReply=document.getElementById("userReply_rfi");
-        if(userReply.innerText==null||userReply.innerText=="")
-        {alert("Please reply to the request before submitting it.")}
-        else {
-            SOP.Crud.cfxSubmit("mainForm", "submit",reqInfoId);
-        }
+        SOP.Crud.cfxSubmit("mainForm", "submit",reqInfoId);
     }
 
 

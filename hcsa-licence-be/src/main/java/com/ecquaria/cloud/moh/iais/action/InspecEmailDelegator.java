@@ -91,8 +91,13 @@ public class InspecEmailDelegator {
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
-
+        HttpServletRequest request=bpc.request;
         AccessUtil.initLoginUserInfo(bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, TASK_DTO, null);
+        ParamUtil.setSessionAttr(request,"appPremCorrId",null);
+        ParamUtil.setSessionAttr(request,"mesContext", null);
+        ParamUtil.setSessionAttr(request,"applicationViewDto",null);
+        ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
 
     }
 

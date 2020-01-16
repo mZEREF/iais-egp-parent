@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 
 import java.util.List;
 
@@ -32,4 +33,7 @@ public interface RequestForInformationService {
     void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     List<LicPremisesReqForInfoDto> getAllReqForInfo();
     byte[] downloadFile(String fileRepoId);
+    void compress();
+    void download(ProcessFileTrackDto processFileTrackDto, String fileName);
+    void delete();
 }

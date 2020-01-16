@@ -1,12 +1,18 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiLicenceQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
@@ -14,10 +20,34 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * RequestForInformationServiceImpl
@@ -26,6 +56,7 @@ import java.util.List;
  * @date 2019/12/16
  */
 @Service
+@Slf4j
 public class RequestForInformationServiceImpl implements RequestForInformationService {
     @Autowired
     RequestForInformationClient requestForInformationClient;
@@ -37,6 +68,18 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     HcsaConfigClient hcsaConfigClient;
     @Autowired
     FileRepoClient fileRepoClient;
+
+    @Value("${iais.syncFileTracking.shared.path}")
+    private     String sharedPath;
+    private     String download;
+    private     String backups;
+    private     String fileFormat=".text";
+    private     String compressPath;
+    private     String downZip;
+
+    @Autowired
+    private SystemBeLicClient systemClient;
+
 
     private final String[] appType=new String[]{
             ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
@@ -72,8 +115,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,
             ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,
             ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY,
-            ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_NOTIFICATION,
-            ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_AMEND,
             ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION
 };
     private final String[] licServiceType=new String[]{
@@ -164,4 +205,228 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         return fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
     }
 
+    @Override
+    public void compress(){
+        log.info("-------------compress start ---------");
+        if(new File(backups).isDirectory()){
+            File[] files = new File(backups).listFiles();
+            for(File fil:files){
+                if(fil.getName().endsWith(".zip")){
+                    String name = fil.getName();
+                    String path = fil.getPath();
+                    HashMap<String,String> map=new HashMap<>();
+                    map.put("fileName",name);
+                    map.put("filePath",path);
+
+                    ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
+                    if(processFileTrackDto!=null){
+
+                        CheckedInputStream cos=null;
+                        BufferedInputStream bis=null;
+                        BufferedOutputStream bos=null;
+                        OutputStream os=null;
+                        try (ZipFile zipFile=new ZipFile(path);)  {
+                            for(Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements();){
+                                ZipEntry zipEntry = entries.nextElement();
+                                zipFile(zipEntry,os,bos,zipFile,bis,cos,name);
+                            }
+
+                        } catch (IOException e) {
+                            log.error(e.getMessage(),e);
+                        }
+
+                        try {
+
+                            this.download(processFileTrackDto,name);
+                            //save success
+                        }catch (Exception e){
+                            //save bad
+
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName)  {
+
+
+        try {
+            if(!zipEntry.getName().endsWith(File.separator)){
+
+                String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
+                File file =new File(compressPath+File.separator+fileName+File.separator+substring);
+                if(!file.exists()){
+                    file.mkdirs();
+                }
+                os=new FileOutputStream(compressPath+File.separator+fileName+File.separator+zipEntry.getName());
+                bos=new BufferedOutputStream(os);
+                InputStream is=zipFile.getInputStream(zipEntry);
+                bis=new BufferedInputStream(is);
+                cos=new CheckedInputStream(bis,new CRC32());
+                byte []b=new byte[1024];
+                int count =0;
+                count=cos.read(b);
+                while(count!=-1){
+                    bos.write(b,0,count);
+                    count=cos.read(b);
+                }
+
+            }else {
+
+                new File(compressPath+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
+            }
+        }catch (IOException e){
+
+        }finally {
+            if(cos!=null){
+                try {
+                    cos.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+            if(bis!=null){
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+            if(bos!=null){
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+            if(os!=null){
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void   download( ProcessFileTrackDto processFileTrackDto,String fileName) {
+
+
+        File file =new File(downZip+File.separator+fileName+File.separator+"folder");
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        if(file.isDirectory()){
+            File[] files = file.listFiles();
+            for(File  filzz:files){
+                if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
+                    try (FileInputStream fileInputStream =new FileInputStream(filzz);
+                         ByteArrayOutputStream by=new ByteArrayOutputStream();) {
+
+                        int count=0;
+                        byte [] size=new byte[1024];
+                        count=fileInputStream.read(size);
+                        while(count!=-1){
+                            by.write(size,0,count);
+                            count= fileInputStream.read(size);
+                        }
+                        if(processFileTrackDto!=null){
+                            changeStatus(processFileTrackDto);
+                            saveFileRepo( fileName);
+                        }
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+            }
+        }
+
+    }
+    private void changeStatus( ProcessFileTrackDto processFileTrackDto){
+        /*  applicationClient.updateStatus().getEntity();*/
+        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
+        processFileTrackDto.setAuditTrailDto(batchJobDto);
+        processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
+        systemClient.updateProcessFileTrack(processFileTrackDto);
+
+    }
+
+    private void saveFileRepo(String fileNames){
+        boolean aBoolean=false;
+        File file =new File(downZip+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        if(file.isDirectory()){
+            File[] files = file.listFiles();
+            for(File f:files){
+                if(f.isFile()){
+                    try {
+                        StringBuilder fileName=new StringBuilder();
+                        String[] split = f.getName().split("@");
+                        for(int i=1;i<split.length;i++){
+                            fileName.append(split[i]);
+                        }
+                        FileItem fileItem = null;
+                        try {
+                            fileItem = new DiskFileItem("selectedFile", Files.probeContentType(f.toPath()),
+                                    false, fileName.toString(), (int) f.length(), f.getParentFile());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        try ( InputStream input = new FileInputStream(f);){
+                            if(fileItem!=null){
+                                OutputStream os = fileItem.getOutputStream();
+                                IOUtils.copy(input, os);
+                            }
+                        } catch (IOException ex) {
+                            log.error(ex.getMessage(),ex);
+                        }
+                        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+
+                        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
+                        FileRepoDto fileRepoDto = new FileRepoDto();
+                        fileRepoDto.setId(split[0]);
+                        fileRepoDto.setAuditTrailDto(intranet);
+                        fileRepoDto.setFileName(fileName.toString());
+                        fileRepoDto.setRelativePath(downZip+File.separator+fileNames+File.separator+"folder"+File.separator+"files");
+                        aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
+
+                        if(aBoolean){
+                            /*   removeFilePath(f);*/
+                        }
+                    }catch (Exception e){
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void delete() {
+        download= sharedPath+File.separator+"compress"+File.separator+"folder";
+        backups=sharedPath+File.separator+"backups"+File.separator;
+        compressPath=sharedPath+File.separator+"compress";
+        downZip=sharedPath+File.separator+"compress";
+        File file =new File(download);
+        File b=new File(backups);
+        File c=new File(compressPath);
+        if(!c.exists()){
+            c.mkdirs();
+        }
+        if(!b.exists()){
+            b.mkdirs();
+        }
+
+        if(!file.mkdirs()){
+            file.mkdirs();
+        }
+
+    }
 }

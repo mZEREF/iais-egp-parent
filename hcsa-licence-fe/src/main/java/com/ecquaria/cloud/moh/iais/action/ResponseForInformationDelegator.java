@@ -120,7 +120,6 @@ public class ResponseForInformationDelegator {
         licPremisesReqForInfoDto.setReplyDate(new Date());
         licPremisesReqForInfoDto.setReplyUser(licPremisesReqForInfoDto.getLicenseeId());
         licPremisesReqForInfoDto.setUserReply(userReply);
-        responseForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -129,6 +128,16 @@ public class ResponseForInformationDelegator {
 
         responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
+        logAbout("preparetionData");
+        byte[] data = responseForInformationService.getData(licPremisesReqForInfoDto);
+        log.info("------------------- getData  end --------------");
+        responseForInformationService.saveFile(data);
+        log.info("------------------- saveFile  end --------------");
+        responseForInformationService.compressFile();
+        log.info("------------------- compressFile  end --------------");
         // 		doSubmit->OnStepProcess
+    }
+    private  void logAbout(String methodName){
+        log.debug(StringUtil.changeForLog("****The***** " +methodName +" ******Start ****"));
     }
 }
