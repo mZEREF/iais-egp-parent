@@ -356,7 +356,7 @@ public class InspectionServiceImpl implements InspectionService {
                     inspectionTaskPoolListDto.setAppCorrelationId(tDto.getRefNo());
                     inspectionTaskPoolListDto.setTaskId(tDto.getId());
                     if (StringUtil.isEmpty(tDto.getUserId())) {
-                        inspectionTaskPoolListDto.setInspectorName("");
+                        inspectionTaskPoolListDto.setInspectorName(HcsaConsts.HCSA_PREMISES_HCI_NULL);
                     } else {
                         inspectionTaskPoolListDto.setInspector(tDto.getUserId());
                         List<String> ids = new ArrayList<>();
