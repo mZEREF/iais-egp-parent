@@ -195,12 +195,12 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
         List<HcsaRiskInspectionMatrixDto> updateList = new ArrayList<>();
         for(HcsaRiskInspectionMatrixDto temp : dtoList){
             if(temp.isCaEdit()||temp.isMjEdit()||temp.isMiEdit()){
-                saveList.add(getFinDto(temp,true,"C"));
-                saveList.add(getFinDto(temp,false,"C"));
-                saveList.add(getFinDto(temp,true,"I"));
-                saveList.add(getFinDto(temp,false,"I"));
-                saveList.add(getFinDto(temp,true,"A"));
-                saveList.add(getFinDto(temp,true,"A"));
+                saveList.add(getFinDto(temp,true,"RSKL0001"));
+                saveList.add(getFinDto(temp,false,"RSKL0001"));
+                saveList.add(getFinDto(temp,true,"RSKL0003"));
+                saveList.add(getFinDto(temp,false,"RSKL0003"));
+                saveList.add(getFinDto(temp,true,"RSKL0002"));
+                saveList.add(getFinDto(temp,true,"RSKL0002"));
             }
         }
         doUpdate(saveList,dtoList);
@@ -217,11 +217,11 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
             if(lastversionList!=null && !lastversionList.isEmpty()){
                 for(HcsaRiskInspectionMatrixDto lastversion:lastversionList){
                     lastversion.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    if("C".equals(lastversion.getRiskLevel())&&lastversion.isCaEdit()){
+                    if("RSKL0001".equals(lastversion.getRiskLevel())&&lastversion.isCaEdit()){
                         updateLastVersion(temp,lastversion);
-                    }else if("I".equals(lastversion.getRiskLevel())&&lastversion.isMiEdit()){
+                    }else if("RSKL0003".equals(lastversion.getRiskLevel())&&lastversion.isMiEdit()){
                         updateLastVersion(temp,lastversion);
-                    }else if("A".equals(lastversion.getRiskLevel())&&lastversion.isMjEdit()){
+                    }else if("RSKL0002".equals(lastversion.getRiskLevel())&&lastversion.isMjEdit()){
                         updateLastVersion(temp,lastversion);
                     }
                 }
@@ -236,7 +236,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
     }
     public void updateLastVersion(HcsaRiskInspectionMatrixDto newFin,HcsaRiskInspectionMatrixDto dbFin){
         try {
-            if("C".equals(dbFin.getRiskLevel())){
+            if("RSKL0001".equals(dbFin.getRiskLevel())){
                 if("CRRR003".equals(dbFin.getRiskRating())){
                     dbFin.setEndDate(Formatter.parseDate(newFin.getDoCaEffectiveDate()));
                     if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
@@ -248,7 +248,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                         dbFin.setStatus("CMSTAT003");
                     }
                 }
-            }else if("I".equals(dbFin.getRiskLevel())){
+            }else if("RSKL0003".equals(dbFin.getRiskLevel())){
                 if("CRRR003".equals(dbFin.getRiskRating())){
                     dbFin.setEndDate(Formatter.parseDate(newFin.getDoMiEffectiveDate()));
                     if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
@@ -259,7 +259,7 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                     if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
                         dbFin.setStatus("CMSTAT003");
                     }
-                }else if("J".equals(dbFin.getRiskLevel())){
+                }else if("RSKL0002".equals(dbFin.getRiskLevel())){
                     dbFin.setEndDate(Formatter.parseDate(newFin.getDoMjEffectiveDate()));
                     if(dbFin.getEndDate().getTime()<System.currentTimeMillis()){
                         dbFin.setStatus("CMSTAT003");
@@ -277,13 +277,13 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
         List<HcsaRiskInspectionMatrixDto> returnList = new ArrayList<>();
         if(lastversionList!=null && !lastversionList.isEmpty()){
             for(HcsaRiskInspectionMatrixDto fin:lastversionList){
-                if(temp.isCaEdit()&&"C".equals(fin.getRiskLevel())){
+                if(temp.isCaEdit()&&"RSKL0001".equals(fin.getRiskLevel())){
                     fin.setCaEdit(true);
                 }
-                if(temp.isMiEdit()&&"I".equals(fin.getRiskLevel())){
+                if(temp.isMiEdit()&&"RSKL0003".equals(fin.getRiskLevel())){
                     fin.setMiEdit(true);
                 }
-                if(temp.isMjEdit()&&"A".equals(fin.getRiskLevel())){
+                if(temp.isMjEdit()&&"RSKL0002".equals(fin.getRiskLevel())){
                     fin.setMjEdit(true);
                 }
                 returnList.add(fin);
@@ -308,8 +308,8 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
         }
         Date effDate = null;
         Date endDate = null;
-        if("C".equals(level)) {
-            finDto.setRiskLevel("C");
+        if("RSKL0001".equals(level)) {
+            finDto.setRiskLevel("RSKL0001");
             try {
                 effDate = Formatter.parseDate(dto.getDoCaEffectiveDate());
                 endDate = Formatter.parseDate(dto.getDoCaEndDate());
@@ -325,8 +325,8 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 finDto.setNcCountTh(Integer.parseInt(dto.getDoCaRightModCounth()));
                 finDto.setRiskRating(RiskConsts.HIGH);
             }
-        }else if("I".equals(level)){
-            finDto.setRiskLevel("I");
+        }else if("RSKL0003".equals(level)){
+            finDto.setRiskLevel("RSKL0003");
             try {
                 effDate = Formatter.parseDate(dto.getDoMiEffectiveDate());
                 endDate = Formatter.parseDate(dto.getDoMiEndDate());
@@ -342,8 +342,8 @@ public class HcsaRiskInspectionServiceImpl implements HcsaRiskInspectionService 
                 finDto.setNcCountTh(Integer.parseInt(dto.getDoMiRightModCounth()));
                 finDto.setRiskRating(RiskConsts.HIGH);
             }
-        }else if("A".equals(level)){
-            finDto.setRiskLevel("A");
+        }else if("RSKL0002".equals(level)){
+            finDto.setRiskLevel("RSKL0002");
             try {
                 effDate = Formatter.parseDate(dto.getDoMjEffectiveDate());
                 endDate = Formatter.parseDate(dto.getDoMjEndDate());

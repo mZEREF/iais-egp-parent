@@ -653,13 +653,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String conifgType) {
         List<InspectionFillCheckListDto> fillChkDtoList = null;
         TaskDto taskDto = taskService.getTaskById(taskId);
-        List<AppPremisesCorrelationDto> appCorrDtolist = null;
         String appPremCorrId = null;
-        String serviceCode = null;
         if(taskDto!=null){
             appPremCorrId = taskDto.getRefNo();
-            ApplicationViewDto appViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
-            String svcId = appViewDto.getApplicationDto().getServiceId();
         }
         if(appPremCorrId!=null){
             List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();

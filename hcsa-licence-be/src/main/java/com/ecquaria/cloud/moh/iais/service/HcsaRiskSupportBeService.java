@@ -10,10 +10,10 @@ import java.util.List;
 
 /**
  * @Author: jiahao
- * @Date: 2020/1/9 11:00
+ * @Date: 2020/1/14 16:44
  */
-public interface RiskSupportService {
-    HcsaLastInspectionDto getLastSecRiskSocre(String licId, String svcCode);
+public interface HcsaRiskSupportBeService{
+    HcsaLastInspectionDto getLastSecRiskSocre(String licId,String svcCode);
     List<PreOrPostInspectionResultDto> preOrPostInspection(List<RecommendInspectionDto> recommendInspectionDtoList);
     List<RiskResultDto> getRiskResult(List<RiskAcceptiionDto> riskAcceptiionDtoList);
 }

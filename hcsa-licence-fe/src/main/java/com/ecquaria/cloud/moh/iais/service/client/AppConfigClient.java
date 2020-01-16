@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaLastInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGlobalDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGolbalExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatrixDto;
@@ -163,4 +164,8 @@ public interface AppConfigClient {
 
     @PostMapping(value = "/iais-hcsa-fee/fee-amendment", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeeDto> amendmentFee(@RequestBody @Required AmendmentFeeDto amendmentFeeDto);
+
+    @GetMapping(path = "/iais-hcsa-risk/lastandaecriskScore",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaLastInspectionDto> getLastAndSecRiskScore(@RequestBody HcsaLastInspectionDto inspDto);
+
 }

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestion
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -21,20 +22,14 @@ import java.util.Map;
  * @Date: 2019/11/27 10:06
  */
 public class InspectionCheckListValidation implements CustomizeValidator {
+    private static final String ERR0010 = "ERR0010";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = new HashMap<>();
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
-        if(serListDto.getFdtoList()!=null &&!serListDto.getFdtoList().isEmpty()){
+        if(serListDto!=null&&!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto fDto:serListDto.getFdtoList()){
-                List<InspectionCheckQuestionDto> cqDtoList = fDto.getCheckList();
-                if(cqDtoList!=null && !cqDtoList.isEmpty()){
-                    for(InspectionCheckQuestionDto temp:cqDtoList){
-                        if(StringUtil.isEmpty(temp.getChkanswer())){
-                            errMap.put(fDto.getSvcCode()+temp.getSectionName()+temp.getItemId(),"ERR0010");
-                        }
-                    }
-                }
+                getServiceMsg(fDto,errMap);
             }
         }
         tcuVad(serListDto,errMap);
@@ -43,13 +38,24 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         return errMap;
     }
 
+    public void getServiceMsg(InspectionFillCheckListDto fDto,Map<String, String> errMap){
+        List<InspectionCheckQuestionDto> cqDtoList = fDto.getCheckList();
+        if(!IaisCommonUtils.isEmpty(cqDtoList)){
+            for(InspectionCheckQuestionDto temp:cqDtoList){
+                if(StringUtil.isEmpty(temp.getChkanswer())){
+                    errMap.put(fDto.getSvcCode()+temp.getSectionName()+temp.getItemId(),ERR0010);
+                }
+            }
+        }
+    }
+
     public void commonVad(HttpServletRequest request,Map<String, String> errMap){
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
         List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
         if(cqDtoList!=null && !cqDtoList.isEmpty()){
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(temp.getSectionName()+temp.getItemId()+"com","ERR0010");
+                    errMap.put(temp.getSectionName()+temp.getItemId()+"com",ERR0010);
                 }
             }
         }else{
@@ -62,7 +68,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(itemDtoList!=null && !itemDtoList.isEmpty()){
             for(AdhocNcCheckItemDto temp:itemDtoList){
                 if(StringUtil.isEmpty(temp.getAdAnswer())){
-                    errMap.put(temp.getId()+"adhoc","ERR0010");
+                    errMap.put(temp.getId()+"adhoc",ERR0010);
                 }
             }
         }
