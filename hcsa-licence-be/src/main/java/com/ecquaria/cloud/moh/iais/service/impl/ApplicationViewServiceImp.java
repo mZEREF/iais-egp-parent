@@ -90,5 +90,10 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         return applicationClient.getLastAppPremisesCorrelationDtoByCorreId(id).getEntity();
     }
 
+    @Override
+    public HcsaSvcRoutingStageDto getStageById(String id) {
+        return hcsaConfigClient.getHcsaSvcRoutingStageById().getEntity();
+    }
+
 
 }

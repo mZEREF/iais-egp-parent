@@ -11,11 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -85,6 +81,8 @@ public class HcsaApplicationDelegator {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
 
+    @Autowired
+    private InsRepService insRepService;
 
     public void routingTask(BaseProcessClass bpc) throws FeignException {
         log.debug(StringUtil.changeForLog("the do routingTask start ...."));
@@ -169,7 +167,7 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setCurrentStatus(status);
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         Map<String,String> routingStage=new HashMap<>();
-        Map<String,String> verified=new HashMap<>();
+
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList
              ) {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
@@ -217,11 +215,12 @@ public class HcsaApplicationDelegator {
         if(applicationViewDto.getRollBackHistroyList()!=null){
         for (AppPremisesRoutingHistoryDto e:applicationViewDto.getRollBackHistroyList()
              ) {
-            String stageName=MasterCodeUtil.getCodeDesc(e.getAppStatus());
+            String stageName=applicationViewService.getStageById(e.getStageId()).getStageName();
             String userId=e.getActionby();
             String wrkGrpId=e.getWrkGrpId();
             OrgUserDto user=applicationViewService.getUserById(userId);
             String actionBy=user.getDisplayName();
+
             rollBackMap.put(actionBy+"("+stageName+")",e.getStageId()+","+wrkGrpId+","+userId);
          }
         }
@@ -241,8 +240,6 @@ public class HcsaApplicationDelegator {
         if(HcsaConsts.ROUTING_STAGE_AO3.equals(taskDto.getTaskKey())){
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,
                     MasterCodeUtil.getCodeDesc(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL));
-          //  routingStage.put(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject");
-           // routingStage.put(ApplicationConsts.PROCESSING_DECISION_INTERNAL_ENQUIRY,"Internal Enquiry");
             routingStage.put(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Route To DMS");
         }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(taskDto.getTaskKey())
                 ||HcsaConsts.ROUTING_STAGE_AO1.equals(taskDto.getTaskKey())){
@@ -267,7 +264,7 @@ public class HcsaApplicationDelegator {
                 String dateType = riskResultDto.getDateType();
                 String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
                 String count = String.valueOf(riskResultDto.getTimeCount());
-                String recommTime = count+codeDesc;
+                String recommTime = count+" "+codeDesc;
                 riskResult.add(recommTime);
             }
         }
@@ -288,6 +285,30 @@ public class HcsaApplicationDelegator {
      */
     public void chooseStage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do chooseStage start ...."));
+        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
+        String appPremCorreId=taskDto.getRefNo();
+        //save recommendation
+        String recommendationStr = ParamUtil.getString(bpc.request,"recomedation");
+        if(("---select---").equals(recommendationStr)){
+
+        }else if(("reject").equals(recommendationStr)){
+            AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
+            appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
+            appPremisesRecommendationDto.setRecomInNumber(0);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+            insRepService.saveRecommendation(appPremisesRecommendationDto);
+        }else{
+            AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
+            String[] strs=recommendationStr.split("\\s+");
+            appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+            appPremisesRecommendationDto.setRecomInNumber( Integer.valueOf(strs[0]));
+            appPremisesRecommendationDto.setChronoUnit(strs[1]);
+            insRepService.saveRecommendation(appPremisesRecommendationDto);
+        }
+
+
+
         String verified = ParamUtil.getString(bpc.request,"verified");
         String rollBack=ParamUtil.getString(bpc.request,"rollBack");
         String nextStage=null;
@@ -423,17 +444,17 @@ public class HcsaApplicationDelegator {
         String wrkGpId=result[1];
         String userId=result[2];
         if(HcsaConsts.ROUTING_STAGE_ASO.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,RoleConsts.USER_ROLE_ASO,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_ASO,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_ASO,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_PSO.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING,RoleConsts.USER_ROLE_PSO,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_PSO,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_PSO,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_INS.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,RoleConsts.USER_ROLE_INSPECTIOR,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_INSPECTIOR,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_AO1.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO1,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_AO1,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_AO2.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02,RoleConsts.USER_ROLE_AO2,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO2,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_AO2,wrkGpId,userId);
         }else if(HcsaConsts.ROUTING_STAGE_AO3.equals(satageId)){
-            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,wrkGpId,userId);
+            rollBack(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_ROLL_BACK,RoleConsts.USER_ROLE_AO3,wrkGpId,userId);
         }
         log.debug(StringUtil.changeForLog("the do routeBack end ...."));
     }
@@ -556,15 +577,15 @@ public class HcsaApplicationDelegator {
 
 
     /**
-     * StartStep: verified
+     * StartStep: replay
      *
      * @param bpc
      * @throws
      */
-    public void verified(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do verified start ...."));
-        //TODO:verified
-        log.debug(StringUtil.changeForLog("the do verified end ...."));
+    public void replay(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do replay start ...."));
+        //TODO:replay
+        log.debug(StringUtil.changeForLog("the do replay end ...."));
     }
 
 
