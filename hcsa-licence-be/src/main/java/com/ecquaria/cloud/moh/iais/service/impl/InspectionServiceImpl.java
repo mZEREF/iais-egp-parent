@@ -364,6 +364,11 @@ public class InspectionServiceImpl implements InspectionService {
                         List<OrgUserDto> orgUserDtos = organizationClient.retrieveOrgUserAccount(ids).getEntity();
                         inspectionTaskPoolListDto.setInspectorName(orgUserDtos.get(0).getDisplayName());
                     }
+                    if(StringUtil.isEmpty(iDto.getHciName())){
+                        iDto.setHciName(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                    }if(StringUtil.isEmpty(iDto.getHciCode())){
+                        iDto.setHciCode(HcsaConsts.HCSA_PREMISES_HCI_NULL);
+                    }
                     inspectionTaskPoolListDto.setWorkGroupId(tDto.getWkGrpId());
                     List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(tDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                     List<String> leadName = getWorkGroupLeadsByGroupId(inspectionTaskPoolListDto.getWorkGroupId(), orgUserDtos);
