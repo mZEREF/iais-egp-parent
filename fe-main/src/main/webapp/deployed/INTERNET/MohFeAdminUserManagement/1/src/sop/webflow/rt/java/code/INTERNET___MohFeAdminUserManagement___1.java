@@ -11,7 +11,6 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
-
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohFeAdminUserManagement___1 extends BaseProcessClass {
@@ -25,12 +24,24 @@ public class INTERNET___MohFeAdminUserManagement___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "preparePage", this);
 	}
 	public void validation_OnStepProcess_0() throws Exception {
-	// 		Validation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "validation", this);
+	// 		CreateValidation->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "createValidation", this);
 	}
-	public void insertDatabase_OnStepProcess_0() throws Exception {
-	// 		InsertDatabase->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "insertDatabase", this);
+	public void create_OnStepProcess_0() throws Exception {
+	// 		Create->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "create", this);
+	}
+	public void edit_OnStepProcess_0() throws Exception {
+		// 		Edit->OnStepProcess
+			EngineHelper.delegate(DELEGATOR, "edit", this);
+		}
+	public void editValidation_OnStepProcess_0() throws Exception {
+		// 		EditValidation->OnStepProcess
+			EngineHelper.delegate(DELEGATOR, "editValidation", this);
+		}
+	public void page_OnStepProcess_0() throws Exception {
+	// 		Page->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPage", this);
 	}
 
 }

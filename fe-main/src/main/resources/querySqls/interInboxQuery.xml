@@ -73,5 +73,49 @@
         ]]>
     </sql>
 
+    <sql  key = "feAdminList" remarks = "Query fe admin ">
+        <![CDATA[
+            SELECT DISTINCT
+                acc.ID,
+               acc.ID_NO,
+               acc.SALUTATION,
+               acc.FIRST_NAME,
+               acc.LAST_NAME,
+               acc.EMAIL_ADDR,
+               acc.MOBILE_NO,
+               acc.STATUS,
+               role.ROLE_ID,
+               org.UEN_NO
+               FROM user_account acc
+               JOIN organization org ON acc.ORGANIZATION_ID = org.ID
+               JOIN user_role role ON acc.ID = role.USER_ACCT_ID
+                where 1 = 1
+                <#if orgid??>AND org.ID = :orgid</#if>
+                <#if roleid??>AND role.ROLE_ID = :roleid</#if>
+        ]]>
+    </sql>
 
+    <sql  key = "feUserList" remarks = "Query user admin ">
+        <![CDATA[
+            SELECT DISTINCT
+                acc.ID,
+                acc.FIRST_NAME,
+               acc.LAST_NAME,
+               acc.SALUTATION,
+               acc.ID_TYPE,
+               acc.ID_NO,
+               acc.DESIGNATION,
+               acc.OFFICE_TEL_NO,
+               acc.MOBILE_NO,
+               acc.EMAIL_ADDR,
+               acc.DISPLAY_NAME
+               FROM user_account acc
+               JOIN organization org ON acc.ORGANIZATION_ID = org.ID
+               JOIN user_role role ON acc.ID = role.USER_ACCT_ID
+                where 1 = 1
+                <#if orgid??>AND org.ID = :orgid</#if>
+                <#if roleid??>AND role.ROLE_ID = :roleid</#if>
+
+        ]]>
+    </sql>
 </sqls>

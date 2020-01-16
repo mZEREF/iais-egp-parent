@@ -1,1 +1,0 @@
-<%@include file="/iais/feadmin/adminManage/success.jsp"%>

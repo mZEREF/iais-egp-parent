@@ -16,29 +16,56 @@
     <JavaCode defClass="" executor="" methodName="preCreate_OnStepProcess_0" name="preCreate_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Validation" x="580" y="110">
+  <AutomaticStep defClass="" executor="" icon="" name="CreateValidation" x="320" y="530">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="validation_OnStepProcess_0" name="validation_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InsertDatabase" x="370" y="370">
+  <AutomaticStep defClass="" executor="" icon="" name="Create" x="350" y="290">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="insertDatabase_OnStepProcess_0" name="insertDatabase_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="create_OnStepProcess_0" name="create_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Edit" x="540" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="edit_OnStepProcess_0" name="edit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="EditValidation" x="530" y="530">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="editValidation_OnStepProcess_0" name="editValidation_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Page" x="680" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="page_OnStepProcess_0" name="page_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CreatePage" stageIndicator="" x="380" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CreatePage" stageIndicator="" x="340" y="400">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SuccessPage" stageIndicator="" x="520" y="370">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewAdminUser" stageIndicator="" x="340" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="EditPage" stageIndicator="" x="540" y="410">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -47,34 +74,74 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Pages/WebPage/CreatePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrePage" style="rectanular">
-   <position>{(240,120)(400,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrePage" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
    <position>{(120,120)(240,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Validation" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/CreatePage" style="rectanular">
-   <position>{(400,120)(600,130)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/CreateValidation" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/CreatePage" style="rectanular">
+   <position>{(360,420)(340,550)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InsertDatabase" style="rectanular">
-   <position>{(390,390)(540,390)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/CreateValidation" style="oblique">
+   <position>{(340,550)(240,550)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Validation" style="rectanular">
-   <position>{(600,130)(420,250)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/CreatePage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(240,550)(360,420)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/CreatePage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(420,250)(400,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/EditValidation" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/EditPage" style="rectanular">
+   <position>{(560,430)(550,550)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/InsertDatabase" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(420,250)(390,390)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/EditValidation" style="oblique">
+   <position>{(550,550)(460,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/EditPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(460,550)(560,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrePage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(460,550)(240,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrePage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(240,550)(240,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ViewAdminUser" style="rectanular">
+   <position>{(360,120)(560,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ViewAdminUser" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrePage" style="rectanular">
+   <position>{(240,120)(360,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Create" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(560,120)(370,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CreatePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Create" style="rectanular">
+   <position>{(370,310)(360,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Edit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(560,120)(560,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/EditPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Edit" style="rectanular">
+   <position>{(560,310)(560,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Page" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(560,120)(700,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Page" style="oblique">
+   <position>{(700,310)(240,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/CreatePage" componentIfTrue="/Steps/AutomaticStep/InsertDatabase" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="400" y="230">
+  <Condition componentIfFalse="/Pages/WebPage/CreatePage" componentIfTrue="/Steps/AutomaticStep/PrePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;ture&quot;" x="220" y="530">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/EditPage" componentIfTrue="/Steps/AutomaticStep/PrePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="440" y="530">
    <Description/>
   </Condition>
  </Conditions>
- <Switches/>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Create" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="540" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Create" value="&quot;create&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Edit" value="&quot;edit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Page" value="&quot;page&quot;"/>
+  </Switch>
+ </Switches>
  <Branches/>
  <Merges/>
  <StudioLabels/>
