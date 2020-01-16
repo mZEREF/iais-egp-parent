@@ -72,29 +72,32 @@ public class InspectionSendRecBatchjob {
         }
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         for(ApplicationDto aDto : applicationDtos){
-            InterMessageDto interMessageDto = new InterMessageDto();
-            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
-            interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
-            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-            String mesNO = inboxMsgService.getMessageNo();
-            interMessageDto.setRefNo(mesNO);
-            interMessageDto.setService_id(aDto.getServiceId());
-            String url = systemParamConfig.getInterServerName() +
-                    MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION +
-                    aDto.getApplicationNo();
-            interMessageDto.setProcessUrl(url);
-            interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            inboxMsgService.saveInterMessage(interMessageDto);
-            List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtos = new ArrayList<>();
-            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
-            jobRemindMsgTrackingDto.setAuditTrailDto(intranet);
-            jobRemindMsgTrackingDto.setMsgKey(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-            jobRemindMsgTrackingDto.setRefNo(aDto.getId());
-            jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            jobRemindMsgTrackingDto.setId(null);
-            jobRemindMsgTrackingDtos.add(jobRemindMsgTrackingDto);
-            systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
+            JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
+            if(jobRemindMsgTrackingDto2 == null) {
+                InterMessageDto interMessageDto = new InterMessageDto();
+                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
+                interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
+                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+                String mesNO = inboxMsgService.getMessageNo();
+                interMessageDto.setRefNo(mesNO);
+                interMessageDto.setService_id(aDto.getServiceId());
+                String url = systemParamConfig.getInterServerName() +
+                        MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION +
+                        aDto.getApplicationNo();
+                interMessageDto.setProcessUrl(url);
+                interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                inboxMsgService.saveInterMessage(interMessageDto);
+                List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtos = new ArrayList<>();
+                JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
+                jobRemindMsgTrackingDto.setAuditTrailDto(intranet);
+                jobRemindMsgTrackingDto.setMsgKey(MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE);
+                jobRemindMsgTrackingDto.setRefNo(aDto.getId());
+                jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                jobRemindMsgTrackingDto.setId(null);
+                jobRemindMsgTrackingDtos.add(jobRemindMsgTrackingDto);
+                systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
+            }
         }
     }
 }
