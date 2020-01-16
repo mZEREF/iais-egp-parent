@@ -166,23 +166,9 @@ public class LicenceViewServiceDelegator {
                  String[] selects = ParamUtil.getStrings(bpc.request,"editCheckbox");
                  if(selects!=null && selects.length > 0){
                      List<String> selectsList = Arrays.asList(selects);
-
-                     AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                     appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                     appEditSelectDto.setApplicationId(newAppPremisesCorrelationDto.getApplicationId());
-                     if(selectsList.contains("premises")){
-                         appEditSelectDto.setPremisesEdit(true);
-                     }
-                     if(selectsList.contains("primary")){
-                         appEditSelectDto.setPrimaryEdit(true);
-                     }
-                     if(selectsList.contains("service")){
-                         appEditSelectDto.setServiceEdit(true);
-                     }
-                     appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
-                     appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                     AppEditSelectDto  appEditSelectDto = setAppEditSelectDto(newAppPremisesCorrelationDto,selectsList);
                      appEditSelectDto = licenceViewService.saveAppEditSelect(appEditSelectDto);
-                     appEditSelectDto = licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
+                     licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
                      successMsg = "save success";
                  }else{
                      successMsg = "do not select save success!!!";
@@ -198,6 +184,7 @@ public class LicenceViewServiceDelegator {
          ParamUtil.setRequestAttr(bpc.request,"errorMsg",errorMsg);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect end ..."));
     }
+
 
     /**
      * StartStep: prepareView
@@ -376,5 +363,23 @@ public class LicenceViewServiceDelegator {
         }
 
         return  appSvcRelatedInfoDto;
+    }
+    private AppEditSelectDto setAppEditSelectDto(AppPremisesCorrelationDto newAppPremisesCorrelationDto,List<String> selectsList){
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appEditSelectDto.setApplicationId(newAppPremisesCorrelationDto.getApplicationId());
+
+        if(selectsList.contains("premises")){
+            appEditSelectDto.setPremisesEdit(true);
+        }
+        if(selectsList.contains("primary")){
+            appEditSelectDto.setPrimaryEdit(true);
+        }
+        if(selectsList.contains("service")){
+            appEditSelectDto.setServiceEdit(true);
+        }
+        appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
+        appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        return  appEditSelectDto;
     }
 }
