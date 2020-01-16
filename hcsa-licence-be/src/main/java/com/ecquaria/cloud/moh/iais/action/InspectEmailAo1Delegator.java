@@ -100,16 +100,17 @@ public class InspectEmailAo1Delegator {
     private OrganizationClient organizationClient;
     @Autowired
     ApplicationService applicationService;
-    private final String ADCHK_DTO="adchklDto";
-    private final String TASK_DTO="taskDto";
-    private final String APP_VIEW_DTO="applicationViewDto";
-    private final String COM_DTO="commonDto";
-    private final String MSG_CON="messageContent";
-    private final String EMAIL_VIEW="emailView";
-    private final String INS_EMAIL_DTO="insEmailDto";
-    private final String AC_DTO="acDto";
-    private final String SER_LIST_DTO= "serListDto";
-    private final String TD="</td><td>";
+    private static final String ADCHK_DTO="adchklDto";
+    private static final String TASK_DTO="taskDto";
+    private static final String APP_VIEW_DTO="applicationViewDto";
+    private static final String COM_DTO="commonDto";
+    private static final String MSG_CON="messageContent";
+    private static final String EMAIL_VIEW="emailView";
+    private static final String INS_EMAIL_DTO="insEmailDto";
+    private static final String AC_DTO="acDto";
+    private static final String SER_LIST_DTO= "serListDto";
+    private static final String TD="</td><td>";
+    private static final String SUBJECT="subject";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -178,8 +179,8 @@ public class InspectEmailAo1Delegator {
             return;
         }
         String content=ParamUtil.getString(request,MSG_CON);
-        String subject=ParamUtil.getString(request,"subject");
-        ParamUtil.setRequestAttr(request,"subject", subject);
+        String subject=ParamUtil.getString(request,SUBJECT);
+        ParamUtil.setRequestAttr(request,SUBJECT, subject);
         ParamUtil.setRequestAttr(request,"content", content);
 
 
@@ -202,7 +203,7 @@ public class InspectEmailAo1Delegator {
         if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
-        inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
+        inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = new HashMap<>();

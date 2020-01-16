@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -74,8 +73,10 @@ public class InspectionMergeSendNcEmailDelegator {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
-    private final String INS_EMAIL_DTO="insEmailDto";
-    private final String TASK_DTO="taskDto";
+    private static final String INS_EMAIL_DTO="insEmailDto";
+    private static final String TASK_DTO="taskDto";
+    private static final String SUBJECT="subject";
+
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         AccessUtil.initLoginUserInfo(bpc.request);
@@ -96,11 +97,11 @@ public class InspectionMergeSendNcEmailDelegator {
         StringBuilder mesContext=new StringBuilder();
         String oneEmail=inspEmailService.getInsertEmail(appPremisesCorrelationDtos.get(0).getId()).getMessageContent();
         mesContext.append(oneEmail.substring(0,oneEmail.indexOf("Below are the review outcome")));
-        List<String> appIds=new ArrayList<>();
+        List<String> appPremCorrIds=new ArrayList<>();
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
                 ) {
             String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
-            appIds.add(appPremisesCorrelationDto.getApplicationId());
+            appPremCorrIds.add(appPremisesCorrelationDto.getId());
             mesContext.append(ncEmail.substring(ncEmail.indexOf("Below are the review outcome"),ncEmail.indexOf("<p>Thank you</p>")));
         }
         mesContext.append(oneEmail.substring(oneEmail.indexOf("<p>Thank you</p>")));
@@ -112,7 +113,7 @@ public class InspectionMergeSendNcEmailDelegator {
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
-        ParamUtil.setSessionAttr(request,"appIds", (Serializable) appIds);
+        ParamUtil.setSessionAttr(request,"appPremCorrIds", (Serializable) appPremCorrIds);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,"mesContext", mesContext.toString());
         ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
@@ -135,8 +136,8 @@ public class InspectionMergeSendNcEmailDelegator {
             return;
         }
         String content=ParamUtil.getString(request,"messageContent");
-        String subject=ParamUtil.getString(request,"subject");
-        ParamUtil.setRequestAttr(request,"subject", subject);
+        String subject=ParamUtil.getString(request,SUBJECT);
+        ParamUtil.setRequestAttr(request,SUBJECT, subject);
         ParamUtil.setRequestAttr(request,"content", content);
     }
 
@@ -151,18 +152,19 @@ public class InspectionMergeSendNcEmailDelegator {
         String serviceId=applicationViewDto.getApplicationDto().getServiceId();
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
-        inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
+        inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,"messageContent"));
         String decision=ParamUtil.getString(request,"decision");
         if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
-        List<String>appIds= (List<String>) ParamUtil.getSessionAttr(request,"appIds");
-        for(int i=1;i<=appIds.size();i++){
+        List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");
+        for(int i=1;i<=appPremCorrIds.size();i++){
             String param="revise"+i;
             if(ParamUtil.getString(request, param)==null){
-                appIds.set(i-1,"");
+                appPremCorrIds.set(i-1,"");
             }
         }
-        List<ApplicationDto> applicationDtos= applicationService.getApplicaitonsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());
+
 
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = new HashMap<>();
@@ -184,8 +186,8 @@ public class InspectionMergeSendNcEmailDelegator {
             createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_APPROVED,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
             completedTask(taskDto);
 
-            for(int i=0;i<appIds.size();i++){
-                if(appIds.get(i).equals(applicationDtos.get(i).getId())){
+            for(int i=0;i<appPremCorrIds.size();i++){
+                if(appPremCorrIds.get(i).equals(appPremisesCorrelationDtos.get(i).getId())){
                     AppPremisesRoutingHistoryDto appPremisesRoutingHisDto= new AppPremisesRoutingHistoryDto();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppId(applicationViewDto.getApplicationDto().getId());
                     String upDt=appPremisesRoutingHistoryDtos.get(0).getUpdatedDt();
@@ -195,17 +197,15 @@ public class InspectionMergeSendNcEmailDelegator {
                             appPremisesRoutingHisDto=appPremisesRoutingHistoryDto1;
                         }
                     }
-                    applicationDtos.get(i).setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW);
-                    applicationViewService.updateApplicaiton(applicationDtos.get(i));
-                    AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
+
+                    ApplicationViewDto applicationViewDto1=applicationViewService.searchByCorrelationIdo(appPremCorrIds.get(i));
+                    applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW);
+                    applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());
+                    AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorrIds.get(i)).getEntity();
                     appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
                     appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     appInspectionStatusClient.update(appInspectionStatusDto1);
-
-//                    taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
-//                    createAppPremisesRoutingHistory(applicationViewDto.getAppPremisesCorrelationId(), ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT,taskDto,HcsaConsts.ROUTING_STAGE_POT,userId);
-//                    completedTask(taskDto);
-                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(appIds.get(i),HcsaConsts.ROUTING_STAGE_INS);
+                    AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto1.getApplicationDto().getId(),HcsaConsts.ROUTING_STAGE_INS);
 
                     HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
                     hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);

@@ -758,7 +758,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <select id="decision-email" name="decision">
+                                                <select id="decision-email" name="decision" onchange="thisTime()">
                                                     <option>Select</option>
                                                     <c:forEach items="${appTypeOption}" var="decision">
                                                         <option  value="${decision.value}">${decision.text}</option>
@@ -767,7 +767,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr height="1">
+                                    <tr height="1" style="display: none" id="selectReviseNc">
                                         <td class="col-xs-2" >
                                             <p >
                                                 need revise
@@ -775,7 +775,7 @@
                                         </td>
                                         <td>
                                             <div class="col-sm-9">
-                                                <c:forEach items="${appIds}" var="revise" varStatus="index">
+                                                <c:forEach items="${appPremCorrIds}" var="revise" varStatus="index">
                                                     <input type="checkbox"  name="revise${index.index+1}" value="${revise}">NC/BP ${index.index+1}</input>
                                                 </c:forEach>
 
@@ -815,7 +815,9 @@
         SOP.Crud.cfxSubmit("mainForm", "send");
     }
 
-
+    function thisTime() {
+        $("#selectReviseNc").show();
+    }
 </script>
 
 

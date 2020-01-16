@@ -82,10 +82,12 @@ public class InspecEmailDelegator {
     AppInspectionStatusClient appInspectionStatusClient;
     @Autowired
     private OrganizationClient organizationClient;
-    private final String TASK_DTO="taskDto";
-    private final String MSG_CON="messageContent";
-    private final String TD="</td><td>";
-    private final String INS_EMAIL_DTO="insEmailDto";
+    private static final String TASK_DTO="taskDto";
+    private static final String MSG_CON="messageContent";
+    private static final String TD="</td><td>";
+    private static final String INS_EMAIL_DTO="insEmailDto";
+    private static final String SUBJECT="subject";
+
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -177,8 +179,8 @@ public class InspecEmailDelegator {
             return;
         }
         String content=ParamUtil.getString(request,MSG_CON);
-        String subject=ParamUtil.getString(request,"subject");
-        ParamUtil.setRequestAttr(request,"subject", subject);
+        String subject=ParamUtil.getString(request,SUBJECT);
+        ParamUtil.setRequestAttr(request,SUBJECT, subject);
         ParamUtil.setRequestAttr(request,"content", content);
 
 
@@ -201,7 +203,7 @@ public class InspecEmailDelegator {
         if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
 
         InspectionEmailTemplateDto inspectionEmailTemplateDto= (InspectionEmailTemplateDto) ParamUtil.getSessionAttr(request,INS_EMAIL_DTO);
-        inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,"subject"));
+        inspectionEmailTemplateDto.setSubject(ParamUtil.getString(request,SUBJECT));
         inspectionEmailTemplateDto.setMessageContent(ParamUtil.getString(request,MSG_CON));
         if (inspectionEmailTemplateDto.getSubject().isEmpty()){
             Map<String,String> errorMap = new HashMap<>();
