@@ -867,7 +867,6 @@ public class LicenceApproveBatchjob {
         licenceDto.setLicenceNo(licenceNo);
         licenceDto.setVersion(version);
         licenceDto.setFeeRetroNeeded(false);
-        //licenceDto.setIsFeeRetroNeeded(Integer.parseInt(AppConsts.NO));
         //todo:Judge the licence status
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
         licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
