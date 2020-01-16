@@ -95,16 +95,17 @@ public class LicenceViewServiceDelegator {
         String status = appSubmissionDto.getStatus();
         if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(status)){
             //new
-            ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
-            //last
-            ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
-            if(applicationDto!=null){
-                AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
-                if(appSubmissionDto!=null){
-                    appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
+            if(appPremisesCorrelationDto!=null){
+                ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
+                //last
+                ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
+                if(applicationDto!=null){
+                    AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
+                    if(appSubmissionDto!=null){
+                        appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
+                    }
                 }
             }
-
 
         }else if(!StringUtil.isEmpty(newCorrelationId)&&!StringUtil.isEmpty(oldCorrelationId)&&!newCorrelationId.equals(oldCorrelationId)){
             AppPremisesCorrelationDto lastAppPremisesCorrelationDtoById =

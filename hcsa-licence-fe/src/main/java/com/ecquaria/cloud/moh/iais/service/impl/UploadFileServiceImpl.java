@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -23,7 +24,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
@@ -105,20 +109,36 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
-    public String  changeStatus() {
+    public String  changeStatus(ApplicationListFileDto applicationListDto) {
         if(flag){
-            applicationClient.updateStatus(ApplicationConsts.APPLICATION_SUCCESS_ZIP).getEntity();
-        }
+            List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
+            Map<String,List<String>> map =new HashMap<>();
+            List<String> oldStatus=new ArrayList<>();
+            oldStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            List<String> newStatus=new ArrayList<>();
+            newStatus.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
+            List<String> groupIds=new ArrayList<>();
+
+            for(ApplicationGroupDto every:applicationGroup){
+                String id = every.getId();
+                groupIds.add(id)  ;
+            }
+            map.put("oldStatus",oldStatus);
+            map.put("newStatus",newStatus);
+            map.put("groupIds",groupIds);
+             applicationClient.updateStatus(map).getEntity();
+         }
 
         return "";
     }
     @Override
-    public void compressFile(){
+    public boolean compressFile(){
         String compress = compress();
         log.info("-------------compress() end --------------");
-        rename(compress);
+        boolean rename = rename(compress);
 
         deleteFile();
+        return rename;
     }
     /*****************compress*********/
 /*
@@ -200,7 +220,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     }
 
-    private void rename(String fileNamesss)  {
+    private boolean rename(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
         flag = true;
         File zipFile =new File(backups);
@@ -240,6 +260,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                }
            }
         }
+        return flag;
     }
 
     private void deleteFile(){

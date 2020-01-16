@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
@@ -92,4 +93,7 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/organization/organization-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationDto> getOrganizationById(@RequestParam("id") String id);
+
+    @GetMapping(value = "/iais-orguser-be/organization-user-admin-or",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity< List<OrgUserRoleDto>> getSendEmailUser(@RequestParam("organizationId") String organizationId);
 }

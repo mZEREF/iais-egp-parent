@@ -138,10 +138,10 @@ public class HcsaApplicationDelegator {
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
         String newCorrelationId = appPremisesCorrelationDto.getId();
-        if(StringUtil.isEmpty(correlationId)&&StringUtil.isEmpty(newCorrelationId)&&!newCorrelationId.equals(correlationId)){
+      /*  if(StringUtil.isEmpty(correlationId)&&StringUtil.isEmpty(newCorrelationId)&&!newCorrelationId.equals(correlationId)){
 
 
-        }
+        }*/
 //        get routing stage dropdown send to page.
         ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(newCorrelationId);
         List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
@@ -872,7 +872,4 @@ public class HcsaApplicationDelegator {
 
     /************************/
 
-    private void  date(HttpServletRequest request){
-
-    }
 }

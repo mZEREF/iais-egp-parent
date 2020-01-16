@@ -139,10 +139,13 @@ public class KpiAndReminderDelegator {
         request.getSession().removeAttribute("service");
         request.getSession().removeAttribute("reminderThreshold");
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = (List<HcsaSvcRoutingStageDto>)request.getSession().getAttribute("hcsaSvcRoutingStageDtos");
-        for(HcsaSvcRoutingStageDto every:hcsaSvcRoutingStageDtos){
-            String stageCode = every.getStageCode();
-            request.getSession().removeAttribute(stageCode);
+        if(hcsaSvcRoutingStageDtos!=null){
+            for(HcsaSvcRoutingStageDto every:hcsaSvcRoutingStageDtos){
+                String stageCode = every.getStageCode();
+                request.getSession().removeAttribute(stageCode);
+            }
         }
+
 
     }
 }

@@ -277,7 +277,7 @@ $('#cancel').click(function () {
     $("input[name='levelTwo']").val("");
     $("input[name='levelThree']").val("");
     $("input[name='postInspection']").val("");
-
+   /* location.href="https://egp.sit.intra.iais.com/egov/process/EGPCLOUD/Home";*/
    /* SOP.Crud.cfxSubmit("mainForm", "cancel");*/
 });
 

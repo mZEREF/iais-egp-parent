@@ -684,7 +684,7 @@ public class ClinicalLaboratoryDelegator {
         int count=0;
 
         if(listDtos.isEmpty()){
-            map.put("checkError","UC_CHKLMD001_ERR002");
+         /*   map.put("checkError","UC_CHKLMD001_ERR002");*/
         }else {
             for(int i=0;i<listDtos.size();i++){
                 String parentName = listDtos.get(i).getParentName();

@@ -5,19 +5,29 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Wenkang
@@ -32,11 +42,15 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
+    private MsgTemplateClient msgTemplateClient;
+    @Autowired
     private OrganizationClient organizationClient;
     @Autowired
     private SystemBeLicClient systemBeLicClient;
+    private SimpleDateFormat simpleDateFormat =new SimpleDateFormat("dd/MM/yyyy");
+
     @Override
-    public void startRenwal() {
+    public void startRenwal(HttpServletRequest request) {
         List<Integer> dayList=new ArrayList<>();
         dayList.add(30);
         dayList.add(45);
@@ -44,7 +58,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         dayList.add(90);
         dayList.add(120);
         dayList.add(150);
-        dayList.add(1800);
+        dayList.add(180);
         List<JobRemindMsgTrackingDto> JobRemindMsgTrackingDto = systemBeLicClient.listJob().getEntity();
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
         entity.forEach((k, v) -> {
@@ -57,11 +71,23 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
                 if(!autoOrNon){
 
-                    isAuto(v.get(i));
+                    try {
+                        isAuto(v.get(i),request);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                 }else {
 
-                    isNoAuto(v.get(i));
+                    try {
+
+                        isNoAuto(v.get(i),request);
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+
+                    }
 
                 }
 
@@ -120,7 +146,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     * non auto to send
     *
     * */
-    private void  isNoAuto(LicenceDto licenceDto){
+    private void  isNoAuto(LicenceDto licenceDto ,HttpServletRequest request) throws IOException, TemplateException {
 
         String svcName = licenceDto.getSvcName();
 
@@ -133,10 +159,21 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
 
         for(String every:list){
+            String address = every.substring(every.indexOf("/")+1);
+            String substring = every.substring(0, every.indexOf("/"));
+            String format = simpleDateFormat.format(expiryDate);
+            Map<String,Object> map =new HashMap();
+            map.put("IAIS_URL","aaaaa");
+            map.put("NAME_OF_HCI",substring);
+            map.put("Name_of_Service",svcName);
+            map.put("Licence_Expiry_Date",format);
+            map.put("HCI_Address",address);
+            MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("079E4C27-7937-EA11-BE7E-000C29F371DC").getEntity();
 
+            String messageContent = entity.getMessageContent();
+            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
-
-
+            request.setAttribute("email1",templateMessageByContent);
         }
 
 
@@ -145,11 +182,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     *
     * auto to send
     * */
-    private void isAuto(LicenceDto licenceDto ){
+    private void isAuto(LicenceDto licenceDto ,HttpServletRequest request ) throws IOException, TemplateException {
         /*Name of Service*/
 
         OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOrganizationId());
-
+        String id1 = organizationBy.getId();
+        List<OrgUserRoleDto> sendMailUser = getSendMailUser(id1);
         String svcName = licenceDto.getSvcName();
         Date expiryDate = licenceDto.getExpiryDate();
         String licenceNo = licenceDto.getLicenceNo();
@@ -173,7 +211,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         }
 
         if(!entity.isEmpty()){
-
             for(HcsaLicenceGroupFeeDto every:entity){
                 LicenceFeeDto licenceFeeDto=new LicenceFeeDto();
                 licenceFeeDto.setLicenceId(id);
@@ -186,9 +223,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 licenceFeeDto.setServiceCode(split[4]);
                 licenceFeeDto.setServiceName(svcName);
                 licenceFeeDto.setPremises(premises);
-
                 licenceFeeDto.setExpiryDate(expiryDate1);
-
               if(isMigrated){
                   licenceFeeDto.setMigrated(isMigrated);
                   licenceFeeDto.setGroupId(groupId);
@@ -208,6 +243,22 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         }
 
         for(String every:useLicenceIdFindHciNameAndAddress){
+            String hciName = every.substring(0, every.indexOf("/"));
+            String address = every.substring(every.indexOf("/") + 1);
+            Map<String ,Object> map=new HashMap<>();
+            String format = simpleDateFormat.format(expiryDate);
+            map.put("Licence_Expiry_Date",expiryDate.toString());
+            map.put("Payment_Amount",total);
+            map.put("NAME_OF_HCI",hciName);
+            map.put("HCI_Address",address);
+            map.put("GIRO_Account_Number","***");
+            map.put("IAIS_URL","IAIS_URL");
+            map.put("System_Generated_Special_Link","System_Generated_Special_Link");
+            map.put("Name_of_Service",svcName);
+            map.put("Licence_Expiry_Date",format);
+            MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate("8D6746B1-6F37-EA11-BE7E-000C29F371DC").getEntity();
+            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
+            request.setAttribute("",templateMessageByContent);
 
 
         }
@@ -259,8 +310,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String floorNo = every.getFloorNo();
                 String unitNo = every.getUnitNo();
                 String postalCode = every.getPostalCode();
-
-                stringBuilder.append(hciName+"\n");
+                stringBuilder.append(hciName+"/");
                 stringBuilder.append(blkNo+" ");
                 stringBuilder.append(streetName+" ");
                 stringBuilder.append(buildingName+" # ");
@@ -271,4 +321,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             }
         return nameAndAddress;
        }
+
+
+       private  List<OrgUserRoleDto> getSendMailUser(String organizationId){
+           List<OrgUserRoleDto> entity = organizationClient.getSendEmailUser(organizationId).getEntity();
+           return entity;
+
+       }
+
 }

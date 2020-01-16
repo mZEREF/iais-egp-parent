@@ -90,6 +90,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(fil.getName().endsWith(".zip")){
                     String name = fil.getName();
                     String path = fil.getPath();
+                    String relPath="backups"+File.separator+name;
                     HashMap<String,String> map=new HashMap<>();
                     map.put("fileName",name);
                     map.put("filePath",path);
@@ -382,6 +383,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             List<ApplicationDto> list = this.listApplication();
              this. requestForInfList(requestForInfList);
              listApplicationDto.addAll(list);
+             List<String> applicationGroupIds=new ArrayList<>();
+             for(ApplicationGroupDto every:applicationGroup){
+                 String id = every.getId();
+                 applicationGroupIds.add(id);
+             }
+
+
            /* requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);*/
 
         }

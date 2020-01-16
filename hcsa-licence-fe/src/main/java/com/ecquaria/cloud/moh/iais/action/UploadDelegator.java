@@ -2,11 +2,15 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.UploadFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.List;
 
 
 /**
@@ -34,9 +38,17 @@ public class UploadDelegator {
         log.info("------------------- getData  end --------------");
         uploadFileService.saveFile(data);
         log.info("------------------- saveFile  end --------------");
-        uploadFileService.compressFile();
+        boolean b = uploadFileService.compressFile();
         log.info("------------------- compressFile  end --------------");
-        uploadFileService.changeStatus();
+        try {
+            if(b){
+                ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(data, ApplicationListFileDto.class);
+                uploadFileService.changeStatus(applicationListDto);
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+
         log.info("------------------- changeStatus  end --------------");
 
     }

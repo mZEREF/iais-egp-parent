@@ -148,7 +148,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             if(StringUtil.isEmpty(stageCode1)){
                 errorMap.put(stageCode,"UC_CHKLMD001_ERR001");
             }else {
-                if(!stageCode1.matches("^[0-9]*$")){
+                if(!stageCode1.matches("^[0-9]{0,5}$")){
                     errorMap.put(stageCode,"UC_CHKLMD001_ERR002");
                 }
             }
@@ -179,7 +179,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         if(StringUtil.isEmpty(reminderThreshold)){
             errorMap.put("reminderThreshold","UC_CHKLMD001_ERR001");
         }else {
-            if(!reminderThreshold.matches("^[0-9]*$")){
+            if(!reminderThreshold.matches("^[0-9]{0,5}$")){
                 errorMap.put("reminderThreshold","UC_CHKLMD001_ERR002");
             }
         }
