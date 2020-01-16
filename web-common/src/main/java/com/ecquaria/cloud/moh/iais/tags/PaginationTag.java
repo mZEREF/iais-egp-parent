@@ -20,6 +20,7 @@ import javax.servlet.jsp.JspTagException;
 public class PaginationTag extends DivTagSupport {
     private static final long serialVersionUID = 3640193450482281014L;
     private static final String STARTLI =  "<li><a href=\"#\" onclick=\"javascript:";
+    private static final String ENDTAG = "');\">";
     private String param;
     private String result;
     private String jsFunc;
@@ -135,15 +136,15 @@ public class PaginationTag extends DivTagSupport {
         if (pageNo > 1) {
             //sb.append(STARTLI).append(jsFunc).append("('1');\"></a></li>");
             sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-chevron-left\"></i></span></a></li>");
-            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append("');\">");
+            sb.append(STARTLI).append(jsFunc).append("('").append(pageNo - 1).append(ENDTAG);
             sb.append(pageNo-1);
             sb.append("</a></li>");
             sb.append("<li class=\"active\"><a href=\"#\"  onclick=\"javascript:");
-            sb.append(jsFunc).append("('").append(pageNo).append("');\">");
+            sb.append(jsFunc).append("('").append(pageNo).append(ENDTAG);
             sb.append(pageNo);
             sb.append("</a></li>");
             if(pageNo+1<=pageCount){
-                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\">");
+                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append(ENDTAG);
                 sb.append(pageNo+1);
                 sb.append("</a></li>");
             }
@@ -153,12 +154,12 @@ public class PaginationTag extends DivTagSupport {
             sb.append(pageNo);
             sb.append("</a></li>");
             if(pageNo+1<=pageCount){
-                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append("');\">");
+                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 1).append(ENDTAG);
                 sb.append(pageNo+1);
                 sb.append("</a></li>");
             }
             if(pageNo+2<=pageCount){
-                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 2).append("');\">");
+                sb.append(STARTLI).append(jsFunc).append("('").append(pageNo + 2).append(ENDTAG);
                 sb.append(pageNo+2);
                 sb.append("</a></li>");
             }
