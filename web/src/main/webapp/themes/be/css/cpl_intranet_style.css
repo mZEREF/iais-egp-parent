@@ -5552,9 +5552,6 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 /*------------------------*/
 .column-sort {
   float: left;
-}
-
-.column-sort {
   display: block;
   margin: 0 8px 9px 0;
   width: 14px;
@@ -5562,10 +5559,6 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 
 .column-sort .sort-up:active, .column-sort .sort-up.active {
   background-position: -30px 1px;
-}
-
-.column-sort .sort-up:active,
-.column-sort .sort-up.active {
 }
 
 .column-sort .sort-up {
