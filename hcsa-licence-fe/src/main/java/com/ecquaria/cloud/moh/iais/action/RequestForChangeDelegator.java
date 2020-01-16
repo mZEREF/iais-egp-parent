@@ -38,6 +38,8 @@ public class RequestForChangeDelegator {
      */
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
+        String licenceId = ParamUtil.getString(bpc.request, "licenceId");
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
 
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
@@ -127,9 +129,8 @@ public class RequestForChangeDelegator {
      */
     public void prepareAmend(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do prepareAmend start ...."));
-        //todo change
-        //todo status
-        String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
+        //String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
+        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setId(licenceId);
         licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_REQUEST_FOR_CHANGE);

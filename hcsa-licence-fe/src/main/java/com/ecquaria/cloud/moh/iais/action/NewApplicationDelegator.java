@@ -721,6 +721,7 @@ public class NewApplicationDelegator {
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
         }
 
@@ -1594,7 +1595,8 @@ public class NewApplicationDelegator {
     }
     private void requestForChangeLoading(BaseProcessClass bpc) throws CloneNotSupportedException{
         log.debug(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
-        String licenceId = ParamUtil.getString(bpc.request, "licenceId");
+//        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+        String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
         String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
         amendLicenceType = new String[]{"RFCATYPE01","RFCATYPE03","RFCATYPE04","RFCATYPE05","RFCATYPE06"};
         if(!StringUtil.isEmpty(licenceId) && amendLicenceType != null && amendLicenceType.length>0 ){

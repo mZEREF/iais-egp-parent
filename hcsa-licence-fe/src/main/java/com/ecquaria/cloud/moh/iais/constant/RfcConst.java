@@ -12,7 +12,8 @@ public class RfcConst {
     public static final String CRUD_ACTION_TOP  = "crud_action_top";
     public static final String FORM_TAB_VALUE  = "form_tab_value";
     public static final String CRUD_ACTION_TYPE_MENU = "crud_action_type_menu";
-
+    
+    public static final String LICENCEID = "LicenceId";
 
     //premises list page
     public static final String PREMISESLISTDTOS  = "PremisesListDtos";
