@@ -343,7 +343,7 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToINS(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS start ...."));
-        routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,RoleConsts.USER_ROLE_INSPECTIOR);
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,RoleConsts.USER_ROLE_INSPECTIOR);
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS end ...."));
     }
 
@@ -743,7 +743,7 @@ public class HcsaApplicationDelegator {
                     broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
                     broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
                 }
-            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus)){
+            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
                 AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
                 appInspectionStatusDto.setAppPremCorreId(taskDto.getRefNo());
                 appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
