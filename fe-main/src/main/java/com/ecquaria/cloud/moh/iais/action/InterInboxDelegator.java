@@ -319,6 +319,22 @@ public class InterInboxDelegator {
 
     /**
      *
+     * @param bpc
+     *
+     */
+    public void licDoAmend(BaseProcessClass bpc) throws IOException {
+        String licId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName())
+                .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange")
+                .append("?licenceId=").append(licId);
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+    }
+
+    /**
+     *
      * @param request
      * @description Data to Form select part
      */
@@ -386,5 +402,7 @@ public class InterInboxDelegator {
         LicenceTypeList.add(new SelectOption("Blood Transfusion Service", "Blood Transfusion"));
         ParamUtil.setRequestAttr(request, "licType", LicenceTypeList);
     }
-
+    
+    
+    
 }

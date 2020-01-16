@@ -62,6 +62,10 @@
         submit('licPage');
     }
 
+    function doLicAmend() {
+        submit('licDoAmend');
+    }
+    
     function sortRecords(sortFieldName,sortType){
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);

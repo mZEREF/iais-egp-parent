@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -12,8 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +31,13 @@ import java.util.Map;
  *   @author zixian
  */
 @Slf4j
-@Delegator("inboxMenuDelegator")
-public class InboxMenuDelegator {
+@Delegator("MohRequestForChangeMenuDelegator")
+public class RequestForChangeMenuDelegator {
     @Autowired
     RequestForChangeService requestForChangeService;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
 
     /**
@@ -172,9 +174,8 @@ public class InboxMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.FORM_TAB, "prepareEdit");
             return;
         }
-
-        //compare and set diff data into XXX table
-        //todo
+        
+        //todo:
         compareAndSetData(appSubmissionDto, premisesListQueryDto, newPremisesDto);
         String appType = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
         if(!StringUtil.isEmpty(appSubmissionDto.getAppType())){
@@ -182,13 +183,12 @@ public class InboxMenuDelegator {
         }
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(appType);
         appSubmissionDto.setAppGrpNo(appGroupNo);
-        //todo ?
-        appSubmissionDto.setAmount(0.0);
+        Double amount = appSubmissionService.getGroupAmendAmount(appSubmissionDto);
+        appSubmissionDto.setAmount(amount);
         //save data
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        requestForChangeService.submitChange(appSubmissionDto, bpc.process);
+        appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDto, bpc.process);
 
 
         log.debug(StringUtil.changeForLog("the do doPremisesEdit end ...."));

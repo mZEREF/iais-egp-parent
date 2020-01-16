@@ -1,5 +1,5 @@
+<form class="" method="post" id="licForm" action=<%=process.runtime.continueURL()%>>
 <div class="tab-search">
-    <form class="" method="post" id="licForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="lic_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
@@ -77,7 +77,7 @@
                     <button type="button" class="btn btn-primary" >Renew</button>
                 </div>
                 <div class="col-xs-2 col-md-2">
-                    <button type="button" class="btn btn btn-secondary" >Amend</button>
+                    <button type="button" class="btn btn btn-secondary" id="lic-amend" >Amend</button>
                 </div>
                 <div class="col-xs-2 col-md-2">
                     <button type="button" class="btn btn btn-secondary" >Cease</button>
@@ -85,7 +85,6 @@
             </div>
         </div>
         <iais:pagination  param="licParam" result="licResult"/>
-    </form>
 </div>
 <div class="row">
     <div class="col-xs-12">
@@ -117,10 +116,11 @@
                                     <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                     <div class="form-check">
                                         <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
-                                               name="licenceNo" value="${licenceQuery.licenceNo}" aria-invalid="false">
+                                               name="licenceNo" value="licenId${status.index}" aria-invalid="false">
                                         <label class="form-check-label" for="licence1"><span
                                                 class="check-square"></span><a
                                                 href="#">${licenceQuery.licenceNo}</a></label>
+                                        <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}" />"/>
                                     </div>
                                 </td>
                                 <td>
@@ -154,3 +154,10 @@
         </div>
     </div>
 </div>
+</form>
+<script>
+    $('#lic-amend').click(function () {
+        doLicAmend();
+    });
+    
+</script>
