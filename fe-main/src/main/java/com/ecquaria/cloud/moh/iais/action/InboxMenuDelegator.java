@@ -186,7 +186,7 @@ public class InboxMenuDelegator {
         appSubmissionDto.setAmount(0.0);
         //save data
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_NOTIFICATION);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         requestForChangeService.submitChange(appSubmissionDto, bpc.process);
 
