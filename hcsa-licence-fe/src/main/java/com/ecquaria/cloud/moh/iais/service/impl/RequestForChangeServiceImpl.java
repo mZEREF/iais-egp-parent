@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -46,7 +47,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
-
+    
+    
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
         return licenceClient.getPremises(licenseeId).getEntity();
@@ -98,5 +100,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByLicenseeId(String licenseeId) {
         return organizationLienceseeClient.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeId).getEntity();
+    }
+
+    @Override
+    public void sendEmail() {
+       
+        MsgTemplateDto entity =  systemAdminClient.getMsgTemplate("").getEntity();
+
+        String messageContent = entity.getMessageContent();
+        //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+        
     }
 }

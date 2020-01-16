@@ -593,12 +593,11 @@ public class ClinicalLaboratoryDelegator {
     public void doLaboratoryDisciplines(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit);
         if(judegCanEdit(appSubmissionDto)) {
             if (!isGetDataFromPage) {
                 // when rfc not click edit
-                log.info(StringUtil.changeForLog("get data from session ;app type:" + appSubmissionDto.getAppType()) + ";isEdit:" + isEdit);
                 log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
                 return;
             }
@@ -735,12 +734,11 @@ public class ClinicalLaboratoryDelegator {
     public void doGovernanceOfficers(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit);
         if(judegCanEdit(appSubmissionDto)) {
             if (!isGetDataFromPage) {
                 // when rfc not click edit
-                log.info(StringUtil.changeForLog("get data from session ;app type:" + appSubmissionDto.getAppType()) + ";isEdit:" + isEdit);
                 log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
                 return;
             }
@@ -788,8 +786,7 @@ public class ClinicalLaboratoryDelegator {
         if (judegCanEdit(appSubmissionDto)) {
             if (!isGetDataFromPage) {
                 // when rfc not click edit
-                log.info(StringUtil.changeForLog("get data from session ;app type:" + appSubmissionDto.getAppType()) + ";isEdit:" + AppConsts.YES);
-                log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+                log.debug(StringUtil.changeForLog("the do doDisciplineAllocation return end ...."));
                 return;
             }
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -870,28 +867,20 @@ public class ClinicalLaboratoryDelegator {
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         if (judegCanEdit(appSubmissionDto)) {
-            String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+            String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
             String isEditDpo = ParamUtil.getString(bpc.request, "isEditDpo");
             boolean isGetDataFromPagePo = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit);
             boolean isGetDataFromPageDpo = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEditDpo);
             if (!isGetDataFromPagePo && !isGetDataFromPageDpo) {
                 // when rfc not click edit
-                log.info(StringUtil.changeForLog("get data from session ;app type:" + appSubmissionDto.getAppType()) + ";isEdit:" + isEdit + ";isEditDpo:" + isEditDpo);
-                log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+                log.debug(StringUtil.changeForLog("the do doPrincipalOfficers return end ...."));
                 return;
             }
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = genAppSvcPrincipalOfficersDto(bpc.request, isGetDataFromPagePo, isGetDataFromPageDpo);
             ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
             if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
-                if (isGetDataFromPagePo) {
-                    clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS);
-                }
-                if (isGetDataFromPageDpo) {
-                    clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS);
-                }
-
-                appSubmissionDto.setClickEditPage(clickEditPages);
+                appSubmissionDto = setPrincipalOfficersClickEditPage(appSubmissionDto, isGetDataFromPagePo, isGetDataFromPageDpo);
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
             }
             Map<String, String> map = new HashMap<>();
             String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
@@ -912,10 +901,10 @@ public class ClinicalLaboratoryDelegator {
                 return;
             }
         }
-
+        
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
     }
-
+    
     /**
      * StartStep: doDocuments
      *
@@ -950,8 +939,7 @@ public class ClinicalLaboratoryDelegator {
         if(judegCanEdit(appSubmissionDto)){
             boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, AppConsts.YES);
             if(!isGetDataFromPage){
-                log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+AppConsts.YES);
-                log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+                log.debug(StringUtil.changeForLog("the do doDocuments return end ...."));
                 return;
             }
             Map<String,AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
@@ -1113,12 +1101,11 @@ public class ClinicalLaboratoryDelegator {
     public void doServicePersonnel (BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doServicePersonnel start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION, isEdit);
         if(!isGetDataFromPage){
-            // when rfc not click edit
-            log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+isEdit);
-            log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+
+            log.debug(StringUtil.changeForLog("the do doServicePersonnel return end ...."));
             return;
         }
 
@@ -1912,5 +1899,21 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         return  canEdit;
+    }
+
+    private Set<String> getRfcClickEditPageSet(AppSubmissionDto appSubmissionDto){
+        return appSubmissionDto.getClickEditPage() == null ? new HashSet<>() : appSubmissionDto.getClickEditPage();
+    }
+
+    private AppSubmissionDto setPrincipalOfficersClickEditPage(AppSubmissionDto appSubmissionDto, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo){
+        Set<String> clickEditPages = getRfcClickEditPageSet(appSubmissionDto);
+        if (isGetDataFromPagePo) {
+            clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS);
+        }
+        if (isGetDataFromPageDpo) {
+            clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS);
+        }
+        appSubmissionDto.setClickEditPage(clickEditPages);
+        return appSubmissionDto;
     }
 }

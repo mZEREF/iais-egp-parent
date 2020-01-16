@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -93,7 +94,7 @@ public class NewApplicationDelegator {
     public static final String ACKMESSAGE = "AckMessage";
     public static final String SERVICEALLPSNCONFIGMAP = "ServiceAllPsnConfigMap";
     public static final String FIRESTOPTION = "Please Select";
-    
+
     //page name
     public static final String APPLICATION_PAGE_NAME_PREMISES                       = "APPPN01";
     public static final String APPLICATION_PAGE_NAME_PRIMARY                        = "APPPN02";
@@ -103,9 +104,9 @@ public class NewApplicationDelegator {
     public static final String APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS  = "APPSPN04";
     public static final String APPLICATION_SVC_PAGE_NAME_DOCUMENT                   = "APPSPN05";
     public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL          = "APPSPN06";
-    
-    
-    
+
+    public static final String IS_EDIT = "isEdit";
+
     @Autowired
     private ServiceConfigService serviceConfigService;
 
@@ -126,7 +127,7 @@ public class NewApplicationDelegator {
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
         list.add(appSvcPrincipalOfficersDto);
         ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",(Serializable) list);
-        
+
         //Primary Documents
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
@@ -213,7 +214,7 @@ public class NewApplicationDelegator {
             Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }
-        
+
         //todo continue
         //reload 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -362,11 +363,11 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPremises start ...."));
-        
+
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        
-        String isEdit = ParamUtil.getString(bpc.request, "isEdit");
+
+        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isGetDataFromPage = isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit);
         log.debug("isGetDataFromPage:"+isGetDataFromPage);
         //request for information
@@ -385,7 +386,7 @@ public class NewApplicationDelegator {
                 clickEditPages.add(APPLICATION_PAGE_NAME_PREMISES);
                 appSubmissionDto.setClickEditPage(clickEditPages);
             }
-            
+
             Map<String, String> errorMap= doValidatePremiss(bpc);
             if(errorMap.size()>0){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
@@ -395,7 +396,7 @@ public class NewApplicationDelegator {
 
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-        
+
 
         log.debug(StringUtil.changeForLog("the do doPremises end ...."));
     }
@@ -428,6 +429,12 @@ public class NewApplicationDelegator {
             }
         }
         if(canEdit){
+            boolean isGetDataFromPage = NewApplicationDelegator.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT, AppConsts.YES);
+            if(!isGetDataFromPage){
+                log.info(StringUtil.changeForLog("get data from session ;app type:"+appSubmissionDto.getAppType())+";isEdit:"+AppConsts.YES);
+                log.debug(StringUtil.changeForLog("the do doLaboratoryDisciplines return end ...."));
+                return;
+            }
             List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO);
             List<HcsaSvcDocConfigDto> premHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO);
             List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -670,7 +677,7 @@ public class NewApplicationDelegator {
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
-       // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,"AckMessage","The request for information save success");
         log.debug(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
@@ -682,9 +689,9 @@ public class NewApplicationDelegator {
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto!=null){
             if(!appEditSelectDto.isPremisesEdit()){
-              if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())){
-                  result.put("premiss","UC_CHKLMD001_ERR001");
-              }
+                if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())){
+                    result.put("premiss","UC_CHKLMD001_ERR001");
+                }
             }
             if(!appEditSelectDto.isPrimaryEdit()){
                 if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())){
@@ -700,6 +707,183 @@ public class NewApplicationDelegator {
         return result;
     }
 
+
+    /**
+     * StartStep: doRequestForChangeSubmit
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doRequestForChangeSubmit(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+
+        Map<String, String> map = doPreviewAndSumbit(bpc);
+        if(!map.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"Msg",map);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            return;
+        }
+
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
+
+        boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
+        
+        String draftNo = appSubmissionDto.getDraftNo();
+        if(StringUtil.isEmpty(draftNo)){
+            draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+            appSubmissionDto.setDraftNo(draftNo);
+        }
+        //appSubmissionDto =checkAndSetData(bpc.request, appSubmissionDto);
+        //get appGroupNo
+        String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
+        log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
+        appSubmissionDto.setAppGrpNo(appGroupNo);
+        Double amount = appSubmissionService.getGroupAmendAmount(appSubmissionDto);
+        log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
+        appSubmissionDto.setAmount(amount);
+        //judge is the preInspection
+        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
+        if (preOrPostInspectionResultDto == null) {
+            appSubmissionDto.setPreInspection(true);
+            appSubmissionDto.setRequirement(true);
+        } else {
+            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        }
+        //set Risk Score
+        appSubmissionService.setRiskToDto(appSubmissionDto);
+
+        appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDto, bpc.process);
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        String isrfiSuccess = "N";
+        if(isAutoRfc){
+            //change pmt status for carry file
+            
+            isrfiSuccess = "Y";
+            ParamUtil.setRequestAttr(bpc.request,"AckMessage","The request for change save success");
+        }
+        ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess",isrfiSuccess);
+
+        
+        log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+    }
+
+    private AppSubmissionDto setSubmissionDtoSvcData(HttpServletRequest request, AppSubmissionDto appSubmissionDto){
+        List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
+        if(appSubmissionDto != null){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtoList){
+                    for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
+                        if(hcsaServiceDto.getId().equals(appSvcRelatedInfoDto.getServiceId())){
+                            appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                            appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
+                            appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+                        }
+                    }
+                }
+            }
+        }
+        return appSubmissionDto;
+    }
+
+    private boolean compareAndSendEmail(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
+        boolean isAuto = true;
+        List<String> amendType = appSubmissionDto.getAmendTypes();
+        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION)){
+            if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto)){
+                isAuto =  compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                if(isAuto){
+                    isAuto = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                }
+                //send eamil
+                
+            }
+        }
+
+        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_MEDALERT_PERSONNEL)){
+            //todo ?
+        }
+        //one svc
+        AppSvcRelatedInfoDto appSvcRelatedInfoDtoList = getAppSvcRelatedInfoDto(appSubmissionDto.getAppSvcRelatedInfoDtoList());
+        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDtoList = getAppSvcRelatedInfoDto(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PRINCIPAL_OFFICER )||
+                amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_DEPUTY_PRINCIPAL_OFFICER)){
+            if(!appSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList().equals(oldAppSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList())){
+                //send eamil
+
+            }
+        }
+
+        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_RELATED_INFORMATION)){
+
+
+
+        }
+
+        if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT)){
+            if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos()) ||
+                    !appSvcRelatedInfoDtoList.getAppSvcDocDtoLit().equals(oldAppSvcRelatedInfoDtoList.getAppSvcDocDtoLit())){
+                //send eamil
+
+            }
+
+        }
+        return isAuto;
+    }
+    
+    
+    private boolean compareHciName(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
+        int length = appGrpPremisesDtos.size();
+        int oldLength = oldAppGrpPremisesDtos.size();
+        if(length == oldLength){
+            for(int i=0; i<length; i++){
+                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
+                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
+                if(!getHciName(appGrpPremisesDto).equals(getHciName(oldAppGrpPremisesDto))){
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+
+    private boolean compareLocation(List<AppGrpPremisesDto> appGrpPremisesDtos,List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
+        int length = appGrpPremisesDtos.size();
+        int oldLength = oldAppGrpPremisesDtos.size();
+        if(length == oldLength){
+            for(int i=0; i<length; i++){
+                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
+                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
+                if(!appGrpPremisesDto.getAddress().equals(oldAppGrpPremisesDto.getAddress())){
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    private String getHciName(AppGrpPremisesDto appGrpPremisesDto){
+        String hciName = "";
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            hciName = appGrpPremisesDto.getHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            hciName = appGrpPremisesDto.getConveyanceVehicleNo();
+        }
+        return hciName;
+    }
+    
+    
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            return appSvcRelatedInfoDtos.get(0);
+        }
+        return new AppSvcRelatedInfoDto();
+    }
+
     /**
      * StartStep: doSubmit
      *
@@ -709,7 +893,7 @@ public class NewApplicationDelegator {
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
         //do validate
-       // Map<String, Map<String, String>> validateResult = doValidate(bpc);
+        // Map<String, Map<String, String>> validateResult = doValidate(bpc);
         //save the app and appGroup
         Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
@@ -728,7 +912,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
         appSubmissionDto.setAppGrpNo(appGroupNo);
         //get Amount
-        Double amount = appSubmissionService.getGroupAmount(appSubmissionDto);
+        Double amount = amount = appSubmissionService.getGroupAmount(appSubmissionDto);
         log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
@@ -916,26 +1100,26 @@ public class NewApplicationDelegator {
                     flag=true;
                 }
             }
-        if(flag){
-            sB.append(serviceId);
-        }
+            if(flag){
+                sB.append(serviceId);
+            }
         }
 
     }
     private void doAppSvcCgoDto(  List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcCgoDto> list,String serviceId,StringBuilder sB){
-     if(list==null){
-         if(hcsaSvcPersonnelDtos!=null){
-             for(HcsaSvcPersonnelDto every:hcsaSvcPersonnelDtos){
-                 String psnType = every.getPsnType();
-                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)){
-                     sB.append(serviceId);
-                     return;
-                 }
-             }
-         }
+        if(list==null){
+            if(hcsaSvcPersonnelDtos!=null){
+                for(HcsaSvcPersonnelDto every:hcsaSvcPersonnelDtos){
+                    String psnType = every.getPsnType();
+                    if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)){
+                        sB.append(serviceId);
+                        return;
+                    }
+                }
+            }
 
-         return;
-     }
+            return;
+        }
 
 
         boolean flag =false;
@@ -986,19 +1170,19 @@ public class NewApplicationDelegator {
     }
 
     private void doPO( List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map ,List<AppSvcPrincipalOfficersDto> list,String serviceId,StringBuilder sB){
-     if(list==null){
-         if(hcsaSvcPersonnelDtos!=null){
-             for(HcsaSvcPersonnelDto every :hcsaSvcPersonnelDtos){
-                 String psnType = every.getPsnType();
-                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
-                     sB.append(serviceId);
-                     return;
-                 }
-             }
-         }
+        if(list==null){
+            if(hcsaSvcPersonnelDtos!=null){
+                for(HcsaSvcPersonnelDto every :hcsaSvcPersonnelDtos){
+                    String psnType = every.getPsnType();
+                    if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
+                        sB.append(serviceId);
+                        return;
+                    }
+                }
+            }
 
-         return;
-     }
+            return;
+        }
 
 
         boolean flag=false;
@@ -1125,6 +1309,7 @@ public class NewApplicationDelegator {
      */
     public void controlSwitch(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do controlSwitch start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String switch2 = "loading";
         String crudActionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (StringUtil.isEmpty(crudActionValue)) {
@@ -1134,11 +1319,14 @@ public class NewApplicationDelegator {
         if ("saveDraft".equals(crudActionValue) || "ack".equals(crudActionValue)) {
             switch2 = crudActionValue;
         }else if("doSubmit".equals(crudActionValue)){
-             if(requestInformationConfig == null){
-                 switch2 = crudActionValue;
-             }else{
-                 switch2 = "information";
-             }
+            if(requestInformationConfig == null){
+                switch2 = crudActionValue;
+            }else{
+                switch2 = "information";
+            }
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                switch2 = "requstChange";
+            }
         }
         ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
         log.debug(StringUtil.changeForLog("the do controlSwitch end ...."));
@@ -1357,8 +1545,8 @@ public class NewApplicationDelegator {
         ops.flush();
         log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
-    
-    
+
+
 
     /**
      * @param request
@@ -1367,8 +1555,8 @@ public class NewApplicationDelegator {
      */
     public ApplicationValidateDto getValueFromPage(HttpServletRequest request) {
         ApplicationValidateDto dto = new ApplicationValidateDto();
-         String pageCon = request.getParameter("pageCon");
-            chose(request,pageCon);
+        String pageCon = request.getParameter("pageCon");
+        chose(request,pageCon);
 
         return dto;
     }
@@ -1407,17 +1595,16 @@ public class NewApplicationDelegator {
     private void requestForChangeLoading(BaseProcessClass bpc) throws CloneNotSupportedException{
         log.debug(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
         String licenceId = ParamUtil.getString(bpc.request, "licenceId");
-        String amendTypes = ParamUtil.getString(bpc.request, "amendTypes");
-        if(!StringUtil.isEmpty(licenceId) && !StringUtil.isEmpty(amendTypes)){
+        String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
+        amendLicenceType = new String[]{"RFCATYPE01","RFCATYPE03","RFCATYPE04","RFCATYPE05","RFCATYPE06"};
+        if(!StringUtil.isEmpty(licenceId) && amendLicenceType != null && amendLicenceType.length>0 ){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
-            String [] amendTypeArr= amendTypes.split(";");
             List<String> amendTypeList = new ArrayList<>();
-            for(String type:amendTypeArr){
+            for(String type:amendLicenceType){
                 amendTypeList.add(type);
             }
-            
+
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_AMEND);
             appSubmissionDto.setAmendTypes(amendTypeList);
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -1446,7 +1633,7 @@ public class NewApplicationDelegator {
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,appSubmissionDto.getAppEditSelectDto());
+            ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,"test");
         }
         log.debug(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
     }
@@ -1647,17 +1834,17 @@ public class NewApplicationDelegator {
                         }else {
                             errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR001");
                         }
-                        
+
                         try {
                             LocalTime wrkTimeFrom = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteStartHH()), Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteStartMM()));
                             LocalTime wrkTimeTo = LocalTime.of(Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteEndHH()),Integer.parseInt(appGrpPremisesDtoList.get(i).getOnsiteEndMM()) );
                             appGrpPremisesDtoList.get(i).setWrkTimeFrom(Time.valueOf(wrkTimeFrom));
                             appGrpPremisesDtoList.get(i).setWrkTimeTo(Time.valueOf(wrkTimeTo));
-                            
+
                         }catch (Exception e){
                             log.error(StringUtil.changeForLog("number formatter exception..."));
                         }
-                        
+
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
@@ -1750,7 +1937,7 @@ public class NewApplicationDelegator {
                         }catch (Exception e){
                             log.error(StringUtil.changeForLog("number formatter exception..."));
                         }
-                        
+
                     }
                 } else {
                     //premiseSelect = organization hci code
@@ -2025,7 +2212,7 @@ public class NewApplicationDelegator {
                     String onsitePbHolDayStartMMName = premValue[i]+"onsitePbHolDayStartMM"+j;
                     String onsitePbHolDayEndHHName = premValue[i]+"onsitePbHolDayEndHH"+j;
                     String onsitePbHolDayEndMMName = premValue[i]+"onsitePbHolDayEndMM"+j;
-                    
+
                     String onsitePubHoliday = ParamUtil.getDate(request, onsitePubHolidayName);
                     String onsitePbHolDayStartHH = ParamUtil.getString(request, onsitePbHolDayStartHHName);
                     String onsitePbHolDayStartMM = ParamUtil.getString(request, onsitePbHolDayStartMMName);
@@ -2040,7 +2227,7 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
                     appPremPhOpenPeriods.add(appPremPhOpenPeriod);
                 }
-   
+
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])){
                 appGrpPremisesDto.setConStartHH(conStartHH[i]);
                 appGrpPremisesDto.setConStartMM(conStartMM[i]);
@@ -2114,6 +2301,9 @@ public class NewApplicationDelegator {
                 appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
+        }else{
+            //set svc info
+            appSubmissionDto = setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "IndexNoCount", 0);
@@ -2258,7 +2448,7 @@ public class NewApplicationDelegator {
         }
         return svcAllPsnConfig;
     }
-    
+
     private static boolean checkCanEdit(List<String> amendTypes, String currentType){
         boolean rfcCanEdit = false;
         if(amendTypes != null){
@@ -2271,7 +2461,7 @@ public class NewApplicationDelegator {
         }
         return rfcCanEdit;
     }
-    
+
     public static boolean isGetDataFromPage(AppSubmissionDto appSubmissionDto, String currentType, String isEdit){
         if(appSubmissionDto == null){
             return true;
@@ -2284,6 +2474,6 @@ public class NewApplicationDelegator {
         }
         return otherType || rfcType;
     }
-    
+
 }
 

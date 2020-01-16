@@ -33,4 +33,6 @@ public interface RequestForChangeService {
     LicenceDto getByLicNo(String licNo);
 
     List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByLicenseeId(String licenseeId);
+    
+    void sendEmail();
 }
