@@ -92,7 +92,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public HcsaSvcRoutingStageDto getStageById(String id) {
-        return hcsaConfigClient.getHcsaSvcRoutingStageById().getEntity();
+        return hcsaConfigClient.getHcsaSvcRoutingStageById(id).getEntity();
     }
 
 
