@@ -59,6 +59,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,"adchklDto",null);
         ParamUtil.setSessionAttr(request,"fillCheckListDto",null);
         ParamUtil.setSessionAttr(request,"commonDto",null);
+        ParamUtil.setSessionAttr(request,"taskDto",null);
     }
 
     public void init(BaseProcessClass bpc){
@@ -152,11 +153,8 @@ public class InspectionNcCheckListDelegator {
             e.printStackTrace();
         }
         ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
-        try {
-            fillupChklistService.routingTask(taskDto,null);
-        }catch (Exception e){
+        fillupChklistService.routingTask(taskDto,null);
 
-        }
     }
 
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
