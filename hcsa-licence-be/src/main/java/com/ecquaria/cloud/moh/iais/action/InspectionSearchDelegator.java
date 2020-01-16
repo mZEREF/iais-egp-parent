@@ -317,8 +317,16 @@ public class InspectionSearchDelegator {
     public InspectionTaskPoolListDto getValueFromPage(BaseProcessClass bpc) {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         String[] nameValue = ParamUtil.getStrings(bpc.request,"inspectorCheck");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(nameValue == null || nameValue.length <= 0) {
-            inspectionTaskPoolListDto.setInspectorCheck(null);
+            if(StringUtil.isEmpty(inspectionTaskPoolListDto.getInspector())){
+                SelectOption so = new SelectOption(loginContext.getUserId(), "text");
+                List<SelectOption> inspectorCheckList = new ArrayList<>();
+                inspectorCheckList.add(so);
+                inspectionTaskPoolListDto.setInspectorCheck(inspectorCheckList);
+            }else {
+                inspectionTaskPoolListDto.setInspectorCheck(null);
+            }
         } else {
             List<SelectOption> inspectorCheckList = inspectionService.getCheckInspector(nameValue, inspectionTaskPoolListDto);
             inspectionTaskPoolListDto.setInspectorCheck(inspectorCheckList);
