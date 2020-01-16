@@ -242,8 +242,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                        by.write(size,0,count);
                        count= is.read(size);
                    }
-                    by.close();
-                    is.close();
+
                    byte[] bytes = by.toByteArray();
                    String s = FileUtil.genMd5FileChecksum(bytes);
                    File curFile = MiscUtil.generateFile(backups, s + ".zip");

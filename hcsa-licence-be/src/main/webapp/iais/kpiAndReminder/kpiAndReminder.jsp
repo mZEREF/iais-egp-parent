@@ -31,10 +31,10 @@
 
                <option   value="APTY002" >New</option>
                <option   value="APTY004"  >Renewal</option>
-               <option  value="APTY005">Request for Change</option>
-               <option  value="APTY001">Appeal</option>
-               <option  value="APTY006" >Withdrawal</option>
-               <option  value="APTY003">Revocation</option>
+               <option   value="APTY005">Request for Change</option>
+               <option   value="APTY001">Appeal</option>
+               <option   value="APTY006" >Withdrawal</option>
+               <option   value="APTY003">Revocation</option>
             </select>
 
            <span name="iaisErrorMsg" id="error_module" class="error-msg"></span>
@@ -277,7 +277,7 @@ $('#cancel').click(function () {
     $("input[name='levelTwo']").val("");
     $("input[name='levelThree']").val("");
     $("input[name='postInspection']").val("");
-   /* location.href="https://egp.sit.intra.iais.com/egov/process/EGPCLOUD/Home";*/
+    location.href="https://egp.sit.intra.iais.com/egov/process/EGPCLOUD/Home";
    /* SOP.Crud.cfxSubmit("mainForm", "cancel");*/
 });
 

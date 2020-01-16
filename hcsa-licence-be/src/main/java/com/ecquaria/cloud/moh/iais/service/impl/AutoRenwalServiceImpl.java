@@ -151,6 +151,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         String svcName = licenceDto.getSvcName();
 
         OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOrganizationId());
+        String id1 = organizationBy.getId();
+        List<OrgUserRoleDto> sendMailUser = getSendMailUser(id1);
 
         Date expiryDate = licenceDto.getExpiryDate();
 
@@ -158,7 +160,9 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
 
-        for(String every:list){
+        for(OrgUserRoleDto orgUserRoleDto :sendMailUser){
+
+            for(String every:list){
             String address = every.substring(every.indexOf("/")+1);
             String substring = every.substring(0, every.indexOf("/"));
             String format = simpleDateFormat.format(expiryDate);
@@ -174,8 +178,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
             request.setAttribute("email1",templateMessageByContent);
+             }
         }
-
 
     }
     /*
@@ -188,6 +192,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         OrganizationDto organizationBy = getOrganizationBy(licenceDto.getOrganizationId());
         String id1 = organizationBy.getId();
         List<OrgUserRoleDto> sendMailUser = getSendMailUser(id1);
+
         String svcName = licenceDto.getSvcName();
         Date expiryDate = licenceDto.getExpiryDate();
         String licenceNo = licenceDto.getLicenceNo();
@@ -242,7 +247,10 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         }
 
-        for(String every:useLicenceIdFindHciNameAndAddress){
+        for( OrgUserRoleDto orgUserRoleDto :sendMailUser){
+
+
+         for(String every:useLicenceIdFindHciNameAndAddress){
             String hciName = every.substring(0, every.indexOf("/"));
             String address = every.substring(every.indexOf("/") + 1);
             Map<String ,Object> map=new HashMap<>();
@@ -261,8 +269,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             request.setAttribute("",templateMessageByContent);
 
 
+            }
         }
-
 
     }
 

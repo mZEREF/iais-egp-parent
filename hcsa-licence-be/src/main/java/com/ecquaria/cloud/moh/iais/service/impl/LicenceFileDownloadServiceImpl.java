@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
@@ -19,12 +22,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppliGrpPremisesD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
@@ -72,6 +81,21 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private     String fileFormat=".text";
     private     String compressPath;
     private     String downZip;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+    @Autowired
+    private InboxMsgService inboxMsgService;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -80,7 +104,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private FileRepoClient fileRepoClient;
     @Autowired
     private OrganizationClient organizationClient;
-
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
     @Override
     public void compress(List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList){
         log.info("-------------compress start ---------");
@@ -382,15 +407,47 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             log.info("-----------getDownloadFile-------");
             List<ApplicationDto> list = this.listApplication();
              this. requestForInfList(requestForInfList);
+             Map<String,List<String>> map=new HashMap<>();
+             List<String> oldStauts=new ArrayList<>();
+             oldStauts.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
+             List<String > newStatus=new ArrayList<>();
+             newStatus.add(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
              listApplicationDto.addAll(list);
              List<String> applicationGroupIds=new ArrayList<>();
              for(ApplicationGroupDto every:applicationGroup){
                  String id = every.getId();
                  applicationGroupIds.add(id);
              }
+             map.put("oldStatus",oldStauts);
+             map.put("newStatus",newStatus);
+             map.put("groupIds",applicationGroupIds);
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+          /*  int statusCode = beEicGatewayClient.updateStatus(map, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getStatusCode();
+            *//* requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);*//*
+            if(statusCode==200){
 
+                for(ApplicationGroupDto every:applicationGroup){
+                    String submitBy = every.getSubmitBy();
+                    //send message to FE user.
+                    InterMessageDto interMessageDto = new InterMessageDto();
+                    interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_SRC_ID);
+                    interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
+                    interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+                    String mesNO = inboxMsgService.getMessageNo();
+                    interMessageDto.setRefNo(mesNO);
+                  *//*  interMessageDto.setService_id(applicationDto.getServiceId());*//*
+                    String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+every.getGroupNo();
+                    interMessageDto.setProcessUrl(url);
+                    interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    interMessageDto.setUserId(submitBy);
+                    interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    inboxMsgService.saveInterMessage(interMessageDto);
 
-           /* requeOrNew(applicationGroup,application,listApplicationDto,requestForInfList);*/
+                }
+
+            }*/
 
         }
 

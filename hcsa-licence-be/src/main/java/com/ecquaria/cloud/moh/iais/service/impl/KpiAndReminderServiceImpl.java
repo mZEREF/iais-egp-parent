@@ -95,26 +95,10 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         }
 
         String reminderThreshold = request.getParameter("reminderThreshold");
-      /*  String adminScreening = request.getParameter("adminScreening");
-        String professionalScreening = request.getParameter("professionalScreening");
-        String preInspection = request.getParameter("preInspection");
-        String inspection = request.getParameter("inspection");
-        String postInspection = request.getParameter("postInspection");
-        String levelOne = request.getParameter("levelOne");
-        String levelTwo = request.getParameter("levelTwo");
-        String levelThree = request.getParameter("levelThree");*/
         String createDate = request.getParameter("createDate");
         HcsaSvcKpiDto hcsaSvcKpiDto =new HcsaSvcKpiDto();
         hcsaSvcKpiDto.setModule(module);
         hcsaSvcKpiDto.setRemThreshold(Integer.parseInt(reminderThreshold));
-       /* kpi.put("12848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(adminScreening));
-        kpi.put("13848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(professionalScreening));
-        kpi.put("298BCC95-5130-EA11-BE7D-000C29F371DC",Integer.parseInt(inspection));
-        kpi.put("15848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(levelOne));
-        kpi.put("16848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(levelTwo));
-        kpi.put("17848A70-820B-EA11-BE7D-000C29F371DC",Integer.parseInt(levelThree));
-        kpi.put("288BCC95-5130-EA11-BE7D-000C29F371DC",Integer.parseInt(preInspection));
-        kpi.put("2A8BCC95-5130-EA11-BE7D-000C29F371DC",Integer.parseInt(postInspection));*/
         hcsaSvcKpiDto.setStageIdKpi(kpi);
         hcsaSvcKpiDto.setVersion(1);
         hcsaSvcKpiDto.setServiceCode(service);
@@ -153,23 +137,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                 }
             }
         }
-       /* String adminScreening = request.getParameter("adminScreening");
-        request.getSession().setAttribute("adminScreening",adminScreening);
-        String professionalScreening = request.getParameter("professionalScreening");
-        request.getSession().setAttribute("professionalScreening",professionalScreening);
-        String preInspection = request.getParameter("preInspection");
-        request.getSession().setAttribute("preInspection",preInspection);
-        String inspection = request.getParameter("inspection");
-        request.getSession().setAttribute("inspection",inspection);
-        String postInspection = request.getParameter("postInspection");
-        request.getSession().setAttribute("postInspection",postInspection);
-        String levelOne = request.getParameter("levelOne");
-        request.getSession().setAttribute("levelOne",levelOne);
-        String levelTwo = request.getParameter("levelTwo");
-        request.getSession().setAttribute("levelTwo",levelTwo);
-        String levelThree = request.getParameter("levelThree");
-        request.getSession().setAttribute("levelThree",levelThree);
-        String createDate = request.getParameter("createDate");*/
+
         if(StringUtil.isEmpty(module)){
             errorMap.put("module","UC_CHKLMD001_ERR001");
         }
