@@ -7,9 +7,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +33,16 @@ public class NotifyUnprocessedTaskBatchjob {
 
     private TaskService taskService;
     private InspEmailService inspEmailService;
-    public void doBatchJob(BaseProcessClass bpc){
+
+    private final String EMAILMPLATEID = "A0D4EADD-D61B-EA11-BE7D-000C29F371DC";
+    String REQ_REF_NUM = "AAAAA-SSSSSS-XXXXXX";
+
+    @Autowired
+    MsgTemplateClient msgTemplateClient;
+
+    @Autowired
+    SystemBeLicClient systemBeLicClient;
+    public void doBatchJob(BaseProcessClass bpc) throws IOException, TemplateException{
 
         log.debug(StringUtil.changeForLog("The NotifyUnprocessedTaskBatchjob is  start..." ));
 
@@ -36,8 +51,7 @@ public class NotifyUnprocessedTaskBatchjob {
         //get officer groupleader admin to notify
         emailmap = taskService.getEmailNotifyList();
         //get email template
-        String tempalteid = "A0D4EADD-D61B-EA11-BE7D-000C29F371DC";
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(tempalteid);
+        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(EMAILMPLATEID);
 
 
         List<TaskEmailDto> officerDtoList= (ArrayList<TaskEmailDto>)emailmap.get("officer");
@@ -45,7 +59,6 @@ public class NotifyUnprocessedTaskBatchjob {
         List<TaskEmailDto> adminDtoList= (ArrayList<TaskEmailDto>)emailmap.get("admin");
 
         String templateHtml = inspectionEmailTemplateDto.getMessageContent();
-        String REQ_REF_NUM = "AAAAA-SSSSSS-XXXXXX";
         List<String> receipts = new ArrayList<String>();
         EmailDto email = new EmailDto();
         for (TaskEmailDto item: officerDtoList
@@ -99,4 +112,17 @@ public class NotifyUnprocessedTaskBatchjob {
 
     }
 
+    private void sendEmail(TaskEmailDto item,String templateHtml) throws IOException, TemplateException{
+        EmailDto email = new EmailDto();
+        Map<String,Object> map=new HashMap<>();
+        map.put("OFFICER_NAME",item.getName());
+        map.put("NC_DETAILS","There is an unprocessed task.");
+        map.put("MOH_NAME","MOH");
+        String mesContext= MsgUtil.getTemplateMessageByContent(templateHtml,map);
+        email.setReqRefNum(REQ_REF_NUM);
+        email.setContent(mesContext);
+        email.setSender("guyin@ecquaria.com");
+        email.setClientQueryCode("FFFF=EEEEEE");
+        inspEmailService.SendAndSaveEmail(email);
+    }
 }
