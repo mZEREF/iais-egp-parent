@@ -13,7 +13,7 @@ package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTERNET___MohRequestForChangeMenu___1 extends BaseProcessClass {
+public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
 
 	private static final String DELEGATOR ="MohRequestForChangeMenuDelegator";
 	
