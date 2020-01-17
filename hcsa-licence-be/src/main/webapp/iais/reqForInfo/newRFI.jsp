@@ -32,7 +32,7 @@
                                             <iais:field value="Title:"/>
                                             <iais:value width="18">
                                                 <label>
-                                                    <textarea id="rfiTitle" type="text" name="rfiTitle" ></textarea>
+                                                    <textarea id="rfiTitle"  name="rfiTitle" >title</textarea>
                                                 </label>
                                             </iais:value>
                                         </iais:row>
@@ -80,12 +80,7 @@
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
     function doSubmit() {
-        var rfiTitle=document.getElementById("rfiTitle");
-        if(rfiTitle.innerText==null||rfiTitle.innerText=="")
-        {alert("Please enter the title.")}
-        else {
-            SOP.Crud.cfxSubmit("mainForm", "submit");
-        }
+        SOP.Crud.cfxSubmit("mainForm", "submit");
     }
 
 </script>
