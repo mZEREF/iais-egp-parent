@@ -60,6 +60,6 @@ public interface InspectionTaskClient {
     @PostMapping(value = "/iais-application-be/self-decl/results", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getSelfDeclChecklistByCorreId(@RequestBody List<String> correIdList);
 
-    @PostMapping(value = "/historys-kpi",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-application-history/historys-kpi",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getHistoryForKpi(@RequestBody AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto );
 }
