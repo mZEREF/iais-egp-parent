@@ -23,7 +23,7 @@ import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -55,15 +55,15 @@ public class InspectionPreDelegator {
     private AdhocChecklistService adhocChecklistService;
 
     @Autowired
-    private InspectionAssignTaskService inspectionAssignTaskService;
+    private ApplicationViewService applicationViewService;
 
     @Autowired
     private InspectionPreDelegator(InspectionPreTaskService inspectionPreTaskService, TaskService taskService,
-                                   AdhocChecklistService adhocChecklistService, InspectionAssignTaskService inspectionAssignTaskService){
+                                   AdhocChecklistService adhocChecklistService, ApplicationViewService applicationViewService){
         this.inspectionPreTaskService = inspectionPreTaskService;
         this.taskService = taskService;
         this.adhocChecklistService = adhocChecklistService;
-        this.inspectionAssignTaskService = inspectionAssignTaskService;
+        this.applicationViewService = applicationViewService;
     }
 
     /**
@@ -105,17 +105,16 @@ public class InspectionPreDelegator {
     public void inspectionPreInspectorPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorPre start ...."));
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
-        ApplicationDto applicationDto = (ApplicationDto)ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO);
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if(inspectionPreTaskDto == null){
             inspectionPreTaskDto = new InspectionPreTaskDto();
             String taskId = ParamUtil.getRequestString(bpc.request, "taskId");
             taskDto = taskService.getTaskById(taskId);
-            applicationDto = inspectionPreTaskService.getAppStatusByTaskId(taskDto);
-            String appStatus = applicationDto.getStatus();
-            inspectionPreTaskDto.setAppStatus(appStatus);
         }
-        ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String appStatus = applicationDto.getStatus();
+        inspectionPreTaskDto.setAppStatus(appStatus);
         Map<InspectionFillCheckListDto, List<InspectionFillCheckListDto>> mapInDto = inspectionPreTaskService.getSelfCheckListByCorrId(taskDto.getRefNo());
         InspectionFillCheckListDto inspectionFillCheckListDto = new InspectionFillCheckListDto();
         List<InspectionFillCheckListDto> ifcDtos = new ArrayList<>();
