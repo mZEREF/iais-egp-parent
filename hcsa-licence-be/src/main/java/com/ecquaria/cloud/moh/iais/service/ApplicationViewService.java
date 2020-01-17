@@ -35,4 +35,6 @@ public interface ApplicationViewService {
     public AppPremisesCorrelationDto getLastAppPremisesCorrelationDtoById(String id);
 
     HcsaSvcRoutingStageDto getStageById(String id);
+
+    ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId);
 }

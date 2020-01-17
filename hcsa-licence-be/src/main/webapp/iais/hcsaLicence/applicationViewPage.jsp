@@ -627,13 +627,11 @@
         }
         if('${applicationViewDto.applicationDto.status}' == 'APST000'){
             $('#processingDecision').addClass('hidden');
+            $('#recomedationDropdown').addClass('hidden');
             $('#replytr').removeClass('hidden');
+            $('lienceStartDate').addClass('hidden');
         }
     });
-
-
-
-
 
     $("#submitButton").click(function () {
         var textarea = $("#internalRemarksId").val();

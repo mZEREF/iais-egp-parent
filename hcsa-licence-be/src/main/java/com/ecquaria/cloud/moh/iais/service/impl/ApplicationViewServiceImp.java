@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -9,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -27,6 +29,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     private OrganizationClient organizationClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    ApplicationViewService applicationViewService;
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -93,6 +97,36 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Override
     public HcsaSvcRoutingStageDto getStageById(String id) {
         return hcsaConfigClient.getHcsaSvcRoutingStageById(id).getEntity();
+    }
+
+    @Override
+    public ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId) {
+        ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(appCorId);
+        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
+        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
+        for (int i = 0; i <appSupDocDtos.size(); i++) {
+            for (int j = 0; j <docTitleList.size() ; j++) {
+                if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
+                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
+                }
+            }
+            for (int j = 0; j <userNameList.size() ; j++) {
+                if ((appSupDocDtos.get(i).getSubmittedBy()).equals(userNameList.get(j).getId())){
+                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getDisplayName());
+                }
+            }
+        }
+        String applicationType= MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType());
+        applicationViewDto.setApplicationType(applicationType);
+        String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
+        applicationViewDto.setServiceType(serviceType);
+        String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
+        applicationViewDto.setCurrentStatus(status);
+        HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
+        applicationViewDto.setServiceType(hcsaServiceDto.getSvcName());
+
+        return applicationViewDto;
     }
 
 

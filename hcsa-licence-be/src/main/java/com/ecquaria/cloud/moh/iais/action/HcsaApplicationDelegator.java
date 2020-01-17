@@ -9,13 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -134,35 +132,11 @@ public class HcsaApplicationDelegator {
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
         String newCorrelationId = appPremisesCorrelationDto.getId();
-      /*  if(StringUtil.isEmpty(correlationId)&&StringUtil.isEmpty(newCorrelationId)&&!newCorrelationId.equals(correlationId)){
-
-
-        }*/
+        ApplicationViewDto applicationViewDto=applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
 //        get routing stage dropdown send to page.
-        ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(newCorrelationId);
-        List<HcsaSvcDocConfigDto> docTitleList=applicationViewService.getTitleById(applicationViewDto.getTitleIdList());
-        List<OrgUserDto> userNameList=applicationViewService.getUserNameById(applicationViewDto.getUserIdList());
+
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
 
-        List<AppSupDocDto> appSupDocDtos=applicationViewDto.getAppSupDocDtoList();
-        for (int i = 0; i <appSupDocDtos.size(); i++) {
-            for (int j = 0; j <docTitleList.size() ; j++) {
-                if ((appSupDocDtos.get(i).getFile()).equals(docTitleList.get(j).getId())){
-                    appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
-                }
-            }
-            for (int j = 0; j <userNameList.size() ; j++) {
-                if ((appSupDocDtos.get(i).getSubmittedBy()).equals(userNameList.get(j).getId())){
-                    appSupDocDtos.get(i).setSubmittedBy(userNameList.get(j).getDisplayName());
-                }
-            }
-        }
-        String applicationType=MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType());
-        applicationViewDto.setApplicationType(applicationType);
-        String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
-        applicationViewDto.setServiceType(serviceType);
-        String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
-        applicationViewDto.setCurrentStatus(status);
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList=applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),taskDto.getTaskKey());
         Map<String,String> routingStage=new HashMap<>();
 
@@ -261,7 +235,6 @@ public class HcsaApplicationDelegator {
             }
         }
         applicationViewDto.setRecomeDation(riskResult);
-        applicationViewDto.setServiceType(hcsaServiceDto.getSvcName());
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
