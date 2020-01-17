@@ -520,6 +520,7 @@
         $('input[type="text"]').prop('disabled',false);
         $('div.nice-select').removeClass('disabled');
         $('#isEditHiddenVal').val('1');
+        $('#edit-content').addClass('hidden');
     });
   }
   

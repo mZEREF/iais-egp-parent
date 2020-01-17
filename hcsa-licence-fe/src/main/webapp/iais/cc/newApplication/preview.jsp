@@ -9,6 +9,7 @@
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <input type="hidden" name="crud_action_type_tab" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -95,7 +96,10 @@
                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}">
                                                             <div class="panel-body">
                                                                 <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit}">
-                                                                <p class="text-right mb-0"><a href="application-service-related-clinical-lab-lab-discipline.html"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                                                <p class="text-right mb-0">
+                                                                    <a href="#" class="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
+                                                                    <input type="hidden" value="${hcsaServiceDto.svcCode}" name="svcCode" />
+                                                                </p>
                                                                 </c:if>
                                                                 <iframe  class="svc-iframe" title="" src="${pageContext.request.contextPath}/eservice/INTERNET/MohServiceRelatedInformation?crud_action_type_form_value=prepareView&svcId=${hcsaServiceDto.id}" id="elemId-${status.index}"  width="100%" height="100%" ></iframe> <!--scrolling="no" scrollbar="no" -->
                                                             </div>
@@ -156,6 +160,11 @@
             submit('payment','doSubmit',null);
         });
 
+        $('.doSvcEdit').click(function () {
+            submitForms
+            var svcCode = $(this).next().val();
+            submitForms('preview',null,null,svcCode);
+        });
     });
 
     $('.svc-pannel-collapse').click(function () {

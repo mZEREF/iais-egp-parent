@@ -105,7 +105,7 @@
                     <c:set var="premValue" value="${status.index}"/>
                     <div class="col-xs-12">
                       <div class="form-horizontal">
-                        <div class="form-group premisesTypeDiv" id="premisesType">
+                        <div class="form-group premisesTypeDiv" id="premisesType" <c:if test="${'APTY005' ==AppSubmissionDto.appType}">hidden</c:if> >
                           <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your premises type ? <span class="mandatory">*</span></label><br>
                           <span class="error-msg"></span>
                           <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
@@ -113,11 +113,19 @@
                           <c:forEach var="premisesType" items="${premisesType}">
                             <div class="col-xs-6 col-md-2">
                                 <div class="form-check">
+                                  <c:choose>
+                                    <c:when test="${'ONSITE' == premisesType}">
+                                      <c:set var="className" value="onSite"/>
+                                    </c:when>
+                                    <c:when test="${'CONVEYANCE' == premisesType}">
+                                      <c:set var="className" value="conveyance" />
+                                    </c:when>
+                                  </c:choose>
                                   <c:if test="${appGrpPremisesDto.premisesType!=premisesType}">
-                                    <input class="form-check-input premTypeRadio ${premisesType}"  type="radio" name="premType${status.index}" value = "${premisesType}" aria-invalid="false">
+                                    <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" value = "${premisesType}" aria-invalid="false">
                                   </c:if>
                                   <c:if test="${appGrpPremisesDto.premisesType==premisesType}">
-                                    <input class="form-check-input premTypeRadio ${premisesType}"  type="radio" name="premType${status.index}" checked="checked" value = "${premisesType}"  aria-invalid="false">
+                                    <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" checked="checked" value = "${premisesType}"  aria-invalid="false">
                                   </c:if>
 
                                   <label class="form-check-label" ><span class="check-circle"></span>
@@ -147,28 +155,28 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_premisesType${status.index}"></span>
                           </div>
                         </div>
-                        <iais:row cssClass="premiseOnSiteSelect hidden">
+                        <iais:row cssClass="onSiteSelect hidden">
                           <iais:field value="Add or select a premises from the list" width="12" mandatory="true"/>
                           <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
                               <c:choose>
                                 <c:when test="${appGrpPremisesDto.premisesType == onSite}">
-                                  <iais:select cssClass="premSelect" id="premOnsiteSel" name="premOnSiteSelect"  options="premisesSelect" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                  <iais:select cssClass="premSelect" id="onSiteSel" name="onSiteSelect"  options="premisesSelect" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
                                 </c:when>
                                 <c:otherwise>
-                                  <iais:select cssClass="premSelect" id="premOnsiteSel" name="premOnSiteSelect"  options="premisesSelect" value=""></iais:select>
+                                  <iais:select cssClass="premSelect" id="onSiteSel" name="onSiteSelect"  options="premisesSelect" value=""></iais:select>
                                 </c:otherwise>
                               </c:choose>
                           </iais:value>
                         </iais:row>
-                        <iais:row cssClass="premiseConSelect hidden">
+                        <iais:row cssClass="conveyanceSelect hidden">
                           <iais:field value="Add or select a premises from the list" width="12" mandatory="true"/>
                           <iais:value  cssClass="col-xs-11 col-sm-7 col-md-5">
                             <c:choose>
                               <c:when test="${appGrpPremisesDto.premisesType == conv}">
-                                <iais:select cssClass="premSelect" id="premConSel" name="premConSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
                               </c:when>
                               <c:otherwise>
-                                <iais:select cssClass="premSelect" id="premConSel" name="premConSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
+                                <iais:select cssClass="premSelect" id="conveyanceSel" name="conveyanceSelect"  options="conveyancePremSel" value="${appGrpPremisesDto.premisesSelect}"></iais:select>
                               </c:otherwise>
                             </c:choose>
                           </iais:value>
@@ -185,14 +193,14 @@
                           <iais:row>
                             <iais:field value="Name of HCI " mandatory="true" width="11"/>
                             <iais:value width="11">
-                              <iais:input maxLength="100" type="text" name="hciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
+                              <iais:input maxLength="100" type="text" name="onSiteHciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
                               <span id="error_hciName${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row cssClass="postalCodeDiv">
                             <iais:field value="Postal Code " mandatory="true" width="12"/>
                             <iais:value width="5">
-                              <iais:input cssClass="sitePostalCode" maxLength="6" type="text"  name="postalCode"  value="${appGrpPremisesDto.postalCode}"></iais:input>
+                              <iais:input cssClass="sitePostalCode" maxLength="6" type="text"  name="onSitePostalCode"  value="${appGrpPremisesDto.postalCode}"></iais:input>
                               <span  id="error_postalCode${status.index}" class="error-msg" name="iaisErrorMsg"></span>
                             </iais:value>
                             <div class="col-xs-7 col-sm-6 col-md-4">
@@ -203,68 +211,68 @@
                           <iais:row>
                             <iais:field value="Address Type " mandatory="true" width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:select cssClass="siteAddressType" name="siteAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type" value="${appGrpPremisesDto.addrType}"></iais:select>
+                              <iais:select cssClass="siteAddressType" name="onSiteAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Select address type" value="${appGrpPremisesDto.addrType}"></iais:select>
                               <span class="error-msg" name="iaisErrorMsg" id="error_addrType${status.index}"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row>
                             <iais:field value="Block / House No." width="12"/>
                             <iais:value width="5">
-                              <iais:input cssClass="siteBlockNo" maxLength="10"  type="text" name="blkNo" id="siteBlockNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
+                              <iais:input cssClass="siteBlockNo" maxLength="10"  type="text" name="onSiteBlkNo" id="siteBlockNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
                               <span class="error-msg" name="iaisErrorMsg" id="error_blkNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row>
                             <iais:field value="Floor No." width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                              <iais:input maxLength="3" type="text" name="floorNo" id="siteFloorNo" value="${appGrpPremisesDto.floorNo}"></iais:input>
+                              <iais:input maxLength="3" type="text" name="onSiteFloorNo" id="siteFloorNo" value="${appGrpPremisesDto.floorNo}"></iais:input>
                               <span class="error-msg" name="iaisErrorMsg" id="error_floorNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row>
                             <iais:field value="Unit No." width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3 input-with-label">
-                              <iais:input maxLength="5" type="text" name="unitNo" id="siteUnitNo" value="${appGrpPremisesDto.unitNo}"></iais:input>
+                              <iais:input maxLength="5" type="text" name="onSiteUnitNo" id="siteUnitNo" value="${appGrpPremisesDto.unitNo}"></iais:input>
                               <span class="error-msg" name="iaisErrorMsg" id="error_unitNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row>
                             <iais:field value="Building Name" width="12"/>
                             <iais:value width="11" cssClass="input-with-label">
-                              <iais:input cssClass="siteBuildingName" maxLength="45" type="text" name="buildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
+                              <iais:input cssClass="siteBuildingName" maxLength="45" type="text" name="onSiteBuildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
                               <span class="error-msg" name="iaisErrorMsg" id="error_buildingName"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row>
                             <iais:field value="Street Name " mandatory="true" width="10"/>
                             <iais:value width="10">
-                              <iais:input cssClass="siteStreetName" maxLength="32" type="text" name="streetName" id="siteStreetName" value="${appGrpPremisesDto.streetName}"></iais:input>
+                              <iais:input cssClass="siteStreetName" maxLength="32" type="text" name="onSiteStreetName" id="siteStreetName" value="${appGrpPremisesDto.streetName}"></iais:input>
                               <span class="error-msg" name="iaisErrorMsg" id="error_streetName${status.index}"></span>
                             </iais:value>
                           </iais:row>
                           <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="&lt;p&gt;This is a xxx digit No. that you can access from the Life Saving Force Portral.&lt;/p&gt;">i</a></label>
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input id="siteSafefyNo" name="scdfRefNo" type="text" value="${appGrpPremisesDto.scdfRefNo}">
+                              <input id="siteSafefyNo" name="onSiteScdfRefNo" type="text" value="${appGrpPremisesDto.scdfRefNo}">
                             </div>
                           </div>
                           <iais:row>
                             <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:datePicker cssClass="fireIssuedDate" name="fireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDt}" />
+                              <iais:datePicker cssClass="fireIssuedDate" name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDt}" />
                             </iais:value>
                           </iais:row>
                           <iais:row>
                             <iais:field value="Office Telephone No " mandatory="true" width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                              <iais:input type="text" name="offTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" cssClass="onsitOffice" />
+                              <iais:input type="text" name="onSiteOffTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" cssClass="onsitOffice" />
                               <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo${status.index}"></span>
                             </iais:value>
                           </iais:row>
                           <iais:row cssClass="other-lic-content">
                             <iais:field value="Are you co-locating with another licensee?" mandatory="true" width="12"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-6">
-                              <input type="hidden" name="isOtherLic" value="${appGrpPremisesDto.isOtherLic}"/>
+                              <input type="hidden" name="onSiteIsOtherLic" value="${appGrpPremisesDto.isOtherLic}"/>
                               <div class="form-check col-sm-3">
                                 <input <c:if test="${'0'==appGrpPremisesDto.isOtherLic}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
@@ -282,9 +290,9 @@
                             </label>
 
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="${appGrpPremisesDto.onsiteStartHH}" maxlength="2" style="width: 60px" name="onsiteStartHH"/>(HH)
+                              <input type="text" value="${appGrpPremisesDto.onsiteStartHH}" maxlength="2" style="width: 60px" name="onSiteStartHH"/>(HH)
                               :
-                              <input type="text" value="${appGrpPremisesDto.onsiteStartMM}" maxlength="2" style="width: 60px"  name="onsiteStartMM"/>(MM)
+                              <input type="text" value="${appGrpPremisesDto.onsiteStartMM}" maxlength="2" style="width: 60px"  name="onSiteStartMM"/>(MM)
                               <span class="error-msg" name="iaisErrorMsg" id="error_onsiteStartMM${status.index}"></span>
                             </div>
                           </div>
@@ -294,9 +302,9 @@
                             </label>
 
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="${appGrpPremisesDto.onsiteEndHH}" maxlength="2" style="width: 60px" name="onsiteEndHH"/>(HH)
+                              <input type="text" value="${appGrpPremisesDto.onsiteEndHH}" maxlength="2" style="width: 60px" name="onSiteEndHH"/>(HH)
                               :
-                              <input type="text" value="${appGrpPremisesDto.onsiteEndMM}" maxlength="2" style="width: 60px" name="onsiteEndMM"/>(MM)
+                              <input type="text" value="${appGrpPremisesDto.onsiteEndMM}" maxlength="2" style="width: 60px" name="onSiteEndMM"/>(MM)
                               <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndMM${status.index}"></span>
                             </div>
                           </div>
@@ -307,7 +315,7 @@
                                   <iais:row>
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                                      <iais:datePicker cssClass="form_datetime public-holiday" value="${ph.phDateStr}"  name="${premValue}onsitePubHoliday${phStat.index}"/>
+                                      <iais:datePicker cssClass="form_datetime public-holiday" value="${ph.phDateStr}"  name="${premValue}onSitePubHoliday${phStat.index}"/>
                                     </iais:value>
                                     <c:if test="${!phStat.first}">
                                       <div class=" col-xs-7 col-sm-4 col-md-3">
@@ -322,9 +330,9 @@
                                       Public Holidays Operating Hours (Start)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-4">
-                                      <input class="PbHolDayStartHH" type="text" name="${premValue}onsitePbHolDayStartHH${phStat.index}" value="${ph.onsiteStartFromHH}" maxlength="2" style="width: 60px"/>(HH)
+                                      <input class="PbHolDayStartHH" type="text" name="${premValue}onSitePbHolDayStartHH${phStat.index}" value="${ph.onsiteStartFromHH}" maxlength="2" style="width: 60px"/>(HH)
                                       :
-                                      <input class="PbHolDayStartMM" type="text" name="${premValue}onsitePbHolDayStartMM${phStat.index}" value="${ph.onsiteStartFromMM}" maxlength="2" style="width: 60px"/>(MM)
+                                      <input class="PbHolDayStartMM" type="text" name="${premValue}onSitePbHolDayStartMM${phStat.index}" value="${ph.onsiteStartFromMM}" maxlength="2" style="width: 60px"/>(MM)
                                     </div>
                                   </div>
                                   <div class="form-group">
@@ -332,9 +340,9 @@
                                       Public Holidays Operating Hours (End)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-4">
-                                      <input class="PbHolDayEndHH" type="text" name="${premValue}onsitePbHolDayEndHH${phStat.index}" value="${ph.onsiteEndToHH}" maxlength="2" style="width: 60px"/>(HH)
+                                      <input class="PbHolDayEndHH" type="text" name="${premValue}onSitePbHolDayEndHH${phStat.index}" value="${ph.onsiteEndToHH}" maxlength="2" style="width: 60px"/>(HH)
                                       :
-                                      <input class="PbHolDayEndMM" type="text" name="${premValue}onsitePbHolDayEndMM${phStat.index}" value="${ph.onsiteEndToMM}" maxlength="2" style="width: 60px"/>(MM)
+                                      <input class="PbHolDayEndMM" type="text" name="${premValue}onSitePbHolDayEndMM${phStat.index}" value="${ph.onsiteEndToMM}" maxlength="2" style="width: 60px"/>(MM)
                                       <span class="error-msg" name="iaisErrorMsg" id="error_onsiteEndToMM${status.index}"></span>
                                     </div>
                                   </div>
@@ -346,7 +354,7 @@
                                 <iais:row>
                                   <iais:field value="Select Public Holiday" width="12"/>
                                   <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                                    <iais:datePicker cssClass="form_datetime public-holiday"  name="${premValue}onsitePubHoliday0"/>
+                                    <iais:datePicker cssClass="form_datetime public-holiday"  name="${premValue}onSitePubHoliday0"/>
                                   </iais:value>
                                 </iais:row>
                                 <div class="form-group">
@@ -354,9 +362,9 @@
                                     Public Holidays Operating Hours (Start)
                                   </label>
                                   <div class="col-xs-9 col-sm-5 col-md-4">
-                                    <input class="PbHolDayStartHH" type="text" name="${premValue}onsitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                    <input class="PbHolDayStartHH" type="text" name="${premValue}onSitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px"/>(HH)
                                     :
-                                    <input class="PbHolDayStartMM" type="text" name="${premValue}onsitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+                                    <input class="PbHolDayStartMM" type="text" name="${premValue}onSitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px"/>(MM)
                                     <span  class="error-msg"  name="iaisErrorMsg" id="error_"></span>
                                   </div>
                                 </div>
@@ -365,10 +373,9 @@
                                     Public Holidays Operating Hours (End)
                                   </label>
                                   <div class="col-xs-9 col-sm-5 col-md-4">
-                                    <input class="PbHolDayEndHH" type="text" name="${premValue}onsitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                    <input class="PbHolDayEndHH" type="text" name="${premValue}onSitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px"/>(HH)
                                     :
-                                    <input class="PbHolDayEndMM" type="text" name="${premValue}onsitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px"/>(MM)
-
+                                    <input class="PbHolDayEndMM" type="text" name="${premValue}onSitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px"/>(MM)
                                   </div>
                                 </div>
 
@@ -449,9 +456,9 @@
                               Operating Hours (Start) <span class="mandatory">*</span>
                             </label>
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="${appGrpPremisesDto.conStartHH}" maxlength="2" style="width: 60px" name="conStartHH"/>(HH)
+                              <input type="text" value="${appGrpPremisesDto.conStartHH}" maxlength="2" style="width: 60px" name="conveyanceStartHH"/>(HH)
                               :
-                              <input type="text" value="${appGrpPremisesDto.conStartMM}" maxlength="2" style="width: 60px" name="conStartMM"/>(MM)
+                              <input type="text" value="${appGrpPremisesDto.conStartMM}" maxlength="2" style="width: 60px" name="conveyanceStartMM"/>(MM)
                               <span class="error-msg" name="isaiErrorMsg" id="error_conStartMM${status.index}"></span>
                             </div>
 
@@ -461,9 +468,9 @@
                               Operating Hours (End) <span class="mandatory">*</span>
                             </label>
                             <div class="col-xs-9 col-sm-5 col-md-4">
-                              <input type="text" value="${appGrpPremisesDto.conEndHH}" maxlength="2" style="width: 60px" name="conEndHH"/>(HH)
+                              <input type="text" value="${appGrpPremisesDto.conEndHH}" maxlength="2" style="width: 60px" name="conveyanceEndHH"/>(HH)
                               :
-                              <input type="text" value="${appGrpPremisesDto.conEndMM}" maxlength="2" style="width: 60px" name="conEndMM"/>(MM)
+                              <input type="text" value="${appGrpPremisesDto.conEndMM}" maxlength="2" style="width: 60px" name="conveyanceEndMM"/>(MM)
                               <span class="error-msg" name="iaisErrorMsg" id="error_conEndMM${status.index}"></span>
                             </div>
                           </div>
@@ -474,7 +481,7 @@
                                   <iais:row>
                                     <iais:field value="Select Public Holiday" width="12"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                                      <iais:datePicker cssClass="form_datetime public-holiday" value="${ph.phDateStr}"  name="${premValue}convPubHoliday${phStat.index}"/>
+                                      <iais:datePicker cssClass="form_datetime public-holiday" value="${ph.phDateStr}"  name="${premValue}conveyancePubHoliday${phStat.index}"/>
                                     </iais:value>
                                     <c:if test="${!phStat.first}">
                                       <div class=" col-xs-7 col-sm-4 col-md-3">
@@ -489,9 +496,9 @@
                                       Public Holidays Operating Hours (Start)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-4">
-                                      <input class="PbHolDayStartHH" type="text" name="${premValue}convPbHolDayStartHH${phStat.index}" value="${ph.convStartFromHH}" maxlength="2" style="width: 60px"/>(HH)
+                                      <input class="PbHolDayStartHH" type="text" name="${premValue}conveyancePbHolDayStartHH${phStat.index}" value="${ph.convStartFromHH}" maxlength="2" style="width: 60px"/>(HH)
                                       :
-                                      <input class="PbHolDayStartMM" type="text" name="${premValue}convPbHolDayStartMM${phStat.index}" value="${ph.convStartFromMM}" maxlength="2" style="width: 60px"/>(MM)
+                                      <input class="PbHolDayStartMM" type="text" name="${premValue}conveyancePbHolDayStartMM${phStat.index}" value="${ph.convStartFromMM}" maxlength="2" style="width: 60px"/>(MM)
                                     </div>
                                   </div>
                                   <div class="form-group">
@@ -499,9 +506,9 @@
                                       Public Holidays Operating Hours (End)
                                     </label>
                                     <div class="col-xs-9 col-sm-5 col-md-4">
-                                      <input class="PbHolDayEndHH" type="text" name="${premValue}convPbHolDayEndHH${phStat.index}" value="${ph.convEndToHH}" maxlength="2" style="width: 60px"/>(HH)
+                                      <input class="PbHolDayEndHH" type="text" name="${premValue}conveyancePbHolDayEndHH${phStat.index}" value="${ph.convEndToHH}" maxlength="2" style="width: 60px"/>(HH)
                                       :
-                                      <input class="PbHolDayEndMM" type="text" name="${premValue}convPbHolDayEndMM${phStat.index}" value="${ph.convEndToMM}" maxlength="2" style="width: 60px"/>(MM)
+                                      <input class="PbHolDayEndMM" type="text" name="${premValue}conveyancePbHolDayEndMM${phStat.index}" value="${ph.convEndToMM}" maxlength="2" style="width: 60px"/>(MM)
                                       <span class="error-msg" name="iaisErrorMsg" id="error_convEndToHH${status.index}"></span>
                                     </div>
                                   </div>
@@ -513,7 +520,7 @@
                                 <iais:row>
                                   <iais:field value="Select Public Holiday" width="12"/>
                                   <iais:value cssClass="col-xs-7 col-sm-4 col-md-3">
-                                    <iais:datePicker cssClass="form_datetime public-holiday"  name="${premValue}convPubHoliday0"/>
+                                    <iais:datePicker cssClass="form_datetime public-holiday"  name="${premValue}conveyancePubHoliday0"/>
                                   </iais:value>
                                 </iais:row>
                                 <div class="form-group">
@@ -521,9 +528,9 @@
                                     Public Holidays Operating Hours (Start)
                                   </label>
                                   <div class="col-xs-9 col-sm-5 col-md-4">
-                                    <input class="PbHolDayStartHH" type="text" name="${premValue}convPbHolDayStartHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                    <input class="PbHolDayStartHH" type="text" name="${premValue}conveyancePbHolDayStartHH0" value="" maxlength="2" style="width: 60px"/>(HH)
                                     :
-                                    <input class="PbHolDayStartMM" type="text" name="${premValue}convPbHolDayStartMM0" value="" maxlength="2" style="width: 60px"/>(MM)
+                                    <input class="PbHolDayStartMM" type="text" name="${premValue}conveyancePbHolDayStartMM0" value="" maxlength="2" style="width: 60px"/>(MM)
                                   </div>
                                 </div>
                                 <div class="form-group">
@@ -531,10 +538,9 @@
                                     Public Holidays Operating Hours (End)
                                   </label>
                                   <div class="col-xs-9 col-sm-5 col-md-4">
-                                    <input class="PbHolDayEndHH" type="text" name="${premValue}convPbHolDayEndHH0" value="" maxlength="2" style="width: 60px"/>(HH)
+                                    <input class="PbHolDayEndHH" type="text" name="${premValue}conveyancePbHolDayEndHH0" value="" maxlength="2" style="width: 60px"/>(HH)
                                     :
-                                    <input class="PbHolDayEndMM" type="text" name="${premValue}convPbHolDayEndMM0" value="" maxlength="2" style="width: 60px"/>(MM)
-
+                                    <input class="PbHolDayEndMM" type="text" name="${premValue}conveyancePbHolDayEndMM0" value="" maxlength="2" style="width: 60px"/>(MM)
                                   </div>
                                 </div>
                               </div>
@@ -553,7 +559,7 @@
                 </div>
                 <div class="row">
                   <div class="col-xs-12">
-                    <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType}">
+                    <c:if test="${requestInformationConfig==null && 'APTY005' !=AppSubmissionDto.appType && AppSubmissionDto.appSvcRelatedInfoDtoList.size()== 1}">
                       <button id="addPremBtn" type="button">Add Premises</button>
                     </c:if>
                   </div>
@@ -596,19 +602,19 @@
         $('.premTypeValue').each(function (k,v) {
             checkedType = $(this).val();
             $premCountEle = $(this).closest('div.premContent');
-            if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==checkedType){
-                $premCountEle.find('.premiseOnSiteSelect').removeClass('hidden');
-                $premCountEle.find('.premiseConSelect').addClass('hidden');
+            if('ONSITE'==checkedType){
+                $premCountEle.find('.onSiteSelect').removeClass('hidden');
+                $premCountEle.find('.conveyanceSelect').addClass('hidden');
                 $premCountEle.find('.new-premise-form-conv').addClass('hidden');
-                var premSelValue =  $premCountEle.find('.premiseOnSiteSelect .premSelect').val();
+                var premSelValue =  $premCountEle.find('.onSiteSelect .premSelect').val();
                 if(premSelValue == "newPremise"){
                     $premCountEle.find('.new-premise-form-on-site').removeClass('hidden');
                 }
-            }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
-                $premCountEle.find('.premiseConSelect').removeClass('hidden');
-                $premCountEle.find('.premiseOnSiteSelect').addClass('hidden');
+            }else if('CONVEYANCE' == checkedType){
+                $premCountEle.find('.conveyanceSelect').removeClass('hidden');
+                $premCountEle.find('.onSiteSelect').addClass('hidden');
                 $premCountEle.find('.new-premise-form-on-site').addClass('hidden');
-                var premSelValue =  $premCountEle.find('.premiseConSelect .premSelect').val();
+                var premSelValue =  $premCountEle.find('.conveyanceSelect .premSelect').val();
                 if(premSelValue =="newPremise"){
                     $premCountEle.find('.new-premise-form-conv').removeClass('hidden');
                 }
@@ -660,18 +666,18 @@
             var checkedType = $(this).val();
             $premSelect = $(this).closest('div.premContent');
             $premSelctDivEle = $(this).closest('div.premisesTypeDiv');
-            if('<%=ApplicationConsts.PREMISES_TYPE_ON_SITE%>'==checkedType){
-                $premSelect.find('.premiseOnSiteSelect').removeClass('hidden');
-                $premSelect.find('.premiseConSelect').addClass('hidden');
+            if('ONSITE'==checkedType){
+                $premSelect.find('.onSiteSelect').removeClass('hidden');
+                $premSelect.find('.conveyanceSelect').addClass('hidden');
                 $premSelect.find('.new-premise-form-conv').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
                 <!--change hidden length value -->
                 var length =  $premSelect.find('.new-premise-form-on-site div.pubHolidayContent').length;
                 $premSelect.find('.phLength').val(length);
                 
-            }else if('<%=ApplicationConsts.PREMISES_TYPE_CONVEYANCE%>' == checkedType){
-                $premSelect.find('.premiseConSelect').removeClass('hidden');
-                $premSelect.find('.premiseOnSiteSelect').addClass('hidden');
+            }else if('CONVEYANCE' == checkedType){
+                $premSelect.find('.conveyanceSelect').removeClass('hidden');
+                $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 $premSelctDivEle.find('.premTypeValue').val(checkedType);
                 <!--change hidden length value -->
@@ -691,10 +697,10 @@
             if("newPremise" == premSelectVal){
                 $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
                 $premSelect.find('.new-premise-form-conv').addClass('hidden');
-                if("premOnsiteSel" == thisId){
+                if("onSiteSel" == thisId){
                     $premSelect.find('.new-premise-form-on-site').removeClass('hidden');
                     $premSelect.find('.new-premise-form-conv').addClass('hidden');
-                }else if ("premConSel" == thisId) {
+                }else if ("conveyanceSel" == thisId) {
                     $premSelect.find('.new-premise-form-conv').removeClass('hidden');
                     $premSelect.find('.new-premise-form-on-site').addClass('hidden');
                 }
@@ -840,9 +846,9 @@ var retrieveAddr = function(){
       $('.addPubHolDay').click(function () {
          var name = $(this).closest('div.premContent').find('.premTypeValue').val();
          if('ONSITE' == name){
-             name = 'onsite';
+             name = 'onSite';
          }else if('CONVEYANCE' == name){
-             name = "conv";
+             name = "conveyance";
          }
          //alert("name:"+name);
           //onsite conv
@@ -911,12 +917,11 @@ var retrieveAddr = function(){
 
          var nameVal = $premContentEle.find('.premTypeValue').val();
          if('ONSITE' == nameVal){
-             nameVal = 'onsite';
+             nameVal = 'onSite';
          }else if('CONVEYANCE' == nameVal){
-             nameVal = "conv";
+             nameVal = 'conveyance';
          }
-         
-         
+          
          $contentDivEle.find('div.pubHolidayContent').each(function (k,v) {
              var publicHoliday = nameVal + 'PubHoliday';
              var PbHolDayStartHH = nameVal + 'PbHolDayStartHH';

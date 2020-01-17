@@ -16,7 +16,9 @@
     padding-top:40px;
 }
 
-
+.mandatory{
+    color: rgb(255,0,0);
+}
 
 
 /* label in the component */
