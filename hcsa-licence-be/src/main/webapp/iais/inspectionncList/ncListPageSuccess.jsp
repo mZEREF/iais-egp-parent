@@ -29,11 +29,25 @@
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                            <li class="complete" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
+                            <li class="<c:choose>
+                                            <c:when test="${serListDto.checkListTab=='chkList'}">
+                                                   complete
+                                                </c:when>
+                                                <c:otherwise>
+                                                    active
+                                                </c:otherwise>
+                                            </c:choose>" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a></li>
                             <li class="complete" role="presentation"><a href="#tabDocuments" aria-controls="tabDocuments" role="tab"
                                                                         data-toggle="tab">Documents</a></li>
-                            <li class="active" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
-                                                                        data-toggle="tab">Success</a></li>
+                            <li class="<c:choose>
+                                            <c:when test="${serListDto.checkListTab=='chkList'}">
+                                                   active
+                                                </c:when>
+                                                <c:otherwise>
+                                                    complete
+                                                </c:otherwise>
+                                            </c:choose>" role="presentation"><a href="#tabPayment" aria-controls="tabPayment" role="tab"
+                                                                                data-toggle="tab">CheckList</a></li>
                         </ul>
                         <div class="tab-nav-mobile visible-xs visible-sm">
                             <div class="swiper-wrapper" role="tablist">
@@ -44,10 +58,10 @@
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-button-next"></div>
                         </div>
-
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabInfo" role="tabpanel">
+                            <div class="tab-pane  <c:if test="${serListDto.checkListTab!='chkList'}">active</c:if>" id="tabInfo" role="tabpanel">
                                 <div class="panel panel-default">
+                                    <!-- Default panel contents -->
                                     <div class="panel-heading"><strong>Submission Details</strong></div>
                                     <div class="row">
                                         <div class="col-xs-12">
@@ -55,20 +69,21 @@
                                                 <table class="table table-bordered">
                                                     <tbody>
                                                     <tr>
-                                                        <td class="col-xs-6" align="right">Application No. (Overall)</td>
-                                                        <td class="col-xs-6">${applicationViewDto.applicationDto.applicationNo}</td>
+                                                        <td class="col-xs-6" align="right">Application No. (Overall)
+                                                        </td>
+                                                        <td class="col-xs-6">${applicationViewDto.applicationNoOverAll}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Application No.</td>
-                                                        <td>${applicationViewDto.applicationNoOverAll}</td>
+                                                        <td>${applicationViewDto.applicationDto.applicationNo}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Application Type</td>
-                                                        <td>${applicationViewDto.applicationDto.applicationType}</td>
+                                                        <td>${applicationViewDto.applicationType}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Service Type</td>
-                                                        <td>${applicationViewDto.applicationDto.serviceId}</td>
+                                                        <td align="right">Clinical Laboratory</td>
+                                                        <td>${applicationViewDto.serviceType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Submission Date</td>
@@ -76,7 +91,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Current Status</td>
-                                                        <td>${applicationViewDto.applicationDto.status}</td>
+                                                        <td>${applicationViewDto.currentStatus}</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -85,9 +100,11 @@
                                     </div>
                                 </div>
                                 <div align="center">
-                                    <button type="button" class="btn btn-primary">
-                                        View Application
-                                    </button>
+                                    <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?appId=${applicationViewDto.applicationDto.id}" target="_blank">
+                                        <button type="button" class="btn btn-primary">
+                                            View Application
+                                        </button>
+                                    </a>
                                 </div>
                                 <div>&nbsp</div>
                                 <div class="panel panel-default">
@@ -106,7 +123,7 @@
                                                         <td>${applicationViewDto.hciName}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">HCI ADDRESS</td>
+                                                        <td align="right">HCI Address</td>
                                                         <td>${applicationViewDto.hciAddress}</td>
                                                     </tr>
                                                     <tr>
@@ -124,6 +141,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                 <div class="alert alert-info" role="alert"><strong>
                                     <h4>Supporting Document</h4>
@@ -147,13 +165,14 @@
                                                 </thead>
 
                                                 <tbody>
-                                                <c:forEach items="${applicationViewDto.appSupDocDtoList}" var="appSupDocDto">
+                                                <c:forEach items="${applicationViewDto.appSupDocDtoList}"
+                                                           var="appSupDocDto">
                                                     <tr>
                                                         <td>
-                                                            <p><c:out value="${appSupDocDto.document}"></c:out></p>
+                                                            <p><c:out value="${appSupDocDto.file}"></c:out></p>
                                                         </td>
                                                         <td>
-                                                            <p><a href="#"><c:out value="${appSupDocDto.file}"></c:out></a></p>
+                                                            <p><a href="#"><c:out value="${appSupDocDto.document}"></c:out></a></p>
                                                         </td>
                                                         <td>
                                                             <p><c:out value="${appSupDocDto.size}"></c:out></p>
@@ -172,8 +191,9 @@
                                             <div class="alert alert-info" role="alert"><strong>
                                                 <h4>Internal Document</h4>
                                             </strong></div>
-                                            <div  class="text ">
-                                                <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
+                                            <div class="text ">
+                                                <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
+                                                </p>
                                             </div>
                                             <table class="table">
                                                 <thead>
@@ -188,7 +208,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr>
-                                                    <td colspan="6" align="center">
+                                                    <td colspan="5" align="center">
                                                         <p>No record found.</p>
                                                     </td>
                                                 </tr>
@@ -197,15 +217,31 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-                            <div class="tab-pane active" id="tabPayment" role="tabpanel">
-                                <div class="alert alert-info" role="alert"><strong>
-                                </strong></div>
-                                <div class="row">
-                                    <div class="col-xs-12">
+                            <div class="tab-pane <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
+                                <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                                    <li class="complete" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General</a></li>
+                                    <li class="complete" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
+                                                                                data-toggle="tab">ServiceInfo</a></li>
+                                    <li class="complete" role="presentation"><a href="#chkInfo" aria-controls="ServiceInfo" role="tab"
+                                                                                data-toggle="tab">chkInfo</a></li>
+                                </ul>
 
-                                        <h3>Common</h3>
+                                <div class="tab-nav-mobile visible-xs visible-sm">
+                                    <div class="swiper-wrapper" role="tablist">
+                                        <div class="swiper-slide"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General</a></div>
+                                        <div class="swiper-slide"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab" data-toggle="tab">ServiceInfo</a></div>
+                                        <div class="swiper-slide"><a href="#chkInfo" aria-controls="chkInfo" role="tab" data-toggle="tab">chkInfo</a></div>
+                                    </div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
+                                </div>
+
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="General" role="tabpanel">
+                                        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
+                                        <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
+                                        <h3>General</h3>
                                         <div class="table-gp">
                                             <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
                                                 <br/>
@@ -249,6 +285,10 @@
                                                 </table>
                                             </c:forEach>
                                         </div>
+                                    </div>
+                                    <div class="tab-pane" id="ServiceInfo" role="tabpanel">
+                                        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
+                                        <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
                                         <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="status">
                                             <h3>${cdto.svcName}</h3>
                                             <div class="table-gp">
@@ -295,6 +335,8 @@
                                                 </c:forEach>
                                             </div>
                                         </c:forEach>
+                                        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.adhocDo}"/>/<c:out value="${serListDto.adhocTotal}"/><br>
+                                        <span><strong>Nc:</strong></span>&nbsp;<c:out value="${serListDto.adhocNc}"/>
                                         <div class="table-gp">
                                             <h3>Adhoc</h3>
                                             <br/>
@@ -319,11 +361,11 @@
                                                         <td></td>
                                                         <td><c:out value="${item.question}"/></td>
                                                         <c:set value = "${item.id}" var = "ckkId"/>
-                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" disabled /></td>
+                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" disabled/></td>
                                                         <td>
-                                                            <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" disabled />
+                                                            <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" disabled/>
                                                         </td>
-                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A" disabled /></td>
+                                                        <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A" disabled/></td>
                                                         <td><input name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" type="text" value="<c:out value="${item.remark}"/>" disabled/></td>
                                                         <td>
                                                             <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
@@ -337,8 +379,8 @@
                                                 </tbody>
                                             </table>
                                         </div>
-
-
+                                    </div>
+                                    <div class="tab-pane" id="chkInfo" role="tabpanel">
                                         <div class="col-xs-12">
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
@@ -375,8 +417,10 @@
                                                 <div class="ax_default text_area">
                                                     <h4>Other Inspection Officers</h4>
                                                     <textarea cols="70" rows="7" name="otherinspector" id="otherinspector" disabled><c:out value="${serListDto.otherinspectionofficer}"></c:out></textarea>
+                                                    <span class="error-msg" id="error_otherofficer" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
+
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
                                                     <h4>Best Practice</h4>
@@ -386,12 +430,14 @@
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
-                                                    <h4>TCU Date</h4> <c:out value="${serListDto.tuc}"></c:out> &nbsp;<br>
+                                                    <h4>TCU Date</h4> &nbsp; <c:out value="${serListDto.tuc}"/><br>
+                                                    <span class="error-msg" id="error_tcuDate" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
                                             <div class="input-group">
                                                 <div class="ax_default text_area">
                                                     <h4>Remark</h4> <textarea cols="70" rows="7" name="tcuRemark" id="tcuRemark" disabled><c:out value="${serListDto.tcuRemark}"></c:out></textarea>
+                                                    <span class="error-msg" id="error_tcuRemark" name="iaisErrorMsg"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -407,29 +453,5 @@
 </form>
 <%@ include file="/include/validation.jsp" %>
 <script type="text/javascript">
-    function doSubmit(){
-        SOP.Crud.cfxSubmit("mainForm", "submit");
-    }
-    function doBack(){
-        SOP.Crud.cfxSubmit("mainForm", "back");
-    }
-    function showCheckBox(str){
-        var name = str;
-        var divId = str+'ck';
-        var comId = str+'comck'
-        var comdivck =document.getElementById(divId);
-        var divck =document.getElementById(comId);
-        $("#"+divId).show();
-        $("#"+comId).show();
-    }
-    function hideCheckBox(str){
-        var name = str;
-        var divId = str+'ck';
-        var comdivId = str+'comck';
-        var divck =document.getElementById(divId);
-        var comdivck =document.getElementById(comdivId);
-        $("#"+divId).hide();
-        $("#"+comdivId).hide();
 
-    }
 </script>
