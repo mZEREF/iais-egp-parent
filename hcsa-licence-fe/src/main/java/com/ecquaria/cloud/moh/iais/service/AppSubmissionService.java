@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import sop.webflow.rt.api.Process;
 
@@ -24,7 +25,7 @@ public interface AppSubmissionService {
     public void setRiskToDto(AppSubmissionDto appSubmissionDto);
     public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);
     public AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
-    public Double getGroupAmendAmount(AppSubmissionDto appSubmissionDto);
+    public Double getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto);
     
     public AppSubmissionDto submitRequestChange(AppSubmissionDto appSubmissionDto, Process process);
 }

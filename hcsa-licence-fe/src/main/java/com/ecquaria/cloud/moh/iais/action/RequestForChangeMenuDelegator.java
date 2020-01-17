@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -175,16 +176,22 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         
-        //todo:
-        compareAndSetData(appSubmissionDto, premisesListQueryDto, newPremisesDto);
         String appType = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
         if(!StringUtil.isEmpty(appSubmissionDto.getAppType())){
             appType = appSubmissionDto.getAppType();
         }
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(appType);
         appSubmissionDto.setAppGrpNo(appGroupNo);
-        Double amount = appSubmissionService.getGroupAmendAmount(appSubmissionDto);
+
+        //amount
+        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+        amendmentFeeDto.setChangeInLicensee(false);
+        amendmentFeeDto.setChangeInHCIName(false);
+        boolean isSame = compareLocation(premisesListQueryDto, newPremisesDto);
+        amendmentFeeDto.setChangeInLocation(!isSame);
+        Double amount = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         appSubmissionDto.setAmount(amount);
+        
         //save data
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
@@ -437,11 +444,14 @@ public class RequestForChangeMenuDelegator {
         return  errorMap;
     }
 
-    private void compareAndSetData(AppSubmissionDto appSubmissionDto, PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto newPremisesDto) {
-       /* String premType = premisesListQueryDto.getPremisesType();
-        String premVal = getPremisesVal(premisesListQueryDto);
-        AppGrpPremisesDto oldPremisesDto = getAppGrpPremisesDtoFromAppGrpPremisesDtoList(appSubmissionDto.getAppGrpPremisesDtoList(), premType, premVal);*/
 
+    private boolean compareLocation(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto){
+        String oldAddress = premisesListQueryDto.getAddress();
+        String newAddress = appGrpPremisesDto.getAddress();
+        if(!oldAddress.equals(newAddress)){
+            return false;
+        }
+        return true;
     }
 
 }

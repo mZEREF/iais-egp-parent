@@ -23,14 +23,14 @@
             <span class="error-msg"></span>
           </div>
         </div>
-        <div class="form-group premiseOnSiteSelect hidden">
+        <div class="form-group onSiteSelect hidden">
           <label class="col-xs-12 col-md-4 control-label">Add or select a premises from the list <span class="mandatory">*</span></label>
           <div class=" col-xs-11 col-sm-7 col-md-5">
             (2)
             <span class="error-msg"></span>
           </div>
         <div class="clear"></div></div>
-        <div class="form-group premiseConSelect hidden">
+        <div class="form-group conveyanceSelect hidden">
           <label class="col-xs-12 col-md-4 control-label">Add or select a premises from the list <span class="mandatory">*</span></label>
           <div class=" col-xs-11 col-sm-7 col-md-5">
             (3)
@@ -48,7 +48,7 @@
           <div class="form-group">
             <label class="col-xs-11 col-md-4 control-label">Name of HCI <span class="mandatory">*</span></label>
             <div class="col-sm-7 col-md-6 col-xs-10">
-              <input type="text" id="sitePremiseName" name="hciName" maxlength="100" autocomplete="off">
+              <input type="text" id="sitePremiseName" name="onSiteHciName" maxlength="100" autocomplete="off">
               <span id="error_hciName" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
@@ -57,7 +57,7 @@
             <div class="col-sm-7 col-md-6 col-xs-10">
               <div class="form-group">
                 <div class="col-sm-7 col-md-6 col-xs-10">
-                  <input type="text" id="sitePostalCode" name="postalCode" class="sitePostalCode" maxlength="6" autocomplete="off">
+                  <input type="text" id="sitePostalCode" name="onSitePostalCode" class="sitePostalCode" maxlength="6" autocomplete="off">
                    <span  id="error_postalCode" class="error-msg" name="iaisErrorMsg"></span>
                 </div>
                 <div class="col-xs-7 col-sm-6 col-md-6">
@@ -77,61 +77,61 @@
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Block / House No.</label>
             <div class="col-sm-4 col-md-2 col-xs-5">
-              <input type="text" id="siteBlockNo" name="blkNo" class="siteBlockNo" maxlength="10" autocomplete="off">
+              <input type="text" id="siteBlockNo" name="onSiteBlkNo" class="siteBlockNo" maxlength="10" autocomplete="off">
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Floor No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
-              <input type="text" id="siteFloorNo" name="floorNo" maxlength="3" autocomplete="off">
+              <input type="text" id="siteFloorNo" name="onSiteFloorNo" maxlength="3" autocomplete="off">
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Unit No.</label>
             <div class=" col-xs-7 col-sm-4 col-md-3 input-with-label">
-              <input type="text" id="siteUnitNo" name="unitNo" maxlength="5" autocomplete="off">
+              <input type="text" id="siteUnitNo" name="onSiteUnitNo" maxlength="5" autocomplete="off">
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Building Name</label>
             <div class="col-sm-7 col-md-6 col-xs-10 input-with-label">
-              <input type="text" id="siteBuildingName" name="buildingName" class="siteBuildingName" maxlength="45" autocomplete="off">
+              <input type="text" id="siteBuildingName" name="onSiteBuildingName" class="siteBuildingName" maxlength="45" autocomplete="off">
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-10 col-md-4 control-label">Street Name <span class="mandatory">*</span></label>
             <div class="col-sm-7 col-md-5 col-xs-10">
-              <input type="text" id="siteStreetName" name="streetName" class="siteStreetName" maxlength="32" autocomplete="off">
+              <input type="text" id="siteStreetName" name="onSiteStreetName" class="siteStreetName" maxlength="32" autocomplete="off">
               <span class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label" for="siteSafefyNo">Fire Safety Shelter Bureau Ref. No. <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true">i</a></label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input id="scdfRefNo" name="scdfRefNo" type="text" value="">
+              <input id="scdfRefNo" name="onSiteScdfRefNo" type="text" value="">
             </div>
           </div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Fire Safety Certificate Issued Date</label>
             <div class=" col-xs-7 col-sm-4 col-md-3">
-              <input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="fireSafetyCertIssuedDate" id="-67713756688199" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_fireSafetyCertIssuedDate" name="iaisErrorMsg" class="error-msg"></span>
+              <input type="text" autocomplete="off" class="date_picker form-control fireIssuedDate" name="onSiteFireSafetyCertIssuedDate" id="-67713756688199" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_fireSafetyCertIssuedDate" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group">
             <label class="col-xs-12 col-md-4 control-label">Office Telephone No <span class="mandatory">*</span></label>
             <div class=" col-xs-7 col-sm-4 col-md-3">
-              <input type="text" name="offTelNo" maxlength="8" autocomplete="off">
+              <input type="text" name="onSiteOffTelNo" maxlength="8" autocomplete="off">
               <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo(00)"></span>
             </div>
           <div class="clear"></div></div>
           <div class="form-group other-lic-content">
             <label class="col-xs-12 col-md-4 control-label">Are you co-locating with another licensee?<span class="mandatory">*</span></label>
             <div class=" col-xs-7 col-sm-4 col-md-6">
-              <input type="hidden" name="isOtherLic" value=""/>
+              <input type="hidden" name="onSiteIsOtherLic" value=""/>
               <div class="form-check col-sm-3">
                 <input class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
@@ -147,9 +147,9 @@
               Operating Hours (Start) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="onsiteStartHH" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="onSiteStartHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" name="onsiteStartMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="onSiteStartMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="form-group">
@@ -157,16 +157,16 @@
               Operating Hours (End) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="onsiteEndHH" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="onSiteEndHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" name="onsiteEndMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="onSiteEndMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="pubHolidayContent">
             <div class="form-group">
               <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
               <div class=" col-xs-7 col-sm-4 col-md-3">
-                <input type="text" autocomplete="off" class="date_picker form-control form_datetime public-holiday" name="0onsitePubHoliday0" id="-261272817908100" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onsitePubHoliday0" name="iaisErrorMsg" class="error-msg"></span>
+                <input type="text" autocomplete="off" class="date_picker form-control form_datetime public-holiday" name="0onSitePubHoliday0" id="-261272817908100" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0onsitePubHoliday0" name="iaisErrorMsg" class="error-msg"></span>
               </div>
             <div class="clear"></div></div>
             <div class="form-group">
@@ -174,9 +174,9 @@
                 Public Holidays Operating Hours (Start)
               </label>
               <div class="col-xs-9 col-sm-5 col-md-4">
-                <input class="PbHolDayStartHH" type="text" name="0onsitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px">(HH)
+                <input class="PbHolDayStartHH" type="text" name="0onSitePbHolDayStartHH0" value="" maxlength="2" style="width: 60px">(HH)
                 :
-                <input class="PbHolDayStartMM" type="text" name="0onsitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px">(MM)
+                <input class="PbHolDayStartMM" type="text" name="0onSitePbHolDayStartMM0" value="" maxlength="2" style="width: 60px">(MM)
               </div>
             </div>
             <div class="form-group">
@@ -184,9 +184,9 @@
                 Public Holidays Operating Hours (End)
               </label>
               <div class="col-xs-9 col-sm-5 col-md-4">
-                <input class="PbHolDayEndHH" type="text" name="0onsitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px">(HH)
+                <input class="PbHolDayEndHH" type="text" name="0onSitePbHolDayEndHH0" value="" maxlength="2" style="width: 60px">(HH)
                 :
-                <input class="PbHolDayEndMM" type="text" name="0onsitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px">(MM)
+                <input class="PbHolDayEndMM" type="text" name="0onSitePbHolDayEndMM0" value="" maxlength="2" style="width: 60px">(MM)
               </div>
             </div>
           </div>
@@ -261,9 +261,9 @@
               Operating Hours (Start) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="conStartHH" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="conveyanceStartHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" name="conStartMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="conveyanceStartMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="form-group">
@@ -271,16 +271,16 @@
               Operating Hours (End) <span class="mandatory">*</span>
             </label>
             <div class="col-xs-9 col-sm-5 col-md-4">
-              <input type="text" value="" maxlength="2" name="conEndHH" style="width: 60px">(HH)
+              <input type="text" value="" maxlength="2" name="conveyanceEndHH" style="width: 60px">(HH)
               :
-              <input type="text" value="" maxlength="2" name="conEndMM" style="width: 60px">(MM)
+              <input type="text" value="" maxlength="2" name="conveyanceEndMM" style="width: 60px">(MM)
             </div>
           </div>
           <div class="pubHolidayContent">
             <div class="form-group">
               <label class="col-xs-12 col-md-4 control-label">Select Public Holiday</label>
               <div class=" col-xs-7 col-sm-4 col-md-3">
-                <input type="text" autocomplete="off" class="date_picker form-control form_datetime public-holiday" name="0convPubHoliday0" id="-261272817908100" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0convPubHoliday0" name="iaisErrorMsg" class="error-msg"></span>
+                <input type="text" autocomplete="off" class="date_picker form-control form_datetime public-holiday" name="0conveyancePubHoliday0" id="-261272817908100" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_0convPubHoliday0" name="iaisErrorMsg" class="error-msg"></span>
               </div>
             <div class="clear"></div></div>
             <div class="form-group">
@@ -288,9 +288,9 @@
                 Public Holidays Operating Hours (Start)
               </label>
               <div class="col-xs-9 col-sm-5 col-md-4">
-                <input class="PbHolDayStartHH" type="text" name="0convPbHolDayStartHH0" value="" maxlength="2" style="width: 60px">(HH)
+                <input class="PbHolDayStartHH" type="text" name="0conveyancePbHolDayStartHH0" value="" maxlength="2" style="width: 60px">(HH)
                 :
-                <input class="PbHolDayStartMM" type="text" name="0convPbHolDayStartMM0" value="" maxlength="2" style="width: 60px">(MM)
+                <input class="PbHolDayStartMM" type="text" name="0conveyancePbHolDayStartMM0" value="" maxlength="2" style="width: 60px">(MM)
               </div>
             </div>
             <div class="form-group">
@@ -298,9 +298,9 @@
                 Public Holidays Operating Hours (End)
               </label>
               <div class="col-xs-9 col-sm-5 col-md-4">
-                <input class="PbHolDayEndHH" type="text" name="0convPbHolDayEndHH0" value="" maxlength="2" style="width: 60px">(HH)
+                <input class="PbHolDayEndHH" type="text" name="0conveyancePbHolDayEndHH0" value="" maxlength="2" style="width: 60px">(HH)
                 :
-                <input class="PbHolDayEndMM" type="text" name="0convPbHolDayEndMM0" value="" maxlength="2" style="width: 60px">(MM)
+                <input class="PbHolDayEndMM" type="text" name="0conveyancePbHolDayEndMM0" value="" maxlength="2" style="width: 60px">(MM)
               </div>
             </div>
           </div>

@@ -32,12 +32,13 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.Process;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AppSubmisionServiceImpl
@@ -278,13 +279,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public Double getGroupAmendAmount(AppSubmissionDto appSubmissionDto) {
+    public Double getGroupAmendAmount(AmendmentFeeDto amendmentFeeDto) {
         Double amount = 0.0;
-        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        //todo compare
-        amendmentFeeDto.setChangeInLicensee(false);
-        amendmentFeeDto.setChangeInHCIName(false);
-        amendmentFeeDto.setChangeInLocation(false);
         FeeDto feeDto = appConfigClient.amendmentFee(amendmentFeeDto).getEntity();
         if(feeDto != null){
             amount = feeDto.getTotal();

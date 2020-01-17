@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -127,7 +129,7 @@ public class NewApplicationDelegator {
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
         list.add(appSvcPrincipalOfficersDto);
         ParamUtil.setSessionAttr(bpc.request,"AppSvcPrincipalOfficersDto",(Serializable) list);
-
+    
         //Primary Documents
         ParamUtil.setSessionAttr(bpc.request, COMMONHCSASVCDOCCONFIGDTO, null);
         ParamUtil.setSessionAttr(bpc.request, PREMHCSASVCDOCCONFIGDTO, null);
@@ -722,19 +724,19 @@ public class NewApplicationDelegator {
     public void doRequestForChangeSubmit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
 
-        Map<String, String> map = doPreviewAndSumbit(bpc);
+       /* Map<String, String> map = doPreviewAndSumbit(bpc);
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
-        }
+        }*/
 
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
-        
+        appSubmissionDto.setAutoRfc(isAutoRfc);
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
             draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
@@ -745,7 +747,8 @@ public class NewApplicationDelegator {
         String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
         log.debug(StringUtil.changeForLog("the appGroupNo is -->:") + appGroupNo);
         appSubmissionDto.setAppGrpNo(appGroupNo);
-        Double amount = appSubmissionService.getGroupAmendAmount(appSubmissionDto);
+        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto);
+        Double amount = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         log.debug(StringUtil.changeForLog("the amount is -->:") + amount);
         appSubmissionDto.setAmount(amount);
         //judge is the preInspection
@@ -765,7 +768,11 @@ public class NewApplicationDelegator {
         String isrfiSuccess = "N";
         if(isAutoRfc){
             //change pmt status for carry file
-            
+            String appGrpId = appSubmissionDto.getAppGrpId();
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+            serviceConfigService.updatePaymentStatus(appGrp);
             isrfiSuccess = "Y";
             ParamUtil.setRequestAttr(bpc.request,"AckMessage","The request for change save success");
         }
@@ -829,11 +836,11 @@ public class NewApplicationDelegator {
         }
 
         if(amendType.contains(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT)){
-            if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos()) ||
+            /*if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos()) ||
                     !appSvcRelatedInfoDtoList.getAppSvcDocDtoLit().equals(oldAppSvcRelatedInfoDtoList.getAppSvcDocDtoLit())){
                 //send eamil
 
-            }
+            }*/
 
         }
         return isAuto;
@@ -852,7 +859,7 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        
+        //is same
         return true;
     }
 
@@ -868,7 +875,7 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        
+        //is same
         return true;
     }
     
@@ -882,6 +889,15 @@ public class NewApplicationDelegator {
         return hciName;
     }
     
+    private AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
+        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
+        boolean changeHciName = compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+        boolean changeLocation = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+        amendmentFeeDto.setChangeInLicensee(false);
+        amendmentFeeDto.setChangeInHCIName(!changeHciName);
+        amendmentFeeDto.setChangeInLocation(!changeLocation);
+        return amendmentFeeDto;
+    }
     
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
@@ -1468,9 +1484,16 @@ public class NewApplicationDelegator {
         StringBuffer premTypeBuffer = new StringBuffer();
 
         for(String type:premType){
+            String className = "";
+            if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
+                className = "onSite";
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
+                className = "conveyance";
+            }
+            
             premTypeBuffer.append("<div class=\"col-xs-6 col-md-2\">")
                     .append("<div class=\"form-check\">")
-                    .append("<input class=\"form-check-input premTypeRadio\"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
+                    .append("<input class=\"form-check-input premTypeRadio "+className+" \"  type=\"radio\" name=\"premType"+currentLength+"\" value = "+type+" aria-invalid=\"false\">");
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)){
                 premTypeBuffer.append(" <label class=\"form-check-label\" ><span class=\"check-circle\"></span>On-site</label>");
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)){
@@ -1484,8 +1507,8 @@ public class NewApplicationDelegator {
         List<SelectOption> premisesOnSite= (List) ParamUtil.getSessionAttr(request, "premisesSelect");
         Map<String,String> premisesOnSiteAttr = new HashMap<>();
         premisesOnSiteAttr.put("class", "premSelect");
-        premisesOnSiteAttr.put("id", "premOnsiteSel");
-        premisesOnSiteAttr.put("name", "premOnSiteSelect");
+        premisesOnSiteAttr.put("id", "onSiteSel");
+        premisesOnSiteAttr.put("name", "onSiteSelect");
         premisesOnSiteAttr.put("style", "display: none;");
         String premOnSiteSelectStr = generateDropDownHtml(premisesOnSiteAttr, premisesOnSite, null);
 
@@ -1493,8 +1516,8 @@ public class NewApplicationDelegator {
         List<SelectOption> premisesConv= (List) ParamUtil.getSessionAttr(request, "conveyancePremSel");
         Map<String,String> premisesConvAttr = new HashMap<>();
         premisesConvAttr.put("class", "premSelect");
-        premisesConvAttr.put("id", "premConSel");
-        premisesConvAttr.put("name", "premConSelect");
+        premisesConvAttr.put("id", "conveyanceSel");
+        premisesConvAttr.put("name", "conveyanceSelect");
         premisesConvAttr.put("style", "display: none;");
         String premConvSelectStr = generateDropDownHtml(premisesConvAttr, premisesConv, null);
 
@@ -1502,7 +1525,7 @@ public class NewApplicationDelegator {
         List<SelectOption> addrTypes= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE);
         Map<String,String> addrTypesAttr = new HashMap<>();
         addrTypesAttr.put("id", "siteAddressType");
-        addrTypesAttr.put("name", "siteAddressType");
+        addrTypesAttr.put("name", "onSiteAddressType");
         addrTypesAttr.put("style", "display: none;");
         String addrTypeSelectStr = generateDropDownHtml(addrTypesAttr, addrTypes, FIRESTOPTION);
 
@@ -1600,10 +1623,10 @@ public class NewApplicationDelegator {
     }
     private void requestForChangeLoading(BaseProcessClass bpc) throws CloneNotSupportedException{
         log.debug(StringUtil.changeForLog("the do requestForChangeLoading start ...."));
-//        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
-        String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
+        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+        //String licenceId = "B99F41F3-5D1E-EA11-BE7D-000C29F371DC";
         String [] amendLicenceType = ParamUtil.getStrings(bpc.request, "amend-licence-type");
-        amendLicenceType = new String[]{"RFCATYPE01","RFCATYPE03","RFCATYPE04","RFCATYPE05","RFCATYPE06"};
+        //amendLicenceType = new String[]{"RFCATYPE01","RFCATYPE03","RFCATYPE04","RFCATYPE05","RFCATYPE06"};
         if(!StringUtil.isEmpty(licenceId) && amendLicenceType != null && amendLicenceType.length>0 ){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
             List<String> amendTypeList = new ArrayList<>();
@@ -2222,32 +2245,44 @@ public class NewApplicationDelegator {
      * @return: AppGrpPremisesDto
      */
     public List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = new ArrayList<>();
         int count = 0;
         String [] premisesType = ParamUtil.getStrings(request, "premType");
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            int i = 0;
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                premisesType = new String[appGrpPremisesDtos.size()];
+                
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    premisesType[i] =  appGrpPremisesDto.getPremisesType();
+                }
+            }
+        }
         if(premisesType != null){
             count = premisesType.length;
         }
         //onsite
-        String [] premisesSelect = ParamUtil.getStrings(request, "premOnSiteSelect");
-        String [] hciName = ParamUtil.getStrings(request, "hciName");
-        String [] postalCode = ParamUtil.getStrings(request,  "postalCode");
-        String [] blkNo = ParamUtil.getStrings(request, "blkNo");
-        String [] streetName = ParamUtil.getStrings(request, "streetName");
-        String [] floorNo = ParamUtil.getStrings(request, "floorNo");
-        String [] unitNo = ParamUtil.getStrings(request, "unitNo");
-        String [] buildingName = ParamUtil.getStrings(request, "buildingName");
-        String [] siteAddressType = ParamUtil.getStrings(request, "siteAddressType");
-        String [] offTelNo= ParamUtil.getStrings(request,"offTelNo");
-        String [] scdfRefNo = ParamUtil.getStrings(request, "scdfRefNo");
-        String [] onsiteStartHH = ParamUtil.getStrings(request, "onsiteStartHH");
-        String [] onsiteStartMM = ParamUtil.getStrings(request, "onsiteStartMM");
-        String [] onsiteEndHHS = ParamUtil.getStrings(request, "onsiteEndHH");
-        String [] onsiteEndMMS = ParamUtil.getStrings(request, "onsiteEndMM");
-        String [] fireSafetyCertIssuedDateStr  = ParamUtil.getStrings(request, "fireSafetyCertIssuedDate");
-        String [] isOtherLic = ParamUtil.getStrings(request, "isOtherLic");
+        String [] premisesSelect = ParamUtil.getStrings(request, "onSiteSelect");
+        String [] hciName = ParamUtil.getStrings(request, "onSiteHciName");
+        String [] postalCode = ParamUtil.getStrings(request,  "onSitePostalCode");
+        String [] blkNo = ParamUtil.getStrings(request, "onSiteBlkNo");
+        String [] streetName = ParamUtil.getStrings(request, "onSiteStreetName");
+        String [] floorNo = ParamUtil.getStrings(request, "onSiteFloorNo");
+        String [] unitNo = ParamUtil.getStrings(request, "onSiteUnitNo");
+        String [] buildingName = ParamUtil.getStrings(request, "onSiteBuildingName");
+        String [] siteAddressType = ParamUtil.getStrings(request, "onSiteAddressType");
+        String [] offTelNo= ParamUtil.getStrings(request,"onSiteOffTelNo");
+        String [] scdfRefNo = ParamUtil.getStrings(request, "onSiteScdfRefNo");
+        String [] onsiteStartHH = ParamUtil.getStrings(request, "onSiteStartHH");
+        String [] onsiteStartMM = ParamUtil.getStrings(request, "onSiteStartMM");
+        String [] onsiteEndHHS = ParamUtil.getStrings(request, "onSiteEndHH");
+        String [] onsiteEndMMS = ParamUtil.getStrings(request, "onSiteEndMM");
+        String [] fireSafetyCertIssuedDateStr  = ParamUtil.getStrings(request, "onSiteFireSafetyCertIssuedDate");
+        String [] isOtherLic = ParamUtil.getStrings(request, "onSiteIsOtherLic");
         //conveyance
-        String [] conPremisesSelect = ParamUtil.getStrings(request, "premConSelect");
+        String [] conPremisesSelect = ParamUtil.getStrings(request, "conveyanceSelect");
         String [] conVehicleNo = ParamUtil.getStrings(request, "conveyanceVehicleNo");
         String [] conPostalCode = ParamUtil.getStrings(request,  "conveyancePostalCode");
         String [] conBlkNo = ParamUtil.getStrings(request, "conveyanceBlockNo");
@@ -2256,10 +2291,10 @@ public class NewApplicationDelegator {
         String [] conUnitNo = ParamUtil.getStrings(request, "conveyanceUnitNo");
         String [] conBuildingName = ParamUtil.getStrings(request, "conveyanceBuildingName");
         String [] conSiteAddressType = ParamUtil.getStrings(request, "conveyanceAddrType");
-        String [] conStartHH = ParamUtil.getStrings(request, "conStartHH");
-        String [] conStartMM = ParamUtil.getStrings(request, "conStartMM");
-        String [] conEndHHS = ParamUtil.getStrings(request, "conEndHH");
-        String [] conEndMMS = ParamUtil.getStrings(request, "conEndMM");
+        String [] conStartHH = ParamUtil.getStrings(request, "conveyanceStartHH");
+        String [] conStartMM = ParamUtil.getStrings(request, "conveyanceStartMM");
+        String [] conEndHHS = ParamUtil.getStrings(request, "conveyanceEndHH");
+        String [] conEndMMS = ParamUtil.getStrings(request, "conveyanceEndMM");
         //every prem's ph length
         String [] phLength = ParamUtil.getStrings(request,"phLength");
         String [] premValue = ParamUtil.getStrings(request, "premValue");
@@ -2294,11 +2329,11 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setIsOtherLic(isOtherLic[i]);
                 for(int j =0; j<length; j++){
                     AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
-                    String onsitePubHolidayName = premValue[i]+"onsitePubHoliday"+j;
-                    String onsitePbHolDayStartHHName = premValue[i]+"onsitePbHolDayStartHH"+j;
-                    String onsitePbHolDayStartMMName = premValue[i]+"onsitePbHolDayStartMM"+j;
-                    String onsitePbHolDayEndHHName = premValue[i]+"onsitePbHolDayEndHH"+j;
-                    String onsitePbHolDayEndMMName = premValue[i]+"onsitePbHolDayEndMM"+j;
+                    String onsitePubHolidayName = premValue[i]+"onSitePubHoliday"+j;
+                    String onsitePbHolDayStartHHName = premValue[i]+"onSitePbHolDayStartHH"+j;
+                    String onsitePbHolDayStartMMName = premValue[i]+"onSitePbHolDayStartMM"+j;
+                    String onsitePbHolDayEndHHName = premValue[i]+"onSitePbHolDayEndHH"+j;
+                    String onsitePbHolDayEndMMName = premValue[i]+"onSitePbHolDayEndMM"+j;
 
                     String onsitePubHoliday = ParamUtil.getDate(request, onsitePubHolidayName);
                     String onsitePbHolDayStartHH = ParamUtil.getString(request, onsitePbHolDayStartHHName);
@@ -2331,11 +2366,11 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
                 for(int j =0; j<length; j++){
                     AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
-                    String convPubHolidayName = premValue[i]+"convPubHoliday"+j;
-                    String convPbHolDayStartHHName = premValue[i]+"convPbHolDayStartHH"+j;
-                    String convPbHolDayStartMMName = premValue[i]+"convPbHolDayStartMM"+j;
-                    String convPbHolDayEndHHName = premValue[i]+"convPbHolDayEndHH"+j;
-                    String convPbHolDayEndMMName = premValue[i]+"convPbHolDayEndMM"+j;
+                    String convPubHolidayName = premValue[i]+"conveyancePubHoliday"+j;
+                    String convPbHolDayStartHHName = premValue[i]+"conveyancePbHolDayStartHH"+j;
+                    String convPbHolDayStartMMName = premValue[i]+"conveyancePbHolDayStartMM"+j;
+                    String convPbHolDayEndHHName = premValue[i]+"conveyancePbHolDayEndHH"+j;
+                    String convPbHolDayEndMMName = premValue[i]+"conveyancePbHolDayEndMM"+j;
 
                     String convPubHoliday = ParamUtil.getDate(request, convPubHolidayName);
                     String convPbHolDayStartHH = ParamUtil.getString(request, convPbHolDayStartHHName);
