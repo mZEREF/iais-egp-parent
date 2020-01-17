@@ -213,4 +213,25 @@ public class ApplicationClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsPaySuc(){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<List<ApplicationDto>>getAppDtosByAppGrpId(){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    FeignResponseEntity<List<ApplicationDto>>getAppDtosReject(){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

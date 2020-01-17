@@ -126,5 +126,12 @@ public interface ApplicationClient {
     @GetMapping(path = "/iais-application/application/correlations/{appid}")
     FeignResponseEntity<List<AppPremisesCorrelationDto>> listAppPremisesCorrelation(@PathVariable(name = "appid") String appId);
 
+    @GetMapping(value = "/iais-application-be/appGrps-pay-success",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsPaySuc();
 
+    @GetMapping(value = "/iais-application-be/applications/{appGrpId}",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>>getAppDtosByAppGrpId(@PathVariable(name = "appGrpId") String appGrpId);
+
+    @GetMapping(value = "/iais-application-be/app-reject",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>>getAppDtosReject();
 }
