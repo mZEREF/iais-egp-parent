@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -108,13 +109,13 @@ public class BackendAjaxController {
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                 if(kpiMap != null) {
                     int kpi = kpiMap.get(taskDto.getTaskKey());
-                    int days = 0;
+                    int days = getWorkingDaysBySubStage(subStage, inspectionAppInGroupQueryDto, applicationViewDto);
                     if (days < hcsaSvcKpiDto.getRemThreshold()) {
                         colour = "black";
                     } else if (hcsaSvcKpiDto.getRemThreshold() <= days && days <= kpi) {
-                        colour = "red";
-                    } else if (days > kpi) {
                         colour = "amber";
+                    } else if (days > kpi) {
+                        colour = "red";
                     }
                 }
             }
@@ -122,6 +123,15 @@ public class BackendAjaxController {
 
         }
         return colour;
+    }
+
+    private int getWorkingDaysBySubStage(String subStage, InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto, ApplicationViewDto applicationViewDto) {
+        int workDays = 0;
+        if(StringUtil.isEmpty(subStage)){
+            return 0;
+        }
+        
+        return workDays;
     }
 
     private String getSubStageByInspectionStatus(InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto) {
