@@ -75,8 +75,8 @@
                                                         <td>${applicationViewDto.applicationType}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Service Type</td>
-                                                        <td>${applicationViewDto.applicationDto.serviceId}</td>
+                                                        <td align="right">Clinical Laboratory</td>
+                                                        <td>${applicationViewDto.serviceType}</td>
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Submission Date</td>
@@ -116,7 +116,7 @@
                                                         <td>${applicationViewDto.hciName}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">HCI ADDRESS</td>
+                                                        <td align="right">HCI Address</td>
                                                         <td>${applicationViewDto.hciAddress}</td>
                                                     </tr>
                                                     <tr>
@@ -474,7 +474,7 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <tr>
+                                                    <tr id="processingDecision">
                                                         <td>
                                                             <span>Processing Decision(</span><span
                                                                 style="color: red">*</span><span>):</span></span>
@@ -484,6 +484,19 @@
                                                                 <option>---select---</option>
                                                                 <option value="VERIFIED">Verified</option>
                                                                 <option value="ROLLBACK">Roll back</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="replytr" class="hidden">
+                                                        <td>
+                                                            <span>Processing Decision(</span><span
+                                                                style="color: red">*</span><span>):</span></span>
+                                                        </td>
+                                                        <td>
+                                                            <select name="nextStageReply" class="table-select">
+                                                                <option>---select---</option>
+                                                                <option value="PROCREP">Reply</option>
+                                                                <option value="PROCREJ">Reject</option>
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -513,7 +526,7 @@
                                                             <span>Roll Back:</span>
                                                         </td>
                                                         <td>
-                                                            <select name="rollBack" class="table-select" required>
+                                                            <select name="rollBack" class="table-select">
                                                                 <option>---select---</option>
                                                                 <c:forEach items="${applicationViewDto.rollBack}" var="rollBack">
                                                                     <option value="${rollBack.value}">${rollBack.key}</option>
@@ -537,7 +550,7 @@
                                                     </tr>
                                                 </table>
                                                 <div align="center">
-                                                    <button id="submitButton" type="submit" class="btn btn-primary">
+                                                    <button id="submitButton" type="button" class="btn btn-primary">
                                                         Submit
                                                     </button>
                                                 </div>
@@ -612,6 +625,10 @@
             $('#ApplicationViewInspection').css('display','none');
             $('#recomedationDropdown').removeClass('hidden');
         }
+        if('${applicationViewDto.applicationDto.status}' == 'APST000'){
+            $('#processingDecision').addClass('hidden');
+            $('#replytr').removeClass('hidden');
+        }
     });
 
 
@@ -619,14 +636,14 @@
 
 
     $("#submitButton").click(function () {
-        $("#submitButton").attr("disabled",true);
         var textarea = $("#internalRemarksId").val();
         if (textarea == "") {
             $('#notNull').remove();
             $("#internalRemarksId").after("<span id='notNull' style='color: red;'>*NOT NULL!</span>")
             return false;
         }
-
+        document.getElementById("mainForm").submit();
+        $("#submitButton").attr("disabled",true);
     });
 
     $("[name='nextStage']").change(function selectChange() {
@@ -634,7 +651,9 @@
         if (selectValue == "VERIFIED") {
             $('#verifiedDropdown').removeClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
+            $("[name='rollBack']").removeClass('required');
         }else if(selectValue == "ROLLBACK"){
+            $("[name='rollBack']").addClass('required');
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
         }else{

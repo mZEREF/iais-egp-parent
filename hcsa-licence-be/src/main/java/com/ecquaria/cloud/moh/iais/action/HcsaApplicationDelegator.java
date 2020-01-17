@@ -11,12 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -39,14 +34,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -54,13 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * HcsaApplicationDelegator
@@ -139,7 +121,6 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
         //get the task
        String  taskId = ParamUtil.getString(bpc.request,"taskId");
-        //String taskId="12848A70-820B-EA11-BE7D-000C29F371DC";
         TaskDto taskDto = taskService.getTaskById(taskId);
 //        String loginID=(String) ParamUtil.getSessionAttr(bpc.request,"loginID");
 //        if(!(loginID.equals(taskDto.getUserId()))){
@@ -190,14 +171,8 @@ public class HcsaApplicationDelegator {
             routingStage.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
 //            verified.put(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName());
         }
-
-
 //        applicationViewDto.setVerified(verified)
-
-
-
 // History
-
         List<String> actionByList=new ArrayList<>();
         for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
              ) {
@@ -286,9 +261,7 @@ public class HcsaApplicationDelegator {
             }
         }
         applicationViewDto.setRecomeDation(riskResult);
-
-
-
+        applicationViewDto.setServiceType(hcsaServiceDto.getSvcName());
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);
         log.debug(StringUtil.changeForLog("the do prepareData end ...."));
@@ -323,9 +296,6 @@ public class HcsaApplicationDelegator {
             appPremisesRecommendationDto.setChronoUnit(strs[1]);
             insRepService.saveRecommendation(appPremisesRecommendationDto);
         }
-
-
-
         String verified = ParamUtil.getString(bpc.request,"verified");
         String rollBack=ParamUtil.getString(bpc.request,"rollBack");
         String nextStage=null;
@@ -498,6 +468,7 @@ public class HcsaApplicationDelegator {
     public void support(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do support start ...."));
         //TODO:support
+
         log.debug(StringUtil.changeForLog("the do support end ...."));
     }
 
@@ -602,6 +573,8 @@ public class HcsaApplicationDelegator {
     public void replay(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         //TODO:replay
+
+
         log.debug(StringUtil.changeForLog("the do replay end ...."));
     }
 
