@@ -305,7 +305,7 @@
                             <iais:row>
                               <iais:field value="Remarks"/>
                               <iais:value width="300">
-                                <textarea id="preInspecRemarks" name="preInspecRemarks" cols="70" rows="7" ><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
+                                <textarea maxlength="300" id="preInspecRemarks" name="preInspecRemarks" cols="70" rows="7" ><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_reMarks"></span>
                               </iais:value>
                             </iais:row>
