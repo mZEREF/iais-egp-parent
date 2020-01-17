@@ -41,6 +41,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -92,11 +94,16 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     private InspectionAssignTaskService inspectionAssignTaskService;
     @Autowired
     InsepctionNcCheckListService insepctionNcCheckListService;
+    @Autowired
+    ApplicationViewService applicationViewService;
+    @Autowired
+    ApplicationService applicationService;
     @Override
     public ApplicationViewDto getAppViewDto(String taskId){
         TaskDto taskDto = taskService.getTaskById(taskId);
         String refNo = taskDto.getRefNo();
-        ApplicationViewDto viewDto = applicationClient.getAppViewByCorrelationId(refNo).getEntity();
+        ApplicationViewDto viewDto = applicationViewService.getApplicationViewDtoByCorrId(refNo);
+
         return viewDto;
     }
 
@@ -680,7 +687,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 chkDtoList.add(fDto);
             }else if("service".equals(conifgType)&&!dto.isCommon()){
                 fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
-                fDto.setSvcName(dto.getSvcName());
+                if(!StringUtil.isEmpty(dto.getSvcName())){
+                    fDto.setSvcName(dto.getSvcName());
+                }
                 fDto.setConfigId(temp.getChkLstConfId());
                 fDto.setSvcCode(dto.getSvcCode());
                 if(dto.getSvcSubType()!=null){
