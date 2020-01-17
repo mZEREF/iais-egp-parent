@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -120,21 +119,17 @@ public class ResponseForInformationDelegator {
         licPremisesReqForInfoDto.setReplyDate(new Date());
         licPremisesReqForInfoDto.setReplyUser(licPremisesReqForInfoDto.getLicenseeId());
         licPremisesReqForInfoDto.setUserReply(userReply);
-
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        feEicGatewayClient.routeRfiData(licPremisesReqForInfoDto,
-                signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
-
-        responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto1=responseForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
         logAbout("preparetionData");
-        byte[] data = responseForInformationService.getData(licPremisesReqForInfoDto);
+        String data = responseForInformationService.getData(licPremisesReqForInfoDto1);
         log.info("------------------- getData  end --------------");
         responseForInformationService.saveFile(data);
         log.info("------------------- saveFile  end --------------");
         responseForInformationService.compressFile();
         log.info("------------------- compressFile  end --------------");
+
+
         // 		doSubmit->OnStepProcess
     }
     private  void logAbout(String methodName){

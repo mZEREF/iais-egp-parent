@@ -206,7 +206,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public void compress(){
+    public void compress(LicPremisesReqForInfoDto licPremisesReqForInfoDto){
         log.info("-------------compress start ---------");
         if(new File(backups).isDirectory()){
             File[] files = new File(backups).listFiles();
@@ -237,7 +237,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
                         try {
 
-                            this.download(processFileTrackDto,name);
+                            this.download(processFileTrackDto,licPremisesReqForInfoDto,name);
                             //save success
                         }catch (Exception e){
                             //save bad
@@ -313,9 +313,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     @Override
-    public void   download( ProcessFileTrackDto processFileTrackDto,String fileName) {
+    public boolean download( ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto,String fileName) {
 
-
+        Boolean flag=false;
         File file =new File(downZip+File.separator+fileName+File.separator+"folder");
         if(!file.exists()){
             file.mkdirs();
@@ -334,9 +334,18 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                             by.write(size,0,count);
                             count= fileInputStream.read(size);
                         }
-                        if(processFileTrackDto!=null){
-                            changeStatus(processFileTrackDto);
-                            saveFileRepo( fileName);
+                        Boolean aBoolean = fileToDto(by.toString(), licPremisesReqForInfoDto);
+                        flag=aBoolean;
+                        /*  Boolean backups = backups(flag, filzz);*/
+                        if(aBoolean){
+                            if(processFileTrackDto!=null){
+
+                                changeStatus(processFileTrackDto);
+
+                                /*     Boolean aBoolean1 = changeFeApplicationStatus();*/
+
+                                saveFileRepo( fileName);
+                            }
                         }
                     }catch (Exception e){
                         log.error(e.getMessage(),e);
@@ -344,8 +353,15 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 }
             }
         }
+        return flag;
+    }
+    private Boolean fileToDto(String str,LicPremisesReqForInfoDto licPremisesReqForInfoDto){
+        licPremisesReqForInfoDto = JsonUtil.parseToObject(str, LicPremisesReqForInfoDto.class);
+        Boolean flag=requestForInformationClient.rfiFeUpdateToBe(licPremisesReqForInfoDto).getStatusCode() == 200;
+        return flag;
 
     }
+
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
         /*  applicationClient.updateStatus().getEntity();*/
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);

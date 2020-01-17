@@ -476,6 +476,12 @@ public class RequestForInformationDelegator {
         String reqInfoId = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
         requestForInformationService.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
+        licPremisesReqForInfoDto.setReqInfoId(reqInfoId);
+        licPremisesReqForInfoDto.setAction("delete");
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        gatewayClient.createLicPremisesReqForInfoFe(licPremisesReqForInfoDto,
+                signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
         // 		doAccept->OnStepProcess
     }
     public void preViewRfi(BaseProcessClass bpc) {

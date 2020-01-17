@@ -9,9 +9,9 @@
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,
                 T4.LICENSEE_ID
             FROM APPLICATION AS app
-             JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = app.ID
-             JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
-             JOIN APPLICATION_GROUP T4 ON T4.ID = app.APP_GRP_ID
+             LEFT JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = app.ID
+             LEFT JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
+             LEFT JOIN APPLICATION_GROUP T4 ON T4.ID = app.APP_GRP_ID
 
             WHERE 1=1
             <#if id??> AND app.id = :id </#if>
@@ -37,11 +37,13 @@
                 licApp.APPLICATION_ID as APPLICATION_ID,
                 Prem.HCI_CODE,Prem.HCI_NAME,
                 Prem.BLK_NO, Prem.FLOOR_NO, Prem.UNIT_NO, Prem.STREET_NAME, Prem.BUILDING_NAME,
-                licPrem.ID as lic_prem_id
+                licPrem.ID as lic_prem_id,
+                LicPremisesAdhocChklItem.RISK_LEVEL
             FROM LICENCE AS lic
-            JOIN LIC_PREMISES licPrem ON licPrem.LICENCE_ID = lic.ID
-            JOIN PREMISES Prem ON Prem.ID = licPrem.PREMISES_ID
-            JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
+            LEFT JOIN LIC_PREMISES licPrem ON licPrem.LICENCE_ID = lic.ID
+            LEFT JOIN PREMISES Prem ON Prem.ID = licPrem.PREMISES_ID
+            LEFT JOIN LIC_APP_CORRELATION licApp ON licApp.LICENCE_ID = lic.ID
+            LEFT JOIN lic_premises_adhoc_chkl_item LicPremisesAdhocChklItem ON licPrem.ID = LicPremisesAdhocChklItem.LIC_PREM_CORRE_ID
             WHERE 1=1
             <#if licence_status??> AND lic.STATUS = :licence_status</#if>
             <#if start_date??> AND lic.start_date >= :start_date</#if>
@@ -50,8 +52,4 @@
             <#if app_id??> AND licApp.APPLICATION_ID = :app_id</#if>
         ]]>
     </sql>
-    <!--                LicPremisesAdhocChklItem.RISK_LEVEL-->
-
-    <!--            JOIN lic_premises_adhoc_chkl_item LicPremisesAdhocChklItem ON licPrem.ID = LicPremisesAdhocChklItem.LIC_PREM_CORRE_ID-->
-
 </sqls>

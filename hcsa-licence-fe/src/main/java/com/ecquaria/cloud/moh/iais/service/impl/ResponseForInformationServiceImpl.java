@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -78,21 +79,21 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
 
     @Override
-    public void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
-        responseForInformationClient.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto);
+    public LicPremisesReqForInfoDto acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+        return responseForInformationClient.acceptLicPremisesReqForInfo(licPremisesReqForInfoDto).getEntity();
     }
 
     @Override
-    public Boolean saveFile(byte[]  str) {
-        String s = FileUtil.genMd5FileChecksum(str);
+    public Boolean saveFile(String  str) {
+        String s = FileUtil.genMd5FileChecksum(str.getBytes());
         File file=MiscUtil.generateFile(download, s+fileFormat);
         try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
              FileOutputStream fileOutputStream  =new FileOutputStream(file);) {
             if(!file.exists()){
                 file.createNewFile();
             }
-            fileOutputStream.write(str);
-            fileInputStream.write(str);
+            fileOutputStream.write(str.getBytes());
+            fileInputStream.write(str.getBytes());
 
         } catch (Exception e) {
             log.error(e.getMessage(),e);
@@ -102,7 +103,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     @Override
-    public byte[] getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
+    public String getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         fileName = "folder";
         download = sharedPath + "folder";
         backups = sharedPath + "backups";
@@ -111,6 +112,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!fileRepPath.exists()){
             fileRepPath.mkdirs();
         }
+        String entity1= JsonUtil.parseToJson(licPremisesReqForInfoDto);
         byte[] entity = fileRepositoryClient.getFileFormDataBase(licPremisesReqForInfoDto.getFileRepoId()).getEntity();
         File file = MiscUtil.generateFile(download + File.separator + "files",
                 licPremisesReqForInfoDto.getFileRepoId() + "@" + licPremisesReqForInfoDto.getDocName());
@@ -119,7 +121,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
-        return entity;
+        return entity1;
     }
 
 

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 @Delegator("rfiFileRepoDownloadDelegator")
 public class RfiFileRepoDownloadDelegator {
+    private LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
 
     @Autowired
     private RequestForInformationService requestForInformationService;
@@ -27,7 +29,7 @@ public class RfiFileRepoDownloadDelegator {
     public  void prepareData(BaseProcessClass bpc) throws Exception {
          logAbout("preparetionData");
         requestForInformationService.delete();
-        requestForInformationService.compress();
+        requestForInformationService.compress(licPremisesReqForInfoDto);
 
     }
 /*******************************/

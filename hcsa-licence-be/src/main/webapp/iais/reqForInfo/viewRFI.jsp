@@ -97,7 +97,9 @@
                                         </c:if>
 
                                         <iais:action style="text-align:center;">
-                                            <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAccept('${licPreReqForInfoDto.reqInfoId}')">Accept</button>
+                                            <c:if test="${licPreReqForInfoDto.userReply!=null}">
+                                                <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doAccept('${licPreReqForInfoDto.reqInfoId}')">Accept</button>
+                                            </c:if>
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doCancel('${licPreReqForInfoDto.reqInfoId}')">Cancel</button>
                                             <button class="btn btn-lg btn-login-submit" type="button" style="background:#2199E8; color: white" onclick="javascript:doBack()">Back</button>
                                         </iais:action>

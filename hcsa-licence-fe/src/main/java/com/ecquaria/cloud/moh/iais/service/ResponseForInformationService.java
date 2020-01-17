@@ -14,9 +14,9 @@ public interface ResponseForInformationService {
 
     List<LicPremisesReqForInfoDto> searchLicPreRfiBylicenseeId(String licenseeId);
     LicPremisesReqForInfoDto getLicPreReqForInfo(String id);
-    void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
-    Boolean saveFile(byte[]  str);
-    byte[] getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+    LicPremisesReqForInfoDto acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+    Boolean saveFile(String  str);
+    String getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     void compressFile();
 
 }

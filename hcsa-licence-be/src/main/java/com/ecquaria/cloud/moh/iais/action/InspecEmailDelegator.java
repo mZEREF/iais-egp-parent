@@ -87,7 +87,7 @@ public class InspecEmailDelegator {
     private static final String TD="</td><td>";
     private static final String INS_EMAIL_DTO="insEmailDto";
     private static final String SUBJECT="subject";
-
+    private static final String APP_VIEW_DTO="applicationViewDto";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -96,7 +96,7 @@ public class InspecEmailDelegator {
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, null);
         ParamUtil.setSessionAttr(request,"appPremCorrId",null);
         ParamUtil.setSessionAttr(request,"mesContext", null);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",null);
+        ParamUtil.setSessionAttr(request,APP_VIEW_DTO,null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
 
     }
@@ -137,13 +137,14 @@ public class InspecEmailDelegator {
         map.put("HCI_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getHciNameOrAddress()));
         map.put("SERVICE_NAME",StringUtil.viewHtml(inspectionEmailTemplateDto.getServiceName()));
         if(!ncAnswerDtos.isEmpty()){
-            StringBuilder stringBuilder=new StringBuilder();int i=0;
+            StringBuilder stringBuilder=new StringBuilder();
+            int i=0;
             for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                  ) {
-                stringBuilder.append("<tr><td>"+ ++i);
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getClause()));
-                stringBuilder.append(TD+StringUtil.viewHtml(ncAnswerDto.getRemark()));
+                stringBuilder.append("<tr><td>").append(++i);
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
                 stringBuilder.append("</td></tr>");
             }
             map.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
@@ -164,7 +165,7 @@ public class InspecEmailDelegator {
         ParamUtil.setSessionAttr(request,"appPremCorrId",appPremCorrId);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
         ParamUtil.setSessionAttr(request,"mesContext", mesContext);
-        ParamUtil.setSessionAttr(request,"applicationViewDto",applicationViewDto);
+        ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
     }
 
@@ -179,10 +180,6 @@ public class InspecEmailDelegator {
     public void previewEmail(BaseProcessClass bpc){
         log.info("=======>>>>>previewEmail>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"preview".equals(currentAction)){
-            return;
-        }
         String content=ParamUtil.getString(request,MSG_CON);
         String subject=ParamUtil.getString(request,SUBJECT);
         ParamUtil.setRequestAttr(request,SUBJECT, subject);
@@ -197,13 +194,9 @@ public class InspecEmailDelegator {
         HttpServletRequest request = bpc.request;
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,"applicationViewDto");
+        ApplicationViewDto applicationViewDto= (ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
         String serviceId=applicationViewDto.getApplicationDto().getServiceId();
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(!"send".equals(currentAction)){
-            return;
-        }
         String decision=ParamUtil.getString(request,"decision");
         if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
 

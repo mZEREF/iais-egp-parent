@@ -31,7 +31,7 @@ public interface ResponseForInformationClient {
     FeignResponseEntity<LicPremisesReqForInfoDto> getLicPreReqForInfo(@PathVariable("reqForInfoId") String id);
 
     @PostMapping(value = "/hcsa-resForInfo-fe/licence-accept-rfi",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    void acceptLicPremisesReqForInfo(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+    FeignResponseEntity<LicPremisesReqForInfoDto> acceptLicPremisesReqForInfo(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto);
 
 
 

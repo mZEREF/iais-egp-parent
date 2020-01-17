@@ -33,7 +33,7 @@ public interface RequestForInformationService {
     void acceptLicPremisesReqForInfo(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
     List<LicPremisesReqForInfoDto> getAllReqForInfo();
     byte[] downloadFile(String fileRepoId);
-    void compress();
-    void download(ProcessFileTrackDto processFileTrackDto, String fileName);
+    void compress(LicPremisesReqForInfoDto licPremisesReqForInfoDto);
+    boolean download(ProcessFileTrackDto processFileTrackDto,LicPremisesReqForInfoDto licPremisesReqForInfoDto, String fileName);
     void delete();
 }
