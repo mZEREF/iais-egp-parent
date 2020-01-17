@@ -91,11 +91,11 @@
             <tr>
               <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
               <td></td>
-              <iais:sortableHeader needSort="true"   field="IS_COMMON" value="Common"></iais:sortableHeader>
+              <iais:sortableHeader needSort="true"   field="is_common" value="Common"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="type" value="Type"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="service" value="Service"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="SUBTYPE_NAME" value="Service Sub-type"></iais:sortableHeader>
+              <iais:sortableHeader needSort="true"   field="subtype_name" value="Service Sub-type"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="START_DATE" value="Effective Start Date"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="END_DATE" value="Effective End Date"></iais:sortableHeader>

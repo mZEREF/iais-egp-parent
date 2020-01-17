@@ -644,13 +644,15 @@ public class HcsaChklConfigDelegator {
                 int order = Integer.valueOf(orderStr);
                 sec.setOrder(order);
             }catch (NumberFormatException e){
+                log.debug(e.getMessage());
                 throw  new IaisRuntimeException(e.getMessage());
             }
 
             List<ChecklistItemDto> checklistItemDtos = sec.getChecklistItemDtos();
             if (checklistItemDtos != null && !checklistItemDtos.isEmpty()){
                 for (ChecklistItemDto item : checklistItemDtos){
-                    String itemOrder = ParamUtil.getString(request, item.getItemId());
+                    String itemId = item.getItemId() + orderStr;
+                    String itemOrder = ParamUtil.getString(request, itemId);
                     item.setSectionItemOrder(Integer.valueOf(itemOrder));
                 }
             }
@@ -718,7 +720,7 @@ public class HcsaChklConfigDelegator {
         HttpServletRequest request = bpc.request;
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        CrudHelper.doSorting(searchParam,bpc.request);
+        CrudHelper.doPaging(searchParam,bpc.request);
     }
 
 

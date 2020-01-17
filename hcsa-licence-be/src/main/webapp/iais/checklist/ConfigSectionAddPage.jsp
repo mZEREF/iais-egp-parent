@@ -117,8 +117,8 @@
 
                             <c:forEach var = "chklitem" items = "${chklsec.checklistItemDtos}" varStatus="status">
 
-                                    <tr class="itemClass" data-id="${chklitem.itemId} + ${sectionStatus.index}">
-                                      <input type="hidden" name="${chklitem.itemId}" data-name="itemWant" value="${status.index}">
+                                    <tr class="itemClass" data-id="${chklitem.itemId}${sectionStatus.index}">
+                                      <input type="hidden" name="${chklitem.itemId}${sectionStatus.index}" data-name="itemWant" value="${status.index}">
                                         <td>
                                           <p class="visible-xs visible-sm table-row-title">Regulation Clause Number</p>
                                           <p>${chklitem.regulationClauseNo}</p>
@@ -142,8 +142,8 @@
 
                                         <td>
                                           <p class="visible-xs visible-sm table-row-title">Date</p>
-                                          <p><a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId} + ${sectionStatus.index}','UP', 'itemClass')"><em class=""> </em>Up</a>
-                                            <a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId} + ${sectionStatus.index}','DOWN', 'itemClass')"><em class=""></em>Down</a>
+                                          <p><a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId}${sectionStatus.index}','UP', 'itemClass')"><em class=""> </em>Up</a>
+                                            <a class="btnUp" data-id="${chklitem.itemId} + ${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId}${sectionStatus.index}','DOWN', 'itemClass')"><em class=""></em>Down</a>
                                             <a class="btnUp"  onclick="javascript:removeSectionItem('${chklsec.id}','${chklitem.itemId}')"><em class=""></em>Remove</a></p>
                                           </p>
 
@@ -212,6 +212,7 @@
     function saveSortValue(){
         var secIndex = document.querySelectorAll("input[data-name='sectionWant']")
         var itemIndex = document.querySelectorAll("input[data-name='itemWant']")
+
         if (secIndex){
             for(var i = 0,j = secIndex.length;i<j;i++){
                 secIndex[i].value = i
@@ -219,12 +220,13 @@
             }
         }
 
-        if (itemIndex){
+       /* if (itemIndex){
             for(var i = 0,j = itemIndex.length;i<j;i++){
                 itemIndex[i].value = i
                 console.log(itemIndex[i].value);
             }
-        }
+        }*/
+
     }
 
     function routeToItemProcess(id) {

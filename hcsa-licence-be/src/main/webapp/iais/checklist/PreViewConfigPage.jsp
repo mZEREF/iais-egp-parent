@@ -37,10 +37,10 @@
                 <c:if test="${configSessionAttr.common eq false}">
                   <c:choose>
                     <c:when test="${empty item.svcSubType}">
-                      <h2>${configSessionAttr.svcCode}</h2>
+                      <h2>${configSessionAttr.svcName}</h2>
                     </c:when>
                     <c:otherwise>
-                      <h2>${configSessionAttr.svcCode} | ${configSessionAttr.svcSubType}</h2>
+                      <h2>${configSessionAttr.svcName} | ${configSessionAttr.svcSubType}</h2>
                     </c:otherwise>
                   </c:choose>
                 </c:if>
