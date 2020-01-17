@@ -90,4 +90,10 @@ public class OrganizationMainClientFallback {
         return entity;
     }
 
+    public FeignResponseEntity<List<TaskDto>> getInsKpiTask(TaskDto taskDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
