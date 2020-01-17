@@ -34,9 +34,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
@@ -433,15 +436,15 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    public void saveDraft(InspectionFillCheckListDto icDto, InspectionFillCheckListDto comDto, AdCheckListShowDto adDto) {
+    public void saveDraft(InspectionFDtosDto serListDto, InspectionFillCheckListDto comDto, AdCheckListShowDto adDto) {
         CheckListDraftDto checkListDraftDto = new CheckListDraftDto();
-        checkListDraftDto.setGeneralDto(icDto);
+        //checkListDraftDto.setGeneralDto(icDto);
         checkListDraftDto.setComDto(comDto);
         String insDraft =JsonUtil.parseToJson(checkListDraftDto);
         AppPremInsDraftDto insDraftDto = new AppPremInsDraftDto();
         insDraftDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         insDraftDto.setAnswer(insDraft);
-        AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(icDto.getCheckList().get(0).getAppPreCorreId(),icDto.getCheckList().get(0).getConfigId()).getEntity();
+      /*  AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(icDto.getCheckList().get(0).getAppPreCorreId(),icDto.getCheckList().get(0).getConfigId()).getEntity();
         if (appDto == null) {
             appDto = new AppPremisesPreInspectChklDto();
             appDto.setVersion(1+"");
@@ -451,7 +454,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             appDto.setChkLstConfId(icDto.getCheckList().get(0).getConfigId());
             appDto = fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto).getEntity();
         }
-        insDraftDto.setPreInsChklId(appDto.getId());
+        insDraftDto.setPreInsChklId(appDto.getId());*/
         //Date date = newDate()
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
@@ -581,7 +584,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String svcId = applicationDto.getServiceId();
         String stgId = taskDto.getTaskKey();
-
         HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
         dto.setStageId(stgId);
         dto.setServiceId(svcId);
@@ -681,6 +683,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 fDto.setSvcName(dto.getSvcName());
                 fDto.setConfigId(temp.getChkLstConfId());
                 fDto.setSvcCode(dto.getSvcCode());
+                if(dto.getSvcSubType()!=null){
+                    fDto.setSubName(dto.getSvcSubType().replace(" ",""));
+                }else{
+                    fDto.setSubName(dto.getSvcCode());
+                }
                 chkDtoList.add(fDto);
             }
         }
@@ -709,5 +716,124 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
         serListDto.setBestPractice(dto.getBestPractice());
         serListDto.setTcuRemark(dto.getRemarks());
+    }
+
+    @Override
+    public String getInspectionDate(String appPremCorrId) {
+        AppPremisesRecommendationDto dto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        String inspectionDate = null;
+        if(dto!=null){
+            try {
+                inspectionDate = Formatter.formatDate(dto.getRecomInDate());
+            }catch (Exception e){
+                log.debug(e.toString());
+            }
+        }
+        return inspectionDate;
+    }
+
+    @Override
+    public List<String> getInspectiors(String appPremCorrId) {
+        List<String> inspectiors = new ArrayList<>();
+        List<TaskDto> dtos = organizationClient.getTaskByAppNo(appPremCorrId).getEntity();
+        if(!IaisCommonUtils.isEmpty(dtos)){
+            for(TaskDto temp:dtos){
+                OrgUserDto userDto = null;
+                if(temp.getUserId()!=null) {
+                    userDto = organizationClient.retrieveOrgUserAccountById(temp.getUserId()).getEntity();
+                    if(userDto.getDisplayName()!=null){
+                        inspectiors.add(userDto.getDisplayName());
+                    }
+                }
+            }
+        }
+        return inspectiors;
+    }
+
+    @Override
+    public String getInspectionLeader(String appPremCorrId) {
+        String inspectiorLeader = null;
+        List<TaskDto> dtos = organizationClient.getTaskByAppNo(appPremCorrId).getEntity();
+        if(!IaisCommonUtils.isEmpty(dtos)){
+            for(TaskDto temp:dtos){
+                if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(temp.getRoleId())){
+                    OrgUserDto userDto = organizationClient.retrieveOrgUserAccountById(temp.getUserId()).getEntity();
+                    inspectiorLeader =  userDto.getDisplayName();
+                }
+            }
+        }
+        return inspectiorLeader;
+    }
+
+    @Override
+    public void getRateOfCheckList(InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto, InspectionFillCheckListDto commonDto, String appPremCorrId) {
+        if(serListDto.getFdtoList()!=null){
+            getServiceTotalAndNc(serListDto);
+        }
+        if(commonDto!=null){
+            getGeneralTotalAndNc(commonDto,serListDto);
+        }
+        if(adchklDto!=null&&!IaisCommonUtils.isEmpty(adchklDto.getAdItemList())){
+            getAdhocTotalAndNc(adchklDto,serListDto);
+        }
+    }
+
+    private void getAdhocTotalAndNc(AdCheckListShowDto adchklDto, InspectionFDtosDto serListDto) {
+        int totalNum = 0;
+        int ncNum = 0;
+        int doNum = 0;
+        for(AdhocNcCheckItemDto aditem : adchklDto.getAdItemList()){
+            totalNum++;
+            if(!StringUtil.isEmpty(aditem)){
+                doNum++;
+                if("No".equals(aditem.getAdAnswer())){
+                    ncNum++;
+                }
+            }
+        }
+        serListDto.setAdhocTotal(totalNum);
+        serListDto.setAdhocNc(ncNum);
+        serListDto.setAdhocDo(doNum);
+    }
+
+    private void getGeneralTotalAndNc(InspectionFillCheckListDto commonDto, InspectionFDtosDto serListDto) {
+        int totalNum = 0;
+        int ncNum = 0;
+        int doNum = 0;
+        for(InspectionCheckQuestionDto cqDto : commonDto.getCheckList()){
+            totalNum++;
+            if(!StringUtil.isEmpty(cqDto.getChkanswer())){
+                doNum++;
+            }
+            if("No".equals(cqDto.getChkanswer())){
+                ncNum++;
+            }
+        }
+        serListDto.setGeneralTotal(totalNum);
+        serListDto.setGeneralDo(doNum);
+        serListDto.setGeneralNc(ncNum);
+    }
+
+    private void getServiceTotalAndNc(InspectionFDtosDto serListDto) {
+        List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();
+        int totalNum = 0;
+        int doNum = 0;
+        int ncNum = 0;
+        for(InspectionFillCheckListDto temp:dtoList){
+            if(!IaisCommonUtils.isEmpty(temp.getCheckList())){
+                for(InspectionCheckQuestionDto cqDto : temp.getCheckList()){
+                    totalNum++;
+                    if(!StringUtil.isEmpty(cqDto.getChkanswer())){
+                        doNum++;
+                        if("No".equals(cqDto.getChkanswer())){
+                            ncNum++;
+                        }
+                    }
+                }
+            }
+        }
+        serListDto.setServiceDo(doNum);
+        serListDto.setServiceTotal(totalNum);
+        serListDto.setServiceNc(ncNum);
     }
 }

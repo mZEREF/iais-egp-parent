@@ -39,4 +39,8 @@ public interface LicenceClient {
     @RequestMapping(path= "/hcsa-licence-rfc/licence-bylicence-byNo/{licenceNo}", method = RequestMethod.GET)
     FeignResponseEntity<LicenceDto> getLicBylicNo();
 
+    @RequestMapping(path = "/hcsa-licence/licence-by-licno",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getLicDtosByLicNos(@RequestBody List<String> licenceNos);
+
+
 }

@@ -168,4 +168,8 @@ public interface AppConfigClient {
     @GetMapping(path = "/iais-hcsa-risk/lastandaecriskScore",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaLastInspectionDto> getLastAndSecRiskScore(@RequestBody HcsaLastInspectionDto inspDto);
 
+    @GetMapping(path = "/iais-hcsa-service/service-by-name/{svcName}")
+    FeignResponseEntity<String> getServiceCodeByName(@PathVariable(name= "svcName") String svcName);
+
+
 }

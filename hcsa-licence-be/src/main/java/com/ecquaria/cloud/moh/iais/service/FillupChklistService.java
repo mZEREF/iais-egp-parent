@@ -37,7 +37,7 @@ public interface FillupChklistService {
     void merge(InspectionFillCheckListDto comDto,InspectionFillCheckListDto icDto);
     AdCheckListShowDto getAdhoc(String appremCorrId);
     void saveAdhocDto(AdCheckListShowDto showDto,String appPremId);
-    void saveDraft(InspectionFillCheckListDto icDto,InspectionFillCheckListDto comDto,AdCheckListShowDto adDto);
+    void saveDraft(InspectionFDtosDto serListDto,InspectionFillCheckListDto comDto,AdCheckListShowDto adDto);
     CheckListDraftDto getDraftByTaskId(String taskId,String svcType);
     List<AdhocDraftDto> getAdhocDraftByAppPremId(String appPremId);
     AdCheckListShowDto getAdhocDraftByappCorrId(String appremCorrId);
@@ -47,4 +47,12 @@ public interface FillupChklistService {
     List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String taskId, String service);
 
     void getTcuInfo(InspectionFDtosDto serListDto, String appPremCorrId);
+
+    String getInspectionDate(String appPremCorrId);
+
+    List<String> getInspectiors(String appPremCorrId);
+
+    String getInspectionLeader(String appPremCorrId);
+
+    void getRateOfCheckList(InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto, InspectionFillCheckListDto commonDto, String appPremCorrId);
 }

@@ -192,7 +192,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
        // AppPremPreInspectionNcDto ncDto = RestApiUtil.getByPathParam("hcsa-config:8883/iais-apppreinsnc-be/AppPremNcByAppCorrId{appCorrId}", appCorrId, AppPremPreInspectionNcDto.class);
         AppPremPreInspectionNcDto ncDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appCorrId).getEntity();
         String ncId = ncDto.getId();
-        //List<AppPremisesPreInspectionNcItemDto> ncItemDtoList = RestApiUtil.getListByPathParam("hcsa-config:8883/iais-apppreinsncitem-be/AppPremNcItemByNcId{ncId}", ncId, AppPremisesPreInspectionNcItemDto.class);
         List<AppPremisesPreInspectionNcItemDto> ncItemDtoList = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
         return ncItemDtoList;
     }
@@ -202,17 +201,19 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("appCorrId", appCorrId);
         paramMap.put("recomType", recomType);
-        //AppPremisesRecommendationDto appPremisesRecommendationDto = RestApiUtil.getByReqParam("hcsa-config:8883/application-be/RescomDto/{appPremId}/{recomType}", paramMap, AppPremisesRecommendationDto.class);
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorrId,recomType).getEntity();
         return appPremisesRecommendationDto;
     }
 
     @Override
     public void submit(InspectionFillCheckListDto commDto,AdCheckListShowDto showDto, InspectionFDtosDto serListDto,String appPremId) {
-        saveInspectionCheckListDto(commDto,appPremId);
+        if(commDto!=null){
+            saveInspectionCheckListDto(commDto,appPremId);
+        }
         saveSerListDto(serListDto,appPremId);
         saveAdhocDto(showDto,appPremId);
         saveRecommend(serListDto,appPremId);
+        saveOtherInspection(serListDto,appPremId);
         List<InspectionFillCheckListDto> fillcheckDtoList = new ArrayList<>();
         if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
@@ -225,6 +226,23 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         if(!fillcheckDtoList.isEmpty()){
             saveNcItem(fillcheckDtoList,appPremId);
         }
+    }
+
+    private void saveOtherInspection(InspectionFDtosDto serListDto, String appPremId) {
+        AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS).getEntity();
+        if(appPreRecommentdationDto!=null){
+            appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            fillUpCheckListGetAppClient.updateAppRecom(appPreRecommentdationDto);
+            appPreRecommentdationDto.setVersion(appPreRecommentdationDto.getVersion()+1);
+        }else{
+            appPreRecommentdationDto = new AppPremisesRecommendationDto();
+            appPreRecommentdationDto.setVersion(1);
+        }
+        appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appPreRecommentdationDto.setAppPremCorreId(appPremId);
+        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS);
+        appPreRecommentdationDto.setRemarks(serListDto.getOtherinspectionofficer());
+        fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
     }
 
     private void saveNcItem(List<InspectionFillCheckListDto> fillcheckDtoList, String appPremId) {
@@ -602,10 +620,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     public boolean isHaveNc(InspectionFillCheckListDto dto){
-        List<InspectionCheckQuestionDto> dtoList = dto.getCheckList();
-        for(InspectionCheckQuestionDto temp:dtoList){
-            if("No".equals(temp.getChkanswer())){
-                return true;
+        if(dto!=null){
+            List<InspectionCheckQuestionDto> dtoList = dto.getCheckList();
+            if(!IaisCommonUtils.isEmpty(dtoList)){
+                for(InspectionCheckQuestionDto temp:dtoList){
+                    if("No".equals(temp.getChkanswer())){
+                        return true;
+                    }
+                }
             }
         }
         return false;

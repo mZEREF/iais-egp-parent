@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.AutoRenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaLastInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGlobalDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskGolbalExtDto;
@@ -69,7 +71,7 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
     }
     @Override
     public HcsaLastInspectionDto getLastSecRiskSocre(String licId,String svcCode) {//use
-        List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = new ArrayList<>();
+         List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList = new ArrayList<>();
         HcsaLastInspectionDto lstInpDto = null;
         List<InspectionInfoDto> inspInfoList = new ArrayList<InspectionInfoDto>();
         InspectionInfoDto info = new InspectionInfoDto();
@@ -171,8 +173,6 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
         if(resultDto.isPreInspection()){
             HcsaLastInspectionDto dto = getLastSecRiskSocre(temp.getLicId(),temp.getSvcCode());
             doRenewInspectionLogic(dto,svcCode,resultDto);
-
-            //
         }else{
             HcsaLastInspectionDto dto = getLastSecRiskSocre(temp.getLicId(),temp.getSvcCode());
             lastSixMonthlogic(resultDto,dto,svcCode);
@@ -280,6 +280,54 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
         return riskResult;
     }
 
+    @Override
+    public List<AutoRenewDto> isAutoRenew(List<String> licNo,boolean isRenew) {
+        List<LicenceDto> licDtoList = hcsaLicenceClient.getLicDtosByLicNos(licNo).getEntity();
+        List<AutoRenewDto> autoRenewDtoList = new ArrayList<>();
+        AutoRenewDto dto = null;
+        if(IaisCommonUtils.isEmpty(licDtoList)){
+            for(LicenceDto temp:licDtoList){
+                dto = doCalAuto(temp,isRenew);
+                autoRenewDtoList.add(dto);
+            }
+        }
+        return autoRenewDtoList;
+    }
 
+    private AutoRenewDto doCalAuto(LicenceDto temp,boolean isRenew) {
+        String licId = temp.getId();
+        String svcName = temp.getSvcName();
+        AutoRenewDto adto = null;
+        String svcCode = hcsaConfigClient.getServiceCodeByName(svcName).getEntity();
+        List<RecommendInspectionDto> recommendInspectionDtoList = new ArrayList<>();
+        RecommendInspectionDto dto = new RecommendInspectionDto();
+        dto.setLicId(licId);
+        dto.setSvcCode(svcCode);
+        dto.setRenewal(isRenew);
+        recommendInspectionDtoList.add(dto);
+        List<PreOrPostInspectionResultDto> preOrPostList = preOrPostInspection(recommendInspectionDtoList);
+        PreOrPostInspectionResultDto preOrPostDto = null;
+        if(IaisCommonUtils.isEmpty(preOrPostList)){
+            preOrPostDto = preOrPostList.get(0);
+            if(preOrPostDto.isPreInspection()){
+                adto = getAutoDto(svcCode);
+                adto.setLicId(licId);
+                adto.setRenew(isRenew);
+                adto.setLicNo(temp.getLicenceNo());
+            }
+        }
+        return adto;
+    }
+
+    private AutoRenewDto getAutoDto(String svcCode) {
+        AutoRenewDto autoRenewDto = new AutoRenewDto();
+        HcsaRiskGlobalDto riskGlobalDto = hcsaConfigClient.getRiskGolbalRiskMatraixBySvcCode(svcCode).getEntity();
+        if(riskGlobalDto.isAutoRenewal()){
+            autoRenewDto.setRenew(true);
+        }else{
+            autoRenewDto.setRenew(false);
+        }
+        return autoRenewDto;
+    }
 }
 
