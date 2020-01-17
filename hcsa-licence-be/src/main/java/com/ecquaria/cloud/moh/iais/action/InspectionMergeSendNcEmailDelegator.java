@@ -163,12 +163,7 @@ public class InspectionMergeSendNcEmailDelegator {
         String decision=ParamUtil.getString(request,"decision");
         if(decision.equals("Please select")){decision=InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT;}
         List<String>appPremCorrIds= (List<String>) ParamUtil.getSessionAttr(request,"appPremCorrIds");
-        for(int i=1;i<=appPremCorrIds.size();i++){
-            String param="revise"+i;
-            if(ParamUtil.getString(request, param)==null){
-                appPremCorrIds.set(i-1,"");
-            }
-        }
+
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=inspEmailService.getAppPremisesCorrelationsByAppGroupId(applicationViewDto.getApplicationDto().getAppGrpId());
 
 
@@ -181,7 +176,12 @@ public class InspectionMergeSendNcEmailDelegator {
             ParamUtil.setRequestAttr(request, DemoConstants.ERRORMAP,errorMap);
         }
         if (decision.equals(InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT)){
-
+            for(int i=1;i<=appPremCorrIds.size();i++){
+                String param="revise"+i;
+                if(ParamUtil.getString(request, param)==null){
+                    appPremCorrIds.set(i-1,"");
+                }
+            }
             applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW);
             applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
             AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();

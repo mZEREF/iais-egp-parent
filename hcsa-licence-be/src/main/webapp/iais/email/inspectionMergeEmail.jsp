@@ -500,7 +500,7 @@
                                         <td>
                                             <div class="col-sm-9">
                                                 <c:forEach items="${appPremCorrIds}" var="revise" varStatus="index">
-                                                    <input type="checkbox" checked name="revise${index.index+1}" value="${revise}">NC/BP ${index.index+1}</input>
+                                                    <input type="checkbox"  name="revise${index.index+1}" value="${revise}">NC/BP ${index.index+1}</input>
                                                 </c:forEach>
 
                                             </div>
@@ -539,7 +539,7 @@
         var decision=document.getElementById("decision-email");
         if(decision.value=="Revise email/Letter Content"){
             var checkOne = false;
-            var checkBox = $('input[name = revise1]');
+            var checkBox = $('input[type = checkbox]');
             for (var i = 0; i < checkBox.length; i++) {
                 if (checkBox[i].checked) {
                     checkOne = true;
