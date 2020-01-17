@@ -111,16 +111,10 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
             return;
         }
-//        Map<String,String> errorMap = new HashMap<>(34);
         OrgUserDto orgUserDto = prepareOrgUserDto(bpc.request);
-//        errorMap = doValidatePo(orgUserDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(orgUserDto,"save");
-//        IntranetUserDtoValidate intranetUserDtoValidate = new IntranetUserDtoValidate();
-//        Map<String, String> errorMap = intranetUserDtoValidate.validate(bpc.request);
         Map<String, String> errorMap = validationResult.retrieveAll();
         if (!errorMap.isEmpty()||validationResult.isHasErrors()) {
-//            errorMap = doValidatePo(orgUserDto);
-//            errorMap.putAll(validationResultMap);
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
             ParamUtil.setSessionAttr(bpc.request,IntranetUserConstant.INTRANET_USER_DTO_ATTR,orgUserDto);

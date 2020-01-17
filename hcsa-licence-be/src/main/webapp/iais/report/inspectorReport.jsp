@@ -140,7 +140,7 @@
                                 <p>Other Inspection Officer:</p>
                             </td>
                             <td class="col-xs-8">
-                                <%--                                <p>${insRepDto.reportedBy}</p>--%>
+                                <p>${insRepDto.inspectOffices}</p>
                             </td>
                         </tr>
                         <tr>
@@ -180,7 +180,7 @@
 
                             <td class="col-xs-8">
                                 <p>${insRepDto.serviceName}</p>
-                                <c:if test="${insRepDto.otherCheckList != null}">
+                                <c:if test="${insRepDto.otherCheckList.adItemList != null}">
                                     <table class="table">
                                         <thead>
                                         <tr>
@@ -199,6 +199,9 @@
                                         </c:forEach>
                                         </tbody>
                                     </table>
+                                </c:if>
+                                <c:if test="${insRepDto.otherCheckList.adItemList == null}">
+                                    NO RESULT !
                                 </c:if>
                             </td>
                         </tr>
@@ -236,30 +239,36 @@
                                 <p>Non-Compliances:</p>
                             </td>
                             <td class="col-xs-8">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>SN</th>
-                                        <th>Checklist Item</th>
-                                        <th>Regulation Clause</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach items="${insRepDto.ncRegulation}" var="ncRegulations" varStatus="status">
+                                <c:if test="${insRepDto.ncRegulation}">
+                                    <table class="table">
+                                        <thead>
                                         <tr>
-                                            <td>
-                                                <p><c:out value="${status.count}"></c:out></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${ncRegulations.nc}"></c:out></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${ncRegulations.regulation}"></c:out></p>
-                                            </td>
+                                            <th>SN</th>
+                                            <th>Checklist Item</th>
+                                            <th>Regulation Clause</th>
                                         </tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach items="${insRepDto.ncRegulation}" var="ncRegulations"
+                                                   varStatus="status">
+                                            <tr>
+                                                <td>
+                                                    <p><c:out value="${status.count}"></c:out></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${ncRegulations.nc}"></c:out></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${ncRegulations.regulation}"></c:out></p>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:if>
+                                <c:if test="${insRepDto.ncRegulation == null}">
+                                    NO RESULT !
+                                </c:if>
                             </td>
                         </tr>
                         <tr>
@@ -288,31 +297,36 @@
                                 <p>Rectified:</p>
                             </td>
                             <td class="col-xs-8">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>SN</th>
-                                        <th>Checklist Item</th>
-                                        <th>Rectified?</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach items="${insRepDto.ncRectification}" var="ncRectification"
-                                               varStatus="status">
+                                <c:if test="${insRepDto.ncRectification != null}">
+                                    <table class="table">
+                                        <thead>
                                         <tr>
-                                            <td>
-                                                <p><c:out value="${status.count}"></c:out></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${ncRectification.nc}"></c:out></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${ncRectification.rectified}"></c:out></p>
-                                            </td>
+                                            <th>SN</th>
+                                            <th>Checklist Item</th>
+                                            <th>Rectified?</th>
                                         </tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                        <c:forEach items="${insRepDto.ncRectification}" var="ncRectification"
+                                                   varStatus="status">
+                                            <tr>
+                                                <td>
+                                                    <p><c:out value="${status.count}"></c:out></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${ncRectification.nc}"></c:out></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${ncRectification.rectified}"></c:out></p>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:if>
+                                <c:if test="${insRepDto.ncRectification == null}">
+                                    NO RESULT !
+                                </c:if>
                             </td>
                         </tr>
                         <tr>
@@ -321,7 +335,8 @@
                             </td>
                             <div>
                                 <td class="col-xs-4">
-                                    <input name="remarks" type="text" value="${appPremisesRecommendationDto.remarks}">
+                                    <input name="remarks" type="text" value="${appPremisesRecommendationDto.remarks}"
+                                           MAXLENGTH="4000">
                                     <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
                                 </td>
                             </div>
@@ -344,15 +359,18 @@
                         <tr>
                             <td class="col-xs-4">
                                 <p>Recommendation:</p>
-                                value="${appPremisesRecommendationDto.recommendation}"
                             </td>
-                            <td class="col-xs-4">
+                            <td class="col-xs-8">
                                 <iais:select name="recommendation" options="riskOption" firstOption="Please select"
-                                             onchange="javascirpt:x(this.value);" value="${appPremisesRecommendationDto.recommendation}"/>
+                                             onchange="javascirpt:x(this.value);"
+                                             value="${appPremisesRecommendationDto.recommendation}"/>
                                 <span id="error_recommendation" name="iaisErrorMsg" class="error-msg"></span>
                                 <div id="recom1" hidden>
-                                    <input type="number" name="number" value="${number}">
-                                    <iais:select name="chrono" options="chronoOption" firstOption="Please select" value="${chrono}"/>
+                                    <input id=recomInNumber type="text" name="number" value="${number}">
+                                    <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+                                    <iais:select id="chronoUnit" name="chrono" options="chronoOption"
+                                                 firstOption="Please select" value="${chrono}"/>
+                                    <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </td>
                             <td class="col-xs-4"></td>
@@ -380,8 +398,8 @@
         }
     }
 
-    $(document).ready(function(){
-        if($("#recommendation").val() == "Others"){
+    $(document).ready(function () {
+        if ($("#recommendation").val() == "Others") {
             x("Others");
         }
     });

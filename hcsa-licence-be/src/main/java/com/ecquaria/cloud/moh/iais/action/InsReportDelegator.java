@@ -44,6 +44,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author weilu
@@ -60,11 +62,12 @@ public class InsReportDelegator {
     @Autowired
     private TaskService taskService;
 
-    private final String RECOMMENDATION_DTO="appPremisesRecommendationDto";
-    private final String RECOMMENDATION="recommendation";
-    private final String CHRONO="chrono";
-    private final String NUMBER="number";
-    private final String OTHERS="Others";
+    private final String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
+    private final String RECOMMENDATION = "recommendation";
+    private final String CHRONO = "chrono";
+    private final String NUMBER = "number";
+    private final String OTHERS = "Others";
+
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
         AuditTrailHelper.auditFunction("Inspection Report", "Assign Report");
@@ -83,8 +86,8 @@ public class InsReportDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
         String taskId;
-        taskId = ParamUtil.getRequestString(bpc.request,"taskId");
-        if(StringUtil.isEmpty(taskId)){
+        taskId = ParamUtil.getRequestString(bpc.request, "taskId");
+        if (StringUtil.isEmpty(taskId)) {
             taskId = "B7A46131-6637-EA11-BE7E-000C29F371DC";
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
@@ -92,18 +95,18 @@ public class InsReportDelegator {
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
         InspectionReportDto insRepDto = (InspectionReportDto) ParamUtil.getSessionAttr(bpc.request, "insRepDto");
         if (insRepDto == null) {
-            insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto,loginContext);
+            insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
         }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
-        ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable)chronoOption);
-        ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable)riskOption);
+        ParamUtil.setSessionAttr(bpc.request, "chronoOption", (Serializable) chronoOption);
+        ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable) riskOption);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
     }
 
-    private List<SelectOption> getChronoOption(){
+    private List<SelectOption> getChronoOption() {
         List<SelectOption> ChronoResult = new ArrayList<>();
         SelectOption so1 = new SelectOption("Year", "Year");
         SelectOption so2 = new SelectOption("Month", "Month");
@@ -114,16 +117,29 @@ public class InsReportDelegator {
         return ChronoResult;
     }
 
-    private Map<String,  String> doValidateRe(BaseProcessClass bpc){
-        Map<String,String> errorMap = new HashMap<>(34);
+    private Map<String, String> doValidateRe(BaseProcessClass bpc) {
+        Map<String, String> errorMap = new HashMap<>(34);
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
+        String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
         String number = ParamUtil.getRequestString(bpc.request, NUMBER);
-        if(OTHERS.equals(recommendation)){
-            if(StringUtil.isEmpty(chrono)){
-                errorMap.put(RECOMMENDATION,"please select");
-            }else if (StringUtil.isEmpty(number)) {
-                errorMap.put(RECOMMENDATION,"please key a number");
+        if (OTHERS.equals(recommendation)) {
+            if (StringUtil.isEmpty(chrono)) {
+                errorMap.put(RECOMMENDATION, "please select");
+            } else if (StringUtil.isEmpty(number)) {
+                errorMap.put(RECOMMENDATION, "please key a number");
+            } else {
+                try {
+                    Integer.parseInt(number);
+                } catch (NumberFormatException e) {
+                    errorMap.put(RECOMMENDATION, "please key a number");
+                }
+            }
+        }
+        if (!StringUtil.isEmpty(remarks)) {
+            int length = remarks.length();
+            if (length > 4000) {
+                errorMap.put(remarks, "remarks must be less than 4000");
             }
         }
         return errorMap;
@@ -135,26 +151,40 @@ public class InsReportDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-        AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc, appPremisesCorrelationId);
-        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
         Map<String, String> stringStringMap = doValidateRe(bpc);
-        Map<String,String> errorMap = new HashMap<>(34);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "create");
+        AppPremisesRecommendationDto appPremisesRecommendationDto = prepareRecommendation(bpc);
+        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, appPremisesRecommendationDto);
+        Map<String, String> errorMap = new HashMap<>(34);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(appPremisesRecommendationDto, "save");
         if (validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
             errorMap.putAll(stringStringMap);
-            ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.FALSE);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-        insRepService.saveRecommendation(appPremisesRecommendationDto);
+        AppPremisesRecommendationDto appPremisesRecommendationDto1 = prepareForSave(bpc, appPremisesCorrelationId);
+        insRepService.saveRecommendation(appPremisesRecommendationDto1);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        insRepService.routingTaskToAo1(taskDto,applicationDto,appPremisesCorrelationId);
-        ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
+        insRepService.routingTaskToAo1(taskDto, applicationDto, appPremisesCorrelationId);
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
 
     }
 
-    private AppPremisesRecommendationDto prepareRecommendation (BaseProcessClass bpc,String appPremisesCorrelationId){
+    private AppPremisesRecommendationDto prepareRecommendation(BaseProcessClass bpc) {
+        String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
+        String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
+        String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
+        String number = ParamUtil.getRequestString(bpc.request, NUMBER);
+        ParamUtil.setSessionAttr(bpc.request, CHRONO, chrono);
+        ParamUtil.setSessionAttr(bpc.request, NUMBER, number);
+        AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+        appPremisesRecommendationDto.setRemarks(remarks);
+        appPremisesRecommendationDto.setRecommendation(recommendation);
+        return appPremisesRecommendationDto;
+    }
+
+    private AppPremisesRecommendationDto prepareForSave(BaseProcessClass bpc, String appPremisesCorrelationId) {
         String remarks = ParamUtil.getRequestString(bpc.request, "remarks");
         String recommendation = ParamUtil.getRequestString(bpc.request, RECOMMENDATION);
         String chrono = ParamUtil.getRequestString(bpc.request, CHRONO);
@@ -167,11 +197,11 @@ public class InsReportDelegator {
         appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT);
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         appPremisesRecommendationDto.setRecommendation(recommendation);
-        if(OTHERS.equals(recommendation)&&!StringUtil.isEmpty(chrono)&&!StringUtil.isEmpty(number)){
+        if (OTHERS.equals(recommendation) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setChronoUnit(chrono);
             appPremisesRecommendationDto.setRecomInNumber(Integer.parseInt(number));
-        }else if(!StringUtil.isEmpty(recommendation)&&!OTHERS.equals(recommendation)){
+        } else if (!StringUtil.isEmpty(recommendation) && !OTHERS.equals(recommendation)) {
             String[] split_number = recommendation.split("\\D");
             String[] split_unit = recommendation.split("\\d");
             String chronoRe = split_unit[1];

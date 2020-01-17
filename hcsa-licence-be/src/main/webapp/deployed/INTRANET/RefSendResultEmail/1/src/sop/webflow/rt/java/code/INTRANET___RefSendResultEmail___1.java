@@ -14,14 +14,16 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___ReSendResultEmail___1 extends BaseProcessClass {
+public class INTRANET___RefSendResultEmail___1 extends BaseProcessClass {
 
-	private static final String DELEGATOR ="emailToRenewResult";
+	
+	private static final String DELEGATOR ="emailToRfcResult";
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
+
 	public void action_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "action", this);
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 }
