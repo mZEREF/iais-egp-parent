@@ -275,14 +275,12 @@ public class LicenceApproveBatchjob {
                 //todo:get the yearLenth.
                 String licenceNo = null;
                 int yearLength = 1;
-                //todo:wait zixian save this field.
-                boolean isRFCMiniChange = false;
                 //create licence
-                if(!isRFCMiniChange) {
+                if(!applicationGroupDto.isAutoRfc()) {
                     licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), yearLength);
                 }
                 log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
-                if(StringUtil.isEmpty(licenceNo)&&!isRFCMiniChange){
+                if(StringUtil.isEmpty(licenceNo)&&!applicationGroupDto.isAutoRfc()){
                     errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size() + ":" + yearLength;
                     break;
                 }
@@ -452,14 +450,13 @@ public class LicenceApproveBatchjob {
                         break;
                     }
                     superLicDto.setPremisesGroupDtos(premisesGroupDtos);
-                    //todo:wait zixian save this field.
-                    boolean isRFCMiniChange = false;
+
                     //create licence
-                    if(!isRFCMiniChange){
+                    if(!applicationGroupDto.isAutoRfc()){
                         licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(),hcsaServiceDto.getSvcCode(),yearLength);
                     }
                     log.debug(StringUtil.changeForLog("The licenceNo is -->;"+licenceNo));
-                    if(StringUtil.isEmpty(licenceNo)&&!isRFCMiniChange){
+                    if(StringUtil.isEmpty(licenceNo)&&!applicationGroupDto.isAutoRfc()){
                         errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode() + ":" + yearLength;
                         break;
                     }
@@ -839,37 +836,52 @@ public class LicenceApproveBatchjob {
                                      List<ApplicationDto> applicationDtos){
         LicenceDto licenceDto = new LicenceDto();
         licenceDto.setSvcName(svcName);
-        //todo:The latest choose from Giro pay Date, Approved Date,Aso set Date,
-        Date startDate = applicationGroupDto.getModifiedAt();
-        log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
-        if(startDate == null){
-            startDate = new Date();
-        }
-        licenceDto.setStartDate(startDate);
-        licenceDto.setExpiryDate(getExpiryDate(licenceDto.getStartDate(),yearLength));
-        licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
-        licenceDto.setOrganizationId(organizationId);
-        licenceDto.setOriginLicenceId(originLicenceId);
         LicenceDto licenceDto1 = null;
         if(!StringUtil.isEmpty(originLicenceId)){
             licenceDto1  = licenceService.getLicenceDto(originLicenceId);
         }
-        int version = 1;
-        if(licenceDto1!=null){
-            licenceDto.setMigrated(licenceDto1.isMigrated());
-        }else{
-            licenceDto.setMigrated(false);
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())){
+            if(licenceDto1!=null){
+                licenceDto.setStartDate(licenceDto1.getStartDate());
+                licenceDto.setExpiryDate(licenceDto1.getExpiryDate());
+                licenceDto.setGrpLic(licenceDto1.isGrpLic());
+                licenceDto.setOrganizationId(licenceDto1.getOrganizationId());
+                licenceDto.setOriginLicenceId(originLicenceId);
+                licenceDto.setMigrated(licenceDto1.isMigrated());
+                licenceDto.setLicenceNo(licenceDto1.getLicenceNo());
+                licenceDto.setVersion(licenceDto1.getVersion()+1);
+                licenceDto.setFeeRetroNeeded(licenceDto1.isFeeRetroNeeded());
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
+                licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+            }else {
+                log.error(StringUtil.changeForLog("This applicaiton to do RFC but do not have the originLicenceId -->: "+applicationDto.getId()));
+            }
+        }else {
+            //todo:The latest choose from Giro pay Date, Approved Date,Aso set Date,
+            Date startDate = applicationGroupDto.getModifiedAt();
+            log.debug(StringUtil.changeForLog("The startDate is -->:"+startDate));
+            if(startDate == null){
+                startDate = new Date();
+            }
+            licenceDto.setStartDate(startDate);
+            licenceDto.setExpiryDate(getExpiryDate(licenceDto.getStartDate(),yearLength));
+            licenceDto.setGrpLic(applicationGroupDto.getIsGrpLic() == 1);
+            licenceDto.setOrganizationId(organizationId);
+            licenceDto.setOriginLicenceId(originLicenceId);
+
+            int version = 1;
+            if(licenceDto1!=null){
+                licenceDto.setMigrated(licenceDto1.isMigrated());
+            }else{
+                licenceDto.setMigrated(false);
+            }
+            licenceDto.setLicenceNo(licenceNo);
+            licenceDto.setVersion(version);
+            licenceDto.setFeeRetroNeeded(false);
+            //todo:Judge the licence status
+            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
+            licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
         }
-        if(StringUtil.isEmpty(licenceNo)){
-            licenceNo = licenceDto1.getLicenceNo();
-            version = licenceDto1.getVersion()+1;
-        }
-        licenceDto.setLicenceNo(licenceNo);
-        licenceDto.setVersion(version);
-        licenceDto.setFeeRetroNeeded(false);
-        //todo:Judge the licence status
-        licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
-        licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
         List<ApplicationDto> applicationDtos1 =  new ArrayList<>();
         if(applicationDto!=null){
             applicationDtos1.add(applicationDto);
@@ -878,6 +890,7 @@ public class LicenceApproveBatchjob {
             applicationDtos1.addAll(applicationDtos);
         }
         licenceDto.setApplicationDtos(applicationDtos1);
+
         return licenceDto;
     }
     private String getOrganizationIdBylicenseeId(String licenseeId){
