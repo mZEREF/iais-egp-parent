@@ -87,9 +87,9 @@ public final class FieldTag extends DivTagSupport {
 
         generateHtml(html);
         if (isBackend && required) {
-            html.append("<span class=\"text-mandatory\">*</span>");
+            html.append("<span style=\"color: red\"> *</span>");
         } else if (required) {
-            html.append("<span class=\"orangetxt\">*</span>");
+            html.append("<span style=\"color: red\"> *</span>");
         }
 
         if(mandatory){
