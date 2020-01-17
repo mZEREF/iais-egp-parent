@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -21,6 +22,8 @@ import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,6 +61,12 @@ public class BackendAjaxController {
 
     @Autowired
     private HcsaConfigMainClient hcsaConfigClient;
+
+    @Autowired
+    private InspectionTaskMainClient inspectionTaskMainClient;
+
+    @Autowired
+    private OrganizationMainClient organizationMainClient;
 
     @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
     public @ResponseBody
@@ -109,7 +119,11 @@ public class BackendAjaxController {
                 Map<String, Integer> kpiMap = hcsaSvcKpiDto.getStageIdKpi();
                 if(kpiMap != null) {
                     int kpi = kpiMap.get(taskDto.getTaskKey());
-                    int days = getWorkingDaysBySubStage(subStage, inspectionAppInGroupQueryDto, applicationViewDto);
+                    Map<Integer, Integer> workAndNonMap = getWorkingDaysBySubStage(subStage, inspectionAppInGroupQueryDto, taskDto);
+                    int days = 0;
+                    for(Map.Entry<Integer, Integer> map:workAndNonMap.entrySet()){
+                        days = map.getKey();
+                    }
                     if (days < hcsaSvcKpiDto.getRemThreshold()) {
                         colour = "black";
                     } else if (hcsaSvcKpiDto.getRemThreshold() <= days && days <= kpi) {
@@ -125,13 +139,29 @@ public class BackendAjaxController {
         return colour;
     }
 
-    private int getWorkingDaysBySubStage(String subStage, InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto, ApplicationViewDto applicationViewDto) {
-        int workDays = 0;
+    private Map<Integer, Integer> getWorkingDaysBySubStage(String subStage, InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto, TaskDto taskDto) {
+        Map<Integer, Integer> workAndNonMap = new HashMap();
         if(StringUtil.isEmpty(subStage)){
-            return 0;
+            return null;
         }
-        
-        return workDays;
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setSubStage(subStage);
+        appPremisesRoutingHistoryDto.setWrkGrpId(taskDto.getWkGrpId());
+        appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
+        appPremisesRoutingHistoryDto.setAppPremCorreId(taskDto.getRefNo());
+        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = inspectionTaskMainClient.getHistoryForKpi(appPremisesRoutingHistoryDto).getEntity();
+        if(subStage.equals(HcsaConsts.ROUTING_STAGE_INP)){
+
+        } else {
+            List<TaskDto> taskDtoList = organizationMainClient.getInsKpiTask(taskDto).getEntity();
+            workAndNonMap = getActualWorkingDays(taskDtoList);
+        }
+        return workAndNonMap;
+    }
+
+    private Map<Integer, Integer> getActualWorkingDays(List<TaskDto> taskDtoList) {
+        Map<Integer, Integer> workAndNonMap = new HashMap();
+        return workAndNonMap;
     }
 
     private String getSubStageByInspectionStatus(InspectionAppInGroupQueryDto inspectionAppInGroupQueryDto) {
