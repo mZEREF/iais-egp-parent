@@ -83,7 +83,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                 callBackUrl, EventBusConsts.SOP_USER_ID,false,project,processName,step);
         //
         SubmitResp submitResp = client.submit(AppConsts.REST_PROTOCOL_TYPE + RestApiUrlConsts.EVENT_BUS, req);
-        return null;
+        return broadcastApplicationDto;
     }
 
     @Override

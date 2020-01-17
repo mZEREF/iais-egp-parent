@@ -744,6 +744,8 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setEventRefNo(eventRefNo);
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
+        //0062460 update FE  application status.
+        applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
     private void rollBack(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws FeignException, CloneNotSupportedException {
