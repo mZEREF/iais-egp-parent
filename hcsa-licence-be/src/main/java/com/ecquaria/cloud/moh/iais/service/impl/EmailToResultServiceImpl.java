@@ -5,7 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.service.RenewEmailToResultService;
+import com.ecquaria.cloud.moh.iais.service.EmailToResultService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
@@ -25,7 +25,7 @@ import java.util.Map;
  * @date 2020/1/16 19:40
  */
 @Service
-public class RenewEmailToResultServiceImpl implements RenewEmailToResultService {
+public class EmailToResultServiceImpl implements EmailToResultService {
     @Autowired
     private MsgTemplateClient msgTemplateClient;
     @Autowired
@@ -40,7 +40,7 @@ public class RenewEmailToResultServiceImpl implements RenewEmailToResultService 
     private final String GETFAILEDMSGTEMPLATEID = "09B58803-4F38-EA11-BE7E-000C29F371DC";
 
     @Override
-    public void sendEmail() throws IOException, TemplateException {
+    public void sendRenewResultEmail() throws IOException, TemplateException {
         // get appGrpId which pay success
         List<ApplicationGroupDto> appGrpDtos = applicationClient.getAppGrpsPaySuc().getEntity();
         if(appGrpDtos!=null&&!appGrpDtos.isEmpty()){
@@ -68,10 +68,41 @@ public class RenewEmailToResultServiceImpl implements RenewEmailToResultService 
                     String applicationNo = applicationDto.getApplicationNo();
                     prepareAndSenEmail(applicationNo);
                 }
-
             }
         }
+    }
 
+    @Override
+    public void sendEfcResultEmail() throws IOException, TemplateException {
+        // get appGrpId which pay success
+        List<ApplicationGroupDto> appGrpDtos = applicationClient.getAppGrpsPaySuc().getEntity();
+        if(appGrpDtos!=null&&!appGrpDtos.isEmpty()){
+            for(ApplicationGroupDto applicationGroupDto : appGrpDtos){
+                String appGrpId = applicationGroupDto.getId();
+                List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
+                if(!applicationDtos.isEmpty()&&applicationDtos!=null){
+                    for(ApplicationDto applicationDto :applicationDtos){
+                        String applicationType = applicationDto.getApplicationType();
+                        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+                            String appNo = applicationDto.getApplicationNo();
+                            prepareAndSendSuccessEmail(appNo);
+                        }
+
+                    }
+                }
+            }
+        }
+        // get appGrpId which reject
+        List<ApplicationDto> applicationDtos = applicationClient.getAppDtosReject().getEntity();
+        if(applicationDtos!=null&&!appGrpDtos.isEmpty()){
+            for(ApplicationDto applicationDto :applicationDtos){
+                String applicationType = applicationDto.getApplicationType();
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+                    String applicationNo = applicationDto.getApplicationNo();
+                    prepareAndSenEmail(applicationNo);
+                }
+            }
+        }
     }
 
 

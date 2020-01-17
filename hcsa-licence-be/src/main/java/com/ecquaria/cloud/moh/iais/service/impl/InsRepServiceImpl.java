@@ -30,10 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
-import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
@@ -84,6 +81,8 @@ public class InsRepServiceImpl implements InsRepService {
     private AppPremisesCorrClient appPremisesCorrClient;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
+    @Autowired
+    ApplicationService applicationService;
 
 
     @Override
@@ -172,10 +171,12 @@ public class InsRepServiceImpl implements InsRepService {
                     listReportNcRegulationDto.add(reportNcRegulationDto);
                 }
                 inspectionReportDto.setStatus("Partial Compliance");
+                inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
 
-            } else {
-                inspectionReportDto.setStatus("Full Compliance");
             }
+        }else {
+            inspectionReportDto.setStatus("Full Compliance");
+            inspectionReportDto.setNcRegulation(null);
         }
         //add listReportNcRectifiedDto and add ncItemId
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationId).getEntity();
@@ -190,9 +191,13 @@ public class InsRepServiceImpl implements InsRepService {
                     reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
                     listReportNcRectifiedDto.add(reportNcRectifiedDto);
                 }
+                inspectionReportDto.setNcRectification(listReportNcRectifiedDto);
             }
+        }else {
+            inspectionReportDto.setNcRectification(null);
         }
         AppPremisesRecommendationDto NcRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_TCU).getEntity();
+
         String bestPractice = null;
         String remarks = null;
         if (NcRecommendationDto != null) {
@@ -200,29 +205,12 @@ public class InsRepServiceImpl implements InsRepService {
             remarks = NcRecommendationDto.getRemarks();
         }
 
-        //ChecklistConfigDto otherChecklist = hcsaChklClient.getMaxVersionConfigByParams("CLB", "Inspection", "New").getEntity();
         AdCheckListShowDto adhocCheckListDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremisesCorrelationId);
         if(adhocCheckListDto!=null){
             inspectionReportDto.setOtherCheckList(adhocCheckListDto);
         }
 
 
-//        RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
-//        riskAcceptiionDto.setScvCode(svcCode);
-//        List<RiskAcceptiionDto> listRiskAcceptiionDto = new ArrayList<>();
-//        listRiskAcceptiionDto.add(riskAcceptiionDto);
-//        List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
-//        List<String> riskResult = new ArrayList<>();
-//        if (listRiskResultDto != null && !listRiskResultDto.isEmpty()) {
-//            for (RiskResultDto riskResultDto : listRiskResultDto) {
-//                String dateType = riskResultDto.getDateType();
-//                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
-//                String count = String.valueOf(riskResultDto.getTimeCount());
-//                String recommTime = count + codeDesc;
-//                riskResult.add(recommTime);
-//            }
-//        }
-//        riskResult.add("Others");
 
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
@@ -230,8 +218,8 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setPrincipalOfficer(appInsRepDto.getPrincipalOfficer());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
-        inspectionReportDto.setNcRegulation(listReportNcRegulationDto);
-        inspectionReportDto.setNcRectification(listReportNcRectifiedDto);
+
+
 
 
         inspectionReportDto.setInspectionDate(new Date());
@@ -243,7 +231,6 @@ public class InsRepServiceImpl implements InsRepService {
         inspectionReportDto.setReportNoteBy(leadName);
         inspectionReportDto.setInspectors(inspectors);
         inspectionReportDto.setTaskRemarks(remarks);
-        //inspectionReportDto.setRiskRecommendations(riskResult);
         return inspectionReportDto;
     }
 
@@ -402,6 +389,7 @@ public class InsRepServiceImpl implements InsRepService {
 
     private ApplicationDto updateApplicaitonStatus(ApplicationDto applicationDto, String appStatus) {
         applicationDto.setStatus(appStatus);
+        applicationService.updateFEApplicaiton(applicationDto);
         return updateApplicaiton(applicationDto);
     }
 
