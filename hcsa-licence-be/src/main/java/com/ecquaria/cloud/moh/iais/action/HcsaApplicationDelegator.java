@@ -518,6 +518,8 @@ public class HcsaApplicationDelegator {
             broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null);
             broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null);
+            //0062460 update FE  application status.
+            applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
         }
 
         log.debug(StringUtil.changeForLog("the do broadcast end ...."));
@@ -785,9 +787,8 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process);
 
-
-
-
+        //0062460 update FE  application status.
+        applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
 
     }
 
