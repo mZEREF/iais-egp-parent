@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.action;
  */
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -69,7 +70,7 @@ public class HcsaChklItemDelegator {
             .clz(CheckItemQueryDto.class)
             .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH)
             .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT)
-            .sortField("item_id").build();
+            .sortField("status").sortType(SearchParam.ASCENDING).build();
 
     @Autowired
     public HcsaChklItemDelegator(HcsaChklService hcsaChklService){
@@ -158,7 +159,7 @@ public class HcsaChklItemDelegator {
             return errorMap;
         }
 
-        double size = Double.valueOf(file.getSize() / 0x400 / 0x400);
+        double size = file.getSize() / 0x400 / 0x400;
 
         if (Math.ceil(size) > 0x10){
             errorMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");
@@ -386,18 +387,19 @@ public class HcsaChklItemDelegator {
     * @author: yichen 
     */
     private ChecklistItemDto requestChklItemDto(HttpServletRequest request){
-        ChecklistItemDto itemDto = new ChecklistItemDto();
+        ChecklistItemDto itemDto = (ChecklistItemDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR);
+        if (itemDto == null){
+            itemDto = new ChecklistItemDto();
+        }
         String itemId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_ID);
         String clause = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
         String desc = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
-        String regulationId = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHKL_REGULATION_ID);
         String chklItem = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM);
         String riskLevel = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_RISK_LEVEL);
         String answerType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE);
         String status = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_STATUS);
 
         itemDto.setItemId(itemId);
-        itemDto.setRegulationId(regulationId);
         itemDto.setRegulationClauseNo(clause);
         itemDto.setRegulationClause(desc);
         itemDto.setRiskLevel(riskLevel);
@@ -434,6 +436,7 @@ public class HcsaChklItemDelegator {
         itemDto.setAnswerType(answerType);
         itemDto.setRiskLevel(riskLevel);
         itemDto.setChecklistItem(chklItem);
+        itemDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(itemDto, "clone");
@@ -470,6 +473,7 @@ public class HcsaChklItemDelegator {
         HttpServletRequest request = bpc.request;
         String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_CLONE_SESSION_ATTR, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
 
         if(HcsaChecklistConstants.ACTION_CANCEL.equals(currentAction)){
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, null);
@@ -534,7 +538,13 @@ public class HcsaChklItemDelegator {
         String itemId = ParamUtil.getString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(itemId)){
             ChecklistItemDto itemDto = hcsaChklService.getChklItemById(itemId);
-            ParamUtil.setRequestAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
+            if (itemDto.getStatus().equals(AppConsts.COMMON_STATUS_IACTIVE)){
+                itemDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            }
+            ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_ITEM_REQUEST_ATTR, itemDto);
+
+
+
         }
     }
 

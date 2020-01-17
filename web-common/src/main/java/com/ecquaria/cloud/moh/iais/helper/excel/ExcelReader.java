@@ -105,7 +105,9 @@ public final class ExcelReader {
             throw new IllegalArgumentException(e.getMessage());
         }finally {
             try {
-                workBook.close();
+                if (workBook != null){
+                    workBook.close();
+                }
             } catch (IOException e) {
                 log.debug(e.getMessage());
             }

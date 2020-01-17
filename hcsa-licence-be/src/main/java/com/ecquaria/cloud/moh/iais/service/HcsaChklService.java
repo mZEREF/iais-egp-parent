@@ -66,7 +66,7 @@ public interface HcsaChklService {
 
     /**
      * list de-weight regulation clause number
-     * backend method: saveCloneItem
+     * backend method: listRegulationClauseNo
      * @return
      */
     List<String> listRegulationClauseNo();

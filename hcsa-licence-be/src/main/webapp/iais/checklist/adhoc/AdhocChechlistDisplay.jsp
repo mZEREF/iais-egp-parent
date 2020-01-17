@@ -52,10 +52,10 @@
               <c:if test="${item.common eq false}">
                 <c:choose>
                   <c:when test="${empty item.svcSubType}">
-                    <h2>${item.svcCode}</h2>
+                    <h2>${item.svcName}</h2>
                   </c:when>
                   <c:otherwise>
-                    <h2>${item.svcCode} | ${item.svcSubType}</h2>
+                    <h2>${item.svcName} | ${item.svcSubType}</h2>
                   </c:otherwise>
                 </c:choose>
               </c:if>
@@ -64,7 +64,7 @@
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
               <div class="panel panel-default">
                 <div class="panel-heading" id="headingPremise" role="tab">
-                  <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">${sec.section}</a></h4>
+                  <h4 class="panel-title"><a role="button" data-toggle="" href="#collapsePremise" aria-expanded="" aria-controls="">${sec.section}</a></h4>
                 </div>
                 <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                   <div class="panel-body">
@@ -90,7 +90,7 @@
                             <p>${chklitem.checklistItem}</p>
                           </td>
                           <td>
-                            <p>${chklitem.riskLevel}</p>
+                            <p><iais:code code="${chklitem.riskLevel}"></iais:code></p>
                           </td>
                         </tr>
                       </c:forEach>
@@ -108,7 +108,7 @@
               <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
                   <div class="panel-heading"  role="tab">
-                    <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Adhoc Item</a></h4>
+                    <h4 class="panel-title"><a role="button" data-toggle="" href="#collapsePremise" aria-expanded="" aria-controls="">Adhoc Item</a></h4>
                   </div>
                   <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
                     <div class="panel-body">
@@ -118,7 +118,7 @@
                           <th>Checklist Item</th>
                           <th>Answer Type</th>
                           <th>Risk Level</th>
-                          <th>Actionl</th>
+                          <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -128,14 +128,14 @@
                               <p>${adhocItem.question}</p>
                             </td>
                             <td>
-                              <p>${adhocItem.answerType}</p>
+                              <p><iais:code code="${adhocItem.answerType}"></iais:code></p>
                             </td>
                             <td>
-                              <p>${adhocItem.riskLvl}</p>
+                              <p><iais:code code="${adhocItem.riskLvl}"></iais:code></p>
                             </td>
 
                             <td>
-                              <button id="removeAdhocItemId" value="${adhocItem.question}" type="button">Remove</button>
+                              <button id="removeAdhocItemId" onclick="removeAdhocItem()" value="${adhocItem.question}" type="button">Remove</button>
                             </td>
                           </tr>
                         </c:forEach>
@@ -180,9 +180,10 @@
       SOP.Crud.cfxSubmit("mainForm", "saveAdhocItem");
   }
 
-  removeAdhocItemId.onclick = function () {
+  function removeAdhocItem() {
       var content = $("#removeAdhocItemId").val();
       SOP.Crud.cfxSubmit("mainForm", "removeAdhocItem", content);
   }
+
 
 </script>

@@ -13,7 +13,7 @@
                 item.question AS CHECKLISTITEM, item.answer_type as ANSWER_TYPE, item.risk_level as RISK_LEVEL,
                 item.status as STATUS from chkl_config_hcsa_svc_item_pool item, chkl_config_hcsa_svc_regulation regulation where 1 = 1
                 and item.regulation_id = regulation.id
-                and (item.status = 'CMSTAT001' or item.status = 'CMSTAT002')
+                and (item.status = 'CMSTAT001' or item.status = 'CMSTAT003')
                 <#if itemId??> and charindex(:itemId, item.id) >0</#if>
                 <#if regulationClauseNo??> and charindex(:regulationClauseNo, regulation.clause_no) >0 </#if>
                 <#if regulationClause??> and charindex(:regulationClause, regulation.clause) >0 </#if>

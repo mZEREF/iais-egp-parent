@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -45,6 +46,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Delegator(value = "adhocChecklistDelegator")
@@ -62,6 +64,12 @@ public class AdhocChecklistDelegator {
 
     @Autowired
     private HcsaChklService hcsaChklService;
+
+    private FilterParameter filterParameter = new FilterParameter.Builder()
+            .clz(CheckItemQueryDto.class)
+            .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH)
+            .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT)
+            .sortField("item_id").build();
 
     /**
      * StartStep: startStep
@@ -95,17 +103,13 @@ public class AdhocChecklistDelegator {
         }*/
 
         TaskDto task = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
-
-        if (task != null){
-            String refNo = task.getRefNo();
-            ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(refNo);
+            ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo("A22E14F4-8A33-EA11-BE78-000C29D29DB0");
             if (applicationViewDto != null){
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
                 log.info("inspectionChecklist info =====>>>>>>>>>>> " + inspectionChecklist.toString());
                 ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
             }
-        }
     }
 
 
@@ -117,6 +121,31 @@ public class AdhocChecklistDelegator {
      */
     public void getNextStep(BaseProcessClass bpc) {
         log.debug("getNextStep");
+    }
+
+    /**
+     * AutoStep: changePage
+     *
+     * @param bpc
+     * @throws
+     */
+    public void changePage(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+    }
+
+    /**
+     * AutoStep: doSort
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doSort(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+
+        CrudHelper.doSorting(searchParam,bpc.request);
     }
 
     /**
@@ -232,17 +261,26 @@ public class AdhocChecklistDelegator {
     public void receiveItemPool(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
-        FilterParameter filterParameter = new FilterParameter.Builder()
-                .clz(CheckItemQueryDto.class)
-                .searchAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH)
-                .resultAttr(HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT)
-                .sortField("item_id").build();
-
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
-
         SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
 
+        // remove has select item in the pool, you can modify my methods with SQL parameters
+        AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocConfigObj(request);
+        if (adhocCheckListConifgDto != null) {
+            List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
+            List<CheckItemQueryDto> rows = searchResult.getRows();
+            Iterator<CheckItemQueryDto> iter = rows.iterator();
+            while (iter.hasNext()) {
+                String remId = iter.next().getItemId();
+                for (AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem){
+                    if (adhocChecklistItemDto.getItemId() != null && adhocChecklistItemDto.getItemId().equals(remId)){
+                        iter.remove();
+                    }
+                }
+            }
+
+        }
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_RESULT, searchResult);
     }
 
@@ -263,13 +301,9 @@ public class AdhocChecklistDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
-
         List<ChecklistItemDto> selectItemList = hcsaChklService.listChklItemByItemId(Arrays.asList(checkBoxItemId));
-
         AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocConfigObj(request);
         List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
-
-        ParamUtil.setRequestAttr(request, "selectItemList", selectItemList);
 
         selectItemList.stream().forEach(selectItem -> {
             AdhocChecklistItemDto adhocItem = new AdhocChecklistItemDto();
@@ -277,12 +311,12 @@ public class AdhocChecklistDelegator {
             String answerType = selectItem.getAnswerType();
             String riskLevel = selectItem.getRiskLevel();
 
+            adhocItem.setItemId(selectItem.getItemId());
             adhocItem.setAnswerType(answerType);
             adhocItem.setQuestion(question);
             adhocItem.setRiskLvl(riskLevel);
             adhocItem.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             allAdhocItem.add(adhocItem);
-
         });
         ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
@@ -333,19 +367,33 @@ public class AdhocChecklistDelegator {
             return;
         }
 
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-            AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocConfigObj(request);
-            List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
+        AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocConfigObj(request);
+        List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
 
+        Optional<AdhocChecklistItemDto> optional =
+        allAdhocItem.stream().
+                filter(i -> i.getAnswerType().equals(answerType)
+                        && i.getQuestion().equals(question)
+                        && i.getRiskLvl().equals(riskLevel))
+                .findFirst();
+
+        if (!optional.isPresent()){
             AdhocChecklistItemDto adhocItem = new AdhocChecklistItemDto();
             adhocItem.setAnswerType(answerType);
             adhocItem.setQuestion(question);
             adhocItem.setRiskLvl(riskLevel);
             adhocItem.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             allAdhocItem.add(adhocItem);
-            adhocCheckListConifgDto.setAllAdhocItem(allAdhocItem);
 
+            adhocCheckListConifgDto.setAllAdhocItem(allAdhocItem);
             ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }else {
+            Map<String, String> errorMap = new HashMap<>(1);
+            errorMap.put("customItemError", "can no add sample item!");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+        }
        }
 
 }

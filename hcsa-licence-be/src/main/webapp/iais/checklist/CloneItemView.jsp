@@ -52,7 +52,6 @@
                     <iais:sortableHeader needSort="false"   field="regulationClause" value="Regulations"></iais:sortableHeader>
                     <iais:sortableHeader needSort="false"   field="checklistItem" value="Checklist Item"></iais:sortableHeader>
                     <iais:sortableHeader needSort="false"   field="riskLevel" value="Rusk Level"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
                     <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
                   </tr>
                   </thead>
@@ -72,7 +71,6 @@
                           <td>${cloneItem.regulationClause}</td>
                           <td>${cloneItem.checklistItem}</td>
                           <td><iais:code code="${cloneItem.riskLevel}"></iais:code></td>
-                          <td><iais:code code="${cloneItem.status}"></iais:code></td>
                           <td>
                             <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareCloneItem('${cloneItem.itemId}');"/>
                           </td>

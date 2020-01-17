@@ -61,4 +61,12 @@ public class INTRANET___MohAdhocChecklist___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doCancel", this); 
 	}
 
+	public void changePage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "changePage", this); 
+	}
+
+	public void doSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doSort", this);
+	}
+
 }

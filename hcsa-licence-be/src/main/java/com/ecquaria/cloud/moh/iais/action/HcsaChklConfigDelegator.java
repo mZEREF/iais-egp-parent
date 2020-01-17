@@ -528,10 +528,6 @@ public class HcsaChklConfigDelegator {
         }
     }
 
-
-
-
-
     /**
      * @AutoStep: saveChecklistConfig
      * @param:

@@ -37,6 +37,7 @@
             <div class="col-xs-12">
               <div class="components">
                 <h2 class="component-title">Item &amp; Pool</h2>
+                <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
                 <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
                 <div class="table-gp">
                   <table class="table">
@@ -44,10 +45,10 @@
                     <tr>
                       <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
                       <td></td>
-                      <iais:sortableHeader needSort="true"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="regulationClause" value="Regulations"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="checklistItem" value="Checklist Item"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="riskLevel" value="Risk Level"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="CLAUSE_NO" value="Regulation Clause Number"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="CLAUSE" value="Regulations"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="CHECKLISTITEM" value="Checklist Item"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   field="RISK_LEVEL" value="Risk Level"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,7 +68,7 @@
                             <td>${item.regulationClauseNo}</td>
                             <td>${item.regulationClause}</td>
                             <td>${item.checklistItem}</td>
-                            <td>${item.riskLevel}</td>
+                            <td><iais:code code="${item.riskLevel}"></iais:code></td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>
@@ -83,16 +84,11 @@
                       </div>
                       <div class="col-xs-6 col-md-8 text-right">
                         <div class="nav">
-                          <ul class="pagination">
-                            <li class="hidden"><a href="#" aria-label="Previous"><span aria-hidden="true"><em class="fa fa-chevron-left"></em></span></a></li>
-                            <li class="active"><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#" aria-label="Next"><span aria-hidden="true"><em class="fa fa-chevron-right"></em></span></a></li>
-                          </ul>
+                          <ul class="pagination"></ul>
                           <br><br><br>
-                          <p><a class="back" onclick="doCancel();"><em class="fa fa-angle-left" ></em> Back</a></p>
+                          <p></p>
                           <div class="text-right text-center-mobile">
+                                <a    onclick="doCancel()" class="btn btn-primary custom">Cancel</a>
                                 <a  id="customAdhocItembtnId"  class="btn btn-primary custom">Custom Adhoc Item</a>
                                 <a  id="adhocSectionbtnId" class="btn btn-primary addToSection">Add to Adhoc Section</a>
                           </div>
@@ -138,6 +134,14 @@
 
     function doCancel(){
         SOP.Crud.cfxSubmit("mainForm", "doCancel");
+    }
+
+    function sortRecords(sortFieldName,sortType){
+        SOP.Crud.cfxSubmit("mainForm","doSort",sortFieldName,sortType);
+    }
+
+    function jumpToPagechangePage(){
+        SOP.Crud.cfxSubmit("mainForm","changePage");
     }
 
 </script>

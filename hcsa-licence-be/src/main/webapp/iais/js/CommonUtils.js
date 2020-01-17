@@ -10,9 +10,11 @@ var Utils = {
     },
 
     clearClickStatus: function () {
+
         $("input[type='radio']").removeAttr('checked')
         $("input[type='checkbox']").removeAttr('checked')
         $("input[type='text']").val("");
         $(".current").text("Please select");
+
     }
 }

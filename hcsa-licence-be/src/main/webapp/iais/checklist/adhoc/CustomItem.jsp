@@ -46,6 +46,8 @@
   <br><br><br>
   <div class="main-content">
     <div class="container">
+      <span id="error_customItemError" name="iaisErrorMsg" class="error-msg"></span>
+      <br><br>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="form-horizontal">
           <div class="form-group">
