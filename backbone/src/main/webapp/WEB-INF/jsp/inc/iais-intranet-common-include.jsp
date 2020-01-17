@@ -23,6 +23,7 @@
 <link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker.standalone.min.css" rel="stylesheet">
 <link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.min.css" rel="stylesheet">
 <link href="<%=webRootCommon%>css/bootstrap-datepicker-1.9.0-dist/bootstrap-datepicker3.standalone.min.css" rel="stylesheet">
+<link href="<%=webRootCommon%>css/comm_style.css" rel="stylesheet">
 <link rel="stylesheet" href="<%=webroot%>css/cpl_intranet_style.css">
 
 <script type="text/javascript" src="<%=webroot%>js/bootstrap.min.js"></script>

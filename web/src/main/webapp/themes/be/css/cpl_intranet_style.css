@@ -5547,31 +5547,5 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 .mb-0 {
   margin-bottom: 0 !important;
 }
-/*--------------------------*/
-/*** Column Sort Styling ***/
-/*------------------------*/
-.column-sort {
-  float: left;
-  display: block;
-  margin: 0 8px 9px 0;
-  width: 14px;
-}
 
-.column-sort .sort-up:active, .column-sort .sort-up.active {
-  background-position: -30px 1px;
-}
-
-.column-sort .sort-up {
-  background-position: 0 1px;
-}
-
-.column-sort .sort-up,
-.column-sort .sort-down {
-  display: block;
-  height: 10px;
-  width: 13px;
-}
-.column-sort .sort-down {
-  background-position: 0 bottom;
-}
 /*# sourceMappingURL=cpl_style.css.map */
